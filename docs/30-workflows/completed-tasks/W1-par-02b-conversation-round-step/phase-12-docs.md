@@ -34,7 +34,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 - [ ] `InterviewProgressBar` に JSDoc コメントを追加する
 - [ ] `ApplySummaryCard` に JSDoc コメントを追加する
 - [ ] 共有型定義（`packages/shared/src/types/skillCreator.ts`）の該当型にコメントを追加する
-- [ ] W2-seq-03b が `wizard/index.ts` のエクスポート更新を担当することを記録する
+- [ ] `apps/desktop/src/renderer/components/skill/wizard/index.ts` が current facts（`ConfigureStep` / `WizardOptions` の export が無い）になっていることを記録する
 - [ ] `phase12-task-spec-compliance-check.md` で task-specification-creator / aiworkflow-requirements への準拠を確認する
 
 ## 参照資料
@@ -80,7 +80,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
  *   onGenerate={handleGenerate}
  * />
  */
-export function ConversationRoundStep({ ... }: ConversationRoundStepProps) { ... }
+export const ConversationRoundStep = (props: ConversationRoundStepProps) => { ... }
 ```
 
 ### Step 2: InterviewProgressBar への JSDoc 追加（表示契約の固定）
@@ -96,7 +96,7 @@ export function ConversationRoundStep({ ... }: ConversationRoundStepProps) { ...
  * <InterviewProgressBar currentQuestion={1} />
  * <InterviewProgressBar currentQuestion={4} totalQuestions={6} />
  */
-export function InterviewProgressBar({ ... }: InterviewProgressBarProps) { ... }
+export const InterviewProgressBar = (props: InterviewProgressBarProps) => { ... }
 ```
 
 ### Step 3: ApplySummaryCard への JSDoc 追加（警告はブロックではない）
@@ -108,9 +108,9 @@ export function InterviewProgressBar({ ... }: InterviewProgressBarProps) { ... }
  * - 未回答問のスマートデフォルト値一覧を表示する。
  * - `category === "external-integration"` かつ Q5 未設定の場合に警告を表示する。
  * - 「×」ボタン（dismissible）で閉じられる。
- * - 「生成する」ボタンで `onConfirmGenerate` を呼ぶ（`onGenerate("skip")` に対応）。
+ * - 「生成する」ボタンで `onConfirm` を呼ぶ（親で `onGenerate("skip")` に接続する）。
  */
-export function ApplySummaryCard({ ... }: ApplySummaryCardProps) { ... }
+export const ApplySummaryCard = (props: ApplySummaryCardProps) => { ... }
 ```
 
 ### Step 4: shared 型定義への型コメント追加（Q3 の条件付きフィールドを明記）
@@ -154,15 +154,12 @@ export interface ConversationAnswers {
 
 これらのコメントは `packages/shared/src/types/skillCreator.ts` の該当エントリに追加する。
 
-### Step 5: バレルファイルの更新（W2 に委任）
+### Step 5: バレルファイルの更新（本タスクで実施済みであることを確認）
 
-`wizard/index.ts` のエクスポート再構成は W2-seq-03b の担当とする。Phase 12 では該当変更には手を入れず、「新コンポーネントが shared 型を使って動作する」ことだけを記録する。W1-par-02b には local `types.ts` を新設しない。
+`wizard/index.ts` は本タスクで更新済みであることを前提に、`ConfigureStep` / `WizardOptions` の export が残っていないこと、`ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` が export されていることを記録する。
 
 ```typescript
-// Before
-export { ConfigureStep } from "./ConfigureStep";
-
-// After
+// After（例: Step 1 の構成要素が export されている）
 export { ConversationRoundStep } from "./ConversationRoundStep";
 export { InterviewProgressBar } from "./InterviewProgressBar";
 export { ApplySummaryCard } from "./ApplySummaryCard";
@@ -175,6 +172,8 @@ export { ApplySummaryCard } from "./ApplySummaryCard";
 - 追加: `ConversationRoundStep.tsx` — スキルウィザード Step 1 コンポーネント（6問・2ページ）
 - 追加: `InterviewProgressBar.tsx` — 「質問 N/6」進捗バー
 - 追加: `ApplySummaryCard.tsx` — 今すぐ生成時の適用サマリーカード
+- 更新: `DescribeStep.tsx` — Step 0 にカテゴリ選択を追加（Q5 必須表示の根拠として使用）
+- 更新: `SkillCreateWizard.tsx` — Step 0 入力から smart defaults を推論し、Step 1 に引き渡す
 - 共有型 `packages/shared/src/types/skillCreator.ts` に `ConversationAnswers` / `QuestionAnswer` / `SkillWizardScheduleConfig` のドキュメントコメントを追加
 - 削除: `ConfigureStep.tsx`（`WizardOptions` チェックボックス3個含む）
 - 削除: `WizardOptions` 型のエクスポート
@@ -215,7 +214,7 @@ export { ApplySummaryCard } from "./ApplySummaryCard";
 - [ ] `InterviewProgressBar` に JSDoc コメントが付与されている
 - [ ] `ApplySummaryCard` に JSDoc コメントが付与されている
 - [ ] `ConversationAnswers` / `QuestionAnswer` / `SkillWizardScheduleConfig` 型にコメントが付与されている
-- [ ] `wizard/index.ts` のエクスポート更新は W2-seq-03b が担当することを記録する
+- [ ] `wizard/index.ts` が current facts（`ConfigureStep` / `WizardOptions` の export なし）になっている
 - [ ] `ConfigureStep` / `WizardOptions` のエクスポートが削除されている
 - [ ] 変更履歴が記録されている（簡潔でよい）
 - [ ] `phase12-task-spec-compliance-check.md` が作成されている

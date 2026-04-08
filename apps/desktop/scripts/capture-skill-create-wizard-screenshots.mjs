@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const screenshotDir = path.join(
   repoRoot,
-  "docs/30-workflows/W1-par-02a-skill-info-step/outputs/phase-11/screenshots",
+  "outputs/phase-11/screenshots",
 );
 
 const baseRoute = "http://localhost:5173/advanced/skill-create-wizard";
@@ -35,94 +35,105 @@ function parseArgs(argv) {
 
 const scenarios = [
   {
-    file: "TC-01-step0-initial-dark.png",
+    file: "TC-11-01-step0-description-category.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-skill-info"]',
+    selector: '[data-testid="wizard-step-describe"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
-  },
-  {
-    file: "TC-02-step0-filled-dark.png",
-    url: baseRoute,
-    selector: '[data-testid="wizard-step-skill-info"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "dark",
+    note: "Step 0 で説明とカテゴリを入力した状態",
     preCapture: async (page) => {
-      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
-      await page.click('button:has-text("自動化")');
+      await page.fill(
+        "#skill-description",
+        "毎日通知するスキル",
+      );
+      await page.selectOption("#skill-category", "external-integration");
       await page.waitForTimeout(200);
     },
   },
   {
-    file: "TC-03-step1-configure-dark.png",
+    file: "TC-11-02-step1-page1-defaults.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-configure"]',
+    selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
-      await page.click('button:has-text("自動化")');
-      await page.click('button:has-text("次へ")');
+      await page.fill(
+        "#skill-description",
+        "毎日通知するスキル",
+      );
+      await page.selectOption("#skill-category", "external-integration");
+      await page.waitForTimeout(100);
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
       await page.waitForTimeout(200);
     },
   },
   {
-    file: "TC-04-step2-generating-dark.png",
-    url: `${baseRoute}?mode=slow`,
-    selector: '[data-testid="wizard-step-generate"]',
+    file: "TC-11-03-step1-cron-error.png",
+    url: baseRoute,
+    selector: '[role="alert"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
-      await page.click('button:has-text("自動化")');
-      await page.click('button:has-text("次へ")');
-      await page.click('button:has-text("スキルを生成")');
-      await page.waitForTimeout(700);
+      await page.fill(
+        "#skill-description",
+        "毎日通知するスキル",
+      );
+      await page.selectOption("#skill-category", "external-integration");
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.locator("#schedule-cron").fill("25 99 * * *");
+      await page.locator("#schedule-cron").blur();
+      await page.waitForSelector('text=cron式の形式が正しくありません');
+      await page.waitForTimeout(200);
     },
   },
   {
-    file: "TC-05-step3-complete-dark.png",
+    file: "TC-11-04-step2-required-q5.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-complete"]',
+    selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
-      await page.click('button:has-text("自動化")');
-      await page.click('button:has-text("次へ")');
-      await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector("text=スキルが作成されました");
+      await page.fill(
+        "#skill-description",
+        "毎日通知するスキル",
+      );
+      await page.selectOption("#skill-category", "external-integration");
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.waitForSelector('text=Q5: 外部ツール連携（必須★）');
       await page.waitForTimeout(150);
     },
   },
   {
-    file: "TC-06-step2-error-dark.png",
-    url: `${baseRoute}?mode=error`,
-    selector: '[data-testid="wizard-step-generate"]',
+    file: "TC-11-05-summary-card-warning.png",
+    url: baseRoute,
+    selector: '[aria-label="適用サマリー"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
-      await page.click('button:has-text("自動化")');
-      await page.click('button:has-text("次へ")');
-      await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector("text=スキル生成に失敗しました");
+      await page.fill(
+        "#skill-description",
+        "毎日通知するスキル",
+      );
+      await page.selectOption("#skill-category", "external-integration");
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.getByRole("button", { name: "今すぐ生成する" }).click();
+      await page.waitForSelector('[aria-label="適用サマリー"]');
       await page.waitForTimeout(150);
     },
-  },
-  {
-    file: "TC-07-step0-initial-light.png",
-    url: baseRoute,
-    selector: '[data-testid="wizard-step-skill-info"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "light",
-  },
-  {
-    file: "TC-08-step0-initial-mobile-dark.png",
-    url: baseRoute,
-    selector: '[data-testid="wizard-step-skill-info"]',
-    viewport: { width: 390, height: 844 },
-    colorScheme: "dark",
   },
 ];
 
@@ -220,22 +231,17 @@ async function captureScenario(browser, scenario, outputDir) {
   try {
     await context.addInitScript(createMockScript());
     const page = await context.newPage();
-    page.setDefaultTimeout(60_000);
-    page.setDefaultNavigationTimeout(60_000);
 
-    await page.goto(scenario.url, {
-      waitUntil: "domcontentloaded",
-      timeout: 60_000,
-    });
+    await page.goto(scenario.url, { waitUntil: "domcontentloaded" });
     await page.waitForSelector('[data-testid="skill-create-wizard"]', {
-      timeout: 60_000,
+      timeout: 15_000,
     });
 
     if (scenario.preCapture) {
       await scenario.preCapture(page);
     }
 
-    await page.waitForSelector(scenario.selector, { timeout: 60_000 });
+    await page.waitForSelector(scenario.selector, { timeout: 15_000 });
     await page.waitForTimeout(150);
 
     await page.screenshot({

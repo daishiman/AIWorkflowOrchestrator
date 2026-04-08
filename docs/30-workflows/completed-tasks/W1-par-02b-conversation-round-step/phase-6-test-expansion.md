@@ -97,6 +97,12 @@ ApplySummaryCard は Phase 5 で key-based マッピングを採用するため�
 pnpm --filter @repo/desktop vitest run src/renderer/components/skill/wizard/__tests__/
 ```
 
+## 統合テスト連携
+
+- Phase 4 の TC-01〜TC-12 に加え、Phase 6 でエッジケース（SmartDefault null / cron 不正 / Q5 警告）を追加する。
+- `q1` → `smartDefaults.who`、`q6` → `smartDefaults.format` の key-based マッピング回帰を TC として固定する。
+- Phase 11 の手動テストで検出した問題は Phase 12 の unassigned-task-detection に記録する。
+
 ## 成果物
 
 - 拡充済みテストファイル（スマートデフォルト・スケジュールUI・Q5警告・コールバック・アクセシビリティ）

@@ -31,11 +31,11 @@ Phase 1 で確定した要件を基に、`ConversationRoundStep` コンポーネ
 
 ## 参照資料
 
-| 資料名                  | パス                                              | 説明         |
-| ----------------------- | ------------------------------------------------- | ------------ |
-| Phase 1 要件定義        | `phase-1-requirements.md`                         | 確定した要件 |
-| W1-par-02a Phase 2 設計 | `../W1-par-02a-skill-info-step/phase-2-design.md` | 連携先設計   |
-| 共有型定義              | `packages/shared/src/types/`                      | 型定義参照   |
+| 資料名                  | パス                                                                         | 説明         |
+| ----------------------- | ---------------------------------------------------------------------------- | ------------ |
+| Phase 1 要件定義        | `phase-1-requirements.md`                                                    | 確定した要件 |
+| W1-par-02a Phase 2 設計 | `../skill-wizard-redesign-lane/W1-par-02a-skill-info-step/phase-2-design.md` | 連携先設計   |
+| 共有型定義              | `packages/shared/src/types/`                                                 | 型定義参照   |
 
 ## 実行手順
 
@@ -57,7 +57,7 @@ ConversationRoundStep
 └── NavigationButtons
     ├── BackButton
     ├── NextPageButton（Page1のみ）
-    └── GenerateButton（Page2のみ）
+    └── GenerateNowButton（全ページで表示。「今すぐ生成する」でサマリーカードを開く）
 ```
 
 ### Step 2: ページング状態設計
@@ -118,14 +118,8 @@ interface ScheduleConfigInputProps {
 // Q5が必須になる条件
 const isQ5Required = formData.category === "external-integration";
 
-// Step 2 遷移時のみチェック（「今すぐ生成する」ボタン押下時）
-const validateBeforeGenerate = (): boolean => {
-  if (isQ5Required) {
-    const q5 = answers.q5;
-    return q5.selectedOption !== null || q5.freeText.trim().length > 0;
-  }
-  return true;
-};
+// 本タスクでは Q5 未回答でも生成をブロックしない（警告のみ）。
+// required 表示（ラベルの「必須★」）と、ApplySummaryCard 内の警告表示にのみ利用する。
 ```
 
 ### Step 7: 適用サマリーカード（ApplySummaryCard）設計
@@ -134,8 +128,8 @@ const validateBeforeGenerate = (): boolean => {
 interface ApplySummaryCardProps {
   answers: ConversationAnswers;
   smartDefaults: SmartDefaultResult;
-  isQ5Required: boolean;
-  onConfirmGenerate: () => void;
+  formData: SkillInfoFormData;
+  onConfirm: () => void;
   onDismiss: () => void;
 }
 
@@ -144,7 +138,7 @@ interface ApplySummaryCardProps {
 //   - Q5未設定かつ必須の場合: 警告メッセージ
 // 操作:
 //   - 「×」でカードを閉じる（onDismiss）
-//   - 「生成する」で onGenerate("skip") を呼ぶ（onConfirmGenerate）
+//   - 「生成する」で onGenerate("skip") を呼ぶ（onConfirm）
 ```
 
 注意: 未回答問と `SmartDefaultResult` の対応付けは **key-based**（`q1 -> who` のような明示マップ）で実装し、配列のインデックス等の **順序依存** を作らない。
@@ -152,17 +146,11 @@ interface ApplySummaryCardProps {
 ### Step 8: スマートデフォルト適用設計
 
 ```typescript
-// 初期化時に smartDefaults から answers を事前入力
-const initializeAnswers = (
-  smartDefaults: SmartDefaultResult,
-): ConversationAnswers => ({
-  q1: { selectedOption: smartDefaults.who ?? null, freeText: "" },
-  q2: { selectedOption: smartDefaults.input ?? null, freeText: "" },
-  q3: { selectedOption: smartDefaults.timing ?? null, freeText: "" },
-  q4: { selectedOption: smartDefaults.output ?? null, freeText: "" },
-  q5: { selectedOption: smartDefaults.tool ?? null, freeText: "" },
-  q6: { selectedOption: smartDefaults.format ?? null, freeText: "" },
-});
+// 初期化時に smartDefaults から answers を事前入力する。
+//
+// - 既に回答済みの問は上書きしない（ユーザー入力を優先）
+// - デフォルト値が選択肢に無い場合は freeText 側へ入れる
+// - Q3 が「定期実行」の場合のみ、scheduleConfig を初期化する
 ```
 
 ### Step 9: ファイル配置設計
@@ -181,6 +169,12 @@ const initializeAnswers = (
 - 全サブコンポーネントの Props 設計
 - Q3スケジュールUI・Q5バリデーション・適用サマリーカードの詳細設計
 - ファイル配置計画
+
+## 統合テスト連携
+
+- Phase 1 の AC-01〜AC-08 の実現方針を設計として固定し、Phase 4 テスト設計の入力とする。
+- key-based mapping（`DEFAULT_KEY_BY_QUESTION`）はPhase 4/6のテストで回帰確認する。
+- ページング状態（`currentPage`）とサマリーカード表示（`showSummaryCard`）は Phase 4 の state テストで検証する。
 
 ## 完了条件
 

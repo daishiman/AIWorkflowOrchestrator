@@ -109,6 +109,11 @@ rg -n "ConfigureStep|WizardOptions" apps packages
 | InterviewProgressBar 独立動作確認 | -    |
 | ApplySummaryCard 独立動作確認     | -    |
 
+## 統合テスト連携
+
+- AC-08（ConfigureStep / WizardOptions 参照ゼロ）を QA の削除確認ステップとして検証する（`rg -n "ConfigureStep|WizardOptions"` で 0 件）。
+- Phase 4/6/7/8 の全テストが GREEN であることを最終確認する。
+
 ## 成果物
 
 - QA チェックリスト（全項目合格）

@@ -29,6 +29,8 @@
 - [ ] 「今すぐ生成する」サマリーカードを確認する
 - [ ] スマートデフォルト事前入力を確認する
 - [ ] キーボード操作を確認する
+- [ ] スクリーンショット証跡を `outputs/phase-11/screenshots/` に保存する（Phase 11 必須）
+- [ ] `outputs/phase-11/screenshot-plan.json` と `outputs/phase-11/phase11-capture-metadata.json` を current task で更新する
 
 ## 参照資料
 
@@ -44,6 +46,27 @@
 ```bash
 pnpm --filter @repo/desktop dev
 ```
+
+### Step 1.5: スクリーンショット証跡の計画（必須）
+
+本タスクは UI 変更を含むため、Phase 11 の証跡として **スクリーンショットが必須**。
+
+- 保存先: `outputs/phase-11/screenshots/`
+- 付随メタデータ: `outputs/phase-11/screenshot-plan.json` / `outputs/phase-11/phase11-capture-metadata.json`
+
+最小セット（例）:
+
+| TC       | 画面                   | 目的                                   |
+| -------- | ---------------------- | -------------------------------------- |
+| TC-11-01 | Step 0（DescribeStep） | 説明入力 + カテゴリ選択（外部連携）    |
+| TC-11-02 | Step 1 Page 1          | 進捗バー（1/6）と Q3「定期実行」展開   |
+| TC-11-03 | Step 1 Page 2          | Q5 の「必須★」表示（外部連携カテゴリ） |
+| TC-11-04 | Step 1 サマリーカード  | Q5 未回答の警告表示（ブロックしない）  |
+
+補足:
+
+- smart defaults の事前入力を見せる場合は、Step 0 の説明文に推論キーワード（例: 「Slack」「毎日」「通知」など）を含める。
+- Q5 警告を見せる場合は、外部連携カテゴリのまま Q5 を未回答にしてサマリーカードを開く。
 
 ### Step 2: 進捗バーの表示確認
 
@@ -118,10 +141,17 @@ pnpm --filter @repo/desktop dev
 | Step 7: smartDefaults  | A/B      | [ ] PASS / [ ] FAIL | -    |
 | Step 8: キーボード     | A/B      | [ ] PASS / [ ] FAIL | -    |
 
+## 統合テスト連携
+
+- Phase 4/6/7/9 の自動テスト結果を前提として、Phase 11 では視覚的・操作的確認（Semantic / Visual / AI UX 3層評価）を実施する。
+- Phase 11 で発見した HIGH 問題は Phase 12 の unassigned-task-detection に記録する（VISUAL task 分類）。
+
 ## 成果物
 
 - 手動テスト実施記録（各項目の合否）
 - 発見した視覚的・操作的問題のリスト
+- `outputs/phase-11/screenshots/` のスクリーンショット一式（UI変更タスクのため必須）
+- `outputs/phase-11/screenshot-plan.json` / `outputs/phase-11/phase11-capture-metadata.json`
 
 ## 完了条件
 

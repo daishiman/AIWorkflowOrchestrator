@@ -330,6 +330,23 @@ describe("ConversationRoundStep", () => {
 pnpm --filter @repo/desktop vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx
 ```
 
+## 統合テスト連携
+
+| TC-ID | AC-ID | テスト内容                                                   |
+| ----- | ----- | ------------------------------------------------------------ |
+| TC-01 | AC-01 | Page1 表示時に Q1〜Q3 が表示され Q4〜Q6 は非表示             |
+| TC-02 | AC-01 | 「次のページ」クリックで Q4〜Q6 が表示される                 |
+| TC-03 | AC-02 | Page1 で「質問 1/6」、Page2 で「質問 4/6」が表示される       |
+| TC-04 | AC-03 | SmartDefaultResult が各問の初期値として反映される            |
+| TC-05 | AC-04 | Q3「定期実行」選択でスケジュールUIが展開される               |
+| TC-06 | AC-04 | Q3「手動実行」選択でスケジュールUIが非表示になる             |
+| TC-07 | AC-05 | category=external-integration のとき Q5 に必須マーク         |
+| TC-08 | AC-05 | category=automation のとき Q5 に必須マークなし               |
+| TC-09 | AC-06 | 「今すぐ生成する」でサマリーカードが表示される               |
+| TC-10 | AC-07 | サマリーカードの×ボタンでカードが閉じる                      |
+| TC-11 | AC-06 | サマリーカードの「生成する」で onGenerate("skip") が呼ばれる |
+| TC-12 | —     | 「戻る」ボタンで onBack が呼ばれる                           |
+
 ## 成果物
 
 - `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx`

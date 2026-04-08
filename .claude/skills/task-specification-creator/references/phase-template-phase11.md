@@ -42,6 +42,13 @@ Phase 11 の manual test。
 - coverage matrix
 - `phase11-capture-metadata.json`
 
+> **[W1-02b-1] UI task の screenshot-plan.json は `mode: "VISUAL"` をデフォルトにする**
+>
+> UI コンポーネントの追加・変更が明確な task では、`screenshot-plan.json` 生成時に `mode: "VISUAL"` をデフォルトにする。
+> `NON_VISUAL` で作成したファイルを Phase 11 で差し替える場合、`taskId` フィールドが旧タスクのままになりやすい。
+> Phase 11 着手前に `phase11-capture-metadata.json` の `taskId` が **現行タスク ID** と一致しているかを確認し、不一致なら preflight で fail-fast させる。
+> 確認コマンド例: `jq '.taskId' outputs/phase-11/phase11-capture-metadata.json`
+
 ## 必須成果物
 
 | 成果物 | 用途 |

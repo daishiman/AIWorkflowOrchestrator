@@ -121,6 +121,11 @@ pnpm --filter @repo/desktop typecheck
 pnpm --filter @repo/desktop vitest run src/renderer/components/skill/wizard/__tests__/
 ```
 
+## 統合テスト連携
+
+- リファクタリング後も Phase 4/6 の全テストが GREEN であることを確認する（回帰防止）。
+- key-based マッピングの整理（Before/After テーブル）と Phase 6 の回帰テスト結果を対応付けて記録する。
+
 ## 成果物
 
 - リファクタリング済み `ConversationRoundStep.tsx`

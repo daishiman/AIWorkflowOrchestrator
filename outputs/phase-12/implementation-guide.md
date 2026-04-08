@@ -1,132 +1,98 @@
-# 実装ガイド — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+# Phase 12: 実装ガイド（implementation-guide.md）— UT-SKILL-WIZARD-W1-par-02b
+
+## メタ情報
+
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 対象: Skill Create Wizard（Step 0: DescribeStep / Step 1: ConversationRoundStep）
+- 作成日: 2026-04-08
 
 ## Part 1: 中学生レベルの概念説明
 
-### healthPolicy とは何か
+### 何が変わったの？
 
-`healthPolicy` は、AI につなぐ前に見る「健康診断メモ」です。
-接続できるか、API キーは有効か、途中で制限されていないかを 1 枚にまとめます。
+「スキルを作るウィザード」を、アンケートみたいに 6つの質問で順番に答える形にしました。
 
-たとえば学校の保健室で、先生が
+- まず Step 0 で「このスキルは何をする？」を文章で書きます
+- さらに「カテゴリ（自動化、外部連携など）」も選べます
+- 次に Step 1 で 6問に答えると、スキルの設定が決まっていきます
 
-- いま教室に入れるか
-- 体調が悪くないか
-- 忘れ物で止まっていないか
+### どうしてカテゴリが必要？
 
-を見てから判断するのと同じです。
-情報が 1 か所にまとまっていると、毎回ちがう先生がバラバラに判断しなくて済みます。
+カテゴリは「この質問（Q5: 外部ツール連携）が重要かどうか」を判断する材料です。
 
-### リファクタリングとは何か
+- 外部連携カテゴリなら「Q5 は必須」だと分かる
+- それ以外なら「Q5 は任意」でもよい
 
-リファクタリングは、動きは変えずに、書き方だけをきれいにすることです。
+### smartDefaults（スマートデフォルト）って何？
 
-たとえば、同じ計算を 2 つのノートに書いていたら、片方だけ直してしまうことがあります。
-1 つにまとめれば、直し忘れが起きにくくなります。
+最初に書いた説明文やカテゴリから、よくある答えを先に「予測して入れておく」仕組みです。
 
-### なぜ独自ロジックをなくすのか
+例:
 
-`useMainlineExecutionAccess` の中で `apiKeyDegraded` を自分で計算すると、同じ判断が別の場所にもある状態になります。
-すると、片方だけ修正されて、もう片方が古いまま残る危険があります。
+- 説明文に「毎日」「定期」などが入っていれば、Q3 は「定期実行」になりやすい
+- 「Slack」「GitHub」などが入っていれば、Q5 の候補が絞りやすい
 
-今回の修正では、その判断を `resolveHealthPolicy()` に寄せました。
-これで「健康状態の判断」は共有の 1 か所に集まり、フック側は結果を受け取るだけになります。
+ただし、予測はあくまで「助け」なので、あとでユーザーが自由に上書きできます。
 
-### resolveHealthPolicy() の役割
+### 「今すぐ生成する」って何？
 
-`resolveHealthPolicy()` は、接続状態と最終ヘルスチェックの情報を受け取って、統一された `HealthPolicy` を返す関数です。
+質問に全部答えなくても、途中で「今すぐ生成する」を押せます。
 
-`useMainlineExecutionAccess` はこの関数を呼び、返ってきた `HealthPolicy` を `buildMainlineExecutionAccessState()` に渡します。
-つまり、フックは「どう判断するか」を持たず、「共有ルールに聞いて、その結果を使う」役に変わりました。
+- まだ答えていない質問があると、smartDefaults を「こう入れますよ」という確認カードが出ます
+- 外部連携カテゴリなのに Q5 を空にしている場合だけ、警告が出ます（生成をブロックはしない）
 
-## Part 2: 技術的詳細
+## Part 2: 技術者向け説明
 
-### 変更の概要
+### 目的と変更点（要約）
 
-変更対象は `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts` です。
+- Step 0（DescribeStep）に `SkillCategory` 選択を追加し、Step 1（ConversationRoundStep）へカテゴリを引き渡す
+- template モードでは Step 0 の入力（description + category）から `SmartDefaultResult` を推論して Step 1 に渡す
+- Step 1（ConversationRoundStep）は 6問・2ページのインタビュー UI として実装し、Q3 で cron 入力、Q5 でカテゴリ依存の必須表示、サマリーカード表示を行う
 
-削除したのは次の独自計算です。
+### 主な実装ファイル（current facts）
 
-```typescript
-const apiKeyDegraded =
-  credentials.apiKeyValid &&
-  (selectedHealthStatus?.status === "disconnected" ||
-    selectedHealthStatus?.status === "error");
-```
+- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`
+  - `category?: SkillCategory | null` と `onCategoryChange?: (value: SkillCategory | null) => void` を追加
+  - `select#skill-category` でカテゴリ選択（未選択/自動化/外部連携/データ分析/コード支援/その他）
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
+  - `category` state を追加し、DescribeStep に接続
+  - `smartDefaults` state を追加し、template モードで `inferSmartDefaults({ purpose, category })` を実行して Step 1 に渡す
+  - `ConversationRoundStep` へ `formData={{ purpose: description, category } as SkillInfoFormData}` を渡す
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`
+  - 6問・2ページ、`InterviewProgressBar` 常時表示（Page1: 1/6, Page2: 4/6）
+  - smartDefaults は初回描画時に answers へ反映（以降はユーザー入力を優先）
+  - cron 検証は renderer で動く browser-safe な 5-field validator を使用
+  - `onAnswersChange` は `useEffect` で `internalAnswers` の変更に追従
+  - Q3 を「定期実行」以外へ切替時、`scheduleConfig` を `undefined` にクリア
+  - 「今すぐ生成する」で `ApplySummaryCard` を表示し、確認後 `onGenerate("skip")`
+- `apps/desktop/src/renderer/components/skill/wizard/InterviewProgressBar.tsx`
+  - `質問 N/6` + `role="progressbar"` のバー表示
+- `apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx`
+  - 未回答問の smartDefaults を key-based マッピング（`q1..q6` -> `who..format`）で一覧表示
+  - `category === "external-integration"` かつ Q5 未回答の場合に警告（ブロックしない）
 
-変更後は、`resolveHealthPolicy()` の返り値を `healthPolicy` として渡します。
+### 型（shared contracts）
 
-```typescript
-const healthPolicy = resolveHealthPolicy({
-  connectionStatus: selectedHealthStatus?.status ?? "disconnected",
-  isApiKeyValid: credentials.apiKeyValid,
-  apiKeyDegraded: false,
-  isRateLimited: false,
-  lastHealthCheck: selectedHealthStatus ?? null,
-});
+以下は `packages/shared/src/types/skillCreator.ts` の「Skill Wizard Shared Contracts」セクションを参照する。
 
-return {
-  access: buildMainlineExecutionAccessState({
-    apiKeyValid: credentials.apiKeyValid,
-    subscriptionValid: credentials.subscriptionValid,
-    isAuthenticated,
-    selectedProviderName: selectedProvider?.name,
-    selectedModelName: selectedModel?.name,
-    healthStatus: selectedHealthStatus,
-    isLoading: credentials.isLoading,
-    healthPolicy,
-  }),
-  refreshHealth,
-};
-```
+- `SkillCategory`
+- `SkillInfoFormData`
+- `ConversationAnswers` / `QuestionAnswer`
+- `SkillWizardScheduleConfig`
+- `SmartDefaultResult`（`inferenceLog?: string[]` を含む）
 
-### resolveHealthPolicy() の入出力仕様
+### 仕様上の重要な挙動
 
-#### 入力
+- smartDefaults の反映タイミングは「初回描画時のみ」。Step 0 に戻って description を変えても、Step 1 で既に回答している場合は自動上書きしない（ユーザー回答優先）。
+- Q5 の「必須」は表示と警告に限定する（生成のブロックはしない）。
+- cron のバリデーションは UI 上でのフィードバック用途。renderer で動く browser-safe な 5-field validator を使い、実行スケジューラの厳密性とは別（必要なら後続タスクで統一）。
 
-| フィールド         | 型                                         | このフックでの値                                 | 補足                                       |
-| ------------------ | ------------------------------------------ | ------------------------------------------------ | ------------------------------------------ |
-| `connectionStatus` | `"connected" \| "disconnected" \| "error"` | `selectedHealthStatus?.status ?? "disconnected"` | プロバイダー未選択時は `disconnected` 扱い |
-| `isApiKeyValid`    | `boolean`                                  | `credentials.apiKeyValid`                        | 将来の拡張に備えた入力                     |
-| `apiKeyDegraded`   | `boolean`                                  | `false`                                          | フック内で独自再計算しないため             |
-| `isRateLimited`    | `boolean`                                  | `false`                                          | このフックでは未取得                       |
-| `lastHealthCheck`  | `HealthCheckResult \| null`                | `selectedHealthStatus ?? null`                   | 未取得時は `null`                          |
+### Phase 11 スクリーンショット（証跡）
 
-#### 出力
+Phase 11 の視覚証跡は `outputs/phase-11/` 配下に保存する。
 
-| フィールド              | 型                                                    | 意味                 |
-| ----------------------- | ----------------------------------------------------- | -------------------- |
-| `isConnectionAvailable` | `boolean`                                             | 接続可否             |
-| `isDegraded`            | `boolean`                                             | 品質低下の有無       |
-| `isRateLimited`         | `boolean`                                             | レート制限の有無     |
-| `healthStatus`          | `"healthy" \| "degraded" \| "unhealthy" \| "unknown"` | 総合状態             |
-| `lastCheckedAt`         | `Date \| null`                                        | 最終チェック時刻     |
-| `errorDetail?`          | `string`                                              | `unhealthy` 時の補足 |
+- `outputs/phase-11/screenshot-plan.json`
+- `outputs/phase-11/phase11-capture-metadata.json`
+- `outputs/phase-11/screenshots/`（本タスクの UI 状態を示す PNG 群）
 
-### buildMainlineExecutionAccessState() との連携
-
-`buildMainlineExecutionAccessState()` は `healthPolicy?: HealthPolicy` を受け取り、渡された場合はそれを優先して状態を導出します。
-
-このタスクでは、フック側で `apiKeyDegraded` を組み立てず、`healthPolicy` を 1 つ渡すだけにしました。
-これにより、共有ロジックとレンダリング層の責務が分離されます。
-
-### インポート方針
-
-`resolveHealthPolicy` は `@repo/shared/types` からインポートします。
-`AuthMode` は barrel export されていないため、既存どおり `@repo/shared/types/auth-mode` を使います。
-
-```typescript
-import { resolveHealthPolicy } from "@repo/shared/types";
-import type { AuthMode } from "@repo/shared/types/auth-mode";
-```
-
-### 検証メモ
-
-このタスクは NON_VISUAL で、スクリーンショット証跡は不要です。
-検証は次の 2 つで行いました。
-
-```bash
-pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts
-pnpm --filter @repo/desktop typecheck
-```
-
-`resolveHealthPolicy` は Vitest のモック都合で直接 spy せず、`buildMainlineExecutionAccessState()` への `healthPolicy` 引き渡しで間接確認しています。
+本ファイルは、上記の証跡が current task（`UT-SKILL-WIZARD-W1-par-02b`）として更新されている前提で記述している。
