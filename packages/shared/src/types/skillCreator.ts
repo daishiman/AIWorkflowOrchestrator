@@ -939,7 +939,8 @@ export type SkillCategory =
 
 /**
  * Step 0 のフォームデータ。
- * `skillName` は任意入力で、省略も空文字も許容する。
+ * `skillName` は型上は任意入力で、省略や空文字も表現できるが、
+ * runtime validation では空文字・空白のみを拒否する。
  */
 export interface SkillInfoFormData {
   /** スキル名（任意） */

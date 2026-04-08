@@ -10,6 +10,31 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+### タスク: UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 SkillInfoFormData ランタイムバリデーション実装（2026-04-08）
+
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001                                                      |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                              |
+| タイプ     | docs / shared-types / workflow-sync                                                            |
+| 優先度     | 中                                                                                              |
+| 完了日     | 2026-04-08                                                                                     |
+| 対象       | `packages/shared/src/types/skillInfoFormValidation.ts` のランタイムバリデーション追加と Phase 12 同期 |
+| 成果物     | `docs/30-workflows/skill-wizard-runtime-validation/`                                            |
+| 元未タスク | なし（lane spec 先行タスク）                                                                    |
+
+#### 実施内容
+
+- `packages/shared/src/types/skillInfoFormValidation.ts` を新規作成し、`validateSkillName` / `validatePurpose` / `validateSkillInfoForm` を実装した
+- `packages/shared/src/types/index.ts` に runtime validation API を公開エクスポートした
+- `packages/shared/src/types/__tests__/skillInfoFormValidation.test.ts` を 23 tests 相当の回帰テストとして整備した
+- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/*` を current facts へ同期し、`interfaces-agent-sdk-skill-reference.md` / `task-workflow.md` / `task-workflow-completed.md` / LOGS / `SKILL.md` を same-wave 更新した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/shared test -- --run skillInfoFormValidation`: 現行 node_modules の esbuild バイナリ不整合で起動失敗（0.21.5 / 0.25.12 mismatch）
+
 ### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
 
 | 項目       | 値                                                                                                  |
