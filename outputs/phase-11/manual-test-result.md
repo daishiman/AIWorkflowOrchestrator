@@ -1,33 +1,46 @@
-# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W1-par-02b
 
 ## 判定
 
-NON_VISUAL / static verification PASS / manual app smoke PASS / vitest PASS
+PASS
+
+## 実施概要
+
+- 実施方法: Playwright で `outputs/phase-11/screenshots/` を capture
+- capture コマンド: `node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs`
+- 対象 UI: `SkillCreateWizard` -> `DescribeStep` -> `ConversationRoundStep` -> `ApplySummaryCard`
 
 ## 実測
 
-| コマンド                                                                                                                                                                                                                                                                                                                                              | 結果 | 補足                                        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------- |
-| `pnpm --filter @repo/shared build`                                                                                                                                                                                                                                                                                                                    | PASS | `@repo/shared` の dist を生成               |
-| `pnpm --filter @repo/desktop build`                                                                                                                                                                                                                                                                                                                   | PASS | Desktop bundle の生成を確認                 |
-| `timeout 25s pnpm --filter @repo/desktop dev`                                                                                                                                                                                                                                                                                                         | PASS | Electron 起動まで到達し、runtime error なし |
-| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                               | PASS | 変更範囲の型整合を確認                      |
-| `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts` | PASS | 対象ファイル lint 0 error                   |
-| `pnpm --filter @repo/desktop exec vitest run ...`                                                                                                                                                                                                                                                                                                     | PASS | 3 files / 100 tests PASS                    |
+| シナリオ                       | 結果 | 補足                                          |
+| ------------------------------ | ---- | --------------------------------------------- |
+| Step 0: description + category | PASS | `SkillCategory` セレクトが表示される          |
+| Step 1: page 1 defaults        | PASS | `質問 1/6` と smartDefaults の初期選択を確認  |
+| Step 1: cron error             | PASS | `25 99 * * *` でエラー表示を確認              |
+| Step 2: Q5 required            | PASS | external-integration のとき Q5 必須表示を確認 |
+| Summary card                   | PASS | `Q5` 未回答警告を確認                         |
 
-## NON_VISUAL 判定理由
+## 参照スクリーンショット
 
-- UI 変更なし（Main Process の DI 配線変更のみ）
-- 手動アプリ起動による smoke を実施し、runtime error なしで起動確認済み
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
+- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
+- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
-## source evidence
+## 所見
 
-- `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
-- `apps/desktop/src/main/ipc/index.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`
+- Page 1 では progress bar と Q1/Q2/Q3 が崩れず表示される
+- Q3 の定期実行 UI は cron 入力と timezone 選択をインライン展開する
+- Page 2 の Q5 は external-integration の場合のみ必須表示になる
+- summary card は dismissible で、生成前の確認面として機能している
 
-## スクリーンショット
+## 完了条件
 
-N/A
+- [x] 進捗バーが 6問基準で正確に表示される
+- [x] ページング操作（遷移・回答保持）が正常に動作する
+- [x] Q3「定期実行」でスケジュール UI が展開される
+- [x] Q5 必須マークがカテゴリに応じて表示される
+- [x] 今すぐ生成のサマリーカードが表示される
+- [x] スマートデフォルトの事前入力が確認できる
+- [x] キーボード操作の起点となるボタン群が表示される

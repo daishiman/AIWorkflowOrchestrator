@@ -1,4 +1,4 @@
-# Phase 11: discovered issues — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# Phase 11: 発見した問題 — UT-SKILL-WIZARD-W1-par-02b
 
 ## サマリー
 
@@ -6,15 +6,19 @@
 | ------------------- | ---- |
 | current blocker     | 0    |
 | current minor       | 0    |
-| resolved carry-over | 2    |
-
-## 詳細
-
-### resolved carry-over
-
-- vitest 実行の esbuild host/binary version mismatch（`0.21.5` vs `0.25.12`）を解消し、再実行で PASS
-- `pnpm --filter @repo/desktop dev` の起動失敗（`@repo/shared` dist 未生成）を `pnpm --filter @repo/shared build` 後の再実行で解消
+| resolved carry-over | 1    |
 
 ## 判定
 
-新規未解決課題はなし。Phase 11 は完了。
+新規の blocker / minor はなし。
+
+## resolved carry-over
+
+- `ConversationRoundStep.tsx` が `node-cron` を renderer で直 import していたため、browser bundle の初期化時に `Class extends value [object Object] is not a constructor or null` が発生していた
+- browser-safe な cron validator に置き換えたことで解消した
+
+## 確認メモ
+
+- Page 1 / Page 2 / summary card の capture は成功
+- `Q5` 必須表示は external-integration のときのみ出る
+- summary card は Q5 未回答警告を表示し、生成前確認として機能する

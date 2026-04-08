@@ -1,0 +1,276 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CompleteStep > スナップショット > 外部連携あり表示のスナップショットが一致する 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6 py-6"
+    data-testid="complete-step"
+  >
+    <div
+      class="flex flex-col items-center gap-1 text-center"
+      data-testid="complete-step-header"
+      role="status"
+    >
+      <span
+        aria-hidden="true"
+        class="text-2xl"
+      >
+        ✓
+      </span>
+      <h2
+        class="text-xl font-semibold text-[var(--text-primary)]"
+      >
+        スキルの骨格を生成しました
+      </h2>
+      <p
+        class="text-sm text-[var(--text-secondary)] mt-1"
+      >
+        ※ これは骨格です。完全に動作するまでには設定が必要な場合があります。
+      </p>
+    </div>
+    <section
+      class="flex flex-col items-center gap-3"
+    >
+      <p
+        class="text-sm text-[var(--text-secondary)]"
+      >
+        この骨格は期待通りでしたか？
+      </p>
+      <div
+        class="flex gap-3"
+      >
+        <button
+          aria-label="期待通り"
+          class="rounded-lg px-4 py-2 text-sm font-medium border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="complete-step-feedback-satisfied"
+          type="button"
+        >
+          👍 はい
+        </button>
+        <button
+          aria-label="イメージと違う、やり直す"
+          class="rounded-lg px-4 py-2 text-sm font-medium border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="complete-step-feedback-unsatisfied"
+          type="button"
+        >
+          👎 イメージと違う → やり直す
+        </button>
+      </div>
+    </section>
+    <section
+      aria-label="次のアクション"
+      class="grid grid-cols-1 gap-4 md:grid-cols-3"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="今すぐ実行する"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-execute"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ▶
+        </span>
+        <span>
+          今すぐ実行する
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        aria-label="エディタで開く"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-open-editor"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ✏
+        </span>
+        <span>
+          エディタで開く
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        aria-label="別のスキルを作る"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-create-another"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ＋
+        </span>
+        <span>
+          別のスキルを作る
+        </span>
+      </button>
+    </section>
+    <section
+      class="flex flex-col gap-2"
+      data-testid="complete-step-external-checklist"
+    >
+      <h3
+        class="text-sm font-semibold text-[var(--text-primary)]"
+      >
+        動作確認チェック
+      </h3>
+      <label
+        class="flex items-center gap-2 text-sm"
+      >
+        <input
+          aria-checked="false"
+          data-testid="complete-step-check-webhook"
+          type="checkbox"
+        />
+        <span
+          class="truncate"
+        >
+          Slack
+           Webhook URL を設定する
+        </span>
+      </label>
+      <label
+        class="flex items-center gap-2 text-sm"
+      >
+        <input
+          aria-checked="false"
+          data-testid="complete-step-check-test-run"
+          type="checkbox"
+        />
+        テスト実行で動作確認する
+      </label>
+    </section>
+  </div>
+</div>
+`;
+
+exports[`CompleteStep > スナップショット > 標準表示のスナップショットが一致する 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6 py-6"
+    data-testid="complete-step"
+  >
+    <div
+      class="flex flex-col items-center gap-1 text-center"
+      data-testid="complete-step-header"
+      role="status"
+    >
+      <span
+        aria-hidden="true"
+        class="text-2xl"
+      >
+        ✓
+      </span>
+      <h2
+        class="text-xl font-semibold text-[var(--text-primary)]"
+      >
+        スキルの骨格を生成しました
+      </h2>
+      <p
+        class="text-sm text-[var(--text-secondary)] mt-1"
+      >
+        ※ これは骨格です。完全に動作するまでには設定が必要な場合があります。
+      </p>
+    </div>
+    <section
+      class="flex flex-col items-center gap-3"
+    >
+      <p
+        class="text-sm text-[var(--text-secondary)]"
+      >
+        この骨格は期待通りでしたか？
+      </p>
+      <div
+        class="flex gap-3"
+      >
+        <button
+          aria-label="期待通り"
+          class="rounded-lg px-4 py-2 text-sm font-medium border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="complete-step-feedback-satisfied"
+          type="button"
+        >
+          👍 はい
+        </button>
+        <button
+          aria-label="イメージと違う、やり直す"
+          class="rounded-lg px-4 py-2 text-sm font-medium border border-[var(--border-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
+          data-testid="complete-step-feedback-unsatisfied"
+          type="button"
+        >
+          👎 イメージと違う → やり直す
+        </button>
+      </div>
+    </section>
+    <section
+      aria-label="次のアクション"
+      class="grid grid-cols-1 gap-4 md:grid-cols-3"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="今すぐ実行する"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-execute"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ▶
+        </span>
+        <span>
+          今すぐ実行する
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        aria-label="エディタで開く"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-open-editor"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ✏
+        </span>
+        <span>
+          エディタで開く
+        </span>
+      </button>
+      <button
+        aria-disabled="true"
+        aria-label="別のスキルを作る"
+        class="flex flex-col items-center gap-2 rounded-xl w-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4 text-sm font-medium hover:bg-[var(--bg-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        data-testid="complete-step-action-create-another"
+        disabled=""
+        type="button"
+      >
+        <span
+          aria-hidden="true"
+          class="text-lg"
+        >
+          ＋
+        </span>
+        <span>
+          別のスキルを作る
+        </span>
+      </button>
+    </section>
+  </div>
+</div>
+`;

@@ -1,84 +1,72 @@
-# Phase 9: 品質保証レポート — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 9: 品質保証レポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 実行環境
+## 実施日時
 
-- ワークディレクトリ: `apps/desktop`
-- 日時: 2026-04-06
+2026-04-07
 
 ---
 
-## 1. TypeScript 型チェック
+## チェック 1: ユニットテスト結果
 
-### コマンド
+**コマンド**: `node_modules/.bin/vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts`
 
-```bash
-cd apps/desktop && CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm typecheck
+**結果: PASS**
+
+```
+ ✓ src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts (10 tests) 132ms
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  01:10:38
+   Duration  5.89s
 ```
 
-### 結果
+---
+
+## チェック 2: Lint 結果
+
+**コマンド**: `pnpm --filter @repo/desktop lint`
+
+**結果: PASS（0 errors, 6 warnings — 変更ファイル外の既存 warnings）**
+
+変更対象ファイル（`useMainlineExecutionAccess.ts`, `useMainlineExecutionAccess.test.ts`）に lint エラーなし。6件の `@typescript-eslint/no-explicit-any` 警告は他ファイルの既存問題であり、本タスクの変更によるものではない。
+
+---
+
+## チェック 3: 型チェック結果
+
+**コマンド**: `pnpm --filter @repo/desktop typecheck`
+
+**結果: PASS**
 
 ```
 > @repo/desktop@1.0.0 typecheck
 > tsc --noEmit
-（エラー出力なし）
 ```
 
-**判定: PASS（エラー 0件）**
+出力なし（エラー 0 件）。AC-6 達成確認済み。
 
 ---
 
-## 2. ESLint
+## チェック 4: フォーマット結果
 
-### コマンド
+**コマンド**: `pnpm exec prettier --check apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts`
 
-```bash
-cd apps/desktop && CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm eslint \
-  src/preload/skill-creator-api.ts \
-  src/renderer/components/skill/SkillLifecyclePanel.tsx
-```
-
-### 結果
+**結果: PASS**
 
 ```
-（出力なし）
+Checking formatting...
+All matched files use Prettier code style!
 ```
-
-**判定: PASS（警告・エラー 0件）**
 
 ---
 
-## 3. Vitest（全テスト）
+## 総合判定
 
-### コマンド
+**全チェック PASS → Phase 10 へ進む**
 
-```bash
-cd apps/desktop && CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm vitest run \
-  src/preload/__tests__/skill-creator-api.approval.test.ts \
-  src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx
-```
-
-### 結果
-
-```
-✓ SkillLifecyclePanel.approval.test.tsx (10 tests) 84ms
-✓ skill-creator-api.approval.test.ts (9 tests) 6ms
-
-Test Files  2 passed (2)
-     Tests  19 passed (19)
-  Start at  21:29:42
-  Duration  2.27s
-```
-
-**判定: PASS（19/19件）**
-
----
-
-## 総合品質判定
-
-| チェック項目                            | 結果          |
-| --------------------------------------- | ------------- |
-| TypeScript 型チェック（pnpm typecheck） | PASS          |
-| ESLint                                  | PASS          |
-| Vitest 全件                             | PASS（19/19） |
-
-**総合: PASS**
+| チェック項目   | 結果 |
+| -------------- | ---- |
+| ユニットテスト | PASS |
+| Lint           | PASS |
+| 型チェック     | PASS |
+| フォーマット   | PASS |

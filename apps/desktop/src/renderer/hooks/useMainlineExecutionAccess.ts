@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { resolveHealthPolicy } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import {
   useCheckLLMHealth,
@@ -114,21 +115,29 @@ export function useMainlineExecutionAccess(): UseMainlineExecutionAccessResult {
   const selectedHealthStatus = selectedProviderId
     ? llmHealthStatus[selectedProviderId]
     : undefined;
+  // API key が有効だが接続が断絶/エラー状態 → subscription fallback を有効化するため degraded 判定
   const apiKeyDegraded =
     credentials.apiKeyValid &&
     (selectedHealthStatus?.status === "disconnected" ||
       selectedHealthStatus?.status === "error");
+  const healthPolicy = resolveHealthPolicy({
+    connectionStatus: selectedHealthStatus?.status ?? "disconnected",
+    isApiKeyValid: credentials.apiKeyValid,
+    apiKeyDegraded,
+    isRateLimited: false,
+    lastHealthCheck: selectedHealthStatus ?? null,
+  });
 
   return {
     access: buildMainlineExecutionAccessState({
       apiKeyValid: credentials.apiKeyValid,
       subscriptionValid: credentials.subscriptionValid,
-      apiKeyDegraded,
       isAuthenticated,
       selectedProviderName: selectedProvider?.name,
       selectedModelName: selectedModel?.name,
       healthStatus: selectedHealthStatus,
       isLoading: credentials.isLoading,
+      healthPolicy,
     }),
     refreshHealth,
   };
