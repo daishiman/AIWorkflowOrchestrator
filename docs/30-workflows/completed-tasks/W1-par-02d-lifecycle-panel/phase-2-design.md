@@ -161,7 +161,7 @@ rg -n "SkillLifecyclePanel" apps/desktop/src/ --glob "*.tsx" --glob "*.ts"
 | 資料名      | パス                                                    | 説明       |
 | ----------- | ------------------------------------------------------- | ---------- |
 | 要件定義書  | `outputs/phase-1/requirements.md`                       | 直前成果物 |
-| レーンindex | `docs/30-workflows/skill-wizard-redesign-lane/index.md` | 設計根拠   |
+| レーンindex | `docs/30-workflows/W1-par-02d-lifecycle-panel/index.md` | 設計根拠   |
 
 ## 成果物
 

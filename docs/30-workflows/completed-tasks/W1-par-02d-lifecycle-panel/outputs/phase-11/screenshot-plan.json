@@ -1,0 +1,86 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W1-par-02d",
+  "phase": 11,
+  "generatedAt": "2026-04-08",
+  "environmentConstraint": "Playwright harness (phase11-task-rt-04-skill-authkey.html) で実画面キャプチャ済み。worktree の esbuild 制約は harness 経由で回避可能だった。",
+  "screenshots": [
+    {
+      "id": "SC-01",
+      "tcId": "TC-11-01",
+      "filename": "TC-11-01-skill-lifecycle-hidden-controls.png",
+      "path": "outputs/phase-11/screenshots/TC-11-01-skill-lifecycle-hidden-controls.png",
+      "description": "旧入力要素（textarea・生成ボタン・方針ボタン）が DOM に存在しないことを確認",
+      "screenState": "desktop / idle",
+      "theme": "light",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "実画面キャプチャ済み"
+    },
+    {
+      "id": "SC-02",
+      "tcId": "TC-11-02",
+      "filename": "TC-11-02-skill-lifecycle-open-wizard.png",
+      "path": "outputs/phase-11/screenshots/TC-11-02-skill-lifecycle-open-wizard.png",
+      "description": "「1. スキルを作成する」セクション・説明文・ウィザードボタンの表示確認",
+      "screenState": "desktop / primary section",
+      "theme": "light",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "実画面キャプチャ済み"
+    },
+    {
+      "id": "SC-03",
+      "tcId": "TC-11-03",
+      "filename": "TC-11-03-skill-lifecycle-open-wizard-click.png",
+      "path": "outputs/phase-11/screenshots/TC-11-03-skill-lifecycle-open-wizard-click.png",
+      "description": "ボタンクリック後に onOpenSkillWizard が呼ばれる導線確認",
+      "screenState": "desktop / interaction",
+      "theme": "light",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "実画面キャプチャ済み（settings overlay 表示）"
+    },
+    {
+      "id": "SC-04",
+      "tcId": "TC-11-04",
+      "filename": "TC-11-04-skill-lifecycle-legacy-preserved.png",
+      "path": "outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-legacy-preserved.png",
+      "description": "既存セクション（2. 生成したスキルを実行する 以降）への影響なしを確認",
+      "screenState": "desktop / legacy section",
+      "theme": "light",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "実画面キャプチャ済み"
+    },
+    {
+      "id": "SC-05",
+      "tcId": "TC-11-05",
+      "filename": "TC-11-05-skill-lifecycle-visual-review.png",
+      "path": "outputs/phase-11/screenshots/TC-11-05-skill-lifecycle-visual-review.png",
+      "description": "ダークモード・ホバー状態・CSS変数・ボタンスタイルの視覚品質確認",
+      "screenState": "dark / hover / review",
+      "theme": "dark",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "実画面キャプチャ済み"
+    },
+    {
+      "id": "SC-06",
+      "tcId": "TC-11-06",
+      "filename": "phase11-capture-metadata.json",
+      "path": "outputs/phase-11/phase11-capture-metadata.json",
+      "description": "checklist / plan / coverage / result の同期確認（JSON メタデータ）",
+      "screenState": "artifact sync",
+      "theme": "n/a",
+      "priority": "A",
+      "status": "completed",
+      "skipReason": null,
+      "captureEvidence": "phase11-capture-metadata.json に capture inventory を記録済み"
+    }
+  ]
+}

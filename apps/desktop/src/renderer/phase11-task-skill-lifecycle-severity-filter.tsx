@@ -34,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <SkillLifecyclePanel
       onClose={() => undefined}
       onOpenWizard={() => undefined}
+      onOpenSkillWizard={() => undefined}
       skillName="phase11-severity-filter-harness"
     />
   </div>,
