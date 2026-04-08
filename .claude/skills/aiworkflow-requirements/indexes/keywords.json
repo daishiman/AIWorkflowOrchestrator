@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2852,
+  "totalKeywords": 2858,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1666,6 +1666,7 @@
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -7527,6 +7528,24 @@
     "スキル新規追加": [
       "lessons-learned-current-2026-04.md"
     ],
+    "PANEL": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-phase12-lifecycle-recent.md",
+      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+    ],
+    "TRANSITION": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SkillLifecyclePanel": [
+      "lessons-learned-current-2026-04.md",
+      "ui-result-panel-pattern.md"
+    ],
+    "ウィザード遷移ボタン化": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -7795,13 +7814,6 @@
     "CODE": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "PANEL": [
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -12547,6 +12559,15 @@
       "ui-result-panel-pattern.md"
     ],
     "コンポーネント設計パターン早見表": [
+      "ui-result-panel-pattern.md"
+    ],
+    "責務別": [
+      "ui-result-panel-pattern.md"
+    ],
+    "props": [
+      "ui-result-panel-pattern.md"
+    ],
+    "分離パターン": [
       "ui-result-panel-pattern.md"
     ],
     "高度な": [

@@ -76,3 +76,49 @@ TASK-RT-03（SkillCreationResultPanel）実装から確立。
 - ResizeObserver は vi.stubGlobal でモック必要
 - 4状態（loading/error/null/data）全カバー
 - edge case: 長テキスト、大量データ、XSS防止
+
+---
+
+## SkillLifecyclePanel 責務別props分離パターン
+
+> 確立タスク: UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001（2026-04-08）
+
+### 概要
+
+`SkillLifecyclePanel` では複数の画面遷移導線を責務ごとに独立したpropsとして分離した。
+
+### Props定義
+
+```typescript
+interface SkillLifecyclePanelProps {
+  // スキル操作系
+  onOpenWizard: () => void;           // 新規スキル作成ウィザードを開く
+  onOpenSkillWizard: () => void;      // 既存スキルのウィザードを開く
+  // 設定系（アダプターエラー時の導線）
+  onOpenSettings: () => void;         // 設定画面を開く（LLMAdapterErrorBanner用）
+}
+```
+
+### 設計判断ガイドライン
+
+| パターン | 適用条件 | 理由 |
+|---------|---------|------|
+| props分割 | 遷移先の「責務」が異なる場合 | 1つのcallbackで分岐するとテスタビリティが低下 |
+| 定数化 | UIからの入力が実行の必須条件でない場合 | 自由入力は条件判定を複雑化する |
+| エラーバナー導線 | アダプター設定エラー時 | ユーザーを正しいアクション（設定変更）へ誘導 |
+
+### canExecuteSkill の簡約化
+
+```typescript
+// 変更前（4条件以上）
+const canExecuteSkill = selectedSkill && executionPrompt.trim().length > 0 && !isExecuting && adapterStatus === 'ok';
+
+// 変更後（3条件）
+const canExecuteSkill = selectedSkill && !isExecuting && adapterStatus === 'ok';
+```
+
+UIから入力依存を除去することで、実行可否の判定ロジックが明確になる。
+
+### LLMAdapterErrorBanner → settings 導線
+
+エラー時の設定画面への直接誘導パターン。`onOpenSettings` を `LLMAdapterErrorBanner` へ渡し、アダプター設定エラー発生時にユーザーを設定画面へ直接誘導する。実行ボタンの有効/無効制御（`adapterStatus === 'ok'`）と組み合わせることで、エラー状態のままスキル実行を試みるユーザーフローを防止できる。

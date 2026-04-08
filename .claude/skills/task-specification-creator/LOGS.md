@@ -38,6 +38,20 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
 manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
 
+## 2026-04-08 - UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/artifacts.json` を `phase13_blocked` で同期
+- `outputs/artifacts.json` を current task（TRANSITION-001）用に更新
+- Phase 6〜12 canonical 成果物を `outputs/phase-{6..12}/` に作成
+- `outputs/phase-11/` を VISUAL evidence（task-specific light/dark screenshot bundle）として整備
+
+### 背景
+
+UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 の Phase 12 close-out として、全成果物を同波で同期した。
+`skill-lifecycle-execution-input` textarea 削除タスクは実装・テスト・全成果物が完了し、Phase 13（PR作成）blocked 状態へ移行した。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ### 変更内容

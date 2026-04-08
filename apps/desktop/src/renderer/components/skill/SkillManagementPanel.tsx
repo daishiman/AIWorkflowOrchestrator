@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import type { ImportedSkill, SkillMetadata } from "@repo/shared";
 import {
+  useAppStore,
   useAvailableSkillsMetadata,
   useClearSkillError,
   useFetchSkills,
@@ -281,6 +282,7 @@ export function SkillManagementPanel({
   const fetchSkills = useFetchSkills();
   const removeSkill = useRemoveSkill();
   const clearSkillError = useClearSkillError();
+  const setGlobalCurrentView = useAppStore((state) => state.setCurrentView);
 
   useEffect(() => {
     void fetchSkills();
@@ -473,6 +475,7 @@ export function SkillManagementPanel({
           onClose={handleBackToList}
           onOpenWizard={() => setCurrentView("create")}
           onOpenSkillWizard={() => setCurrentView("create")}
+          onOpenSettings={() => setGlobalCurrentView("settings")}
         />
       </div>
     );
