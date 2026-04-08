@@ -1,7 +1,5 @@
 {
-  "generated": "2026-04-08T04:39:37.401Z",
-  "totalKeywords": 2826,
-  "totalKeywords": 2827,
+  "totalKeywords": 2841,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -162,6 +160,7 @@
       "security-skill-ipc-core.md",
       "security-skill-ipc.md",
       "skill-executor-type-migration.md",
+      "skill-google-calendar-integration.md",
       "spec-elegance-consistency-audit.md",
       "spec-splitting-guidelines.md",
       "task-workflow-active.md",
@@ -492,6 +491,7 @@
       "security-skill-execution-permission.md",
       "security-skill-ipc-history.md",
       "security-skill-ipc.md",
+      "skill-google-calendar-integration.md",
       "spec-splitting-guidelines.md",
       "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "task-workflow-history.md",
@@ -2767,6 +2767,7 @@
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3023,6 +3024,7 @@
     "DI": [
       "arch-electron-services-details-part2.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
@@ -3408,7 +3410,8 @@
     ],
     "再設計": [
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md"
+      "arch-state-management-reference-selectors.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "SEARCH": [
       "arch-state-management-core.md",
@@ -4009,6 +4012,7 @@
       "llm-streaming.md",
       "local-agent.md",
       "plugin-development.md",
+      "skill-google-calendar-integration.md",
       "ui-history-design.md",
       "ui-ux-llm-selector.md"
     ],
@@ -4169,6 +4173,7 @@
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -7420,15 +7425,6 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "seq": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "SmartDefault": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "推論サービス": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "MAINLINE": [
       "lessons-learned-current-2026-04.md",
       "ui-ux-settings-core.md"
@@ -7463,6 +7459,46 @@
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "コンフリクト解消": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "seq": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SmartDefault": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "推論サービス実装": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "INJECTION": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "healthPolicy": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "注入": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "par": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SkillInfoStep": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "DescribeStep": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "Google": [
+      "lessons-learned-current-2026-04.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "skill-google-calendar-integration.md"
+    ],
+    "Calendar": [
+      "lessons-learned-current-2026-04.md",
+      "skill-google-calendar-integration.md"
+    ],
+    "スキル新規追加": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -10067,10 +10103,6 @@
     "バグ修正": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md"
     ],
-    "Google": [
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md"
-    ],
     "アバター取得修正": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md"
     ],
@@ -11624,6 +11656,23 @@
     "苦戦した箇所と解決策": [
       "skill-executor-type-migration.md"
     ],
+    "スキル統合仕様": [
+      "skill-google-calendar-integration.md"
+    ],
+    "ファイル構成": [
+      "skill-google-calendar-integration.md",
+      "ui-history-components.md"
+    ],
+    "認証方式": [
+      "skill-google-calendar-integration.md"
+    ],
+    "フェーズ定義": [
+      "skill-google-calendar-integration.md",
+      "task-workflow-phases.md"
+    ],
+    "設計上の重要ポイント": [
+      "skill-google-calendar-integration.md"
+    ],
     "仕様エレガンス・整合性監査ガイド": [
       "spec-elegance-consistency-audit.md"
     ],
@@ -12064,9 +12113,6 @@
       "task-workflow-phases.md",
       "task-workflow-rules.md"
     ],
-    "フェーズ定義": [
-      "task-workflow-phases.md"
-    ],
     "Close": [
       "task-workflow-phases.md"
     ],
@@ -12377,9 +12423,6 @@
       "ui-history-components.md",
       "ui-ux-agent-execution-core.md",
       "ui-ux-feature-skill-stream.md"
-    ],
-    "ファイル構成": [
-      "ui-history-components.md"
     ],
     "定義": [
       "ui-history-components.md"

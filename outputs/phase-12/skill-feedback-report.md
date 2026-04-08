@@ -1,56 +1,61 @@
-# Phase 12: スキルフィードバック（skill-feedback-report.md）— UT-SKILL-WIZARD-W1-par-02b
+# W2-seq-03a スキルフィードバックレポート
 
-## メタ情報
+## タスクID: W2-seq-03a
 
-- タスクID: UT-SKILL-WIZARD-W1-par-02b
-- 作成日: 2026-04-08
+## 作成日: 2026-04-08
+
+---
 
 ## 対象
 
 - `task-specification-creator`（Phase/成果物の規約とテンプレート）
 - `aiworkflow-requirements`（システム仕様の正本）
 
-## フィードバック（改善提案）
+---
 
-### 1. UI タスクの Phase 11 証跡テンプレートを強制的に「VISUAL」に寄せる
+## 改善点（今後の改善候補）
 
-今回のように UI 変更が明確なタスクでは、`outputs/phase-11/screenshot-plan.json` と `phase11-capture-metadata.json` が旧タスクの `NON_VISUAL` のまま残りやすい。
+### 1. inferSmartDefaults のツール値大文字小文字統一
 
-改善案:
+**課題**:
 
-- UI task の場合、Phase 11 成果物のテンプレート生成時に `mode: "VISUAL"` をデフォルトにする
-- `taskId` を自動埋めし、旧 taskId の混入を検出して fail-fast する（例: preflight スクリプト）
+`inferSmartDefaults` の推論ループ内では、ツール名のキーワード検索を小文字で行い（`purposeLower.includes('slack')`）、表示名は大文字で返す（`toolName: 'Slack'`）。この変換規則が `EXTERNAL_TOOL_KEYWORDS` 配列内にのみ暗黙的に存在しており、ドキュメントに明記されていない。
 
-### 2. 「Step 0 -> Step 1 引き渡し項目」を設計テンプレートに明記する
+**改善案**:
 
-本タスクでは `category` と `smartDefaults` を Step 0 から Step 1 へ渡す仕様が核心だった。
+- `EXTERNAL_TOOL_KEYWORDS` の型定義に `displayName: string`（大文字）と `searchKeyword: string`（小文字）を明示的に分離する
+- Phase 2 の設計書（inference-flowchart.md）に「キーワード検索は小文字化して実施、表示名は元の大文字表記を使用」と明記する
 
-改善案:
+---
 
-- Phase 2（設計）のテンプレートに「ステップ間の state ownership と引き渡し項目」の表を必須化する
-- `smartDefaults` の反映タイミング（初回のみ/都度更新/ユーザー入力優先）を decision として固定する欄を用意する
+### 2. handleGenerate の二重呼び出し防止を設計書に明記
 
-### 3. 用語の一貫性（onConfirmGenerate などの名前ずれ）を抑える仕組み
+**課題**:
 
-ドキュメント中のコールバック名が、実装の `onConfirm` / `onGenerate("skip")` などとズレると stale が発生する。
+`handleGenerate` の二重呼び出し防止は Phase 6 のエッジケース（EC-HG-02）で検証しているが、Phase 2 の設計書（architecture-design.md）のハンドラ設計に防止策が記載されていない。
 
-改善案:
+**改善案**:
 
-- Phase 12 のチェック項目に「ドキュメント内の識別子（関数/prop 名）が現行コードのものか」を追加する
-- 代表コードスニペットは「型/props 定義」から引用する方針に寄せる（手書きで drift しやすい）
+- Phase 2 のハンドラ設計に「生成中フラグ（`isGenerating`）を使って二重呼び出しを防止する」旨を追記する
+- Phase 1 の非機能要件に「`handleGenerate` の冪等性保証」を追加する
 
-### 4. Renderer での node-only import を早期に検出する
+---
 
-本タスクでは `node-cron` を renderer で直接 import したことで、Vite ブラウザバンドルの初期化時に runtime error が出た。
+### 3. handleRetry 後のリセット対象を設計書に一覧化
 
-改善案:
+**課題**:
 
-- renderer 側の UI コンポーネントでは node-only パッケージを直接 import しないチェックを入れる
-- cron / date / filesystem などは browser-safe な薄いユーティリティに寄せる
-- Phase 11 の capture 前に「ブラウザで実際に route を開く smoke test」を必須にする
+`handleRetry` がリセットする State（`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName`）と保持する State（`formData`）の一覧が、architecture-design.md のハンドラ設計のコードコメントにのみ記載されており、テーブル形式で一目で分からない。
+
+**改善案**:
+
+- Phase 2 の設計書に「handleRetry のリセット対象 State / 保持 State」のテーブルを追加する
+
+---
 
 ## 良かった点（維持したい点）
 
-- `ConversationRoundStep` の `onAnswersChange` を `useEffect` に寄せ、setState updater 内の副作用を避けた点（テスト容易性と予測可能性が上がる）
-- `ApplySummaryCard` の key-based マッピングにより、`Object.keys()` 依存の順序バグを避けた点
-- Q3 の scheduleConfig を「定期実行から外れたら `undefined` にクリア」する挙動が仕様と一致している点
+- `inferSmartDefaults` を純粋関数として実装し、副作用を排除した点（テスト容易性が高い）
+- `EXTERNAL_TOOL_KEYWORDS` / `SKIP_CATEGORIES` を定数配列として切り出し、新ツール・カテゴリ追加時の拡張性を確保した点
+- `inferenceLog` を `SmartDefaultResult` に含め、推論過程をデバッグ・テストで確認できるようにした点
+- `handleRetry` で `formData` のみを保持し、その他の State をリセットすることで「前回入力を引き継ぎつつクリーンな状態で再生成」を実現した点
