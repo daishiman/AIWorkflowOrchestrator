@@ -18,7 +18,6 @@
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
-| 2026-04-08 | 2.5.0      | UT-SKILL-WIZARD-W1-par-02c-complete-step-2 教訓3件を追加（→ [lessons-learned-phase12-lifecycle-recent.md](lessons-learned-phase12-lifecycle-recent.md): L-W1-02c2-001 generatedSkill 保持・非表示 SRP パターン / L-W1-02c2-002 onQualityFeedback と onRetry 分離（観察と制御の境界）/ L-W1-02c2-003 ワークフロー `-2` suffix 再設計命名規則） |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-04-06 | 1.9.4      | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓3件を追加（L-EXECUTE-ASYNC-001: vi.spyOn vs executeMock / L-EXECUTE-ASYNC-002: onWorkflowStateSnapshot 複数呼び出しテスト / L-EXECUTE-ASYNC-003: snapshot ?? null パターン） |
 | 2026-04-04 | 1.9.3      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 教訓2件を追加（secondary surface の戻り導線は同一 surface の実画像と action trace を分けて扱う / `skillManagement` は `skillCenter` に正規化して dock を維持する） |
