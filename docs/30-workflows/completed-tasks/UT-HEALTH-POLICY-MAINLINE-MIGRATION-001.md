@@ -8,7 +8,6 @@
 | 優先度       | HIGH                                                            |
 | 親タスク     | TASK-IMP-HEALTH-POLICY-UNIFICATION-001                          |
 | 対象ファイル | `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts` |
-| issue番号    | #1605                                                           |
 
 ## 概要
 

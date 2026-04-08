@@ -1,33 +1,54 @@
-# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 判定
+## 実施日時
 
-NON_VISUAL / static verification PASS / manual app smoke PASS / vitest PASS
+2026-04-08 06:54:38 JST
 
-## 実測
+## タスク分類: NON_VISUAL
 
-| コマンド                                                                                                                                                                                                                                                                                                                                              | 結果 | 補足                                        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------- |
-| `pnpm --filter @repo/shared build`                                                                                                                                                                                                                                                                                                                    | PASS | `@repo/shared` の dist を生成               |
-| `pnpm --filter @repo/desktop build`                                                                                                                                                                                                                                                                                                                   | PASS | Desktop bundle の生成を確認                 |
-| `timeout 25s pnpm --filter @repo/desktop dev`                                                                                                                                                                                                                                                                                                         | PASS | Electron 起動まで到達し、runtime error なし |
-| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                               | PASS | 変更範囲の型整合を確認                      |
-| `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts` | PASS | 対象ファイル lint 0 error                   |
-| `pnpm --filter @repo/desktop exec vitest run ...`                                                                                                                                                                                                                                                                                                     | PASS | 3 files / 100 tests PASS                    |
+本タスクは純粋な TypeScript リファクタリング（`useMainlineExecutionAccess.ts` L117-120 の `apiKeyDegraded` 独自ロジック削除）であり、UI 変更なし。スクリーンショットによる視覚的証跡は不要。
 
-## NON_VISUAL 判定理由
+---
 
-- UI 変更なし（Main Process の DI 配線変更のみ）
-- 手動アプリ起動による smoke を実施し、runtime error なしで起動確認済み
+## 主要証跡: 自動テスト結果
 
-## source evidence
+| 項目           | 値                                                                             |
+| -------------- | ------------------------------------------------------------------------------ |
+| テストファイル | `apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
+| テスト総件数   | 10                                                                             |
+| PASS 件数      | 10                                                                             |
+| FAIL 件数      | 0                                                                              |
+| 実行時刻       | 2026-04-08 06:54:38 JST                                                        |
+| 実行時間       | 11.68s                                                                         |
 
-- `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
-- `apps/desktop/src/main/ipc/index.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`
+---
 
-## スクリーンショット
+## テスト実行ログ
 
-N/A
+```
+ ✓ src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts (10 tests) 453ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  06:54:38
+   Duration  11.68s
+```
+
+---
+
+## チェックリスト
+
+| 項目                                                            | 結果          |
+| --------------------------------------------------------------- | ------------- |
+| 自動テスト全 PASS                                               | ✓             |
+| 型チェックエラーなし（`pnpm --filter @repo/desktop typecheck`） | ✓             |
+| Lint エラーなし                                                 | N/A（未実施） |
+| フォーマット適用済み（prettier）                                | N/A（未実施） |
+| UI への視覚的変更なし（NON_VISUAL 確認）                        | ✓             |
+| スクリーンショット不要（NON_VISUAL 確認）                       | ✓             |
+
+---
+
+## 発見された問題
+
+なし

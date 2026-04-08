@@ -2,6 +2,26 @@
 
 ## 役割
 
+## 2026-04-08 - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 Phase 12 close-out sync（skill-feedback 反映）
+
+### 変更内容
+- `task-specification-creator/SKILL.md` の「よくある漏れ」テーブルに FB-UT-HP-001〜003 を追加
+  - FB-UT-HP-001: Phase 12 checklist への `index.md` + `artifacts.json` status 同期明示ルール
+  - FB-UT-HP-002: `outputs/phase-12/` legacy draft ファイル識別ルール
+  - FB-UT-HP-003: Step 2 条件付き更新の consumer ファイルパス明示ルール
+- 「Phase 12 苦戦防止Tips」に async hook flush helper 共通化推奨を追加
+- `SKILL.md` 変更履歴テーブルに v6.18.29 エントリを追加
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-HP-001〜003 追加
+- `aiworkflow-requirements/references/lessons-learned-current.md` に v3.10.0 エントリ追加
+- `aiworkflow-requirements/LOGS.md` に Phase 12 close-out ヘッドライン追加
+- stash conflict marker (`||||||| Stash base`) を修正し、UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 セクションを正規化
+
+### 背景
+UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 の skill-feedback-report 推奨事項を SKILL.md に反映した。
+`resolveHealthPolicy()` を shared に集約するパターン（L-HP-002）は、hook 側の責務薄化のモデルケースとして記録する。
+
+---
+
 ## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
 
 ### 変更内容
@@ -15,7 +35,6 @@
 
 ### 背景
 Phase 12 のドキュメントは実装証跡と同じ wave で揃える必要があり、特に public type export parity と Phase 11 manual-test の件数ズレを残さないことを優先した。
-
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
