@@ -685,3 +685,14 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/`（evidence bundle 11ファイル新規作成）、`docs/30-workflows/ut-sdk-07-phase11-screenshot-evidence-001/outputs/`（Phase 1-3 / 9-12 成果物作成）、`docs/30-workflows/unassigned-task/task-ut-sdk-07-phase11-screenshot-evidence-001.md`（status: spec_created）、`task-workflow-completed.md`（spec_created 追記） |
 | 結果     | TASK-SDK-07 Phase 11 の未取得 screenshot evidence（HandoffGuidance / disclosure summary / integrated_api 対照）を補完。Phase 11 evidence chain が完成した                                                                                                                                                                                                                                                           |
 | 検証     | Phase 11: 3件 screenshot（TC-11-01〜TC-11-03 PASS）、カバレッジ 100%、発見事項 0件                                                                                                                                                                                                                                                                                                                                  |
+| 結果 | TASK-SDK-07 Phase 11 の未取得 screenshot evidence（HandoffGuidance / disclosure summary / integrated_api 対照）を補完。Phase 11 evidence chain が完成した |
+| 検証 | Phase 11: 3件 screenshot（TC-11-01〜TC-11-03 PASS）、カバレッジ 100%、発見事項 0件 |
+
+### 2026-04-08 - Phase-12 impl-spec-to-skill-sync（W0-seq-02 / UT-HEALTH-POLICY / W1-par-02a / google スキル）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only / lessons-learned 更新 / コンフリクトマーカー修正 / 新規参照ファイル |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`（`\|\|\|\|\|\|\|` Stash base マーカー除去・教訓 10 件追加）、`references/skill-google-calendar-integration.md`（新規）、`LOGS.md`（本エントリ追加） |
+| 教訓追加 | W0-seq-02 SmartDefault 三軸推論設計・root export 管理（L-SMART-DEFAULT-001/002）、healthPolicy DI 末尾 optional 追加パターン（L-HEALTH-DI-001/002）、DescribeStep→SkillInfoStep 破壊的改名理由・arch docs 是正（L-SKILL-INFO-STEP-001/002）、Google Calendar 複合認証設計・pnpm workspace 配置（L-GOOGLE-CAL-001/002） |
+| 結果 | lessons-learned の孤立コンフリクトマーカーを解消。今回実装 4 件の教訓が検索可能な状態に到達 |

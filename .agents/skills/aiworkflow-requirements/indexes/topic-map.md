@@ -3054,6 +3054,10 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L553 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L570 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L586 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L603 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -4413,6 +4417,18 @@ node scripts/list-specs.js --topics
 | 関連タスク | L63 |
 | 参照 | L72 |
 | 変更履歴 | L77 |
+
+### references/skill-google-calendar-integration.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L3 |
+| ファイル構成 | L11 |
+| 認証方式 | L31 |
+| フェーズ定義 | L38 |
+| エラーハンドリング | L46 |
+| 設計上の重要ポイント | L55 |
+| 関連ドキュメント | L69 |
 
 ### references/spec-elegance-consistency-audit.md
 
