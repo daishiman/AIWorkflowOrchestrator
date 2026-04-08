@@ -6,6 +6,7 @@
 ## 残課題（未タスク）
 
 > 2026-04-07: `UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` は completed へ移管済み。関連 backlog エントリはなし。
+> 2026-04-08: `UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001` も completed へ移管済み。`ConfigureStep.tsx` / `WizardOptions` の削除・参照置換は `W2-seq-03a` の担当として保持し、backlog には追加しない。
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 

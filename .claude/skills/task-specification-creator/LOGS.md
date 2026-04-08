@@ -31,6 +31,22 @@
 Phase 4 は Red にならず Green 開始となる特性があり、skill-feedback-report.md に改善提案として記録した。
 
 ## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
+## 2026-04-08 - UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 Phase 12 close-out sync
+
+### 変更内容
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` を新規追加し、6問固定・2ページ構成の会話ラリー UI を実装した
+- `apps/desktop/src/renderer/components/skill/wizard/index.ts` に `ConversationRoundStep` / `buildInitialAnswers` / `QUESTIONS` / `ConversationRoundStepProps` の export を追加した
+- `buildInitialAnswers()` で semantic default を canonical label に正規化し、`自分だけ` → `自分のみ` などの alias を吸収した
+- `ConversationRoundStep.test.tsx` を 19 tests PASS まで拡張し、canonical / alias の両経路を固定した
+- `docs/30-workflows/ut-skill-wizard-w1-conversation-round-step-001/` の `index.md` / `artifacts.json` / phase spec / phase outputs / lane index / task-workflow 台帳を同波同期した
+- `outputs/phase-13/` の PR 準備ファイルを current facts に合わせて整備した
+
+### 検証
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run --coverage src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --coverage.include="**/wizard/ConversationRoundStep.tsx"`: PASS
+
+## 2026-04-08 - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 Phase 12 close-out sync（skill-feedback 反映）
 
 ### 変更内容
 - `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）

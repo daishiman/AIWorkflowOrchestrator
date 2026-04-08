@@ -39,6 +39,34 @@
 
 ---
 
+
+### タスク: UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 ConversationRoundStep.tsx 実装（Step 1: 会話ラリー質問 / wizard export 追加）（2026-04-08）
+
+| 項目       | 値                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                             |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                                                                          |
+| タイプ     | docs / renderer-ui / workflow-sync                                                                                                                         |
+| 優先度     | 高                                                                                                                                                         |
+| 完了日     | 2026-04-08                                                                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` / `apps/desktop/src/renderer/components/skill/wizard/index.ts` / 台帳同期 |
+| 成果物     | `docs/30-workflows/ut-skill-wizard-w1-conversation-round-step-001/`                                                                                        |
+| 元未タスク | なし（Wave 1 lane 先行タスク）                                                                                                                             |
+
+#### 実施内容
+
+- `ConversationRoundStep.tsx` を新規作成し、Q1〜Q6 の 6問固定・2ページ構成・`InterviewProgressBar` 再利用を実装した
+- `buildInitialAnswers()` で semantic default 正規化を行い、`自分だけ` / `scheduled` / `realtime` / `slack` / `github` / `notion` / `code` / `structured` を canonical label に寄せた
+- `ConversationRoundStep.test.tsx` を 19 tests まで拡張し、canonical / alias / fallback の各経路を固定した
+- `wizard/index.ts` の export 追加と Phase 12 docs の current-fact 同期を同波で実施した
+- `outputs/phase-13/` の PR 準備成果物を整備し、PR はユーザー承認待ちのまま blocked を維持した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run --coverage src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --coverage.include="**/wizard/ConversationRoundStep.tsx"`: PASS
+
 ### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
 
 | 項目       | 値                                                                                                  |
