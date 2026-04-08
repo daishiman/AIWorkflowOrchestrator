@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2841,
+  "totalKeywords": 2843,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6994,6 +6994,7 @@
     "CONVERSATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -7461,6 +7462,18 @@
     "コンフリクト解消": [
       "lessons-learned-current-2026-04.md"
     ],
+    "WIZARD": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "ui-ux-navigation-chat-patterns.md"
+    ],
+    "ROUND": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "STEP": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "seq": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7794,11 +7807,6 @@
     "CREATE": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "WIZARD": [
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "ui-ux-navigation-chat-patterns.md"
     ],
     "PLAN": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",

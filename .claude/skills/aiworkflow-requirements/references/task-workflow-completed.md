@@ -9,6 +9,36 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+### タスク: TASK-UT-RT-01-EXHAUSTIVE-CHECK-EXECUTE-RESPONSE-001 executeAsync() レスポンス exhaustive check 導入（2026-04-08）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXHAUSTIVE-CHECK-EXECUTE-RESPONSE-001                                                 |
+| ステータス | **完了**                                                                                            |
+| タイプ     | test / exhaustive-check / tdd                                                                       |
+| 優先度     | 中                                                                                                  |
+| 完了日     | 2026-04-08                                                                                          |
+| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` の exhaustive check テスト追加（TC-01〜TC-09）          |
+| 成果物     | `docs/30-workflows/task-ut-rt-01-exhaustive-check-execute-response-001/`                            |
+| 元未タスク | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 Phase 12 未タスク検出（2026-04-06）         |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.exhaustive.test.ts` を新規作成し、TC-01〜TC-09（+TC-05b）9件のテストを実装した
+- `classifyExecuteResult()` / `assertNever()` / `extractExecuteErrorMessage()` はすべて親タスクにて実装済み（インターフェース不変）
+- `executeAsync()` switch の全 branch（`success` / `terminal_handoff` / `error` / `default: assertNever`）を exhaustive に検証した
+- TC-05（型レベル検証）は `it.todo()` として意図的に留保し、TC-05b でランタイム assertNever を確認した
+- Phase 1〜12 全フェーズの outputs を作成した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.exhaustive.test.ts` → 9 PASS / 1 todo
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts` → 12 PASS / 1 todo（リグレッションなし）
+- `pnpm --filter @repo/desktop typecheck` → エラー 0 件
+- `pnpm --filter @repo/desktop exec eslint` → 0 errors
+
+---
+
 
 ### タスク: UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 ConversationRoundStep.tsx 実装（Step 1: 会話ラリー質問 / wizard export 追加）（2026-04-08）
 

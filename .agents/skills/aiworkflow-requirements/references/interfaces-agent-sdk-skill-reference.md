@@ -111,6 +111,19 @@ W0 のスキルウィザード共有型。canonical source は `packages/shared/
 | `SmartDefaultResult` | semantic key ベースの初期値契約 |
 | `SkeletonQualityFeedback` | 骨格品質のフィードバック契約 |
 
+#### ConversationRoundStep（UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001）
+
+Step 1 の 6問固定会話ラリー UI。canonical source は `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`。  
+`ConversationRoundStepProps` は `smartDefaults: SmartDefaultResult` / `onComplete: (answers: ConversationAnswers) => void` / `onBack: () => void` を受け取り、`buildInitialAnswers()` が semantic default を canonical label に正規化する。
+
+| 項目 | 契約 |
+| --- | --- |
+| `ConversationRoundStepProps` | `smartDefaults`, `onComplete`, `onBack` |
+| local state | `useState<1 \| 2>(1)` で page 管理 |
+| initial answers | `buildInitialAnswers()` が alias / semantic default を正規化 |
+| reused components | `InterviewProgressBar`, `SingleSelectChips`, `FreeTextInput` |
+| export surface | `apps/desktop/src/renderer/components/skill/wizard/index.ts` |
+
 #### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。

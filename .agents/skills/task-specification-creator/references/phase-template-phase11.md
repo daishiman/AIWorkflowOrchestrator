@@ -70,6 +70,20 @@ Phase 11 の screenshot 撮影前に以下を確認する：
    - `docs/30-workflows/unassigned-task/` に未タスクとして formalize する
 3. 起動可能な場合 → 通常の screenshot 撮影フローへ進む
 
+### NON_VISUAL 判定時の artifacts.json 必須フィールド【Feedback UT-RT-01-EXHAUSTIVE-001】
+
+Phase 11 を NON_VISUAL と判定した場合、`artifacts.json` のルートの `metadata` キーに以下を**必須で**記載する：
+
+```json
+{
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  }
+}
+```
+
+**理由**: `validate-phase11.js` / `validate-phase-output.js` は `metadata.taskType = "NON_VISUAL"` がない場合に fail-closed で screenshot 要件を維持する。NON_VISUAL と判定したにもかかわらず validator が FAIL する原因の多くはこのフィールドの欠落による。
+
 ## 設計タスク専用セクション（SF-01対応）
 
 **判定基準**: タスク種別が「設計・仕様策定」であり、UI実装が存在しない場合に適用。
