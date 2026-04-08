@@ -37,6 +37,64 @@
 - `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts`: PASS
 - `pnpm exec eslint packages/shared/src/types/skillCreator.ts packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`: PASS
 
+### タスク: UT-RT-02-EXHAUSTIVE-CHECK-001 RuntimeSkillCreatorExecuteResponse union exhaustive check 導入（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-RT-02-EXHAUSTIVE-CHECK-001                                                                       |
+| ステータス | **完了**                                                                                            |
+| タイプ     | refactoring / exhaustive-check / typescript                                                         |
+| 優先度     | 中                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` の switch + assertNever 化                               |
+| 成果物     | `docs/30-workflows/ut-rt-02-exhaustive-check/`                                                      |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-runtime-execute-response-exhaustive-check.md`                 |
+
+#### 実施内容
+
+- `classifyExecuteResult()` module-local 正規化 helper + `assertNever()` を `RuntimeSkillCreatorFacade.ts` に追加した
+- `executeAsync()` の `isStructuredError` if-else パターンを switch + assertNever に変換した
+- `success === false`（厳格等価）で振る舞いを旧コードと完全に一致させた（T-03 回帰防止）
+- TC-08（unknown variant smoke test）と it.todo TC-09 をテストファイルに追加した
+- 11 tests PASS / 1 todo / pnpm typecheck エラー 0 件
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts` → 11 PASS / 1 todo
+- `pnpm --filter @repo/desktop typecheck` → エラー 0 件
+
+---
+
+### タスク: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 スマートデフォルト推論サービス実装（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001                                                     |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | docs / shared-services / workflow-sync                                                              |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` の推論実装と Phase 12 同期 |
+| 成果物     | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/`                                      |
+| 元未タスク | なし（lane spec 先行タスク）                                                                        |
+
+#### 実施内容
+
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を実装し、Slack / GitHub / Notion / scheduled / realtime / code / structured の規則ベース推論を追加した
+- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` を更新し、`@repo/shared` から `inferSmartDefaults` を import できるようにした
+- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` を更新し、`SkillInfoFormData` / `SmartDefaultResult` を root export で利用できるようにした
+- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加し、shared 内テストの解決性を固定した
+- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` を 33 tests PASS に拡張し、空白のみ purpose の edge case を固定した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` へ同期した
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に W0-seq-02 の完了記録を追加した
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` と `system-spec-update-summary.md` を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`（`packages/shared` 直下）: 33 tests PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/W0-seq-02-smart-default-reasoning-service`: PASS
+
 ### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
 
 ## 完了タスク（2026-03後半）
@@ -2108,7 +2166,7 @@
 | 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
 | --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001  | RuntimePolicyResolver の HealthPolicy 注入元実装                  | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md`  |
+| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/ut-health-policy-runtime-injection/` |
 | UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
 
 ---
@@ -2496,7 +2554,7 @@
 
 ---
 
-### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
+### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-07）
 
 | 項目       | 値                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2504,7 +2562,7 @@
 | ステータス | **完了**                                                                                                                                        |
 | タイプ     | implementation / TDD / security                                                                                                                 |
 | 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
 | 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
 | 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
 
@@ -2515,6 +2573,7 @@
 - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加（improve phase 対応）
 - `_executeInternal()` 呼び出しで `this.getExplicitSkillCreatorRoot() ?? ""` を渡すよう修正
 - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を shared に追加
 
 #### 検証証跡
 
@@ -2522,6 +2581,21 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+#### 苦戦箇所
+
+- **SDK callback input キー名の揺れ**: SDK が `file_path` と `path` の両方を使用するケースがあり、`extractTargetPath()` で `file_path ?? path` の fallback 順序で吸収
+- **判定ロジック層と配線層の責任分離**: `SkillCreatorPermissionPolicy` は変更禁止（判定ロジック层）、`RuntimeSkillCreatorFacade` のみ変更（配線層）という設計原則を維持
+- **improve() が SDK callback を経由しない設計**: `applyImprovement()` 内での明示的呼び出しが必要だが、未タスク TASK-P0-09-U1-A として carry-forward
+- **governance hooks と phase 追加時の統一性**: phase 追加時のチェックリスト明示化が未対応（TASK-P0-09-U1-B / C）
+
+#### 派生未タスク
+
+| 未タスクID         | 内容                                              | 優先度 |
+| ------------------ | ------------------------------------------------- | ------ |
+| TASK-P0-09-U1-A    | improve() canUseTool 配線（SDK callback 経由化）  | 中     |
+| TASK-P0-09-U1-B    | renderer UI への governance 結果表示              | 中     |
+| TASK-P0-09-U1-C    | audit 永続化（ring buffer → ストレージ）          | 低     |
 
 ---
 

@@ -113,7 +113,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 | --- | --- | --- | --- |
 | view-like component | SkillCreateWizard | ウィザード全体状態管理（description/options/error/skillPath） | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` |
 | molecule | StepIndicator | ステップ進捗表示（active/completed/pending） | `.../components/skill/wizard/StepIndicator.tsx` |
-| molecule | DescribeStep | 説明入力 + 次へ遷移 | `.../components/skill/wizard/DescribeStep.tsx` |
+| molecule | SkillInfoStep | 基本情報入力（スキル名・目的・カテゴリ）+ 次へ遷移 | `.../components/skill/wizard/SkillInfoStep.tsx` |
 | molecule | ConfigureStep | 生成オプション設定（generateTasks/addAgents/addReferences） | `.../components/skill/wizard/ConfigureStep.tsx` |
 | molecule | GenerateStep | 生成中ローディング / エラー表示 | `.../components/skill/wizard/GenerateStep.tsx` |
 | molecule | CompleteStep | 生成完了表示（作成パス表示 + close） | `.../components/skill/wizard/CompleteStep.tsx` |

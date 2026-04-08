@@ -229,6 +229,11 @@ export type {
   SkillExecutorStreamMessage,
 } from "./src/types/skillCreator";
 
+export type {
+  SkillInfoFormData,
+  SmartDefaultResult,
+} from "./src/types/skillCreator";
+
 // External API Support (TASK-SDK-SC-03)
 export {
   type ExternalApiAuthType,
@@ -400,3 +405,6 @@ export {
 } from "./src/ipc/channels";
 
 export type { IpcChannel, SkillChannel } from "./src/ipc/channels";
+
+// Skill Creator Services (UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001)
+export { inferSmartDefaults } from "./src/services/skillCreator";

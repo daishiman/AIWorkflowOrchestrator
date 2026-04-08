@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const screenshotDir = path.join(
   repoRoot,
-  "docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots",
+  "docs/30-workflows/W1-par-02a-skill-info-step/outputs/phase-11/screenshots",
 );
 
 const baseRoute = "http://localhost:5173/advanced/skill-create-wizard";
@@ -35,69 +35,60 @@ function parseArgs(argv) {
 
 const scenarios = [
   {
-    file: "TC-01-step1-initial-dark.png",
+    file: "TC-01-step0-initial-dark.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-describe"]',
+    selector: '[data-testid="wizard-step-skill-info"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
   },
   {
-    file: "TC-02-step1-filled-dark.png",
+    file: "TC-02-step0-filled-dark.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-describe"]',
+    selector: '[data-testid="wizard-step-skill-info"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill(
-        "#skill-description",
-        "ファイルを整理して命名規則を統一するスキル",
-      );
+      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
+      await page.click('button:has-text("自動化")');
       await page.waitForTimeout(200);
     },
   },
   {
-    file: "TC-03-step2-configure-dark.png",
+    file: "TC-03-step1-configure-dark.png",
     url: baseRoute,
     selector: '[data-testid="wizard-step-configure"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill(
-        "#skill-description",
-        "ファイルを整理して命名規則を統一するスキル",
-      );
+      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
+      await page.click('button:has-text("自動化")');
       await page.click('button:has-text("次へ")');
       await page.waitForTimeout(200);
     },
   },
   {
-    file: "TC-04-step3-generating-dark.png",
+    file: "TC-04-step2-generating-dark.png",
     url: `${baseRoute}?mode=slow`,
     selector: '[data-testid="wizard-step-generate"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill(
-        "#skill-description",
-        "ファイルを整理して命名規則を統一するスキル",
-      );
+      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
+      await page.click('button:has-text("自動化")');
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector("text=生成中...");
-      await page.waitForTimeout(150);
+      await page.waitForTimeout(700);
     },
   },
   {
-    file: "TC-05-step4-complete-dark.png",
+    file: "TC-05-step3-complete-dark.png",
     url: baseRoute,
     selector: '[data-testid="wizard-step-complete"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill(
-        "#skill-description",
-        "ファイルを整理して命名規則を統一するスキル",
-      );
+      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
+      await page.click('button:has-text("自動化")');
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
       await page.waitForSelector("text=スキルが作成されました");
@@ -105,16 +96,14 @@ const scenarios = [
     },
   },
   {
-    file: "TC-06-step3-error-dark.png",
+    file: "TC-06-step2-error-dark.png",
     url: `${baseRoute}?mode=error`,
     selector: '[data-testid="wizard-step-generate"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
-      await page.fill(
-        "#skill-description",
-        "ファイルを整理して命名規則を統一するスキル",
-      );
+      await page.fill("#purpose", "ファイルを整理して命名規則を統一するスキル");
+      await page.click('button:has-text("自動化")');
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
       await page.waitForSelector("text=スキル生成に失敗しました");
@@ -122,16 +111,16 @@ const scenarios = [
     },
   },
   {
-    file: "TC-07-step1-initial-light.png",
+    file: "TC-07-step0-initial-light.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-describe"]',
+    selector: '[data-testid="wizard-step-skill-info"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "light",
   },
   {
-    file: "TC-08-step1-initial-mobile-dark.png",
+    file: "TC-08-step0-initial-mobile-dark.png",
     url: baseRoute,
-    selector: '[data-testid="wizard-step-describe"]',
+    selector: '[data-testid="wizard-step-skill-info"]',
     viewport: { width: 390, height: 844 },
     colorScheme: "dark",
   },
@@ -231,17 +220,22 @@ async function captureScenario(browser, scenario, outputDir) {
   try {
     await context.addInitScript(createMockScript());
     const page = await context.newPage();
+    page.setDefaultTimeout(60_000);
+    page.setDefaultNavigationTimeout(60_000);
 
-    await page.goto(scenario.url, { waitUntil: "domcontentloaded" });
+    await page.goto(scenario.url, {
+      waitUntil: "domcontentloaded",
+      timeout: 60_000,
+    });
     await page.waitForSelector('[data-testid="skill-create-wizard"]', {
-      timeout: 15_000,
+      timeout: 60_000,
     });
 
     if (scenario.preCapture) {
       await scenario.preCapture(page);
     }
 
-    await page.waitForSelector(scenario.selector, { timeout: 15_000 });
+    await page.waitForSelector(scenario.selector, { timeout: 60_000 });
     await page.waitForTimeout(150);
 
     await page.screenshot({

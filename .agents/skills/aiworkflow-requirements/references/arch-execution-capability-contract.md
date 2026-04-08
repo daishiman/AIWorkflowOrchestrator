@@ -99,5 +99,5 @@ isDegraded チェックは resolve() の最初に実行され、P62 対策とし
 | --- | --- | --- | --- |
 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 | HealthPolicy 統一インターフェース | **完了**（2026-03-25） | Gap-3 解消。38テスト全PASS |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess 移行 | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver 注入元実装 | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver 注入元実装 | **完了**（2026-04-07） | `docs/30-workflows/ut-health-policy-runtime-injection/` |
 | UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded 除去（v0.8.0） | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

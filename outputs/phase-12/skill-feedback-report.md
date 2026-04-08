@@ -1,38 +1,27 @@
-# skill-feedback-report.md — TASK-P0-09-U1
+# スキルフィードバックレポート
 
-## テンプレート改善観点
+## タスクID: UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-### 1. TDD サイクルの明確化
+## 良かった点
 
-**観点**: Phase 4（Red）でテストを書く際に「プライベートメソッドのテスト方法」が仕様書に記載されていなかった。
+- `resolveHealthPolicy()` を shared 側の正本に寄せたことで、hook 側の責務がかなり薄くなった
+- `useMainlineExecutionAccess` のテストが `buildMainlineExecutionAccessState()` への引数確認に集中でき、実装意図が読みやすかった
+- Phase 11 の NON_VISUAL 証跡を先に固めたことで、Phase 12 の文章化が迷いなく進められた
 
-# Phase 12: スキルフィードバック — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+## 改善点・気づき
 
-**改善案**: Phase 4 仕様書テンプレートに「private method テストは `(facade as unknown as FacadePrivate)` キャストを使う」等の補足を追加するか、「public callback 経由でテスト」を推奨するガイドを記載する。
+- `outputs/phase-12/` に旧タスクの成果物と current task の草稿が混在しており、canonical ファイルの選定に一度迷った
+- `docs/30-workflows/ut-health-policy-mainline-migration/index.md` と `artifacts.json` の status が古いままだと、実装済みでも workflow 上は未完了に見えてしまう
+- async hook のテストは、`renderHook` 後に 1 ティック待たないと `act(...)` 警告が出ることがあった
 
-### 2. improve phase の canUseTool 配線の明確化
+## 今後のタスクへの推奨事項
 
-**観点**: `improve()` フローが `llmAdapter.sendChat()` を使用するため SDK callback が適用されないことが仕様書から読み取れなかった。Phase 5 のタスク2で「`createImproveGovernanceCanUseTool()` を接続」と書かれているが、接続先（`applyImprovement()` vs SDK callback）が曖昧だった。
+- Phase 12 の成果物は、最初から task-specific の canonical 名で揃える
+- workflow の進捗更新は、出力ファイルだけでなく `index.md` と `artifacts.json` まで同じ wave で同期する
+- async な hook テストは、`renderAccessHook` のような flush helper を共通化する
 
-1. runtime guard は入口で統一すると UI/IPC/テストの一貫性が保たれる
-2. structured error を shared type で定義し、renderer は message 正規化に専念させると責務が分離できる
-3. execute ack 後の snapshot 再読込で failure path の取りこぼしを防げる
-4. improve failure の snapshot は `recordImproveFailure()` に寄せると phase 遷移の整合が保てる
-5. Phase 11 NON_VISUAL は証跡ファイルの current facts 化まで含めないと drift が残る
+## task-specification-creator スキルへのフィードバック
 
-**改善案**: 仕様書に「improve フローでの canUseTool 適用可能範囲と制約」を明記する。
-
-## ワークフロー改善観点
-
-### 小規模タスクの outputs 省略許可
-
-**観点**: 小規模タスク（phase-1〜3 で既に設計が自明な場合）でも全 Phase outputs が必須となっており、ドキュメント作成コストが実装コストを上回るケースがある。
-
-**改善案**: 規模（小/中/大）に応じて必須 outputs を tier 分けする仕組みを検討する。
-
-## 改善点なしの判断
-
-- Phase 仕様書の構造（目的・実行タスク・成果物・完了条件）は明確で実用的
-- TDD フローの Phase 4（Red）→ Phase 5（Green）→ Phase 6（拡充）は正しい順序
-- 知見セクション（苦戦箇所）が実装の助けになった
-  特になし（follow-up は未タスク検出レポートに記録済み）。
+- Phase 12 の checklist に `index.md` と `artifacts.json` の status 同期を明示してほしい
+- Phase 12 の出力テンプレートで、legacy draft ファイルが残る場合の扱いを先に書いてほしい
+- Step 2 の条件付き更新では、正本コメントに追記すべき consumer のファイルパスを明示すると迷いが減る

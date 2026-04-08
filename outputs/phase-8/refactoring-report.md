@@ -1,42 +1,82 @@
-# Phase 8: リファクタリング報告 — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+# Phase 8: リファクタリングレポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 評価結果
+## 実施日時
 
-### 純粋関数の分離状態
+2026-04-07
 
-| チェック項目                                              | 結果 | 備考                                       |
-| --------------------------------------------------------- | ---- | ------------------------------------------ |
-| `filterChecksBySeverity` が純粋関数として分離されているか | PASS | 副作用なし、入力に対して決定的な出力を返す |
-| 単体テストで独立してテスト可能か                          | PASS | SF-01〜SF-04 で直接テスト済み              |
+---
 
-### useMemo の依存配列
+## Before / After テーブル
 
-| チェック項目                                 | 結果 | 備考                                               |
-| -------------------------------------------- | ---- | -------------------------------------------------- |
-| `filteredChecksByLayer` の依存配列が最小限か | PASS | `[checksByLayer, severityFilter]` のみ             |
-| `severityTotalCounts` の依存配列が最小限か   | PASS | `[checksByLayer]` のみ（フィルタ状態に依存しない） |
+| 項目                                         | Before（削除前）                                                                                                                                    | After（削除後）                                                                                                                     | 理由                                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `apiKeyDegraded` 変数                        | `const apiKeyDegraded = credentials.apiKeyValid && (selectedHealthStatus?.status === "disconnected" \|\| selectedHealthStatus?.status === "error")` | 変数自体を削除                                                                                                                      | `HealthPolicy` 型が同等の情報を内包するため不要       |
+| HealthPolicy の取得方法                      | 存在しない（独自ロジックで `apiKeyDegraded` を算出）                                                                                                | `resolveHealthPolicy({ connectionStatus, isApiKeyValid, apiKeyDegraded: false, isRateLimited: false, lastHealthCheck })` を呼び出し | ヘルス判定ロジックを `resolveHealthPolicy()` に一元化 |
+| `buildMainlineExecutionAccessState()` の引数 | `apiKeyDegraded` フラグを個別引数として渡していた                                                                                                   | `healthPolicy: HealthPolicy` オブジェクトを渡す（`apiKeyDegraded` 引数は削除）                                                      | 型安全性の向上と将来の拡張容易性                      |
+| インポート                                   | `@repo/shared/types` からのインポートなし                                                                                                           | `import { resolveHealthPolicy } from "@repo/shared/types"` を追加                                                                   | AC-4 準拠（barrel export 経由）                       |
 
-### 定数・スタイルの配置
+---
 
-| チェック項目                                                      | 結果 | 備考                                         |
-| ----------------------------------------------------------------- | ---- | -------------------------------------------- |
-| `SEVERITY_FILTER_OPTIONS` の配置が既存パターンと一貫しているか    | PASS | コンポーネント外のモジュールスコープに定義   |
-| `severityFilterButtonStyles` の配置が既存パターンと一貫しているか | PASS | 既存 `lifecycleButtonStyles` と同パターン    |
-| 型定義 `SeverityFilterLevel` の配置が適切か                       | PASS | コンポーネントファイル内のトップレベルに定義 |
+## 削除コードスニペット（旧 L117-120）
 
-## リファクタリング実施判断
-
-**大規模なリファクタリングは不要**と判断。
-
-理由:
-
-1. 変更範囲が `SkillLifecyclePanel.tsx` 内の約 50 行に限定
-2. 既存の `expandedLayers`・`checksByLayer` パターンを踏襲
-3. `filterChecksBySeverity` が純粋関数として適切に分離済み
-4. 重複コードなし
-
-## TDD 検証結果
-
+```typescript
+// 削除前
+const apiKeyDegraded =
+  credentials.apiKeyValid &&
+  (selectedHealthStatus?.status === "disconnected" ||
+    selectedHealthStatus?.status === "error");
 ```
-全 27 テスト PASS（既存 18 + severity フィルタ 9）
+
+## 追加コードスニペット
+
+```typescript
+// 追加後
+const healthPolicy = resolveHealthPolicy({
+  connectionStatus: selectedHealthStatus?.status ?? "disconnected",
+  isApiKeyValid: credentials.apiKeyValid,
+  apiKeyDegraded: false,
+  isRateLimited: false,
+  lastHealthCheck: selectedHealthStatus ?? null,
+});
 ```
+
+---
+
+## コードレビュー観点チェック結果
+
+### 1. import 順序
+
+| 確認項目                                                      | 結果 | 備考                                                                              |
+| ------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------- |
+| `@repo/shared/types` からのインポートが適切に整理されているか | PASS | L2 に `resolveHealthPolicy` をインポート、L3 に `AuthMode` type import と分離済み |
+| 不要な import が残っていないか                                | PASS | `apiKeyDegraded` 関連の旧インポートなし                                           |
+| import の重複なし                                             | PASS | 同一モジュールからの重複インポートなし                                            |
+
+### 2. 命名一貫性
+
+| 確認項目                                                        | 結果 | 備考                                            |
+| --------------------------------------------------------------- | ---- | ----------------------------------------------- |
+| `healthPolicy` 変数名が命名規則と一貫しているか                 | PASS | `resolveHealthPolicy` → `healthPolicy` パターン |
+| 関数名・変数名が camelCase で統一されているか                   | PASS | TypeScript 規約準拠                             |
+| `HealthPolicy` 型名が `@repo/shared/types` 定義と一致しているか | PASS | 型エイリアス・再定義なし                        |
+
+### 3. その他
+
+| 確認項目                                 | 結果 | 備考                                        |
+| ---------------------------------------- | ---- | ------------------------------------------- |
+| マジックナンバー・マジック文字列がないか | PASS | `"disconnected"` はデフォルト値として明示的 |
+| 古いコメントが残っていないか             | PASS | 削除ロジックに関する古いコメントなし        |
+| `any` 型の使用がないか                   | PASS | 厳密な型定義を維持                          |
+
+---
+
+## 指摘事項と対応状況
+
+指摘事項: なし
+
+---
+
+## 次フェーズへの引き継ぎ事項
+
+- リファクタリング確認完了、コード品質問題なし
+- Phase 9（品質保証）へ進む

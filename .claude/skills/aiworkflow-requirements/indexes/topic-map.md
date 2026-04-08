@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-07
+> 自動生成: 2026-04-08
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -453,12 +453,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L424 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L435 |
-| スキルチェーン 型定義（TASK-9D） | L485 |
-| スキルスケジュール 型定義（TASK-9G） | L520 |
-| スキルフォーク 型定義（TASK-9E） | L545 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L593 |
+| 続き | L439 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -951,13 +946,6 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L201 |
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L708 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L739 |
-| AIプロバイダーAPI連携 | L777 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L810 |
-| Skill Creator External API Support（TASK-SDK-SC-03） | L857 |
-| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L938 |
 | 分割ファイル一覧 | L426 |
 
 ### references/api-ipc-system-details.md
@@ -1236,10 +1224,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L64 |
-| LLM Adapter Error Banner（TASK-RT-01） | L120 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L159 |
-| 続き | L270 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L65 |
+| LLM Adapter Error Banner（TASK-RT-01） | L121 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L160 |
+| 続き | L271 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -2332,7 +2320,7 @@ node scripts/list-specs.js --topics
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
 | LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L271 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L377 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
 
 ### references/arch-state-management.md
 
@@ -2790,7 +2778,8 @@ node scripts/list-specs.js --topics
 | TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
-| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -2805,27 +2794,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L91 |
-| クイックリファレンス: カテゴリ別検索ガイド | L109 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L290 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L622 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L656 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L739 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L755 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L779 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L829 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L854 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L885 |
-| TASK-RT-06 教訓（2026-03-29） | L916 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L938 |
-| TASK-P0-04 教訓（2026-03-30） | L969 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1005 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1100 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1154 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1194 |
-| 分割ファイル一覧 | L88 |
-| クイックリファレンス: カテゴリ別検索ガイド | L106 |
-| 分割ファイル一覧 | L110 |
+| 分割ファイル一覧 | L90 |
+| クイックリファレンス: カテゴリ別検索ガイド | L108 |
+| 分割ファイル一覧 | L112 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2877,12 +2848,13 @@ node scripts/list-specs.js --topics
 ### references/lessons-learned-ipc-preload-runtime-2026-04.md
 
 | セクション | 行 |
-|------------|----|\n| TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01） | L4 |
-| TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31） | L24 |
-| TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31） | L38 |
-| TASK-FIX-AUTH-IPC-001（2026-04-01） | L53 |
-| Phase-12 IPC 4層型同期（2026-04-06） | L77 |
-| TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06） | L111 |
+|------------|----|\n| TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01） | L5 |
+| TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31） | L25 |
+| TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31） | L39 |
+| TASK-FIX-AUTH-IPC-001（2026-04-01） | L54 |
+| Phase-12 IPC 4層型同期（2026-04-06） | L78 |
+| TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06） | L112 |
+| UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001 IPC ハンドラ重複登録サイレントフェイル（2026-04-07） | L116 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2907,7 +2879,6 @@ node scripts/list-specs.js --topics
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L473 |
 | TASK-SC-05-IMPROVE-LLM（2026-03-23） | L493 |
 | TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L509 |
-| 分割ファイル一覧 | L47 |
 
 ### references/lessons-learned-phase12-lifecycle-early-b.md
 
@@ -3108,11 +3079,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L29 |
-| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L65 |
-| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L108 |
-| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L197 |
-| 2026-04-01 TASK-TRACE-SKILL-AUTH-001（スキル生成 auth:login リグレッション調査） | L237 |
+| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L30 |
+| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L66 |
+| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L109 |
+| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L198 |
+| 2026-04-01 TASK-TRACE-SKILL-AUTH-001（スキル生成 auth:login リグレッション調査） | L238 |
+| 2026-04-07 TASK-UT-RT-01（TDD 2段階テスト設計） | L311 |
 
 ### references/lessons-learned-ui-adapter-status-retry.md
 
@@ -4132,7 +4104,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 残課題（未タスク） | L6 |
-| 続き | L325 |
+| 続き | L327 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4343,10 +4315,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L13 |
-| 完了タスク（機能別アーカイブ） | L21 |
-|------------|----|\n| 完了タスク | L7 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L168 |
+| 完了タスク（2026-03後半） | L100 |
+| 完了タスク（機能別アーカイブ） | L108 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
 
 ### references/task-workflow-history.md
 

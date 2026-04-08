@@ -45,7 +45,7 @@ async function* defaultSearchProvider(
   _options: SearchProviderOptions,
 ): AsyncGenerator<FileSearchResult> {
   // This will be replaced with actual IPC call
-  yield* [];
+  yield* [] as FileSearchResult[];
 }
 
 export function WorkspaceSearchPanel({

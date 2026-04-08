@@ -10,7 +10,7 @@
 
 import fs from "fs/promises";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { LoadedWorkflowManifest } from "@repo/shared/types";
+import type { HealthPolicy, LoadedWorkflowManifest } from "@repo/shared/types";
 import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { ManifestLoader } from "../ManifestLoader";
@@ -127,6 +127,16 @@ function createEmptyPlanningResult() {
       selectedRoots: [],
       degradeReasons: [],
     },
+  };
+}
+
+function makeDegradedPolicy(): HealthPolicy {
+  return {
+    isConnectionAvailable: true,
+    isDegraded: true,
+    isRateLimited: false,
+    healthStatus: "degraded",
+    lastCheckedAt: new Date("2026-04-07T00:00:00Z"),
   };
 }
 
@@ -303,6 +313,34 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
   // 3. terminal_handoff 経路の非破壊テスト
   // ------------------------------------------------------------------
   describe("terminal_handoff 経路の非破壊", () => {
+    it("healthPolicy が degraded の場合、api-key が有効でも terminal_handoff になる", async () => {
+      const degradedFacade = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        resourceLoader: mockResourceLoader as never,
+        healthPolicy: makeDegradedPolicy(),
+      });
+
+      (
+        mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>
+      ).mockResolvedValue("agent-content");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validPlanResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+      });
+
+      const result = await degradedFacade.plan(
+        "health policy degraded spec",
+        "api-key",
+        "sk-valid-key",
+      );
+
+      expect(result).toHaveProperty("type", "terminal_handoff");
+      expect(mockResourceLoader.loadAgent).not.toHaveBeenCalled();
+      expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
+    });
+
     it("terminal_handoff 判定時、LLM 呼び出しが行われない", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",

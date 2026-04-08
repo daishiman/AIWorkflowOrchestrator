@@ -200,7 +200,9 @@ describe("resolveHealthPolicy", () => {
       expect(result.healthStatus).toBe("unknown");
     });
 
-    it("disconnected + rateLimited → P2 が優先され unhealthy を返す", () => {
+    it("disconnected + rateLimited → rateLimited（P2/3）が優先され degraded を返す", () => {
+      // ルール順序: rateLimited/apiKeyDegraded（P2/3）が接続断（P4）より先に評価される
+      // subscription fallback を有効化するため isRateLimited=true は degraded として扱う
       const input: HealthPolicyInput = {
         connectionStatus: "disconnected",
         isApiKeyValid: true,
@@ -209,12 +211,15 @@ describe("resolveHealthPolicy", () => {
         lastHealthCheck: makeHealthCheckResult(),
       };
       const result = resolveHealthPolicy(input);
-      expect(result.healthStatus).toBe("unhealthy");
+      expect(result.healthStatus).toBe("degraded");
       expect(result.isConnectionAvailable).toBe(false);
+      expect(result.isDegraded).toBe(true);
       expect(result.isRateLimited).toBe(true);
     });
 
-    it("error + apiKeyDegraded → P2 が優先され unhealthy を返す", () => {
+    it("error + apiKeyDegraded → apiKeyDegraded（P2/3）が優先され degraded を返す", () => {
+      // ルール順序: apiKeyDegraded（P2/3）が接続断（P4）より先に評価される
+      // valid API key + connection error の場合は subscription fallback を有効化するため degraded
       const input: HealthPolicyInput = {
         connectionStatus: "error",
         isApiKeyValid: true,
@@ -225,9 +230,9 @@ describe("resolveHealthPolicy", () => {
         }),
       };
       const result = resolveHealthPolicy(input);
-      expect(result.healthStatus).toBe("unhealthy");
-      expect(result.isDegraded).toBe(false);
-      expect(result.errorDetail).toBe("Connection refused");
+      expect(result.healthStatus).toBe("degraded");
+      expect(result.isDegraded).toBe(true);
+      expect(result.isConnectionAvailable).toBe(false);
     });
 
     it("lastHealthCheck: null + disconnected + rateLimited + apiKeyDegraded → P1 が優先され unknown を返す", () => {
