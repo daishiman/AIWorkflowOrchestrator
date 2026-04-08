@@ -1316,6 +1316,7 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "security-electron-ipc-examples.md",
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
@@ -1406,6 +1407,7 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -4150,6 +4152,7 @@
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-implementation-patterns-shared.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "ui-ux-portal-patterns.md"
     ],
     "パフォーマンス最適化パターン": [
@@ -4744,6 +4747,7 @@
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
       "lessons-learned-skill-remove-contract.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
@@ -6536,6 +6540,7 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -6598,6 +6603,7 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -7605,7 +7611,8 @@
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "関連ファイル": [
-      "lessons-learned-governance-hooks-phase-policy.md"
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "Channel": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
@@ -7881,7 +7888,8 @@
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "feedback": [
-      "lessons-learned-phase12-lifecycle-early-b.md"
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "memory": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -8207,6 +8215,7 @@
     ],
     "苦戦箇所": [
       "lessons-learned-severity-filter-ui.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "ui-history-search-view.md",
@@ -8581,6 +8590,34 @@
     ],
     "プロパティ正式移行": [
       "lessons-learned-skill-validation-logging-deprecation.md"
+    ],
+    "Wizard": [
+      "lessons-learned-skill-wizard-redesign.md",
+      "workflow-onboarding-wizard-alignment.md"
+    ],
+    "Redesign": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "seq": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "タスク概要": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "将来参照用": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "非ブロッカー改善候補": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "report": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "より": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "依存関係": [
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "templates": [
       "lessons-learned-templates.md"
@@ -9303,7 +9340,8 @@
       "task-workflow-completed-recent-2026-03e.md",
       "task-workflow-completed-recent-2026-04a.md",
       "task-workflow-completed-recent-2026-04b.md",
-      "task-workflow-completed-recent-2026-04c.md"
+      "task-workflow-completed-recent-2026-04c.md",
+      "task-workflow-completed-recent-2026-04d.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
@@ -13283,9 +13321,6 @@
     ],
     "仕様作成追補": [
       "workflow-light-theme-global-remediation.md"
-    ],
-    "Wizard": [
-      "workflow-onboarding-wizard-alignment.md"
     ],
     "検出した未タスク": [
       "workflow-permission-fallback-abort-skip-retry.md"

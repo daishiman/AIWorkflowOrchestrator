@@ -1,0 +1,68 @@
+{
+  "taskId": "TASK-SDK-SC-02",
+  "generatedAt": "2026-04-04T02:55:22.914Z",
+  "baseUrl": "http://127.0.0.1:5199",
+  "harnessPath": "/phase11-skill-creator-conversation-ui.html",
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "step": "waiting",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-01-waiting-state.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "step": "single-select",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-02-single-select-question.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "step": "single-select-free-text",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-03-single-select-free-text-open.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "step": "multi-select",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-04-multi-select-active.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "step": "multi-select-submitting",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-05-multi-select-submitting.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "step": "free-text",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-06-free-text-question.png"
+    },
+    {
+      "tcId": "TC-11-07",
+      "step": "secret",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-07-secret-question.png"
+    },
+    {
+      "tcId": "TC-11-08",
+      "step": "confirm",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-08-confirm-question.png"
+    },
+    {
+      "tcId": "TC-11-09",
+      "step": "complete",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-09-complete-state.png"
+    },
+    {
+      "tcId": "TC-11-11",
+      "step": "result-panel-ready",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-11-result-panel-ready.png"
+    },
+    {
+      "tcId": "TC-11-12",
+      "step": "result-panel-overwrite",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-12-result-panel-overwrite.png"
+    },
+    {
+      "tcId": "TC-11-10",
+      "step": "error",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-10-error-state.png"
+    }
+  ]
+}

@@ -19,8 +19,17 @@
 ## 背景
 
 スキル作成ウィザードのテンプレート生成モードを廃止し、LLM専用化する。  
-`description` / `options` / `generationMode` state と全 `template` 条件分岐を除去し、新たに `formData` / `answers` / `smartDefaults` / `generationMethod` / `skillPath` state を追加する。  
-`GenerateStep` は `generationMode` なしの LLM 進捗表示に統一し、`CompleteStep` は `skillPath` と `onRetry` を受け取る回復可能な完了画面とする。
+`description` / `options` / `generationMode` state と全 `template` 条件分岐を除去し、新たに `formData` / `answers` / `smartDefaults` / `generationMethod` / `skillPath` / `hasExternalIntegration` / `externalToolName` state を追加する。
+`GenerateStep` は `generationMode` なしの LLM 進捗表示に統一し、`CompleteStep` は `skillPath` / `hasExternalIntegration` / `externalToolName` と `onRetry` を受け取る回復可能な完了画面とする。
+
+## 追加要件（実装差分反映）
+
+| 区分       | 要件                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 推論ルール | `inferSmartDefaults` は `purpose` を小文字化して判定し、`slack` / `github` / `notion` を大小文字不問で検出する                                 |
+| 生成制御   | `handleGenerate(method)` は `isGenerating` 中の再入を拒否し、二重呼び出しを防止する                                                            |
+| 完了画面   | Step 3 で `skillPath` を明示表示し、生成先パスを確認できること                                                                                 |
+| リトライ   | `handleRetry` は `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` をリセットする |
 
 ## description/options/generationMode 削除による影響範囲
 

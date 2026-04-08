@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 11                                   |
 | 後続Phase  | Phase 13                                   |
 | 作成日     | 2026-04-07                                 |
-| ステータス | pending                                    |
+| ステータス | completed（Phase 12 完了 / PR 未作成）     |
 
 ## 目的
 
@@ -42,7 +42,7 @@ Part 1（中学生向け）と Part 2（技術者向け）の2部構成で作成
 
 以前は「テンプレートで作る方法」と「AIに考えてもらう方法」の2択がありました。でも2択があると使う人が迷ってしまいます。今回は「AIに考えてもらう方法」だけに統一しました。
 
-また、AIにスキルを作ってもらうとき、ユーザーが入力した「スキル名」「目的」「カテゴリ」から、AIへの質問の答えを自動で予測する「スマートデフォルト」機能を追加しました。たとえば「目的にSlackと書いてあれば、Q5の答えは自動でslackにする」という感じです。これで、ユーザーが同じことを何度も入力する手間を省けます。
+また、AIにスキルを作ってもらうとき、ユーザーが入力した「スキル名」「目的」「カテゴリ」から、AIへの質問の答えを自動で予測する「スマートデフォルト」機能を追加しました。たとえば「目的に `slack` / `Slack` / `SLACK` のどれが書かれていても、Q5の答え候補を `slack` として推論する」という感じです。これで、ユーザーが同じことを何度も入力する手間を省けます。
 
 完了画面では、生成したスキルのパスを見ながら品質フィードバックを送り、イメージと違ったら Step 0 に戻ってやり直せます。前回の入力は残るので、毎回最初から入力し直す必要はありません。
 
@@ -62,7 +62,7 @@ Part 1（中学生向け）と Part 2（技術者向け）の2部構成で作成
 
 **変更概要：**
 
-`SkillCreateWizard.tsx` から `description` / `options` / `generationMode` state と関連する全 `template` 分岐を除去し、LLM 専用化した。新たに `formData`/`answers`/`smartDefaults`/`generationMethod`/`skillPath`/`hasExternalIntegration`/`externalToolName` の state を追加し、`handleRetry` で Step 0 への復帰を接続する。
+`SkillCreateWizard.tsx` から `description` / `options` / `generationMode` state と関連する全 `template` 分岐を除去し、LLM 専用化した。新たに `formData`/`answers`/`smartDefaults`/`generationMethod`/`skillPath`/`hasExternalIntegration`/`externalToolName` の state を追加し、`handleRetry` で Step 0 への復帰を接続する。`inferSmartDefaults` は `purpose` を小文字化して判定し、`slack`/`github`/`notion` を大小文字不問で推論する。生成開始時は `generationLockRef` と `clearGenerationState()` で再入とストア残留を抑える。
 
 **inferSmartDefaults 関数：**
 
@@ -87,7 +87,7 @@ function inferSmartDefaults(data: SkillInfoFormData): SmartDefaultResult {
 **API シグネチャ：**
 
 ```typescript
-handleStep0Next(data: SkillInfoFormData): void
+handleStep0Next(): void
 handleGenerate(method: "complete" | "skip"): Promise<void>
 handleQualityFeedback(satisfied: boolean): void
 handleRetry(): void
@@ -96,32 +96,33 @@ handleRetry(): void
 **エッジケース：**
 
 - LLM 生成失敗時: `isGenerating=false` + エラー state で UI フィードバック
-- 二重呼び出し: `isGenerating` フラグで防止
+- 二重呼び出し: `generationLockRef` + `isGenerating` で防止
 - 推論0件: `inferenceLog` が空配列で返る（エラーにならない）
+- `handleRetry`: `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` / `error` / `generationMethod` / `isGenerating` をリセット
 
 ### Task 12-2: システム仕様更新
 
-#### Step 1-A: 完了タスク記録・関連リンク・LOGS.md 更新
+#### Step 1-A: 完了タスク記録・関連リンク更新
 
-- `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W2-seq-03a ステータスを `completed` へ更新
-- 関連レーンの LOGS.md（2ファイル）に完了記録を追加
-- `topic-map.md` の skill-wizard-redesign 項目を更新
+- `docs/30-workflows/W2-seq-03a-skill-create-wizard/index.md` のステータスを `Phase 12 完了（PR 未作成）` へ更新
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に W2-seq-03a 完了と W3 着手条件充足の注記を追加
+- 本ワークツリーには `LOGS.md` / `topic-map.md` の対象ファイルが存在しないため、このタスクでは N/A として扱う
 
 #### Step 1-B: 実装状況テーブル更新
 
 - W2-seq-03a の実装状況を `spec_created` → `completed` へ更新
 
-#### Step 1-C: 関連タスクテーブル更新
+#### Step 1-C: 関連タスクテーブル確認
 
-| タスク     | 依存関係              | ステータス更新 |
-| ---------- | --------------------- | -------------- |
-| W3-seq-04  | W2-seq-03a 完了後着手 | `ready` へ更新 |
-| W2-seq-03b | W2-seq-03a と並列     | 変更なし       |
+| タスク     | 依存関係              | ステータス更新                   |
+| ---------- | --------------------- | -------------------------------- |
+| W3-seq-04  | W2-seq-03a 完了後着手 | `ready` 判定（実着手は別タスク） |
+| W2-seq-03b | W2-seq-03a と並列     | 変更なし                         |
 
 #### Step 2: 新規 I/F 追加の仕様更新判定
 
 `inferSmartDefaults` 関数は内部ユーティリティのため外部 API 契約変更なし。  
-`handleGenerate(method)` は `ConversationRoundStep` から呼ばれる親ハンドラであり、`GenerateStep` への props 契約変更ではない。  
+`handleGenerate(method)` は `ConversationRoundStep` から呼ばれる親ハンドラであり、`GenerateStep` への props 契約変更ではない。内部では `generationLockRef` と `clearGenerationState()` を使って再入防止と旧ストア状態の初期化を行う。
 外部 I/F の更新点は `GenerateStep` から `generationMode` を外すことと、`CompleteStep` に `skillPath` / `hasExternalIntegration` / `externalToolName` / action cards / `onRetry` を接続すること。  
 → `wizard/index.ts` の re-export 変更は W2-seq-03b の対象なので、この Task 12-2 では props 契約の更新が必要であることを `system-spec-update-summary.md` に記録する。
 
@@ -160,9 +161,9 @@ handleRetry(): void
 ## 実行手順
 
 1. Task 12-1: `implementation-guide.md` を Part 1/Part 2 で作成する。
-2. Task 12-2 Step 1-A: 完了タスク記録・LOGS.md（2ファイル）・topic-map.md を更新する。
+2. Task 12-2 Step 1-A: 完了タスク記録と関連リンクを更新する（`LOGS.md` / `topic-map.md` は N/A 判定を記録）。
 3. Task 12-2 Step 1-B: W2-seq-03a 実装状況を `completed` へ更新する。
-4. Task 12-2 Step 1-C: W3-seq-04 ステータスを `ready` へ更新する。
+4. Task 12-2 Step 1-C: W3-seq-04 の着手条件を `ready` 判定として記録する。
 5. Task 12-2 Step 2: `GenerateStep` / `CompleteStep` の props 契約を確認し、`generationMode` 削除・`skillPath` / `hasExternalIntegration` / `externalToolName` / action cards / `onRetry` 接続の更新内容を `system-spec-update-summary.md` に記録する。
 6. Task 12-3: `documentation-changelog.md` を作成する。
 7. Task 12-4: `unassigned-task-detection.md` を作成する。
@@ -182,12 +183,12 @@ handleRetry(): void
 
 ## Phase 12 Task 2 判定基準
 
-| 判定項目 | 実行条件                       | 完了条件                               |
-| -------- | ------------------------------ | -------------------------------------- |
-| Step 1-A | 全タスクで必須                 | 完了記録 + LOGS.md(2) + topic-map 更新 |
-| Step 1-B | 全タスクで必須                 | 実装状況を `completed` へ更新          |
-| Step 1-C | 関連タスク記載がある場合は必須 | 関連タスク表ステータス更新             |
-| Step 2   | 新規 I/F 追加がある場合        | 対象仕様を更新し変更履歴へ記録         |
+| 判定項目 | 実行条件                       | 完了条件                                                                        |
+| -------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| Step 1-A | 全タスクで必須                 | 完了記録 + 関連リンク更新（`LOGS.md` / `topic-map.md` は対象なしなら N/A 記録） |
+| Step 1-B | 全タスクで必須                 | 実装状況を `completed` へ更新                                                   |
+| Step 1-C | 関連タスク記載がある場合は必須 | 関連タスク表ステータス更新                                                      |
+| Step 2   | 新規 I/F 追加がある場合        | 対象仕様を更新し変更履歴へ記録                                                  |
 
 ## Phase 12 実装ガイド要件
 

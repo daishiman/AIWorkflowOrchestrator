@@ -10,7 +10,7 @@
 | 依存タスク   | W1-par-02a, W1-par-02b, W1-par-02c                                                                                                       |
 | 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`, `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx` |
 | 作成日       | 2026-04-07                                                                                                                               |
-| ステータス   | pending                                                                                                                                  |
+| ステータス   | Phase 12 完了（PR 未作成）                                                                                                               |
 
 ## 概要
 
@@ -61,10 +61,18 @@ Step 3 の `CompleteStep` では `skillPath` を表示し、品質フィード�
 ## スマートデフォルト推論ルール
 
 ```typescript
-// 目的に「Slack」→ tool = "slack"
-// 目的に「毎日/毎週/定期」→ timing = "scheduled"
+// 目的テキストは小文字化して判定（大小文字不問）
+// "slack" / "github" / "notion" を含む → tool = "slack" / "github" / "notion"
+// 「毎日/毎週/定期」→ timing = "scheduled"
 // category === "code-support" → format = "code"
 ```
+
+## 実装上の要点（2026-04-08時点）
+
+- `CompleteStep` で `skillPath` を表示し、生成先パスを完了画面で確認できる
+- `hasExternalIntegration` / `externalToolName` は Step 0 の推論結果を初期値として保持し、Step 3 のチェックリスト表示に使う
+- `handleGenerate(method)` は `isGenerating` と `generationLockRef` を使って二重呼び出しを防止し、生成開始時に `clearGenerationState()` でストアを初期化する
+- `handleRetry()` は `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` / `error` / `generationMethod` / `isGenerating` をリセットし、`clearGenerationState()` と `generationLockRef` を初期化して Step 0 に戻す
 
 ## Phaseリスト
 
