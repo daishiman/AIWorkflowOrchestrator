@@ -30,47 +30,47 @@
 
 ### 新規作成ファイル（ドキュメント outputs/）
 
-| ファイル                                                 | Phase |
-| -------------------------------------------------------- | ----- |
-| `outputs/phase-1/requirements-definition.md`             | 1     |
-| `outputs/phase-1/acceptance-criteria.md`                 | 1     |
-| `outputs/phase-1/impact-scope-map.md`                    | 1     |
-| `outputs/phase-2/api-design.md`                          | 2     |
-| `outputs/phase-2/inference-flowchart.md`                 | 2     |
-| `outputs/phase-2/test-strategy.md`                       | 2     |
-| `outputs/phase-3/design-review-result.md`                | 3     |
-| `outputs/phase-3/contradiction-checklist.md`             | 3     |
-| `outputs/phase-3/gate-decision.md`                       | 3     |
-| `outputs/phase-4/test-specification.md`                  | 4     |
-| `outputs/phase-4/red-test-result.md`                     | 4     |
-| `outputs/phase-4/integration-test-plan.md`               | 4     |
-| `outputs/phase-5/implementation-summary.md`              | 5     |
-| `outputs/phase-5/changed-files.md`                       | 5     |
-| `outputs/phase-5/contract-diff.md`                       | 5     |
-| `outputs/phase-6/expanded-test-cases.md`                 | 6     |
-| `outputs/phase-6/regression-test-result.md`              | 6     |
-| `outputs/phase-6/edge-case-result.md`                    | 6     |
-| `outputs/phase-7/coverage-plan.md`                       | 7     |
-| `outputs/phase-7/uncovered-analysis-plan.md`             | 7     |
-| `outputs/phase-7/traceability-coverage-report.md`        | 7     |
-| `outputs/phase-8/refactoring-plan.md`                    | 8     |
-| `outputs/phase-8/responsibility-boundary-map.md`         | 8     |
-| `outputs/phase-8/post-refactor-test-plan.md`             | 8     |
-| `outputs/phase-9/quality-report.md`                      | 9     |
-| `outputs/phase-9/risk-register.md`                       | 9     |
-| `outputs/phase-9/causal-loop-check.md`                   | 9     |
-| `outputs/phase-10/final-review-result.md`                | 10    |
-| `outputs/phase-10/release-readiness-checklist.md`        | 10    |
-| `outputs/phase-10/corrective-action-plan.md`             | 10    |
-| `outputs/phase-11/manual-test-checklist.md`              | 11    |
-| `outputs/phase-11/manual-test-result.md`                 | 11    |
-| `outputs/phase-11/discovered-issues.md`                  | 11    |
-| `outputs/phase-12/implementation-guide.md`               | 12    |
-| `outputs/phase-12/system-spec-update-summary.md`         | 12    |
-| `outputs/phase-12/documentation-changelog.md`            | 12    |
-| `outputs/phase-12/unassigned-task-detection.md`          | 12    |
-| `outputs/phase-12/skill-feedback-report.md`              | 12    |
-| `outputs/phase-12/phase12-task-spec-compliance-check.md` | 12    |
+| ファイル                                                                                                | Phase |
+| ------------------------------------------------------------------------------------------------------- | ----- |
+| `outputs/phase-1/requirements-definition.md`                                                            | 1     |
+| `outputs/phase-1/acceptance-criteria.md`                                                                | 1     |
+| `outputs/phase-1/impact-scope-map.md`                                                                   | 1     |
+| `outputs/phase-2/api-design.md`                                                                         | 2     |
+| `outputs/phase-2/inference-flowchart.md`                                                                | 2     |
+| `outputs/phase-2/test-strategy.md`                                                                      | 2     |
+| `outputs/phase-3/design-review-result.md`                                                               | 3     |
+| `outputs/phase-3/contradiction-checklist.md`                                                            | 3     |
+| `outputs/phase-3/gate-decision.md`                                                                      | 3     |
+| `outputs/phase-4/test-specification.md`                                                                 | 4     |
+| `outputs/phase-4/red-test-result.md`                                                                    | 4     |
+| `outputs/phase-4/integration-test-plan.md`                                                              | 4     |
+| `outputs/phase-5/implementation-summary.md`                                                             | 5     |
+| `outputs/phase-5/changed-files.md`                                                                      | 5     |
+| `outputs/phase-5/contract-diff.md`                                                                      | 5     |
+| `outputs/phase-6/expanded-test-cases.md`                                                                | 6     |
+| `outputs/phase-6/regression-test-result.md`                                                             | 6     |
+| `outputs/phase-6/edge-case-result.md`                                                                   | 6     |
+| `outputs/phase-7/coverage-plan.md`                                                                      | 7     |
+| `outputs/phase-7/uncovered-analysis-plan.md`                                                            | 7     |
+| `outputs/phase-7/traceability-coverage-report.md`                                                       | 7     |
+| `outputs/phase-8/refactoring-plan.md`                                                                   | 8     |
+| `outputs/phase-8/responsibility-boundary-map.md`                                                        | 8     |
+| `outputs/phase-8/post-refactor-test-plan.md`                                                            | 8     |
+| `outputs/phase-9/quality-report.md`                                                                     | 9     |
+| `outputs/phase-9/risk-register.md`                                                                      | 9     |
+| `outputs/phase-9/causal-loop-check.md`                                                                  | 9     |
+| `outputs/phase-10/final-review-result.md`                                                               | 10    |
+| `outputs/phase-10/release-readiness-checklist.md`                                                       | 10    |
+| `outputs/phase-10/corrective-action-plan.md`                                                            | 10    |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` | 11    |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    | 11    |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/discovered-issues.md`     | 11    |
+| `outputs/phase-12/implementation-guide.md`                                                              | 12    |
+| `outputs/phase-12/system-spec-update-summary.md`                                                        | 12    |
+| `outputs/phase-12/documentation-changelog.md`                                                           | 12    |
+| `outputs/phase-12/unassigned-task-detection.md`                                                         | 12    |
+| `outputs/phase-12/skill-feedback-report.md`                                                             | 12    |
+| `outputs/phase-12/phase12-task-spec-compliance-check.md`                                                | 12    |
 
 ---
 
@@ -85,11 +85,21 @@
 
 ## Phase 11 証跡参照
 
-| ファイル                                    | 内容                                                 |
-| ------------------------------------------- | ---------------------------------------------------- |
-| `outputs/phase-11/manual-test-checklist.md` | 手動テスト項目一覧                                   |
-| `outputs/phase-11/manual-test-result.md`    | Vitest 33件 PASS 確認（2026-04-07）                  |
-| `outputs/phase-11/discovered-issues.md`     | vitest.config.ts alias 欠如 / テスト矛盾（是正済み） |
+| ファイル                                                                                                | 内容                                |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` | 手動テスト項目一覧                  |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    | Vitest 33件 PASS 確認（2026-04-07） |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/discovered-issues.md`     | 発見事項 0件                        |
+
+## Workflow-local mirror
+
+| ファイル                                                                                                | 内容                            |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/artifacts.json`                    | workflow-local artifacts mirror |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` | W0 Phase 11 checklist mirror    |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    | W0 Phase 11 result mirror       |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/discovered-issues.md`     | W0 Phase 11 issues mirror       |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/*.md`                     | workflow-local Phase 12 mirror  |
 
 ---
 

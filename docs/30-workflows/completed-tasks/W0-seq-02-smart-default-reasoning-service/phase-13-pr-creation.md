@@ -9,12 +9,14 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 12                                       |
 | 後続Phase  | -                                              |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | blocked                                        |
 
 ## 目的
 
 提出準備を完了し、ユーザー承認後のみ PR 作成へ進む。
+
+> **重要**: PR 作成はユーザーの明示的な承認後のみ実施する。承認なしは blocked 状態を維持する。
 
 ## 実行タスク
 
@@ -49,125 +51,84 @@
 
 ### レビュー観点
 
-| 観点             | 確認内容                                                                            |
-| ---------------- | ----------------------------------------------------------------------------------- |
-| 機能要件         | AC-1〜AC-4 の全受け入れ基準が充足されていること                                     |
-| 型安全性         | W0-seq-01 型定義との整合・`any` 型未使用                                            |
-| テストカバレッジ | 全推論ルール分岐・フォールバックパス・inferenceLog・組み合わせテストが90%以上カバー |
-| barrel 整合      | `packages/shared/` からのインポートパスが解決できること                             |
-| 後続タスク       | W2-seq-03a が `inferSmartDefaults` をインポートして利用できること                   |
+| 観点             | 確認内容                                                                           |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| 機能要件         | AC-1〜AC-4 の全受け入れ基準が充足されていること                                    |
+| 型安全性         | W0-seq-01 型定義との整合・`any` 型未使用                                           |
+| テストカバレッジ | 全推論ルール分岐・フォールバックパス・inferenceLog・組み合わせテストが 90%+ カバー |
+| barrel 整合      | `packages/shared/` からのインポートパスが解決できること                            |
+| 後続タスク       | W2-seq-03a が `inferSmartDefaults` をインポートして利用できること                  |
 
 ## 承認条件
 
-**ユーザーの明示承認がある場合のみ PR 作成へ進む。**
+| 条件                                                | 確認状況              |
+| --------------------------------------------------- | --------------------- |
+| Phase 12 の canonical 6 成果物が全て揃っていること  | [ ]                   |
+| `pnpm lint` がエラーなし                            | [ ]                   |
+| `pnpm --filter @repo/shared test:run` が全件 PASS   | [ ]                   |
+| `pnpm --filter @repo/shared typecheck` がエラーなし | [ ]                   |
+| ユーザーの明示的な PR 作成承認                      | [ ] 未承認（blocked） |
 
-承認がない場合は `outputs/phase-13/pr-preparation.md` の作成で終了する。
-
-## PR タイトル案
-
-```
-feat(skill-wizard): スマートデフォルト推論サービス実装（W0-seq-02）
-```
-
-## PR 本文テンプレート
+## PR テンプレート
 
 ```markdown
 ## 概要
 
-スキルウィザードのスマートデフォルト推論サービスを `packages/shared/` に独立実装。
-ユーザー入力（スキル名を含むフォーム入力。主に目的・カテゴリを使用）から推奨設定を自動提案する `inferSmartDefaults` 関数を追加。
+`inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult` 推論サービスを実装した。
 
-closes #1998
+関連 Issue: #2003
 
 ## 変更内容
 
-- `smartDefaultReasoningService.ts` を新規作成
-  - ツール推論: purpose テキストから slack/github/notion を推論（先勝ちルール）
-  - タイミング推論: 定期実行キーワード → scheduled、リアルタイムキーワード → realtime
-  - フォーマット推論: category から code/structured を推論
-  - フォールバック: 推論不能フィールドは null・inferenceLog は空配列 []
-- ユニットテストを追加（全 AC-1〜AC-4 をカバー）
-- barrel へのエクスポートを追加
-
-## 依存タスク
-
-- W0-seq-01（型定義）: 完了済み（SmartDefaultResult / SkillInfoFormData）
-
-## 後続タスク
-
-- W2-seq-03a（SkillCreateWizard 更新）: 本サービスをインポートして利用可能
+- 推論サービス本体（`smartDefaultReasoningService.ts`）の新規実装
+- ツール推論・タイミング推論・フォーマット推論・フォールバック処理
+- `inferenceLog` による推論根拠の記録
+- `@repo/shared` からの barrel export 追加
 
 ## テスト
 
-- `pnpm --filter @repo/shared test` で全テスト Green
-- カバレッジ: `smartDefaultReasoningService.ts` 90% 以上
-- 全推論ルール（slack/github/notion/scheduled/realtime/code/structured）をテスト
-- フォールバック（null/undefined/空文字入力）をテスト
+- ユニットテスト: TC-01〜TC-20 全件 PASS
+- typecheck: エラーなし
+- lint: エラーなし
+- coverage: Line 90%+, Branch 80%+, Function 100%
 ```
 
 ## 参照資料
 
-| 資料名                   | パス                                                     | 用途            |
-| ------------------------ | -------------------------------------------------------- | --------------- |
-| API 設計                 | `outputs/phase-2/api-design.md`                          | Phase 2 成果物  |
-| 実装サマリー             | `outputs/phase-5/implementation-summary.md`              | Phase 5 成果物  |
-| 回帰テスト結果           | `outputs/phase-6/regression-test-result.md`              | Phase 6 成果物  |
-| 網羅率レポート           | `outputs/phase-7/traceability-coverage-report.md`        | Phase 7 成果物  |
-| 責務境界マップ           | `outputs/phase-8/responsibility-boundary-map.md`         | Phase 8 成果物  |
-| 品質レポート             | `outputs/phase-9/quality-report.md`                      | Phase 9 成果物  |
-| 実装ガイド               | `outputs/phase-12/implementation-guide.md`               | Phase 12 成果物 |
-| システム仕様更新サマリー | `outputs/phase-12/system-spec-update-summary.md`         | Phase 12 成果物 |
-| 更新履歴                 | `outputs/phase-12/documentation-changelog.md`            | Phase 12 成果物 |
-| 仕様準拠チェック         | `outputs/phase-12/phase12-task-spec-compliance-check.md` | Phase 12 成果物 |
-| 最終レビュー結果         | `outputs/phase-10/final-review-result.md`                | Phase 10 成果物 |
-| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`                 | Phase 11 成果物 |
+| 資料名                     | パス                                                     | 用途            |
+| -------------------------- | -------------------------------------------------------- | --------------- |
+| Phase12 準拠チェック       | `outputs/phase-12/phase12-task-spec-compliance-check.md` | PR 提出前確認   |
+| リリース準備チェックリスト | `outputs/phase-10/release-readiness-checklist.md`        | Phase 10 成果物 |
 
 ## 実行手順
 
-1. Phase 12 成果物を確認する。
-2. 差分要約とレビュー観点を整理する。
-3. 承認条件チェックでユーザー明示承認の有無を確認する。
-4. 承認がない場合は `outputs/phase-13/pr-preparation.md` のみ作成して終了する。
-5. 承認がある場合は `gh pr create` で PR を作成する。
+1. Phase 12 の成果物（canonical 6件）が全て揃っていることを確認する。
+2. PR 準備サマリーを作成する。
+3. ユーザー承認を待つ（承認なしの場合は blocked 維持）。
+4. ユーザー承認後: ブランチ・コミット・PR 作成を実施する。
 
 ## 成果物
 
-| 成果物           | パス                                     | 説明                                 |
-| ---------------- | ---------------------------------------- | ------------------------------------ |
-| PR 準備メモ      | `outputs/phase-13/pr-preparation.md`     | 提出準備情報                         |
-| 引き継ぎサマリー | `outputs/phase-13/handoff-summary.md`    | 後続タスク（W2-seq-03a）への引き継ぎ |
-| 承認チェック     | `outputs/phase-13/approval-checklist.md` | ユーザー承認確認                     |
+| 成果物             | パス                                     | 説明                   |
+| ------------------ | ---------------------------------------- | ---------------------- |
+| PR 準備サマリー    | `outputs/phase-13/pr-preparation.md`     | PR 本文・変更サマリー  |
+| 引き継ぎサマリー   | `outputs/phase-13/handoff-summary.md`    | 後続タスクへの引き継ぎ |
+| 承認チェックリスト | `outputs/phase-13/approval-checklist.md` | PR 作成条件確認        |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] PR 準備メモが作成されていること
-- [ ] 引き継ぎサマリーに W2-seq-03a への引き継ぎ情報が記載されていること
-- [ ] 承認チェックが記録されていること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
-- [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. 差分要約の整理
-3. 承認条件チェック
-4. PR 作成（承認時のみ）
-5. 成果物出力
+- [ ] PR 準備サマリーが作成されていること
+- [ ] ユーザーの承認待ち状態（blocked）であることが明記されていること
+- [ ] 承認後に実施する手順が記録されていること
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] PR作成はユーザー明示承認後のみ実施
+- [ ] 承認なしは blocked 状態を維持
 - [ ] 成果物テーブル記載のファイルを全件生成
 - [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
 
-## PR 作成制約
+## ステータス
 
-- ユーザーの明示承認がある場合だけ PR 作成へ進む。
-- 明示承認がない場合は `outputs/phase-13/pr-preparation.md` の作成で終了する。
-
-## 次のPhase
-
-Phase -:（W2-seq-03a へ引き継ぎ）
+**blocked** - ユーザーの明示的な PR 作成承認を待機中

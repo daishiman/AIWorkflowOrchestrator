@@ -9,8 +9,8 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | -                                              |
 | 後続Phase  | Phase 2                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
@@ -68,12 +68,12 @@ W2-seq-03a（SkillCreateWizard 更新）では `inferSmartDefaults()` 関数を
 
 ## 受け入れ基準（AC）
 
-| AC番号 | 内容                                                                                             | 検証方法                          |
-| ------ | ------------------------------------------------------------------------------------------------ | --------------------------------- |
-| AC-1   | `inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult` 関数が実装されること          | 関数シグネチャ確認・型チェック    |
-| AC-2   | スキル名・目的から適切なカテゴリ・ツール・タイミング・フォーマットのデフォルト値が提案されること | ユニットテスト                    |
-| AC-3   | ユニットテストが全件 PASS すること                                                               | `pnpm --filter @repo/shared test` |
-| AC-4   | 推論不能時のフォールバック挙動が定義・実装されること（null フィールド・空 inferenceLog）         | ユニットテスト                    |
+| AC番号 | 内容                                                                                             | 検証方法                              |
+| ------ | ------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| AC-1   | `inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult` 関数が実装されること          | 関数シグネチャ確認・型チェック        |
+| AC-2   | スキル名・目的から適切なカテゴリ・ツール・タイミング・フォーマットのデフォルト値が提案されること | ユニットテスト                        |
+| AC-3   | ユニットテストが全件 PASS すること                                                               | `pnpm --filter @repo/shared test:run` |
+| AC-4   | 推論不能時のフォールバック挙動が定義・実装されること（null フィールド・空 inferenceLog）         | ユニットテスト                        |
 
 ## 機能要件
 
@@ -96,13 +96,18 @@ W2-seq-03a（SkillCreateWizard 更新）では `inferSmartDefaults()` 関数を
 | NFR-03 | 外部ライブラリ（LLM API等）への依存なし（規則ベース実装のみ）            |
 | NFR-04 | `packages/shared/` に配置し、デスクトップ/Web 両方から利用可能であること |
 
+## タスク分類
+
+- **タスク種別**: NON_VISUAL（UIコンポーネント変更なし、推論ロジックのみ）
+- **Phase 11 方針**: REPL / CLI 確認を主証跡とし、スクリーンショット不要
+
 ## 参照資料
 
 | 資料名                    | パス                                                                         | 用途                         |
 | ------------------------- | ---------------------------------------------------------------------------- | ---------------------------- |
 | 型定義（W0-seq-01成果物） | `packages/shared/src/types/skillCreator.ts`                                  | SmartDefaultResult等の型確認 |
 | W0-seq-01 index           | `docs/30-workflows/completed-tasks/W0-seq-01-types-skill-info-form/index.md` | 先行タスクの成果物確認       |
-| Issue #1998               | GitHub Issue                                                                 | 要件・受け入れ基準の出典     |
+| Issue #2003               | GitHub Issue                                                                 | 要件・受け入れ基準の出典     |
 
 ## 実行手順
 
@@ -130,14 +135,6 @@ W2-seq-03a（SkillCreateWizard 更新）では `inferSmartDefaults()` 関数を
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. 型定義の確認（SmartDefaultResult / SkillInfoFormData）
-3. 影響範囲の全列挙
-4. 受け入れ基準の定義
-5. 成果物出力
 
 ## タスク100%実行確認【必須】
 

@@ -28,6 +28,7 @@ Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件�
 | 18  | Task 2/5 | user 指定の skill root が正本として更新され、mirror root との drift がない      | `.claude/skills/**` と `.agents/skills/**` などの mirror root                          | user 指定rootで validator 実行 + `diff -qr` または等価手段で mirror sync を検証 |
 | 19  | Task 2/5 | completed workflow の `phase-12-documentation.md` と `outputs/phase-12/*.md` に `仕様策定のみ` / `実行予定` などの planned wording が残っていない | `phase-12-documentation.md`, `outputs/phase-12/*.md` | `rg -n "仕様策定のみ|実行予定|保留として記録|計画|予定|TODO|will be|を予定" <workflow>/phase-12-documentation.md <workflow>/outputs/phase-12/*.md` で 0件確認 |
 | 20  | Task 2/5 | `artifacts.json` と `outputs/artifacts.json` の title / type / status / phase artifact 名が一致している | `<workflow>/artifacts.json`, `<workflow>/outputs/artifacts.json` | JSON 実体を比較し、片側だけ `spec_created` / `completed` などにずれていないことを確認 |
+| 21  | Task 2/5 | ledger 4点（task-workflow-backlog.md / task-workflow-completed.md / lane index / artifacts.json）がsame-waveで同期されている | 上記4ファイル全て | 各ファイルのタスク状態・ステータスが一致していることを確認 |
 
 ## 機械検証コマンド
 

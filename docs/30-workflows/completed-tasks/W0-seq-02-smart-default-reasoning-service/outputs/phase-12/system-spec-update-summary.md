@@ -41,11 +41,11 @@
 
 ### Phase 11 証跡参照
 
-| 証跡ファイル                                | 参照先                            |
-| ------------------------------------------- | --------------------------------- |
-| `outputs/phase-11/manual-test-checklist.md` | 手動テストチェックリスト          |
-| `outputs/phase-11/manual-test-result.md`    | 実行結果（33件 PASS、2026-04-07） |
-| `outputs/phase-11/discovered-issues.md`     | 検出事項（是正済み2件）           |
+| 証跡ファイル                                                                                            | 参照先                            |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` | 手動テストチェックリスト          |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    | 実行結果（33件 PASS、2026-04-07） |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/discovered-issues.md`     | 検出事項（0件）                   |
 
 ---
 
@@ -88,11 +88,13 @@ import { inferSmartDefaults } from "@repo/shared";
 
 ### エクスポート追加先ファイル
 
-| ファイル                                             | 変更種別 | 追加内容                                                              |
-| ---------------------------------------------------- | -------- | --------------------------------------------------------------------- |
-| `packages/shared/src/services/skillCreator/index.ts` | 新規作成 | `export { inferSmartDefaults } from "./smartDefaultReasoningService"` |
-| `packages/shared/index.ts`                           | 変更     | `export { inferSmartDefaults } from "./src/services/skillCreator"`    |
-| `packages/shared/src/types/index.ts`                 | 変更     | `SkillInfoFormData` / `SmartDefaultResult` の型 export 追加           |
+| ファイル                                                                                                | 変更種別 | 追加内容                                                              |
+| ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| `packages/shared/src/services/skillCreator/index.ts`                                                    | 新規作成 | `export { inferSmartDefaults } from "./smartDefaultReasoningService"` |
+| `packages/shared/index.ts`                                                                              | 変更     | `export { inferSmartDefaults } from "./src/services/skillCreator"`    |
+| `packages/shared/src/types/index.ts`                                                                    | 変更     | `SkillInfoFormData` / `SmartDefaultResult` の型 export 追加           |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/artifacts.json`                    | 追加     | workflow-local parity mirror                                          |
+| `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` | 追加     | Phase 11 checklist mirror                                             |
 
 ### 関数シグネチャ
 
@@ -150,3 +152,8 @@ interface SmartDefaultResult {
 | mirror parity | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` で差分0確認 | —                 |
 
 Step 2 は新規 public API の追加であるため、仕様更新対象と判定。
+
+### workflow-local mirror 補足
+
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/artifacts.json` を追加し、workflow-local でも `artifacts.json` parity を確認できるようにした
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/` に manual-test-checklist / manual-test-result / discovered-issues の mirror を配置し、Phase 11 証跡を workflow-local に閉じた

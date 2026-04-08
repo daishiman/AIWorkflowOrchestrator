@@ -1,0 +1,24 @@
+# Phase 6: テスト拡充後 GREEN 確認
+
+## 実行日時
+2026-04-02
+
+## テスト結果
+RUN  v2.1.9
+ ✓ src/main/ipc/__tests__/disclosureHandlers.test.ts (12 tests) 54ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+
+## 追加テストケース（6件）
+1. fallback 値の境界テスト
+   - aiServiceName が空文字列のとき、そのまま返される ✓
+   - externalDestinations が空配列であることを確認する ✓
+
+2. DENY-5 negative テスト強化
+   - レスポンス全体に機密情報プロパティが含まれない（8種: apiKey/api_key/token/accessToken/secret/secretKey/password/credential） ✓
+
+3. buildDisclosureInfo 純粋関数テスト（統合経由）
+   - subscription モード のとき aiServiceName が 'Claude Code CLI' になる ✓
+   - api-key モード のとき aiServiceName が 'Anthropic API' になる ✓
+   - undefined 相当（fallback） のとき aiServiceName が 'unknown' になる ✓

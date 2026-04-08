@@ -1,49 +1,77 @@
-# 最終レビュー結果
+# Phase 10: 最終レビュー結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## タスク情報
+## AC チェック一覧
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 10                                             |
+| AC ID | 内容                                                                | 確認方法                                                      | 結果 |
+| ----- | ------------------------------------------------------------------- | ------------------------------------------------------------- | ---- |
+| AC-1  | `inferSmartDefaults` が `purpose` から tool/timing を推論すること   | TC-01〜TC-09 全件 PASS（Phase 6 regression-test-result）      | PASS |
+| AC-2  | purpose + category の複合入力で複数フィールドを同時推論できること   | 組み合わせテスト3件 PASS（Phase 6 regression-test-result）    | PASS |
+| AC-3  | `inferenceLog` に推論理由が記録されること                           | TC-13, TC-14 PASS（inferenceLog length・内容確認済み）        | PASS |
+| AC-4  | 推論できなかったフィールドは null を返し、エラーを throw しないこと | フォールバックテスト全件 PASS（TC-12, TC-14, TC-15 他）       | PASS |
+| AC-5  | `inferSmartDefaults` が `@repo/shared` から named export されること | barrel export 確認（index.ts: `export { inferSmartDefaults }` | PASS |
+| AC-6  | `pnpm typecheck` PASS                                               | Phase 9 実行結果: エラー 0件                                  | PASS |
+| AC-7  | `pnpm eslint` PASS                                                  | Phase 9 実行結果: 警告・エラー 0件                            | PASS |
+| AC-8  | Vitest 全件 PASS                                                    | Phase 9 実行結果: 33/33件 PASS                                | PASS |
 
-## 受け入れ基準達成確認
+## AC 詳細
 
-| 要件                                                                          | 達成状況 | 根拠                             |
-| ----------------------------------------------------------------------------- | -------- | -------------------------------- |
-| AC-1: `inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult` 実装 | ✅       | Phase 5 実装・Phase 8 リファクタ |
-| AC-2: ツール・タイミング・フォーマットのデフォルト値提案                      | ✅       | Phase 6 組み合わせテスト全 PASS  |
-| AC-3: ユニットテスト全件 PASS                                                 | ✅       | 32/32 PASS（Phase 9 確認）       |
-| AC-4: 推論不能時フォールバック（null フィールド・空 inferenceLog）            | ✅       | Phase 6 エッジケース全 PASS      |
+### AC-1 / AC-2: 推論ロジック確認
 
-## 機能要件達成確認
+```typescript
+// smartDefaultReasoningService.ts より
+export function inferSmartDefaults(
+  input: SkillInfoFormData,
+): SmartDefaultResult {
+  const result = createEmptyResult();
+  const inferenceLog: string[] = [];
+  const purpose = normalizePurpose(input?.purpose);
 
-| 要件                                        | 達成状況 | 根拠                      |
-| ------------------------------------------- | -------- | ------------------------- |
-| FR-02: ツール推論（slack/github/notion）    | ✅       | テスト #1-7 PASS          |
-| FR-03: タイミング推論（scheduled/realtime） | ✅       | テスト #8-16 PASS         |
-| FR-04: フォーマット推論（code/structured）  | ✅       | テスト #17-22 PASS        |
-| FR-05: inferenceLog への推論根拠記録        | ✅       | テスト #23-26 PASS        |
-| FR-06: 非該当フィールドが null を返すこと   | ✅       | テスト #4,#15,#19-22 PASS |
-| FR-07: 推論0件時の inferenceLog = []        | ✅       | テスト #24 PASS           |
+  if (purpose !== "") {
+    const toolResult = inferTool(purpose);
+    result.tool = toolResult.tool;
+    if (toolResult.log) inferenceLog.push(toolResult.log);
 
-## 品質基準達成確認
+    const timingResult = inferTiming(purpose);
+    result.timing = timingResult.timing;
+    if (timingResult.log) inferenceLog.push(timingResult.log);
+  }
 
-| 基準                    | 達成状況 | 根拠                 |
-| ----------------------- | -------- | -------------------- |
-| 全テストが Green        | ✅ 32/32 | Phase 9 実行記録     |
-| カバレッジ 90% 以上     | ✅ 100%  | Phase 7 計測結果     |
-| 静的解析エラー 0件      | ✅       | Phase 9 品質レポート |
-| TypeScript 型エラー 0件 | ✅       | Phase 9 品質レポート |
-| any 型未使用            | ✅       | Phase 9 品質レポート |
+  const formatResult = inferFormat(input?.category);
+  result.format = formatResult.format;
+  if (formatResult.log) inferenceLog.push(formatResult.log);
 
-## 依存関係確認
+  return { ...result, inferenceLog };
+}
+```
 
-| 依存タスク                                  | 状態                                                            |
-| ------------------------------------------- | --------------------------------------------------------------- |
-| W0-seq-01（型定義）完了                     | ✅ `SkillInfoFormData`/`SmartDefaultResult` 解決済み            |
-| `packages/shared/index.ts` root barrel 追加 | ✅ `import { inferSmartDefaults } from "@repo/shared"` 解決可能 |
+### AC-5: barrel export 確認
 
-## 最終レビュー判定
+```typescript
+// packages/shared/src/services/skillCreator/index.ts
+export { inferSmartDefaults } from "./smartDefaultReasoningService";
+```
 
-**PASS** ✅ — 全チェック項目達成。Phase 11（手動テスト）へ進行。
+テストファイルが `@repo/shared` 経由でインポートしており、barrel export が正しく機能することが検証済み。
+
+```typescript
+// テストファイル冒頭
+import { inferSmartDefaults, type SkillInfoFormData } from "@repo/shared";
+```
+
+---
+
+## 全テスト PASS 確認
+
+```
+Test Files  1 passed (1)
+     Tests  33 passed (33)
+  Duration  1.8s
+```
+
+---
+
+## ゲート判定
+
+**PASS**
+
+AC-1〜AC-8 全件 PASS。条件付きパスなし。Phase 11（NON_VISUAL 手動テスト）へ進む。

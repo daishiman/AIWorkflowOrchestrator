@@ -1,0 +1,255 @@
+import { render, screen, act, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { SkillCreatorConversationPanel } from "../SkillCreatorConversationPanel";
+
+// window.skillCreatorSessionAPI モック
+const mockOnQuestion =
+  vi.fn<(callback: (question: unknown) => void) => () => void>();
+const mockOnComplete =
+  vi.fn<(callback: (event: unknown) => void) => () => void>();
+const mockOnError = vi.fn<(callback: (event: unknown) => void) => () => void>();
+const mockSendAnswer = vi.fn<(answer: unknown) => Promise<void>>();
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockOnQuestion.mockReturnValue(() => {});
+  mockOnComplete.mockReturnValue(() => {});
+  mockOnError.mockReturnValue(() => {});
+  mockSendAnswer.mockResolvedValue(undefined);
+
+  Object.defineProperty(window, "skillCreatorSessionAPI", {
+    value: {
+      onQuestion: mockOnQuestion,
+      onComplete: mockOnComplete,
+      onError: mockOnError,
+      sendAnswer: mockSendAnswer,
+      startSession: vi.fn(),
+    },
+    writable: true,
+    configurable: true,
+  });
+});
+
+describe("SkillCreatorConversationPanel", () => {
+  // T-06: IPCリスナーが unmount 時にクリーンアップされる
+  it("アンマウント時に IPC リスナーが解除される", () => {
+    const unsubQuestion = vi.fn();
+    const unsubComplete = vi.fn();
+    const unsubError = vi.fn();
+    mockOnQuestion.mockReturnValue(unsubQuestion);
+    mockOnComplete.mockReturnValue(unsubComplete);
+    mockOnError.mockReturnValue(unsubError);
+
+    const { unmount } = render(<SkillCreatorConversationPanel />);
+    unmount();
+
+    expect(unsubQuestion).toHaveBeenCalledTimes(1);
+    expect(unsubComplete).toHaveBeenCalledTimes(1);
+    expect(unsubError).toHaveBeenCalledTimes(1);
+  });
+
+  // マウント時に onQuestion リスナーが登録される
+  it("マウント時に onQuestion IPCリスナーが登録される", () => {
+    render(<SkillCreatorConversationPanel />);
+    expect(mockOnQuestion).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  // マウント時に onComplete リスナーが登録される
+  it("マウント時に onComplete IPCリスナーが登録される", () => {
+    render(<SkillCreatorConversationPanel />);
+    expect(mockOnComplete).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  // マウント時に onError リスナーが登録される
+  it("マウント時に onError IPCリスナーが登録される", () => {
+    render(<SkillCreatorConversationPanel />);
+    expect(mockOnError).toHaveBeenCalledWith(expect.any(Function));
+  });
+});
+
+describe("SkillCreatorConversationPanel 結合テスト", () => {
+  // T-11-1: IPC 受信で QuestionCard が更新される
+  it("question-received 受信で QuestionCard が表示される", async () => {
+    let questionCallback: ((question: unknown) => void) | undefined;
+    mockOnQuestion.mockImplementation((cb) => {
+      questionCallback = cb;
+      return () => {};
+    });
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockReturnValue(() => {});
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      questionCallback!({
+        toolCallId: "tc-1",
+        type: "single_select",
+        question: "使用言語を選択してください",
+        options: [
+          { value: "typescript", label: "TypeScript" },
+          { value: "javascript", label: "JavaScript" },
+        ],
+      });
+    });
+
+    expect(screen.getByText("使用言語を選択してください")).toBeInTheDocument();
+  });
+
+  // T-11-2: 複数回 IPC 受信で questionIndex が更新される
+  it("question-received を2回受信すると進捗が更新される", async () => {
+    let questionCallback: ((question: unknown) => void) | undefined;
+    mockOnQuestion.mockImplementation((cb) => {
+      questionCallback = cb;
+      return () => {};
+    });
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockReturnValue(() => {});
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      questionCallback!({
+        toolCallId: "tc-1",
+        type: "free_text",
+        question: "質問1",
+      });
+    });
+    await act(async () => {
+      questionCallback!({
+        toolCallId: "tc-2",
+        type: "free_text",
+        question: "質問2",
+      });
+    });
+
+    expect(screen.getByText(/質問\s*2\s*\/\s*10/)).toBeInTheDocument();
+  });
+
+  // セッション完了時にコールバックが呼ばれる
+  it("session-complete 受信で onComplete が呼ばれる", async () => {
+    let completeCallback: ((event: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockImplementation((cb) => {
+      completeCallback = cb;
+      return () => {};
+    });
+    mockOnError.mockReturnValue(() => {});
+
+    const onComplete = vi.fn();
+    render(<SkillCreatorConversationPanel onComplete={onComplete} />);
+
+    await act(async () => {
+      completeCallback!({ result: "done" });
+    });
+
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  // セッションエラー時にエラーメッセージが表示される
+  it("session-error 受信でエラーメッセージが表示される", async () => {
+    let errorCallback: ((event: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockImplementation((cb) => {
+      errorCallback = cb;
+      return () => {};
+    });
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      errorCallback!({ error: "接続が切断されました" });
+    });
+
+    expect(screen.getByText("接続が切断されました")).toBeInTheDocument();
+  });
+
+  // 質問受信後に回答を送信するとsendAnswerが呼ばれる
+  it("回答送信で sendAnswer が呼ばれる", async () => {
+    let questionCallback: ((question: unknown) => void) | undefined;
+    mockOnQuestion.mockImplementation((cb) => {
+      questionCallback = cb;
+      return () => {};
+    });
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockReturnValue(() => {});
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      questionCallback!({
+        toolCallId: "tc-1",
+        type: "single_select",
+        question: "言語を選んでください",
+        options: [{ value: "ts", label: "TypeScript" }],
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("TypeScript"));
+    });
+
+    expect(mockSendAnswer).toHaveBeenCalledWith({
+      toolCallId: "tc-1",
+      value: "ts",
+    });
+  });
+
+  // sendAnswer失敗時にエラー状態に遷移する
+  it("sendAnswer 失敗時にエラーメッセージが表示される", async () => {
+    let questionCallback: ((question: unknown) => void) | undefined;
+    mockOnQuestion.mockImplementation((cb) => {
+      questionCallback = cb;
+      return () => {};
+    });
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockReturnValue(() => {});
+    mockSendAnswer.mockRejectedValueOnce(new Error("送信失敗"));
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      questionCallback!({
+        toolCallId: "tc-1",
+        type: "single_select",
+        question: "選択してください",
+        options: [{ value: "a", label: "選択肢A" }],
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("選択肢A"));
+    });
+
+    expect(screen.getByText("送信失敗")).toBeInTheDocument();
+  });
+
+  // 質問待機中のメッセージ表示
+  it("質問未受信時に待機メッセージが表示される", () => {
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockReturnValue(() => {});
+    mockOnError.mockReturnValue(() => {});
+
+    render(<SkillCreatorConversationPanel />);
+    expect(screen.getByText("質問を待機中...")).toBeInTheDocument();
+  });
+
+  // 完了状態のUIメッセージ
+  it("session-complete 受信後に完了メッセージが表示される", async () => {
+    let completeCallback: ((event: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockImplementation((cb) => {
+      completeCallback = cb;
+      return () => {};
+    });
+    mockOnError.mockReturnValue(() => {});
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      completeCallback!({ result: "done" });
+    });
+
+    expect(screen.getByText("インタビューが完了しました")).toBeInTheDocument();
+  });
+});

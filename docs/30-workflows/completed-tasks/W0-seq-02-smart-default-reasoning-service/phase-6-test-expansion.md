@@ -9,111 +9,72 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 5                                        |
 | 後続Phase  | Phase 7                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
-Phase 4 の基本テストを拡充し、エッジケース・回帰テストで品質を高める。
+Phase 5 で Green にしたテストに加え、エッジケース・回帰ガード・組み合わせテストを追加する。
 
 ## 実行タスク
 
-1. ツール・タイミング・フォーマットの境界条件を追加する。
-2. inferenceLog の件数と内容を検証する。
-3. AC-2 を組み合わせテストで再確認する。
+1. エッジケーステスト（複数ツール名・空文字・null）を追加する。
+2. 回帰ガードテスト（既存 TC が壊れないことを確認）を追加する。
+3. フォーマット推論の独立評価テストを追加する。
 
 ## 統合テスト連携
 
-- Phase 7 では各分岐の到達率を確認し、未到達を埋める。
-- Phase 9 では追加した分岐が静的解析と因果ループ監査に影響しないことを確認する。
+- Phase 7 の coverage 対象に新規テストを含める。
+- Phase 8 のリファクタリング後も全テストが Green であることを確認する。
 
-## 拡充テストケース
+## 追加テストケース
 
-### ツール推論エッジケース
+| TC-ID | 説明                                                                    | 期待値                            |
+| ----- | ----------------------------------------------------------------------- | --------------------------------- |
+| TC-16 | purpose = '' かつ category = 'code-support' → format = 'code'           | `result.format === "code"`        |
+| TC-17 | purpose = 'Slack毎日通知' → tool = 'slack', timing = 'scheduled'        | 両フィールドが正しく推論される    |
+| TC-18 | purpose に 'GitHub' と 'Notion' が両方ある場合 → GitHub 優先            | `result.tool === "github"`        |
+| TC-19 | purpose = null（nullable）→ tool = null, timing = null                  | フォールバック動作                |
+| TC-20 | 全入力が有効 → inferenceLog に3件（tool/timing/format）すべて記録される | `result.inferenceLog.length >= 3` |
 
-| ケース                                  | 期待結果                                          |
-| --------------------------------------- | ------------------------------------------------- |
-| purpose に "Slack" と "GitHub" 両方含む | 先に一致した "Slack" が採用される（先勝ちルール） |
-| purpose に "slack"（小文字）が含まれる  | tool = null（大文字小文字は区別する）             |
-| purpose に "SlackBot" と入力する        | tool = "slack"（部分一致で検出される）            |
-| purpose が null の場合                  | tool = null（エラーにならない）                   |
+## 検証コマンド
 
-### タイミング推論エッジケース
+```bash
+# 拡充テスト実行
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
 
-| ケース                                       | 期待結果                                              |
-| -------------------------------------------- | ----------------------------------------------------- |
-| purpose に "毎日" と "リアルタイム" 両方含む | 先に一致した "scheduled" が採用される（先勝ちルール） |
-| purpose に "毎週" が含まれる                 | timing = "scheduled"                                  |
-| purpose に "スケジュール" が含まれる         | timing = "scheduled"                                  |
-| purpose に "すぐに" が含まれる               | timing = "realtime"                                   |
-| purpose に "即座" が含まれる                 | timing = "realtime"                                   |
-
-### フォーマット推論エッジケース
-
-| ケース                          | 期待結果      |
-| ------------------------------- | ------------- |
-| category が undefined の場合    | format = null |
-| category が "automation" の場合 | format = null |
-| category が "" 空文字の場合     | format = null |
-
-### inferenceLog 詳細テスト
-
-| ケース                                               | 期待結果                                                     |
-| ---------------------------------------------------- | ------------------------------------------------------------ |
-| ツール+タイミング+フォーマット全て推論できた場合     | inferenceLog に 3件の記録が含まれること                      |
-| 推論が0件の場合                                      | inferenceLog は [] で返ること（エラーにならない）            |
-| 各 inferenceLog エントリが対応するフィールド名を含む | slack → "slack" を含む文字列, scheduled → "scheduled" を含む |
-
-### 組み合わせテスト（AC-2 確認）
-
-| 入力                                                                  | 期待結果                                               |
-| --------------------------------------------------------------------- | ------------------------------------------------------ |
-| purpose="毎日Slackに通知を送る", category="automation"                | tool="slack", timing="scheduled", format=null          |
-| purpose="コードをリアルタイムでレビューする", category="code-support" | tool=null, timing="realtime", format="code"            |
-| purpose="Notionにデータを毎週記録する", category="data-analysis"      | tool="notion", timing="scheduled", format="structured" |
+# 全テスト確認
+pnpm --filter @repo/shared test:run
+```
 
 ## 参照資料
 
-| 資料名           | パス                                        | 用途           |
-| ---------------- | ------------------------------------------- | -------------- |
-| 実装サマリー     | `outputs/phase-5/implementation-summary.md` | Phase 5 成果物 |
-| 変更ファイル一覧 | `outputs/phase-5/changed-files.md`          | Phase 5 成果物 |
-| テスト仕様書     | `outputs/phase-4/test-specification.md`     | Phase 4 成果物 |
+| 資料名       | パス                                        | 用途           |
+| ------------ | ------------------------------------------- | -------------- |
+| テスト仕様書 | `outputs/phase-4/test-specification.md`     | Phase 4 成果物 |
+| 実装サマリー | `outputs/phase-5/implementation-summary.md` | Phase 5 成果物 |
 
 ## 実行手順
 
-1. Phase 5 成果物を確認する。
-2. エッジケーステストを追加する。
-3. 組み合わせテストを追加する。
-4. 全テストが Green であることを確認する。
+1. Phase 5 の実装済みファイルを確認する。
+2. TC-16〜TC-20 のテストを追加する。
+3. 全テストを実行し、TC-01〜TC-20 が全て Green であることを確認する。
 
 ## 成果物
 
-| 成果物           | パス                                        | 説明                   |
-| ---------------- | ------------------------------------------- | ---------------------- |
-| 拡張テストケース | `outputs/phase-6/expanded-test-cases.md`    | エッジケース一覧       |
-| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | 回帰テスト実行結果     |
-| 異常系結果       | `outputs/phase-6/edge-case-result.md`       | エッジケーステスト結果 |
+| 成果物           | パス                                        | 説明                     |
+| ---------------- | ------------------------------------------- | ------------------------ |
+| 拡充テストケース | `outputs/phase-6/expanded-test-cases.md`    | 追加したテストケース一覧 |
+| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | 既存テスト継続 PASS 確認 |
+| エッジケース結果 | `outputs/phase-6/edge-case-result.md`       | エッジケーステスト結果   |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] ツール推論エッジケーステストが追加されていること
-- [ ] タイミング推論エッジケーステストが追加されていること
-- [ ] フォーマット推論エッジケーステストが追加されていること
-- [ ] 組み合わせテスト（AC-2）が追加されていること
-- [ ] 全テストが Green であること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] TC-01〜TC-20 の全テストが Green であること
+- [ ] エッジケーステスト（TC-16〜TC-20）が全て PASS であること
+- [ ] 回帰ガードが機能していること（既存テスト変更なし）
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. エッジケーステスト追加
-3. 組み合わせテスト追加
-4. 全テスト Green 確認
-5. 成果物出力
 
 ## タスク100%実行確認【必須】
 

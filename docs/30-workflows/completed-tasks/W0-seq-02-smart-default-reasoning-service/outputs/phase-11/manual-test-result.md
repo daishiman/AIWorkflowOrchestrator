@@ -1,53 +1,39 @@
-# Phase 11: 手動テスト結果
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## タスク情報
+## NON_VISUAL 方針
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 11                                             |
-| 実施日   | 2026-04-07                                     |
+本タスク（W0-seq-02）の実装対象 `inferSmartDefaults` は純粋関数であり、
+GUI を持たない。そのため Phase 11 の手動テストは REPL/CLI 確認で代替する。
+スクリーンショットは不要。
 
 ## 判定
 
-**PASS** ✅
+NON_VISUAL / REPL 確認 PASS / vitest 33件 PASS
 
-## 実行記録
+## REPL/CLI 手動確認
 
-### Vitest 実行コマンド
+| 確認内容           | コマンド / 操作                                                                                                    | 結果 | 備考              |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ | ---- | ----------------- |
+| typecheck          | `pnpm --filter @repo/shared typecheck`                                                                             | PASS | エラー 0件        |
+| ESLint             | `pnpm --filter @repo/shared eslint src/services/skillCreator/smartDefaultReasoningService.ts`                      | PASS | 警告・エラー 0件  |
+| Vitest 全件        | `pnpm vitest run packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`         | PASS | 33/33件 PASS      |
+| barrel import 確認 | テストファイルが `@repo/shared` 経由で `inferSmartDefaults` をインポートし PASS                                    | PASS | named export 正常 |
+| REPL 動作確認      | `inferSmartDefaults({ skillName: "test", purpose: "Slack通知を送る", category: null })` → `{ tool: "slack", ... }` | PASS | 期待値と一致      |
+| REPL null 入力確認 | `inferSmartDefaults({ skillName: "test", purpose: null, category: null })` → エラーなし、全 null                   | PASS | 例外なし          |
 
-```bash
-pnpm vitest run src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
-```
+## NON_VISUAL 判定理由
 
-### 実行結果
+- GUI 変更なし（純粋関数の新規実装のみ）
+- スクリーンショット不要
+- REPL/CLI 確認と自動テスト 33件で動作を十分に検証済み
 
-```
-✓ src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts (33 tests) 28ms
+## source evidence
 
-Test Files  1 passed (1)
-     Tests  33 passed (33)
-  Start at  23:46:23
-  Duration  6.52s
-```
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md`
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts`
+- `packages/shared/src/services/skillCreator/index.ts`
+- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`
 
-### 検証項目
+## スクリーンショット
 
-| #   | 確認項目                                   | 結果 |
-| --- | ------------------------------------------ | ---- |
-| 1   | `@repo/shared` import が解決できること     | ✅   |
-| 2   | vitest resolve alias が正しく機能すること  | ✅   |
-| 3   | ツール推論テスト（8件）全件 PASS           | ✅   |
-| 4   | タイミング推論テスト（9件）全件 PASS       | ✅   |
-| 5   | フォーマット推論テスト（6件）全件 PASS     | ✅   |
-| 6   | inferenceLog テスト（4件）全件 PASS        | ✅   |
-| 7   | フォールバック AC-4 テスト（2件）全件 PASS | ✅   |
-| 8   | 空白のみの purpose フォールバック確認      | ✅   |
-| 9   | 組み合わせテスト（3件）全件 PASS           | ✅   |
-
-## 是正事項（Phase 11 で検出・修正済み）
-
-| #   | 検出内容                                                                         | 対応                                                 |
-| --- | -------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| 1   | フック自動編集によりテスト import が `@repo/shared` に変更され解決不可           | `vitest.config.ts` に `resolve.alias` を追加して修正 |
-| 2   | fallback テスト #27 に `category: "code-support"` が追加されたが期待値が古いまま | AC-4 仕様に合わせ期待値を `format="code"` に修正     |
+N/A（NON_VISUAL タスクのため不要）
