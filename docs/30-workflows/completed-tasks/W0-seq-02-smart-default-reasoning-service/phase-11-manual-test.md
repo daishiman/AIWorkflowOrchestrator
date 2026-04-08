@@ -9,22 +9,25 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 10                                       |
 | 後続Phase  | Phase 12                                       |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
 REPL / Vitest UI を主証跡としてスマートデフォルト推論の動作を手動確認し、
-自動テストでは検出できない UX 上の問題を発見する。
-W2-seq-03a 統合後のみ Electron 実機 / ウィザード UI を補助確認に使う。
+自動テストでは検出できない問題を発見する。
 
-> **注意**: 本タスク（W0-seq-02）は推論サービスの単体実装が主目的であり、
-> ウィザード UI への統合（W2-seq-03a）が完了していない段階では
-> コンポーネントレベルの確認は省略可。
-> その場合は node REPL / Vitest UI での動作確認に代替する。
->
-> **分類**: 本タスクは基本 `NON_VISUAL` として扱い、証跡の主ソースは
-> REPL / Vitest の実行結果に置く。W2-seq-03a 統合後のみ UI 画面の補助確認を追加する。
+> **分類**: 本タスクは `NON_VISUAL` として扱う。証跡の主ソースは REPL / Vitest の実行結果に置く。
+> W2-seq-03a（SkillCreateWizard 統合）完了後のみ UI 画面の補助確認を追加する。
+
+## Phase 11 手動テスト方針（NON_VISUAL）
+
+- `manual-test-checklist.md` を必ず作成する
+- `discovered-issues.md` を必ず作成する
+- `screenshot-plan.json` は生成しない
+- primary evidence は `vitest` / `typecheck` / `lint` / REPL 確認記録
+- `manual-test-result.md` には `TC-ID ↔ evidence`、NON_VISUAL である理由、代替 evidence を明記する
+- placeholder-only の証跡は PASS 扱いにしない
 
 ## 実行タスク
 
@@ -45,97 +48,64 @@ W2-seq-03a が完了していない場合、以下で推論サービスを直接
 
 ```bash
 # Vitest UI で推論結果を確認
-pnpm --filter @repo/shared test --ui
+pnpm --filter @repo/shared test:run --ui
 
-# または node REPL で直接実行
-node --input-type=module -e "
-import { inferSmartDefaults } from '@repo/shared';
-console.log(inferSmartDefaults({ skillName: 'テスト', purpose: '毎日Slackに通知を送る', category: 'automation' }));
-"
+# または pnpm --filter @repo/shared test:run で全件 PASS を確認
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
 ```
 
-### シナリオ 2: ウィザード統合動作確認（W2-seq-03a 完了後）
+### シナリオ 2: inferenceLog の確認
 
-W2-seq-03a が完了している場合、以下の手順で Electron 実機確認を行う。
-
-| ステップ | 操作                                                          | 期待結果                                                                  |
-| -------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 1        | ウィザードを開き、Step 0 でスキル名・目的・カテゴリを入力する | Step 0 の入力フォームが表示される                                         |
-| 2        | 目的に「毎日Slackに通知を送る」と入力して「次へ」を押す       | Step 1 で `tool = "slack"`, `timing = "scheduled"` がデフォルト適用される |
-| 3        | カテゴリに「code-support」を選択して「次へ」を押す            | Step 1 で `format = "code"` がデフォルト適用される                        |
-| 4        | 推論できなかったフィールドの確認                              | 推論対象外のフィールドが空欄またはデフォルト値で表示されること            |
+```bash
+# テスト出力で inferenceLog を確認
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts --reporter=verbose
+```
 
 ### シナリオ 3: フォールバック動作確認
 
-| ステップ | 操作                                                         | 期待結果                                        |
-| -------- | ------------------------------------------------------------ | ----------------------------------------------- |
-| 1        | 目的フィールドを空欄にして「次へ」を押す                     | 全デフォルトが null（空欄）で Step 1 に遷移する |
-| 2        | カテゴリを未選択（null）にして「次へ」を押す                 | format が null（空欄）で Step 1 に遷移する      |
-| 3        | 推論対象外のキーワードのみ入力する（例：「汎用タスク実行」） | 全デフォルトが null（空欄）で Step 1 に遷移する |
+全フィールドが null になるケースが正しく動作するかを確認する。
+TC-12（全フィールド null）のテスト結果を証跡として使用する。
 
-### シナリオ 4: inferenceLog の確認（開発者向け）
+## 手動テストチェックリスト
 
-| ステップ | 操作                                                      | 期待結果                                      |
-| -------- | --------------------------------------------------------- | --------------------------------------------- |
-| 1        | DevTools コンソールで `inferSmartDefaults` 結果をログ出力 | `inferenceLog` に推論根拠が記録されていること |
-| 2        | 推論0件の入力で `inferenceLog` を確認する                 | `inferenceLog = []`（空配列）であること       |
-
-## 証跡計画
-
-| 証跡種別           | 方針                                        |
-| ------------------ | ------------------------------------------- |
-| スクリーンショット | NON_VISUAL のため不要                       |
-| 主要証跡           | REPL 出力 / Vitest UI / CLI ログ            |
-| 追加確認           | W2-seq-03a がある場合のみ UI 統合確認を行う |
+| TC-ID | シナリオ                             | 確認方法        | 判定 |
+| ----- | ------------------------------------ | --------------- | ---- |
+| MT-01 | Slack 推論: tool = 'slack'           | vitest 出力確認 | [ ]  |
+| MT-02 | 毎日タイミング: timing = 'scheduled' | vitest 出力確認 | [ ]  |
+| MT-03 | code-support: format = 'code'        | vitest 出力確認 | [ ]  |
+| MT-04 | 全フォールバック: inferenceLog = []  | vitest 出力確認 | [ ]  |
+| MT-05 | inferenceLog に推論根拠が記録される  | vitest 出力確認 | [ ]  |
 
 ## 参照資料
 
-| 資料名           | パス                                              | 用途            |
-| ---------------- | ------------------------------------------------- | --------------- |
-| テスト戦略       | `outputs/phase-2/test-strategy.md`                | Phase 2 成果物  |
-| 実装サマリー     | `outputs/phase-5/implementation-summary.md`       | Phase 5 成果物  |
-| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md`       | Phase 6 成果物  |
-| 網羅率レポート   | `outputs/phase-7/traceability-coverage-report.md` | Phase 7 成果物  |
-| 責務境界マップ   | `outputs/phase-8/responsibility-boundary-map.md`  | Phase 8 成果物  |
-| 品質レポート     | `outputs/phase-9/quality-report.md`               | Phase 9 成果物  |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md`         | Phase 10 成果物 |
-| 出荷準備チェック | `outputs/phase-10/release-readiness-checklist.md` | Phase 10 成果物 |
-| 受け入れ基準     | `outputs/phase-1/acceptance-criteria.md`          | Phase 1 成果物  |
+| 資料名                     | パス                                              | 用途            |
+| -------------------------- | ------------------------------------------------- | --------------- |
+| リリース準備チェックリスト | `outputs/phase-10/release-readiness-checklist.md` | Phase 10 成果物 |
+| テスト仕様書               | `outputs/phase-4/test-specification.md`           | Phase 4 成果物  |
 
 ## 実行手順
 
-1. Phase 10 成果物を確認する。
-2. W2-seq-03a の完了状態を確認する（統合前/後で確認方法が変わる）。
-3. シナリオ 1（または 2）を実施する。
-4. シナリオ 3（フォールバック動作）を実施する。
-5. シナリオ 4（inferenceLog 確認）を実施する。
-6. 問題が発見された場合は修正して再テストする。
+1. Phase 10 のリリース準備チェックリストを確認する。
+2. シナリオ 1〜3 の手動確認を実施する。
+3. 手動テストチェックリスト（MT-01〜MT-05）を評価する。
+4. 発見事項があれば `discovered-issues.md` に記録する。
 
 ## 成果物
 
-| 成果物                   | パス                                        | 説明             |
-| ------------------------ | ------------------------------------------- | ---------------- |
-| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | 実施項目一覧     |
-| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | シナリオ実施結果 |
-| 検出事項                 | `outputs/phase-11/discovered-issues.md`     | 問題・差分の記録 |
+| 成果物                   | パス                                        | 説明                       |
+| ------------------------ | ------------------------------------------- | -------------------------- |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | MT-01〜MT-05 確認リスト    |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | TC-ID ↔ evidence 対応記録  |
+| 発見事項                 | `outputs/phase-11/discovered-issues.md`     | スコープ外の発見・改善提案 |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] シナリオ 1（または 2）が PASS であること
-- [ ] シナリオ 3（フォールバック）が PASS であること
-- [ ] inferenceLog が正しく記録されることが確認されていること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] `manual-test-checklist.md` が作成されていること
+- [ ] `manual-test-result.md` に NON_VISUAL である理由が明記されていること
+- [ ] `discovered-issues.md` が作成されていること（0件でも出力必須）
+- [ ] MT-01〜MT-05 の全確認が完了していること
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. W2-seq-03a 完了状態確認
-3. シナリオ 1〜4 実施
-4. REPL / CLI 証跡整理
-5. 成果物出力
 
 ## タスク100%実行確認【必須】
 

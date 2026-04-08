@@ -1,62 +1,94 @@
 /**
  * @file SkillCreateWizard.tsx
  * @description スキル作成ウィザード統合コンポーネント
- * @task TASK-10A-C, TASK-SC-07
+ * @task UT-SKILL-WIZARD-W2-seq-03a
+ *
+ * W2-seq-03a 変更:
+ * - description / options / generationMode state を削除
+ * - formData / answers / smartDefaults / generationMethod / skillPath /
+ *   hasExternalIntegration / externalToolName state を追加
+ * - STEPS を ["スキル情報入力","詳細設定","生成","完了"] に変更
+ * - Step 0: DescribeStep → SkillInfoStep
+ * - Step 1: ConversationRoundStep（onGenerate(method) 接続）
+ * - Step 2: GenerateStep（generationMode prop 削除）
+ * - Step 3: CompleteStep（skillPath / action cards / onRetry 接続）
+ * - inferSmartDefaults / handleStep0Next / handleGenerate(method) /
+ *   handleQualityFeedback / handleRetry を実装
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StepIndicator,
-  DescribeStep,
+  SkillInfoStep,
   ConversationRoundStep,
   GenerateStep,
   CompleteStep,
 } from "./wizard";
-import type {
-  GenerationMode,
-  GenerationError,
-  GenerationStage,
-} from "./wizard";
+import type { GenerationError, GenerationStage } from "./wizard";
 import type {
   ConversationAnswers,
   SkillInfoFormData,
-  SkillCategory,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
-import type {
-  SkillCreatorExecutePlanAck,
-  RuntimeSkillCreatorExecuteErrorResponse,
-  RuntimeSkillCreatorExecuteResponse,
-  RuntimeSkillCreatorPlanErrorResponse,
-  RuntimeSkillCreatorPlanResponse,
-  SkillCreatorWorkflowUiSnapshot,
-} from "@repo/shared/types";
-import type { PlanResult } from "../../store/slices/agentSlice";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
   useCreateSkill,
   useIsSkillGenerating,
   useGenerationProgress,
   useGenerationError,
-  useCurrentPlanResult,
-  useCurrentPlanId,
-  useSetIsSkillGenerating,
-  useSetGenerationProgress,
-  useSetGenerationError,
-  useSetCurrentPlanResult,
-  useSetCurrentPlanId,
   useClearGenerationState,
   useWorkflowSnapshot,
-  useExecuteSkill,
-  useSelectSkillByName,
-  useSetCurrentView,
-  useSetCurrentSkillName,
 } from "../../store";
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 
-const STEPS = ["説明入力", "設定", "生成", "完了"];
+// ────────────────────────────────────────────────────────────────────────────
+// 定数
+// ────────────────────────────────────────────────────────────────────────────
+
+/** W2-seq-03a: ステップ名称更新 */
+export const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"];
+
+/** LLM生成オプション */
+const SKILL_GENERATION_OPTIONS = {
+  generateTasks: true,
+  addAgents: false,
+  addReferences: false,
+} as const;
+
+const DEFAULT_FORM_DATA: SkillInfoFormData = {
+  skillName: "",
+  purpose: "",
+  category: null,
+};
+
+const DEFAULT_ANSWERS: ConversationAnswers = {
+  q1: { selectedOption: null, freeText: "" },
+  q2: { selectedOption: null, freeText: "" },
+  q3: { selectedOption: null, freeText: "", scheduleConfig: undefined },
+  q4: { selectedOption: null, freeText: "" },
+  q5: { selectedOption: null, freeText: "" },
+  q6: { selectedOption: null, freeText: "" },
+};
+
+const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
+  who: null,
+  input: null,
+  timing: null,
+  output: null,
+  tool: null,
+  format: null,
+};
+
+interface ExternalIntegrationState {
+  hasExternalIntegration: boolean;
+  externalToolName: string | null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// ユーティリティ関数
+// ────────────────────────────────────────────────────────────────────────────
 
 function resolveStage(
   streamingStage: GenerationStage,
@@ -85,40 +117,27 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
   };
 }
 
-// テンプレート生成で使うオプション（ConversationRoundStep 追加後も固定）
-const TEMPLATE_OPTIONS = {
-  generateTasks: true,
-  addAgents: false,
-  addReferences: false,
-} as const;
+// ────────────────────────────────────────────────────────────────────────────
+// inferSmartDefaults（W2-seq-03a）
+// ────────────────────────────────────────────────────────────────────────────
 
-/** CompleteStep ハンドラ等で使う生成オプションのデフォルト値 */
-const DEFAULT_OPTIONS = TEMPLATE_OPTIONS;
-
-const DEFAULT_ANSWERS: ConversationAnswers = {
-  q1: { selectedOption: null, freeText: "" },
-  q2: { selectedOption: null, freeText: "" },
-  q3: { selectedOption: null, freeText: "" },
-  q4: { selectedOption: null, freeText: "" },
-  q5: { selectedOption: null, freeText: "" },
-  q6: { selectedOption: null, freeText: "" },
-};
-
-const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
-  who: null,
-  input: null,
-  timing: null,
-  output: null,
-  tool: null,
-  format: null,
-};
-
-function inferSmartDefaults(data: {
-  purpose: string;
-  category: SkillCategory | null;
-}): SmartDefaultResult {
-  const text = data.purpose.toLowerCase();
-  const defaults: SmartDefaultResult = {
+/**
+ * Step 0 の入力から Q1〜Q6 の初期値を推論する純粋関数。
+ * - purpose に "Slack" → tool = "slack"
+ * - purpose に "GitHub" → tool = "github"
+ * - purpose に "Notion" → tool = "notion"
+ * - purpose に "毎日/毎週/定期/スケジュール" → timing = "scheduled"
+ * - purpose に "リアルタイム/即座/すぐに" → timing = "realtime"
+ * - category === "code-support" → format = "code"
+ * - category === "data-analysis" → format = "structured"
+ */
+export function inferSmartDefaults(
+  data: SkillInfoFormData,
+): SmartDefaultResult {
+  const purpose = data.purpose ?? "";
+  const purposeLower = purpose.toLowerCase();
+  const inferenceLog: string[] = [];
+  const result: SmartDefaultResult = {
     who: null,
     input: null,
     timing: null,
@@ -127,194 +146,104 @@ function inferSmartDefaults(data: {
     format: null,
   };
 
-  if (text.includes("自分")) {
-    defaults.who = "自分のみ";
-  } else if (
-    text.includes("チーム") ||
-    data.category === "external-integration"
-  ) {
-    defaults.who = "チームメンバー";
-  } else if (text.includes("社内")) {
-    defaults.who = "社内全体";
-  } else if (text.includes("外部")) {
-    defaults.who = "外部ユーザー";
+  // ツール推論（大文字小文字を区別しない）
+  if (purposeLower.includes("slack")) {
+    result.tool = "slack";
+    inferenceLog.push("purpose に 'slack' を検出 → tool = 'slack'");
+  } else if (purposeLower.includes("github")) {
+    result.tool = "github";
+    inferenceLog.push("purpose に 'github' を検出 → tool = 'github'");
+  } else if (purposeLower.includes("notion")) {
+    result.tool = "notion";
+    inferenceLog.push("purpose に 'notion' を検出 → tool = 'notion'");
   }
 
-  if (text.includes("ファイル")) {
-    defaults.input = "ファイル";
-  } else if (text.includes("url") || text.includes("リンク")) {
-    defaults.input = "URLリンク";
-  } else if (text.includes("json") || text.includes("構造化")) {
-    defaults.input = "構造化データ";
-  } else if (text.includes("テキスト")) {
-    defaults.input = "テキスト";
+  // タイミング推論
+  if (/毎日|毎週|定期|スケジュール/.test(purpose)) {
+    result.timing = "scheduled";
+    inferenceLog.push(
+      "purpose に定期実行キーワードを検出 → timing = 'scheduled'",
+    );
+  } else if (/リアルタイム|即座|すぐに/.test(purpose)) {
+    result.timing = "realtime";
+    inferenceLog.push(
+      "purpose にリアルタイムキーワードを検出 → timing = 'realtime'",
+    );
   }
 
-  if (
-    text.includes("毎日") ||
-    text.includes("毎週") ||
-    text.includes("定期") ||
-    text.includes("スケジュール")
-  ) {
-    defaults.timing = "定期実行";
-  } else if (text.includes("イベント")) {
-    defaults.timing = "イベント駆動";
-  } else if (text.includes("手動")) {
-    defaults.timing = "手動実行";
+  // フォーマット推論
+  if (data.category === "code-support") {
+    result.format = "code";
+    inferenceLog.push("category = 'code-support' → format = 'code'");
+  } else if (data.category === "data-analysis") {
+    result.format = "structured";
+    inferenceLog.push("category = 'data-analysis' → format = 'structured'");
   }
 
-  if (text.includes("通知") || text.includes("アラート")) {
-    defaults.output = "通知";
-  } else if (text.includes("返信") || text.includes("チャット")) {
-    defaults.output = "チャット返信";
-  } else if (text.includes("保存")) {
-    defaults.output = "ファイル保存";
-  } else if (text.includes("ツール")) {
-    defaults.output = "外部ツール";
-  }
-
-  if (text.includes("slack")) {
-    defaults.tool = "Slack";
-  } else if (text.includes("github")) {
-    defaults.tool = "GitHub";
-  } else if (text.includes("その他")) {
-    defaults.tool = "その他";
-  }
-
-  if (text.includes("json")) {
-    defaults.format = "JSON";
-  } else if (text.includes("箇条書き") || text.includes("リスト")) {
-    defaults.format = "箇条書き";
-  } else if (
-    text.includes("表") ||
-    text.includes("markdown") ||
-    text.includes("レポート")
-  ) {
-    defaults.format = "Markdown";
-  }
-
-  return defaults;
+  return { ...result, inferenceLog };
 }
 
-type SkillCreatorRuntimeApi = {
-  planSkill?: (
-    prompt: string,
-    authMode?: string,
-    apiKey?: string,
-  ) => Promise<{
-    success: boolean;
-    data?: RuntimeSkillCreatorPlanResponse;
-    error?: string;
-  }>;
-  executePlan?: (
-    planId: string,
-    skillSpec: string,
-    authMode?: string,
-    apiKey?: string,
-  ) => Promise<{
-    success: boolean;
-    data?: SkillCreatorExecutePlanAck | RuntimeSkillCreatorExecuteResponse;
-    error?: string;
-  }>;
-  getWorkflowState?: (planId: string) => Promise<{
-    success: boolean;
-    data?: SkillCreatorWorkflowUiSnapshot;
-    error?: string;
-  }>;
-};
+function resolveKnownTool(input: string | null | undefined): string | null {
+  const normalized = (input ?? "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized.includes("slack")) return "slack";
+  if (normalized.includes("github")) return "github";
+  if (normalized.includes("notion")) return "notion";
+  return null;
+}
 
-function isRuntimePlanErrorResponse(
-  response: unknown,
-): response is RuntimeSkillCreatorPlanErrorResponse {
-  if (!response || typeof response !== "object") {
-    return false;
+function toExternalToolName(tool: string | null): string | null {
+  if (!tool) return null;
+  if (tool === "slack") return "Slack";
+  if (tool === "github") return "GitHub";
+  if (tool === "notion") return "Notion";
+  return tool;
+}
+
+function resolveExternalIntegration(
+  q5Answer: ConversationAnswers["q5"],
+  smartDefaultTool: string | null | undefined,
+): ExternalIntegrationState {
+  const selected = q5Answer.selectedOption?.trim() ?? "";
+  const freeText = q5Answer.freeText.trim();
+
+  if (selected === "なし") {
+    return { hasExternalIntegration: false, externalToolName: null };
   }
-  if (!("success" in response) || response.success !== false) {
-    return false;
+  if (selected === "Slack") {
+    return { hasExternalIntegration: true, externalToolName: "Slack" };
   }
-  if (!("error" in response) || !response.error) {
-    return false;
+  if (selected === "GitHub") {
+    return { hasExternalIntegration: true, externalToolName: "GitHub" };
   }
-  return (
-    typeof response.error === "object" &&
-    "message" in response.error &&
-    typeof response.error.message === "string"
-  );
-}
-
-function isExecuteTerminalHandoff(
-  response: RuntimeSkillCreatorExecuteResponse,
-): response is Extract<
-  RuntimeSkillCreatorExecuteResponse,
-  { type: "terminal_handoff" }
-> {
-  return "type" in response && response.type === "terminal_handoff";
-}
-
-function isExecuteErrorResponse(
-  response: RuntimeSkillCreatorExecuteResponse,
-): response is RuntimeSkillCreatorExecuteErrorResponse {
-  return (
-    "success" in response &&
-    response.success === false &&
-    typeof response.error === "object" &&
-    response.error !== null &&
-    "message" in response.error &&
-    typeof response.error.message === "string"
-  );
-}
-
-function isExecutePlanAck(
-  response: unknown,
-): response is SkillCreatorExecutePlanAck {
-  return (
-    !!response &&
-    typeof response === "object" &&
-    "accepted" in response &&
-    (response as { accepted: unknown }).accepted === true &&
-    "planId" in response &&
-    typeof (response as { planId: unknown }).planId === "string"
-  );
-}
-
-function getWorkflowFailureMessage(
-  snapshot: SkillCreatorWorkflowUiSnapshot | null | undefined,
-): string | null {
-  if (!snapshot?.verifyResult || snapshot.verifyResult.status !== "fail") {
-    return null;
-  }
-
-  return snapshot.verifyResult.message ?? "スキル生成に失敗しました";
-}
-
-function toPlanResult(
-  response: RuntimeSkillCreatorPlanResponse,
-): PlanResult | null {
-  if ("type" in response && response.type === "terminal_handoff") {
+  if (selected === "その他") {
     return {
-      type: "terminal_handoff",
-      guidance: response.guidance,
+      hasExternalIntegration: true,
+      externalToolName: freeText.length > 0 ? freeText : null,
     };
   }
-  if ("success" in response && response.success === false) {
-    return null;
+  if (freeText.length > 0) {
+    const known = resolveKnownTool(freeText);
+    return {
+      hasExternalIntegration: true,
+      externalToolName: toExternalToolName(known) ?? freeText,
+    };
   }
-  if (!("planId" in response)) {
-    return null;
+
+  const knownFromDefault = resolveKnownTool(smartDefaultTool);
+  if (knownFromDefault) {
+    return {
+      hasExternalIntegration: true,
+      externalToolName: toExternalToolName(knownFromDefault),
+    };
   }
-  return {
-    type: "integrated_api",
-    planId: response.planId,
-    estimatedSteps: response.estimatedSteps,
-    skillSpec: response.skillSpec,
-  };
+
+  return { hasExternalIntegration: false, externalToolName: null };
 }
 
-const getSkillCreatorApi = (): SkillCreatorRuntimeApi => {
-  const api = (window as Window & { skillCreatorAPI?: SkillCreatorRuntimeApi })
-    .skillCreatorAPI;
-  return api ?? {};
-};
+// ────────────────────────────────────────────────────────────────────────────
+// コンポーネント
+// ────────────────────────────────────────────────────────────────────────────
 
 export interface SkillCreateWizardProps {
   onClose: () => void;
@@ -328,319 +257,163 @@ export const SkillCreateWizard = React.forwardRef<
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
   const { cancelGeneration } = useCancelGeneration();
+  const workflowSnapshot = useWorkflowSnapshot();
+  const clearGenerationState = useClearGenerationState();
+  const isSkillGenerating = useIsSkillGenerating();
+  const generationProgress = useGenerationProgress();
+  const generationError = useGenerationError();
+  const generationLockRef = useRef(false);
 
-  // Existing local state
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<SkillCategory | null>(null);
+  // ── 新 state（W2-seq-03a） ─────────────────────────────────────────────
+  const [formData, setFormData] =
+    useState<SkillInfoFormData>(DEFAULT_FORM_DATA);
   const [answers, setAnswers] = useState<ConversationAnswers>(DEFAULT_ANSWERS);
-  const [smartDefaults, setSmartDefaults] = useState<SmartDefaultResult>(
-    DEFAULT_SMART_DEFAULTS,
+  const [smartDefaults, setSmartDefaults] = useState<SmartDefaultResult | null>(
+    null,
+  );
+  const [generationMethod, setGenerationMethod] = useState<"complete" | "skip">(
+    "complete",
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [skillPath, setSkillPath] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+  const [hasExternalIntegration, setHasExternalIntegration] = useState(false);
+  const [externalToolName, setExternalToolName] = useState<string | null>(null);
 
-  // CompleteStep ハンドラ用に SkillInfoFormData 形式で統合したビュー
-  const formData: SkillInfoFormData = {
-    skillName: "",
-    purpose: description,
-    category,
-  };
-  const setFormData = (data: SkillInfoFormData) => {
-    setDescription(data.purpose);
-    setCategory(data.category);
-  };
-
-  // TASK-SC-07: LLM generation state
-  const [generationMode, setGenerationMode] =
-    useState<GenerationMode>("template");
-  const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
-    null,
-  );
-
-  // Store hooks (TASK-SC-07)
-  const isSkillGenerating = useIsSkillGenerating();
-  const generationProgress = useGenerationProgress();
-  const generationError = useGenerationError();
-  const storePlanResult = useCurrentPlanResult();
-  const storePlanId = useCurrentPlanId();
-  const setStoreIsGenerating = useSetIsSkillGenerating();
-  const setStoreGenerationProgress = useSetGenerationProgress();
-  const setStoreGenerationError = useSetGenerationError();
-  const setCurrentPlanResult = useSetCurrentPlanResult();
-  const setCurrentPlanId = useSetCurrentPlanId();
-  const clearGenerationState = useClearGenerationState();
-  const workflowSnapshot = useWorkflowSnapshot();
-  const executeSkill = useExecuteSkill();
-  const selectSkillByName = useSelectSkillByName();
-  const setCurrentView = useSetCurrentView();
-  const setCurrentSkillName = useSetCurrentSkillName();
-
-  // TASK-SC-07: Cleanup store on unmount (P3)
+  // アンマウント時に Store をクリア
   useEffect(() => {
     return () => {
       clearGenerationState();
     };
   }, [clearGenerationState]);
 
-  const clearPlanExecutionState = () => {
-    setLocalPlanResult(null);
-    setCurrentPlanResult(null);
-    setCurrentPlanId(null);
-  };
+  // ── ハンドラ（W2-seq-03a） ────────────────────────────────────────────
 
-  const normalizedSkillName = (formData.skillName ?? "").trim();
-  const resolvedSkillName =
-    normalizedSkillName ||
-    (() => {
-      if (!skillPath) return "";
-      const segments = skillPath.split(/[\\/]/).filter(Boolean);
-      return segments[segments.length - 1] ?? "";
-    })();
-  const hasExternalIntegration = formData.category === "external-integration";
-  const generatedSkill = skillPath
-    ? {
-        path: skillPath,
-        name: resolvedSkillName || undefined,
-      }
-    : null;
-
-  const handleOpenInEditor = useCallback(() => {
-    if (!resolvedSkillName) return;
-    selectSkillByName(resolvedSkillName);
-    setCurrentSkillName(resolvedSkillName);
-    setCurrentView("skill-editor");
-  }, [
-    resolvedSkillName,
-    selectSkillByName,
-    setCurrentSkillName,
-    setCurrentView,
-  ]);
-
-  const handleExecuteNow = useCallback(() => {
-    if (!resolvedSkillName) return;
-    const prompt = formData.purpose.trim() || resolvedSkillName;
-    selectSkillByName(resolvedSkillName);
-    setCurrentSkillName(resolvedSkillName);
-    setCurrentView("agent");
-    void executeSkill(prompt);
-  }, [
-    executeSkill,
-    formData.purpose,
-    resolvedSkillName,
-    selectSkillByName,
-    setCurrentSkillName,
-    setCurrentView,
-  ]);
-
-  const handleCreateAnother = useCallback(() => {
-    setFormData({
-      skillName: "",
-      purpose: "",
-      category: null,
-    });
-    setOptions(DEFAULT_OPTIONS);
+  const resetGeneratedState = (preserveFormData: boolean) => {
+    if (!preserveFormData) {
+      setFormData(DEFAULT_FORM_DATA);
+    }
+    setAnswers(DEFAULT_ANSWERS);
+    setSmartDefaults(null);
+    setGenerationMethod("complete");
     setIsGenerating(false);
     setError(null);
     setSkillPath(null);
-    clearPlanExecutionState();
-    setStoreIsGenerating(false);
-    setStoreGenerationProgress(null);
-    setStoreGenerationError(null);
-    setCurrentSkillName(null);
-    selectSkillByName(null);
-    goToStep(0);
-  }, [
-    clearPlanExecutionState,
-    goToStep,
-    selectSkillByName,
-    setCurrentSkillName,
-    setStoreGenerationError,
-    setStoreGenerationProgress,
-    setStoreIsGenerating,
-  ]);
+    setHasExternalIntegration(false);
+    setExternalToolName(null);
+    generationLockRef.current = false;
+    clearGenerationState();
+  };
 
-  // Existing template generation handler
-  const handleGenerate = async () => {
+  /**
+   * Step 0 → Step 1 遷移。formData からスマートデフォルトを推論して保存する。
+   */
+  const handleStep0Next = () => {
+    const defaults = inferSmartDefaults(formData);
+    setSmartDefaults(defaults);
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+    setHasExternalIntegration(integration.hasExternalIntegration);
+    setExternalToolName(integration.externalToolName);
+    goNext();
+  };
+
+  /**
+   * LLM 生成を起動する。"complete" はフル生成、"skip" は即時生成。
+   * 現行は createSkill バックエンドを使用。
+   */
+  const handleGenerate = async (method: "complete" | "skip") => {
+    if (
+      generationLockRef.current ||
+      isGenerating ||
+      isSkillGenerating ||
+      streaming.isGenerating
+    ) {
+      return;
+    }
+
+    generationLockRef.current = true;
+    const defaults = smartDefaults ?? inferSmartDefaults(formData);
+    if (!smartDefaults) {
+      setSmartDefaults(defaults);
+    }
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+
+    clearGenerationState();
+    setGenerationMethod(method);
     goToStep(2);
     setIsGenerating(true);
     setError(null);
+
     try {
-      const path = await createSkill(description, TEMPLATE_OPTIONS);
-      if (path) {
-        setSkillPath(path);
-        goToStep(3);
-      } else {
+      const path = await createSkill(
+        formData.purpose,
+        SKILL_GENERATION_OPTIONS,
+      );
+      if (!path) {
         setError(new Error("スキル生成に失敗しました"));
+        return;
       }
+      setSkillPath(path);
+      setHasExternalIntegration(integration.hasExternalIntegration);
+      setExternalToolName(integration.externalToolName);
+      goToStep(3);
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
     } finally {
       setIsGenerating(false);
+      generationLockRef.current = false;
     }
   };
 
-  // TASK-SC-07: LLM plan generation (AC-2)
-  const handleLlmGenerate = async () => {
-    if (!description.trim()) return;
-    if (isSkillGenerating) return;
-    goToStep(2);
-    setStoreIsGenerating(true);
-    setStoreGenerationProgress("計画を生成中...");
-    setStoreGenerationError(null);
-    try {
-      const api = getSkillCreatorApi();
-      if (!api.planSkill) {
-        throw new Error("planSkill API が利用できません");
-      }
-      const result = await api.planSkill(description);
-      if (result.success && result.data) {
-        // TASK-RT-02: plan logical error の検出（UT-RT-02-M03: SkillLifecyclePanel とパリティ統一）
-        const data = result.data;
-        if (isRuntimePlanErrorResponse(data)) {
-          clearPlanExecutionState();
-          setStoreGenerationError(data.error.message);
-          return;
-        }
-        const normalizedPlan = toPlanResult(data);
-        if (!normalizedPlan) {
-          clearPlanExecutionState();
-          setStoreGenerationError("計画レスポンスの形式が不正です");
-          return;
-        }
-        setLocalPlanResult(normalizedPlan);
-        setCurrentPlanResult(normalizedPlan);
-        if (normalizedPlan.planId) {
-          setCurrentPlanId(normalizedPlan.planId);
-        }
-      } else {
-        clearPlanExecutionState();
-        setStoreGenerationError(result.error ?? "計画生成に失敗しました");
-      }
-    } catch (err) {
-      clearPlanExecutionState();
-      setStoreGenerationError(
-        err instanceof Error ? err.message : "計画生成に失敗しました",
-      );
-    } finally {
-      setStoreIsGenerating(false);
-      setStoreGenerationProgress(null);
-    }
+  /**
+   * 品質フィードバックを受信する。W3-seq-04 計装で trackEvent に接続予定。
+   */
+  const handleQualityFeedback = (satisfied: boolean) => {
+    // TODO(W3-seq-04): trackEvent("skill_skeleton_quality_feedback", { satisfied, generationMethod })
+    void satisfied;
+    void generationMethod;
   };
 
-  // TASK-SC-07: Execute plan (AC-4, AC-10)
-  const handleExecutePlan = async () => {
-    if (!storePlanId || !localPlanResult) return;
-    setStoreIsGenerating(true);
-    setStoreGenerationError(null);
-    try {
-      const api = getSkillCreatorApi();
-      if (!api.executePlan) {
-        throw new Error("executePlan API が利用できません");
-      }
-      const canonicalSkillSpec =
-        storePlanResult?.type === "integrated_api"
-          ? (storePlanResult.skillSpec ?? description)
-          : description;
-      const result = await api.executePlan(storePlanId, canonicalSkillSpec);
-      if (result.success && result.data) {
-        if (isExecutePlanAck(result.data)) {
-          if (api.getWorkflowState) {
-            try {
-              const snapshotResult = await api.getWorkflowState(storePlanId);
-              if (
-                snapshotResult.success &&
-                snapshotResult.data?.handoffBundle
-              ) {
-                setStoreGenerationError(
-                  `ターミナル実行が必要です: ${snapshotResult.data.handoffBundle.suggestedCommand}`,
-                );
-                return;
-              }
-              const failureMessage = getWorkflowFailureMessage(
-                snapshotResult.success ? snapshotResult.data : null,
-              );
-              if (failureMessage) {
-                setStoreGenerationError(failureMessage);
-                return;
-              }
-            } catch {
-              // ack 受理後の snapshot 取得失敗は最終遷移を妨げない
-            }
-          }
-          setSkillPath(null);
-          setLocalPlanResult(null);
-          clearGenerationState();
-          goToStep(3);
-          return;
-        }
-        if (isExecuteTerminalHandoff(result.data)) {
-          setStoreGenerationError(
-            `ターミナル実行が必要です: ${result.data.bundle.suggestedCommand}`,
-          );
-          return;
-        }
-        if (isExecuteErrorResponse(result.data)) {
-          setStoreGenerationError(result.data.error.message);
-          return;
-        }
-        if (!result.data.success) {
-          setStoreGenerationError(
-            result.data.error ?? "スキル生成に失敗しました",
-          );
-          return;
-        }
-        setSkillPath(null);
-        setLocalPlanResult(null);
-        clearGenerationState();
-        goToStep(3);
-      } else {
-        setStoreGenerationError(result.error ?? "スキル生成に失敗しました");
-      }
-    } catch (err) {
-      setStoreGenerationError(
-        err instanceof Error ? err.message : "スキル生成に失敗しました",
-      );
-    } finally {
-      setStoreIsGenerating(false);
-    }
-  };
-
-  // TASK-SC-07: Cancel plan (AC-5, AC-10)
-  const handleCancelPlan = () => {
-    setLocalPlanResult(null);
-    clearGenerationState();
+  /**
+   * 👎 から Step 0 へ復帰。前回入力（formData）は保持し、生成結果関連 state を初期化する。
+   */
+  const handleRetry = () => {
+    resetGeneratedState(true);
     goToStep(0);
   };
 
-  // TASK-SC-07: Route DescribeStep onNext based on mode (AC-2, AC-8)
-  const handleDescribeNext = () => {
-    if (generationMode === "llm") {
-      void handleLlmGenerate();
-    } else {
-      setSmartDefaults(inferSmartDefaults({ purpose: description, category }));
-      goNext();
-    }
+  /** 今すぐ実行する → ウィザードを閉じる */
+  const handleExecuteNow = () => {
+    _onClose();
   };
 
-  const activePlanResult = localPlanResult ?? storePlanResult;
-  const llmError = bridgeGenerationError(generationError);
-  const templateError = streaming.error ?? bridgeLocalError(error);
-  const resolvedStage =
-    generationMode === "llm"
-      ? resolveStage("idle", isSkillGenerating, llmError)
-      : resolveStage(streaming.stage, isGenerating, templateError);
-  const resolvedPercent =
-    generationMode === "llm" ? (isSkillGenerating ? 25 : 0) : streaming.percent;
-  const resolvedMessage =
-    generationMode === "llm" ? (generationProgress ?? "") : streaming.message;
-  const resolvedPreview =
-    generationMode === "llm" ? null : streaming.previewContent;
-  const resolvedError = generationMode === "llm" ? llmError : templateError;
+  /** エディタで開く → ウィザードを閉じる */
+  const handleOpenInEditor = () => {
+    _onClose();
+  };
+
+  /** 別のスキルを作る → Step 0 復帰（フォームと生成結果を全リセット） */
+  const handleCreateAnother = () => {
+    resetGeneratedState(false);
+    goToStep(0);
+  };
+
+  // ── GenerateStep 用 props 計算 ───────────────────────────────────────
+
+  const resolvedStage = resolveStage(
+    streaming.stage,
+    isGenerating || isSkillGenerating,
+    bridgeLocalError(error),
+  );
+  const resolvedPercent = streaming.percent;
+  const resolvedMessage = streaming.message || generationProgress || "";
+  const resolvedPreview = streaming.previewContent;
+  const resolvedError =
+    bridgeLocalError(error) ?? bridgeGenerationError(generationError);
+
+  // ── レンダリング ──────────────────────────────────────────────────────
 
   return (
     <div
@@ -654,31 +427,33 @@ export const SkillCreateWizard = React.forwardRef<
         sourceProvenance={workflowSnapshot?.sourceProvenance ?? null}
       />
       <StepIndicator steps={STEPS} currentStep={currentStep} />
+
+      {/* Step 0: スキル情報入力（SkillInfoStep） */}
       {currentStep === 0 && (
-        <div data-testid="wizard-step-describe">
-          <DescribeStep
-            description={description}
-            onDescriptionChange={setDescription}
-            category={category}
-            onCategoryChange={setCategory}
-            generationMode={generationMode}
-            onGenerationModeChange={setGenerationMode}
-            onNext={handleDescribeNext}
+        <div data-testid="wizard-step-info">
+          <SkillInfoStep
+            formData={formData}
+            onFormDataChange={setFormData}
+            onNext={handleStep0Next}
           />
         </div>
       )}
+
+      {/* Step 1: 詳細設定（ConversationRoundStep） */}
       {currentStep === 1 && (
         <div data-testid="wizard-step-conversation-round">
           <ConversationRoundStep
-            formData={{ purpose: description, category } as SkillInfoFormData}
-            smartDefaults={smartDefaults}
+            formData={formData}
+            smartDefaults={smartDefaults ?? DEFAULT_SMART_DEFAULTS}
             answers={answers}
             onAnswersChange={setAnswers}
             onBack={goBack}
-            onGenerate={() => void handleGenerate()}
+            onGenerate={handleGenerate}
           />
         </div>
       )}
+
+      {/* Step 2: 生成中（GenerateStep）— generationMode prop なし */}
       {currentStep === 2 && (
         <div data-testid="wizard-step-generate">
           <GenerateStep
@@ -687,40 +462,27 @@ export const SkillCreateWizard = React.forwardRef<
             message={resolvedMessage}
             previewContent={resolvedPreview}
             error={resolvedError}
-            generationMode={generationMode}
-            generationProgress={
-              generationMode === "llm" ? generationProgress : null
-            }
             isGenerating={
-              generationMode === "llm"
-                ? isSkillGenerating
-                : isGenerating || streaming.isGenerating
+              isGenerating || isSkillGenerating || streaming.isGenerating
             }
-            planResult={generationMode === "llm" ? activePlanResult : null}
-            onExecutePlan={
-              generationMode === "llm" ? handleExecutePlan : undefined
-            }
-            onCancelPlan={
-              generationMode === "llm" ? handleCancelPlan : undefined
-            }
-            onCancel={
-              generationMode === "template" ? cancelGeneration : undefined
-            }
-            onRetry={generationMode === "template" ? handleGenerate : undefined}
+            onCancel={cancelGeneration}
+            onRetry={() => void handleGenerate(generationMethod)}
           />
         </div>
       )}
+
+      {/* Step 3: 完了（CompleteStep）— skillPath / action cards / onRetry 接続 */}
       {currentStep === 3 && (
         <div data-testid="wizard-step-complete">
           <CompleteStep
-            generatedSkill={generatedSkill}
+            skillPath={skillPath}
             hasExternalIntegration={hasExternalIntegration}
-            externalToolName={hasExternalIntegration ? "外部ツール" : undefined}
-            onExecuteNow={generatedSkill ? handleExecuteNow : undefined}
-            onOpenInEditor={generatedSkill ? handleOpenInEditor : undefined}
+            externalToolName={externalToolName}
+            onExecuteNow={handleExecuteNow}
+            onOpenInEditor={handleOpenInEditor}
             onCreateAnother={handleCreateAnother}
-            onQualityFeedback={() => {}}
-            onRetry={() => goToStep(0)}
+            onQualityFeedback={handleQualityFeedback}
+            onRetry={handleRetry}
           />
         </div>
       )}

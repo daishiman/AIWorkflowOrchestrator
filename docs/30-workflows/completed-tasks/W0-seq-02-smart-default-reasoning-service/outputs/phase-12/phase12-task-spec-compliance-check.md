@@ -77,11 +77,13 @@
 
 ## 追加確認項目
 
-| 確認項目                                                                                                     | 状態 | 根拠                                                              |
-| ------------------------------------------------------------------------------------------------------------ | ---- | ----------------------------------------------------------------- |
-| `outputs/phase-12/*.md` に計画表現が残っていない                                                             | ✅   | 全 6 ファイルが確定した事実のみ記録                               |
-| Phase 11 証跡ファイル（3件）が存在する                                                                       | ✅   | `outputs/phase-11/` に 3 ファイル確認済み                         |
-| vitest 実測値（33件 PASS）の根拠ファイルが存在する                                                           | ✅   | `outputs/phase-11/manual-test-result.md`                          |
-| `@repo/shared` resolve alias が vitest.config.ts に存在する                                                  | ✅   | `packages/shared/vitest.config.ts` resolve.alias 節               |
-| `packages/shared/src/types/index.ts` で `SkillInfoFormData` / `SmartDefaultResult` が root export されている | ✅   | `packages/shared/src/types/index.ts` / `packages/shared/index.ts` |
-| `inferSmartDefaults` が `packages/shared/index.ts` からエクスポートされている                                | ✅   | `packages/shared/index.ts` 末尾のバレルエクスポート               |
+| 確認項目                                                                                                     | 状態 | 根拠                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------- |
+| `outputs/phase-12/*.md` に計画表現が残っていない                                                             | ✅   | 全 6 ファイルが確定した事実のみ記録                                                                     |
+| Phase 11 証跡ファイル（3件）が存在する                                                                       | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/` に 3 ファイル確認済み   |
+| vitest 実測値（33件 PASS）の根拠ファイルが存在する                                                           | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    |
+| Phase 11 チェックリストが存在する                                                                            | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` |
+| workflow-local artifacts mirror が存在する                                                                   | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/artifacts.json`                    |
+| `@repo/shared` resolve alias が vitest.config.ts に存在する                                                  | ✅   | `packages/shared/vitest.config.ts` resolve.alias 節                                                     |
+| `packages/shared/src/types/index.ts` で `SkillInfoFormData` / `SmartDefaultResult` が root export されている | ✅   | `packages/shared/src/types/index.ts` / `packages/shared/index.ts`                                       |
+| `inferSmartDefaults` が `packages/shared/index.ts` からエクスポートされている                                | ✅   | `packages/shared/index.ts` 末尾のバレルエクスポート                                                     |

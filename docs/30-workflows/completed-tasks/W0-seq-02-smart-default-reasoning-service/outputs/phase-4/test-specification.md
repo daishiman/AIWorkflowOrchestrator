@@ -1,77 +1,55 @@
-# テスト仕様書
+# Phase 4: テスト仕様書 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## タスク情報
+## テストケース一覧（TC-01〜TC-15）
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 4                                              |
+### ツール推論（TC-01〜TC-04）
 
-## テストファイル
+| TC ID | テスト説明                                                          | 入力（purpose）            | 入力（category） | 期待値（tool） |
+| ----- | ------------------------------------------------------------------- | -------------------------- | ---------------- | -------------- |
+| TC-01 | purpose に 'Slack' を含む場合、tool = 'slack' を推論する            | "Slack通知を送る"          | null             | "slack"        |
+| TC-02 | purpose に 'GitHub' を含む場合、tool = 'github' を推論する          | "GitHubのPRをレビューする" | null             | "github"       |
+| TC-03 | purpose に 'Notion' を含む場合、tool = 'notion' を推論する          | "Notionにページを作成する" | null             | "notion"       |
+| TC-04 | ツール名が含まれない場合、tool = null を返す（AC-4 フォールバック） | "汎用的なタスクを実行する" | null             | null           |
 
-`packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`
+### タイミング推論（TC-05〜TC-09）
 
-## テストケース一覧
+| TC ID | テスト説明                                                           | 入力（purpose）          | 期待値（timing） |
+| ----- | -------------------------------------------------------------------- | ------------------------ | ---------------- |
+| TC-05 | purpose に '毎日' を含む場合、timing = 'scheduled' を推論する        | "毎日レポートを生成する" | "scheduled"      |
+| TC-06 | purpose に '毎週' を含む場合、timing = 'scheduled' を推論する        | "毎週サマリーを送る"     | "scheduled"      |
+| TC-07 | purpose に '定期' を含む場合、timing = 'scheduled' を推論する        | "定期的に実行する"       | "scheduled"      |
+| TC-08 | purpose に 'リアルタイム' を含む場合、timing = 'realtime' を推論する | "リアルタイムで通知する" | "realtime"       |
+| TC-09 | タイミングキーワードが含まれない場合、timing = null を返す           | "コードを解析する"       | null             |
 
-### ツール推論（7件）
+### フォーマット推論（TC-10〜TC-12）
 
-| #   | テスト内容                   | 期待値                          |
-| --- | ---------------------------- | ------------------------------- |
-| 1   | purpose に 'Slack' を含む    | tool = 'slack'                  |
-| 2   | purpose に 'GitHub' を含む   | tool = 'github'                 |
-| 3   | purpose に 'Notion' を含む   | tool = 'notion'                 |
-| 4   | ツール名が含まれない         | tool = null（フォールバック）   |
-| 5   | 'Slack' と 'GitHub' 両方含む | tool = 'slack'（先勝ちルール）  |
-| 6   | 'slack'（小文字）を含む      | tool = null（大文字小文字区別） |
-| 7   | purpose が null              | tool = null（エラーにならない） |
+| TC ID | テスト説明                                                           | 入力（category） | 期待値（format） |
+| ----- | -------------------------------------------------------------------- | ---------------- | ---------------- |
+| TC-10 | category = 'code-support' の場合、format = 'code' を推論する         | "code-support"   | "code"           |
+| TC-11 | category = 'data-analysis' の場合、format = 'structured' を推論する  | "data-analysis"  | "structured"     |
+| TC-12 | category が null の場合、format = null を返す（AC-4 フォールバック） | null             | null             |
 
-### タイミング推論（9件）
+### inferenceLog（TC-13〜TC-14）
 
-| #   | テスト内容                       | 期待値                               |
-| --- | -------------------------------- | ------------------------------------ |
-| 8   | purpose に '毎日' を含む         | timing = 'scheduled'                 |
-| 9   | purpose に '毎週' を含む         | timing = 'scheduled'                 |
-| 10  | purpose に '定期' を含む         | timing = 'scheduled'                 |
-| 11  | purpose に 'スケジュール' を含む | timing = 'scheduled'                 |
-| 12  | purpose に 'リアルタイム' を含む | timing = 'realtime'                  |
-| 13  | purpose に '即座' を含む         | timing = 'realtime'                  |
-| 14  | purpose に 'すぐに' を含む       | timing = 'realtime'                  |
-| 15  | タイミングキーワードなし         | timing = null（フォールバック）      |
-| 16  | '毎日' と 'リアルタイム' 両方    | timing = 'scheduled'（先勝ちルール） |
+| TC ID | テスト説明                                                              | 入力                                       | 期待値（inferenceLog）                |
+| ----- | ----------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| TC-13 | 推論が1件の場合、inferenceLog に1件の記録が含まれる                     | purpose: "Slack通知を送る", category: null | length = 1, エントリに "slack" を含む |
+| TC-14 | 推論が0件の場合、inferenceLog は空配列 [] を返す（AC-4 フォールバック） | purpose: "", category: null                | []                                    |
 
-### フォーマット推論（6件）
+### フォールバック（TC-15）
 
-| #   | テスト内容                 | 期待値                          |
-| --- | -------------------------- | ------------------------------- |
-| 17  | category = 'code-support'  | format = 'code'                 |
-| 18  | category = 'data-analysis' | format = 'structured'           |
-| 19  | category が null           | format = null（フォールバック） |
-| 20  | category が undefined      | format = null                   |
-| 21  | category が 'automation'   | format = null                   |
-| 22  | category が 空文字         | format = null                   |
+| TC ID | テスト説明                                                                 | 入力                                  | 期待値                                                                                              |
+| ----- | -------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| TC-15 | purpose が空文字の場合、tool/timing は null、category は独立推論を継続する | purpose: "", category: "code-support" | tool=null, timing=null, format="code", inferenceLog=["category = 'code-support' → format = 'code'"] |
 
-### inferenceLog（4件）
+## テスト実行コマンド
 
-| #   | テスト内容                           | 期待値                                    |
-| --- | ------------------------------------ | ----------------------------------------- |
-| 23  | 推論1件                              | inferenceLog.length = 1 かつ "slack" 含む |
-| 24  | 推論0件                              | inferenceLog = []                         |
-| 25  | ツール+タイミング+フォーマット全推論 | inferenceLog.length = 3                   |
-| 26  | 各エントリが対応フィールド名含む     | slack/scheduled/structured 含む           |
+```bash
+pnpm vitest run packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
+```
 
-### フォールバック（2件）
+## テストファイルパス
 
-| #   | テスト内容          | 期待値                                                   |
-| --- | ------------------- | -------------------------------------------------------- |
-| 27  | purpose = 空文字    | tool/timing = null（category 未選択なら format も null） |
-| 28  | purpose = undefined | tool/timing = null（category 未選択なら format も null） |
-
-### 組み合わせテスト（3件）
-
-| #   | テスト内容                                  | 期待値                                           |
-| --- | ------------------------------------------- | ------------------------------------------------ |
-| 29  | 毎日Slack, category=automation              | tool=slack, timing=scheduled, format=null        |
-| 30  | リアルタイムレビュー, category=code-support | tool=null, timing=realtime, format=code          |
-| 31  | Notion毎週, category=data-analysis          | tool=notion, timing=scheduled, format=structured |
-
-**合計: 31 テストケース**（vitest 実行時は describe ネストで 32 表示）
+```
+packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
+```
