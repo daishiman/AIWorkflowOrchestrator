@@ -3,6 +3,8 @@
 > 親仕様書: [ui-ux-feature-components.md](ui-ux-feature-components.md)
 > 役割: reference bundle
 
+> 2026-04-08 追記: `CompleteStep` 再設計の current contract は詳細側の `ui-ux-feature-components-skill-analysis.md` に反映済み。`skillPath` / `onClose` ベースの旧表示から、起点画面化された完了画面へ更新された。
+
 ## SkillCenterView UI（TASK-UI-05 / 完了）
 
 TASK-UI-05-SKILL-CENTER-VIEW で、ツール探索専用ビュー `SkillCenterView` の実装と検証（Phase 1-12）が完了。

@@ -285,20 +285,16 @@
 - **影響**: errorMessage のような補助情報が silent drop されるのを防げる
 - **発見日**: 2026-04-06
 
-### Pitfall: エラーコールバックを `if (!snapshot)` 等の条件でガードするとエラーが隠れる
+### Pitfall: Renderer での node-only import（browser bundle 破壊）
 
-- **状況**: fire-and-forget ラッパー内でエラーコールバックを呼ぶ際、「snapshot がない場合のみ通知する」という条件でガードすると、snapshot が取得できた場合でもエラーが Renderer に届かない
-- **問題**: `onWorkflowStateSnapshot` のような callback を `if (!snapshot) { callback(null, error) }` パターンで呼ぶと、snapshot がある通常ケースでエラーが無通知のまま silent failure になる
-- **対策**: `callback(snapshot ?? null, error)` パターンで常にエラーを渡す。条件分岐でエラー通知をガードしない
-- **コード例**:
-  ```typescript
-  // NG: snapshot がある場合エラーが隠れる
-  if (!snapshot) {
-    onWorkflowStateSnapshot(null, error.message);
-  }
-
-  // OK: snapshot の有無にかかわらずエラーを伝搬する
-  onWorkflowStateSnapshot(snapshot ?? null, error.message);
-  ```
-- **影響**: Renderer 側でエラー理由が表示されない silent failure を防げる
-- **発見日**: 2026-04-07（TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001）
+- **状況**: `node-cron` など Node.js 専用パッケージを renderer 側の UI コンポーネントで直接 import した
+- **問題**: Vite ブラウザバンドルのビルド時は通過しても、ルートを開いた瞬間に runtime error が発生しアプリが初期化できなくなる
+- **原因**: Node.js 組み込み API（`process`、`fs`、`module` 等）をブラウザ環境で解決できないため
+- **対策**:
+  1. renderer コンポーネントでは node-only パッケージを直接 import しない
+  2. cron / schedule 検証は browser-safe な薄いユーティリティに切り出す（例: 5-field regex で validate するだけの関数）
+  3. Phase 11 capture 前に「ブラウザで実際に route を開く smoke test」を必須にする
+  4. `apps/desktop/vite.config.ts` の `ssr.noExternal` / `ssr.external` で不意のバンドルを早期検出する
+- **影響**: Phase 11 の手動テスト冒頭でブランクスクリーンになり、screenshot 全件がブロックされる
+- **発見日**: 2026-04-08
+- **関連タスク**: UT-SKILL-WIZARD-W1-par-02b

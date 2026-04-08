@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
+
+### 変更内容
+- `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）
+- `references/phase-template-phase11.md` の UI task 追加要件に `[W1-02b-1] screenshot-plan mode: VISUAL デフォルト` ガイドを追加（Feedback 1）
+- `references/phase-12-documentation-guide.md` の Task 12-6 に `[W1-02b-3] identifier consistency check` を追加（Feedback 3）
+- `SKILL.md` の「よくある漏れ」テーブルに Feedback W1-02b-1〜4（VISUAL default / multi-step state ownership / identifier drift / node-only import）を追記（Feedback 1〜4）
+
+### 背景
+UT-SKILL-WIZARD-W1-par-02b の `skill-feedback-report.md` に記録された改善提案4件を same-wave で skill に反映した。
+node-only import による browser bundle 破壊は Phase 11 の screenshot 全件ブロックにつながる高影響度 pitfall のため、patterns-lessons-and-pitfalls に優先追加した。
+
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
@@ -39,18 +51,6 @@ Phase 12 close-out では、task-spec 観点でも `artifacts.json` / `outputs/a
 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
 
 ---
-
-## 2026-04-07 - TASK-P0-09-U1 Phase 12 スキル更新確認・keywords.json キーワード同期
-
-### 変更内容
-- `aiworkflow-requirements/indexes/keywords.json` に TASK-P0-09-U1 実装由来の不足キーワード4件を追加（`extractTargetPath` / `path-scoped` / `governance-enforcement` / `RuntimeSkillCreatorExecuteErrorResponse`）
-- SKILL.md（task-specification-creator）の3フィードバック反映（Phase 4 private method テスト方針・Phase 5 canUseTool 制約・小規模タスク tier 分け）は 2026-04-06 済みにつき本日追加なし
-
-### 背景
-Phase-12 skill-feedback-report.md の3改善提案はすでに 2026-04-06 に SKILL.md v6.18.19 / v10.09.29 として反映済み。本エントリは keywords.json への未追加キーワードの同期記録。
-
----
-
 ## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync

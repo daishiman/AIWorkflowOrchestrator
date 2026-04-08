@@ -50,6 +50,7 @@
 ```
 Wave 0（直列・先行必須）
   W0-seq-01-types-skill-info-form        # 型定義（SkillInfoFormData等）
+  W0-seq-02-smart-default-reasoning-service  # 推論サービス（inferSmartDefaults / shared）
 
 Wave 1（並列・W0完了後 ※02dはW0と同時可）
   W1-par-02a-skill-info-step             # SkillInfoStep.tsx（Step 0）
@@ -66,6 +67,7 @@ Wave 3（直列・W2完了後）
 ```
 
 - W0-seq-01 は Phase 1-11 の outputs を補完し、Phase 12 の canonical 6 成果物と `artifacts.json` / `outputs/artifacts.json` を同期済み。共有型は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
+- W0-seq-02 は `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/` 配下で `inferSmartDefaults` を `@repo/shared` から公開し、Phase 12 close-out まで完了済み。root / outputs artifacts と lane index の同期を同波で確認した。
 
 ## Phase一覧
 
