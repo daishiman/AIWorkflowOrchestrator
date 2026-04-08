@@ -54,7 +54,7 @@ Wave 0（直列・先行必須）
 
 Wave 1（並列・W0完了後 ※02dはW0と同時可）
   W1-par-02a-skill-info-step             # SkillInfoStep.tsx（Step 0）
-  W1-par-02b-conversation-round-step     # ConversationRoundStep.tsx（Step 1、completed）
+  W1-par-02b-conversation-round-step     # ConversationRoundStep.tsx（Step 1）
   W1-par-02c-complete-step               # CompleteStep.tsx（完了画面）
   W1-par-02d-lifecycle-panel             # SkillLifecyclePanel.tsx（遷移ボタン化）
 
@@ -66,10 +66,13 @@ Wave 3（直列・W2完了後）
   W3-seq-04-usage-tracking               # 使用率計装（trackEvent / NON_VISUAL）
 ```
 
+### 進捗スナップショット（2026-04-08）
+
+- W2-seq-03a: Phase 12 完了（PR 未作成）
+- W3-seq-04: W2-seq-03a 依存が解消し、着手条件を満たした状態
+
 - W0-seq-01 は Phase 1-11 の outputs を補完し、Phase 12 の canonical 6 成果物と `artifacts.json` / `outputs/artifacts.json` を同期済み。共有型は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
 - W0-seq-02 は `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/` 配下で `inferSmartDefaults` を `@repo/shared` から公開し、Phase 12 close-out まで完了済み。root / outputs artifacts と lane index の同期を同波で確認した。
-- W1-par-02b は completed 済みで、`ConversationRoundStep.tsx` / `wizard/index.ts` / Phase 7-13 の台帳を同波同期した。
-- W1-par-02a は `docs/30-workflows/W1-par-02a-skill-info-step-2/` で Step 0 の仕様・検証・完了記録を整理し、`apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` と `apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx` を実装済み。Issue #2012 クローズ・PR #2019 マージにより Phase 1-13 完了済み。`SkillInfoFormData` は `@repo/shared/types/skillCreator` の subpath import に閉じている。
 
 ## Phase一覧
 

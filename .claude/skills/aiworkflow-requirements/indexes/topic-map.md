@@ -501,7 +501,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L452 |
+| 続き | L439 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1349,10 +1349,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L98 |
-| LLM Adapter Error Banner（TASK-RT-01） | L154 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L193 |
-| 続き | L302 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L66 |
+| LLM Adapter Error Banner（TASK-RT-01） | L122 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L161 |
+| 続き | L270 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -3051,13 +3051,11 @@ node scripts/list-specs.js --topics
 | TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+| W0-seq-02 SmartDefault推論サービス (2026-04-08) | L481 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L553 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L579 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L596 |
-| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L612 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3377,6 +3375,17 @@ node scripts/list-specs.js --topics
 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L6 |
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
+
+### references/lessons-learned-skill-wizard-redesign.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L21 |
+| 苦戦箇所 | L108 |
+| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
+| 依存関係 | L159 |
+| 関連ファイル | L171 |
 
 ### references/lessons-learned-templates.md
 
@@ -4418,18 +4427,6 @@ node scripts/list-specs.js --topics
 | 参照 | L72 |
 | 変更履歴 | L77 |
 
-### references/skill-google-calendar-integration.md
-
-| セクション | 行 |
-|------------|----|
-| 概要 | L3 |
-| ファイル構成 | L11 |
-| 認証方式 | L31 |
-| フェーズ定義 | L38 |
-| エラーハンドリング | L46 |
-| 設計上の重要ポイント | L55 |
-| 関連ドキュメント | L69 |
-
 ### references/spec-elegance-consistency-audit.md
 
 | セクション | 行 |
@@ -4504,7 +4501,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L330 |
+| 続き | L327 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4620,6 +4617,11 @@ node scripts/list-specs.js --topics
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
 
 ### references/task-workflow-completed-recent-2026-04c.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04d.md
 
 | セクション | 行 |
 |------------|----|
@@ -4748,9 +4750,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 完了タスク（2026-03後半） | L100 |
+| 完了タスク（機能別アーカイブ） | L108 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
 | 完了タスク（2026-03後半） | L158 |
 | 完了タスク（機能別アーカイブ） | L166 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L275 |
+| 完了タスク（2026-03後半） | L101 |
+| 完了タスク（機能別アーカイブ） | L109 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
 
 ### references/task-workflow-history.md
 

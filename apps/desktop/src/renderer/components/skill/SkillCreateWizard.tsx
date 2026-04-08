@@ -16,7 +16,7 @@
  *   handleQualityFeedback / handleRetry を実装
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StepIndicator,
   SkillInfoStep,
@@ -81,6 +81,11 @@ const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
   format: null,
 };
 
+interface ExternalIntegrationState {
+  hasExternalIntegration: boolean;
+  externalToolName: string | null;
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // ユーティリティ関数
 // ────────────────────────────────────────────────────────────────────────────
@@ -130,6 +135,7 @@ export function inferSmartDefaults(
   data: SkillInfoFormData,
 ): SmartDefaultResult {
   const purpose = data.purpose ?? "";
+  const purposeLower = purpose.toLowerCase();
   const inferenceLog: string[] = [];
   const result: SmartDefaultResult = {
     who: null,
@@ -140,16 +146,16 @@ export function inferSmartDefaults(
     format: null,
   };
 
-  // ツール推論（大文字小文字を区別）
-  if (purpose.includes("Slack")) {
+  // ツール推論（大文字小文字を区別しない）
+  if (purposeLower.includes("slack")) {
     result.tool = "slack";
-    inferenceLog.push("purpose に 'Slack' を検出 → tool = 'slack'");
-  } else if (purpose.includes("GitHub")) {
+    inferenceLog.push("purpose に 'slack' を検出 → tool = 'slack'");
+  } else if (purposeLower.includes("github")) {
     result.tool = "github";
-    inferenceLog.push("purpose に 'GitHub' を検出 → tool = 'github'");
-  } else if (purpose.includes("Notion")) {
+    inferenceLog.push("purpose に 'github' を検出 → tool = 'github'");
+  } else if (purposeLower.includes("notion")) {
     result.tool = "notion";
-    inferenceLog.push("purpose に 'Notion' を検出 → tool = 'notion'");
+    inferenceLog.push("purpose に 'notion' を検出 → tool = 'notion'");
   }
 
   // タイミング推論
@@ -177,6 +183,64 @@ export function inferSmartDefaults(
   return { ...result, inferenceLog };
 }
 
+function resolveKnownTool(input: string | null | undefined): string | null {
+  const normalized = (input ?? "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized.includes("slack")) return "slack";
+  if (normalized.includes("github")) return "github";
+  if (normalized.includes("notion")) return "notion";
+  return null;
+}
+
+function toExternalToolName(tool: string | null): string | null {
+  if (!tool) return null;
+  if (tool === "slack") return "Slack";
+  if (tool === "github") return "GitHub";
+  if (tool === "notion") return "Notion";
+  return tool;
+}
+
+function resolveExternalIntegration(
+  q5Answer: ConversationAnswers["q5"],
+  smartDefaultTool: string | null | undefined,
+): ExternalIntegrationState {
+  const selected = q5Answer.selectedOption?.trim() ?? "";
+  const freeText = q5Answer.freeText.trim();
+
+  if (selected === "なし") {
+    return { hasExternalIntegration: false, externalToolName: null };
+  }
+  if (selected === "Slack") {
+    return { hasExternalIntegration: true, externalToolName: "Slack" };
+  }
+  if (selected === "GitHub") {
+    return { hasExternalIntegration: true, externalToolName: "GitHub" };
+  }
+  if (selected === "その他") {
+    return {
+      hasExternalIntegration: true,
+      externalToolName: freeText.length > 0 ? freeText : null,
+    };
+  }
+  if (freeText.length > 0) {
+    const known = resolveKnownTool(freeText);
+    return {
+      hasExternalIntegration: true,
+      externalToolName: toExternalToolName(known) ?? freeText,
+    };
+  }
+
+  const knownFromDefault = resolveKnownTool(smartDefaultTool);
+  if (knownFromDefault) {
+    return {
+      hasExternalIntegration: true,
+      externalToolName: toExternalToolName(knownFromDefault),
+    };
+  }
+
+  return { hasExternalIntegration: false, externalToolName: null };
+}
+
 // ────────────────────────────────────────────────────────────────────────────
 // コンポーネント
 // ────────────────────────────────────────────────────────────────────────────
@@ -198,6 +262,7 @@ export const SkillCreateWizard = React.forwardRef<
   const isSkillGenerating = useIsSkillGenerating();
   const generationProgress = useGenerationProgress();
   const generationError = useGenerationError();
+  const generationLockRef = useRef(false);
 
   // ── 新 state（W2-seq-03a） ─────────────────────────────────────────────
   const [formData, setFormData] =
@@ -224,12 +289,31 @@ export const SkillCreateWizard = React.forwardRef<
 
   // ── ハンドラ（W2-seq-03a） ────────────────────────────────────────────
 
+  const resetGeneratedState = (preserveFormData: boolean) => {
+    if (!preserveFormData) {
+      setFormData(DEFAULT_FORM_DATA);
+    }
+    setAnswers(DEFAULT_ANSWERS);
+    setSmartDefaults(null);
+    setGenerationMethod("complete");
+    setIsGenerating(false);
+    setError(null);
+    setSkillPath(null);
+    setHasExternalIntegration(false);
+    setExternalToolName(null);
+    generationLockRef.current = false;
+    clearGenerationState();
+  };
+
   /**
    * Step 0 → Step 1 遷移。formData からスマートデフォルトを推論して保存する。
    */
   const handleStep0Next = () => {
     const defaults = inferSmartDefaults(formData);
     setSmartDefaults(defaults);
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+    setHasExternalIntegration(integration.hasExternalIntegration);
+    setExternalToolName(integration.externalToolName);
     goNext();
   };
 
@@ -238,10 +322,28 @@ export const SkillCreateWizard = React.forwardRef<
    * 現行は createSkill バックエンドを使用。
    */
   const handleGenerate = async (method: "complete" | "skip") => {
+    if (
+      generationLockRef.current ||
+      isGenerating ||
+      isSkillGenerating ||
+      streaming.isGenerating
+    ) {
+      return;
+    }
+
+    generationLockRef.current = true;
+    const defaults = smartDefaults ?? inferSmartDefaults(formData);
+    if (!smartDefaults) {
+      setSmartDefaults(defaults);
+    }
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+
+    clearGenerationState();
     setGenerationMethod(method);
     goToStep(2);
     setIsGenerating(true);
     setError(null);
+
     try {
       const path = await createSkill(
         formData.purpose,
@@ -252,8 +354,8 @@ export const SkillCreateWizard = React.forwardRef<
         return;
       }
       setSkillPath(path);
-      setHasExternalIntegration(false);
-      setExternalToolName(null);
+      setHasExternalIntegration(integration.hasExternalIntegration);
+      setExternalToolName(integration.externalToolName);
       goToStep(3);
     } catch (err) {
       setError(
@@ -261,6 +363,7 @@ export const SkillCreateWizard = React.forwardRef<
       );
     } finally {
       setIsGenerating(false);
+      generationLockRef.current = false;
     }
   };
 
@@ -274,12 +377,10 @@ export const SkillCreateWizard = React.forwardRef<
   };
 
   /**
-   * 👎 から Step 0 へ復帰。前回入力（formData）は保持。
+   * 👎 から Step 0 へ復帰。前回入力（formData）は保持し、生成結果関連 state を初期化する。
    */
   const handleRetry = () => {
-    setSkillPath(null);
-    setHasExternalIntegration(false);
-    setExternalToolName(null);
+    resetGeneratedState(true);
     goToStep(0);
   };
 
@@ -293,12 +394,9 @@ export const SkillCreateWizard = React.forwardRef<
     _onClose();
   };
 
-  /** 別のスキルを作る → Step 0 復帰（フォームリセット） */
+  /** 別のスキルを作る → Step 0 復帰（フォームと生成結果を全リセット） */
   const handleCreateAnother = () => {
-    setFormData(DEFAULT_FORM_DATA);
-    setSkillPath(null);
-    setHasExternalIntegration(false);
-    setExternalToolName(null);
+    resetGeneratedState(false);
     goToStep(0);
   };
 

@@ -57,6 +57,7 @@ const styles = {
 } as const;
 
 export const CompleteStep: React.FC<CompleteStepProps> = ({
+  skillPath,
   hasExternalIntegration = false,
   externalToolName,
   onExecuteNow,
@@ -121,6 +122,19 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
         <h2 className={styles.header}>{HEADER_MESSAGE}</h2>
         <p className={styles.subText}>{HEADER_SUB_MESSAGE}</p>
       </div>
+
+      {/* SkillPath */}
+      {skillPath && (
+        <section
+          data-testid="complete-step-skill-path"
+          className="flex flex-col gap-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-3"
+        >
+          <p className="text-xs text-[var(--text-tertiary)]">生成先パス</p>
+          <code className="text-xs break-all text-[var(--text-primary)]">
+            {skillPath}
+          </code>
+        </section>
+      )}
 
       {/* QualityFeedback */}
       <section className="flex flex-col items-center gap-3">
