@@ -245,8 +245,8 @@ describe("SkillCreateWizard", () => {
       fireEvent.click(
         screen.getByTestId("complete-step-action-create-another"),
       );
-      expect(screen.getByTestId("wizard-step-skill-info")).toBeInTheDocument();
-      expect(screen.getByLabelText(/目的・背景/)).toHaveValue("");
+      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toHaveValue("");
       expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
       expect(mockOnClose).not.toHaveBeenCalled();
     });
@@ -339,7 +339,7 @@ describe("SkillCreateWizard", () => {
   // モーダル制御
   // ============================================================
   describe("モーダル制御", () => {
-    it("Step 4 で「閉じる」クリックで onClose が呼ばれる", async () => {
+    it("Step 4 で CompleteStep が表示される（新設計: 閉じるボタンなし）", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       // Step 1 -> Step 2
@@ -357,9 +357,9 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      // Step 4: 閉じる
-      fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      // Step 4: CompleteStep が表示される（新設計では閉じるボタンなし）
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
     });
   });
 
@@ -522,7 +522,7 @@ describe("SkillCreateWizard", () => {
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
-    it("IPC 完了後に生成されたカスタムパスが CompleteStep に渡される", async () => {
+    it("IPC 完了後に CompleteStep へ遷移する（新設計: パスは UI 非表示）", async () => {
       mockCreateSkill.mockResolvedValue("/custom/generated/path");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
@@ -541,7 +541,11 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("/custom/generated/path")).toBeInTheDocument();
+      // 新設計: generatedSkill は親コンテキスト用のため UI には表示しない
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.queryByText("/custom/generated/path"),
+      ).not.toBeInTheDocument();
     });
   });
 });

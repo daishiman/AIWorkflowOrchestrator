@@ -144,17 +144,20 @@ describe("SkillCreateWizard Store統合", () => {
 
     it("CompleteStep の「イメージと違う → やり直す」で Step 0 に戻る", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      completeStep0();
+      // CompleteStep まで進む
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
       });
 
       fireEvent.click(screen.getByTestId("complete-step-feedback-unsatisfied"));
 
-      expect(screen.getByTestId("wizard-step-skill-info")).toBeInTheDocument();
-      expect(screen.getByLabelText(/目的・背景/)).toHaveValue(
-        "テストスキルの目的説明",
-      );
+      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toHaveValue("テスト");
       expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
     });
 

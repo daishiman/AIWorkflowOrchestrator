@@ -318,7 +318,10 @@ describe("SkillCreateWizard LLM生成フロー", () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
     });
 
     it("W-6: executePlan ack の後に failure snapshot が返ると生成エラーを表示する", async () => {
@@ -369,7 +372,7 @@ describe("SkillCreateWizard LLM生成フロー", () => {
         );
       });
       expect(
-        screen.queryByText("スキルが作成されました"),
+        screen.queryByTestId("complete-step-header"),
       ).not.toBeInTheDocument();
     });
   });
