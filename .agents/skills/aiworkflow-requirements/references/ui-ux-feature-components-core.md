@@ -41,6 +41,38 @@
 | Wizard LLM Generation Flow                                            | TASK-SC-07                              | SkillCreateWizard, SkillInfoStep, GenerateStep                                                   | 完了                       | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/`                        |
 | Skill Create Wizard — SkillInfoStep（Redesign W1）                    | UT-SKILL-WIZARD-W1-par-02a              | SkillInfoStep                                                                                    | 完了                       | `docs/30-workflows/W1-par-02a-skill-info-step/`                                                           |
 | Skill Lifecycle Panel — ウィザード遷移ボタン化（Redesign W1-par-02d） | UT-SKILL-WIZARD-W1-par-02d              | SkillLifecyclePanel（`onOpenSkillWizard` Props追加・テキストエリア削除・ウィザード起動ボタン化） | 完了                       | `docs/30-workflows/W1-par-02d-lifecycle-panel/`                                                           |
+| 機能                         | タスクID         | 主要コンポーネント                                 | 状態 | 詳細仕様                                                         |
+| ---------------------------- | ---------------- | -------------------------------------------------- | ---- | ---------------------------------------------------------------- |
+| Community Visualization      | CONV-08-05       | CommunityGraph, CommunityDetailPanel               | 完了 | 本ファイル                                                       |
+| Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
+| Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
+| Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
+| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/` |
+| Workspace Preview / Quick Search | TASK-UI-04C | PreviewPanel, PreviewToolbar, QuickFileSearch, SourceView | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
+| Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
+| Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
+| Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
+| Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
+| Skill Center CTA Routing  | TASK-SKILL-LIFECYCLE-02 | SkillLifecycleJourneyPanel, HeaderCTA, useSkillCenter nav | 完了 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-02-skillcenter-create-route/` |
+| Skill Detail Action Buttons | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 | SkillDetailPanel, useSkillCenter, SkillEditorView, SkillAnalysisView | 完了 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/` |
+| Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
+| Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
+| Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, SkillInfo/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
+| Skill Create Wizard — ConversationRoundStep（Redesign W1） | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 | ConversationRoundStep, InterviewProgressBar, SingleSelectChips, FreeTextInput | 完了（Phase 12 close-out / Phase 13 blocked） | `docs/30-workflows/ut-skill-wizard-w1-conversation-round-step-001/` |
+| Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| Skill Runtime API Key Panel | TASK-RT-04 | SkillLifecyclePanel, ApiKeySettingsPanel | 完了 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
+| LLM Adapter Error Banner | TASK-RT-01 | LLMAdapterErrorBanner, useLLMAdapterStatus | 完了 | 本ファイル |
+| Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
+| Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
+| Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+| Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
+| History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | [ui-history-search-view.md](./ui-history-search-view.md) |
+| AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| Dashboard Home Enhancement | TASK-UI-07 | DashboardView, GreetingHeader, DashboardSuggestionSection, RecentTimeline | 完了 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
+| ChatPanel Real AI Chat Wiring | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | RuntimeBanner, ChatMessageList, ComposerArea, ErrorGuidance, HandoffBlock | spec_created | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
+| UI→Runtime Connection (plan/execute) | TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel, agentSlice, store/index.ts | 完了 | `docs/30-workflows/w4b-2-sc-ui-runtime-connection/` |
+| Wizard LLM Generation Flow | TASK-SC-07 | SkillCreateWizard, SkillInfoStep, GenerateStep | 完了 | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/` |
+| Skill Create Wizard — SkillInfoStep（Redesign W1）| UT-SKILL-WIZARD-W1-par-02a | SkillInfoStep | 完了 | `docs/30-workflows/W1-par-02a-skill-info-step/` |
 
 #### 未タスク（TASK-SC-06 後続）
 

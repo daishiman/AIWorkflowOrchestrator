@@ -7722,6 +7722,7 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 | ビルド・環境 | → [patterns-success-phase12-advanced.md](patterns-success-phase12-advanced.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
 | 型定義リファクタリング | → [patterns-guideline-type.md](patterns-guideline-type.md) | → [patterns-guideline-type.md](patterns-guideline-type.md) |
 | UI/フロントエンド | → [patterns-success-phase12-advanced.md](patterns-success-phase12-advanced.md), [patterns-success-ipc-auth-b.md](patterns-success-ipc-auth-b.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
+| 外部API統合 | → [patterns-success-external-api.md](patterns-success-external-api.md) | - |
 
 ---
 
@@ -7729,6 +7730,7 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 
 | 日付 | 変更内容 |
 | --- | --- |
+| 2026-04-08 | 外部API統合ドメイン追加（patterns-success-external-api.md 新規）— google スキル（Google Calendar + Slack）の成功パターン 3 件 |
 | 2026-03-26 | TASK-SDK-02 を反映し、public bridge と workflow state owner の分離パターンを追加 |
 | 2026-03-26 | TASK-SDK-01 の close-out を反映し、foundation / internal-contract task 向けの no-op Step 2 判定と blocker 重複未タスク化防止パターンを追加 |
 | 2026-03-18 | 500行制限準拠のため10ファイルに分割、ハブファイル化 |
