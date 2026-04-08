@@ -9,8 +9,8 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 3                                        |
 | 後続Phase  | Phase 5                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
@@ -27,6 +27,11 @@
 - Phase 5 はここで定義した Red テストを Green にする最小実装に限定する。
 - Phase 6 で edge case / regression を追加できるよう、ケース名を安定化する。
 
+## private method テスト方針
+
+本タスクは純粋関数 `inferSmartDefaults` のテストが主体のため private method テストは不要。
+ただし、将来的に内部メソッドが発生した場合は `(service as unknown as ServicePrivate)` キャストまたは public callback 経由を使う。
+
 ## テスト対象
 
 | テスト対象                            | テスト種別     | 目的                                    |
@@ -37,199 +42,75 @@
 | `inferSmartDefaults` フォールバック   | ユニットテスト | null フィールド・空 inferenceLog の確認 |
 | `inferSmartDefaults` inferenceLog     | ユニットテスト | 推論根拠の記録が正しいことの確認        |
 
-## テストケース定義
+## テストケース一覧（Red 段階）
 
-> 補足: `purpose` が空でも `category` は独立して評価されるため、format 推論のテストは `purpose: ""` のまま実施する。
+| TC-ID | 説明                                                        | 期待値                                           |
+| ----- | ----------------------------------------------------------- | ------------------------------------------------ |
+| TC-01 | purpose に 'Slack' を含む場合 tool = 'slack'                | `result.tool === "slack"`                        |
+| TC-02 | purpose に 'GitHub' を含む場合 tool = 'github'              | `result.tool === "github"`                       |
+| TC-03 | purpose に 'Notion' を含む場合 tool = 'notion'              | `result.tool === "notion"`                       |
+| TC-04 | purpose に ツールキーワードなし tool = null                 | `result.tool === null`                           |
+| TC-05 | purpose に '毎日' を含む timing = 'scheduled'               | `result.timing === "scheduled"`                  |
+| TC-06 | purpose に 'リアルタイム' を含む timing = 'realtime'        | `result.timing === "realtime"`                   |
+| TC-07 | purpose にタイミングキーワードなし timing = null            | `result.timing === null`                         |
+| TC-08 | category = 'code-support' の場合 format = 'code'            | `result.format === "code"`                       |
+| TC-09 | category = 'data-analysis' の場合 format = 'structured'     | `result.format === "structured"`                 |
+| TC-10 | category が null の場合 format = null                       | `result.format === null`                         |
+| TC-11 | purpose が空文字の場合 tool = null, timing = null           | `result.tool === null && result.timing === null` |
+| TC-12 | 全フィールドが推論できない場合 inferenceLog = []            | `result.inferenceLog.length === 0`               |
+| TC-13 | Slack推論成功時 inferenceLog に推論根拠が含まれる           | `result.inferenceLog[0]` に 'slack' が含まれる   |
+| TC-14 | 先勝ちルール: Slack と GitHub が両方含まれる場合 slack 優先 | `result.tool === "slack"`                        |
+| TC-15 | purpose が undefined/null の場合 tool = null                | `result.tool === null`                           |
 
-```typescript
-import { inferSmartDefaults } from "../smartDefaultReasoningService";
-import type { SkillInfoFormData } from "../../../types/skillCreator";
+## テスト実行コマンド
 
-const base: SkillInfoFormData = {
-  skillName: "テストスキル",
-  purpose: "",
-  category: null,
-};
+```bash
+# Red 状態確認（実装前）
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
 
-describe("inferSmartDefaults", () => {
-  // --- ツール推論 ---
-  describe("ツール推論", () => {
-    it("purpose に 'Slack' を含む場合、tool = 'slack' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "Slack通知を送る",
-      });
-      expect(result.tool).toBe("slack");
-    });
-
-    it("purpose に 'GitHub' を含む場合、tool = 'github' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "GitHubのPRをレビューする",
-      });
-      expect(result.tool).toBe("github");
-    });
-
-    it("purpose に 'Notion' を含む場合、tool = 'notion' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "Notionにページを作成する",
-      });
-      expect(result.tool).toBe("notion");
-    });
-
-    it("ツール名が含まれない場合、tool = null を返すこと（AC-4 フォールバック）", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "汎用的なタスクを実行する",
-      });
-      expect(result.tool).toBeNull();
-    });
-  });
-
-  // --- タイミング推論 ---
-  describe("タイミング推論", () => {
-    it("purpose に '毎日' を含む場合、timing = 'scheduled' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "毎日レポートを生成する",
-      });
-      expect(result.timing).toBe("scheduled");
-    });
-
-    it("purpose に '定期' を含む場合、timing = 'scheduled' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "定期的に実行する",
-      });
-      expect(result.timing).toBe("scheduled");
-    });
-
-    it("purpose に 'リアルタイム' を含む場合、timing = 'realtime' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "リアルタイムで通知する",
-      });
-      expect(result.timing).toBe("realtime");
-    });
-
-    it("タイミングキーワードが含まれない場合、timing = null を返すこと（AC-4 フォールバック）", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "コードを解析する",
-      });
-      expect(result.timing).toBeNull();
-    });
-  });
-
-  // --- フォーマット推論 ---
-  describe("フォーマット推論", () => {
-    it("category = 'code-support' の場合、format = 'code' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        category: "code-support",
-      });
-      expect(result.format).toBe("code");
-    });
-
-    it("category = 'data-analysis' の場合、format = 'structured' を推論すること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        category: "data-analysis",
-      });
-      expect(result.format).toBe("structured");
-    });
-
-    it("category が null の場合、format = null を返すこと（AC-4 フォールバック）", () => {
-      const result = inferSmartDefaults({ ...base, category: null });
-      expect(result.format).toBeNull();
-    });
-  });
-
-  // --- inferenceLog ---
-  describe("inferenceLog", () => {
-    it("推論が1件の場合、inferenceLog に1件の記録が含まれること", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: "Slack通知を送る",
-      });
-      expect(result.inferenceLog).toHaveLength(1);
-      expect(result.inferenceLog[0]).toContain("slack");
-    });
-
-    it("推論が0件の場合、inferenceLog は空配列 [] を返すこと（AC-4 フォールバック）", () => {
-      const result = inferSmartDefaults({ ...base, purpose: "" });
-      expect(result.inferenceLog).toEqual([]);
-    });
-  });
-
-  // --- フォールバック（AC-4） ---
-  describe("フォールバック（AC-4）", () => {
-    it("purpose が空文字の場合、tool/timing は null を返すこと（category 推論は継続する）", () => {
-      const result = inferSmartDefaults({ ...base, purpose: "" });
-      expect(result.tool).toBeNull();
-      expect(result.timing).toBeNull();
-      expect(result.format).toBeNull();
-    });
-
-    it("purpose が undefined の場合、tool/timing は null を返すこと（category 推論は継続する）", () => {
-      const result = inferSmartDefaults({
-        ...base,
-        purpose: undefined as unknown as string,
-      });
-      expect(result.tool).toBeNull();
-      expect(result.timing).toBeNull();
-      expect(result.format).toBeNull();
-    });
-  });
-});
+# 命名規則確認
+pnpm --filter @repo/shared typecheck
 ```
 
 ## 参照資料
 
-| 資料名             | パス                                      | 用途           |
-| ------------------ | ----------------------------------------- | -------------- |
-| 受け入れ基準       | `outputs/phase-1/acceptance-criteria.md`  | Phase 1 成果物 |
-| 設計レビュー結果   | `outputs/phase-3/design-review-result.md` | Phase 3 成果物 |
-| ゲート判定         | `outputs/phase-3/gate-decision.md`        | Phase 3 成果物 |
-| API シグネチャ設計 | `outputs/phase-2/api-design.md`           | Phase 2 成果物 |
-| 推論フローチャート | `outputs/phase-2/inference-flowchart.md`  | Phase 2 成果物 |
+| 資料名             | パス                                     | 用途           |
+| ------------------ | ---------------------------------------- | -------------- |
+| API シグネチャ設計 | `outputs/phase-2/api-design.md`          | Phase 2 成果物 |
+| 推論フローチャート | `outputs/phase-2/inference-flowchart.md` | Phase 2 成果物 |
+| テスト戦略         | `outputs/phase-2/test-strategy.md`       | Phase 2 成果物 |
+| ゲート判定         | `outputs/phase-3/gate-decision.md`       | Phase 3 成果物 |
 
 ## 実行手順
 
-1. Phase 3 成果物を確認し、ゲート判定が PASS であることを確認する。
-2. テストファイルを `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` に作成する。
-3. 全テストケースが Red（失敗）状態であることを確認する。
-4. テスト仕様書として成果物を出力する。
+1. Phase 2 のテスト戦略を確認する。
+2. Phase 3 のゲート判定が PASS/MINOR であることを確認する。
+3. テストファイルを作成する（実装なしで Red を確認）。
+4. Red テスト結果を記録する。
 
 ## 成果物
 
 | 成果物         | パス                                       | 説明                 |
 | -------------- | ------------------------------------------ | -------------------- |
-| テスト仕様書   | `outputs/phase-4/test-specification.md`    | テストケース一覧     |
-| Red テスト結果 | `outputs/phase-4/red-test-result.md`       | 実装前の失敗確認記録 |
-| 統合テスト計画 | `outputs/phase-4/integration-test-plan.md` | 統合テストシナリオ   |
+| テスト仕様書   | `outputs/phase-4/test-specification.md`    | テストケース定義一覧 |
+| Red テスト結果 | `outputs/phase-4/red-test-result.md`       | 実行結果（FAIL確認） |
+| 統合テスト計画 | `outputs/phase-4/integration-test-plan.md` | 統合テスト方針       |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] ツール推論（slack/github/notion）の全テストが定義されていること
-- [ ] タイミング推論（scheduled/realtime）の全テストが定義されていること
-- [ ] フォーマット推論（code/structured）の全テストが定義されていること
-- [ ] フォールバックテスト（AC-4）が定義されていること
-- [ ] inferenceLog のテストが定義されていること
-- [ ] 全テストが Red（失敗）状態であることが確認されていること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] TC-01〜TC-15 の全テストケースが定義されていること
+- [ ] Red 状態（テスト失敗）が確認されていること
+- [ ] テストファイルパスが命名規則と整合していること
 - [ ] 本Phase内の全タスクを100%実行完了
 
-## サブタスク管理
+## TDD Red 確認
 
-1. 参照資料の確認
-2. テストケース設計
-3. テストファイル作成（Red段階）
-4. Red状態確認
-5. 成果物出力
+```bash
+# 実行コマンド（Red 確認）
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
+# 期待: 全テスト FAIL（実装がないため）
+```
 
 ## タスク100%実行確認【必須】
 

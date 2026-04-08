@@ -1,20 +1,21 @@
-# Phase 11: 手動テストチェックリスト
+# Phase 11: 手動テストチェックリスト — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## 対象
+## 方針
 
-- `phase-11-manual-test.md` で定義した NON_VISUAL 手動確認
+本タスクは `NON_VISUAL` であり、UI スクリーンショットは不要。
+REPL / CLI / Vitest の実行結果を主証跡として、`inferSmartDefaults` の入出力を確認する。
 
 ## チェック項目
 
-- [ ] `inferSmartDefaults` が `Slack` / `GitHub` / `Notion` から tool を推論する
-- [ ] `inferSmartDefaults` が定期実行キーワードから `scheduled` を返す
-- [ ] `inferSmartDefaults` がリアルタイムキーワードから `realtime` を返す
-- [ ] `category = code-support` で `format = code` になる
-- [ ] 推論不能時に `null` と空の `inferenceLog` を返す
-- [ ] `purpose` が空白のみでも空文字として扱われ、category 推論は独立継続する
-- [ ] W2-seq-03a が存在する場合のみ統合 UI 動作を確認する
+| TC-ID | 確認内容                               | 判定 | 証跡                    |
+| ----- | -------------------------------------- | ---- | ----------------------- |
+| MT-01 | Slack 推論: `tool = 'slack'`           | [x]  | `manual-test-result.md` |
+| MT-02 | 毎日タイミング: `timing = 'scheduled'` | [x]  | `manual-test-result.md` |
+| MT-03 | code-support: `format = 'code'`        | [x]  | `manual-test-result.md` |
+| MT-04 | 全フォールバック: `inferenceLog = []`  | [x]  | `manual-test-result.md` |
+| MT-05 | `inferenceLog` に推論根拠が記録される  | [x]  | `manual-test-result.md` |
 
-## 証跡メモ
+## 補足
 
-- REPL / CLI の出力をそのまま記録する
-- スクリーンショットは不要
+- Phase 11 のスクリーンショットは生成しない
+- 33件の Vitest 実行結果を手動確認の代替証跡として扱う

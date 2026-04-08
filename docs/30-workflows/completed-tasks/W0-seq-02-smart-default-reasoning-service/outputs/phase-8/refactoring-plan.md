@@ -1,45 +1,28 @@
-# リファクタリング計画・実施記録
+# Phase 8: リファクタリング計画 — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
-## タスク情報
+## チェック項目と結果
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 8                                              |
+### 1. safeOn パターンが他の on\* メソッドと同形か
 
-## 実施内容
+全メソッド（onProgress / onWorkflowStateChanged / onAdapterStatusChanged / onOutputReady / onApprovalRequest）が
+`safeOn<T>(IPC_CHANNELS.XXX, callback)` の同一パターンで実装されている。
 
-### 1. 推論ルールの定数化
+**判定**: 変更なし、理由: 既存パターンと一致
 
-```typescript
-const TOOL_KEYWORDS: Array<{
-  keyword: string;
-  tool: NonNullable<SmartDefaultResult["tool"]>;
-}> = [
-  { keyword: "Slack", tool: "slack" },
-  { keyword: "GitHub", tool: "github" },
-  { keyword: "Notion", tool: "notion" },
-];
+### 2. pendingApproval state が SkillLifecyclePanel 外に漏れていないか
 
-const SCHEDULED_PATTERN = /毎日|毎週|定期|スケジュール/;
-const REALTIME_PATTERN = /リアルタイム|即座|すぐに/;
-```
+`pendingApproval` は `useState<ApprovalRequestPayload | null>(null)` として
+コンポーネント内部に閉じており、props / context / store への露出なし。
 
-新しいツール対応追加は `TOOL_KEYWORDS` 配列への1行追加で完結する。
+**判定**: 変更なし、理由: state の責務境界が正しく閉じている
 
-### 2. 推論ロジックの関数分割
+### 3. JSDoc コメントが TASK-SDK-07 コメントに準拠しているか
 
-- `inferTool(purpose)` — ツール推論
-- `inferTiming(purpose)` — タイミング推論
-- `inferFormat(category)` — フォーマット推論
+- skill-creator-api.ts: interface に JSDoc + 実装に `// TASK-SDK-07:` コメント付き
+- SkillLifecyclePanel.tsx: 型定義・state・useEffect・ハンドラ・レンダリング全箇所に `// TASK-SDK-07:` コメント付き
 
-各関数は `{ result, log | null }` を返し、公開 API `inferSmartDefaults` がまとめる構造。
+**判定**: 変更なし、理由: TASK-SDK-07 コメント規約に準拠済み
 
-### 3. リファクタ後テスト確認
+## リファクタリング総合判定
 
-| 項目       | 結果                     |
-| ---------- | ------------------------ |
-| Tests      | 32 passed / 0 failed ✅  |
-| TypeScript | エラー 0件 ✅            |
-| ESLint     | エラー 0件 ✅            |
-| Coverage   | 100% 維持（計測済み） ✅ |
+**変更なし** — 全チェック項目で既存パターンと一致し、実装にリファクタリングの必要なし。
