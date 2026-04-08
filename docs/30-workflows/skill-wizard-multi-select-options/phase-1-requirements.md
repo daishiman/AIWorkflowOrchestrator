@@ -79,13 +79,13 @@ apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
 - 変更前: `answer.selectedOption !== null || answer.freeText.trim().length > 0 || answer.scheduleConfig !== undefined`
 - 変更後: `answer.selectedOptions.length > 0 || answer.freeText.trim().length > 0 || answer.scheduleConfig !== undefined`
 
-### FR-05: ApplySummaryCard の複数値表示
+### FR-05: ApplySummaryCard の未回答判定と SmartDefault 表示
 
 未回答判定と表示ロジックを複数選択対応にする。
 
 - 未回答判定: `answer.selectedOptions.length === 0 && answer.freeText.trim() === ""`
-- 選択値の表示: 複数の場合は `"、"` 区切りで結合（例: `"自分のみ、チームメンバー"`）
 - SmartDefault表示: 現行通り（SmartDefaultResult は `string | null` のまま）
+- 回答済みの選択値を別途表示する UI は本タスクでは追加しない
 
 ### FR-06: SmartDefaults の複数選択変換
 
@@ -98,7 +98,7 @@ apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
 ### FR-07: SkillCreateWizard の統合更新
 
 - `DEFAULT_ANSWERS` の初期値: `selectedOption: null` → `selectedOptions: []`
-- `resolveExternalIntegration`: `q5Answer.selectedOption` → `q5Answer.selectedOptions[0] ?? null`（先頭値参照）または複数値対応ロジックに変更
+- `resolveExternalIntegration`: `q5Answer.selectedOption` → `q5Answer.selectedOptions[0] ?? null`（先頭値参照）
 
 ---
 
@@ -139,7 +139,7 @@ apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
 
 - `QuestionAnswer` の型変更（`selectedOption: string | null` → `selectedOptions: string[]`）
 - `ConversationRoundStep.tsx` のトグル選択ロジック・UI変更
-- `ApplySummaryCard.tsx` の複数値表示対応
+- `ApplySummaryCard.tsx` の未回答判定更新
 - `SkillCreateWizard.tsx` の `DEFAULT_ANSWERS` 初期値・`resolveExternalIntegration` 更新
 - 関連ユニットテストの修正・追加
 
@@ -155,21 +155,21 @@ apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
 
 ## 受け入れ基準
 
-| ID    | 条件                                                                               | 確認方法              |
-| ----- | ---------------------------------------------------------------------------------- | --------------------- |
-| AC-01 | Q1〜Q6 で複数のボタンを同時に選択できる                                            | ユニットテスト / 手動 |
-| AC-02 | 選択済みボタンを再クリックすると選択が解除される                                   | ユニットテスト        |
-| AC-03 | `selectedOptions` が空の状態から開始する                                           | 初期値テスト          |
-| AC-04 | Q3で「定期実行」を選択すると ScheduleConfigInput が展開される                      | ユニットテスト        |
-| AC-05 | Q3から「定期実行」の選択を解除すると ScheduleConfigInput が閉じる                  | ユニットテスト        |
-| AC-06 | Q3で「定期実行」と他の選択肢を同時選択した場合も ScheduleConfigInput が展開される  | ユニットテスト        |
-| AC-07 | SmartDefaults 適用時、推論値が選択肢に含まれれば `selectedOptions: [value]` になる | ユニットテスト        |
-| AC-08 | SmartDefaults 適用時、推論値が選択肢に含まれなければ `freeText` に入る             | ユニットテスト        |
-| AC-09 | `aria-pressed` が選択状態に応じて `true`/`false` を返す                            | DOM アサーション      |
-| AC-10 | ApplySummaryCard で複数選択された値が `"、"` 区切りで表示される                    | ユニットテスト        |
-| AC-11 | TypeScript コンパイルエラーが0件                                                   | `pnpm typecheck`      |
-| AC-12 | ESLint エラーが0件                                                                 | `pnpm lint`           |
-| AC-13 | `resolveExternalIntegration` が `selectedOptions[0]` を正しく参照する              | ユニットテスト        |
+| ID    | 条件                                                                                    | 確認方法              |
+| ----- | --------------------------------------------------------------------------------------- | --------------------- |
+| AC-01 | Q1〜Q6 で複数のボタンを同時に選択できる                                                 | ユニットテスト / 手動 |
+| AC-02 | 選択済みボタンを再クリックすると選択が解除される                                        | ユニットテスト        |
+| AC-03 | `selectedOptions` が空の状態から開始する                                                | 初期値テスト          |
+| AC-04 | Q3で「定期実行」を選択すると ScheduleConfigInput が展開される                           | ユニットテスト        |
+| AC-05 | Q3から「定期実行」の選択を解除すると ScheduleConfigInput が閉じる                       | ユニットテスト        |
+| AC-06 | Q3で「定期実行」と他の選択肢を同時選択した場合も ScheduleConfigInput が展開される       | ユニットテスト        |
+| AC-07 | SmartDefaults 適用時、推論値が選択肢に含まれれば `selectedOptions: [value]` になる      | ユニットテスト        |
+| AC-08 | SmartDefaults 適用時、推論値が選択肢に含まれなければ `freeText` に入る                  | ユニットテスト        |
+| AC-09 | `aria-pressed` が選択状態に応じて `true`/`false` を返す                                 | DOM アサーション      |
+| AC-10 | ApplySummaryCard で未回答設問に SmartDefault 値が表示され、回答済み設問では表示されない | ユニットテスト        |
+| AC-11 | TypeScript コンパイルエラーが0件                                                        | `pnpm typecheck`      |
+| AC-12 | ESLint エラーが0件                                                                      | `pnpm lint`           |
+| AC-13 | `resolveExternalIntegration` が `selectedOptions[0]` を正しく参照する                   | ユニットテスト        |
 
 ---
 

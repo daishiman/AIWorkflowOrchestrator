@@ -51,7 +51,7 @@
       "phase": 7,
       "name": "カバレッジ確認",
       "status": "blocked",
-      "artifact": "phase-7-coverage.md",
+      "artifact": "phase-7-coverage-verification.md",
       "blockedReason": "Phase 6 完了後に開始"
     },
     {
@@ -65,7 +65,7 @@
       "phase": 9,
       "name": "品質保証",
       "status": "blocked",
-      "artifact": "phase-9-qa.md",
+      "artifact": "phase-9-quality-assurance.md",
       "blockedReason": "Phase 8 完了後に開始"
     },
     {
@@ -86,14 +86,14 @@
       "phase": 12,
       "name": "ドキュメント更新",
       "status": "blocked",
-      "artifact": "phase-12-docs.md",
+      "artifact": "phase-12-documentation.md",
       "blockedReason": "Phase 11 完了後に開始"
     },
     {
       "phase": 13,
       "name": "PR作成",
       "status": "blocked",
-      "artifact": "phase-13-pr.md",
+      "artifact": "phase-13-pr-creation.md",
       "blockedReason": "ユーザー承認後に開始"
     }
   ],

@@ -29,7 +29,7 @@
 | ---- | ----------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------- |
 | T-01 | `packages/shared/src/types/skillCreator.ts`                                   | 型変更           | `QuestionAnswer.selectedOption: string \| null` → `selectedOptions: string[]` |
 | T-02 | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | 動作変更         | トグル選択ロジック・判定・表示・Q3特殊処理                                    |
-| T-03 | `apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx`      | 表示変更         | 未回答判定・複数値の結合表示                                                  |
+| T-03 | `apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx`      | 表示変更         | 未回答判定・SmartDefault表示の維持                                            |
 | T-04 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | 初期値・参照変更 | `DEFAULT_ANSWERS` / `resolveExternalIntegration`                              |
 | T-05 | （テストファイル群）                                                          | テスト修正       | `selectedOption` 参照を `selectedOptions` に更新                              |
 
