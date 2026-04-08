@@ -242,3 +242,17 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/phase-11-12-guide.md](references/phase-11-12-guide.md)
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
+
+---
+
+### Task 5: スキルフィードバックレポート（改善点なしでも出力必須）
+
+| 観点             | 記録内容                               |
+| ---------------- | -------------------------------------- |
+| テンプレート改善 | Phaseテンプレートの漏れや曖昧さ        |
+| ワークフロー改善 | 機械検証や手順分岐の改善余地           |
+| ドキュメント改善 | 再利用しやすい横断ガイドライン化の候補 |
+
+出力:
+
+- `outputs/phase-12/skill-feedback-report.md`

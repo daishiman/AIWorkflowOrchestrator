@@ -1,4 +1,4 @@
-# Phase 13: PR readiness — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
+# Phase 13: PR準備状況 — UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001
 
 ## 状態
 
@@ -9,6 +9,8 @@ blocked
 - Phase 1-12 は完了
 - commit / push / PR はユーザー承認待ち
 
-## current follow-up
+## 次の対応
 
-0 件
+1 件
+
+- `outputs/phase-13/pr-info.md` を使った PR 作成はユーザー承認後に実施する
