@@ -1,93 +1,38 @@
-# Phase 6: エッジケーステスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 6: エッジケース結果 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
-## 対象エッジケース
+## エッジケース検証
 
-### TC-16: 先勝ちルール（ツール複数一致）
+### EC-1: `executionPrompt` state 削除後の `useState` import 不要化
 
-**シナリオ**: purpose に 'Slack' と 'GitHub' 両方が含まれる
+- **確認方法**: `useState` の使用箇所が他にも残っているため import は維持される
+- **結果**: `useState` は他の state（`createdSkillName`, `isExecuting` 等）で引き続き使用 → import 削除不要
+- **判定**: PASS（不要な変更なし）
 
-**検証内容**:
+### EC-2: `defaultExecutionPrompt` が undefined/null にならない保証
 
-- `TOOL_KEYWORDS` は先頭から順に評価される
-- 最初に一致した 'Slack' が採用される
-- 後続の 'GitHub' は評価されない
+- **確認方法**: 定数定義を確認（`const defaultExecutionPrompt = "このスキルの基本動作を..."` 行付近）
+- **結果**: コンパイル時定数のため実行時に undefined にならない
+- **判定**: PASS
 
-**入力**: `{ purpose: "Slack と GitHub を使う", category: null }`
+### EC-3: テキストエリア削除後の DOM 構造整合性
 
-**結果**: PASS（tool = "slack"）
+- **確認方法**: 削除対象の textarea は独立した要素として配置されており、隣接要素への影響なし
+- **結果**: レイアウト崩れなし
+- **判定**: PASS
 
----
+### EC-4: `describe.skip` ブロック内の旧 testid 参照
 
-### TC-17: 大文字小文字区別
+- **確認方法**: `SkillLifecyclePanel.llm-generation.test.tsx` と `auth-regression.test.tsx` の skip ブロック確認
+- **内容**: `skill-lifecycle-request-input` への参照が `describe.skip` 内にある（本タスク対象の `skill-lifecycle-execution-input` ではない）
+- **結果**: スキップされているため FAIL なし
+- **判定**: PASS（旧 skip はそのまま維持で問題なし）
 
-**シナリオ**: purpose に小文字の 'slack' が含まれる
+### EC-5: `handleExecute` 早期 return 後の状態不変性
 
-**検証内容**:
+- **確認方法**: `!createdSkillName` の場合の早期 return で `executionPrompt` 参照がないことを確認
+- **結果**: 早期 return パスは `defaultExecutionPrompt` を使用しないため問題なし
+- **判定**: PASS
 
-- `String.includes()` は大文字小文字を区別する
-- 'slack'（小文字）は 'Slack'（大文字始まり）にマッチしない
+## エッジケース総合判定
 
-**入力**: `{ purpose: "slack通知を送る", category: null }`
-
-**結果**: PASS（tool = null）
-
----
-
-### TC-18: 部分一致（'SlackBot'）
-
-**シナリオ**: purpose に 'SlackBot' が含まれる
-
-**検証内容**:
-
-- `String.includes("Slack")` は 'SlackBot' の中の 'Slack' に一致する
-- 部分一致でツール推論が正しく動作する
-
-**入力**: `{ purpose: "SlackBotを作成する", category: null }`
-
-**結果**: PASS（tool = "slack"）
-
----
-
-### TC-19: purpose が null（エラーなし）
-
-**シナリオ**: purpose に null が渡される（型違反の実ユーザー操作を想定）
-
-**検証内容**:
-
-- `normalizePurpose(null)` が空文字を返す
-- エラー（TypeError 等）を throw しない
-- 全フィールドが null で返る
-
-**入力**: `{ purpose: null as unknown as string, category: null }`
-
-**結果**: PASS（tool = null、エラーなし）
-
----
-
-### TC-20: 先勝ちルール（タイミング複数一致）
-
-**シナリオ**: purpose に '毎日' と 'リアルタイム' 両方が含まれる
-
-**検証内容**:
-
-- `SCHEDULED_PATTERN` が先に評価される
-- '毎日' が一致した時点で 'scheduled' が採用される
-- 後続の `REALTIME_PATTERN` は評価されない
-
-**入力**: `{ purpose: "毎日リアルタイムで処理する", category: null }`
-
-**結果**: PASS（timing = "scheduled"）
-
----
-
-## エッジケーステスト総合評価
-
-全エッジケース PASS。
-
-| 観点                       | 確認内容                           | 結果 |
-| -------------------------- | ---------------------------------- | ---- |
-| 先勝ちルール（ツール）     | 複数キーワード時は先頭優先         | PASS |
-| 大文字小文字区別           | 大文字始まりのみ一致               | PASS |
-| 部分一致                   | キーワードが語の一部であっても一致 | PASS |
-| null 入力耐性              | エラーを throw せず null を返す    | PASS |
-| 先勝ちルール（タイミング） | scheduled が realtime より優先     | PASS |
+全 EC PASS。予期しない副作用なし。

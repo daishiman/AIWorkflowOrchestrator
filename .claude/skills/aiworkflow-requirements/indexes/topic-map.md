@@ -4499,7 +4499,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L327 |
+| 続き | L331 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4973,6 +4973,7 @@ node scripts/list-specs.js --topics
 | 重要設計決定 | L25 |
 | コンポーネント設計パターン早見表 | L65 |
 | テスト戦略 | L74 |
+| SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
 

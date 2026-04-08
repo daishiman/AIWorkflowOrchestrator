@@ -1,51 +1,18 @@
-# Phase 5: 変更ファイル一覧 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 5: 変更ファイル一覧 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## 変更ファイル一覧
 
-| ファイルパス                                                                | 変更種別 | 行数  | 内容                                         |
-| --------------------------------------------------------------------------- | -------- | ----- | -------------------------------------------- |
-| `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` | 新規作成 | 142行 | 推論サービス本体                             |
-| `packages/shared/src/services/skillCreator/index.ts`                        | 更新     | +1行  | `inferSmartDefaults` を barrel export に追加 |
-
-## 変更の詳細
-
-### smartDefaultReasoningService.ts（新規作成）
-
-```
-packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts
-```
-
-- `TOOL_KEYWORDS` 定数（Slack / GitHub / Notion）
-- `SCHEDULED_PATTERN` 正規表現定数
-- `REALTIME_PATTERN` 正規表現定数
-- `inferTool(purpose)` 内部ヘルパー関数
-- `inferTiming(purpose)` 内部ヘルパー関数
-- `inferFormat(category)` 内部ヘルパー関数
-- `createEmptyResult()` 内部ヘルパー関数
-- `normalizePurpose(value)` 内部ヘルパー関数
-- `inferSmartDefaults(input)` 公開 API（export）
-
-### index.ts（更新）
-
-```
-packages/shared/src/services/skillCreator/index.ts
-```
-
-追加行:
-
-```typescript
-export { inferSmartDefaults } from "./smartDefaultReasoningService";
-```
+| ファイルパス                                                                        | 変更種別 | 内容                                                      |
+| ----------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                | 更新     | textarea削除・state削除・ハンドラ更新                     |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` | 更新     | `skill-lifecycle-execution-input` 非存在テスト追加（2件） |
 
 ## 変更なしのファイル
 
-| ファイルパス                                | 理由                                                          |
-| ------------------------------------------- | ------------------------------------------------------------- |
-| `packages/shared/src/types/skillCreator.ts` | `SkillInfoFormData` / `SmartDefaultResult` 型は既存定義を利用 |
-| テスト以外の既存ファイル                    | 本タスクの影響範囲外                                          |
-
-## 新規テストファイル
-
-| ファイルパス                                                                               | 変更種別 | 件数 |
-| ------------------------------------------------------------------------------------------ | -------- | ---- |
-| `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` | 新規作成 | 33件 |
+| ファイルパス                                     | 理由                                                        |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| `SkillLifecyclePanel.adapter-status.test.tsx`    | `skill-lifecycle-execution-input` 参照なし                  |
+| `SkillLifecyclePanel.approval.test.tsx`          | `skill-lifecycle-execution-input` 参照なし                  |
+| `SkillLifecyclePanel.auth-regression.test.tsx`   | `skill-lifecycle-request-input` 参照は describe.skip 内のみ |
+| `SkillLifecyclePanel.error-persistence.test.tsx` | `skill-lifecycle-execution-input` 参照なし                  |
+| `SkillLifecyclePanel.llm-generation.test.tsx`    | `skill-lifecycle-request-input` 参照は全て describe.skip 内 |
