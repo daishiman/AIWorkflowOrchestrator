@@ -1,21 +1,32 @@
-# Phase 11: 手動テストチェックリスト — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# 手動テスト チェックリスト
 
-## 方針
+## 事前確認
 
-本タスクは `NON_VISUAL` であり、UI スクリーンショットは不要。
-REPL / CLI / Vitest の実行結果を主証跡として、`inferSmartDefaults` の入出力を確認する。
+- [x] Phase 5 実装が完了している
+- [x] TypeScript 型チェックが通過している（`pnpm --filter @repo/desktop typecheck`）
 
-## チェック項目
+## 自動テスト実行
 
-| TC-ID | 確認内容                               | 判定 | 証跡                    |
-| ----- | -------------------------------------- | ---- | ----------------------- |
-| MT-01 | Slack 推論: `tool = 'slack'`           | [x]  | `manual-test-result.md` |
-| MT-02 | 毎日タイミング: `timing = 'scheduled'` | [x]  | `manual-test-result.md` |
-| MT-03 | code-support: `format = 'code'`        | [x]  | `manual-test-result.md` |
-| MT-04 | 全フォールバック: `inferenceLog = []`  | [x]  | `manual-test-result.md` |
-| MT-05 | `inferenceLog` に推論根拠が記録される  | [x]  | `manual-test-result.md` |
+- [x] `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` を実行した
+- [x] 全テストが PASS した
+- [x] テスト件数・実行時刻を記録した
 
-## 補足
+## 受入基準確認
 
-- Phase 11 のスクリーンショットは生成しない
-- 33件の Vitest 実行結果を手動確認の代替証跡として扱う
+- [x] AC-1: `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている
+- [x] AC-2: `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている
+- [x] AC-3: `apiKeyDegraded` 独自算出ロジック（L117-120）が削除されている
+- [x] AC-4: `@repo/shared/types` 経由でインポートしている
+- [x] AC-5: 既存のユニットテストがすべて PASS している
+- [x] AC-6: TypeScript 型チェックがエラーなく通過している
+
+## NON_VISUAL 確認
+
+- [x] UI コンポーネントへの変更がないことを確認した
+- [x] スクリーンショット不要であることを確認した
+- [x] `screenshot-plan.json` を生成しないことを確認した
+
+## 完了確認
+
+- [x] `manual-test-result.md` を作成・記入した
+- [x] `discovered-issues.md` を作成した（0件でも作成必須）

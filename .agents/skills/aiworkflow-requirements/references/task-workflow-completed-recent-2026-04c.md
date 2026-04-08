@@ -327,15 +327,15 @@ TASK-FIX-IPC-SKILL-NAME-001 修正作業中に `registerRuntimeSkillCreatorHandl
 
 ### タスク: UT-SKILL-WIZARD-W1-par-02a SkillInfoStep コンポーネント実装（Step 0）（2026-04-07）
 
-| 項目       | 値                                                                   |
-| ---------- | -------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W1-par-02a                                           |
-| ステータス | **完了**                                                             |
-| タイプ     | UI implementation / wizard redesign                                  |
-| 優先度     | 高                                                                   |
-| 完了日     | 2026-04-07                                                           |
-| 対象       | `SkillInfoStep.tsx`（新規）/ `DescribeStep.tsx`（削除）              |
-| 成果物     | `docs/30-workflows/W1-par-02a-skill-info-step/`                      |
+| 項目       | 値                                                      |
+| ---------- | ------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W1-par-02a                              |
+| ステータス | **完了**                                                |
+| タイプ     | UI implementation / wizard redesign                     |
+| 優先度     | 高                                                      |
+| 完了日     | 2026-04-07                                              |
+| 対象       | `SkillInfoStep.tsx`（新規）/ `DescribeStep.tsx`（削除） |
+| 成果物     | `docs/30-workflows/W1-par-02a-skill-info-step/`         |
 
 #### 実施内容
 
@@ -352,6 +352,44 @@ TASK-FIX-IPC-SKILL-NAME-001 修正作業中に `registerRuntimeSkillCreatorHandl
 - Phase 11 スクリーンショット 8 件（TC-01〜TC-08）保存
 - Phase 12 成果物 6件 PASS（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
 - 未タスク: 0件（W2 への引き継ぎは W1-par-02b / W2-seq-03b のスコープ）
+
+---
+
+### タスク: UT-SKILL-WIZARD-W1-par-02d SkillLifecyclePanel ウィザード遷移ボタン化（2026-04-08）
+
+| 項目       | 値                                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W1-par-02d                                                                         |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                     |
+| タイプ     | UI implementation / wizard redesign                                                                |
+| 優先度     | 高                                                                                                 |
+| 完了日     | 2026-04-08                                                                                         |
+| 対象       | `SkillLifecyclePanel.tsx` / `SkillManagementPanel.tsx` / `SkillCreateWizard.tsx` / `agentSlice.ts` |
+| 成果物     | `docs/30-workflows/W1-par-02d-lifecycle-panel/`                                                    |
+
+#### 実施内容
+
+- `SkillLifecyclePanel.tsx` のテキストエリア・「スキルを生成する」ボタン・「方針を決める」ボタンを削除し、「スキル作成ウィザードを開く →」ボタン一本に置き換え
+- `onOpenSkillWizard?: () => void` / `onOpenWizard?: () => void` Props を追加（既存 Props との共存）
+- `agentSlice.ts` の `PlanResult` インターフェースに `skillSpec?: string` を追加し canonical 値として保持
+- `approvedSkillSpec` 重複 state を除去し `activePlanResult.skillSpec` を canonical data flow として一本化
+- `SkillCreateWizard.tsx`: `executePlan` に canonical `skillSpec` を渡すよう修正
+- `SkillManagementPanel.tsx`: `lifecycle` ビューで `onOpenSkillWizard` を接続
+- テスト 4 件（auth-regression / llm-generation / error-persistence / SkillLifecyclePanel）を current Props に合わせて更新
+- 仕様書ディレクトリを `skill-wizard-redesign-lane/W1-par-02d-lifecycle-panel/` → `docs/30-workflows/W1-par-02d-lifecycle-panel/` へ移動（フラット化）
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                                                                | 解決策                                                                                        |
+| --- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 1   | `approvedSkillSpec`（textarea draft）と `activePlanResult.skillSpec`（approved snapshot）の二重管理混在 | `activePlanResult.skillSpec` を canonical 値として一本化し、textarea draft を除去             |
+| 2   | `onOpenWizard` と `onOpenSkillWizard` の両 Props 共存                                                   | 両方 optional で残し、`SkillManagementPanel` で同値（`() => setCurrentView("create")`）を渡す |
+| 3   | ディレクトリ移動後の `skill-wizard-redesign-lane/index.md` 参照パス不整合                               | 未コミット段階のため次回コミット時に修正                                                      |
+
+#### 検証証跡
+
+- テスト 4 ファイル / Phase 12 成果物 6件 PASS
+- 未タスク: 0件
 
 ### タスク: TASK-SDK-06 verify-and-improve-lifecycle-surface（2026-03-27）
 

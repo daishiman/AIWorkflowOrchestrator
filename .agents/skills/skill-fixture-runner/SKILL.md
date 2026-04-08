@@ -97,11 +97,3 @@ node scripts/validate-schemas.js --target <schemas-directory>
 | references/ | 1  | テストカバレッジ情報 |
 
 テストカバレッジ詳細: [references/test-coverage.md](references/test-coverage.md)
-
-## 変更履歴
-
-| Version | Date       | Changes                                                          |
-| ------- | ---------- | ---------------------------------------------------------------- |
-| 1.0.0   | 2026-02-01 | 初版: 5検証スクリプト、TASK-8C-F 62テスト対応                    |
-| 1.1.0   | 2026-02-01 | TASK-8C-G: 境界値フィクスチャ6種追加、96テスト・100%カバレッジ   |
-| 2.0.0   | 2026-02-01 | skill-creator準拠リファクタリング: 5セクション構造化、references/分離、LOGS.md追加 |

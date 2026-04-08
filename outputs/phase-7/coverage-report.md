@@ -1,52 +1,73 @@
-# Phase 7: カバレッジ計測結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 7: カバレッジ確認レポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 計測対象
+## 実施日時
 
-- ファイル: `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts`
-- テスト: `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`
+2026-04-07
 
-## カバレッジ結果
+---
 
-| 指標      | 計測値 | 目標 | 判定 |
-| --------- | ------ | ---- | ---- |
-| Lines     | 100%   | 80%+ | PASS |
-| Branch    | 100%   | 80%+ | PASS |
-| Function  | 100%   | 80%+ | PASS |
-| Statement | 100%   | 80%+ | PASS |
+## カバレッジ実測結果
 
-## 分岐別カバレッジ確認
+| カバレッジ種別 | Phase 7 目標値 | 実測値 | 判定 |
+| -------------- | -------------- | ------ | ---- |
+| line           | 80% 以上       | 83.15% | PASS |
+| branch         | 60% 以上       | 80%    | PASS |
+| statements     | （参考）       | 83.15% | -    |
+| functions      | （参考）       | 66.66% | -    |
 
-| 分岐                                  | カバー済みテスト     | 結果 |
-| ------------------------------------- | -------------------- | ---- |
-| `inferTool`: Slack 一致               | TC-01, TC-16, TC-18  | PASS |
-| `inferTool`: GitHub 一致              | TC-02                | PASS |
-| `inferTool`: Notion 一致              | TC-03                | PASS |
-| `inferTool`: 不一致（null）           | TC-04, TC-17         | PASS |
-| `inferTiming`: SCHEDULED_PATTERN 一致 | TC-05〜TC-07         | PASS |
-| `inferTiming`: REALTIME_PATTERN 一致  | TC-08, 他            | PASS |
-| `inferTiming`: 不一致（null）         | TC-09                | PASS |
-| `inferFormat`: code-support           | TC-10                | PASS |
-| `inferFormat`: data-analysis          | TC-11                | PASS |
-| `inferFormat`: その他（null）         | TC-12, 他            | PASS |
-| `normalizePurpose`: null 入力         | TC-19                | PASS |
-| `normalizePurpose`: undefined 入力    | フォールバックテスト | PASS |
-| `normalizePurpose`: 空白のみ          | フォールバックテスト | PASS |
-| purpose 空文字 → tool/timing スキップ | TC-15                | PASS |
-| purpose 非空 → tool/timing 推論実行   | TC-01〜TC-08         | PASS |
+**総合判定: PASS → Phase 8 へ進む**
 
-## 判断
+---
 
-`smartDefaultReasoningService.ts` の全行・全分岐・全関数が 33件のテストによってカバーされている。
-カバレッジ目標（80%+）を全指標で達成。追加のテスト補充は不要。
+## 実行コマンド
 
-## テスト実行結果
+```bash
+node_modules/.bin/vitest run \
+  src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts \
+  --coverage \
+  --coverage.include="src/renderer/hooks/useMainlineExecutionAccess.ts" \
+  --coverage.reporter=text
+```
+
+---
+
+## Vitest カバレッジ出力（抜粋）
 
 ```
-✓ smartDefaultReasoningService.test.ts (33 tests) PASS
-  - ツール推論:         8件 PASS
-  - タイミング推論:     9件 PASS
-  - フォーマット推論:   6件 PASS
-  - inferenceLog:       4件 PASS
-  - フォールバック:     3件 PASS
-  - 組み合わせ:         3件 PASS
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   83.15 |       80 |   66.66 |   83.15 |
+ ...utionAccess.ts |   83.15 |       80 |   66.66 |   83.15 | ...,76-85,108-113
+-------------------|---------|----------|---------|---------|-------------------
 ```
+
+---
+
+## 未カバー行の分析
+
+| 行範囲    | 内容                                                                                 | 未カバーの理由                                 | 対応方針                                                                   |
+| --------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------- |
+| L76-L85   | `validateAllModes` 関数本体（useEffect 内の非同期処理・catch ブランチ）              | catch ブランチ（エラー時の状態更新）が未テスト | 対応不要（エラーパスは既存テストの対象外。将来タスクで追加可能）           |
+| L108-L113 | `refreshHealth` 関数本体（selectedProviderId が存在する場合の checkHealth 呼び出し） | refreshHealth の直接呼び出しテストが未実施     | 対応不要（本タスクのスコープ外。refreshHealth の動作確認は別タスクで対応） |
+
+---
+
+## function カバレッジについて
+
+function カバレッジ 66.66% はプロジェクトのグローバル閾値（80%）を下回るが、Phase 7 の判定基準は「line ≥ 80% かつ branch ≥ 60%」であるため PASS とする。
+
+未カバーの関数:
+
+1. `validateAllModes` — 非同期関数、エラーパスのみ未カバー
+2. `refreshHealth` — 返り値として公開されるが直接呼び出しテストなし
+
+これらは本タスクのスコープ（`resolveHealthPolicy` 統合）とは独立した関心事であるため、本タスクでの追加テストは行わない。
+
+---
+
+## 次フェーズへの引き継ぎ事項
+
+- Phase 7 目標値（line ≥ 80%, branch ≥ 60%）を達成
+- Phase 8（リファクタリング確認）へ進む

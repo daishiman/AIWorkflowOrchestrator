@@ -110,6 +110,10 @@
 - Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
 - 全タスクが「完了」と記録されてから Phase 12 を閉じる
 - `documentation-changelog.md` だけでなく `outputs/phase-12/*.md` 全体に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+- **[W1-02b-3] ドキュメント内の識別子（関数名・props 名）が現行コードのものか確認する**
+  - `implementation-guide.md` に記載した callback 名・props 名・型名を現行実装ファイルで `grep` 確認する
+  - 代表コードスニペットは「型定義・props interface」から引用する方針にする（手書き snippets は drift の温床）
+  - 不一致が見つかった場合は `implementation-guide.md` を current facts へ更新してから compliance-check を PASS にする
 - `spec_created` workflow は root path と status の整合も確認し、`completed-tasks/` 配下にあることを理由に `completed` へ上げない
 - `計画済み` / `更新予定` / `作成待` / `完了または計画済み` は未完了扱いとし、compliance-check を PASS にしない
 - `outputs/phase-11/manual-test-result.md` が `not_run` のままなら Phase 11 / 12 を completed にしない

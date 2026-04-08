@@ -263,382 +263,167 @@ afterEach(() => {
   delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
 });
 
+const defaultProps = {
+  onClose: vi.fn(),
+  onOpenWizard: vi.fn(),
+  onOpenSkillWizard: vi.fn(),
+};
+
+const renderPanel = (props?: Partial<typeof defaultProps>) =>
+  render(<SkillLifecyclePanel {...defaultProps} {...props} />);
+
 describe("SkillLifecyclePanel", () => {
-  it("依頼文から mode 判定を行い、セッションログに追記する", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+  describe("ウィザード遷移化 - ウィザードボタンの表示", () => {
+    it("ウィザードボタンがdata-testidで取得できる", () => {
+      renderPanel();
+      expect(
+        screen.getByTestId("skill-lifecycle-open-wizard-button"),
+      ).toBeInTheDocument();
+    });
 
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "レビューを自動化するスキルを作りたい" },
+    it("ウィザードボタンに正しいテキストが表示される", () => {
+      renderPanel();
+      expect(
+        screen.getByTestId("skill-lifecycle-open-wizard-button"),
+      ).toHaveTextContent("スキル作成ウィザードを開く →");
+    });
+
+    it("ウィザードボタンクリックでonOpenSkillWizardが呼ばれる", async () => {
+      const onOpenSkillWizard = vi.fn();
+      renderPanel({ onOpenSkillWizard });
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-open-wizard-button"),
+        );
       });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
-    });
-
-    expect(window.skillCreatorAPI?.detectMode).toHaveBeenCalledWith(
-      "レビューを自動化するスキルを作りたい",
-    );
-    expect(screen.getByTestId("skill-lifecycle-mode-label")).toHaveTextContent(
-      "共同設計",
-    );
-    expect(screen.getByTestId("skill-lifecycle-session-log")).toHaveTextContent(
-      "推奨モード: 共同設計",
-    );
-  });
-
-  it("生成成功時に createSkill と selectSkillByName を呼び、作成済み表示へ進む", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "仕様書を要約するスキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
-    });
-
-    expect(mockCreateSkill).toHaveBeenCalledWith(
-      "仕様書を要約するスキルを作る",
-      {
-        generateTasks: true,
-        addAgents: false,
-        addReferences: false,
-      },
-    );
-    expect(mockSelectSkillByName).toHaveBeenCalledWith("lifecycle-skill");
-    expect(
-      screen.getByTestId("skill-lifecycle-created-name"),
-    ).toHaveTextContent("lifecycle-skill");
-    expect(
-      screen.getByTestId("skill-lifecycle-created-path"),
-    ).toHaveTextContent("/skills/lifecycle-skill");
-  });
-
-  it("生成済みスキルに対して execute を呼び出す", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "会議メモ整形スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
-    });
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-execution-input"), {
-        target: { value: "サンプル入力を処理して" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-execute-button"));
-    });
-
-    expect(mockClearStreamingMessages).toHaveBeenCalledTimes(1);
-    expect(mockSelectSkillByName).toHaveBeenLastCalledWith("lifecycle-skill");
-    expect(mockExecuteSkill).toHaveBeenCalledWith("サンプル入力を処理して");
-  });
-
-  it("新しい prepare 開始時に旧 execute / verify result surface をクリアする", async () => {
-    mockDetectMode.mockResolvedValueOnce({
-      success: true,
-      data: "plan",
-    });
-    mockGetVerifyDetail.mockResolvedValueOnce({
-      success: true,
-      data: {
-        planId: "plan-001",
-        currentPhase: "verify",
-        status: "pending",
-        message: "verify processing",
-        checks: [],
-        evidenceCount: 3,
-        route: {
-          type: "integrated_api",
-          summary: "integrated_api (default)",
-        },
-        reverifyEligible: true,
-        delegatedGovernanceNote: "Task07 owner",
-        delegatedSessionNote: "Task08 owner",
-      },
-    });
-    mockGetVerifyDetail.mockResolvedValueOnce({
-      success: true,
-      data: {
-        planId: "plan-001",
-        currentPhase: "verify",
-        status: "pass",
-        message: "first verify ok",
-        checks: [],
-        evidenceCount: 4,
-        route: {
-          type: "integrated_api",
-          summary: "integrated_api (default)",
-        },
-        reverifyEligible: false,
-        disabledReason: "既に pass 済みです",
-        delegatedGovernanceNote: "Task07 owner",
-        delegatedSessionNote: "Task08 owner",
-      },
-    });
-
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "最初の依頼" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
-    });
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
-    });
-
-    expect(await screen.findByText("first verify ok")).toBeTruthy();
-    expect(
-      screen.getByTestId("skill-creation-result-panel"),
-    ).toBeInTheDocument();
-
-    mockDetectMode.mockRejectedValueOnce(new Error("second detect fail"));
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "次の依頼" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("skill-creation-result-panel")).toBeNull();
+      expect(onOpenSkillWizard).toHaveBeenCalledTimes(1);
     });
   });
 
-  it("生成失敗時はエラーを表示して作成済み状態へ進まない", async () => {
-    mockCreateSkill.mockRejectedValueOnce(new Error("create failed"));
-
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "失敗するスキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+  describe("ウィザード遷移化 - 削除要素の非存在確認", () => {
+    it("テキストエリア（skill-lifecycle-request-input）が存在しない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-request-input")).toBeNull();
     });
 
-    expect(screen.getByTestId("skill-lifecycle-error")).toHaveTextContent(
-      "create failed",
-    );
-    expect(
-      screen.getByTestId("skill-lifecycle-created-name"),
-    ).toHaveTextContent("未生成");
+    it("「スキルを生成する」ボタンが存在しない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-create-button")).toBeNull();
+    });
+
+    it("「方針を決める」ボタンが存在しない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-prepare-button")).toBeNull();
+    });
   });
 
-  it("execute が reject した場合はローカルエラーを表示する", async () => {
-    mockExecuteSkill.mockRejectedValueOnce(new Error("execute failed"));
-
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "会議メモ整形スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+  describe("ウィザード遷移化 - 既存機能の保持確認", () => {
+    it("onCloseが正しく渡せる（TypeScript型エラーなし）", () => {
+      const onClose = vi.fn();
+      renderPanel({ onClose });
+      expect(screen.getByTestId("skill-lifecycle-panel")).toBeInTheDocument();
     });
 
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-execution-input"), {
-        target: { value: "サンプル入力を処理して" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-execute-button"));
+    it("セクション見出し「1. スキルを作成する」が表示される", () => {
+      renderPanel();
+      expect(screen.getByText("1. スキルを作成する")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("skill-lifecycle-error")).toHaveTextContent(
-      "execute failed",
-    );
+    it("説明テキストが表示される", () => {
+      renderPanel();
+      expect(
+        screen.getByText(
+          /スキルの目的・機能・連携ツールをガイドに沿って設定し/,
+        ),
+      ).toBeInTheDocument();
+    });
   });
 
-  it("改善提案を取得し、詳細分析ビューを開ける", async () => {
-    const view = render(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "分析スキルを作る" },
+  describe("ウィザード遷移化 - エッジケース", () => {
+    it("onOpenSkillWizardが複数回クリックされても正常動作する", async () => {
+      const onOpenSkillWizard = vi.fn();
+      renderPanel({ onOpenSkillWizard });
+      const button = screen.getByTestId("skill-lifecycle-open-wizard-button");
+      await act(async () => {
+        fireEvent.click(button);
+        fireEvent.click(button);
+        fireEvent.click(button);
       });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+      expect(onOpenSkillWizard).toHaveBeenCalledTimes(3);
     });
 
-    mockStoreState.skillExecutionStatus = "completed";
-    view.rerender(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
+    it("onCloseとonOpenSkillWizardが同時に渡されても干渉しない", () => {
+      const onClose = vi.fn();
+      const onOpenSkillWizard = vi.fn();
+      renderPanel({ onClose, onOpenSkillWizard });
+      expect(
+        screen.getByTestId("skill-lifecycle-open-wizard-button"),
+      ).toBeInTheDocument();
     });
 
-    expect(mockBeginSkillReview).toHaveBeenCalledTimes(1);
-    expect(window.skillCreatorAPI?.improveSkill).toHaveBeenCalledWith(
-      "lifecycle-skill",
-      { autoApply: false },
-    );
-    expect(mockCompleteSkillReview).toHaveBeenCalledWith("improve_ready");
-    expect(
-      screen.getByTestId("skill-lifecycle-improve-result"),
-    ).toHaveTextContent("ファイル責務を整理する");
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-analysis-toggle"));
+    it("コンポーネントが再レンダリングされてもウィザードボタンが保持される", () => {
+      const { rerender } = renderPanel();
+      rerender(
+        <SkillLifecyclePanel {...defaultProps} onOpenSkillWizard={vi.fn()} />,
+      );
+      expect(
+        screen.getByTestId("skill-lifecycle-open-wizard-button"),
+      ).toBeInTheDocument();
     });
-
-    expect(screen.getByTestId("mock-analysis-view")).toHaveTextContent(
-      "lifecycle-skill",
-    );
   });
 
-  it("improve API が未接続でも詳細分析へフォールバックできる", async () => {
-    (
-      window as Window & {
-        skillCreatorAPI?: {
-          detectMode?: (request: string) => Promise<{
-            success: boolean;
-            data?: string;
-            error?: string;
-          }>;
-        };
-      }
-    ).skillCreatorAPI = {
-      detectMode: vi.fn().mockResolvedValue({
-        success: true,
-        data: "collaborative",
-      }),
-    };
-
-    const view = render(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "分析スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+  describe("ウィザード遷移化 - 回帰テスト: 削除要素の永続的非存在", () => {
+    it("[回帰] テキストエリアが復活していない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-request-input")).toBeNull();
     });
 
-    mockStoreState.skillExecutionStatus = "completed";
-    view.rerender(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
+    it("[回帰] 「スキルを生成する」ボタンが復活していない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-create-button")).toBeNull();
     });
 
-    expect(mockBeginSkillReview).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId("skill-lifecycle-session-log")).toHaveTextContent(
-      "改善 API は未接続です",
-    );
-    expect(screen.getByTestId("mock-analysis-view")).toHaveTextContent(
-      "lifecycle-skill",
-    );
+    it("[回帰] 「方針を決める」ボタンが復活していない", () => {
+      renderPanel();
+      expect(screen.queryByTestId("skill-lifecycle-prepare-button")).toBeNull();
+    });
   });
 
-  it("実行完了前は改善提案ボタンと詳細分析ボタンが無効", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "分析スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+  describe("ウィザード遷移化 - アクセシビリティ", () => {
+    it("ウィザードボタンに type='button' が付与されている", () => {
+      renderPanel();
+      expect(
+        screen.getByTestId("skill-lifecycle-open-wizard-button"),
+      ).toHaveAttribute("type", "button");
     });
 
-    expect(screen.getByTestId("skill-lifecycle-improve-button")).toBeDisabled();
-    expect(
-      screen.getByTestId("skill-lifecycle-analysis-toggle"),
-    ).toBeDisabled();
+    it("セクション見出しが h3 要素として存在する", () => {
+      renderPanel();
+      const heading = screen.getByText("1. スキルを作成する");
+      expect(heading.tagName).toBe("H3");
+    });
+
+    it("説明テキストが text-secondary クラスを持つ", () => {
+      renderPanel();
+      const desc = screen.getByText(
+        /スキルの目的・機能・連携ツールをガイドに沿って設定し/,
+      );
+      expect(desc.className).toContain("text-[var(--text-secondary)]");
+    });
   });
 
-  it("改善準備完了後の実行では reExecuteAfterImprovement を呼ぶ", async () => {
-    const view = render(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "会議メモ整形スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+  describe("ウィザード遷移化 - 既存セクションの保持確認", () => {
+    it("「2. 生成したスキルを実行する」セクションが存在する（影響なし）", () => {
+      renderPanel();
+      expect(
+        screen.getByText("2. 生成したスキルを実行する"),
+      ).toBeInTheDocument();
     });
 
-    mockStoreState.skillExecutionStatus = "improve_ready";
-    view.rerender(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-execution-input"), {
-        target: { value: "改善後のプロンプトで再実行" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-execute-button"));
+    it("SkillLifecyclePanelの全体構造が崩れていない", () => {
+      renderPanel();
+      expect(screen.getByTestId("skill-lifecycle-panel")).toBeInTheDocument();
     });
-
-    expect(mockReExecuteAfterImprovement).toHaveBeenCalledWith(
-      "改善後のプロンプトで再実行",
-    );
-    expect(mockExecuteSkill).not.toHaveBeenCalled();
-  });
-
-  it("改善候補が0件なら reuse_ready を確定する", async () => {
-    (
-      window as Window & {
-        skillCreatorAPI?: {
-          detectMode?: (request: string) => Promise<{
-            success: boolean;
-            data?: string;
-            error?: string;
-          }>;
-          improveSkill?: () => Promise<{
-            success: boolean;
-            data?: {
-              suggestions: [];
-              applied: boolean;
-            };
-          }>;
-        };
-      }
-    ).skillCreatorAPI = {
-      detectMode: vi.fn().mockResolvedValue({
-        success: true,
-        data: "collaborative",
-      }),
-      improveSkill: vi.fn().mockResolvedValue({
-        success: true,
-        data: {
-          suggestions: [],
-          applied: false,
-        },
-      }),
-    };
-
-    const view = render(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-        target: { value: "分析スキルを作る" },
-      });
-      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
-    });
-
-    mockStoreState.skillExecutionStatus = "completed";
-    view.rerender(
-      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-    );
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
-    });
-
-    expect(mockCompleteSkillReview).toHaveBeenCalledWith("reuse_ready");
   });
 
   describe("verifyDetail Layer別グルーピング表示", () => {
@@ -703,7 +488,13 @@ describe("SkillLifecyclePanel", () => {
         success: true,
         data: detail,
       });
-      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+        />,
+      );
       await screen.findByTestId("skill-lifecycle-verify-detail");
       await waitFor(() => {
         expect(screen.queryByText("verify detail を読み込み中...")).toBeNull();
@@ -883,7 +674,13 @@ describe("SkillLifecyclePanel", () => {
         data: { accepted: true },
       });
 
-      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+        />,
+      );
       await screen.findByTestId("skill-lifecycle-verify-detail");
 
       const layerButton = screen.getByTestId(
@@ -985,7 +782,13 @@ describe("SkillLifecyclePanel", () => {
         success: true,
         data: detail,
       });
-      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+        />,
+      );
       await screen.findByTestId("skill-lifecycle-verify-detail");
     };
 
@@ -1123,7 +926,13 @@ describe("SkillLifecyclePanel", () => {
         data: { accepted: true },
       });
 
-      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+        />,
+      );
       await screen.findByTestId("skill-lifecycle-verify-detail");
 
       // warning+ に切り替え

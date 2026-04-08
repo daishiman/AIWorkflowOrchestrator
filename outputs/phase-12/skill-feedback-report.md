@@ -1,64 +1,56 @@
-# Phase 12: スキルフィードバックレポート
+# Phase 12: スキルフィードバック（skill-feedback-report.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## タスク情報
+## メタ情報
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 12                                             |
-| 作成日   | 2026-04-07                                     |
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
----
+## 対象
 
-## フィードバック概要
+- `task-specification-creator`（Phase/成果物の規約とテンプレート）
+- `aiworkflow-requirements`（システム仕様の正本）
 
-| カテゴリ       | 件数 |
-| -------------- | ---- |
-| 設計改善提案   | 2件  |
-| テスト実行環境 | 1件  |
-| スキルプロセス | 2件  |
+## フィードバック（改善提案）
 
----
+### 1. UI タスクの Phase 11 証跡テンプレートを強制的に「VISUAL」に寄せる
 
-## フィードバック詳細
+今回のように UI 変更が明確なタスクでは、`outputs/phase-11/screenshot-plan.json` と `phase11-capture-metadata.json` が旧タスクの `NON_VISUAL` のまま残りやすい。
 
-### FB-01: vitest.config.ts の `@repo/shared` resolve alias 標準化
+改善案:
 
-**発見フェーズ**: Phase 11  
-**内容**: `packages/shared/` 内のテストファイルが `@repo/shared` をインポートする場合、`vitest.config.ts` に `resolve.alias` が必要だが、この設定が標準テンプレートに含まれていなかった。  
-**影響**: フックによる自動 import パス変換後にテストが解決不可になる。  
-**改善案**: `packages/shared/vitest.config.ts` テンプレートに `resolve.alias` を標準で含める。
+- UI task の場合、Phase 11 成果物のテンプレート生成時に `mode: "VISUAL"` をデフォルトにする
+- `taskId` を自動埋めし、旧 taskId の混入を検出して fail-fast する（例: preflight スクリプト）
 
-### FB-02: post-tool-use フックによるテストファイル改変の検出
+### 2. 「Step 0 -> Step 1 引き渡し項目」を設計テンプレートに明記する
 
-**発見フェーズ**: Phase 11  
-**内容**: ESLint フックが import パスを `../smartDefaultReasoningService` から `@repo/shared` へ自動変換した。また別のフックがテストケースの入力値を変更したが、期待値が更新されず矛盾が発生した。  
-**影響**: テスト件数が 0件として扱われ、フォールバックテストが意味の異なる仕様を検証するものになった。  
-**改善案**: フックが変更したテストファイルの diff を人間がレビューする手順をワークフローに組み込む。
+本タスクでは `category` と `smartDefaults` を Step 0 から Step 1 へ渡す仕様が核心だった。
 
-### FB-03: AC-4 フォールバック仕様の明確化
+改善案:
 
-**発見フェーズ**: Phase 4〜11  
-**内容**: AC-4「推論不能時のフォールバック」において、`purpose` が空でも `category` が有効な場合に `format` を推論するか否かが仕様書内で一度揺れた（フック改変が引き金）。  
-**影響**: テスト #27 の期待値が一時的に test #17 と矛盾した。  
-**改善案**: 各フィールドの独立推論性をフォールバック定義に明示する。現状の実装（`purpose` と `category` は完全独立）を仕様書テンプレートに反映する。
+- Phase 2（設計）のテンプレートに「ステップ間の state ownership と引き渡し項目」の表を必須化する
+- `smartDefaults` の反映タイミング（初回のみ/都度更新/ユーザー入力優先）を decision として固定する欄を用意する
 
-### FB-04: workflow ledger と lane index の same-wave 同期を明文化
+### 3. 用語の一貫性（onConfirmGenerate などの名前ずれ）を抑える仕組み
 
-**発見フェーズ**: Phase 12  
-**内容**: `task-workflow-backlog.md` は「completed へ移管済みで backlog エントリなし」という扱いだが、`task-workflow-completed.md` / `skill-wizard-redesign-lane/index.md` / `artifacts.json` の同期関係を明示しないと、次回の close-out で同じ見落としが再発しやすい。  
-**影響**: 仕様書・台帳・lane index の片側更新が発生しやすくなる。  
-**改善案**: Phase 12 の完了条件に「lane index / backlog / artifacts parity を同波で更新する」を追加する。
+ドキュメント中のコールバック名が、実装の `onConfirm` / `onGenerate("skip")` などとズレると stale が発生する。
 
-### FB-05: 33件テストと edge case を検証証跡へ固定する
+改善案:
 
-**発見フェーズ**: Phase 12  
-**内容**: `purpose` が空白のみのケースは空文字と同一視する実装へ収束したが、その判断が `implementation-guide.md` / `manual-test-result.md` / `unassigned-task-detection.md` に分散している。  
-**影響**: 既存の件数表記のズレや未検出の edge case が残ると、後続レビューで false green を起こしやすい。  
-**改善案**: Phase 11 証跡と Phase 12 ガイドに「空白のみ purpose は空文字扱い」「テスト 33件」の2点を明文化し、検証経路を一本化する。
+- Phase 12 のチェック項目に「ドキュメント内の識別子（関数/prop 名）が現行コードのものか」を追加する
+- 代表コードスニペットは「型/props 定義」から引用する方針に寄せる（手書きで drift しやすい）
 
----
+### 4. Renderer での node-only import を早期に検出する
 
-## 結論
+本タスクでは `node-cron` を renderer で直接 import したことで、Vite ブラウザバンドルの初期化時に runtime error が出た。
 
-5件の改善提案を記録した。いずれも次回タスクまたはスキルテンプレート改善として formalize を推奨する。本タスク自体の品質に影響する未解決事項はなし。
+改善案:
+
+- renderer 側の UI コンポーネントでは node-only パッケージを直接 import しないチェックを入れる
+- cron / date / filesystem などは browser-safe な薄いユーティリティに寄せる
+- Phase 11 の capture 前に「ブラウザで実際に route を開く smoke test」を必須にする
+
+## 良かった点（維持したい点）
+
+- `ConversationRoundStep` の `onAnswersChange` を `useEffect` に寄せ、setState updater 内の副作用を避けた点（テスト容易性と予測可能性が上がる）
+- `ApplySummaryCard` の key-based マッピングにより、`Object.keys()` 依存の順序バグを避けた点
+- Q3 の scheduleConfig を「定期実行から外れたら `undefined` にクリア」する挙動が仕様と一致している点

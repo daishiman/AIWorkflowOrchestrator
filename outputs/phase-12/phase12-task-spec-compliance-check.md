@@ -1,89 +1,48 @@
-# Phase 12: タスク仕様準拠チェック
+# Phase 12: タスク仕様準拠チェック（phase12-task-spec-compliance-check.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## タスク情報
+## メタ情報
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 12                                             |
-| 作成日   | 2026-04-07                                     |
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
----
+## チェック 1: Phase 12 canonical 6成果物の存在
 
-## 判定結果
+| 成果物                   | パス                                                     | 期待                   | 状態 |
+| ------------------------ | -------------------------------------------------------- | ---------------------- | ---- |
+| 実装ガイド               | `outputs/phase-12/implementation-guide.md`               | Part 1 + Part 2 を含む | ✅   |
+| システム仕様更新サマリー | `outputs/phase-12/system-spec-update-summary.md`         | current facts を反映   | ✅   |
+| 更新履歴                 | `outputs/phase-12/documentation-changelog.md`            | 変更ファイルの棚卸し   | ✅   |
+| 未タスク検出             | `outputs/phase-12/unassigned-task-detection.md`          | 0件でも出力必須        | ✅   |
+| スキルフィードバック     | `outputs/phase-12/skill-feedback-report.md`              | 改善点なしでも出力必須 | ✅   |
+| 準拠チェック             | `outputs/phase-12/phase12-task-spec-compliance-check.md` | 本ファイル             | ✅   |
 
-**PASS** ✅
+## チェック 2: Phase 11 の視覚証跡
 
----
+| 成果物                  | パス                                                                   | 状態                     |
+| ----------------------- | ---------------------------------------------------------------------- | ------------------------ |
+| screenshot plan         | `outputs/phase-11/screenshot-plan.json`                                | ✅ current task 用に更新 |
+| capture metadata        | `outputs/phase-11/phase11-capture-metadata.json`                       | ✅ current task 用に更新 |
+| Step 0 screenshot       | `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png` | ✅                       |
+| Step 1 screenshot       | `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`       | ✅                       |
+| cron error screenshot   | `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`           | ✅                       |
+| Q5 required screenshot  | `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`          | ✅                       |
+| summary card screenshot | `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`       | ✅                       |
 
-## Task 12-1: implementation-guide.md チェック
+## チェック 3: current code facts との整合
 
-| 確認項目                                | 状態 | 根拠                                                 |
-| --------------------------------------- | ---- | ---------------------------------------------------- |
-| Part 1（中学生向け説明）が存在する      | ✅   | `outputs/phase-12/implementation-guide.md` Part 1 節 |
-| Part 2（技術者向け説明）が存在する      | ✅   | `outputs/phase-12/implementation-guide.md` Part 2 節 |
-| `SkillInfoFormData` 型定義を含む        | ✅   | Part 2 TypeScript 型定義節                           |
-| `SmartDefaultResult` 型定義を含む       | ✅   | Part 2 TypeScript 型定義節                           |
-| `@repo/shared` からの import 例を含む   | ✅   | Part 2 import と使用例節                             |
-| エラーハンドリング / エッジケースを含む | ✅   | Part 2 エラーハンドリング節                          |
-| 設定可能な定数一覧を含む                | ✅   | Part 2 設定可能な定数一覧節                          |
+- Step 0 の `SkillCategory` 選択は `SkillCreateWizard` から `ConversationRoundStep` に渡され、Q5 必須表示の判定に使われる
+- template モードでは Step 0 の description + category から `SmartDefaultResult` を推論して Step 1 に渡す
+- `ConversationRoundStep` は browser-safe な 5-field cron validator で cron を検証する
+- `onAnswersChange` は `useEffect` で `internalAnswers` 変更に追従する
+- Q3 を「定期実行」以外へ切り替えたとき `scheduleConfig` は `undefined` にクリアされる
+- `ApplySummaryCard` の defaults 表示は key-based マッピング（`q1..q6` -> `who..format`）で行う
 
----
+## チェック 4: 仕様・実装・証跡の整合
 
-## Task 12-2: system-spec-update-summary.md チェック
+- `apps/desktop/src/renderer/components/skill/wizard/index.ts` は `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` を export している
+- `ConfigureStep` / `WizardOptions` の export は current facts 上で削除済み
+- Phase 11 の capture は `VISUAL` として完了している
 
-| 確認項目                                             | 状態 | 根拠                                                         |
-| ---------------------------------------------------- | ---- | ------------------------------------------------------------ |
-| Step 1-A（完了記録・LOGS.md・topic-map）記録あり     | ✅   | `outputs/phase-12/system-spec-update-summary.md` Step 1-A 節 |
-| Step 1-B（実装状況 pending→completed）記録あり       | ✅   | Step 1-B 節                                                  |
-| Step 1-C（W2-seq-03a 利用可能通知）記録あり          | ✅   | Step 1-C 節                                                  |
-| Step 2（新規 API `inferSmartDefaults` 仕様）記録あり | ✅   | Step 2 節                                                    |
-| artifacts.json parity 確認記録あり                   | ✅   | Step 2 artifacts.json parity 節                              |
-| canonical/mirror policy 記録あり                     | ✅   | Step 2 canonical/mirror policy 節                            |
-| Phase 11 証跡参照あり                                | ✅   | Step 1-A Phase 11 証跡参照節                                 |
+## 最終判定
 
----
-
-## Task 12-3: documentation-changelog.md チェック
-
-| 確認項目                                                                                            | 状態 | 根拠                                                            |
-| --------------------------------------------------------------------------------------------------- | ---- | --------------------------------------------------------------- |
-| current / baseline 区別が明記されている                                                             | ✅   | `outputs/phase-12/documentation-changelog.md` 区別節            |
-| 変更ファイル一覧が記載されている                                                                    | ✅   | 変更ファイル一覧節（実装・outputs 全件）                        |
-| task-workflow.md / task-workflow-backlog.md / LOGS.md / SKILL.md が canonical path で列挙されている | ✅   | aiworkflow-requirements / task-specification-creator 更新対象節 |
-| `docs/30-workflows/skill-wizard-redesign-lane/index.md` の同期が記載されている                      | ✅   | aiworkflow-requirements 更新対象節 / lane index 節              |
-| Phase 11 証跡への参照が含まれる                                                                     | ✅   | Phase 11 証跡参照節                                             |
-
----
-
-## Task 12-4: unassigned-task-detection.md チェック
-
-| 確認項目                                | 状態 | 根拠                                                 |
-| --------------------------------------- | ---- | ---------------------------------------------------- |
-| 0件でも出力されている                   | ✅   | `outputs/phase-12/unassigned-task-detection.md` 存在 |
-| current / baseline を分けて記録している | ✅   | baseline/current 比較節                              |
-| formalize 判断が記載されている          | ✅   | formalize 判断節（0件のため不要）                    |
-
----
-
-## Task 12-5: skill-feedback-report.md チェック
-
-| 確認項目                   | 状態 | 根拠                                                        |
-| -------------------------- | ---- | ----------------------------------------------------------- |
-| 出力されている（0件でも）  | ✅   | `outputs/phase-12/skill-feedback-report.md` 存在（5件記録） |
-| 件数と理由が記載されている | ✅   | フィードバック詳細節 FB-01〜FB-05                           |
-
----
-
-## 追加確認項目
-
-| 確認項目                                                                                                     | 状態 | 根拠                                                                                                    |
-| ------------------------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------- |
-| `outputs/phase-12/*.md` に計画表現が残っていない                                                             | ✅   | 全 6 ファイルが確定した事実のみ記録                                                                     |
-| Phase 11 証跡ファイル（3件）が存在する                                                                       | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/` に 3 ファイル確認済み   |
-| vitest 実測値（33件 PASS）の根拠ファイルが存在する                                                           | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md`    |
-| Phase 11 チェックリストが存在する                                                                            | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-checklist.md` |
-| workflow-local artifacts mirror が存在する                                                                   | ✅   | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/artifacts.json`                    |
-| `@repo/shared` resolve alias が vitest.config.ts に存在する                                                  | ✅   | `packages/shared/vitest.config.ts` resolve.alias 節                                                     |
-| `packages/shared/src/types/index.ts` で `SkillInfoFormData` / `SmartDefaultResult` が root export されている | ✅   | `packages/shared/src/types/index.ts` / `packages/shared/index.ts`                                       |
-| `inferSmartDefaults` が `packages/shared/index.ts` からエクスポートされている                                | ✅   | `packages/shared/index.ts` 末尾のバレルエクスポート                                                     |
+PASS

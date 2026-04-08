@@ -1,37 +1,56 @@
-# Phase 6: テスト拡充 成果物
+# Phase 6: テスト拡充レポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## メタ情報
+## 実施日時
 
-| 項目   | 値                                       |
-| ------ | ---------------------------------------- |
-| Phase  | 6                                        |
-| 機能名 | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 |
-| 作成日 | 2026-03-31                               |
+2026-04-07
 
-## 追加したテストケース
+---
 
-`apps/desktop/src/__tests__/native/better-sqlite3-abi.test.ts` に以下を追加:
+## 追加テストケース一覧
 
-1. **複数テーブルの同時操作が正常動作すること** — 会話DB構造（conversations / messages）を模擬
-2. **トランザクションが正常動作すること** — DB 書き込みの安全性確認
+| テストID | 説明                                                                                    | 結果 |
+| -------- | --------------------------------------------------------------------------------------- | ---- |
+| TC-01    | フックレンダリング時に buildMainlineExecutionAccessState に healthPolicy が渡されること | PASS |
+| TC-02    | デフォルト状態で healthPolicy.healthStatus = "unknown" が渡されること                   | PASS |
+| TC-03    | disconnected 状態で apiKeyDegraded 独自ロジックが除去されていること                     | PASS |
+| TC-04    | connected 状態で healthPolicy.isConnectionAvailable = true になること                   | PASS |
+| TC-05    | disconnected + lastHealthCheck あり で healthPolicy.healthStatus = "unhealthy"          | PASS |
+| TC-6-1-1 | プロバイダー未選択時は healthPolicy.healthStatus = "unknown" になること                 | PASS |
+| TC-6-1-2 | プロバイダーIDあり・healthStatus なしも "unknown" になること                            | PASS |
+| TC-6-3-1 | connected 状態で healthPolicy.healthStatus = "healthy" になること                       | PASS |
+| TC-6-3-2 | disconnected 状態で healthPolicy.healthStatus = "unhealthy" になること                  | PASS |
+| TC-6-3-3 | error 状態で healthPolicy.healthStatus = "unhealthy" になること                         | PASS |
 
-## postinstall 追加前後の動作比較
+**合計: 10 テスト / 10 PASS / 0 FAIL**
 
-| シナリオ                                 | postinstall なし（修正前）     | postinstall あり（修正後） |
-| ---------------------------------------- | ------------------------------ | -------------------------- |
-| `pnpm install` 後の Electron 起動        | `ERR_DLOPEN_FAILED` が発生     | 正常起動                   |
-| 新規クローン後の `pnpm install`          | 手動 rebuild が必要            | 自動 rebuild で即起動可能  |
-| CI での `pnpm install --frozen-lockfile` | rebuild されないためクラッシュ | postinstall で自動修正     |
+---
 
-## テスト実行確認コマンド
+## テスト戦略の記録
 
-```bash
-pnpm --filter @repo/desktop test --reporter=verbose
+### vi.mock の制約と対応
+
+Vitest `pool: "forks"` + `isolate: true` 環境において、`vi.mock("@repo/shared/types", ...)` がプロダクションコードのモジュールインスタンスを intercept できないことが判明した。
+
+**原因**: package.json `exports` フィールドによる dist ファイル解決（`dist/src/types/index.js`）と、tsconfigPaths によるソースファイル解決（`src/types/index.ts`）の二経路が存在し、モック登録パスとプロダクションコードの解決パスが不一致になる。
+
+**対応**: `resolveHealthPolicy` を直接スパイせず、モック済みの `buildMainlineExecutionAccessState` への引数（`healthPolicy`）を通じて統合的に検証するアプローチを採用。実際の `resolveHealthPolicy` 実行結果（純粋関数・決定論的）を利用することで、より実態に即したテストになった。
+
+---
+
+## TODO コメント一覧（将来対応）
+
+```typescript
+// TODO(UT-HEALTH-POLICY-MAINLINE-MIGRATION-001):
+// isRateLimited が true の場合、resolveHealthPolicy() が
+// DEGRADED または BLOCKED を返すよう将来拡張予定。
+// 設計確定後に以下テストを有効化すること。
 ```
 
-## 完了条件チェック
+配置場所: `useMainlineExecutionAccess.test.ts` の末尾コメントブロック
 
-- [x] 複数テーブル同時操作のテストケースが追加されている
-- [x] トランザクションテストケースが追加されている
-- [x] CI 環境での postinstall 検証手順が記述されている
-- [x] クリーン環境での再現確認手順が記述されている
+---
+
+## 次フェーズへの引き継ぎ事項
+
+- 全テスト PASS 確認済み → Phase 7 カバレッジ確認へ進む
+- `validateAllModes` および `refreshHealth` 関数のカバレッジが未達の可能性あり（Phase 7 で確認）

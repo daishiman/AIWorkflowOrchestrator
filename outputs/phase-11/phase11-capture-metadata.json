@@ -1,15 +1,50 @@
 {
-  "taskId": "UT-HEALTH-POLICY-RUNTIME-INJECTION-001",
-  "featureName": "ut-health-policy-runtime-injection",
-  "capturedAt": "2026-04-07T00:00:00.000Z",
-  "mode": "NON_VISUAL",
-  "screenshots": [],
+  "taskId": "UT-SKILL-WIZARD-W1-par-02b",
+  "taskName": "ConversationRoundStep コンポーネント実装（Step 1）",
+  "capturedAt": "2026-04-07T22:47:23Z",
+  "mode": "VISUAL",
+  "captureMethod": "playwright-vite-harness",
+  "screenshotDir": "outputs/phase-11/screenshots",
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "file": "TC-11-01-step0-description-category.png",
+      "path": "outputs/phase-11/screenshots/TC-11-01-step0-description-category.png",
+      "state": "DescribeStep / Step 0",
+      "note": "説明文とカテゴリ選択が表示される"
+    },
+    {
+      "id": "TC-11-02",
+      "file": "TC-11-02-step1-page1-defaults.png",
+      "path": "outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png",
+      "state": "ConversationRoundStep / Page 1",
+      "note": "質問 1/6 と smartDefaults の初期選択が表示される"
+    },
+    {
+      "id": "TC-11-03",
+      "file": "TC-11-03-step1-cron-error.png",
+      "path": "outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png",
+      "state": "ConversationRoundStep / Page 1 / cron error",
+      "note": "cron の形式エラーが表示される"
+    },
+    {
+      "id": "TC-11-04",
+      "file": "TC-11-04-step2-required-q5.png",
+      "path": "outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png",
+      "state": "ConversationRoundStep / Page 2",
+      "note": "Q5 の必須表示が見える"
+    },
+    {
+      "id": "TC-11-05",
+      "file": "TC-11-05-summary-card-warning.png",
+      "path": "outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png",
+      "state": "ApplySummaryCard / open",
+      "note": "Q5 未回答警告が見える"
+    }
+  ],
   "evidence": [
-    "pnpm --filter @repo/shared build (PASS)",
-    "pnpm --filter @repo/desktop build (PASS)",
-    "timeout 25s pnpm --filter @repo/desktop dev (PASS: Electron startup reached, no runtime error logged)",
-    "pnpm --filter @repo/desktop typecheck (PASS)",
-    "pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts (PASS)",
-    "pnpm --filter @repo/desktop exec vitest run ... (PASS)"
+    "node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs",
+    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/wizard/__tests__/ApplySummaryCard.test.tsx src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1",
+    "pnpm --filter @repo/desktop typecheck"
   ]
 }

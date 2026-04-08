@@ -199,10 +199,3 @@ Google Calendar から自動取得 | 2026/04/07 08:00:00
 - `assets/slack-message-template.json`: Slack Block Kit テンプレート（参考用）
 
 ---
-
-## 変更履歴
-
-| Version | Date       | Changes                                         |
-|---------|------------|-------------------------------------------------|
-| 1.1.0   | 2026-04-07 | 初実装（Google Calendar → Slack 通知）          |
-| 1.0.0   | 2026-04-06 | テンプレート作成                                |

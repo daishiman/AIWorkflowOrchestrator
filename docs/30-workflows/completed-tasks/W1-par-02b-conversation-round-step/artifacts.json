@@ -1,0 +1,192 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W1-par-02b",
+  "taskName": "ConversationRoundStep コンポーネント実装（Step 1）",
+  "workflowDir": "docs/30-workflows/W1-par-02b-conversation-round-step",
+  "createdAt": "2026-04-08T00:00:00Z",
+  "lastUpdated": "2026-04-08T00:00:00Z",
+  "status": "spec_created",
+  "metadata": {
+    "taskType": "feat",
+    "classification": "UI task",
+    "wave": "W1",
+    "executionOrder": "parallel",
+    "dependency": "W0-seq-01",
+    "parallelWith": "W1-par-02a"
+  },
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx",
+          "description": "ConversationRoundStep テストファイル（TDD Red用）",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx",
+          "description": "6問・2ページ構成インタビューフォームコンポーネント",
+          "type": "code"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/InterviewProgressBar.tsx",
+          "description": "質問N/6進捗バーコンポーネント",
+          "type": "code"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx",
+          "description": "今すぐ生成時の適用サマリーカードコンポーネント",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx",
+          "description": "InterviewProgressBar 単体テスト",
+          "type": "code"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/__tests__/ApplySummaryCard.test.tsx",
+          "description": "ApplySummaryCard 単体テスト",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "file": "phase-9-qa.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "spec_created",
+      "artifacts": []
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト実施記録（VISUAL）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見した問題一覧",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-11/screenshots/",
+          "description": "画面検証スクリーンショット",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント整備",
+      "file": "phase-12-docs.md",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 中学生向け + Part 2: 技術者向け）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー（Step 1-A〜1-C / Step 2）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート（0件でも出力必須）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート（改善点なしでも出力必須）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 タスク仕様準拠チェック（root evidence）",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "file": "phase-13-pr.md",
+      "status": "blocked",
+      "blockedReason": "ユーザー明示指示待ち（commit / push / PR 作成禁止）",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "phase-1": [],
+    "phase-2": ["phase-1"],
+    "phase-3": ["phase-1", "phase-2"],
+    "phase-4": ["phase-1", "phase-2", "phase-3"],
+    "phase-5": ["phase-4"],
+    "phase-6": ["phase-5"],
+    "phase-7": ["phase-5", "phase-6"],
+    "phase-8": ["phase-5", "phase-6", "phase-7"],
+    "phase-9": ["phase-5", "phase-8"],
+    "phase-10": ["phase-1", "phase-2", "phase-5", "phase-9"],
+    "phase-11": ["phase-10"],
+    "phase-12": ["phase-11"],
+    "phase-13": ["phase-12"]
+  }
+}

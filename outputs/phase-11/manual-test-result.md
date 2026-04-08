@@ -1,39 +1,46 @@
-# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
-
-## NON_VISUAL 方針
-
-本タスク（W0-seq-02）の実装対象 `inferSmartDefaults` は純粋関数であり、
-GUI を持たない。そのため Phase 11 の手動テストは REPL/CLI 確認で代替する。
-スクリーンショットは不要。
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W1-par-02b
 
 ## 判定
 
-NON_VISUAL / REPL 確認 PASS / vitest 33件 PASS
+PASS
 
-## REPL/CLI 手動確認
+## 実施概要
 
-| 確認内容           | コマンド / 操作                                                                                                    | 結果 | 備考              |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------ | ---- | ----------------- |
-| typecheck          | `pnpm --filter @repo/shared typecheck`                                                                             | PASS | エラー 0件        |
-| ESLint             | `pnpm --filter @repo/shared eslint src/services/skillCreator/smartDefaultReasoningService.ts`                      | PASS | 警告・エラー 0件  |
-| Vitest 全件        | `pnpm vitest run packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`         | PASS | 33/33件 PASS      |
-| barrel import 確認 | テストファイルが `@repo/shared` 経由で `inferSmartDefaults` をインポートし PASS                                    | PASS | named export 正常 |
-| REPL 動作確認      | `inferSmartDefaults({ skillName: "test", purpose: "Slack通知を送る", category: null })` → `{ tool: "slack", ... }` | PASS | 期待値と一致      |
-| REPL null 入力確認 | `inferSmartDefaults({ skillName: "test", purpose: null, category: null })` → エラーなし、全 null                   | PASS | 例外なし          |
+- 実施方法: Playwright で `outputs/phase-11/screenshots/` を capture
+- capture コマンド: `node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs`
+- 対象 UI: `SkillCreateWizard` -> `DescribeStep` -> `ConversationRoundStep` -> `ApplySummaryCard`
 
-## NON_VISUAL 判定理由
+## 実測
 
-- GUI 変更なし（純粋関数の新規実装のみ）
-- スクリーンショット不要
-- REPL/CLI 確認と自動テスト 33件で動作を十分に検証済み
+| シナリオ                       | 結果 | 補足                                          |
+| ------------------------------ | ---- | --------------------------------------------- |
+| Step 0: description + category | PASS | `SkillCategory` セレクトが表示される          |
+| Step 1: page 1 defaults        | PASS | `質問 1/6` と smartDefaults の初期選択を確認  |
+| Step 1: cron error             | PASS | `25 99 * * *` でエラー表示を確認              |
+| Step 2: Q5 required            | PASS | external-integration のとき Q5 必須表示を確認 |
+| Summary card                   | PASS | `Q5` 未回答警告を確認                         |
 
-## source evidence
+## 参照スクリーンショット
 
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md`
-- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts`
-- `packages/shared/src/services/skillCreator/index.ts`
-- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
+- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
+- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
-## スクリーンショット
+## 所見
 
-N/A（NON_VISUAL タスクのため不要）
+- Page 1 では progress bar と Q1/Q2/Q3 が崩れず表示される
+- Q3 の定期実行 UI は cron 入力と timezone 選択をインライン展開する
+- Page 2 の Q5 は external-integration の場合のみ必須表示になる
+- summary card は dismissible で、生成前の確認面として機能している
+
+## 完了条件
+
+- [x] 進捗バーが 6問基準で正確に表示される
+- [x] ページング操作（遷移・回答保持）が正常に動作する
+- [x] Q3「定期実行」でスケジュール UI が展開される
+- [x] Q5 必須マークがカテゴリに応じて表示される
+- [x] 今すぐ生成のサマリーカードが表示される
+- [x] スマートデフォルトの事前入力が確認できる
+- [x] キーボード操作の起点となるボタン群が表示される

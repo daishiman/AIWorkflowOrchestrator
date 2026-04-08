@@ -1,6 +1,7 @@
 {
   "generated": "2026-04-08T04:39:37.401Z",
   "totalKeywords": 2826,
+  "totalKeywords": 2827,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2945,6 +2946,7 @@
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3169,6 +3171,7 @@
     "HEALTH": [
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7106,6 +7109,7 @@
     ],
     "CONFLICT": [
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "import": [
@@ -7425,6 +7429,42 @@
     "推論サービス": [
       "lessons-learned-current-2026-04.md"
     ],
+    "MAINLINE": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-settings-core.md"
+    ],
+    "MIGRATION": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-execute-hook-migration.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "policy": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "移管": [
+      "lessons-learned-current-2026-04.md",
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-skill-views-completed-move.md"
+    ],
+    "WORKTREE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "並列": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "worktree": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "コンフリクト解消": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -7552,11 +7592,6 @@
     ],
     "型が同一な引数の逆転バグ": [
       "lessons-learned-governance-hooks-phase-policy.md"
-    ],
-    "worktree": [
-      "lessons-learned-governance-hooks-phase-policy.md",
-      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
-      "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "でのテスト実行と": [
       "lessons-learned-governance-hooks-phase-policy.md"
@@ -8349,11 +8384,6 @@
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
-    ],
-    "MIGRATION": [
-      "lessons-learned-skill-execute-hook-migration.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "個別セレクタ": [
       "lessons-learned-skill-execute-hook-migration.md"
@@ -9777,13 +9807,6 @@
     ],
     "最終同期": [
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-03-skill-views-completed-move.md"
-    ],
-    "移管": [
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
     "完了条件充足": [
@@ -12949,9 +12972,6 @@
       "ui-ux-settings-core.md"
     ],
     "MATRIX": [
-      "ui-ux-settings-core.md"
-    ],
-    "MAINLINE": [
       "ui-ux-settings-core.md"
     ],
     "AuthKeySection": [

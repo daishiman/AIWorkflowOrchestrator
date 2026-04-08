@@ -2,6 +2,20 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 2038
+task_id: task-imp-layer12-check-id-script-006
+task_name: check ID 突き合わせスクリプト化
+category: tooling（開発ツール・スクリプト）
+target_feature: SkillCreatorVerificationEngine / FR-04 verify 契約
+priority: 低
+scale: 小
+status: 未実施
+source_phase: Phase 12（task-imp-layer12-spec-definition-004）
+created_date: 2026-04-04
+dependencies: []
+```
+
 | 項目         | 内容                                                    |
 | ------------ | ------------------------------------------------------- |
 | タスクID     | task-imp-layer12-check-id-script-006                    |

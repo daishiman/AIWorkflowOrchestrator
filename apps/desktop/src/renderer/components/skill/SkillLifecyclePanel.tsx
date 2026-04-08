@@ -16,7 +16,6 @@ import type {
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
-  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
@@ -41,7 +40,6 @@ import {
   useClearSkillError,
   useClearStreamingMessages,
   useCompleteSkillReview,
-  useCreateSkill,
   useCurrentPlanId,
   useCurrentPlanResult,
   useExecuteSkill,
@@ -57,9 +55,7 @@ import {
   useSetHandoffGuidance,
   useSelectSkillByName,
   useSetCurrentPlanId,
-  useSetCurrentPlanResult,
   useSetGenerationError,
-  useSetGenerationProgress,
   useSetIsSkillGenerating,
   useSetWorkflowError,
   useSetWorkflowSnapshot,
@@ -281,47 +277,6 @@ function isRuntimeImproveErrorResponse(
   return "success" in response && response.success === false;
 }
 
-function isRuntimePlanErrorResponse(
-  response: unknown,
-): response is RuntimeSkillCreatorPlanErrorResponse {
-  if (!response || typeof response !== "object") {
-    return false;
-  }
-  if (!("success" in response) || response.success !== false) {
-    return false;
-  }
-  if (!("error" in response) || !response.error) {
-    return false;
-  }
-  return (
-    typeof response.error === "object" &&
-    "message" in response.error &&
-    typeof response.error.message === "string"
-  );
-}
-
-function toPlanResult(
-  response: RuntimeSkillCreatorPlanResponse,
-): PlanResult | null {
-  if ("type" in response && response.type === "terminal_handoff") {
-    return {
-      type: "terminal_handoff",
-      guidance: response.guidance,
-    };
-  }
-  if ("success" in response && response.success === false) {
-    return null;
-  }
-  if (!("planId" in response)) {
-    return null;
-  }
-  return {
-    type: "integrated_api",
-    planId: response.planId,
-    estimatedSteps: response.estimatedSteps,
-  };
-}
-
 function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
   return {
     terminalCommand: bundle.suggestedCommand,
@@ -332,12 +287,6 @@ function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
 
 const defaultExecutionPrompt =
   "このスキルの基本動作を確認し、改善余地があれば短くまとめてください。";
-
-const defaultCreateOptions = {
-  generateTasks: true,
-  addAgents: false,
-  addReferences: false,
-};
 
 const reviewGateStatuses: SkillExecutionStatus[] = [
   "completed",
@@ -414,12 +363,6 @@ function ApprovalRequestBanner({
   );
 }
 
-function extractSkillNameFromPath(skillPath: string): string {
-  const normalized = skillPath.trim().replace(/\\/g, "/");
-  const segments = normalized.split("/").filter(Boolean);
-  return segments.at(-1) ?? "";
-}
-
 function appendSessionEntry(
   setter: React.Dispatch<React.SetStateAction<SessionEntry[]>>,
   entry: Omit<SessionEntry, "id">,
@@ -438,17 +381,18 @@ function appendSessionEntry(
 export interface SkillLifecyclePanelProps {
   onClose: () => void;
   onOpenWizard?: () => void;
+  onOpenSkillWizard?: () => void;
   skillName?: string;
 }
 
 export function SkillLifecyclePanel({
   onClose,
   onOpenWizard,
+  onOpenSkillWizard,
   skillName: _skillName,
 }: SkillLifecyclePanelProps) {
   const beginSkillReview = useBeginSkillReview();
   const completeSkillReview = useCompleteSkillReview();
-  const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
   const fetchSkills = useFetchSkills();
   const llmAdapterStatus = useLLMAdapterStatus();
@@ -473,10 +417,8 @@ export function SkillLifecyclePanel({
   const storePlanResult = useCurrentPlanResult();
   const storePlanId = useCurrentPlanId();
   const setIsGenerating = useSetIsSkillGenerating();
-  const setGenerationProgress = useSetGenerationProgress();
   const setGenerationError = useSetGenerationError();
   const setCurrentPlanId = useSetCurrentPlanId();
-  const setCurrentPlanResult = useSetCurrentPlanResult();
   const workflowSnapshot = useWorkflowSnapshot();
   const workflowError = useWorkflowError();
   const setWorkflowSnapshot = useSetWorkflowSnapshot();
@@ -489,19 +431,9 @@ export function SkillLifecyclePanel({
   );
   const activePlanResult = localPlanResult ?? storePlanResult;
   const activeGenerationError = generationError;
-
-  const [request, setRequest] = useState("");
-  // plan 承認時点の request snapshot を保持する。
-  // live textarea（request state）とは独立しており、
-  // handleExecutePlan は常にこの snapshot を execute payload として使用する。
-  // cancel または再生成まで不変。
-  const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
-    null,
-  );
   const [detectedMode, setDetectedMode] = useState<SkillCreatorMode | null>(
     null,
   );
-  const [createdSkillPath, setCreatedSkillPath] = useState<string | null>(null);
   const [createdSkillName, setCreatedSkillName] = useState<string | null>(null);
   const [executionPrompt, setExecutionPrompt] = useState(
     defaultExecutionPrompt,
@@ -511,8 +443,6 @@ export function SkillLifecyclePanel({
   const [runtimeImproveResult, setRuntimeImproveResult] =
     useState<RuntimeImproveResult | null>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
-  const [isPreparing, setIsPreparing] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [isPlanningImprovement, setIsPlanningImprovement] = useState(false);
   const [activeWorkflowId, setActiveWorkflowId] = useState<string | null>(null);
   const [verifyDetail, setVerifyDetail] =
@@ -565,14 +495,12 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
-  const isPrepareFlowActiveRef = useRef(false);
   const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
   const verifyDetailRequestSeqRef = useRef(0);
 
   const clearPlanExecutionState = useCallback(() => {
     verifyDetailRequestSeqRef.current += 1;
     clearGenerationState();
-    setApprovedSkillSpec(null);
     setDetectedMode(null);
     setActiveWorkflowId(null);
     setLocalPlanResult(null);
@@ -589,7 +517,6 @@ export function SkillLifecyclePanel({
   }, [
     clearGenerationState,
     clearHandoffGuidance,
-    setApprovedSkillSpec,
     setDetectedMode,
     setDisclosureInfo,
     setIsReverifying,
@@ -1108,130 +1035,6 @@ export function SkillLifecyclePanel({
     onClose();
   };
 
-  const handlePrepare = async () => {
-    const trimmedRequest = request.trim();
-    if (!trimmedRequest) {
-      setLocalError("まず作りたいスキルの依頼文を入力してください。");
-      return;
-    }
-
-    // R-1: isGenerating ガード（二重呼出防止）
-    if (isGenerating) return;
-    if (isPrepareFlowActiveRef.current) return;
-
-    isPrepareFlowActiveRef.current = true;
-    clearSkillError();
-    setLocalError(null);
-    setIsPreparing(true);
-    clearPlanExecutionState();
-
-    appendSessionEntry(setSessionEntries, {
-      role: "user",
-      title: "作成依頼",
-      detail: trimmedRequest,
-    });
-
-    try {
-      const skillCreatorApi = getSkillCreatorApi();
-      if (!skillCreatorApi?.detectMode) {
-        setDetectedMode("create");
-        appendSessionEntry(setSessionEntries, {
-          role: "assistant",
-          title: "標準作成モードで継続します",
-          detail:
-            "mode 判定 API が見つからないため、既存の作成導線を優先して進めます。必要なら詳細ウィザードで細かく調整できます。",
-        });
-        return;
-      }
-
-      const result = await skillCreatorApi.detectMode(trimmedRequest);
-      if (!result.success || !result.data) {
-        throw new Error(result.error ?? "mode 判定に失敗しました。");
-      }
-
-      // detectMode が "plan" を返した場合、planSkill を自動呼出し
-      if (result.data === "plan") {
-        if (!skillCreatorApi.planSkill) {
-          clearPlanExecutionState();
-          setGenerationError("planSkill API が利用できません");
-          return;
-        }
-
-        try {
-          setIsGenerating(true);
-          setGenerationProgress("計画を生成中...");
-
-          const planResult = await skillCreatorApi.planSkill(
-            trimmedRequest,
-            "",
-            "",
-          );
-
-          if (!planResult.success || !planResult.data) {
-            clearPlanExecutionState();
-            setGenerationError(planResult.error ?? "計画生成に失敗しました");
-            return;
-          }
-
-          // TASK-RT-02: plan logical error の検出
-          if (isRuntimePlanErrorResponse(planResult.data)) {
-            clearPlanExecutionState();
-            setGenerationError(planResult.data.error.message);
-            return;
-          }
-
-          const normalizedPlan = toPlanResult(planResult.data);
-          if (!normalizedPlan) {
-            clearPlanExecutionState();
-            setGenerationError("計画レスポンスの形式が不正です");
-            return;
-          }
-
-          // TASK-RT-03: raw plan detail を local state に保存
-          // この時点で terminal_handoff と error response は上流のガードで除外済み
-          // normalizedPlan が取得できている = planResult.data は RuntimeSkillCreatorPlanResult
-          if ("planId" in planResult.data) {
-            setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
-          }
-
-          // plan 承認時点の request を snapshot として固定する。
-          // この後 textarea を編集しても execute payload は変わらない。
-          setApprovedSkillSpec(trimmedRequest);
-          setLocalPlanResult(normalizedPlan);
-          setCurrentPlanResult(normalizedPlan);
-          if (normalizedPlan.planId) {
-            setCurrentPlanId(normalizedPlan.planId);
-            setActiveWorkflowId(normalizedPlan.planId);
-          }
-        } catch (err) {
-          clearPlanExecutionState();
-          setGenerationError(
-            err instanceof Error ? err.message : "計画生成に失敗しました",
-          );
-        } finally {
-          setIsGenerating(false);
-          setGenerationProgress(null);
-        }
-        return;
-      }
-
-      setDetectedMode(result.data);
-      appendSessionEntry(setSessionEntries, {
-        role: "assistant",
-        title: `推奨モード: ${modeLabels[result.data]}`,
-        detail:
-          "表向きの導線はこのまま維持しつつ、内部では必要な計画・実行・改善の役割だけを使い分けます。",
-      });
-    } catch (error) {
-      setLocalError(
-        error instanceof Error ? error.message : "mode 判定に失敗しました。",
-      );
-    } finally {
-      isPrepareFlowActiveRef.current = false;
-      setIsPreparing(false);
-    }
-  };
-
   const handleExecutePlan = async () => {
     const planId = storePlanId ?? activePlanResult?.planId;
     if (!planId) return;
@@ -1243,11 +1046,9 @@ export function SkillLifecyclePanel({
       setIsGenerating(true);
       setDisclosureInfo(null);
       setPendingApprovalRequest(null);
-      // approved snapshot のみを execute payload として渡す。
-      // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
         planId,
-        approvedSkillSpec ?? undefined,
+        activePlanResult?.skillSpec ?? undefined,
       );
       if (!result.success || !result.data) {
         setGenerationError(result.error ?? "計画実行に失敗しました");
@@ -1327,53 +1128,6 @@ export function SkillLifecyclePanel({
   const handleCancelPlan = () => {
     clearPlanExecutionState();
     setLocalPlanResult(null);
-  };
-
-  const handleCreate = async () => {
-    const trimmedRequest = request.trim();
-    if (!trimmedRequest) {
-      setLocalError("作成依頼が空です。");
-      return;
-    }
-
-    clearSkillError();
-    setLocalError(null);
-    setIsCreating(true);
-    setCreatorImproveResult(null);
-    setShowDetailedAnalysis(false);
-    setPendingApprovalRequest(null);
-
-    try {
-      const skillPath = await createSkill(trimmedRequest, defaultCreateOptions);
-      if (!skillPath) {
-        throw new Error("スキル生成に失敗しました。");
-      }
-
-      const nextSkillName = extractSkillNameFromPath(skillPath);
-      if (nextSkillName) {
-        selectSkillByName(nextSkillName);
-      }
-
-      setCreatedSkillPath(skillPath);
-      setCreatedSkillName(nextSkillName || null);
-      setExecutionPrompt((current) =>
-        current.trim().length > 0 ? current : defaultExecutionPrompt,
-      );
-
-      appendSessionEntry(setSessionEntries, {
-        role: "assistant",
-        title: "スキルを生成しました",
-        detail: nextSkillName
-          ? `${nextSkillName} を作成しました。次はそのまま実行して挙動を確認できます。`
-          : `生成先: ${skillPath}`,
-      });
-    } catch (error) {
-      setLocalError(
-        error instanceof Error ? error.message : "スキル生成に失敗しました。",
-      );
-    } finally {
-      setIsCreating(false);
-    }
   };
 
   const handleExecute = async () => {
@@ -1990,62 +1744,25 @@ export function SkillLifecyclePanel({
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <section className="space-y-4">
-          <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h3 className="text-base font-semibold text-[var(--text-primary)]">
-                  1. 依頼をまとめる
-                </h3>
-                <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                  何を作りたいかを自然文で入力してください。mode
-                  判定は内部で処理し、表の導線は増やしません。
-                </p>
-              </div>
-              <button
-                type="button"
-                className={lifecycleButtonStyles.secondary}
-                onClick={handlePrepare}
-                disabled={isPreparing || isCreating || isGenerating}
-                data-testid="skill-lifecycle-prepare-button"
-              >
-                {isPreparing
-                  ? "判定中..."
-                  : isGenerating
-                    ? "計画生成中..."
-                    : "方針を決める"}
-              </button>
-            </div>
-            <textarea
-              value={request}
-              onChange={(event) => setRequest(event.target.value)}
-              rows={5}
-              placeholder="例: ドキュメントを読み、レビュー観点を整理して、改善提案まで返すスキルを作りたい"
-              className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]"
-              data-testid="skill-lifecycle-request-input"
-            />
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+          <section>
+            <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">
+                1. スキルを作成する
+              </h3>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                スキルの目的・機能・連携ツールをガイドに沿って設定し、
+                AIと対話しながらスキルを生成します。
+              </p>
               <button
                 type="button"
                 className={lifecycleButtonStyles.primary}
-                onClick={handleCreate}
-                disabled={isCreating || request.trim().length === 0}
-                data-testid="skill-lifecycle-create-button"
+                onClick={onOpenSkillWizard}
+                data-testid="skill-lifecycle-open-wizard-button"
               >
-                {isCreating ? "生成中..." : "スキルを生成する"}
+                スキル作成ウィザードを開く →
               </button>
-              <span className="text-xs text-[var(--text-secondary)]">
-                実生成は既存の安全な作成導線を再利用し、判定結果は会話プランにだけ反映します。
-              </span>
             </div>
-            {createdSkillPath ? (
-              <p
-                className="mt-3 text-xs text-[var(--text-secondary)]"
-                data-testid="skill-lifecycle-created-path"
-              >
-                生成先: {createdSkillPath}
-              </p>
-            ) : null}
-          </div>
+          </section>
 
           <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
             <div className="flex items-center justify-between gap-3">

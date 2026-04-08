@@ -1,45 +1,36 @@
-# Phase 12: 未タスク検出
+# Phase 12: 未タスク検出レポート（unassigned-task-detection.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## タスク情報
+## メタ情報
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 12                                             |
-| 作成日   | 2026-04-07                                     |
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
----
+## 判定（要点）
 
-## 検出結果
+- **未タスク（大きな課題）: 0件**
+- Phase 11 のスクリーンショット証跡整備と `outputs/phase-11/*` の stale 解消は **本タスクのスコープ内**（未タスクではなく、同一タスクの未完了作業として扱う）
 
-**未着手タスク: 0件**
+## 検出観点と根拠
 
----
+### 1. 仕様の欠落（ドキュメント/コード/成果物）
 
-## baseline / current 比較
+- Step 0 のカテゴリ選択は Step 1 の Q5 必須表示に直接影響するため、Phase 11 証跡と Phase 12 実装ガイドの両方に記録必須
+- 本タスクでは `outputs/phase-12/*` を current task 用に再生成し、旧 task id の混入を排除する（stale の再発防止）
 
-| 区分     | 状態                                          |
-| -------- | --------------------------------------------- |
-| baseline | W0-seq-02 着手前（推論サービス未実装）        |
-| current  | W0-seq-02 完了（実装・テスト・docs 全件完了） |
+### 2. 依存関係の欠落（apps/backend, packages/shared など）
 
----
+- 変更は renderer UI に閉じており、`apps/backend/` の更新要否はない
+- shared contract は `packages/shared/src/types/skillCreator.ts` の既存定義を consumer として利用している
 
-## 確認スコープ
+### 3. 追加するとリスクが高い変更（スコープ外）
 
-UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 に関連するタスクを以下の観点で確認した。
+- cron の厳密仕様（秒フィールド対応、実行基盤との完全整合）は、現時点では UI の入力妥当性チェックに限定されている
+- もし「実行スケジューラの受理形式」との厳密な整合を保証したい場合は、別タスクで仕様を固定して統一するべき
 
-| 確認項目                                   | 結果                                 |
-| ------------------------------------------ | ------------------------------------ |
-| 受け入れ基準 AC-1〜AC-4 全件実装           | 完了                                 |
-| ユニットテスト 33件全件 PASS               | 完了                                 |
-| バレルエクスポート（shared/index.ts）      | 完了                                 |
-| vitest.config.ts `@repo/shared` alias 設定 | 完了                                 |
-| Phase 1〜12 全成果物出力                   | 完了                                 |
-| W2-seq-03a への利用可能通知                | system-spec-update-summary.md に記録 |
+## 参考（同一タスク内で回収すべき証跡）
 
----
+- `outputs/phase-11/screenshots/*.png`
+- `outputs/phase-11/screenshot-plan.json`
+- `outputs/phase-11/phase11-capture-metadata.json`
 
-## formalize 判断
-
-未着手タスクが 0件のため、formalize 手続きは不要。
+上記は **未タスクではなく** Phase 11 の必須成果物。

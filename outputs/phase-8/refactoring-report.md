@@ -1,52 +1,82 @@
-# Phase 8: リファクタリング結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 8: リファクタリングレポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 評価結果
+## 実施日時
 
-### 責務分離の確認
+2026-04-07
 
-| チェック項目                                                | 結果 | 備考                                             |
-| ----------------------------------------------------------- | ---- | ------------------------------------------------ |
-| `inferTool` が tool 推論のみを担当しているか                | PASS | 他の推論ロジックを含まない単一責務               |
-| `inferTiming` が timing 推論のみを担当しているか            | PASS | 他の推論ロジックを含まない単一責務               |
-| `inferFormat` が format 推論のみを担当しているか            | PASS | 他の推論ロジックを含まない単一責務               |
-| `normalizePurpose` が正規化のみを担当しているか             | PASS | 副作用なし、入力変換のみ                         |
-| `createEmptyResult` が初期値生成のみを担当しているか        | PASS | 副作用なし、定数的な空オブジェクト生成           |
-| `inferSmartDefaults` が各ヘルパーの統合のみを担当しているか | PASS | 推論ロジックを直接持たず、ヘルパーに委譲している |
+---
 
-### TOOL_KEYWORDS 定数化
+## Before / After テーブル
 
-| チェック項目                                 | 結果 | 備考                                                 |
-| -------------------------------------------- | ---- | ---------------------------------------------------- |
-| ツールキーワードが定数として分離されているか | PASS | `TOOL_KEYWORDS` 定数にまとめ、コメントで変更点を明示 |
-| キーワード追加・変更が1箇所のみで完結するか  | PASS | `TOOL_KEYWORDS` のみ変更すれば全推論に反映される     |
+| 項目                                         | Before（削除前）                                                                                                                                    | After（削除後）                                                                                                                     | 理由                                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `apiKeyDegraded` 変数                        | `const apiKeyDegraded = credentials.apiKeyValid && (selectedHealthStatus?.status === "disconnected" \|\| selectedHealthStatus?.status === "error")` | 変数自体を削除                                                                                                                      | `HealthPolicy` 型が同等の情報を内包するため不要       |
+| HealthPolicy の取得方法                      | 存在しない（独自ロジックで `apiKeyDegraded` を算出）                                                                                                | `resolveHealthPolicy({ connectionStatus, isApiKeyValid, apiKeyDegraded: false, isRateLimited: false, lastHealthCheck })` を呼び出し | ヘルス判定ロジックを `resolveHealthPolicy()` に一元化 |
+| `buildMainlineExecutionAccessState()` の引数 | `apiKeyDegraded` フラグを個別引数として渡していた                                                                                                   | `healthPolicy: HealthPolicy` オブジェクトを渡す（`apiKeyDegraded` 引数は削除）                                                      | 型安全性の向上と将来の拡張容易性                      |
+| インポート                                   | `@repo/shared/types` からのインポートなし                                                                                                           | `import { resolveHealthPolicy } from "@repo/shared/types"` を追加                                                                   | AC-4 準拠（barrel export 経由）                       |
 
-### normalizePurpose 抽出
+---
 
-| チェック項目                                | 結果 | 備考                                         |
-| ------------------------------------------- | ---- | -------------------------------------------- |
-| null/undefined 処理が関数に集約されているか | PASS | `normalizePurpose` で一元管理                |
-| 本体関数にガード節が散在していないか        | PASS | `inferSmartDefaults` 冒頭の1行呼び出しで完結 |
+## 削除コードスニペット（旧 L117-120）
 
-### 重複コードの排除
-
-| チェック項目                           | 結果 | 備考                                                   |
-| -------------------------------------- | ---- | ------------------------------------------------------ |
-| 推論ログ追加パターンが統一されているか | PASS | `if (result.log) inferenceLog.push(result.log)` で統一 |
-| 空オブジェクト生成が重複していないか   | PASS | `createEmptyResult()` に集約済み                       |
-
-## リファクタリング実施内容
-
-Green フェーズ完了後に以下のリファクタリングを実施した。
-
-1. **TOOL_KEYWORDS 定数化**: マジックストリングの排除。キーワード追加時の変更箇所を1箇所に集約。
-2. **normalizePurpose 抽出**: null/undefined ガード処理を専用関数に分離。
-3. **ヘルパー3関数分離**: `inferTool` / `inferTiming` / `inferFormat` を独立関数として分離し、公開 API（`inferSmartDefaults`）の可読性を向上。
-4. **コメント整備**: 変更ポイントを `// キーワード追加・変更はここのみ変更` として明示。
-
-## TDD 検証結果
-
-リファクタリング後も全テスト PASS を確認。
-
+```typescript
+// 削除前
+const apiKeyDegraded =
+  credentials.apiKeyValid &&
+  (selectedHealthStatus?.status === "disconnected" ||
+    selectedHealthStatus?.status === "error");
 ```
-全 33 テスト PASS（リファクタリング前後で結果変化なし）
+
+## 追加コードスニペット
+
+```typescript
+// 追加後
+const healthPolicy = resolveHealthPolicy({
+  connectionStatus: selectedHealthStatus?.status ?? "disconnected",
+  isApiKeyValid: credentials.apiKeyValid,
+  apiKeyDegraded: false,
+  isRateLimited: false,
+  lastHealthCheck: selectedHealthStatus ?? null,
+});
 ```
+
+---
+
+## コードレビュー観点チェック結果
+
+### 1. import 順序
+
+| 確認項目                                                      | 結果 | 備考                                                                              |
+| ------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------- |
+| `@repo/shared/types` からのインポートが適切に整理されているか | PASS | L2 に `resolveHealthPolicy` をインポート、L3 に `AuthMode` type import と分離済み |
+| 不要な import が残っていないか                                | PASS | `apiKeyDegraded` 関連の旧インポートなし                                           |
+| import の重複なし                                             | PASS | 同一モジュールからの重複インポートなし                                            |
+
+### 2. 命名一貫性
+
+| 確認項目                                                        | 結果 | 備考                                            |
+| --------------------------------------------------------------- | ---- | ----------------------------------------------- |
+| `healthPolicy` 変数名が命名規則と一貫しているか                 | PASS | `resolveHealthPolicy` → `healthPolicy` パターン |
+| 関数名・変数名が camelCase で統一されているか                   | PASS | TypeScript 規約準拠                             |
+| `HealthPolicy` 型名が `@repo/shared/types` 定義と一致しているか | PASS | 型エイリアス・再定義なし                        |
+
+### 3. その他
+
+| 確認項目                                 | 結果 | 備考                                        |
+| ---------------------------------------- | ---- | ------------------------------------------- |
+| マジックナンバー・マジック文字列がないか | PASS | `"disconnected"` はデフォルト値として明示的 |
+| 古いコメントが残っていないか             | PASS | 削除ロジックに関する古いコメントなし        |
+| `any` 型の使用がないか                   | PASS | 厳密な型定義を維持                          |
+
+---
+
+## 指摘事項と対応状況
+
+指摘事項: なし
+
+---
+
+## 次フェーズへの引き継ぎ事項
+
+- リファクタリング確認完了、コード品質問題なし
+- Phase 9（品質保証）へ進む
