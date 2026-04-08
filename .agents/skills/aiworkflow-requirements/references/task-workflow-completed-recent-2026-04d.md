@@ -6,16 +6,16 @@
 
 ### タスク: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（2026-04-08）
 
-| 項目       | 値                                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W2-seq-03a                                                                                                |
-| ステータス | **完了（Phase 12 完了 / Phase 13 blocked）**                                                                              |
-| タイプ     | UI implementation / wizard redesign / orchestration                                                                       |
-| 優先度     | 高                                                                                                                        |
-| 完了日     | 2026-04-08                                                                                                                |
-| 対象       | `SkillCreateWizard.tsx` / `GenerateStep.tsx` / `CompleteStep.tsx`                                                         |
-| 成果物     | `docs/30-workflows/W2-seq-03a-skill-create-wizard/`                                                                       |
-| PR         | 未作成（Phase 13 blocked）                                                                                                |
+| 項目       | 値                                                                  |
+| ---------- | ------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W2-seq-03a                                          |
+| ステータス | **完了（Phase 12 完了 / Phase 13 blocked）**                        |
+| タイプ     | UI implementation / wizard redesign / orchestration                 |
+| 優先度     | 高                                                                  |
+| 完了日     | 2026-04-08                                                          |
+| 対象       | `SkillCreateWizard.tsx` / `GenerateStep.tsx` / `CompleteStep.tsx`   |
+| 成果物     | `docs/30-workflows/completed-tasks/W2-seq-03a-skill-create-wizard/` |
+| PR         | 未作成（Phase 13 blocked）                                          |
 
 #### 実施内容
 
@@ -59,11 +59,11 @@
 
 #### 苦戦箇所
 
-| # | 苦戦箇所 | 解決策 |
-| --- | --- | --- |
-| 1 | `inferSmartDefaults()` の大小文字不問対応 | `toLowerCase()` してから `includes()` で判定 |
-| 2 | `handleGenerate` の二重呼び出し防止 | `generationLockRef`（useRef）+ `isGenerating`（useState）の二重ガード |
-| 3 | `handleRetry` でどの state を保持すべきか | ユーザー入力（`formData`）を保持し生成結果のみリセット |
+| #   | 苦戦箇所                                  | 解決策                                                                |
+| --- | ----------------------------------------- | --------------------------------------------------------------------- |
+| 1   | `inferSmartDefaults()` の大小文字不問対応 | `toLowerCase()` してから `includes()` で判定                          |
+| 2   | `handleGenerate` の二重呼び出し防止       | `generationLockRef`（useRef）+ `isGenerating`（useState）の二重ガード |
+| 3   | `handleRetry` でどの state を保持すべきか | ユーザー入力（`formData`）を保持し生成結果のみリセット                |
 
 #### Phase 12 未タスク（非ブロッカー）
 
@@ -81,45 +81,3 @@
 #### lessons-learned
 
 - `references/lessons-learned-skill-wizard-redesign.md` を参照
-# 完了タスク記録 — 2026-04-08（impl-spec-to-skill-sync）
-
-> 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
-
----
-
-### タスク: UT-SKILL-WIZARD-W1-par-02c CompleteStep 完了画面再設計 impl-spec-to-skill-sync（2026-04-08）
-
-| 項目       | 値                                                                                           |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W1-COMPLETE-STEP-001                                                         |
-| ステータス | **完了**                                                                                     |
-| タイプ     | impl-spec-to-skill-sync / Phase 12 docs / system spec update                                 |
-| 優先度     | 高                                                                                           |
-| 完了日     | 2026-04-08                                                                                   |
-| 対象       | `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`                         |
-| 成果物     | `docs/30-workflows/W1-par-02c-complete-step-2/`（Phase 1-12 仕様書・全成果物）               |
-
-#### 実施内容
-
-- `CompleteStep.tsx` を旧 `skillPath/onClose` シンプル完了画面から 7 Props 構成（`generatedSkill` / `hasExternalIntegration` / `externalToolName` / `onExecuteNow` / `onOpenInEditor` / `onCreateAnother` / `onQualityFeedback` / `onRetry`）へ全面再設計
-- 完了ヘッダー（「✓ スキルの骨格を生成しました」）/ QualityFeedback（👍/👎）/ NextActionCards（3 カード）/ ExternalIntegrationChecklist（条件付き）を実装
-- `feedbackSubmitted` state で二重送信防止。`onQualityFeedback(false)` 失敗時も `onRetry()` を finally ブロックで保証
-- `GeneratedSkill` interface を追加（表示責務は W2-seq-03a に委譲）
-- 36 tests PASS（基本 / エッジ / 統合 / a11y / snapshot 含む）
-- Phase 11 スクリーンショット 9 枚（TC-01〜TC-09）
-- Phase 12 全 6 成果物 PASS（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
-- `ui-ux-feature-components-skill-analysis.md` / `ui-ux-feature-components-reference.md` を current contract に同期（same-wave）
-- `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W1-par-02c slug を `W1-par-02c-complete-step-2` に更新
-- lessons-learned 3 件追加（L-W1-02c2-001〜003: generatedSkill 保持・非表示 SRP / onQualityFeedback と onRetry 分離 / `-2` suffix 命名規則）
-- `task-workflow-completed-recent-2026-04d.md` を新規作成（2026-04c が 538 行超過のため）
-- `generate-index.js` 実行・mirror sync 完了
-
-#### 検証証跡
-
-- `pnpm --filter @repo/desktop vitest run -- CompleteStep`: 36 tests PASS
-- `validate-structure.js`: PASS（警告4件は既存行超過、本タスク起因なし）
-- `generate-index.js`: PASS（2827 キーワード）
-- `diff -qr .agents/skills/aiworkflow-requirements .claude/skills/aiworkflow-requirements`: 差分なし（mirror 同期済み）
-- `audit-unassigned-tasks.js --json --diff-from HEAD`: currentViolations = 0
-
----

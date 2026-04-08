@@ -1,28 +1,53 @@
-# Phase 8: リファクタリング計画 — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 8: リファクタリング計画 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## チェック項目と結果
 
-### 1. safeOn パターンが他の on\* メソッドと同形か
+### 1. `defaultExecutionPrompt` 定数が他の場所でも参照されているか
 
-全メソッド（onProgress / onWorkflowStateChanged / onAdapterStatusChanged / onOutputReady / onApprovalRequest）が
-`safeOn<T>(IPC_CHANNELS.XXX, callback)` の同一パターンで実装されている。
+`defaultExecutionPrompt` は `SkillLifecyclePanel.tsx` 内の定数として定義されており、
+`handleExecute`・`handlePlanImprovement` の2箇所で参照されている。
 
-**判定**: 変更なし、理由: 既存パターンと一致
+外部モジュールへの露出なし。コンポーネント内部で完結している。
 
-### 2. pendingApproval state が SkillLifecyclePanel 外に漏れていないか
+**判定**: 変更なし、理由: 定数の責務境界が正しく閉じている
 
-`pendingApproval` は `useState<ApprovalRequestPayload | null>(null)` として
-コンポーネント内部に閉じており、props / context / store への露出なし。
+### 2. `executionPrompt` state 削除後の残存参照がないか
 
-**判定**: 変更なし、理由: state の責務境界が正しく閉じている
+削除後の `SkillLifecyclePanel.tsx` を確認:
 
-### 3. JSDoc コメントが TASK-SDK-07 コメントに準拠しているか
+- `executionPrompt` の `useState` 宣言: 削除済み
+- `setExecutionPrompt` の参照: 削除済み（textarea の onChange も削除）
+- `executionPrompt.trim()` の参照: 削除済み（canExecuteSkill / handleExecute / handlePlanImprovement）
 
-- skill-creator-api.ts: interface に JSDoc + 実装に `// TASK-SDK-07:` コメント付き
-- SkillLifecyclePanel.tsx: 型定義・state・useEffect・ハンドラ・レンダリング全箇所に `// TASK-SDK-07:` コメント付き
+**判定**: 変更なし、理由: 全参照が正しく除去されている
 
-**判定**: 変更なし、理由: TASK-SDK-07 コメント規約に準拠済み
+### 3. `canExecuteSkill` のロジックが簡潔になったか
+
+削除前:
+
+```typescript
+const canExecuteSkill =
+  Boolean(createdSkillName) &&
+  !isExecuting &&
+  executionPrompt.trim().length > 0 &&
+  skillExecutionStatus !== "review" &&
+  skillExecutionStatus !== "reuse_ready";
+```
+
+削除後:
+
+```typescript
+const canExecuteSkill =
+  Boolean(createdSkillName) &&
+  !isExecuting &&
+  skillExecutionStatus !== "review" &&
+  skillExecutionStatus !== "reuse_ready";
+```
+
+条件が1つ減り、よりシンプルになった。追加リファクタは不要。
+
+**判定**: 変更なし（すでに適切な形に変更済み）
 
 ## リファクタリング総合判定
 
-**変更なし** — 全チェック項目で既存パターンと一致し、実装にリファクタリングの必要なし。
+**変更なし** — 全チェック項目で実装が適切であり、追加リファクタリングは不要。

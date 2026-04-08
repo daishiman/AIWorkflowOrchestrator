@@ -142,7 +142,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 | molecule | InterviewProgressBar | 質問 N/6 + `role="progressbar"` 進捗バー（常時表示） | `.../wizard/InterviewProgressBar.tsx` |
 | molecule | ApplySummaryCard | 未回答問の smartDefaults 一覧 + Q5 空欄警告（external-integration 時のみ）<br>key-based マッピング（q1..q6 → who..format） | `.../wizard/ApplySummaryCard.tsx` |
 | molecule | GenerateStep | 生成中ローディング / エラー表示 | `.../wizard/GenerateStep.tsx` |
-| molecule | CompleteStep | 起点画面化（品質フィードバック + 3カード + 外部連携チェック + リカバリーフロー） | `.../wizard/CompleteStep.tsx` |
+| molecule | CompleteStep | 生成完了表示（作成パス表示 + close） | `.../wizard/CompleteStep.tsx` |
 
 **wizard/index.ts の export（current facts）**:
 - `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` を export

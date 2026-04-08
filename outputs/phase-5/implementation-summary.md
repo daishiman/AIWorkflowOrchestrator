@@ -1,60 +1,92 @@
-# Phase 5: 実装概要 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 5: 実装概要 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## 実装の概要
 
-`inferSmartDefaults` 関数を含むスマートデフォルト推論サービスを新規実装した。
-ユーザーが入力した `purpose`（目的）と `category`（カテゴリ）から、
-スキルウィザード Step 1 の 6 問分の初期値を自動推論する純粋関数。
+`SkillLifecyclePanel.tsx` から `skill-lifecycle-execution-input` textarea と `executionPrompt` state を削除した。
+実行プロンプトは `defaultExecutionPrompt` 定数（固定値）を使用するよう変更した。
 
-## 実装ファイル
+## 変更内容
 
-| ファイル                                                                    | 変更種別 | 内容                                         |
-| --------------------------------------------------------------------------- | -------- | -------------------------------------------- |
-| `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` | 新規作成 | 推論サービス本体（142行）                    |
-| `packages/shared/src/services/skillCreator/index.ts`                        | 更新     | `inferSmartDefaults` を barrel export に追加 |
+### 1. `executionPrompt` state の削除
 
-## 推論ロジック
-
-### 定数定義
-
-```typescript
-const TOOL_KEYWORDS = [
-  { keyword: "Slack", tool: "slack" },
-  { keyword: "GitHub", tool: "github" },
-  { keyword: "Notion", tool: "notion" },
-];
-const SCHEDULED_PATTERN = /毎日|毎週|定期|スケジュール/;
-const REALTIME_PATTERN = /リアルタイム|即座|すぐに/;
+```diff
+- const [executionPrompt, setExecutionPrompt] = useState(
+-   defaultExecutionPrompt,
+- );
 ```
 
-キーワードの追加・変更は `TOOL_KEYWORDS` 定数のみを修正すれば済む設計。
+### 2. `canExecuteSkill` の更新
 
-### 3ヘルパー関数
-
-| 関数名                  | 役割                                                                             | 推論対象            |
-| ----------------------- | -------------------------------------------------------------------------------- | ------------------- |
-| `inferTool(purpose)`    | TOOL_KEYWORDS を先頭から順に評価し、最初に一致したツール名を返す（先勝ちルール） | `tool` フィールド   |
-| `inferTiming(purpose)`  | SCHEDULED_PATTERN → REALTIME_PATTERN の順に正規表現マッチ                        | `timing` フィールド |
-| `inferFormat(category)` | category の値で条件分岐                                                          | `format` フィールド |
-
-補助関数:
-
-- `normalizePurpose(value)`: null/undefined/空白のみの文字列を空文字に正規化
-- `createEmptyResult()`: 全フィールド null の初期値オブジェクトを生成
-
-### 推論フロー
-
-1. `normalizePurpose` で purpose を正規化
-2. purpose が非空なら `inferTool` → `inferTiming` を実行
-3. purpose に関わらず `inferFormat` を実行（category は独立推論）
-4. 推論できたフィールドのログを `inferenceLog` に記録
-5. 全フィールドと `inferenceLog` をまとめて返却
-
-## barrel export 追加
-
-```typescript
-// packages/shared/src/services/skillCreator/index.ts
-export { inferSmartDefaults } from "./smartDefaultReasoningService";
+```diff
+  const canExecuteSkill =
+    Boolean(createdSkillName) &&
+    !isExecuting &&
+-   executionPrompt.trim().length > 0 &&
+    skillExecutionStatus !== "review" &&
+    skillExecutionStatus !== "reuse_ready";
 ```
 
-テストは `@repo/shared` 経由でインポートすることで barrel の整合性も検証。
+### 3. `handleExecute` の更新
+
+```diff
+  const handleExecute = async () => {
+-   const trimmedPrompt = executionPrompt.trim();
+    if (!createdSkillName) {
+      setLocalError("先にスキルを生成してください。");
+      return;
+    }
+-   if (!trimmedPrompt) {
+-     setLocalError("実行内容を入力してください。");
+-     return;
+-   }
+    // ...
+    appendSessionEntry(setSessionEntries, {
+      role: "user",
+      title: "実行依頼",
+-     detail: trimmedPrompt,
++     detail: defaultExecutionPrompt,
+    });
+    // ...
+    if (skillExecutionStatus === "improve_ready") {
+-     await reExecuteAfterImprovement(trimmedPrompt);
++     await reExecuteAfterImprovement(defaultExecutionPrompt);
+    } else {
+-     await executeSkill(trimmedPrompt);
++     await executeSkill(defaultExecutionPrompt);
+    }
+  };
+```
+
+### 4. `handlePlanImprovement` の更新
+
+```diff
+- const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
++ const runtimeFeedback = defaultExecutionPrompt;
+```
+
+### 5. textarea JSX の削除
+
+```diff
+- <textarea
+-   value={executionPrompt}
+-   onChange={(event) => setExecutionPrompt(event.target.value)}
+-   rows={3}
+-   placeholder="このスキルに何をさせるかを書いてください"
+-   className="mt-4 w-full ..."
+-   data-testid="skill-lifecycle-execution-input"
+- />
+```
+
+## テスト結果（Green）
+
+```
+✓ SkillLifecyclePanel.test.tsx (39 tests) 936ms
+✓ SkillLifecyclePanel.llm-generation.test.tsx (35 tests | 13 skipped)
+✓ SkillLifecyclePanel.auth-regression.test.tsx (9 tests | 5 skipped)
+✓ SkillLifecyclePanel.error-persistence.test.tsx (9 tests)
+✓ SkillLifecyclePanel.approval.test.tsx (9 tests)
+✓ SkillLifecyclePanel.adapter-status.test.tsx (2 tests)
+
+Test Files  6 passed (6)
+Tests       85 passed | 18 skipped (103)
+```

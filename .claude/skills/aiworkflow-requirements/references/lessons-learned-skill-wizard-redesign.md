@@ -8,13 +8,13 @@
 
 ## タスク概要
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 完了日 | 2026-04-08 |
-| ステータス | Phase 12 完了 / Phase 13 blocked |
-| 対象ファイル | `SkillCreateWizard.tsx`, `GenerateStep.tsx`, `CompleteStep.tsx` |
-| 成果物 | `docs/30-workflows/W2-seq-03a-skill-create-wizard/` |
+| 項目         | 値                                                                  |
+| ------------ | ------------------------------------------------------------------- |
+| タスクID     | UT-SKILL-WIZARD-W2-seq-03a                                          |
+| 完了日       | 2026-04-08                                                          |
+| ステータス   | Phase 12 完了 / Phase 13 blocked                                    |
+| 対象ファイル | `SkillCreateWizard.tsx`, `GenerateStep.tsx`, `CompleteStep.tsx`     |
+| 成果物       | `docs/30-workflows/completed-tasks/W2-seq-03a-skill-create-wizard/` |
 
 ---
 
@@ -83,7 +83,9 @@ const handleGenerate = async (method: GenerationMethod) => {
 // Step 0: ユーザー入力
 const [formData, setFormData] = useState<SkillInfoFormData | null>(null);
 // Step 1: スマートデフォルト（formDataから自動推論）
-const [smartDefaults, setSmartDefaults] = useState<SmartDefaultResult | null>(null);
+const [smartDefaults, setSmartDefaults] = useState<SmartDefaultResult | null>(
+  null,
+);
 // Step 2: 生成結果（LLM応答）
 const [answers, setAnswers] = useState<ConversationAnswers | null>(null);
 // Complete: 保存パス
@@ -107,12 +109,12 @@ const externalToolName = resolveExternalIntegration(formData)?.toolName ?? null;
 
 ## 苦戦箇所
 
-| # | 苦戦箇所 | 再発条件 | 解決策 |
-| --- | --- | --- | --- |
-| 1 | `inferSmartDefaults()` の大小文字不問対応 | 自然言語入力を文字列判定する場合 | `toLowerCase()` してから `includes()` を使う |
-| 2 | `handleGenerate` の二重呼び出し | ユーザーが連打した場合や非同期処理が遅い場合 | `generationLockRef` + `isGenerating` の二重ガード |
-| 3 | `handleRetry` でどの state を保持するか | リトライ時のUX設計 | ユーザー入力（`formData`）を保持、生成結果のみリセット |
-| 4 | テスト名の表現ゆれ | テストケース追加時 | 「リトライ」に統一（「復帰」「やり直し」は使わない） |
+| #   | 苦戦箇所                                  | 再発条件                                     | 解決策                                                 |
+| --- | ----------------------------------------- | -------------------------------------------- | ------------------------------------------------------ |
+| 1   | `inferSmartDefaults()` の大小文字不問対応 | 自然言語入力を文字列判定する場合             | `toLowerCase()` してから `includes()` を使う           |
+| 2   | `handleGenerate` の二重呼び出し           | ユーザーが連打した場合や非同期処理が遅い場合 | `generationLockRef` + `isGenerating` の二重ガード      |
+| 3   | `handleRetry` でどの state を保持するか   | リトライ時のUX設計                           | ユーザー入力（`formData`）を保持、生成結果のみリセット |
+| 4   | テスト名の表現ゆれ                        | テストケース追加時                           | 「リトライ」に統一（「復帰」「やり直し」は使わない）   |
 
 ---
 
@@ -125,9 +127,9 @@ const externalToolName = resolveExternalIntegration(formData)?.toolName ?? null;
 ```typescript
 // 例: 切り出し後のイメージ
 const EXTERNAL_TOOL_MAP: Array<{ keyword: string; toolName: string }> = [
-  { keyword: 'slack', toolName: 'Slack' },
-  { keyword: 'github', toolName: 'GitHub' },
-  { keyword: 'notion', toolName: 'Notion' },
+  { keyword: "slack", toolName: "Slack" },
+  { keyword: "github", toolName: "GitHub" },
+  { keyword: "notion", toolName: "Notion" },
 ];
 ```
 
@@ -137,10 +139,10 @@ const EXTERNAL_TOOL_MAP: Array<{ keyword: string; toolName: string }> = [
 
 ```typescript
 // 推奨
-it('リトライ時にformDataを保持し生成結果をリセットする')
+it("リトライ時にformDataを保持し生成結果をリセットする");
 // 非推奨
-it('復帰時にformDataを保持する') // "復帰" は使わない
-it('やり直し後に...')           // "やり直し" は使わない
+it("復帰時にformDataを保持する"); // "復帰" は使わない
+it("やり直し後に..."); // "やり直し" は使わない
 ```
 
 ### 3. Phase 11 証跡スクリーンショットの命名規則（TC-11-xx-...形式）を明文化
@@ -158,24 +160,24 @@ TC-11-03-generate-step-retry-button.png
 
 ## 依存関係
 
-| 方向 | タスクID | 内容 |
-| --- | --- | --- |
-| 先行 | W0-seq-01 | `SkillInfoFormData` / `SmartDefaultResult` 型定義 |
-| 先行 | W0-seq-02（UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001） | `inferSmartDefaults()` サービス実装 |
-| 先行 | W1-par-02a | `SkillInfoStep`（Step 0 フォーム）実装 |
-| 先行 | W1-par-02d | `SkillLifecyclePanel` ウィザード遷移ボタン化 |
-| 後続 | W3-seq-04 | Skill生成実行処理（LLM呼び出し実装） |
+| 方向 | タスクID                                                    | 内容                                              |
+| ---- | ----------------------------------------------------------- | ------------------------------------------------- |
+| 先行 | W0-seq-01                                                   | `SkillInfoFormData` / `SmartDefaultResult` 型定義 |
+| 先行 | W0-seq-02（UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001） | `inferSmartDefaults()` サービス実装               |
+| 先行 | W1-par-02a                                                  | `SkillInfoStep`（Step 0 フォーム）実装            |
+| 先行 | W1-par-02d                                                  | `SkillLifecyclePanel` ウィザード遷移ボタン化      |
+| 後続 | W3-seq-04                                                   | Skill生成実行処理（LLM呼び出し実装）              |
 
 ---
 
 ## 関連ファイル
 
-| ファイル | 用途 |
-| --- | --- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` | ウィザード本体 |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx` | 生成ステップ |
-| `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx` | 完了ステップ |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.W2-seq-03a.test.tsx` | W2-seq-03a 単体テスト |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | Store統合テスト |
-| `docs/30-workflows/W2-seq-03a-skill-create-wizard/` | タスク仕様書ディレクトリ |
-| `outputs/phase-12/skill-feedback-report.md` | フィードバックレポート |
+| ファイル                                                                                            | 用途                     |
+| --------------------------------------------------------------------------------------------------- | ------------------------ |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                  | ウィザード本体           |
+| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`                                | 生成ステップ             |
+| `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`                                | 完了ステップ             |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.W2-seq-03a.test.tsx`        | W2-seq-03a 単体テスト    |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | Store統合テスト          |
+| `docs/30-workflows/completed-tasks/W2-seq-03a-skill-create-wizard/`                                 | タスク仕様書ディレクトリ |
+| `outputs/phase-12/skill-feedback-report.md`                                                         | フィードバックレポート   |

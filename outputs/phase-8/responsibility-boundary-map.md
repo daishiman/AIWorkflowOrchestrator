@@ -1,54 +1,53 @@
-# Phase 8: 責務境界マップ
+# Phase 8: 責務境界マップ — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
-## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 8
+## 変更前後のデータフロー
 
-## レイヤー構成
+### 変更前（executionPrompt state あり）
 
 ```
-Main Process (Electron)
-  └── ApprovalHandler（main/handlers/approval-handler.ts）
-        │ ipcRenderer.send("approval:request", payload)
-        ▼
-Preload Layer
-  └── skill-creator-api.ts
-        │ onApprovalRequest: (callback) => safeOn("approval:request", callback)
-        │   ← IPC チャンネルのホワイトリスト制御
-        │   ← listener ラッパーによる event object 隠蔽
-        ▼
-Renderer Layer
-  └── SkillLifecyclePanel.tsx
-        │ useEffect: skillCreatorApi.onApprovalRequest(payload => setPendingApproval(payload))
-        │   ← pendingApproval state（コンポーネント内部に閉じている）
-        │
-        ├── handleApprove()
-        │     └── respondToApproval(sessionId, operationId, "approve")
-        │     └── setPendingApproval(null)
-        │
-        ├── handleReject()
-        │     └── respondToApproval(sessionId, operationId, "reject")
-        │     └── setPendingApproval(null)
-        │
-        └── {pendingApproval ? <ApprovalSheet ... /> : null}
-              └── ApprovalSheet（execution/ApprovalSheet）
-                    ├── data-testid="approval-sheet"
-                    ├── data-testid="approval-approve"
-                    └── data-testid="approval-reject"
+ユーザー入力
+  └── textarea（data-testid="skill-lifecycle-execution-input"）
+        └── onChange → setExecutionPrompt(event.target.value)
+              └── executionPrompt state
+                    ├── canExecuteSkill（プロンプト長チェック）
+                    ├── handleExecute → appendSessionEntry(detail: trimmedPrompt)
+                    ├── handleExecute → executeSkill(trimmedPrompt)
+                    ├── handleExecute → reExecuteAfterImprovement(trimmedPrompt)
+                    └── handlePlanImprovement → runtimeFeedback = trimmedPrompt || default
+```
+
+### 変更後（defaultExecutionPrompt 定数のみ）
+
+```
+定数
+  └── defaultExecutionPrompt（コンパイル時定数）
+        ├── canExecuteSkill（プロンプト長チェック削除）
+        ├── handleExecute → appendSessionEntry(detail: defaultExecutionPrompt)
+        ├── handleExecute → executeSkill(defaultExecutionPrompt)
+        ├── handleExecute → reExecuteAfterImprovement(defaultExecutionPrompt)
+        └── handlePlanImprovement → runtimeFeedback = defaultExecutionPrompt
 ```
 
 ## 責務境界の確認
 
-| レイヤー            | 責務                                            | 境界違反 |
-| ------------------- | ----------------------------------------------- | -------- |
-| Main Process        | approval:request イベントを push する           | なし     |
-| Preload             | チャンネルホワイトリスト制御・listener ラッパー | なし     |
-| SkillLifecyclePanel | 購読・状態管理・ハンドラ定義                    | なし     |
-| ApprovalSheet       | UI 表示のみ（ロジックなし）                     | なし     |
+| 責務区分                 | 変更前                           | 変更後                          | 境界違反 |
+| ------------------------ | -------------------------------- | ------------------------------- | -------- |
+| 実行プロンプトの供給     | ユーザー入力 textarea            | `defaultExecutionPrompt` 定数   | なし     |
+| 実行プロンプトの状態管理 | `executionPrompt` state          | 不要（定数に変更）              | なし     |
+| 実行可否判定             | スキル名 + 実行中 + プロンプト長 | スキル名 + 実行中のみ           | なし     |
+| 実行ハンドラ             | trimmedPrompt を各関数に渡す     | `defaultExecutionPrompt` を渡す | なし     |
 
-## pendingApproval state の閉じ込め確認
+## Wizard 遷移ボタンとの関係
 
-- `pendingApproval` は `SkillLifecyclePanel` の `useState` として定義
-- props として下位コンポーネントに渡されない（ApprovalSheet は payload を個別 props で受け取る）
-- context/store に露出していない
-- グローバル変数としてエクスポートされていない
+`skill-lifecycle-open-wizard-button`（PR#2036 で追加）は `onOpenSkillWizard` prop を呼び出す。
+`SkillCreateWizard` への実配線（W2-seq-03a）は本タスクスコープ外。
 
-**結論**: 責務境界は適切に閉じており、漏れなし。
+```
+SkillLifecyclePanel（本タスク完了後の状態）
+  ├── skill-lifecycle-open-wizard-button → onOpenSkillWizard?() [呼び出し先は未接続]
+  └── skill-lifecycle-execution-area → execute ボタン（defaultExecutionPrompt 使用）
+```
+
+## 結論
+
+責務境界は適切に整理されており、漏れや循環依存なし。
