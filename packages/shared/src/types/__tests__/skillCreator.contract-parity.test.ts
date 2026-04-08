@@ -2,9 +2,11 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 import type {
   RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorExecuteResult,
   LLMAdapterStatusPayload,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
+  TerminalHandoffBundle,
 } from "../skillCreator";
 
 describe("skillCreator contract parity", () => {
@@ -41,37 +43,16 @@ describe("skillCreator contract parity", () => {
     expect(improveResponse.type).toBe("terminal_handoff");
   });
 
-  it("execute response union は success result と handoff result の両方を受け入れる", () => {
-    expectTypeOf<RuntimeSkillCreatorExecuteResponse>().toMatchTypeOf<
-      | {
-          executeId: string;
-          skillName: string;
-          success: boolean;
-          error?: string;
-          sessionId?: string;
-          resultSubtype?: string;
-          stopReason?: string;
-          permissionDenials?: Array<{
-            toolName?: string;
-            toolUseId?: string;
-            reason: string;
-          }>;
-          sdkEvents?: Array<{
-            eventType: string;
-          }>;
-        }
+  it("execute response union は既知メンバーと厳密一致する", () => {
+    type ExpectedRuntimeSkillCreatorExecuteResponse =
+      | RuntimeSkillCreatorExecuteResult
       | {
           type: "terminal_handoff";
-          bundle: {
-            launcher: string;
-            promptBundle: string;
-            cwd: string;
-            suggestedCommand: string;
-            manualRetryRule: string;
-          };
+          bundle: TerminalHandoffBundle;
         }
-      | RuntimeSkillCreatorExecuteErrorResponse
-    >();
+      | RuntimeSkillCreatorExecuteErrorResponse;
+
+    expectTypeOf<RuntimeSkillCreatorExecuteResponse>().toEqualTypeOf<ExpectedRuntimeSkillCreatorExecuteResponse>();
   });
 
   it("LLMAdapterStatusPayload は status/failureReason の契約を満たす", () => {

@@ -1,12 +1,147 @@
-# タスク実行仕様書生成ガイド / completed records
+# タスク完了記録 — インデックス
 
 > 親仕様書: [task-workflow.md](task-workflow.md)
-> 役割: completed records
+> 役割: index — 詳細は各子ファイルを参照
 > 区分: 履歴記録（history record）
 
-## 完了タスク
+## 最近の完了タスク（2026-04）
 
-### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
+- [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
+- [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
+- [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-seq-01                                                                           |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | docs / shared-types / workflow-sync                                                                 |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `packages/shared/src/types/skillCreator.ts` の共有型契約追加と Phase 12 ドキュメント同期           |
+| 成果物     | `docs/30-workflows/W0-seq-01-types-skill-info-form/`                                                |
+| 元未タスク | なし（lane spec 先行タスク）                                                                        |
+
+#### 実施内容
+
+- `SkillCategory` / `SkillInfoFormData` / `SkillWizardScheduleConfig` / `QuestionAnswer` / `ConversationAnswers` / `SmartDefaultResult` / `SkeletonQualityFeedback` を `packages/shared/src/types/skillCreator.ts` に追加した
+- `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成し、型契約 7 件を TDD で固定した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に是正し、Phase 12 の 6 成果物を作成した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` と `docs/30-workflows/skill-wizard-redesign-lane/index.md` に完了記録を追加した
+- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` に shared contract を反映し、`task-specification-creator` / `aiworkflow-requirements` の LOGS も同波更新した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts`: PASS
+- `pnpm exec eslint packages/shared/src/types/skillCreator.ts packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`: PASS
+
+### タスク: UT-RT-02-EXHAUSTIVE-CHECK-001 RuntimeSkillCreatorExecuteResponse union exhaustive check 導入（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-RT-02-EXHAUSTIVE-CHECK-001                                                                       |
+| ステータス | **完了**                                                                                            |
+| タイプ     | refactoring / exhaustive-check / typescript                                                         |
+| 優先度     | 中                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` の switch + assertNever 化                               |
+| 成果物     | `docs/30-workflows/ut-rt-02-exhaustive-check/`                                                      |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-runtime-execute-response-exhaustive-check.md`                 |
+
+#### 実施内容
+
+- `classifyExecuteResult()` module-local 正規化 helper + `assertNever()` を `RuntimeSkillCreatorFacade.ts` に追加した
+- `executeAsync()` の `isStructuredError` if-else パターンを switch + assertNever に変換した
+- `success === false`（厳格等価）で振る舞いを旧コードと完全に一致させた（T-03 回帰防止）
+- TC-08（unknown variant smoke test）と it.todo TC-09 をテストファイルに追加した
+- 11 tests PASS / 1 todo / pnpm typecheck エラー 0 件
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts` → 11 PASS / 1 todo
+- `pnpm --filter @repo/desktop typecheck` → エラー 0 件
+
+---
+
+### タスク: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 スマートデフォルト推論サービス実装（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001                                                     |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | docs / shared-services / workflow-sync                                                              |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` の推論実装と Phase 12 同期 |
+| 成果物     | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/`                                      |
+| 元未タスク | なし（lane spec 先行タスク）                                                                        |
+
+#### 実施内容
+
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を実装し、Slack / GitHub / Notion / scheduled / realtime / code / structured の規則ベース推論を追加した
+- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` を更新し、`@repo/shared` から `inferSmartDefaults` を import できるようにした
+- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` を更新し、`SkillInfoFormData` / `SmartDefaultResult` を root export で利用できるようにした
+- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加し、shared 内テストの解決性を固定した
+- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` を 33 tests PASS に拡張し、空白のみ purpose の edge case を固定した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` へ同期した
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に W0-seq-02 の完了記録を追加した
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` と `system-spec-update-summary.md` を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`（`packages/shared` 直下）: 33 tests PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/W0-seq-02-smart-default-reasoning-service`: PASS
+
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
+
+## 完了タスク（2026-03後半）
+
+- [2026-03-29～31: TASK-P0-02 / TASK-P0-05 / TASK-LLM-MOD-05 / TASK-RT-01 / TASK-RT-02 / TASK-RT-04 / UT-RT-06-* / TASK-UIUX-FEEDBACK-001 など](./task-workflow-completed-recent-2026-03d.md)
+- [2026-03-25～28: TASK-SDK-03 / TASK-SDK-04 / TASK-SDK-05 / TASK-SDK-06 / UT-IMP-RUNTIME-WORKFLOW-* / UT-LLM-MOD-01-005 / TASK-SDK-01 / TASK-SDK-02 など](./task-workflow-completed-recent-2026-03c.md)
+- [2026-03-22～26（後半）: TASK-SDK-08 / TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 / TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 / TASK-SC-04 / UT-SC-03-003 / TASK-IMP-SLIDE-MODIFIER / TASK-IMP-TERMINAL-HANDOFF / TASK-IMP-TRANSCRIPT / TASK-IMP-SETTINGS-SHELL / TASK-IMP-CANONICAL-BRIDGE / TASK-IMP-HEALTH-POLICY / TASK-IMP-ADVANCED-CONSOLE-SAFETY など](./task-workflow-completed-recent-2026-03e.md)
+- [2026-03-19～21: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 / TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001](./task-workflow-completed-recent-2026-03b.md)
+- [2026-03-10～18: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 / TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 / TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 / TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / TASK-SKILL-LIFECYCLE-01 / TASK-UI-06/07/08/04B](./task-workflow-completed-recent-2026-03a.md)
+
+## 完了タスク（機能別アーカイブ）
+
+### Skill Lifecycle
+
+- [Skill Lifecycle UI 実装系（前半）](./task-workflow-completed-skill-lifecycle-ui.md)
+- [Skill Lifecycle UI 実装系（後半: Verify/Improve パネル）](./task-workflow-completed-skill-lifecycle-ui-verify.md)
+- [Skill Lifecycle メイン](./task-workflow-completed-skill-lifecycle.md)
+- [Skill Lifecycle 設計](./task-workflow-completed-skill-lifecycle-design.md)
+- [Skill Lifecycle セキュリティ](./task-workflow-completed-skill-lifecycle-security.md)
+- [Skill Lifecycle AuthFix](./task-workflow-completed-skill-lifecycle-authfix.md)
+- [Skill Lifecycle AgentView/LineBudget](./task-workflow-completed-skill-lifecycle-agent-view-line-budget.md)
+- [Skill Lifecycle アーカイブ 2026-03](./task-workflow-completed-skill-lifecycle-archive-2026-03.md)
+
+### Chat / Lifecycle / Tests
+
+- [Chat Lifecycle Tests（前半）](./task-workflow-completed-chat-lifecycle-tests.md)
+- [Chat Lifecycle Tests（後半）](./task-workflow-completed-chat-lifecycle-tests-part2.md)
+- [Workspace Chat Lifecycle Tests](./task-workflow-completed-workspace-chat-lifecycle-tests.md)
+
+### IPC / Preload / Contract
+
+- [IPC Contract Preload Alignment（前半）](./task-workflow-completed-ipc-contract-preload-alignment.md)
+- [IPC Preload Foundation（後半）](./task-workflow-completed-ipc-preload-foundation.md)
+- [IPC Graceful Degradation Lifecycle](./task-workflow-completed-ipc-graceful-degradation-lifecycle.md)
+
+### UI / View / Navigation
+
+- [Skill Import / Skill Center Nav](./task-workflow-completed-skill-import-skill-center-nav.md)
+- [Skill Create UI Integration](./task-workflow-completed-skill-create-ui-integration.md)
+- [Advanced Views / Analytics / Audit](./task-workflow-completed-advanced-views-analytics-audit.md)
+- [Agent View / Line Budget](./task-workflow-completed-agent-view-line-budget.md)
+- [UI/UX Visual Baseline Drift](./task-workflow-completed-ui-ux-visual-baseline-drift.md)
+
+### Auth / Notification / State
+
+- [Notification / History / Auth Key State](./task-workflow-completed-notification-history-auth-key-state.md)
+- [Abort / Contract / Auth / Session / Chat](./task-workflow-completed-abort-contract-auth-session-chat.md)
 
 | 項目       | 値                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------- |
@@ -16,14 +151,14 @@
 | 優先度     | 中                                                                                 |
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
+### Quality / Infra
 
-#### 実施内容
+- [Quality Gates / Module Resolution / Logging](./task-workflow-completed-quality-gates-module-resolution-logging.md)
+- [Debug / Scheduler / Doc Generation / Theme](./task-workflow-completed-debug-scheduler-doc-generation-theme.md)
+- [UT-06 Safety Gate](./task-workflow-completed-ut-06-safety-gate.md)
 
-- `task-workflow.md` のインデックステーブルに「区分」列を追加（正本 / 履歴 / 契約仕様の判別を即座に可能に）
-- `task-workflow-completed.md` 冒頭に `> 区分: 履歴記録（history record）` を追記
-- `task-workflow-active.md` 冒頭に `> 区分: 正本（current contract）` を追記
-- `interfaces-skill-verify-contract.md` 冒頭に `> 区分: 契約仕様` を追記、verify エンジン責務分離セクションを追加
+### Workspace
 
 #### 検証証跡
 
@@ -119,6 +254,68 @@
 
 | UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
 
+### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
+
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                  |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
+| タイプ     | implementation / IPC 4層統合                                                                                |
+| 優先度     | 高                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                  |
+| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
+
+#### 実施内容
+
+- `getAdapterStatus`: 現在の LLM Adapter の状態（providerName / modelName / isConnected / lastChecked）を取得する IPC エンドポイントを creatorHandlers → SkillCreatorFacade → Preload API → Renderer の4層で統合
+- `onAdapterStatusChanged`: Adapter の状態変化をイベント購読する IPC チャネルを実装（preload variadic パターン適用）
+- `useLLMAdapterStatus` Hook: Renderer 側で Adapter 状態を管理する専用 Hook（ポーリング不要のイベント駆動設計）
+- `GovernanceSummaryPanel.tsx` に Adapter Status 表示を統合
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
+| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
+
+---
+
+### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-01                                                                                                |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
+| タイプ     | implementation / UI routing                                                                               |
+| 優先度     | 高                                                                                                        |
+| 完了日     | 2026-04-06                                                                                                |
+| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
+
+#### 実施内容
+
+- `navigateToSkillLifecycle()` shared action を実装し、SkillCenter → SkillLifecyclePanel への直結ルーティングを確立（最小変更 ~42行）
+- `skillLifecycle` ViewType を `apps/desktop/src/renderer/` に追加（`SKILL_LIFECYCLE_PRIMARY_VIEW` 定数）
+- `SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネントを Atomic Design 準拠で追加
+- `journeyActions` CTA 集約による一次導線の視認性向上
+- Phase 11 Playwright screenshot 4枚（`outputs/phase-11/screenshots/`）で visual evidence を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
+| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
+→ 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
+
+---
+
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
 
@@ -132,7 +329,7 @@
 | 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
 | GitHub Issue     | #1919                                                                                  |
 | 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md`         |
 
 #### 実施内容
 
@@ -1969,7 +2166,7 @@
 | 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
 | --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001  | RuntimePolicyResolver の HealthPolicy 注入元実装                  | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md`  |
+| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/ut-health-policy-runtime-injection/` |
 | UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
 
 ---
@@ -2357,7 +2554,7 @@
 
 ---
 
-### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
+### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-07）
 
 | 項目       | 値                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2365,7 +2562,7 @@
 | ステータス | **完了**                                                                                                                                        |
 | タイプ     | implementation / TDD / security                                                                                                                 |
 | 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
 | 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
 | 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
 
@@ -2376,6 +2573,7 @@
 - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加（improve phase 対応）
 - `_executeInternal()` 呼び出しで `this.getExplicitSkillCreatorRoot() ?? ""` を渡すよう修正
 - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を shared に追加
 
 #### 検証証跡
 
@@ -2383,3 +2581,119 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+#### 苦戦箇所
+
+- **SDK callback input キー名の揺れ**: SDK が `file_path` と `path` の両方を使用するケースがあり、`extractTargetPath()` で `file_path ?? path` の fallback 順序で吸収
+- **判定ロジック層と配線層の責任分離**: `SkillCreatorPermissionPolicy` は変更禁止（判定ロジック层）、`RuntimeSkillCreatorFacade` のみ変更（配線層）という設計原則を維持
+- **improve() が SDK callback を経由しない設計**: `applyImprovement()` 内での明示的呼び出しが必要だが、未タスク TASK-P0-09-U1-A として carry-forward
+- **governance hooks と phase 追加時の統一性**: phase 追加時のチェックリスト明示化が未対応（TASK-P0-09-U1-B / C）
+
+#### 派生未タスク
+
+| 未タスクID         | 内容                                              | 優先度 |
+| ------------------ | ------------------------------------------------- | ------ |
+| TASK-P0-09-U1-A    | improve() canUseTool 配線（SDK callback 経由化）  | 中     |
+| TASK-P0-09-U1-B    | renderer UI への governance 結果表示              | 中     |
+| TASK-P0-09-U1-C    | audit 永続化（ring buffer → ストレージ）          | 低     |
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（Spec Status Drift Correction）（2026-04-07）
+
+| 項目       | 値                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                                      |
+| ステータス | **完了（Phase 12 close-out）**                                                                                                                  |
+| タイプ     | maintenance / docs-only / 品質管理                                                                                                              |
+| 優先度     | P0（最高）                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
+| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正）                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                                                        |
+| 関連Issue  | #1941                                                                                                                                           |
+| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                                                              |
+
+#### 実施内容
+
+- TASK-P0-01 〜 TASK-P0-09 の 8 件タスク仕様書において、artifacts.json / index.md の status フィールドが実装完了状態と乖離していた問題を是正
+- 各タスクの artifacts.json の status を `spec_created` / `in_progress` → `phase12_completed` に更新
+- 各タスクの index.md のステータスフィールドを実装状態と一致するよう更新
+- completed-tasks/ ディレクトリへの未移動タスク仕様書の移動（TASK-UI-04 自身を含む）
+- skill-creator-agent-sdk-lane の executor-guide.md / index.md のステータス整合を確認・更新
+
+#### 検証証跡
+
+- Phase 1: ステータス抽出マップ・乖離インベントリ作成 PASS（`outputs/phase-1/`）
+- Phase 2: 修正計画作成 PASS（`outputs/phase-2/correction-plan.md`）
+- Phase 3: 設計レビューゲート PASS（`outputs/phase-3/design-review-gate.md`）
+- Phase 4-9: テストマトリクス・実装記録・QA レポート PASS（`outputs/phase-4/` 〜 `outputs/phase-9/`）
+- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
+- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-result.md`）、NON_VISUAL（docs-only タスク）
+- Phase 12: スキルフィードバック・未タスク検出・準拠チェック PASS（`outputs/phase-12/`）
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（2026-04-07）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                |
+| ステータス | **phase12_completed**（Phase 13 未実施）                                                                                  |
+| タイプ     | docs-only / メンテナンス / 品質管理                                                                                       |
+| 優先度     | P0                                                                                                                        |
+| 完了日     | 2026-04-07                                                                                                                |
+| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                               |
+| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs）       |
+
+#### 実施内容
+
+- **乖離検出**: P0 タスク群 8 件でコード実装完了済みにもかかわらず仕様書ステータスが `spec_created` / `in_progress` のまま放置されていることを確認
+- **artifacts.json 正規化**: 8 タスク全ての `artifacts.json` status を標準値 `completed` に統一（非標準値 `phase_12_completed` も是正）
+- **index.md 更新**: 8 タスクの `index.md` ステータスフィールドを実装状態と一致させる
+- **skill-creator-agent-sdk-lane リンク修正**: `index.md` の P0 タスクリンク 5 件を旧相対パスから `../completed-tasks/` prefix に修正、✅ completed 追記
+- **executor-guide.md 更新**: P0 全 9 タスクの完了状態テーブルを新規追加（タスクID / ステータス / 実装内容 / 仕様書パス）
+- **Phase 12 成果物**: `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 ファイルを作成
+
+#### skill-feedback-report 提案（2件）
+
+1. **task-specification-creator 向け**: `complete-phase.js` 実行を Phase 完了チェックリストの「必須項目」に昇格させる（現在は任意実行であり、今回の乖離の主因）
+2. **aiworkflow-requirements 向け**: executor-guide.md に「タスク完了時のアクション」セクションを追加（artifacts.json 更新 / executor-guide 状態テーブル更新 を必須記載）
+
+#### 検証証跡
+
+- 対象: 17 ファイル更新（docs-only / コード変更なし）
+- `verify-unassigned-links`: ALL_LINKS_EXIST 確認
+- `audit --diff-from HEAD`: current=0 確認
+- Phase 11: 手動テスト（docs-only タスクのため UI 確認なし）
+
+---
+
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001（2026-04-06）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                                                  |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | ui-task / IPC surface 追加                                                                                                                              |
+| 優先度     | 高                                                                                                                                                      |
+| 完了日     | 2026-04-06                                                                                                                                              |
+| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                                                               |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                   |
+| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                                                               |
+
+#### 実施内容
+
+- `SkillCreatorAPI` interface に `onApprovalRequest(callback: (request: ApprovalRequest) => void): () => void` を追加
+- `safeOn(APPROVAL_CHANNELS.APPROVAL_REQUEST, callback)` パターンで実装（`onDisclosureInfo` と同パターン）
+- `SkillLifecyclePanel.tsx` に `pendingApproval` state・`ApprovalSheet` 条件レンダリング・`handleApprove`/`handleReject`・useEffect cleanup を追加
+- TC-APPR-01〜18 テスト 19 件追加、全件 PASS
+
+#### 検証証跡
+
+- vitest 19/19 PASS（TC-APPR-01〜18 + fixture setup）
+- `pnpm typecheck` EXIT:0 ✅
+- `pnpm lint` EXIT:0（errors 0）✅
+- IPC 契約対称性確認済み（APPROVAL_CHANNELS.APPROVAL_REQUEST）
+- Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
+- [Workspace](./task-workflow-completed-workspace.md)

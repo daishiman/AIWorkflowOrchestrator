@@ -76,12 +76,12 @@ find apps/desktop/src -name "CompleteStep*" -type f
 
 ## 参照資料
 
-| 資料名            | パス                                                                            | 説明               |
-| ----------------- | ------------------------------------------------------------------------------- | ------------------ |
-| 現行CompleteStep  | `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`            | 改修対象ファイル   |
-| SkillCreateWizard | `apps/desktop/src/renderer/components/skill/wizard/SkillCreateWizard.tsx`       | 親コンポーネント   |
-| W0-seq-01型定義   | `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/` | 依存する型定義     |
-| レーンindex       | `docs/30-workflows/skill-wizard-redesign-lane/index.md`                         | 設計根拠・全体方針 |
+| 資料名            | パス                                                                      | 説明               |
+| ----------------- | ------------------------------------------------------------------------- | ------------------ |
+| 現行CompleteStep  | `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`      | 改修対象ファイル   |
+| SkillCreateWizard | `apps/desktop/src/renderer/components/skill/wizard/SkillCreateWizard.tsx` | 親コンポーネント   |
+| W0-seq-01型定義   | `docs/30-workflows/W0-seq-01-types-skill-info-form/`                      | 依存する型定義     |
+| レーンindex       | `docs/30-workflows/skill-wizard-redesign-lane/index.md`                   | 設計根拠・全体方針 |
 
 ## 成果物
 

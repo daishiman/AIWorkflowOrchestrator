@@ -50,6 +50,7 @@
 ```
 Wave 0（直列・先行必須）
   W0-seq-01-types-skill-info-form        # 型定義（SkillInfoFormData等）
+  W0-seq-02-smart-default-reasoning-service  # 推論サービス（inferSmartDefaults / shared）
 
 Wave 1（並列・W0完了後 ※02dはW0と同時可）
   W1-par-02a-skill-info-step             # SkillInfoStep.tsx（Step 0）
@@ -65,23 +66,26 @@ Wave 3（直列・W2完了後）
   W3-seq-04-usage-tracking               # 使用率計装（trackEvent / NON_VISUAL）
 ```
 
+- W0-seq-01 は Phase 1-11 の outputs を補完し、Phase 12 の canonical 6 成果物と `artifacts.json` / `outputs/artifacts.json` を同期済み。共有型は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
+- W0-seq-02 は `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/` 配下で `inferSmartDefaults` を `@repo/shared` から公開し、Phase 12 close-out まで完了済み。root / outputs artifacts と lane index の同期を同波で確認した。
+
 ## Phase一覧
 
-| Phase | 名称             | 仕様書                                                       | ステータス |
-| ----- | ---------------- | ------------------------------------------------------------ | ---------- |
-| 1     | 要件定義         | [phase-1-requirements.md](phase-1-requirements.md)           | pending    |
-| 2     | 設計             | [phase-2-design.md](phase-2-design.md)                       | pending    |
-| 3     | 設計レビュー     | [phase-3-design-review.md](phase-3-design-review.md)         | pending    |
-| 4     | テスト作成       | [phase-4-test-creation.md](phase-4-test-creation.md)         | pending    |
-| 5     | 実装             | [phase-5-implementation.md](phase-5-implementation.md)       | pending    |
-| 6     | テスト拡充       | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | pending    |
-| 7     | カバレッジ確認   | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | pending    |
-| 8     | リファクタリング | [phase-8-refactoring.md](phase-8-refactoring.md)             | pending    |
-| 9     | 品質保証         | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | pending    |
-| 10    | 最終レビュー     | [phase-10-final-review.md](phase-10-final-review.md)         | pending    |
-| 11    | 手動テスト       | [phase-11-manual-test.md](phase-11-manual-test.md)           | pending    |
-| 12    | ドキュメント更新 | [phase-12-documentation.md](phase-12-documentation.md)       | pending    |
-| 13    | PR作成           | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | blocked    |
+| Phase | 名称             | 仕様書                                                                                    | ステータス |
+| ----- | ---------------- | ----------------------------------------------------------------------------------------- | ---------- |
+| 1     | 要件定義         | [phase-1-requirements.md](../W0-seq-01-types-skill-info-form/phase-1-requirements.md)     | completed  |
+| 2     | 設計             | [phase-2-design.md](../W0-seq-01-types-skill-info-form/phase-2-design.md)                 | completed  |
+| 3     | 設計レビュー     | [phase-3-design-review.md](../W0-seq-01-types-skill-info-form/phase-3-design-review.md)   | completed  |
+| 4     | テスト作成       | [phase-4-test-creation.md](../W0-seq-01-types-skill-info-form/phase-4-test-creation.md)   | completed  |
+| 5     | 実装             | [phase-5-implementation.md](../W0-seq-01-types-skill-info-form/phase-5-implementation.md) | completed  |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](../W0-seq-01-types-skill-info-form/phase-6-test-expansion.md) | completed  |
+| 7     | カバレッジ確認   | [phase-7-coverage.md](../W0-seq-01-types-skill-info-form/phase-7-coverage.md)             | completed  |
+| 8     | リファクタリング | [phase-8-refactoring.md](../W0-seq-01-types-skill-info-form/phase-8-refactoring.md)       | completed  |
+| 9     | 品質保証         | [phase-9-qa.md](../W0-seq-01-types-skill-info-form/phase-9-qa.md)                         | completed  |
+| 10    | 最終レビュー     | [phase-10-final-review.md](../W0-seq-01-types-skill-info-form/phase-10-final-review.md)   | completed  |
+| 11    | 手動テスト       | [phase-11-manual-test.md](../W0-seq-01-types-skill-info-form/phase-11-manual-test.md)     | completed  |
+| 12    | ドキュメント更新 | [phase-12-docs.md](../W0-seq-01-types-skill-info-form/phase-12-docs.md)                   | completed  |
+| 13    | PR作成           | [phase-13-pr.md](../W0-seq-01-types-skill-info-form/phase-13-pr.md)                       | blocked    |
 
 ## テストカバレッジ目標
 

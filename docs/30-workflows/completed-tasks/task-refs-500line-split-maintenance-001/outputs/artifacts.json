@@ -1,0 +1,82 @@
+{
+  "feature": "task-refs-500line-split-maintenance-001",
+  "created": "2026-04-07T00:00:00.000Z",
+  "lastUpdated": "2026-04-07T04:42:28Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": ["file-inventory.md", "split-criteria.md"]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["split-plan.md", "naming-conventions.md"]
+    },
+    "3": { "status": "completed", "artifacts": ["design-review-gate.md"] },
+    "4": { "status": "completed", "artifacts": ["verification-criteria.md"] },
+    "5": {
+      "status": "completed",
+      "artifacts": ["implementation-log.md", "split-execution-record.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["link-verification-report.md"]
+    },
+    "7": { "status": "completed", "artifacts": ["coverage-report.md"] },
+    "8": { "status": "completed", "artifacts": ["refactoring-log.md"] },
+    "9": { "status": "completed", "artifacts": ["qa-report.md"] },
+    "10": { "status": "completed", "artifacts": ["final-review-result.md"] },
+    "11": {
+      "status": "completed",
+      "artifacts": ["manual-test-checklist.md", "manual-test-result.md"]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "implementation-guide.md",
+        "system-spec-update-summary.md",
+        "documentation-changelog.md",
+        "unassigned-task-detection.md",
+        "skill-feedback-report.md",
+        "phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "skipped",
+      "artifacts": [],
+      "note": "docs-only worktree task"
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "chore",
+    "taskId": "TASK-REFS-500LINE-SPLIT-001",
+    "workflow": "task-refs-500line-split-maintenance-001",
+    "parentWorkflow": null,
+    "dependsOnTasks": [],
+    "targetFiles": {
+      "aiworkflow-requirements": 19,
+      "task-specification-creator": 5,
+      "total": 24
+    },
+    "results": {
+      "newFilesCreated": 23,
+      "filesOver500LinesBefore": 24,
+      "filesOver500LinesAfter": 0,
+      "codeChanges": 0
+    }
+  }
+}

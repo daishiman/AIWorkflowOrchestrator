@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, session } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "./ipc";
+import { buildHealthPolicy } from "./services/runtime/buildHealthPolicy";
 import { setupCustomProtocol } from "./protocol";
 import {
   initializeConversationDatabase,
@@ -266,7 +267,7 @@ const gotSingleInstanceLock = setupCustomProtocol({
 if (!gotSingleInstanceLock) {
   app.quit();
 } else {
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     electronApp.setAppUserModelId("com.aiworkflow.orchestrator");
 
     // Default open or close DevTools by F12 in development
@@ -287,8 +288,11 @@ if (!gotSingleInstanceLock) {
       console.error("[DB] Failed to initialize conversation database:", error);
     }
 
+    // HealthPolicy を起動時に取得して RuntimePolicyResolver へ注入 (UT-HEALTH-POLICY-RUNTIME-INJECTION-001)
+    const healthPolicy = await buildHealthPolicy();
+
     // Register IPC handlers
-    registerAllIpcHandlers(mainWindowRef, conversationDb);
+    registerAllIpcHandlers(mainWindowRef, conversationDb, { healthPolicy });
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) {

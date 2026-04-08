@@ -7,7 +7,7 @@
 import React, { useEffect, useState } from "react";
 import {
   StepIndicator,
-  DescribeStep,
+  SkillInfoStep,
   ConfigureStep,
   GenerateStep,
   CompleteStep,
@@ -18,6 +18,7 @@ import type {
   GenerationError,
   GenerationStage,
 } from "./wizard";
+import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
 import type {
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteErrorResponse,
@@ -47,7 +48,7 @@ import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 
-const STEPS = ["説明入力", "設定", "生成", "完了"];
+const STEPS = ["スキル情報", "設定", "生成", "完了"];
 
 function resolveStage(
   streamingStage: GenerationStage,
@@ -215,14 +216,18 @@ export const SkillCreateWizard = React.forwardRef<
   const { cancelGeneration } = useCancelGeneration();
 
   // Existing local state
-  const [description, setDescription] = useState("");
+  const [formData, setFormData] = useState<SkillInfoFormData>({
+    skillName: "",
+    purpose: "",
+    category: null,
+  });
   const [options, setOptions] = useState<WizardOptions>(DEFAULT_OPTIONS);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [skillPath, setSkillPath] = useState<string | null>(null);
 
   // TASK-SC-07: LLM generation state
-  const [generationMode, setGenerationMode] =
+  const [generationMode, _setGenerationMode] =
     useState<GenerationMode>("template");
   const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
     null,
@@ -261,7 +266,7 @@ export const SkillCreateWizard = React.forwardRef<
     setIsGenerating(true);
     setError(null);
     try {
-      const path = await createSkill(description, options);
+      const path = await createSkill(formData.purpose, options);
       if (path) {
         setSkillPath(path);
         goToStep(3);
@@ -279,7 +284,7 @@ export const SkillCreateWizard = React.forwardRef<
 
   // TASK-SC-07: LLM plan generation (AC-2)
   const handleLlmGenerate = async () => {
-    if (!description.trim()) return;
+    if (!formData.purpose.trim()) return;
     if (isSkillGenerating) return;
     goToStep(2);
     setStoreIsGenerating(true);
@@ -290,7 +295,7 @@ export const SkillCreateWizard = React.forwardRef<
       if (!api.planSkill) {
         throw new Error("planSkill API が利用できません");
       }
-      const result = await api.planSkill(description);
+      const result = await api.planSkill(formData.purpose);
       if (result.success && result.data) {
         // TASK-RT-02: plan logical error の検出（UT-RT-02-M03: SkillLifecyclePanel とパリティ統一）
         const data = result.data;
@@ -335,7 +340,7 @@ export const SkillCreateWizard = React.forwardRef<
       if (!api.executePlan) {
         throw new Error("executePlan API が利用できません");
       }
-      const result = await api.executePlan(storePlanId, description);
+      const result = await api.executePlan(storePlanId, formData.purpose);
       if (result.success && result.data) {
         if (isExecutePlanAck(result.data)) {
           if (api.getWorkflowState) {
@@ -406,8 +411,8 @@ export const SkillCreateWizard = React.forwardRef<
     goToStep(0);
   };
 
-  // TASK-SC-07: Route DescribeStep onNext based on mode (AC-2, AC-8)
-  const handleDescribeNext = () => {
+  // TASK-SC-07: Route SkillInfoStep onNext based on mode (AC-2, AC-8)
+  const handleSkillInfoNext = () => {
     if (generationMode === "llm") {
       void handleLlmGenerate();
     } else {
@@ -443,13 +448,11 @@ export const SkillCreateWizard = React.forwardRef<
       />
       <StepIndicator steps={STEPS} currentStep={currentStep} />
       {currentStep === 0 && (
-        <div data-testid="wizard-step-describe">
-          <DescribeStep
-            description={description}
-            onDescriptionChange={setDescription}
-            generationMode={generationMode}
-            onGenerationModeChange={setGenerationMode}
-            onNext={handleDescribeNext}
+        <div data-testid="wizard-step-skill-info">
+          <SkillInfoStep
+            formData={formData}
+            onFormDataChange={setFormData}
+            onNext={handleSkillInfoNext}
           />
         </div>
       )}

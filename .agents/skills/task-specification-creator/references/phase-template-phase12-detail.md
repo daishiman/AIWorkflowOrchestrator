@@ -270,6 +270,16 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 Phase 13: PR作成
 `````
 
+## 漏れやすいポイント（06-known-pitfalls.md参照）
+
+| ID | ポイント | 対策 |
+| -- | -------- | ---- |
+| P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
+| P2 | topic-map.md 再生成忘れ | セクション変更時は必ず `generate-index.js` を実行 |
+| P27 | topic-map.md 再生成トリガー判断ミス | 追加だけでなく削除・更新も再生成トリガー |
+| P29 | SKILL.md 変更履歴の更新漏れ | LOGS.md とは別に SKILL.md の変更履歴テーブルも必ず更新 |
+| P3 | 未タスク管理の3ステップ不完全 | ①指示書 → ②task-workflow.md登録 → ③関連仕様書リンク |
+
 ## 関連ガイド
 
 - [phase-template-phase12.md](phase-template-phase12.md) — 設計タスク向け補足（SF-02, SF-03対応）

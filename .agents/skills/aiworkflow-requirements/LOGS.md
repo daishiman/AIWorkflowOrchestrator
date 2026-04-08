@@ -7,6 +7,12 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync（`packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` 追加 / `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` の export 更新 / `packages/shared/src/types/index.ts` で `SkillInfoFormData`・`SmartDefaultResult` を公開 / `packages/shared/vitest.config.ts` に `@repo/shared` alias 追加 / `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期 / `task-workflow.md`・`task-workflow-backlog.md`・`task-workflow-completed.md`・`skill-wizard-redesign-lane/index.md`・`LOGS.md`・`SKILL.md` を同波更新 / `manual-test-result.md` を 33 tests PASS に更新） |
+| 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（aiworkflow-requirements SKILL.md frontmatter に Wizard 型キーワード 11 件追加 / `ui-ux-feature-components-reference.md` の CompleteStep 説明を再設計後仕様へ更新 / mirror 同期） |
+| 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync（`packages/shared/src/types/skillCreator.ts` に shared contracts 7 型を追加 / `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成 / `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に修正 / `task-workflow-completed.md` に W0 完了記録追加 / `interfaces-agent-sdk-skill-reference.md` に Skill Wizard Shared Contracts セクション追加 / `artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期 / LOGS.md 2ファイル更新） |
+| 2026-04-07 - UT-SKILL-WIZARD-W1-par-02a spec sync（`DescribeStep` 残存参照を `SkillInfoStep` に更新 / `arch-state-management-skill-creator.md` の generationMode 記述を current facts へ是正） |
+| 2026-04-07 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement Phase 12 close-out sync（`createExecuteGovernanceCanUseTool(skillRoot)` / `createImproveGovernanceCanUseTool(skillRoot)` 配線完了 / `extractTargetPath()` SDK callback `file_path↔path` fallback 対応 / `RuntimeSkillCreatorExecuteErrorResponse` 型 shared 追加 / TDD 11件追加 101 tests PASS / 未タスク TASK-P0-09-U1-A（improve() canUseTool配線）・U1-B（renderer UI）・U1-C（audit永続化）formalize / `task-workflow-completed.md` 苦戦箇所・派生未タスク追記 / LOGS.md + SKILL.md 同波更新） |
+| 2026-04-07 - UT-HEALTH-POLICY-RUNTIME-INJECTION-001 Phase 12 close-out sync（`RuntimeSkillCreatorFacade` に `healthPolicy?: HealthPolicy` DI 追加 / `apps/desktop/src/main/ipc/index.ts` で `resolveHealthPolicy()` 生成・注入 / `@repo/shared` build 後の dev startup PASS / focused vitest 100 tests PASS / `task-workflow-backlog.md` から completed へ移管 / `arch-execution-capability-contract.md` 関連タスク status 完了化 / `aiworkflow-requirements` LOGS.md 2ファイル + SKILL.md 同波更新） |
 | 2026-04-07 - TASK-UI-03-REMAINING IPC renderer移行完了 Phase 12 close-out sync（`window.skillCreatorAPI` canonical 化 / `ImprovementProposalPanel` 統合実装 / `GovernanceSummaryPanel` IPC 経路移行 / `useStreamingProgress` IPC cleanup / variadic IPC 対応（L-IPC-VARIADIC-001）/ `lessons-learned-ipc-preload-runtime.md` に L-IPC-SKILLCREATOR-CANONICAL-001 追加 / `task-workflow-completed.md` に TASK-UI-03-REMAINING 完了記録追加 / LOGS.md 2ファイル・SKILL.md 更新 / Phase 12 close-out 6成果物 PASS） |
 | 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（P0タスク群8件の artifacts.json / index.md status を `completed` に正規化 / skill-creator-agent-sdk-lane/index.md の P0 リンク5件を `../completed-tasks/` に修正 / executor-guide.md に P0 全9タスク完了状態テーブル追加 / task-workflow-completed.md に TASK-UI-04 完了記録追加 / lessons-learned-current.md に L-UI04-001〜003 教訓追加 / task-specification-creator/SKILL.md の「よくある漏れ」テーブルに [Feedback TASK-UI-04] 行追加） |
 | 2026-04-06 - TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out sync（`creatorHandlers.ts` ipcMain重複登録除去（後続14→全16ハンドラ正常化）/ `SkillService.toWizardSkillName()` 正規化5ステップ実装 / `docs/00-requirements/18-skills.md` 正規化規則追記 / `docs/00-requirements/08-api-design.md` ハンドラ一意性要件追記 / `api-ipc-system-core.md` に IPC Handler Lifecycle Management セクション追加 / `lessons-learned-current.md` v3.7.0 教訓3件追加 / `task-workflow-completed.md` 完了記録追加 / UT-01〜03を unassigned-task に配置 / LOGS.md 2ファイル同時更新） |
@@ -26,6 +32,62 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 内容: 二重送信防止パターン（isSubmittingRef）、useAuthKeyManagement フック統合パターン、check-failed + apiError 二層設計、応用候補
 - lessons-learned.md インデックスに追加
 
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync
+
+### 変更内容
+- `packages/shared/src/types/skillCreator.ts` に Skill Wizard Shared Contracts 7 型を追加
+- `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成し、型契約を TDD で固定
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に是正
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同期
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` と `docs/30-workflows/skill-wizard-redesign-lane/index.md` に完了記録を追加
+- `interfaces-agent-sdk-skill-reference.md` に canonical shared contract セクションを追加
+
+### 背景
+W0 は後続 Wave 1/2/3 の共通依存であり、`SkillCategory` の既存衝突を避けて subpath export に閉じる必要があるため、completed ledger と system spec を同波で更新した。
+
+## 2026-04-07 - UT-SKILL-WIZARD-W1-par-02a spec sync（DescribeStep → SkillInfoStep）
+
+### 変更内容
+- `references/ui-ux-feature-components-core.md` の Skill Create Wizard / Wizard LLM Generation Flow の `DescribeStep` 表記を `SkillInfoStep` に更新
+- `references/ui-ux-feature-components-skill-analysis.md` の `DescribeStep` 表記を `SkillInfoStep` に更新（参照パスも更新）
+- `references/arch-state-management-skill-creator.md` の `DescribeStep` 前提（props/戻り先）を `SkillInfoStep` の current facts に合わせて更新
+
+### current facts メモ
+- Step 0 の実体は `SkillInfoStep`（`DescribeStep.tsx` は deprecation コメントのみ）
+- `generationMode` は `SkillCreateWizard` ローカル state として保持されるが、現行 UI は切替導線を持たず default は `"template"`
+
+## 2026-04-07 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement Phase 12 close-out sync
+
+### 変更内容
+- `RuntimeSkillCreatorFacade.ts` に `createExecuteGovernanceCanUseTool(skillRoot)` と `createImproveGovernanceCanUseTool(skillRoot)` を追加（execute / improve フェーズの path-scoped governance 配線完了）
+- `extractTargetPath()` private メソッド追加（SDK callback の `file_path` → `path` fallback 対応）
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を shared に追加
+- TDD 11件追加（`path-scoped-enforcement.test.ts`）、合計 101 tests PASS
+- `task-workflow-completed.md` の TASK-P0-09-U1 エントリに苦戦箇所・派生未タスクテーブルを追記、完了日を 2026-04-07 に更新
+
+### 苦戦箇所
+- **SDK callback input キー名の揺れ**: `file_path` vs `path` → `extractTargetPath()` で fallback 順序対応
+- **判定ロジック層と配線層の責任分離**: `SkillCreatorPermissionPolicy` は変更禁止、`RuntimeSkillCreatorFacade` のみ変更
+- **improve() が SDK callback を経由しない設計**: `applyImprovement()` 内明示的呼び出しで対応（未タスク TASK-P0-09-U1-A）
+- **governance hooks と phase 追加時の統一性**: phase 追加チェックリスト明示化が必要（TASK-P0-09-U1-B / C）
+
+### 未タスク（carry-forward）
+- TASK-P0-09-U1-A: improve() canUseTool 配線（SDK callback 経由化）
+- TASK-P0-09-U1-B: renderer UI への governance 結果表示
+- TASK-P0-09-U1-C: audit 永続化（ring buffer → ストレージ）
+
+## 2026-04-07 - UT-HEALTH-POLICY-RUNTIME-INJECTION-001 Phase 12 close-out sync
+
+### 変更内容
+- `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` に `healthPolicy?: HealthPolicy` を DI 追加し、`RuntimePolicyResolver` の第3引数へ接続
+- `apps/desktop/src/main/ipc/index.ts` で `resolveHealthPolicy()` を生成して runtime 側へ注入
+- `pnpm --filter @repo/shared build` 後に `pnpm --filter @repo/desktop build` / `timeout 25s pnpm --filter @repo/desktop dev` / focused vitest 100 tests PASS を確認
+- `task-workflow-backlog.md` / `task-workflow-completed.md` / `arch-execution-capability-contract.md` を current facts へ同期
+- `outputs/phase-11/*` / `outputs/phase-12/*` を PASS 状態へ再同期
+
+### 背景
+UT-HEALTH-POLICY-RUNTIME-INJECTION-001 の実装と検証が完了したため、未タスク台帳と system spec の関連タスク状態を完了へ移管した。
+
 | 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 system spec sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -37,6 +99,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - `TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001` の知見を `lessons-learned-rt-04-authkey-dedup.md` に記録
 - 内容: 二重送信防止パターン（`isSubmittingRef`）、`useAuthKeyManagement` フック統合パターン、`check-failed` + `apiError` 二層設計、応用候補
 - `lessons-learned.md` インデックスに追加
+
+## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
+
+### 変更内容
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を追加
+- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` の export を更新
+- `packages/shared/src/types/index.ts` で `SkillInfoFormData` / `SmartDefaultResult` を root export に追加
+- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同期
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` と `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `task-specification-creator` の LOGS / SKILL を同波更新
+
+### 背景
+`inferSmartDefaults` は shared の新規 public API であり、実装・型 export・workflow ledger を同じ wave で閉じる必要があった。
 
 ## archive 入口
 

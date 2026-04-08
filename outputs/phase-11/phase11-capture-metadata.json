@@ -1,14 +1,15 @@
 {
-  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
-  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
-  "capturedAt": "2026-04-04T00:00:00.000Z",
+  "taskId": "UT-HEALTH-POLICY-RUNTIME-INJECTION-001",
+  "featureName": "ut-health-policy-runtime-injection",
+  "capturedAt": "2026-04-07T00:00:00.000Z",
   "mode": "NON_VISUAL",
   "screenshots": [],
   "evidence": [
-    "pnpm --filter @repo/shared typecheck",
-    "pnpm --filter @repo/desktop typecheck",
-    "pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx",
-    "pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts",
-    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx"
+    "pnpm --filter @repo/shared build (PASS)",
+    "pnpm --filter @repo/desktop build (PASS)",
+    "timeout 25s pnpm --filter @repo/desktop dev (PASS: Electron startup reached, no runtime error logged)",
+    "pnpm --filter @repo/desktop typecheck (PASS)",
+    "pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts (PASS)",
+    "pnpm --filter @repo/desktop exec vitest run ... (PASS)"
   ]
 }
