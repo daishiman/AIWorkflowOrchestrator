@@ -501,8 +501,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L439 |
-|------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
 | 続き | L455 |
 
 ### references/interfaces-agent-sdk-skill.md
@@ -1401,8 +1399,6 @@ node scripts/list-specs.js --topics
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L209 |
 | Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L238 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L207 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L236 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3058,11 +3054,10 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L519 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L553 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L579 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L596 |
-| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L612 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L553 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L576 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L602 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L619 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3080,15 +3075,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L141 |
-| クイックリファレンス: カテゴリ別検索ガイド | L159 |
-| 分割ファイル一覧 | L163 |
-| 分割ファイル一覧 | L95 |
-| クイックリファレンス: カテゴリ別検索ガイド | L113 |
-| 分割ファイル一覧 | L117 |
-| 分割ファイル一覧 | L142 |
-| クイックリファレンス: カテゴリ別検索ガイド | L160 |
-| 分割ファイル一覧 | L164 |
+| 分割ファイル一覧 | L144 |
+| クイックリファレンス: カテゴリ別検索ガイド | L162 |
+| 分割ファイル一覧 | L166 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3229,6 +3218,7 @@ node scripts/list-specs.js --topics
 | 2026-03-27 TASK-SDK-05 | L244 |
 | 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L274 |
 | 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L286 |
+| UT-SKILL-WIZARD-W1-par-02c-complete-step-2 教訓（2026-04-08） | L388 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -3236,7 +3226,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L55 |
+| 分割ファイル一覧 | L56 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -4763,16 +4753,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L100 |
-| 完了タスク（機能別アーカイブ） | L108 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
-|------------|----|\n| 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L125 |
-| 完了タスク（機能別アーカイブ） | L133 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L242 |
-| 完了タスク（2026-03後半） | L101 |
-| 完了タスク（機能別アーカイブ） | L109 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
+| 完了タスク（2026-03後半） | L126 |
+| 完了タスク（機能別アーカイブ） | L134 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L243 |
 
 ### references/task-workflow-history.md
 
