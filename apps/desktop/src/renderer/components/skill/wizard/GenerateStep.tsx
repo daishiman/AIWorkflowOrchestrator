@@ -105,9 +105,9 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
   ) => {
     const isActive = GENERATION_STAGES.includes(stage);
     const currentMessage = message || generationProgress || "";
-    const showCancelButton = isActive;
     const showPlanControls =
       Boolean(planResult) || (Boolean(error) && Boolean(onCancelPlan));
+    const showCancelButton = isActive && !(onCancelPlan && showPlanControls);
 
     return (
       <div
@@ -218,7 +218,7 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
         {/* Legacy plan/execute controls */}
         {showPlanControls && (
           <div className="flex gap-3">
-            {planResult && onExecutePlan && (
+            {planResult?.type === "integrated_api" && onExecutePlan && (
               <button
                 type="button"
                 onClick={onExecutePlan}
