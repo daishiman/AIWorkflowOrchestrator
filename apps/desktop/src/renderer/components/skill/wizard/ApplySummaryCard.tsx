@@ -68,6 +68,7 @@ export interface ApplySummaryCardProps {
   formData: SkillInfoFormData;
   onDismiss: () => void;
   onConfirm: () => void;
+  onCancel?: () => void;
 }
 
 /**
@@ -82,6 +83,7 @@ export const ApplySummaryCard = ({
   formData,
   onDismiss,
   onConfirm,
+  onCancel,
 }: ApplySummaryCardProps) => {
   const isQ5Required = formData.category === "external-integration";
   const isQ5Unanswered =
@@ -127,13 +129,24 @@ export const ApplySummaryCard = ({
         </p>
       )}
 
-      <button
-        onClick={onConfirm}
-        type="button"
-        className="w-full py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)] text-sm font-medium"
-      >
-        生成する
-      </button>
+      <div className="flex gap-2">
+        {onCancel && (
+          <button
+            onClick={onCancel}
+            type="button"
+            className="flex-1 py-2 rounded-lg border border-[var(--border-primary)] text-[var(--text-primary)] text-sm"
+          >
+            キャンセル
+          </button>
+        )}
+        <button
+          onClick={onConfirm}
+          type="button"
+          className="flex-1 py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)] text-sm font-medium"
+        >
+          生成する
+        </button>
+      </div>
     </section>
   );
 };

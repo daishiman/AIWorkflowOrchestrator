@@ -12,6 +12,7 @@
  */
 
 import fs from "fs/promises";
+import os from "os";
 import path from "path";
 import type { INotificationService } from "../notification/INotificationService";
 import {
@@ -47,6 +48,7 @@ import type {
   LLMAdapterStatus,
   RuntimeSkillCreatorVerifyAndImproveResult,
   RuntimeSkillCreatorVerifyCheck,
+  VerifyResult,
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
   ImproveFeedbackHistory,
@@ -103,6 +105,7 @@ import {
   buildPhaseResourceRequestsFromManifest,
   WorkflowManifestValidationError,
 } from "./manifestResourceResolver";
+import { SkillLocator } from "./SkillLocator";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -360,9 +363,44 @@ export class RuntimeSkillCreatorFacade {
     return createHooks(phase, this.auditSink, provenance);
   }
 
+  async verify(
+    skillName: string,
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<VerifyResult> {
+    void authMode;
+    void apiKey;
+
+    if (!this.verificationEngine) {
+      throw new Error("verificationEngine is not available");
+    }
+
+    const normalizedSkillName = skillName.trim();
+    const skillDir = await this.resolveVerifySkillDir(normalizedSkillName);
+    const checks = await this.verifySkill(skillDir);
+    const passed = checks.every((check) => check.severity === "info");
+    const failingCount = checks.filter(
+      (check) => check.severity !== "info",
+    ).length;
+
+    return {
+      skillName: normalizedSkillName,
+      passed,
+      checkResults: checks.map((check) => ({
+        checkId: check.id,
+        label: check.summary,
+        passed: check.severity === "info",
+        message: check.evidenceSummary,
+      })),
+      summary: passed
+        ? `${checks.length}件の検証チェックが全て通過しました`
+        : `${failingCount}件の検証チェックで警告またはエラーが見つかりました`,
+    };
+  }
+
   async verifySkill(
     skillDir: string,
-  ): Promise<import("@repo/shared").RuntimeSkillCreatorVerifyCheck[]> {
+  ): Promise<RuntimeSkillCreatorVerifyCheck[]> {
     const verifyId = `verify-${Date.now()}`;
     const governanceHooks = this.createGovernanceHooks("verify");
     governanceHooks.onSessionStart({
@@ -391,6 +429,33 @@ export class RuntimeSkillCreatorFacade {
         summary: `Verify failed: ${error instanceof Error ? error.message : String(error)}`,
       });
       throw error;
+    }
+  }
+
+  private async resolveVerifySkillDir(skillName: string): Promise<string> {
+    if (path.isAbsolute(skillName)) {
+      await fs.access(skillName);
+      return skillName;
+    }
+
+    const candidateDirs = [
+      path.join(os.homedir(), ".aiworkflow/skills", skillName),
+      path.join(os.homedir(), ".claude/skills", skillName),
+    ];
+
+    for (const candidateDir of candidateDirs) {
+      try {
+        await fs.access(candidateDir);
+        return candidateDir;
+      } catch {
+        // Continue to the next candidate.
+      }
+    }
+
+    try {
+      return SkillLocator.resolveSkillDir(skillName, process.cwd());
+    } catch {
+      throw new Error(`Skill directory not found: ${skillName}`);
     }
   }
 

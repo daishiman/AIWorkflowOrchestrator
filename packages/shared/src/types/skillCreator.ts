@@ -589,6 +589,7 @@ export interface SkillCreatorWorkflowUiSnapshot {
   resumeTokenEnvelope: SkillCreatorResumeTokenEnvelope;
   routeSnapshot?: SkillCreatorRouteSnapshot;
   handoffBundle?: TerminalHandoffBundle | null;
+  persistResult?: { skillPath: string; files: string[] } | null;
 }
 
 export interface SkillCreatorUserInputSubmission {
@@ -687,6 +688,20 @@ export interface RuntimeSkillCreatorExecuteResult {
   persistResult?: { skillPath: string; files: string[] } | null;
   /** persist 失敗時のエラーメッセージ。成功またはスキップ時は null */
   persistError?: string | null;
+}
+
+export interface VerifyCheckResult {
+  checkId: string;
+  label: string;
+  passed: boolean;
+  message?: string;
+}
+
+export interface VerifyResult {
+  skillName: string;
+  passed: boolean;
+  checkResults: VerifyCheckResult[];
+  summary: string;
 }
 
 export type RuntimeSkillCreatorVerifyCheckSeverity =
