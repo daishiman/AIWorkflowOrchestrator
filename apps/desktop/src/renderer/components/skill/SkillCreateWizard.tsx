@@ -83,12 +83,12 @@ const DEFAULT_FORM_DATA: SkillInfoFormData = {
 };
 
 const DEFAULT_ANSWERS: ConversationAnswers = {
-  q1: { selectedOption: null, freeText: "" },
-  q2: { selectedOption: null, freeText: "" },
-  q3: { selectedOption: null, freeText: "", scheduleConfig: undefined },
-  q4: { selectedOption: null, freeText: "" },
-  q5: { selectedOption: null, freeText: "" },
-  q6: { selectedOption: null, freeText: "" },
+  q1: { selectedOptions: [], freeText: "" },
+  q2: { selectedOptions: [], freeText: "" },
+  q3: { selectedOptions: [], freeText: "", scheduleConfig: undefined },
+  q4: { selectedOptions: [], freeText: "" },
+  q5: { selectedOptions: [], freeText: "" },
+  q6: { selectedOptions: [], freeText: "" },
 };
 
 const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
@@ -140,7 +140,7 @@ const QUESTION_KEYS = [
 
 function isAnswered(answer: ConversationAnswers[keyof ConversationAnswers]) {
   return (
-    answer.selectedOption !== null ||
+    answer.selectedOptions.length > 0 ||
     answer.freeText.trim().length > 0 ||
     answer.scheduleConfig !== undefined
   );
@@ -288,11 +288,13 @@ function toExternalToolName(tool: string | null): string | null {
   return tool;
 }
 
-function resolveExternalIntegration(
+export function resolveExternalIntegration(
   q5Answer: ConversationAnswers["q5"],
   smartDefaultTool: string | null | undefined,
 ): ExternalIntegrationState {
-  const selected = q5Answer.selectedOption?.trim() ?? "";
+  // 複数選択時は先頭値を主ツールとして参照する。
+  // 複数ツールの並列統合対応は別タスクのスコープ。
+  const selected = (q5Answer.selectedOptions[0] ?? "").trim();
   const freeText = q5Answer.freeText.trim();
 
   if (selected === "なし") {

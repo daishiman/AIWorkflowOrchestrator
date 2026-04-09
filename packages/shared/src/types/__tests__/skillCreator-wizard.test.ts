@@ -76,7 +76,7 @@ describe("SkillWizardScheduleConfig", () => {
 describe("QuestionAnswer", () => {
   it("Q3 用の scheduleConfig を含められる", () => {
     const answer: QuestionAnswer = {
-      selectedOption: "定期実行",
+      selectedOptions: ["定期実行"],
       freeText: "",
       scheduleConfig: {
         cronExpression: "0 9 * * 1-5",
@@ -86,29 +86,34 @@ describe("QuestionAnswer", () => {
     expectTypeOf(answer).toMatchTypeOf<QuestionAnswer>();
   });
 
-  it("selectedOption が string | null 型である", () => {
-    expectTypeOf<QuestionAnswer["selectedOption"]>().toEqualTypeOf<
-      string | null
-    >();
+  it("selectedOptions が string[] 型である", () => {
+    expectTypeOf<QuestionAnswer["selectedOptions"]>().toEqualTypeOf<string[]>();
+  });
+
+  it("selectedOption プロパティは型定義に存在しない", () => {
+    type HasSelectedOption = "selectedOption" extends keyof QuestionAnswer
+      ? true
+      : false;
+    expectTypeOf<HasSelectedOption>().toEqualTypeOf<false>();
   });
 });
 
 describe("ConversationAnswers", () => {
   it("6問分の回答を保持できる", () => {
     const answers: ConversationAnswers = {
-      q1: { selectedOption: "自分のみ", freeText: "" },
-      q2: { selectedOption: "テキスト", freeText: "" },
+      q1: { selectedOptions: ["自分のみ"], freeText: "" },
+      q2: { selectedOptions: ["テキスト"], freeText: "" },
       q3: {
-        selectedOption: "定期実行",
+        selectedOptions: ["定期実行"],
         freeText: "",
         scheduleConfig: {
           cronExpression: "0 9 * * 1-5",
           timezone: "Asia/Tokyo",
         },
       },
-      q4: { selectedOption: "通知", freeText: "" },
-      q5: { selectedOption: "Slack", freeText: "" },
-      q6: { selectedOption: "Markdown", freeText: "" },
+      q4: { selectedOptions: ["通知"], freeText: "" },
+      q5: { selectedOptions: ["Slack"], freeText: "" },
+      q6: { selectedOptions: ["Markdown"], freeText: "" },
     };
     expectTypeOf(answers).toMatchTypeOf<ConversationAnswers>();
   });

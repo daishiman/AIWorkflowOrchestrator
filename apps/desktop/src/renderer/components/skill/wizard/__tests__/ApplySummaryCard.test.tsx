@@ -15,12 +15,12 @@ import type {
 } from "@repo/shared/types/skillCreator";
 
 const defaultAnswers: ConversationAnswers = {
-  q1: { selectedOption: null, freeText: "" },
-  q2: { selectedOption: null, freeText: "" },
-  q3: { selectedOption: null, freeText: "" },
-  q4: { selectedOption: null, freeText: "" },
-  q5: { selectedOption: null, freeText: "" },
-  q6: { selectedOption: null, freeText: "" },
+  q1: { selectedOptions: [], freeText: "" },
+  q2: { selectedOptions: [], freeText: "" },
+  q3: { selectedOptions: [], freeText: "" },
+  q4: { selectedOptions: [], freeText: "" },
+  q5: { selectedOptions: [], freeText: "" },
+  q6: { selectedOptions: [], freeText: "" },
 };
 
 const defaultSmartDefaults: SmartDefaultResult = {
@@ -91,12 +91,12 @@ describe("ApplySummaryCard", () => {
 
   it("全問回答済みのとき未回答デフォルトリストが表示されない", () => {
     const answeredAll: ConversationAnswers = {
-      q1: { selectedOption: "自分のみ", freeText: "" },
-      q2: { selectedOption: "テキスト", freeText: "" },
-      q3: { selectedOption: "手動実行", freeText: "" },
-      q4: { selectedOption: "チャット返信", freeText: "" },
-      q5: { selectedOption: "なし", freeText: "" },
-      q6: { selectedOption: "Markdown", freeText: "" },
+      q1: { selectedOptions: ["自分のみ"], freeText: "" },
+      q2: { selectedOptions: ["テキスト"], freeText: "" },
+      q3: { selectedOptions: ["手動実行"], freeText: "" },
+      q4: { selectedOptions: ["チャット返信"], freeText: "" },
+      q5: { selectedOptions: ["なし"], freeText: "" },
+      q6: { selectedOptions: ["Markdown"], freeText: "" },
     };
     const smartDefaults: SmartDefaultResult = {
       who: "自分のみ",
@@ -167,7 +167,60 @@ describe("ApplySummaryCard", () => {
     } as SkillInfoFormData;
     const answeredQ5: ConversationAnswers = {
       ...defaultAnswers,
-      q5: { selectedOption: "Slack", freeText: "" },
+      q5: { selectedOptions: ["Slack"], freeText: "" },
+    };
+    render(
+      <ApplySummaryCard
+        answers={answeredQ5}
+        smartDefaults={defaultSmartDefaults}
+        formData={formData}
+        onDismiss={mockOnDismiss}
+        onConfirm={mockOnConfirm}
+      />,
+    );
+    expect(
+      screen.queryByText(/Q5.*必須|外部ツール連携.*必須/),
+    ).not.toBeInTheDocument();
+  });
+
+  // ------------------------------------------
+  // 複数選択対応テスト（TC-U-20〜22）
+  // ------------------------------------------
+  it("TC-U-21: Q1 に複数選択があるとき未回答判定されない", () => {
+    const answeredQ1: ConversationAnswers = {
+      ...defaultAnswers,
+      q1: { selectedOptions: ["自分のみ", "チームメンバー"], freeText: "" },
+    };
+    const smartDefaults: SmartDefaultResult = {
+      who: "自分のみ",
+      input: null,
+      timing: null,
+      output: null,
+      tool: null,
+      format: null,
+    };
+    render(
+      <ApplySummaryCard
+        answers={answeredQ1}
+        smartDefaults={smartDefaults}
+        formData={defaultFormData}
+        onDismiss={mockOnDismiss}
+        onConfirm={mockOnConfirm}
+      />,
+    );
+    // Q1 は回答済みのため「利用者」のデフォルト値がリストに表示されない
+    const card = screen.getByRole("region", { name: /サマリー|適用/ });
+    expect(within(card).queryByText(/利用者/)).not.toBeInTheDocument();
+  });
+
+  it("TC-U-22: q5.selectedOptions に値があるとき isQ5Unanswered が false になる", () => {
+    const formData = {
+      ...defaultFormData,
+      category: "external-integration",
+    } as SkillInfoFormData;
+    const answeredQ5: ConversationAnswers = {
+      ...defaultAnswers,
+      q5: { selectedOptions: ["Slack"], freeText: "" },
     };
     render(
       <ApplySummaryCard

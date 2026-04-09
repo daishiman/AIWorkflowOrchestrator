@@ -51,18 +51,18 @@ Wave 2（直列・W1完了後）
 
 | Phase | 名称             | 仕様書                                                                 | ステータス |
 | ----- | ---------------- | ---------------------------------------------------------------------- | ---------- |
-| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)                   | planning   |
-| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                               | planning   |
-| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)                 | planning   |
-| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)                 | blocked    |
-| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)               | blocked    |
-| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)               | blocked    |
-| 7     | カバレッジ確認   | [phase-7-coverage-verification.md](./phase-7-coverage-verification.md) | blocked    |
-| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)                     | blocked    |
-| 9     | 品質保証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md)         | blocked    |
-| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)                 | blocked    |
-| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)                   | blocked    |
-| 12    | ドキュメント更新 | [phase-12-documentation.md](./phase-12-documentation.md)               | blocked    |
+| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)                   | completed  |
+| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                               | completed  |
+| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)                 | completed  |
+| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)                 | completed  |
+| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)               | completed  |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)               | completed  |
+| 7     | カバレッジ確認   | [phase-7-coverage-verification.md](./phase-7-coverage-verification.md) | completed  |
+| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)                     | completed  |
+| 9     | 品質保証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md)         | completed  |
+| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)                 | completed  |
+| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)                   | completed  |
+| 12    | ドキュメント更新 | [phase-12-documentation.md](./phase-12-documentation.md)               | completed  |
 | 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)                   | blocked    |
 
 ## 依存グラフ

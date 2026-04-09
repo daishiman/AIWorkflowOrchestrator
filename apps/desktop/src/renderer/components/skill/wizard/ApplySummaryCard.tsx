@@ -54,7 +54,7 @@ function getUnansweredDefaults(
   return QUESTION_KEYS.flatMap((key) => {
     const answer = answers[key];
     const isUnanswered =
-      answer.selectedOption === null && answer.freeText.trim() === "";
+      answer.selectedOptions.length === 0 && answer.freeText.trim() === "";
     if (!isUnanswered) return [];
     const defaultValue = smartDefaults[DEFAULT_KEY_BY_QUESTION[key]];
     if (!defaultValue) return [];
@@ -87,7 +87,8 @@ export const ApplySummaryCard = ({
 }: ApplySummaryCardProps) => {
   const isQ5Required = formData.category === "external-integration";
   const isQ5Unanswered =
-    answers.q5.selectedOption === null && answers.q5.freeText.trim() === "";
+    answers.q5.selectedOptions.length === 0 &&
+    answers.q5.freeText.trim() === "";
 
   const unansweredWithDefaults = getUnansweredDefaults(answers, smartDefaults);
 
