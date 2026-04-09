@@ -17,6 +17,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
+import { trackEvent } from "../../utils/trackEvent";
 import {
   StepIndicator,
   SkillInfoStep,
@@ -89,6 +90,38 @@ interface ExternalIntegrationState {
 // ────────────────────────────────────────────────────────────────────────────
 // ユーティリティ関数
 // ────────────────────────────────────────────────────────────────────────────
+
+// ────────────────────────────────────────────────────────────────────────────
+// W3-seq-04: 計装ユーティリティ
+// ────────────────────────────────────────────────────────────────────────────
+
+/**
+ * スキップ時に何問目でスキップしたかを回答状態から判定する。
+ * 未回答の最初の設問インデックス（1始まり）を返す。全問回答済みの場合 null。
+ */
+const QUESTION_KEYS = [
+  "q1",
+  "q2",
+  "q3",
+  "q4",
+  "q5",
+  "q6",
+] as const satisfies readonly (keyof ConversationAnswers)[];
+
+function isAnswered(answer: ConversationAnswers[keyof ConversationAnswers]) {
+  return (
+    answer.selectedOption !== null ||
+    answer.freeText.trim().length > 0 ||
+    answer.scheduleConfig !== undefined
+  );
+}
+
+export function resolveSkippedAtQuestion(
+  answers: ConversationAnswers,
+): number | null {
+  const idx = QUESTION_KEYS.findIndex((k) => !isAnswered(answers[k]));
+  return idx === -1 ? null : idx + 1;
+}
 
 function resolveStage(
   streamingStage: GenerationStage,
@@ -280,6 +313,11 @@ export const SkillCreateWizard = React.forwardRef<
   const [hasExternalIntegration, setHasExternalIntegration] = useState(false);
   const [externalToolName, setExternalToolName] = useState<string | null>(null);
 
+  // W3-seq-04 計装 1: ウィザード起動イベント（AC-01）
+  useEffect(() => {
+    trackEvent("skill_wizard_started", {});
+  }, []);
+
   // アンマウント時に Store をクリア
   useEffect(() => {
     return () => {
@@ -331,6 +369,13 @@ export const SkillCreateWizard = React.forwardRef<
       return;
     }
 
+    // W3-seq-04 計装 2: Step 1 完了イベント（AC-02）
+    trackEvent("skill_wizard_step1_completed", {
+      method,
+      skippedAtQuestion:
+        method === "skip" ? resolveSkippedAtQuestion(answers) : null,
+    });
+
     generationLockRef.current = true;
     const defaults = smartDefaults ?? inferSmartDefaults(formData);
     if (!smartDefaults) {
@@ -356,6 +401,14 @@ export const SkillCreateWizard = React.forwardRef<
       setSkillPath(path);
       setHasExternalIntegration(integration.hasExternalIntegration);
       setExternalToolName(integration.externalToolName);
+
+      // W3-seq-04 計装 3: 生成完了イベント（AC-03）—失敗時は発火しない
+      trackEvent("skill_wizard_generation_completed", {
+        method,
+        category: formData.category ?? "other",
+        hasExternalIntegration: integration.hasExternalIntegration,
+      });
+
       goToStep(3);
     } catch (err) {
       setError(
@@ -368,12 +421,13 @@ export const SkillCreateWizard = React.forwardRef<
   };
 
   /**
-   * 品質フィードバックを受信する。W3-seq-04 計装で trackEvent に接続予定。
+   * 品質フィードバックを受信する。W3-seq-04 計装 4（AC-04）。
    */
   const handleQualityFeedback = (satisfied: boolean) => {
-    // TODO(W3-seq-04): trackEvent("skill_skeleton_quality_feedback", { satisfied, generationMethod })
-    void satisfied;
-    void generationMethod;
+    trackEvent("skill_skeleton_quality_feedback", {
+      satisfied,
+      generationMethod,
+    });
   };
 
   /**
@@ -384,18 +438,21 @@ export const SkillCreateWizard = React.forwardRef<
     goToStep(0);
   };
 
-  /** 今すぐ実行する → ウィザードを閉じる */
+  /** 今すぐ実行する → ウィザードを閉じる（W3-seq-04 計装 5: AC-05） */
   const handleExecuteNow = () => {
+    trackEvent("skill_wizard_next_action", { action: "execute" });
     _onClose();
   };
 
-  /** エディタで開く → ウィザードを閉じる */
+  /** エディタで開く → ウィザードを閉じる（W3-seq-04 計装 5: AC-05） */
   const handleOpenInEditor = () => {
+    trackEvent("skill_wizard_next_action", { action: "open_editor" });
     _onClose();
   };
 
-  /** 別のスキルを作る → Step 0 復帰（フォームと生成結果を全リセット） */
+  /** 別のスキルを作る → Step 0 復帰（W3-seq-04 計装 5: AC-05） */
   const handleCreateAnother = () => {
+    trackEvent("skill_wizard_next_action", { action: "create_another" });
     resetGeneratedState(false);
     goToStep(0);
   };

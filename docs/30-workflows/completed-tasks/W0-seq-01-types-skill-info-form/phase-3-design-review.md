@@ -27,13 +27,13 @@ Phase 2 の型契約をレビューし、後続 wave の利用と矛盾しない
 
 ## 参照資料
 
-| 資料名      | パス                                                                           | 説明                 |
-| ----------- | ------------------------------------------------------------------------------ | -------------------- |
-| 設計書      | `phase-2-design.md`                                                            | レビュー対象の型定義 |
-| 既存型定義  | `packages/shared/src/types/skillCreator.ts`                                    | 既存型との整合確認   |
-| Step 0 実装 | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02a-skill-info-step/`     | 後続利用の確認       |
-| Step 1 実装 | `docs/30-workflows/W1-par-02b-conversation-round-step/`                        | 後続利用の確認       |
-| Step 2 実装 | `docs/30-workflows/skill-wizard-redesign-lane/W2-seq-03a-skill-create-wizard/` | 推論利用の確認       |
+| 資料名      | パス                                                                    | 説明                 |
+| ----------- | ----------------------------------------------------------------------- | -------------------- |
+| 設計書      | `phase-2-design.md`                                                     | レビュー対象の型定義 |
+| 既存型定義  | `packages/shared/src/types/skillCreator.ts`                             | 既存型との整合確認   |
+| Step 0 実装 | `docs/30-workflows/completed-tasks/W1-par-02a-skill-info-step-2/`       | 後続利用の確認       |
+| Step 1 実装 | `docs/30-workflows/completed-tasks/W1-par-02b-conversation-round-step/` | 後続利用の確認       |
+| Step 2 実装 | `docs/30-workflows/W2-seq-03a-skill-create-wizard-2/`                   | 推論利用の確認       |
 
 ## 実行手順
 

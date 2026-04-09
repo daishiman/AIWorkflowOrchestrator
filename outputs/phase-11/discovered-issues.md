@@ -1,4 +1,4 @@
-# Phase 11: 発見した問題 — UT-SKILL-WIZARD-W1-par-02b
+# Phase 11: 発見した問題 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## サマリー
 
@@ -6,19 +6,15 @@
 | ------------------- | ---- |
 | current blocker     | 0    |
 | current minor       | 0    |
-| resolved carry-over | 1    |
+| resolved carry-over | 0    |
 
 ## 判定
 
-新規の blocker / minor はなし。
-
-## resolved carry-over
-
-- `ConversationRoundStep.tsx` が `node-cron` を renderer で直 import していたため、browser bundle の初期化時に `Class extends value [object Object] is not a constructor or null` が発生していた
-- browser-safe な cron validator に置き換えたことで解消した
+新規の blocker / minor はなし。carry-over も発生なし。
 
 ## 確認メモ
 
-- Page 1 / Page 2 / summary card の capture は成功
-- `Q5` 必須表示は external-integration のときのみ出る
-- summary card は Q5 未回答警告を表示し、生成前確認として機能する
+- textarea 削除は単純な除去操作のため、新規の UI バグは発生していない
+- light / dark の両方で `skill-lifecycle-open-wizard-button` が安定して表示されることを確認した
+- `describe.skip` ブロック内の旧 testid 参照（`skill-lifecycle-request-input`）は既知の既存事項であり、本タスクで解消する義務はない
+- `SkillCreateWizard` への実配線と settings 導線の分離は current facts で完了済みで、追加の blocker / carry-over はない

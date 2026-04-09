@@ -166,3 +166,19 @@
 - **適用範囲**: fire-and-forget 型の executeAsync ラッパー全般。catch ブロックと structured error パスの両方に適用する
 - **発見元**: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001
 - **発見日**: 2026-04-07
+
+### L-SC13-IPC-001: IPC surface 追加時は `ALLOWED_INVOKE_CHANNELS` 追記が必須
+
+- **教訓**: `packages/shared/src/ipc/channels.ts` に定数を追加し `ipcMain.handle()` を登録しても、`apps/desktop/src/preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` に追記しなければ Renderer から呼び出せない
+- **症状**: `ipcRenderer.invoke("skill-creator:verify", ...)` が Electron の `DISALLOWED_CHANNEL` エラーでリジェクトされる
+- **対策**: IPC surface 追加タスクのチェックリストに「`ALLOWED_INVOKE_CHANNELS` への追記」を必須項目として追加する
+- **発見元**: TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION
+- **発見日**: 2026-04-08
+
+### L-SC13-IPC-002: 公開 surface と内部エンジンで名前が酷似する場合は DTO 変換表を Phase 2 成果物に必須化
+
+- **教訓**: `RuntimeSkillCreatorFacade.verifySkill(skillDir)` が既に存在する状態で公開 `verify(skillName, ...)` を追加すると、コードレビュー時に責務・引数・返り値の差分が不明確になる
+- **対策**: Phase 2 設計成果物に「内部型 → 公開 DTO 変換表」を必須項目として追加し、フィールド名マッピング（`id→checkId` / `summary→label` など）を明文化する
+- **補足**: 解決レイヤ（`resolveVerifySkillDir(skillName)` 等）を Phase 2 で先に命名しておくと設計の揺れを防げる
+- **発見元**: TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION
+- **発見日**: 2026-04-08

@@ -689,6 +689,20 @@ export interface RuntimeSkillCreatorExecuteResult {
   persistError?: string | null;
 }
 
+export interface VerifyCheckResult {
+  checkId: string;
+  label: string;
+  passed: boolean;
+  message?: string;
+}
+
+export interface VerifyResult {
+  skillName: string;
+  passed: boolean;
+  checkResults: VerifyCheckResult[];
+  summary: string;
+}
+
 export type RuntimeSkillCreatorVerifyCheckSeverity =
   | "info"
   | "warning"
@@ -939,8 +953,7 @@ export type SkillCategory =
 
 /**
  * Step 0 のフォームデータ。
- * `skillName` は型上は任意入力で、省略や空文字も表現できるが、
- * runtime validation では空文字・空白のみを拒否する。
+ * `skillName` は任意入力で、省略も空文字も許容する。
  */
 export interface SkillInfoFormData {
   /** スキル名（任意） */

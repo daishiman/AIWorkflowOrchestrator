@@ -105,7 +105,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 | Phase | 名称             | 目的                                                                                                                                         |
 | ----- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる） |
+| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる）。**[carry-over確認]** 前タスクの成果物（`git log --oneline -5` で確認）を棚卸しし、今タスクの新規作業との差異を明確化すること |
 | 2     | 設計             | topology、SubAgent lane、validation path を設計する。**[FB-SDK-07-1]** 「既存コンポーネント再利用可否」を必ず確認する。新規 UI 実装ゼロで品質・アクセシビリティ・HIG準拠を既存レベルで担保できる場合は再利用を優先する |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
 | 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-09-U1]** private method のテストは `(facade as unknown as FacadePrivate)` キャストまたは public callback 経由を使う方針を Phase 4 仕様書に明記する |
@@ -233,6 +233,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | Phase 3/10レビュー結果 | MINOR判定の指摘事項                |
 | Phase 11手動テスト     | スコープ外の発見事項・改善提案     |
 | コードコメント         | TODO/FIXME/HACK/XXX                |
+| `describe.skip` ブロック | 削除したtestid/要素名が旧参照として残存していないか（残存時はcleanupタスクをbacklogに登録） |
 
 ```bash
 # 未タスク検出スクリプト
@@ -247,6 +248,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                               |
 | ----------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v10.09.40** | **2026-04-08** | **TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映**: 「よくある漏れ」テーブルに Feedback SC-13-1（`ALLOWED_INVOKE_CHANNELS` 追記漏れ対策）・SC-13-2（公開 surface と内部エンジン名衝突時の DTO 変換表必須化）を追記。`api-ipc-system-skill-creator-part2.md` に `skill-creator:verify` チャンネル仕様・DTO 型定義・設計注意点を追加。`lessons-learned-ipc-preload-runtime-2026-04.md` に L-SC13-IPC-001/002 を追加。LOGS.md 同波更新。|
 | **v10.09.39** | **2026-04-08** | **UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 skill-feedback 反映**: 「よくある漏れ」テーブルに Feedback W0-RV-001（境界値テスト文字列の実文字数確認）を追記。`aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-RV-001・L-RV-002 を追加。LOGS.md 2ファイル + SKILL.md 同波更新。|
 | **v10.09.38** | **2026-04-08** | **UT-SKILL-WIZARD-W1-par-02b skill-feedback 反映**: `patterns-lessons-and-pitfalls.md` に renderer node-only import pitfall を追加。`phase-template-phase11.md` に UI task VISUAL デフォルトガイドを追加。`phase-12-documentation-guide.md` Task 12-6 に identifier consistency check を追加。「よくある漏れ」テーブルに Feedback W1-02b-1〜4 を追記。LOGS.md 2ファイル + SKILL.md 2ファイル同波更新。|
 | **6.18.27** | **2026-04-07** | **UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync**: `packages/shared/src/types/skillCreator.ts` に shared contracts 7 型を追加し、`SkillCategory` の root 衝突を避けて `@repo/shared/types/skillCreator` に閉じた。`skillCreator-wizard.test.ts` を新規作成し、`phase-12-docs.md` の出力先を current root に修正。`task-workflow-completed.md` / `interfaces-agent-sdk-skill-reference.md` / `LOGS.md` 2ファイル / `SKILL.md` 2ファイル / topic-map を同波更新。|
@@ -325,6 +327,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback W1-02b-3]** `implementation-guide.md` の callback 名・props 名が実装と一致していない（identifier drift） | Phase 12 Task 12-6 で `implementation-guide.md` 内の識別子を現行コードで `grep` 確認する。スニペットは型定義・props interface から引用し、手書き snippets を避ける |
 | **[Feedback W1-02b-4]** renderer UI コンポーネントで node-only パッケージを直接 import し、Vite browser bundle が runtime error になる | renderer コンポーネントでは node-only パッケージ（`node-cron` 等）を直接 import しない。cron/schedule 検証は browser-safe ユーティリティに切り出す。Phase 11 capture 前に「ブラウザで実際に route を開く smoke test」を必須にする |
 | **[Feedback W0-RV-001]** minLength / maxLength のテストケースで境界値文字列の実文字数を確認せずに誤った長さで書く（例: `"十文字以上の目的"` = 実際は 7 文字） | テスト文字列を書く前に `"...".length` で実文字数を確認する。日本語の漢数字表記の意味と `.length` は別物。境界値テストは `// length: N` コメントを付けてから書く |
+| **[Feedback SC-13-1]** IPC surface 追加時に `apps/desktop/src/preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` への追記が漏れる | IPC surface 追加タスクでは Phase 2 成果物のチェックリストに「`ALLOWED_INVOKE_CHANNELS` への追記」を必須項目として記載する。`shared/ipc/channels.ts` への定数追加だけでは Renderer から呼び出せない |
+| **[Feedback SC-13-2]** 公開 IPC メソッド名（`verify(skillName, ...)`）と内部エンジンメソッド名（`verifySkill(skillDir)`）が酷似し Phase 2 設計時に責務が不明確になる | 公開 surface と内部エンジンで名前が近い場合、Phase 2 成果物に「内部型 → 公開 DTO 変換表」と「解決レイヤ名称（例: `resolveVerifySkillDir`）」を必須セクションとして設ける |
 
 ### Phase 12 苦戦防止Tips
 

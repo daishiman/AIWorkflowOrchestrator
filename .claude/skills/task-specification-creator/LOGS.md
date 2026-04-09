@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに Feedback SC-13-1（`ALLOWED_INVOKE_CHANNELS` 追記漏れ）・SC-13-2（公開 surface と内部エンジン名衝突時の DTO 変換表必須化）を追記（v10.09.40）
+- `aiworkflow-requirements/references/api-ipc-system-skill-creator-part2.md` に `skill-creator:verify` チャンネル仕様・DTO 型定義・設計注意点を追加
+- `aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md` に L-SC13-IPC-001/002 を追加
+
+### 背景
+IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内部エンジン名衝突という再発防止すべき2点を知見化した。
+
+---
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -37,6 +49,20 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 ### 背景
 W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
 manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
+## 2026-04-08 - UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/artifacts.json` を `phase13_blocked` で同期
+- `outputs/artifacts.json` を current task（TRANSITION-001）用に更新
+- Phase 6〜12 canonical 成果物を `outputs/phase-{6..12}/` に作成
+- `outputs/phase-11/` を VISUAL evidence（task-specific light/dark screenshot bundle）として整備
+
+### 背景
+
+UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 の Phase 12 close-out として、全成果物を同波で同期した。
+`skill-lifecycle-execution-input` textarea 削除タスクは実装・テスト・全成果物が完了し、Phase 13（PR作成）blocked 状態へ移行した。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 

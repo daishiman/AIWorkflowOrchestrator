@@ -20,5 +20,6 @@ exports[`IPC ハンドラ登録完全性 > TC-01〜TC-03: registerRuntimeSkillCr
   "skill-creator:resume-session",
   "skill-creator:reverify-workflow",
   "skill-creator:submit-user-input",
+  "skill-creator:verify",
 ]
 `;

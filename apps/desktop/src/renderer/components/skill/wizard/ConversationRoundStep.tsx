@@ -58,6 +58,17 @@ const QUESTIONS = [
 type QuestionKey = keyof ConversationAnswers;
 type QuestionOption = (typeof QUESTIONS)[number]["options"][number];
 
+const SMART_DEFAULT_LABELS = {
+  q3: {
+    scheduled: "定期実行",
+    realtime: "イベント駆動",
+  },
+  q5: {
+    slack: "Slack",
+    github: "GitHub",
+  },
+} as const;
+
 const DEFAULT_TIMEZONE = "Asia/Tokyo";
 const DEFAULT_SCHEDULE_CONFIG: SkillWizardScheduleConfig = {
   cronExpression: "",
@@ -86,6 +97,14 @@ function isQuestionAnswered(answer: QuestionAnswer): boolean {
   );
 }
 
+const QUESTION_KEYS = [
+  "q1",
+  "q2",
+  "q3",
+  "q4",
+  "q5",
+  "q6",
+] as const satisfies readonly QuestionKey[];
 function createEmptyAnswers(): ConversationAnswers {
   return {
     q1: { selectedOption: null, freeText: "" },
@@ -185,19 +204,47 @@ function applySmartDefaults(
     : createQuestionAnswer(smartDefaults.input, QUESTIONS[1].options);
   const q3 = isQuestionAnswered(answers.q3)
     ? answers.q3
-    : {
-        ...createQuestionAnswer(smartDefaults.timing, QUESTIONS[2].options),
-        scheduleConfig:
-          smartDefaults.timing === "定期実行"
-            ? DEFAULT_SCHEDULE_CONFIG
-            : undefined,
-      };
+    : (() => {
+        const questionAnswer = createQuestionAnswer(
+          SMART_DEFAULT_LABELS.q3[
+            smartDefaults.timing as keyof typeof SMART_DEFAULT_LABELS.q3
+          ] ?? smartDefaults.timing,
+          QUESTIONS[2].options,
+        );
+
+        return {
+          ...questionAnswer,
+          scheduleConfig:
+            questionAnswer.selectedOption === "定期実行"
+              ? DEFAULT_SCHEDULE_CONFIG
+              : undefined,
+        };
+      })();
   const q4 = isQuestionAnswered(answers.q4)
     ? answers.q4
     : createQuestionAnswer(smartDefaults.output, QUESTIONS[3].options);
   const q5 = isQuestionAnswered(answers.q5)
     ? answers.q5
-    : createQuestionAnswer(smartDefaults.tool, QUESTIONS[4].options);
+    : (() => {
+        const toolValue =
+          SMART_DEFAULT_LABELS.q5[
+            smartDefaults.tool as keyof typeof SMART_DEFAULT_LABELS.q5
+          ] ?? smartDefaults.tool;
+
+        const questionAnswer = createQuestionAnswer(
+          toolValue,
+          QUESTIONS[4].options,
+        );
+
+        if (!questionAnswer.selectedOption && smartDefaults.tool === "notion") {
+          return {
+            selectedOption: "その他",
+            freeText: "Notion",
+          };
+        }
+
+        return questionAnswer;
+      })();
   const q6 = isQuestionAnswered(answers.q6)
     ? answers.q6
     : createQuestionAnswer(smartDefaults.format, QUESTIONS[5].options);
@@ -214,6 +261,14 @@ function validateCronExpression(value: string): string | null {
   return isValidFiveFieldCronExpression(trimmed)
     ? null
     : "cron式の形式が正しくありません";
+}
+
+function resolveGenerationMethod(
+  answers: ConversationAnswers,
+): "complete" | "skip" {
+  return QUESTION_KEYS.every((key) => isQuestionAnswered(answers[key]))
+    ? "complete"
+    : "skip";
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -341,7 +396,7 @@ export const ConversationRoundStep = ({
 
   const handleConfirmGenerate = () => {
     setShowSummaryCard(false);
-    onGenerate("skip");
+    onGenerate(resolveGenerationMethod(internalAnswers));
   };
 
   // ─── QuestionCard レンダラ（インライン） ────────────────────────────────────
