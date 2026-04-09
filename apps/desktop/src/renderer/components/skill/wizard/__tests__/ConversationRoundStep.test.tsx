@@ -33,19 +33,19 @@ const defaultAnswers: ConversationAnswers = {
 };
 
 const completeAnswers: ConversationAnswers = {
-  q1: { selectedOption: "自分のみ", freeText: "" },
-  q2: { selectedOption: "テキスト", freeText: "" },
+  q1: { selectedOptions: ["自分のみ"], freeText: "" },
+  q2: { selectedOptions: ["テキスト"], freeText: "" },
   q3: {
-    selectedOption: "定期実行",
+    selectedOptions: ["定期実行"],
     freeText: "",
     scheduleConfig: {
       cronExpression: "0 9 * * 1-5",
       timezone: "Asia/Tokyo",
     },
   },
-  q4: { selectedOption: "通知", freeText: "" },
-  q5: { selectedOption: "Slack", freeText: "" },
-  q6: { selectedOption: "Markdown", freeText: "" },
+  q4: { selectedOptions: ["通知"], freeText: "" },
+  q5: { selectedOptions: ["Slack"], freeText: "" },
+  q6: { selectedOptions: ["Markdown"], freeText: "" },
 };
 
 const defaultSmartDefaults: SmartDefaultResult = {
