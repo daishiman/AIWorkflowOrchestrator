@@ -105,7 +105,6 @@ const QUESTION_KEYS = [
   "q5",
   "q6",
 ] as const satisfies readonly QuestionKey[];
-
 function createEmptyAnswers(): ConversationAnswers {
   return {
     q1: { selectedOption: null, freeText: "" },
