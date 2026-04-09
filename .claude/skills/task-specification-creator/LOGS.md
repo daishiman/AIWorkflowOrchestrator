@@ -2,6 +2,42 @@
 
 ## 役割
 
+## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに Feedback SC-13-1（`ALLOWED_INVOKE_CHANNELS` 追記漏れ）・SC-13-2（公開 surface と内部エンジン名衝突時の DTO 変換表必須化）を追記（v10.09.40）
+- `aiworkflow-requirements/references/api-ipc-system-skill-creator-part2.md` に `skill-creator:verify` チャンネル仕様・DTO 型定義・設計注意点を追加
+- `aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md` に L-SC13-IPC-001/002 を追加
+
+### 背景
+IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内部エンジン名衝突という再発防止すべき2点を知見化した。
+
+---
+
+## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 の runtime validation 説明を記録
+- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を current facts に合わせて更新
+- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` に Skill Wizard Runtime Validation セクションを追加
+- `task-workflow-completed.md` / `task-workflow.md` / `aiworkflow-requirements/LOGS.md` を同波で同期
+
+### 背景
+Runtime validation は shared types の新しい public surface であり、task spec だけでなく system spec 側にも契約節が必要だった。
+Phase 12 の成果物から漏れやすい topic-map / completed ledger / log を同 wave で閉じる。
+
+## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 skill-feedback 反映（impl-spec-to-skill-sync）
+
+### 変更内容
+- `SKILL.md` の「よくある漏れ」テーブルに Feedback W0-RV-001（minLength/maxLength 境界値テスト文字列の実文字数確認）を追記
+- `SKILL.md` の変更履歴に v10.09.39 エントリを追加
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-RV-001（文字数確認）/ L-RV-002（pure function バリデーション設計）を追加
+- `aiworkflow-requirements/references/lessons-learned-current.md` に v3.12.0 インデックスエントリを追加
+
+### 背景
+`skill-feedback-report.md` の EC-09 文字数ミス教訓（`"十文字以上の目的"` は7文字）を「よくある漏れ」として体系化した。
+テスト境界値に日本語漢数字が含まれる場合の実文字数確認を Phase 4 のガードとして定着させる。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
 
 ### 変更内容
@@ -13,6 +49,20 @@
 ### 背景
 W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
 manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
+## 2026-04-08 - UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/artifacts.json` を `phase13_blocked` で同期
+- `outputs/artifacts.json` を current task（TRANSITION-001）用に更新
+- Phase 6〜12 canonical 成果物を `outputs/phase-{6..12}/` に作成
+- `outputs/phase-11/` を VISUAL evidence（task-specific light/dark screenshot bundle）として整備
+
+### 背景
+
+UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 の Phase 12 close-out として、全成果物を同波で同期した。
+`skill-lifecycle-execution-input` textarea 削除タスクは実装・テスト・全成果物が完了し、Phase 13（PR作成）blocked 状態へ移行した。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 

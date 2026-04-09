@@ -264,4 +264,61 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
 ### 実装参照
 
 - `apps/desktop/src/main/ipc/creatorHandlers.ts` - `registerRuntimeSkillCreatorHandlers()` / `unregisterRuntimeSkillCreatorHandlers()`（16チャネル対称実装）
+
+---
+
+## TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION（2026-04-08）
+
+### 概要
+
+既存 `RuntimeSkillCreatorFacade.verifySkill(skillDir)` の内部エンジンに対して、外部から `skillName` を受け付ける公開 IPC surface `skill-creator:verify` を追加する。
+
+### 実装アンカー
+
+| 層 | ファイル | 変更内容 |
+| --- | --- | --- |
+| 型定義 | `packages/shared/src/types/skillCreator.ts` | `VerifyCheckResult` / `VerifyResult` 型を追加 |
+| IPC 定数 | `packages/shared/src/ipc/channels.ts` | `SKILL_CREATOR_VERIFY = "skill-creator:verify"` を定数エクスポートし `IPC_CHANNELS` に統合 |
+| Preload whitelist | `apps/desktop/src/preload/channels.ts` | `SKILL_CREATOR_VERIFY` を `ALLOWED_INVOKE_CHANNELS` に追加（要 whitelist 登録） |
+| Main Handler | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_VERIFY, ...)` 登録。`validateSender + isBlank + sanitizeErrorMessage` パターン。`unregisterRuntimeSkillCreatorHandlers` に `removeHandler` も追加 |
+| Facade | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `async verify(skillName, authMode, apiKey): Promise<VerifyResult>` を追加。`resolveVerifySkillDir → verifySkill(skillDir) → DTO 変換` |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` | `verifySkill(skillName, authMode?, apiKey?)` メソッドを追加 |
+
+### チャンネル
+
+| チャンネル | 用途 | Request | Response |
+| --- | --- | --- | --- |
+| `skill-creator:verify` | スキルの整合性・品質チェックを実行 | `{ skillName: string, authMode?: string, apiKey?: string }` | `IpcResult<VerifyResult>` |
+
+### 公開 DTO 型
+
+```typescript
+interface VerifyCheckResult {
+  checkId: string;   // RuntimeSkillCreatorVerifyCheck.id から変換
+  label: string;     // RuntimeSkillCreatorVerifyCheck.summary から変換
+  passed: boolean;   // severity === "info" → true
+  message?: string;  // evidenceSummary から変換
+}
+
+interface VerifyResult {
+  success: boolean;
+  checks: VerifyCheckResult[];
+  error?: string;
+}
+```
+
+### DTO 変換ルール（内部型 → 公開 DTO）
+
+| 内部フィールド | 公開フィールド | 変換ルール |
+| --- | --- | --- |
+| `RuntimeSkillCreatorVerifyCheck.id` | `checkId` | そのまま |
+| `RuntimeSkillCreatorVerifyCheck.summary` | `label` | そのまま |
+| `severity === "info"` | `passed = true` | info のみ pass 扱い |
+| `evidenceSummary` | `message` | optional |
+
+### 設計注意点
+
+- `skillName` を受ける公開 surface と `skillDir` を受ける内部エンジン（`verifySkill(skillDir)`）は名前が酷似するため、Phase 2 設計で `resolveVerifySkillDir()` 解決レイヤを明示すること
+- IPC surface 追加時は `preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` への追記が必須（漏れやすい）
+- 新チャネル登録と同時に `unregisterXxxHandlers()` への `removeHandler` 追加を忘れないこと（対称パターン）
 - follow-up: `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`（CI スナップショットテスト）

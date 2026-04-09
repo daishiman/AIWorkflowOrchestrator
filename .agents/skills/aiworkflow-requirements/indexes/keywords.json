@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2849,
+  "totalKeywords": 2835,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2734,6 +2734,27 @@
     "追記": [
       "api-ipc-system-skill-creator-part2.md"
     ],
+    "VERIFY": [
+      "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-lifecycle-recent.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-verify-contract-consolidation.md",
+      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+    ],
+    "CHANNEL": [
+      "api-ipc-system-skill-creator-part2.md",
+      "architecture-implementation-patterns-reference-ipc-naming.md",
+      "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md"
+    ],
+    "IMPLEMENTATION": [
+      "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "Runtime": [
       "api-ipc-system-skill-creator.md",
       "arch-electron-services-details-part2.md",
@@ -2767,7 +2788,6 @@
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-03-late.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3024,7 +3044,6 @@
     "DI": [
       "arch-electron-services-details-part2.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
@@ -3410,8 +3429,7 @@
     ],
     "再設計": [
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-current-2026-04.md"
+      "arch-state-management-reference-selectors.md"
     ],
     "SEARCH": [
       "arch-state-management-core.md",
@@ -4173,7 +4191,6 @@
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -4315,13 +4332,6 @@
     ],
     "チャネル命名監査の運用パターン": [
       "architecture-implementation-patterns-reference-ipc-naming.md"
-    ],
-    "CHANNEL": [
-      "architecture-implementation-patterns-reference-ipc-naming.md",
-      "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "logs-archive-2026-02-completed-move-preload-sync.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "NAMING": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
@@ -6997,7 +7007,6 @@
     "CONVERSATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-conversation-db-robustness.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -7224,13 +7233,6 @@
     "resume": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-04.md"
-    ],
-    "VERIFY": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "lessons-learned-skill-plan-exec-hardening.md",
-      "lessons-learned-verify-contract-consolidation.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "ARTIFACT": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -7465,63 +7467,6 @@
     "コンフリクト解消": [
       "lessons-learned-current-2026-04.md"
     ],
-    "WIZARD": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "ui-ux-navigation-chat-patterns.md"
-    ],
-    "ROUND": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "STEP": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "seq": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
-    "SmartDefault": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "推論サービス実装": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "INJECTION": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "healthPolicy": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "注入": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "par": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "SkillInfoStep": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "DescribeStep": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "wizard": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "exports": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "Google": [
-      "lessons-learned-current-2026-04.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md"
-    ],
-    "Calendar": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "スキル新規追加": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -7723,10 +7668,6 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "IMPLEMENTATION": [
-      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "user": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
@@ -7816,6 +7757,11 @@
     "CREATE": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "WIZARD": [
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "ui-ux-navigation-chat-patterns.md"
     ],
     "PLAN": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -8642,6 +8588,9 @@
       "workflow-onboarding-wizard-alignment.md"
     ],
     "Redesign": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "seq": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "タスク概要": [
@@ -10147,6 +10096,10 @@
     ],
     "バグ修正": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md"
+    ],
+    "Google": [
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-permission-history-execution-timestamps.md"
     ],
     "アバター取得修正": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md"

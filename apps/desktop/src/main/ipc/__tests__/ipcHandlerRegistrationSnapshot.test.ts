@@ -3,12 +3,12 @@
  *
  * UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001
  *
- * `registerRuntimeSkillCreatorHandlers()` が登録する 18 チャネル
- * （public runtime 16 + auxiliary 2）の完全性を CI で固定する。
+ * `registerRuntimeSkillCreatorHandlers()` が登録する 19 チャネル
+ * （public runtime 17 + auxiliary 2）の完全性を CI で固定する。
  *
  * TC-01: 登録チャネル名がスナップショットと一致する
  * TC-02: 重複チャネルが存在しない
- * TC-03: 登録チャネル総数が 18
+ * TC-03: 登録チャネル総数が 19
  * TC-04: 重複登録が注入された場合にアサーションが FAIL する（ネガティブ）
  * TC-05: 想定外チャネル追加でスナップショット差分が生じる（ネガティブ）
  */
@@ -67,8 +67,8 @@ describe("IPC ハンドラ登録完全性", () => {
       expect(unique.size).toBe(channels.length);
     });
 
-    it("TC-03: 登録チャネル総数が 18（public runtime 16 + auxiliary 2）", () => {
-      expect(channels).toHaveLength(18);
+    it("TC-03: 登録チャネル総数が 19（public runtime 17 + auxiliary 2）", () => {
+      expect(channels).toHaveLength(19);
     });
   });
 
@@ -95,8 +95,8 @@ describe("IPC ハンドラ登録完全性", () => {
       mockIpcMainHandle("skill-creator:unexpected-channel", vi.fn());
 
       const channels = getRegisteredChannels();
-      // 18 件より多くなる → 件数チェックで検出できる
-      expect(channels.length).toBeGreaterThan(18);
+      // 19 件より多くなる → 件数チェックで検出できる
+      expect(channels.length).toBeGreaterThan(19);
     });
   });
 });

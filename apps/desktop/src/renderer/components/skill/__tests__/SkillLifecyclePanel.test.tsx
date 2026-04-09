@@ -306,6 +306,13 @@ describe("SkillLifecyclePanel", () => {
       expect(screen.queryByTestId("skill-lifecycle-request-input")).toBeNull();
     });
 
+    it("テキストエリア（skill-lifecycle-execution-input）が存在しない", () => {
+      renderPanel();
+      expect(
+        screen.queryByTestId("skill-lifecycle-execution-input"),
+      ).toBeNull();
+    });
+
     it("「スキルを生成する」ボタンが存在しない", () => {
       renderPanel();
       expect(screen.queryByTestId("skill-lifecycle-create-button")).toBeNull();
@@ -373,9 +380,16 @@ describe("SkillLifecyclePanel", () => {
   });
 
   describe("ウィザード遷移化 - 回帰テスト: 削除要素の永続的非存在", () => {
-    it("[回帰] テキストエリアが復活していない", () => {
+    it("[回帰] テキストエリア（request-input）が復活していない", () => {
       renderPanel();
       expect(screen.queryByTestId("skill-lifecycle-request-input")).toBeNull();
+    });
+
+    it("[回帰] テキストエリア（execution-input）が復活していない", () => {
+      renderPanel();
+      expect(
+        screen.queryByTestId("skill-lifecycle-execution-input"),
+      ).toBeNull();
     });
 
     it("[回帰] 「スキルを生成する」ボタンが復活していない", () => {

@@ -550,6 +550,29 @@
 
 ---
 
+## UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08）
+
+### L-RV-001: テスト文字列の実文字数を必ず数えて確認する
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | EC-09 で `"十文字以上の目的"` を「10文字以上の目的文字列」として使い、minLength バリデーションが通過してしまうはずが実際にはテスト失敗した                     |
+| 原因       | `"十文字以上の目的"` は日本語7文字であり、minLength: 10 の条件を満たさなかった。目視で「十文字以上と書いてあるから10文字以上だろう」と誤認したため              |
+| 解決策     | テスト文字列を書く前に `"...".length` で実文字数を確認する。日本語の場合、漢数字表記の意味と実際の文字数は別物                                                |
+| 再発防止   | minLength / maxLength を境界にするテストケースは、文字列の実 `.length` 値を先にコメントとして記載してからテストを書く                                        |
+| 関連タスク | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001                                                                                                                   |
+
+### L-RV-002: pure function バリデーションは Zod なしでも型安全を達成できる
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 設計判断   | `validateSkillName` / `validatePurpose` / `validateSkillInfoForm` を Zod スキーマではなく TypeScript 純粋関数として実装した                                   |
+| 利点       | ① `packages/shared` への Zod 依存追加なし ② 戻り値型（`SkillInfoFieldValidationResult` / `SkillInfoFormValidationResult`）が明示的で、呼び出し元の型推論が効く ③ テストが純粋な入出力検証で完結し、スキーマ定義とのズレが発生しない |
+| 適用条件   | バリデーションルールが「文字数制限」「空白チェック」程度のシンプルなケースに有効。複雑な依存検証が必要な場合は Zod の方が保守性が高い                          |
+| 関連タスク | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001                                                                                                                   |
+
+---
+
 ## UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08）
 
 ### L-CRS-001: ConversationRoundStep semantic デフォルト正規化の設計的分散
@@ -655,3 +678,47 @@
 - **状況**: `googleapis ^144.0.0` を `.claude/skills/google/package.json` に配置したが、workspace の pnpm に認識されるか確認が必要だった。
 - **解決策**: スキルディレクトリを独立 package として扱い、`node_modules` は `scripts/` 実行時に `pnpm install` で解決する設計とした。
 - **適用**: Claude Code スキルでのみ使う外部 npm パッケージは、スキルディレクトリ直下の `package.json` に閉じ込める。
+
+---
+
+## UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001: SkillLifecyclePanel ウィザード遷移ボタン化
+
+### L-WIZARD-001: 固定値プロンプトによる実行フロー安定化
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | UIのtextarea入力に依存した実行フローで、入力値の存在確認ロジックが複雑化していた |
+| 原因       | `executionPrompt` stateを通じた自由入力を許可していたため、`canExecuteSkill`判定が3条件以上に肥大化 |
+| 解決策     | `defaultExecutionPrompt`定数を導入し、UIからの入力を排除。`canExecuteSkill`を「アダプター正常・スキル選択済み・実行中でない」の3条件に簡約化 |
+| 再発防止   | スキル実行フローの「入力値」は定数化を検討する。UIに入力欄を設けると条件分岐が増えるため、UIとロジックを早期に分離する |
+| 関連タスク | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 |
+
+### L-WIZARD-002: 責務別props分離パターン（ウィザード・スキル・設定の導線分離）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | 画面遷移の導線が1つのcallbackに混在しそうになっていた |
+| 原因       | `onOpenWizard` / `onOpenSkillWizard` / `onOpenSettings` を同一propsにまとめようとしていた |
+| 解決策     | 導線の責務ごとにpropsを分離。`onOpenWizard`（新規スキル作成）、`onOpenSkillWizard`（既存スキルウィザード）、`onOpenSettings`（設定画面）を独立したpropとして定義 |
+| 再発防止   | 複数の画面遷移が必要なコンポーネントは、遷移先の「責務」ごとにpropsを分割する。1つのcallbackで分岐するとテスタビリティが下がる |
+| 関連タスク | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 |
+
+### L-WIZARD-003: 部分完了タスクの引き継ぎ管理
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | 前タスク(PR#2036)で実装済みの要素（`skill-lifecycle-request-input`削除、ウィザードボタン追加）と、今タスクの新規作業（`skill-lifecycle-execution-input`削除）が混在し、Phase 1の現状分析が複雑化 |
+| 原因       | タスク分割時に「前タスクのcarry-over要素」を明示するセクションがPhase 1にない |
+| 解決策     | Phase 1の要件定義着手前に「前タスクのcurrent facts」を棚卸しし、今タスクで新規実施する作業との差異を明確化する |
+| 再発防止   | Phase 1 requirement definitionに「前タスクcarry-over確認」セクションを追加する。`git log --oneline -5`と`current code`の照合を初手で行う |
+| 関連タスク | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 |
+
+### L-WIZARD-004: describe.skip内の旧testid参照残存リスク
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `llm-generation.test.tsx` と `auth-regression.test.tsx` の `describe.skip` ブロック内に、削除済みtestid `skill-lifecycle-request-input` が残存 |
+| 原因       | UIコンポーネントのtestidを変更・削除した際、`skip`されているテストファイルへの影響確認を省略していた |
+| 解決策     | testid削除時は`grep -r "testid名" --include="*.test.*"`で全テストファイルを検索し、skipブロック内の参照も確認する |
+| 再発防止   | Phase 12準拠チェックに「削除したtestidがskipブロック内に残っていないか確認」を追加する。残存している場合はcleanupタスクをbacklogに登録する |
+| 関連タスク | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 |

@@ -221,6 +221,8 @@ export type {
   ScriptResult,
   TaskSpec,
   DependencyGraph,
+  VerifyCheckResult,
+  VerifyResult,
   RuntimeSkillCreatorVerifyCheck,
   RuntimeSkillCreatorVerifyCheckSeverity,
   // SDK 出力型統合基底（UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001）

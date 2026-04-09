@@ -1,8 +1,12 @@
-# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
-| AC番号 | 内容                                                                                         | 検証方法                                                 | 結果         |
-| ------ | -------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------ |
-| AC-1   | `inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult` が実装されること          | 関数シグネチャ確認・型チェック                           | PASS         |
-| AC-2   | スキル入力から適切なカテゴリ・ツール・タイミング・フォーマットのデフォルト値が提案されること | ユニットテスト TC-01〜TC-15                              | PASS         |
-| AC-3   | ユニットテストが全件 PASS すること                                                           | `npx vitest run ...smartDefaultReasoningService.test.ts` | PASS (33/33) |
-| AC-4   | 推論不能時のフォールバック挙動が定義・実装されること（null フィールド・空 inferenceLog）     | ユニットテスト TC-12, TC-11, TC-10                       | PASS         |
+| AC番号 | 基準                                                          | 検証方法           | 結果                         |
+| ------ | ------------------------------------------------------------- | ------------------ | ---------------------------- |
+| AC-1   | `skill-lifecycle-request-input` textarea が削除               | grep確認           | PASS（PR #2036済み）         |
+| AC-2   | `skill-lifecycle-execution-input` textarea が削除             | grep確認 + テスト  | PASS                         |
+| AC-3   | `data-testid="skill-lifecycle-open-wizard-button"` ボタン追加 | screen.getByTestId | PASS（PR #2036済み）         |
+| AC-4   | `executionPrompt` state がコードに残らない                    | grep確認           | PASS                         |
+| AC-5   | 既存テストファイル6本が全てPASS                               | vitest run         | PASS（85テスト、18スキップ） |
+| AC-6   | Phase 9 QA基準（live import ゼロ）                            | grep確認           | PASS                         |
+| AC-7   | SkillCreateWizard本体実装なし                                 | スコープ外確認     | PASS                         |
+| AC-8   | IPCチャンネル変更なし                                         | スコープ外確認     | PASS                         |

@@ -2,6 +2,40 @@
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
+| UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 | SkillLifecyclePanel ウィザード遷移ボタン化（executionPrompt state/textarea 削除、defaultExecutionPrompt 定数導入、onOpenSettings prop 追加、LLMAdapterErrorBanner → settings 導線実装） | 2026-04-08 | PR#完了 | phase-12 100% PASS / 85 tests green |
+
+### タスク: UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 SkillLifecyclePanel テキストエリア削除・ウィザード遷移ボタン化（2026-04-08）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001                                          |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                             |
+| タイプ     | ui-refactoring / state-cleanup / TDD                                                       |
+| 優先度     | 高                                                                                         |
+| 完了日     | 2026-04-08                                                                                 |
+| 対象       | `SkillLifecyclePanel.tsx` / `SkillLifecyclePanel.test.tsx`                                 |
+| 成果物     | `docs/30-workflows/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/`                    |
+
+#### 実施内容
+
+- `executionPrompt` state（useState）を削除し、全参照箇所を `defaultExecutionPrompt` 定数に置換
+- `canExecuteSkill` からプロンプト長チェック（`executionPrompt.trim().length > 0`）を削除
+- `skill-lifecycle-execution-input` textarea（JSX）を削除
+- `handleExecute` / `handlePlanImprovement` を `defaultExecutionPrompt` 定数使用に変更
+- TC-04, TC-05 を Red→Green（`skill-lifecycle-execution-input` 非存在確認 + 回帰ガード）
+- Phase 1-12 全成果物を `outputs/` に整備
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/`: 85 PASS / 18 SKIP
+- `pnpm --filter @repo/desktop typecheck`: PASS
+
+#### Phase 12 carry-over
+
+- W2-seq-03a: `SkillCreateWizard` への実配線・疎通確認は current facts で解消済み（`onOpenSkillWizard` prop の接続確認済み）
+
+---
+
 ### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 execute/improve adapter guard（2026-04-04）
 
 | 項目       | 値                                                                                                    |

@@ -206,6 +206,7 @@ export const SKILL_CREATOR_OUTPUT_READY = "skill-creator:output-ready" as const;
 export const SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED =
   "skill-creator:output-overwrite-approved" as const;
 export const SKILL_CREATOR_OPEN_SKILL = "skill-creator:open-skill" as const;
+export const SKILL_CREATOR_VERIFY = "skill-creator:verify" as const;
 
 /**
  * すべてのIPCチャネル定数
@@ -220,6 +221,7 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_OUTPUT_READY,
   SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_OPEN_SKILL,
+  SKILL_CREATOR_VERIFY,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
   ...APPROVAL_CHANNELS,

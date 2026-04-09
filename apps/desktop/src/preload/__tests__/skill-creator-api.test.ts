@@ -88,7 +88,7 @@ describe("SkillCreator Preload API", () => {
       );
     });
 
-    it("7つのinvokeチャンネルがホワイトリストに含まれること", () => {
+    it("Skill Creator invoke チャンネルがホワイトリストに含まれること", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_DETECT_MODE,
       );
@@ -112,6 +112,9 @@ describe("SkillCreator Preload API", () => {
       );
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+      );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_VERIFY,
       );
     });
 
@@ -168,6 +171,7 @@ describe("SkillCreator Preload API", () => {
       expect(typeof api.openSkill).toBe("function");
       expect(typeof api.improveSkillWithFeedback).toBe("function");
       expect(typeof api.applyRuntimeImprovement).toBe("function");
+      expect(typeof api.verifySkill).toBe("function");
     });
   });
 
@@ -289,6 +293,35 @@ describe("SkillCreator Preload API", () => {
   // ============================================
 
   describe("追加 API メソッド", () => {
+    it("verifySkill が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: {
+          skillName: "test-skill",
+          passed: true,
+          checkResults: [],
+          summary: "all checks passed",
+        },
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.verifySkill(
+        "test-skill",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_VERIFY,
+        {
+          skillName: "test-skill",
+          authMode: "api-key",
+          apiKey: "sk-test",
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
     it("applyRuntimeImprovement が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
       const expectedResult = {
         success: true,
