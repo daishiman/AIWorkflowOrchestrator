@@ -2545,8 +2545,7 @@ node scripts/list-specs.js --topics
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
 | LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
-| TASK-SC-07 SkillCreateWizard current facts | L358 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
 
 ### references/arch-state-management.md
 
@@ -3037,21 +3036,6 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L4 |
 
-### references/lessons-learned-current-2026-04-late.md
-
-| セクション | 行 |
-|------------|----|
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L5 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L39 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L73 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L96 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L122 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L139 |
-| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L155 |
-| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L172 |
-| Google Calendar スキル新規追加 教訓（2026-04-08） | L188 |
-| UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001: SkillLifecyclePanel ウィザード遷移ボタン化 | L204 |
-
 ### references/lessons-learned-current-2026-04.md
 
 | セクション | 行 |
@@ -3072,12 +3056,12 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
 | W0-seq-02 SmartDefault推論サービス (2026-04-08) | L481 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L553 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L576 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L602 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L619 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L484 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L518 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L552 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L575 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L601 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L618 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3413,18 +3397,14 @@ node scripts/list-specs.js --topics
 | 実装パターン（将来参照用） | L21 |
 | 苦戦箇所 | L110 |
 | 非ブロッカー改善候補（skill-feedback-report.md より） | L121 |
-| 依存関係 | L161 |
-| 関連ファイル | L173 |
-| 苦戦箇所 | L108 |
-| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L159 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L185 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L202 |
-| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L218 |
-| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L235 |
-| Google Calendar スキル新規追加 教訓（2026-04-08） | L251 |
-| 依存関係 | L267 |
-| 関連ファイル | L279 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L161 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L187 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L204 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L220 |
+| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
+| 依存関係 | L269 |
+| 関連ファイル | L281 |
 
 ### references/lessons-learned-templates.md
 
@@ -5030,3 +5010,4 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
+

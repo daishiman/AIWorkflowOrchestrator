@@ -30,41 +30,41 @@ type MockConversationScenario = {
 
 function createBlankAnswers(): ConversationAnswers {
   return {
-    q1: { selectedOption: null, freeText: "" },
-    q2: { selectedOption: null, freeText: "" },
-    q3: { selectedOption: null, freeText: "", scheduleConfig: undefined },
-    q4: { selectedOption: null, freeText: "" },
-    q5: { selectedOption: null, freeText: "" },
-    q6: { selectedOption: null, freeText: "" },
+    q1: { selectedOptions: [], freeText: "" },
+    q2: { selectedOptions: [], freeText: "" },
+    q3: { selectedOptions: [], freeText: "", scheduleConfig: undefined },
+    q4: { selectedOptions: [], freeText: "" },
+    q5: { selectedOptions: [], freeText: "" },
+    q6: { selectedOptions: [], freeText: "" },
   };
 }
 
 function createSkipAnswers(): ConversationAnswers {
   return {
-    q1: { selectedOption: "自分のみ", freeText: "" },
-    q2: { selectedOption: "テキスト", freeText: "" },
-    q3: { selectedOption: null, freeText: "", scheduleConfig: undefined },
-    q4: { selectedOption: null, freeText: "" },
-    q5: { selectedOption: null, freeText: "" },
-    q6: { selectedOption: null, freeText: "" },
+    q1: { selectedOptions: ["自分のみ"], freeText: "" },
+    q2: { selectedOptions: ["テキスト"], freeText: "" },
+    q3: { selectedOptions: [], freeText: "", scheduleConfig: undefined },
+    q4: { selectedOptions: [], freeText: "" },
+    q5: { selectedOptions: [], freeText: "" },
+    q6: { selectedOptions: [], freeText: "" },
   };
 }
 
 function createCompleteAnswers(): ConversationAnswers {
   return {
-    q1: { selectedOption: "自分のみ", freeText: "" },
-    q2: { selectedOption: "テキスト", freeText: "" },
+    q1: { selectedOptions: ["自分のみ"], freeText: "" },
+    q2: { selectedOptions: ["テキスト"], freeText: "" },
     q3: {
-      selectedOption: "定期実行",
+      selectedOptions: ["定期実行"],
       freeText: "",
       scheduleConfig: {
         cronExpression: "0 9 * * 1-5",
         timezone: "Asia/Tokyo",
       },
     },
-    q4: { selectedOption: "通知", freeText: "" },
-    q5: { selectedOption: "なし", freeText: "" },
-    q6: { selectedOption: "Markdown", freeText: "" },
+    q4: { selectedOptions: ["通知"], freeText: "" },
+    q5: { selectedOptions: ["なし"], freeText: "" },
+    q6: { selectedOptions: ["Markdown"], freeText: "" },
   };
 }
 
@@ -340,16 +340,16 @@ describe("resolveSkippedAtQuestion", () => {
 
   it("Q1のみ回答済みの場合は 2 を返す", () => {
     const answers = createBlankAnswers();
-    answers.q1 = { selectedOption: "自分のみ", freeText: "" };
+    answers.q1 = { selectedOptions: ["自分のみ"], freeText: "" };
     expect(resolveSkippedAtQuestion(answers)).toBe(2);
   });
 
   it("Q1〜Q3回答済み・Q4未回答の場合は 4 を返す", () => {
     const answers = createBlankAnswers();
-    answers.q1 = { selectedOption: "自分のみ", freeText: "" };
-    answers.q2 = { selectedOption: "テキスト", freeText: "" };
+    answers.q1 = { selectedOptions: ["自分のみ"], freeText: "" };
+    answers.q2 = { selectedOptions: ["テキスト"], freeText: "" };
     answers.q3 = {
-      selectedOption: "定期実行",
+      selectedOptions: ["定期実行"],
       freeText: "",
       scheduleConfig: {
         cronExpression: "0 9 * * 1-5",
@@ -361,10 +361,10 @@ describe("resolveSkippedAtQuestion", () => {
 
   it("Q3のscheduleConfigのみ埋まっている場合も回答済みとして扱う", () => {
     const answers = createBlankAnswers();
-    answers.q1 = { selectedOption: "自分のみ", freeText: "" };
-    answers.q2 = { selectedOption: "テキスト", freeText: "" };
+    answers.q1 = { selectedOptions: ["自分のみ"], freeText: "" };
+    answers.q2 = { selectedOptions: ["テキスト"], freeText: "" };
     answers.q3 = {
-      selectedOption: null,
+      selectedOptions: [],
       freeText: "",
       scheduleConfig: {
         cronExpression: "0 9 * * 1-5",
