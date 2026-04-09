@@ -2544,7 +2544,8 @@ node scripts/list-specs.js --topics
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L271 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
+| TASK-SC-07 SkillCreateWizard current facts | L358 |
 | Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
 
 ### references/arch-state-management.md
@@ -2573,6 +2574,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
+| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 
 ### references/arch-ui-components-details.md
 
@@ -5019,4 +5021,3 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
-

@@ -589,6 +589,7 @@ export interface SkillCreatorWorkflowUiSnapshot {
   resumeTokenEnvelope: SkillCreatorResumeTokenEnvelope;
   routeSnapshot?: SkillCreatorRouteSnapshot;
   handoffBundle?: TerminalHandoffBundle | null;
+  persistResult?: { skillPath: string; files: string[] } | null;
 }
 
 export interface SkillCreatorUserInputSubmission {

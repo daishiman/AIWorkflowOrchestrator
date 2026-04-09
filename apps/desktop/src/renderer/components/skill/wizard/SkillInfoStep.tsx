@@ -79,10 +79,15 @@ export function SkillInfoStep({
 
       {/* 目的・背景 */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="purpose" className="text-sm font-medium text-gray-700">
-          目的・背景
+        <div className="flex items-center">
+          <label
+            htmlFor="purpose"
+            className="text-sm font-medium text-gray-700"
+          >
+            目的・背景
+          </label>
           <span className="ml-1 text-xs text-red-500">必須</span>
-        </label>
+        </div>
         <textarea
           id="purpose"
           value={formData.purpose}

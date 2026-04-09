@@ -14,6 +14,19 @@ IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内
 
 ---
 
+## 2026-04-09 - TASK-SC-07 Phase 12 current facts sync
+
+### 変更内容
+- `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
+- `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
+- `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
+- `.claude/skills/aiworkflow-requirements/references/arch-state-management-skill-creator.md` / `arch-ui-components-core.md` を current facts に更新
+- `aiworkflow-requirements/indexes/topic-map.md` と `aiworkflow-requirements/LOGS.md` を同波で同期
+
+### 背景
+TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
+Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
 
 ### 変更内容
