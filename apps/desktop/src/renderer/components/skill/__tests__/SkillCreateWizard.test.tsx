@@ -14,8 +14,11 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import { SkillCreateWizard } from "../SkillCreateWizard";
-import type { SmartDefaultResult } from "@repo/shared/types/skillCreator";
+import {
+  SkillCreateWizard,
+  resolveExternalIntegration,
+} from "../SkillCreateWizard";
+import type { ConversationAnswers } from "@repo/shared/types/skillCreator";
 
 const mockCreateSkill = vi.fn();
 const mockClearGenerationState = vi.fn();
@@ -249,8 +252,66 @@ describe("SkillCreateWizard", () => {
     });
   });
 
-  describe("エラー表示", () => {
-    it("createSkill が失敗した場合はエラーが表示される", async () => {
+  // ============================================================
+  // 外部連携の解決ロジック
+  // ============================================================
+  describe("resolveExternalIntegration", () => {
+    const q5Answer = (value: ConversationAnswers["q5"]) => value;
+
+    it("選択が空なら smartDefaultTool を外部連携の初期値として使う", () => {
+      expect(
+        resolveExternalIntegration(
+          q5Answer({ selectedOptions: [], freeText: "" }),
+          "github",
+        ),
+      ).toEqual({
+        hasExternalIntegration: true,
+        externalToolName: "GitHub",
+      });
+    });
+
+    it("selectedOptions の先頭値を主ツールとして参照する", () => {
+      expect(
+        resolveExternalIntegration(
+          q5Answer({ selectedOptions: ["Slack", "GitHub"], freeText: "" }),
+          null,
+        ),
+      ).toEqual({
+        hasExternalIntegration: true,
+        externalToolName: "Slack",
+      });
+    });
+
+    it("selectedOptions が『その他』かつ freeText が Notion の場合は Notion を採用する", () => {
+      expect(
+        resolveExternalIntegration(
+          q5Answer({ selectedOptions: ["その他"], freeText: "Notion" }),
+          null,
+        ),
+      ).toEqual({
+        hasExternalIntegration: true,
+        externalToolName: "Notion",
+      });
+    });
+
+    it("先頭が「なし」の場合は後続選択より優先される", () => {
+      expect(
+        resolveExternalIntegration(
+          q5Answer({ selectedOptions: ["なし", "Slack"], freeText: "" }),
+          "notion",
+        ),
+      ).toEqual({
+        hasExternalIntegration: false,
+        externalToolName: null,
+      });
+    });
+  });
+
+  // ============================================================
+  // IPC 呼び出し
+  // ============================================================
+  describe("IPC 呼び出し", () => {
+    it("IPC 失敗時にエラーカードが表示される", async () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
       renderWizard(mockOnClose);
 
@@ -276,6 +337,38 @@ describe("SkillCreateWizard", () => {
 
       expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
+    });
+
+    it("Q5 の複数選択は完了画面の外部連携チェックに反映される", async () => {
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 -> Step 2
+      fireEvent.change(screen.getByRole("textbox", { name: /目的/ }), {
+        target: { value: "Slack と GitHub に通知する" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      // Page 2 へ進み、Q5 を複数選択する
+      fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+
+      // Step 2 -> 生成 -> 完了
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results[0]?.value;
+      });
+
+      expect(
+        screen.getByTestId("complete-step-external-checklist"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Slack Webhook URL を設定する"),
+      ).toBeInTheDocument();
     });
   });
 });

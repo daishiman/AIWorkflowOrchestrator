@@ -981,8 +981,8 @@ export interface SkillWizardScheduleConfig {
  * Q3 では scheduleConfig を追加で保持する。
  */
 export interface QuestionAnswer {
-  /** 4択の選択値。未選択時は null。 */
-  selectedOption: string | null;
+  /** 選択値のリスト。複数選択可。未選択時は空配列。 */
+  selectedOptions: string[];
   /** 自由入力テキスト。 */
   freeText: string;
   /** Q3 の定期実行設定。 */

@@ -27,6 +27,21 @@ IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内
 TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
 Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
 
+## 2026-04-09 - skill-wizard-multi-select-options Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-wizard-multi-select-options/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 完成
+- `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成（canonical 6成果物 PASS）
+- Phase 9〜12 全 outputs を作成し Phase 1-12 outputs 完成
+- LOGS.md 2ファイル同波更新
+
+### 背景
+
+`QuestionAnswer.selectedOption: string | null` → `selectedOptions: string[]` の型移行タスク。
+SmartDefaultResult は変更なし（UI 層の `createQuestionAnswer` で変換を吸収）。
+Phase 12 canonical 6成果物を出力し close-out 完了。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
 
 ### 変更内容
