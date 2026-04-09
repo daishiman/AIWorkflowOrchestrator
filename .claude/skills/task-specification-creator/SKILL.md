@@ -329,6 +329,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback W0-RV-001]** minLength / maxLength のテストケースで境界値文字列の実文字数を確認せずに誤った長さで書く（例: `"十文字以上の目的"` = 実際は 7 文字） | テスト文字列を書く前に `"...".length` で実文字数を確認する。日本語の漢数字表記の意味と `.length` は別物。境界値テストは `// length: N` コメントを付けてから書く |
 | **[Feedback SC-13-1]** IPC surface 追加時に `apps/desktop/src/preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` への追記が漏れる | IPC surface 追加タスクでは Phase 2 成果物のチェックリストに「`ALLOWED_INVOKE_CHANNELS` への追記」を必須項目として記載する。`shared/ipc/channels.ts` への定数追加だけでは Renderer から呼び出せない |
 | **[Feedback SC-13-2]** 公開 IPC メソッド名（`verify(skillName, ...)`）と内部エンジンメソッド名（`verifySkill(skillDir)`）が酷似し Phase 2 設計時に責務が不明確になる | 公開 surface と内部エンジンで名前が近い場合、Phase 2 成果物に「内部型 → 公開 DTO 変換表」と「解決レイヤ名称（例: `resolveVerifySkillDir`）」を必須セクションとして設ける |
+| **[Feedback VSCPKR-01]** JSDoc コメント内に `*/` を含む説明（例: `ステップ値 */n`）があると esbuild がコメント終端と誤認識しパースエラーになる | cron 式や数式を JSDoc コメント内で説明する場合は `*/` を避け、`* /n` のようにスペースを挿入するか、コードブロック（\`\`\`）形式で書く。`@example` タグ内の inline cron 式も同様 |
+| **[Feedback VSCPKR-02]** happy-dom 環境で `vi.stubGlobal("window", ...)` でウィンドウ全体を置き換えると React 内部の `instanceof HTMLElement` が常に false になり、コンポーネントテストが壊れる | `window.api` などの Electron Preload API をモックする場合は `Object.defineProperty(window, "api", { value: mockApi, writable: true })` を使う。`vi.stubGlobal("window", ...)` は使用禁止 |
 
 ### Phase 12 苦戦防止Tips
 

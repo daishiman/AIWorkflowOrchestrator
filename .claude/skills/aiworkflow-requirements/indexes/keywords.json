@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2862,
+  "totalKeywords": 2865,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2035,6 +2035,7 @@
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
@@ -7624,6 +7625,15 @@
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SCHEDULE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "VISUAL": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PICKER": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
