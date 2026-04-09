@@ -342,16 +342,18 @@ describe("SkillCreateWizard", () => {
     it("Q5 の複数選択は完了画面の外部連携チェックに反映される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
+      // Step 0 → Step 1（SmartDefaults で Slack が Q5 に設定される）
       fireEvent.change(screen.getByRole("textbox", { name: /目的/ }), {
         target: { value: "Slack と GitHub に通知する" },
       });
       fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
       fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
 
-      // Page 2 へ進み、Q5 を複数選択する
+      // Page 2 へ進み、Q5 で GitHub を追加選択（Slack は SmartDefaults で選択済み）
       fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
-      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
       fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
 
       // Step 2 -> 生成 -> 完了
