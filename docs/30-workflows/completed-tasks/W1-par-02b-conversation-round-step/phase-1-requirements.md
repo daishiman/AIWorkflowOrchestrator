@@ -51,13 +51,13 @@ node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "wizard" -C 3
 
 ## 参照資料
 
-| 資料名                     | パス                                                                       | 説明                 |
-| -------------------------- | -------------------------------------------------------------------------- | -------------------- |
-| 既存 ConfigureStep         | `apps/desktop/src/renderer/components/skill/wizard/ConfigureStep.tsx`      | 削除対象の現行実装   |
-| 共有型定義                 | `packages/shared/src/types/skill-*.ts`                                     | 型定義参照           |
-| ウィザード親コンポーネント | `apps/desktop/src/renderer/components/skill/wizard/`                       | ウィザード全体構成   |
-| W0-seq-01仕様書            | `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-*/`                | 依存タスクの完了仕様 |
-| W1-par-02a仕様書           | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02a-skill-info-step/` | 連携先仕様           |
+| 資料名                     | パス                                                                  | 説明                 |
+| -------------------------- | --------------------------------------------------------------------- | -------------------- |
+| 既存 ConfigureStep         | `apps/desktop/src/renderer/components/skill/wizard/ConfigureStep.tsx` | 削除対象の現行実装   |
+| 共有型定義                 | `packages/shared/src/types/skill-*.ts`                                | 型定義参照           |
+| ウィザード親コンポーネント | `apps/desktop/src/renderer/components/skill/wizard/`                  | ウィザード全体構成   |
+| W0-seq-01仕様書            | `docs/30-workflows/completed-tasks/W0-seq-01-types-skill-info-form/`  | 依存タスクの完了仕様 |
+| W1-par-02a仕様書           | `docs/30-workflows/completed-tasks/W1-par-02a-skill-info-step-2/`     | 連携先仕様           |
 
 ## 実行手順
 

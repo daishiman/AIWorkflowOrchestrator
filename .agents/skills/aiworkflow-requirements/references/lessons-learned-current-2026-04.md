@@ -480,7 +480,6 @@
 - **解決**: `useEffect(() => { const cleanup = api.onApprovalRequest(...); return cleanup; }, [api])` パターンで登録
 - **適用**: Renderer 側の onEvent listener を持つコンポーネント全般
 
----
 
 ## UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08）
 
@@ -722,3 +721,7 @@
 | 解決策     | testid削除時は`grep -r "testid名" --include="*.test.*"`で全テストファイルを検索し、skipブロック内の参照も確認する |
 | 再発防止   | Phase 12準拠チェックに「削除したtestidがskipブロック内に残っていないか確認」を追加する。残存している場合はcleanupタスクをbacklogに登録する |
 | 関連タスク | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 |
+> 注記（2026-04-08 分離）:
+> - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 教訓（L-HP-001/002/003）と TASK-FIX-WORKTREE-CONFLICT-001 教訓（L-WC-001/002/003）は [lessons-learned-health-policy-worktree-2026-04.md](lessons-learned-health-policy-worktree-2026-04.md) へ移動しました。
+> - スキルウィザード関連教訓（L-CRS-001/002, L-SMART-DEFAULT-001/002, L-HEALTH-DI-001/002, L-SKILL-INFO-STEP-001/002, L-WIZARD-EXPORT-001/002, L-GOOGLE-CAL-001/002）は [lessons-learned-skill-wizard-redesign.md](lessons-learned-skill-wizard-redesign.md) へ移動しました。
+> - W3-seq-04 使用率計装教訓（L-W3-TRACK-001/002, L-WIZARD-LANE-CLEANUP-001）は [lessons-learned-w3-usage-tracking-2026-04.md](lessons-learned-w3-usage-tracking-2026-04.md) へ移動しました。
