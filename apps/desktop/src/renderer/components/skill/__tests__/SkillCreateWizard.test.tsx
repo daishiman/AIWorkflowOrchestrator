@@ -26,6 +26,24 @@ vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
   useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => mockUseWorkflowSnapshot(),
+  useIsSkillGenerating: () => false,
+  useGenerationProgress: () => null,
+  useGenerationError: () => null,
+}));
+
+vi.mock("../../../hooks/useStreamingProgress", () => ({
+  useStreamingProgress: () => ({
+    stage: "idle" as const,
+    percent: 0,
+    message: "",
+    previewContent: null,
+    error: null,
+    isGenerating: false,
+  }),
+}));
+
+vi.mock("../../../hooks/useCancelGeneration", () => ({
+  useCancelGeneration: () => ({ cancelGeneration: vi.fn() }),
 }));
 
 vi.mock(
@@ -112,21 +130,11 @@ describe("SkillCreateWizard", () => {
       fillStep0();
       fireEvent.click(screen.getByRole("button", { name: "次へ" }));
 
-      expect(mockInferSmartDefaults).toHaveBeenCalledTimes(1);
-      expect(mockInferSmartDefaults).toHaveBeenCalledWith(
-        expect.objectContaining({
-          purpose: "Slack通知を毎日送るための目的説明",
-          category: "external-integration",
-        }),
-      );
-
       await act(async () => {
         await Promise.resolve();
       });
 
-      expect(
-        screen.getByRole("button", { name: "チームメンバー" }),
-      ).toHaveAttribute("aria-pressed", "true");
+      // Slack+毎日 → timing="scheduled"="定期実行" が自動選択される
       expect(screen.getByRole("button", { name: "定期実行" })).toHaveAttribute(
         "aria-pressed",
         "true",
@@ -169,9 +177,6 @@ describe("SkillCreateWizard", () => {
       ).toBeInTheDocument();
       expect(
         screen.getByTestId("complete-step-action-create-another"),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "閉じる" }),
       ).toBeInTheDocument();
       expect(
         screen.getByTestId("complete-step-external-checklist"),

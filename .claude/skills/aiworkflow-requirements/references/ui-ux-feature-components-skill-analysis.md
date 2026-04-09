@@ -107,45 +107,24 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4ステップ）を実装し、Phase 1-12 を完了。
 `useWizardStep` でステップ遷移を管理し、`window.electronAPI.skill.create` を通じて Main の `skill:create` IPC と接続する。
 
-### コンポーネント構成
+### コンポーネント構成（current facts）
 
-| 区分 | コンポーネント / Hook | 役割 | 想定配置 |
-| --- | --- | --- | --- |
-| view-like component | SkillCreateWizard | ウィザード全体状態管理（description/options/error/skillPath） | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` |
-| molecule | StepIndicator | ステップ進捗表示（active/completed/pending） | `.../components/skill/wizard/StepIndicator.tsx` |
-| molecule | DescribeStep | 説明入力 + 次へ遷移 | `.../components/skill/wizard/DescribeStep.tsx` |
-| molecule | ConfigureStep | 生成オプション設定（generateTasks/addAgents/addReferences） | `.../components/skill/wizard/ConfigureStep.tsx` |
-| molecule | GenerateStep | 生成中ローディング / エラー表示 | `.../components/skill/wizard/GenerateStep.tsx` |
-| molecule | CompleteStep | 完了画面再設計（起点画面化。骨格生成ヘッダー / 品質フィードバック / 3つの次アクション / 条件付き外部連携チェック） | `.../components/skill/wizard/CompleteStep.tsx` |
-| hook | useWizardStep | ステップ遷移ロジック（goNext/goBack/goToStep） | `.../components/skill/hooks/useWizardStep.ts` |
-
-### ウィザード再設計（UT-SKILL-WIZARD-W1-par-02b / completed）
-
-`skill-wizard-redesign-lane` W1-par-02b タスクで、Step 0 / Step 1 を大きく再設計した。
-
-**変更サマリー（2026-04-08）**:
-
-| 変更 | Before | After |
-| --- | --- | --- |
-| DescribeStep | 説明入力のみ | 説明入力 + `SkillCategory` 選択を追加 |
-| ConfigureStep | 生成オプション 3 チェックボックス | **削除**（export も除去） |
-| Step 1 コンポーネント | ConfigureStep | `ConversationRoundStep`（6問・2ページインタビューUI）に置き換え |
-| 新規追加 | — | `InterviewProgressBar`、`ApplySummaryCard` |
-
-**再設計後のコンポーネント構成（current facts）**:
+W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプション3チェックボックス）と旧 `DescribeStep`（説明入力のみ）は廃止済み（export も除去）。現行構成は以下の通り。
 
 | 区分 | コンポーネント / Hook | 役割 | 配置 |
 | --- | --- | --- | --- |
-| view-like component | SkillCreateWizard | ウィザード全体状態管理（description/category/smartDefaults/error） | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` |
-| molecule | DescribeStep | 説明入力 + `SkillCategory` 選択（`select#skill-category`）+ 次へ遷移 | `.../wizard/DescribeStep.tsx` |
-| molecule | ConversationRoundStep | 6問・2ページインタビューUI（Page1: Q1-Q3、Page2: Q4-Q6）<br>Q3: cron + timezone / Q5: category 依存の必須表示 | `.../wizard/ConversationRoundStep.tsx` |
+| view-like component | SkillCreateWizard | ウィザード全体状態管理（formData/answers/smartDefaults/generationMethod/error）+ W3-seq-04 計装 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` |
+| molecule | StepIndicator | ステップ進捗表示（active/completed/pending） | `.../wizard/StepIndicator.tsx` |
+| molecule | SkillInfoStep | Step 0: スキル名・目的・カテゴリ入力（`SkillInfoFormData`） | `.../wizard/SkillInfoStep.tsx` |
+| molecule | ConversationRoundStep | Step 1: 6問・2ページインタビューUI（Page1: Q1-Q3、Page2: Q4-Q6）<br>Q3: cron + timezone / Q5: category 依存の必須表示 | `.../wizard/ConversationRoundStep.tsx` |
 | molecule | InterviewProgressBar | 質問 N/6 + `role="progressbar"` 進捗バー（常時表示） | `.../wizard/InterviewProgressBar.tsx` |
-| molecule | ApplySummaryCard | 未回答問の smartDefaults 一覧 + Q5 空欄警告（external-integration 時のみ）<br>key-based マッピング（q1..q6 → who..format） | `.../wizard/ApplySummaryCard.tsx` |
-| molecule | GenerateStep | 生成中ローディング / エラー表示 | `.../wizard/GenerateStep.tsx` |
-| molecule | CompleteStep | 生成完了表示（作成パス表示 + close） | `.../wizard/CompleteStep.tsx` |
+| molecule | ApplySummaryCard | 未回答問の smartDefaults 一覧 + Q5 空欄警告（external-integration 時のみ） | `.../wizard/ApplySummaryCard.tsx` |
+| molecule | GenerateStep | Step 2: 生成中ローディング / エラー表示 | `.../wizard/GenerateStep.tsx` |
+| molecule | CompleteStep | Step 3: 起点画面（骨格生成ヘッダー / 品質フィードバック / 3つの次アクション / 条件付き外部連携チェック）+ W3-seq-04 計装 | `.../wizard/CompleteStep.tsx` |
+| hook | useWizardStep | ステップ遷移ロジック（goNext/goBack/goToStep） | `.../components/skill/hooks/useWizardStep.ts` |
 
 **wizard/index.ts の export（current facts）**:
-- `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` を export
+- `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` / `SkillInfoStep` を export
 - `ConfigureStep` / `WizardOptions` は削除済み（export なし）
 
 **shared contracts（`packages/shared/src/types/skillCreator.ts` の既存定義を consumer として利用）**:
@@ -161,6 +140,22 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 
 > W1-par-02c で `CompleteStep` は旧来の「作成パス表示 + close」から、次の行動を促す起点画面へ更新された。`generatedSkill` は親コンテキストとして保持し、表示責務からは切り離している。
 
+### 使用率計装（W3-seq-04 / completed）
+
+`trackEvent.ts`（renderer-local util）を追加し、SkillCreateWizard に 5 計装ポイントを実装した。
+
+**ファイル**: `apps/desktop/src/renderer/utils/trackEvent.ts`
+
+| イベント名 | payload | 計装責務 |
+| --- | --- | --- |
+| `skill_wizard_started` | `{}` | SkillCreateWizard（マウント時 useEffect） |
+| `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（handleGenerate 冒頭） |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後・失敗時は発火しない） |
+| `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action` | `{ action: "execute" \| "open_editor" \| "create_another" }` | SkillCreateWizard（handleExecuteNow / handleOpenInEditor / handleCreateAnother） |
+
+**設計方針**: dev 環境は `console.info` でログ出力、prod は no-op。将来的に内部 sink を analytics adapter に差し替え可能（呼び出し側は変えない）。SkillAnalytics / AnalyticsStore（execution-centric）とは直接接続しない。
+
 ### 進捗ステータス
 
 | 項目 | 状態 | 参照 |
@@ -169,6 +164,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 | 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/` |
 | テスト資産 | ✅ 完了 | `apps/desktop/src/renderer/components/skill/__tests__/` |
 | 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/` |
+| W3-seq-04 使用率計装（trackEvent 5ポイント） | ✅ 完了 | `apps/desktop/src/renderer/utils/trackEvent.ts` |
 
 ### 状態管理・IPC依存
 
