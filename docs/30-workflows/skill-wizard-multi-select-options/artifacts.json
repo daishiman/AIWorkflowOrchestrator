@@ -1,0 +1,175 @@
+{
+  "workflowId": "skill-wizard-multi-select-options",
+  "title": "スキルウィザード複数選択対応",
+  "createdAt": "2026-04-08",
+  "status": "planning",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifact": "phase-1-requirements.md",
+      "completedAt": "2026-04-08"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifact": "phase-2-design.md",
+      "completedAt": "2026-04-08"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifact": "phase-3-design-review.md",
+      "completedAt": "2026-04-08",
+      "reviewResult": "MINOR"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "blocked",
+      "artifact": "phase-4-test-creation.md",
+      "blockedReason": "Phase 3 完了後に開始"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "blocked",
+      "artifact": "phase-5-implementation.md",
+      "blockedReason": "Phase 4 完了後に開始"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "blocked",
+      "artifact": "phase-6-test-expansion.md",
+      "blockedReason": "Phase 5 完了後に開始"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "blocked",
+      "artifact": "phase-7-coverage-verification.md",
+      "blockedReason": "Phase 6 完了後に開始"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "blocked",
+      "artifact": "phase-8-refactoring.md",
+      "blockedReason": "Phase 7 完了後に開始"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "blocked",
+      "artifact": "phase-9-quality-assurance.md",
+      "blockedReason": "Phase 8 完了後に開始"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "blocked",
+      "artifact": "phase-10-final-review.md",
+      "blockedReason": "Phase 9 完了後に開始"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "blocked",
+      "artifact": "phase-11-manual-test.md",
+      "blockedReason": "Phase 10 完了後に開始"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "blocked",
+      "artifact": "phase-12-documentation.md",
+      "blockedReason": "Phase 11 完了後に開始"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "artifact": "phase-13-pr-creation.md",
+      "blockedReason": "ユーザー承認後に開始"
+    }
+  ],
+  "changeTargets": [
+    {
+      "file": "packages/shared/src/types/skillCreator.ts",
+      "changeType": "type-change",
+      "description": "QuestionAnswer.selectedOption: string | null → selectedOptions: string[]"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx",
+      "changeType": "behavior-change",
+      "description": "トグル選択ロジック・isQuestionAnswered・createQuestionAnswer・renderQuestion"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx",
+      "changeType": "display-change",
+      "description": "未回答判定・isQ5Unanswered を selectedOptions.length === 0 に変更"
+    },
+    {
+      "file": "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+      "changeType": "init-and-ref-change",
+      "description": "DEFAULT_ANSWERS の初期値・resolveExternalIntegration の selectedOptions[0] 参照"
+    }
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-01",
+      "title": "SmartDefaultResult は string | null のまま維持",
+      "rationale": "LLM推論結果として1値を返す設計が自然。LLMプロンプト変更の連鎖を回避。applySmartDefaults 内で string → [string] 変換することでコスト最小化。",
+      "alternatives": [
+        "SmartDefaultResult を string[] | null に変更（採用せず: バックエンド変更が連鎖）"
+      ]
+    },
+    {
+      "id": "DD-02",
+      "title": "resolveExternalIntegration は selectedOptions[0] 先頭値参照",
+      "rationale": "外部ツール統合は1ツールを主対象とするのが自然。複数ツール並列対応は別タスクのスコープ。",
+      "alternatives": [
+        "全選択値を処理（採用せず: CompleteStep・createSkill が複数値非対応）"
+      ]
+    }
+  ],
+  "acceptanceCriteria": {
+    "totalCount": 13,
+    "ids": [
+      "AC-01",
+      "AC-02",
+      "AC-03",
+      "AC-04",
+      "AC-05",
+      "AC-06",
+      "AC-07",
+      "AC-08",
+      "AC-09",
+      "AC-10",
+      "AC-11",
+      "AC-12",
+      "AC-13"
+    ]
+  },
+  "minorIssues": [
+    {
+      "id": "M-01",
+      "description": "resolveExternalIntegration に先頭値参照の注釈を追加",
+      "resolveBy": "phase-5"
+    },
+    {
+      "id": "M-02",
+      "description": "既存テストの selectedOption 参照箇所を Phase 4 で洗い出し",
+      "resolveBy": "phase-4"
+    },
+    {
+      "id": "M-03",
+      "description": "handleCronChange / handleTimezoneChange の selectedOptions フォールバック設計を明記",
+      "resolveBy": "phase-5"
+    }
+  ]
+}

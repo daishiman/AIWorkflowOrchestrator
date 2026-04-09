@@ -102,6 +102,7 @@ const HarnessApp = () => {
         onClose={() => undefined}
         onOpenWizard={() => setSettingsOpen(true)}
         onOpenSkillWizard={() => setSettingsOpen(true)}
+        onOpenSettings={() => setSettingsOpen(true)}
         skillName="task-rt-04-phase11"
       />
 

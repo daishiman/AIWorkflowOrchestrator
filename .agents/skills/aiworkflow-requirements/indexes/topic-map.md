@@ -1065,6 +1065,7 @@ node scripts/list-specs.js --topics
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L106 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L153 |
 | IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L234 |
+| TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION（2026-04-08） | L270 |
 
 ### references/api-ipc-system-skill-creator.md
 
@@ -3374,6 +3375,17 @@ node scripts/list-specs.js --topics
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
 
+### references/lessons-learned-skill-wizard-redesign.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L21 |
+| 苦戦箇所 | L110 |
+| 非ブロッカー改善候補（skill-feedback-report.md より） | L121 |
+| 依存関係 | L161 |
+| 関連ファイル | L173 |
+
 ### references/lessons-learned-templates.md
 
 | セクション | 行 |
@@ -4489,6 +4501,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 残課題（未タスク） | L6 |
 | 続き | L327 |
+| 続き | L331 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4604,6 +4617,11 @@ node scripts/list-specs.js --topics
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
 
 ### references/task-workflow-completed-recent-2026-04c.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04d.md
 
 | セクション | 行 |
 |------------|----|
@@ -4735,6 +4753,9 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L100 |
 | 完了タスク（機能別アーカイブ） | L108 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+| 完了タスク（2026-03後半） | L101 |
+| 完了タスク（機能別アーカイブ） | L109 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
 
 ### references/task-workflow-history.md
 
@@ -4957,6 +4978,7 @@ node scripts/list-specs.js --topics
 | 重要設計決定 | L25 |
 | コンポーネント設計パターン早見表 | L65 |
 | テスト戦略 | L74 |
+| SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
 

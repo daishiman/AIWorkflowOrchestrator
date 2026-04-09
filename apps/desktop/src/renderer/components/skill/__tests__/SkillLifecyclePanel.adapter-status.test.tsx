@@ -7,7 +7,7 @@
 
 import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 // useLLMAdapterStatus をモック
 vi.mock("../hooks/useLLMAdapterStatus", () => ({
@@ -99,6 +99,21 @@ describe("SkillLifecyclePanel - LLMAdapter status integration", () => {
     });
     render(<SkillLifecyclePanel {...minimalProps} />);
     expect(screen.getByTestId("llm-adapter-error-banner")).toBeInTheDocument();
+  });
+
+  // T-SLP-01b
+  it("useLLMAdapterStatus が 'failed' で onOpenSettings が渡されたとき設定ボタンが呼ばれる", () => {
+    const onOpenSettings = vi.fn();
+    vi.mocked(useLLMAdapterStatus).mockReturnValue({
+      status: "failed",
+      failureReason: "API key error",
+    });
+    render(
+      <SkillLifecyclePanel {...minimalProps} onOpenSettings={onOpenSettings} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "設定を開く" }));
+    expect(onOpenSettings).toHaveBeenCalledTimes(1);
   });
 
   // T-SLP-02

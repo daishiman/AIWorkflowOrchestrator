@@ -65,6 +65,7 @@ describe("creatorHandlers", () => {
     plan: vi.fn(),
     execute: vi.fn(),
     executeAsync: vi.fn().mockResolvedValue(undefined),
+    verify: vi.fn(),
     improve: vi.fn(),
     applyImprovement: vi.fn(),
     getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
@@ -88,7 +89,7 @@ describe("creatorHandlers", () => {
       createMockMainWindow() as unknown as BrowserWindowType,
     );
 
-    expect(handlerMap.size).toBe(18);
+    expect(handlerMap.size).toBe(19);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     const result = await handler?.(createMockEvent(), { prompt: "spec" });
@@ -113,6 +114,7 @@ describe("creatorHandlers", () => {
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT)).toBe(
       true,
     );
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_VERIFY)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT)).toBe(
       true,
@@ -126,7 +128,7 @@ describe("creatorHandlers", () => {
     expect(
       handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES),
     ).toBe(true);
-    expect(handlerMap.size).toBe(18);
+    expect(handlerMap.size).toBe(19);
   });
 
   it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
@@ -438,12 +440,12 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 17 チャンネルを解除する", () => {
+  it("unregister が 19 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(18);
+    expect(handlerMap.size).toBe(19);
 
     unregisterRuntimeSkillCreatorHandlers();
 
