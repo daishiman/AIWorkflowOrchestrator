@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-08
+> 自動生成: 2026-04-09
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1398,8 +1398,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L209 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L238 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L205 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L234 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -2544,7 +2544,8 @@ node scripts/list-specs.js --topics
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L271 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
+| TASK-SC-07 SkillCreateWizard current facts | L358 |
 | Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
 
 ### references/arch-state-management.md
@@ -2573,6 +2574,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
+| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 
 ### references/arch-ui-components-details.md
 
@@ -3035,6 +3037,21 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L4 |
 
+### references/lessons-learned-current-2026-04-late.md
+
+| セクション | 行 |
+|------------|----|
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L5 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L39 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L73 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L96 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L122 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L139 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L155 |
+| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L172 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L188 |
+| UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001: SkillLifecyclePanel ウィザード遷移ボタン化 | L204 |
+
 ### references/lessons-learned-current-2026-04.md
 
 | セクション | 行 |
@@ -3095,6 +3112,13 @@ node scripts/list-specs.js --topics
 | 7. canUseTool 引数順序の罠（型が同一な引数の逆転バグ） | L107 |
 | 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
 | 関連ファイル | L139 |
+
+### references/lessons-learned-health-policy-worktree-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L7 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L41 |
 
 ### references/lessons-learned-ipc-channel-whitelist-sync.md
 
@@ -3391,6 +3415,16 @@ node scripts/list-specs.js --topics
 | 非ブロッカー改善候補（skill-feedback-report.md より） | L121 |
 | 依存関係 | L161 |
 | 関連ファイル | L173 |
+| 苦戦箇所 | L108 |
+| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L159 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L185 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L202 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L218 |
+| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L235 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L251 |
+| 依存関係 | L267 |
+| 関連ファイル | L279 |
 
 ### references/lessons-learned-templates.md
 
@@ -3474,6 +3508,12 @@ node scripts/list-specs.js --topics
 | 2026-03-20 TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 | L176 |
 | 2026-03-16 TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 | L225 |
 | 派生未タスク | L277 |
+
+### references/lessons-learned-w3-usage-tracking-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4990,4 +5030,3 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
-

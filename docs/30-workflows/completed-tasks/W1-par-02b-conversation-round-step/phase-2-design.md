@@ -31,11 +31,11 @@ Phase 1 で確定した要件を基に、`ConversationRoundStep` コンポーネ
 
 ## 参照資料
 
-| 資料名                  | パス                                                                         | 説明         |
-| ----------------------- | ---------------------------------------------------------------------------- | ------------ |
-| Phase 1 要件定義        | `phase-1-requirements.md`                                                    | 確定した要件 |
-| W1-par-02a Phase 2 設計 | `../skill-wizard-redesign-lane/W1-par-02a-skill-info-step/phase-2-design.md` | 連携先設計   |
-| 共有型定義              | `packages/shared/src/types/`                                                 | 型定義参照   |
+| 資料名                  | パス                                                | 説明         |
+| ----------------------- | --------------------------------------------------- | ------------ |
+| Phase 1 要件定義        | `phase-1-requirements.md`                           | 確定した要件 |
+| W1-par-02a Phase 2 設計 | `../W1-par-02a-skill-info-step-2/phase-2-design.md` | 連携先設計   |
+| 共有型定義              | `packages/shared/src/types/`                        | 型定義参照   |
 
 ## 実行手順
 
