@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2857,
+  "totalKeywords": 2862,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1107,6 +1107,7 @@
       "arch-state-management-skill-creator.md",
       "arch-state-management.md",
       "arch-ui-components-advanced.md",
+      "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-core.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
@@ -1144,6 +1145,7 @@
       "lessons-learned-current-2026-03-mid.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -1464,6 +1466,7 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -1553,9 +1556,11 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -1946,6 +1951,7 @@
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -1961,8 +1967,10 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-verify-contract-consolidation.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
@@ -2700,6 +2708,7 @@
       "api-ipc-system-skill-creator-part2.md",
       "arch-electron-services-details-part2.md",
       "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "interfaces-agent-sdk-skill-editor.md",
       "lessons-learned-current-2026-03-late.md",
@@ -2798,6 +2807,7 @@
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "ui-ux-feature-components-details.md"
     ],
     "CREATOR": [
@@ -2972,10 +2982,12 @@
       "interfaces-auth-core.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-lifecycle-mid.md"
+      "lessons-learned-phase12-lifecycle-mid.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -3049,6 +3061,7 @@
       "arch-electron-services-details-part2.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
@@ -3132,6 +3145,7 @@
       "architecture-implementation-patterns-shared.md",
       "directory-structure-core.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
@@ -3192,14 +3206,17 @@
     ],
     "HealthPolicy": [
       "arch-execution-capability-contract.md",
-      "interfaces-auth-core.md"
+      "interfaces-auth-core.md",
+      "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "HEALTH": [
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "機能追加パターン": [
       "arch-feature-addition.md",
@@ -3435,7 +3452,8 @@
     "再設計": [
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "SEARCH": [
       "arch-state-management-core.md",
@@ -3631,6 +3649,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-skill-creator.md",
       "arch-state-management.md",
+      "arch-ui-components-core.md",
       "interfaces-llm.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3864,6 +3883,30 @@
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "current": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "architecture-rag.md",
+      "lessons-learned-current-2026-03-early.md",
+      "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-current.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "task-workflow-completed-agent-view-line-budget.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "facts": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md"
+    ],
     "Snapshot": [
       "arch-state-management-skill-creator.md"
     ],
@@ -3933,6 +3976,21 @@
       "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "ui-ux-panels.md"
+    ],
+    "SkillCreateWizard": [
+      "arch-ui-components-core.md",
+      "lessons-learned-skill-create-lifecycle-import-contract.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "ui-ux-feature-components-skill-analysis.md"
+    ],
+    "template": [
+      "arch-ui-components-core.md"
+    ],
+    "併用パターン": [
+      "arch-ui-components-core.md"
     ],
     "SkillSelector": [
       "arch-ui-components-details.md",
@@ -4203,6 +4261,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-severity-filter-ui.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -4291,11 +4350,14 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
-      "lessons-learned-ui-ux-visual-baseline-drift.md"
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "テスト戦略": [
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
@@ -4578,24 +4640,6 @@
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "rag-knowledge-graph.md"
-    ],
-    "current": [
-      "architecture-rag.md",
-      "lessons-learned-current-2026-03-early.md",
-      "lessons-learned-current-2026-03-late.md",
-      "lessons-learned-current-2026-03-mid.md",
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-current.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "task-workflow-completed-agent-view-line-budget.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-chat-llm-integration-fix.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "snapshot": [
       "architecture-rag.md"
@@ -6531,6 +6575,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -6568,6 +6613,7 @@
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
       "lessons-learned-viewtype-electron-ui.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -6594,6 +6640,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -6631,6 +6678,7 @@
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
       "lessons-learned-viewtype-electron-ui.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -7017,6 +7065,7 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
     ],
@@ -7136,6 +7185,7 @@
     "CONFLICT": [
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "import": [
@@ -7441,19 +7491,23 @@
     ],
     "MAINLINE": [
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "ui-ux-settings-core.md"
     ],
     "MIGRATION": [
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "policy": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "移管": [
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -7461,76 +7515,98 @@
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
     "WORKTREE": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "並列": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "worktree": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "コンフリクト解消": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "WIZARD": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "ui-ux-navigation-chat-patterns.md"
     ],
     "ROUND": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "STEP": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "seq": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
+    "STEP": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "seq": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
     "SmartDefault": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "推論サービス実装": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "INJECTION": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "healthPolicy": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "注入": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "par": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "SkillInfoStep": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "DescribeStep": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "wizard": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "exports": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "Google": [
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md"
     ],
     "Calendar": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "スキル新規追加": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "PANEL": [
       "lessons-learned-current-2026-04.md",
@@ -7692,6 +7768,10 @@
     "関連ファイル": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "Worktree": [
+      "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
     "Channel": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
@@ -8232,9 +8312,6 @@
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
-    "Worktree": [
-      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
-    ],
     "プロジェクトの": [
       "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
@@ -8330,14 +8407,6 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "logs-archive-legacy.md"
-    ],
-    "SkillCreateWizard": [
-      "lessons-learned-skill-create-lifecycle-import-contract.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "task-workflow-completed-skill-create-ui-integration.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-feature-components-skill-analysis.md"
     ],
     "実装再監査": [
       "lessons-learned-skill-create-lifecycle-import-contract.md"
@@ -9018,6 +9087,12 @@
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
+    ],
+    "使用率計装": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "trackEvent": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "quality": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",

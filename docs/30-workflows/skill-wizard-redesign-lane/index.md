@@ -30,7 +30,7 @@
 
 - **Step 0**: 3フィールド（スキル名/目的/カテゴリ）のみ
 - **Step 1**: 6問固定・2ページ（3+3）・進捗「質問N/6」常時表示・スマートデフォルト
-- **Step 3**: ネクストアクション3カード + 骨格品質フィードバック（👍/👎）+ リカバリーフロー
+- **Step 2**: ネクストアクション3カード + 骨格品質フィードバック（👍/👎）+ リカバリーフロー
 - **SkillLifecyclePanel**: テキストエリア削除・ウィザード遷移ボタンのみ
 
 ## 実行オーケストレーション
@@ -59,7 +59,7 @@ Wave 1（並列・W0完了後 ※02dはW0と同時可）
   W1-par-02d-lifecycle-panel             # SkillLifecyclePanel.tsx（遷移ボタン化）
 
 Wave 2（並列・W1完了後）
-  W2-seq-03a-skill-create-wizard         # SkillCreateWizard.tsx（オーケストレーション）
+  W2-seq-03a-skill-create-wizard-2       # SkillCreateWizard.tsx（オーケストレーション）
   W2-seq-03b-wizard-exports              # wizard/index.ts（エクスポート更新）
 
 Wave 3（直列・W2完了後）
@@ -69,10 +69,12 @@ Wave 3（直列・W2完了後）
 ### 進捗スナップショット（2026-04-08）
 
 - W2-seq-03a: Phase 12 完了（PR 未作成）
-- W3-seq-04: W2-seq-03a 依存が解消し、着手条件を満たした状態
+- W3-seq-04: Phase 12 完了（NON_VISUAL 証跡・canonical 6 成果物・artifacts parity 同期済み）
 
 - W0-seq-01 は Phase 1-11 の outputs を補完し、Phase 12 の canonical 6 成果物と `artifacts.json` / `outputs/artifacts.json` を同期済み。共有型は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
 - W0-seq-02 は `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/` 配下で `inferSmartDefaults` を `@repo/shared` から公開し、Phase 12 close-out まで完了済み。root / outputs artifacts と lane index の同期を同波で確認した。
+- W1-par-02a は `docs/30-workflows/W1-par-02a-skill-info-step-2/` で Step 0 の仕様・検証・完了記録を整理し、`apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` と `apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx` を実装済み。Issue #2012 クローズ・PR #2019 マージにより Phase 1-13 完了済み。`SkillInfoFormData` は `@repo/shared/types/skillCreator` の subpath import に閉じている。
+- W2-seq-03a は `docs/30-workflows/W2-seq-03a-skill-create-wizard-2/` で `SkillCreateWizard.tsx` の Wave 2 再実装（3ステップ構成・shared `inferSmartDefaults` 統合・NON_VISUAL 計装 5 点）を完了。19件テスト全 PASS・Line Coverage 98.14%・Branch 84%・Function 100%・TypeScript エラー 0・ESLint 警告 0。Phase 1-12 の全 outputs および canonical 6 成果物を作成済み（実装ガイド: `docs/30-workflows/W2-seq-03a-skill-create-wizard-2/outputs/phase-12/implementation-guide.md`）。Phase 13（PR 作成）はユーザー承認待ちで blocked 維持。
 
 ## Phase一覧
 

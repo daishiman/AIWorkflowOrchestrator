@@ -268,20 +268,22 @@ guidance --> degraded: Manual 操作キャンセル
 
 ---
 
-## LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION）
+## LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts）
 
-> 完了日: 2026-03-24
+> 完了日: 2026-04-09
 
 ### 概要
 
-SkillLifecyclePanel → RuntimeSkillCreatorFacade の plan/execute フロー接続に伴い、agentSlice に LLM Generation 状態フィールド5件とアクション6件を追加した。新規 Slice は追加せず、既存 `agentSlice` を拡張する判断を採用（スキル作成ドメインの凝集性を維持するため）。
+SkillLifecyclePanel と SkillCreateWizard の両方が `agentSlice` の LLM Generation 状態を共有する。  
+新規 Slice は追加せず、既存 `agentSlice` を拡張する判断を継続する。  
+TASK-SC-07 では、`SkillCreateWizard` 側で `generationMode` / `llmDescription` / `localPlanResult` を追加し、`planSkill` → `executePlan(planId, skillSpec)` → `getWorkflowState(planId)` の current facts を運用する。
 
 ### 追加状態フィールド（agentSlice）
 
 | フィールド | 型 | 初期値 | 用途 |
 | --- | --- | --- | --- |
-| `isGenerating` | `boolean` | `false` | LLM 生成中フラグ（二重実行ガード R-1） |
-| `generationProgress` | `string` | `""` | 進捗メッセージ表示用 |
+| `isGenerating` | `boolean` | `false` | LLM 生成中フラグ（二重実行ガード） |
+| `generationProgress` | `string \| null` | `null` | 進捗メッセージ表示用 |
 | `generationError` | `string \| null` | `null` | 生成エラー表示用 |
 | `currentPlanId` | `string \| null` | `null` | 実行中プランの ID |
 | `currentPlanResult` | `PlanResult \| null` | `null` | プラン結果（Store 側、Hybrid State Pattern の片翼） |
@@ -293,7 +295,8 @@ interface PlanResult {
   type: "integrated_api" | "terminal_handoff";
   planId?: string;
   estimatedSteps?: number;
-  guidance?: { reason: string; command: string };
+  skillSpec?: string;
+  guidance?: { reason: string; terminalCommand: string };
 }
 ```
 
@@ -302,80 +305,69 @@ interface PlanResult {
 | アクション | 引数 | 用途 |
 | --- | --- | --- |
 | `setIsGenerating` | `boolean` | 生成開始/終了の切替 |
-| `setGenerationProgress` | `string` | 進捗メッセージ更新 |
+| `setGenerationProgress` | `string \| null` | 進捗メッセージ更新 |
 | `setGenerationError` | `string \| null` | エラー設定/クリア |
 | `setCurrentPlanId` | `string \| null` | プラン ID 設定 |
 | `setCurrentPlanResult` | `PlanResult \| null` | プラン結果設定 |
 | `clearGenerationState` | なし | 全5フィールドを初期値にリセット |
 
-### 個別セレクタ（11件、P31 対策）
+### 個別セレクタ（11件）
 
 | セレクタ | 返却型 |
 | --- | --- |
 | `useIsSkillGenerating` | `boolean` |
-| `useGenerationProgress` | `string` |
+| `useGenerationProgress` | `string \| null` |
 | `useGenerationError` | `string \| null` |
 | `useCurrentPlanId` | `string \| null` |
 | `useCurrentPlanResult` | `PlanResult \| null` |
 | `useSetIsSkillGenerating` | `(v: boolean) => void` |
-| `useSetGenerationProgress` | `(v: string) => void` |
+| `useSetGenerationProgress` | `(v: string \| null) => void` |
 | `useSetGenerationError` | `(v: string \| null) => void` |
 | `useSetCurrentPlanId` | `(v: string \| null) => void` |
 | `useSetCurrentPlanResult` | `(v: PlanResult \| null) => void` |
 | `useClearGenerationState` | `() => void` |
 
-### Hybrid State Pattern（S33 適用）
+### Hybrid State Pattern
 
-SkillLifecyclePanel / SkillCreateWizard では `useState`（ローカル）と Zustand Store を併用する Hybrid State Pattern を採用:
+SkillLifecyclePanel / SkillCreateWizard では `useState`（ローカル）と Zustand Store を併用する:
 
 ```typescript
 const activePlanResult = localPlanResult ?? storePlanResult;
 ```
 
-- **ローカル（useState）**: 即時 UI 反映用（IPC レスポンス直後に設定）
-- **Store（Zustand）**: クロスコンポーネント共有用（SkillCreateWizard 等からの参照）
+- **ローカル（useState）**: 即時 UI 反映用
+- **Store（Zustand）**: クロスコンポーネント共有用
 - **優先順位**: ローカル > Store（nullish coalescing）
 
 ### 配置判断の根拠
 
 | 選択肢 | 判断 | 理由 |
 | --- | --- | --- |
-| agentSlice 拡張 | **採用** | スキル作成ドメインの凝集性を維持。agentSlice が既にスキル関連状態を管理 |
-| generationSlice 新設 | 却下（後続検討） | 現時点では5フィールドのみで Slice 分割の規模に達しない。TASK-SC-10 で再評価 |
+| agentSlice 拡張 | **採用** | スキル作成ドメインの凝集性を維持 |
+| generationSlice 新設 | 却下（後続検討） | 現時点では state 量が分割規模に達しない |
 
 ### 関連タスク
 
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
 | TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel → RuntimeSkillCreatorFacade plan/execute フロー接続 | **完了**（2026-03-24） |
-| TASK-SC-07 | SkillCreateWizard LLM 生成フロー接続（Hybrid State Pattern + 対称クリア） | **完了**（2026-03-25） |
+| TASK-SC-07 | SkillCreateWizard LLM / template 併用フロー接続 | **完了**（2026-04-09） |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 未着手（LOW） |
-
-#### TASK-SC-07 SkillCreateWizard LLM 接続 実装詳細
-
-**追加 Props:**
-
-| コンポーネント | Prop | 型 | 必須 |
-|---------------|------|-----|------|
-| SkillInfoStep | formData | SkillInfoFormData | required |
-| SkillInfoStep | onFormDataChange | (data: SkillInfoFormData) => void | required |
-| SkillInfoStep | onNext | () => void | required |
-| GenerateStep | generationMode | GenerationMode | optional |
-| GenerateStep | generationProgress | string \| null | optional |
-| GenerateStep | planResult | PlanResult \| null | optional |
-| GenerateStep | onExecutePlan | () => void | optional |
-| GenerateStep | onCancelPlan | () => void | optional |
-
-**追加 State（SkillCreateWizard）:** `generationMode` (useState: "llm" \| "template"), `localPlanResult` (useState: Hybrid State Pattern ローカル側)
-
-**追加 Store Hooks（11個）:** useIsSkillGenerating, useGenerationProgress, useGenerationError, useCurrentPlanResult, useCurrentPlanId + 各 setter + useClearGenerationState
-
-**ハンドラ:** handleLlmGenerate (planSkill 呼び出し), handleExecutePlan (executePlan + 対称クリア), handleCancelPlan (Step 0 戻り + 対称クリア), handleDescribeNext (generationMode 分岐)
-
-**備考（current facts）:** 旧 Step 0 コンポーネントは deprecation コメントのみで、Step 0 の実体は `SkillInfoStep`。`generationMode` は `SkillCreateWizard` のローカル state として保持されるが、現行 UI では切替 UI を持たず default は `"template"`。
-
-**型定義:** `GenerationMode` = wizard/index.ts（SSoT）, `SkillCreatorRuntimeApi` = SkillCreateWizard.tsx ローカル型
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 未着手（LOW） |
+
+#### TASK-SC-07 SkillCreateWizard current facts
+
+| 項目 | current facts |
+| --- | --- |
+| Step 0 正本 | `SkillInfoStep` |
+| deprecated file | `DescribeStep.tsx` は互換維持用 |
+| モード state | `generationMode: "template" \| "llm"` |
+| LLM 入力 | `llmDescription` |
+| 計画結果の保持 | `localPlanResult` + `currentPlanResult` |
+| 実行時の正本 | `PlanResult.skillSpec` |
+| 成功時の確認 | `getWorkflowState(planId)` の snapshot 再読込 |
+| キャンセル時 | `setLocalPlanResult(null)` + `clearGenerationState()` |
+
 
 ## Workflow Snapshot State 配置ルール（TASK-SDK-04）
 

@@ -85,6 +85,29 @@ interface SkillCreatorWorkflowState extends Omit<
   phaseArtifacts: SkillCreatorWorkflowArtifact[];
 }
 
+type SkillCreatorPersistResult = NonNullable<
+  RuntimeSkillCreatorExecuteResult["persistResult"]
+>;
+
+function isSkillCreatorPersistResult(
+  value: unknown,
+): value is SkillCreatorPersistResult {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const record = value as {
+    skillPath?: unknown;
+    files?: unknown;
+  };
+
+  return (
+    typeof record.skillPath === "string" &&
+    Array.isArray(record.files) &&
+    record.files.every((file) => typeof file === "string")
+  );
+}
+
 /**
  * executeAsync の内部進捗フェーズ。
  * Renderer 公開用の WorkflowPhase とは別の、バックグラウンド実行の進捗ラベル。
@@ -990,6 +1013,27 @@ export class SkillCreatorWorkflowEngine {
     state.phaseArtifacts.push(artifact);
   }
 
+  private getLatestPersistResult(
+    state: SkillCreatorWorkflowState,
+  ): SkillCreatorPersistResult | null {
+    const artifact = this.getLatestArtifact(state, "execute_result");
+    if (!artifact || typeof artifact.payload !== "object") {
+      return null;
+    }
+
+    const payload = artifact.payload as {
+      persistResult?: unknown;
+    };
+    if (!isSkillCreatorPersistResult(payload.persistResult)) {
+      return null;
+    }
+
+    return {
+      skillPath: payload.persistResult.skillPath,
+      files: [...payload.persistResult.files],
+    };
+  }
+
   private refreshResumeToken(state: SkillCreatorWorkflowState): void {
     state.resumeTokenEnvelope = {
       version: "task-sdk-02-v1",
@@ -1005,6 +1049,8 @@ export class SkillCreatorWorkflowEngine {
   private snapshot(
     state: SkillCreatorWorkflowState,
   ): SkillCreatorWorkflowStateSnapshot {
+    const persistResult = this.getLatestPersistResult(state);
+
     return {
       planId: state.planId,
       currentPhase: state.currentPhase,
@@ -1029,6 +1075,7 @@ export class SkillCreatorWorkflowEngine {
         ? { ...state.sourceProvenance }
         : undefined,
       handoffBundle: state.handoffBundle ? { ...state.handoffBundle } : null,
+      ...(persistResult ? { persistResult } : {}),
     };
   }
 

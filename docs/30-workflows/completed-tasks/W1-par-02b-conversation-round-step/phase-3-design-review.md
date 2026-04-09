@@ -118,13 +118,13 @@ node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "SmartDefault
 
 ## 参照資料
 
-| 資料名                     | パス                                                                                | 説明                       |
-| -------------------------- | ----------------------------------------------------------------------------------- | -------------------------- |
-| Phase 2 設計書             | `phase-2-design.md`                                                                 | レビュー対象の設計         |
-| W1-par-02a Phase 3         | `../skill-wizard-redesign-lane/W1-par-02a-skill-info-step/phase-3-design-review.md` | 連携先レビュー             |
-| 既存ウィザード実装         | `apps/desktop/src/renderer/components/skill/wizard/`                                | 整合性確認                 |
-| task-specification-creator | `.claude/skills/task-specification-creator/`                                        | Phase 構造・blocked ルール |
-| aiworkflow-requirements    | `.claude/skills/aiworkflow-requirements/`                                           | system spec 参照           |
+| 資料名                     | パス                                                       | 説明                       |
+| -------------------------- | ---------------------------------------------------------- | -------------------------- |
+| Phase 2 設計書             | `phase-2-design.md`                                        | レビュー対象の設計         |
+| W1-par-02a Phase 3         | `../W1-par-02a-skill-info-step-2/phase-3-design-review.md` | 連携先レビュー             |
+| 既存ウィザード実装         | `apps/desktop/src/renderer/components/skill/wizard/`       | 整合性確認                 |
+| task-specification-creator | `.claude/skills/task-specification-creator/`               | Phase 構造・blocked ルール |
+| aiworkflow-requirements    | `.claude/skills/aiworkflow-requirements/`                  | system spec 参照           |
 
 ## 実行手順
 

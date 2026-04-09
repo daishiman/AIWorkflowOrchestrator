@@ -80,20 +80,28 @@ const TIMEZONE_OPTIONS =
 
 function isQuestionAnswered(answer: QuestionAnswer): boolean {
   return (
-    answer.selectedOption !== null ||
+    answer.selectedOptions.length > 0 ||
     answer.freeText.trim().length > 0 ||
     answer.scheduleConfig !== undefined
   );
 }
 
+const QUESTION_KEYS = [
+  "q1",
+  "q2",
+  "q3",
+  "q4",
+  "q5",
+  "q6",
+] as const satisfies readonly QuestionKey[];
 function createEmptyAnswers(): ConversationAnswers {
   return {
-    q1: { selectedOption: null, freeText: "" },
-    q2: { selectedOption: null, freeText: "" },
-    q3: { selectedOption: null, freeText: "", scheduleConfig: undefined },
-    q4: { selectedOption: null, freeText: "" },
-    q5: { selectedOption: null, freeText: "" },
-    q6: { selectedOption: null, freeText: "" },
+    q1: { selectedOptions: [], freeText: "" },
+    q2: { selectedOptions: [], freeText: "" },
+    q3: { selectedOptions: [], freeText: "", scheduleConfig: undefined },
+    q4: { selectedOptions: [], freeText: "" },
+    q5: { selectedOptions: [], freeText: "" },
+    q6: { selectedOptions: [], freeText: "" },
   };
 }
 
@@ -102,14 +110,33 @@ function createQuestionAnswer(
   options: readonly QuestionOption[],
 ): QuestionAnswer {
   if (!defaultValue) {
-    return { selectedOption: null, freeText: "" };
+    return { selectedOptions: [], freeText: "" };
+  }
+
+  // `smartDefaultReasoningService` の semantic 値 "scheduled" は UI 上の
+  // Q3 選択肢「定期実行」に正規化する。
+  if (defaultValue === "scheduled" && options.includes("定期実行")) {
+    return { selectedOptions: ["定期実行"], freeText: "" };
+  }
+
+  // Q5 の外部ツール推論は semantic 値を UI ラベルへ正規化する。
+  const normalizedTool = defaultValue.trim().toLowerCase();
+  if (normalizedTool === "slack" && options.includes("Slack")) {
+    return { selectedOptions: ["Slack"], freeText: "" };
+  }
+  if (normalizedTool === "github" && options.includes("GitHub")) {
+    return { selectedOptions: ["GitHub"], freeText: "" };
+  }
+  if (normalizedTool === "notion" && options.includes("その他")) {
+    return { selectedOptions: ["その他"], freeText: "Notion" };
   }
 
   if (options.includes(defaultValue as QuestionOption)) {
-    return { selectedOption: defaultValue, freeText: "" };
+    // SmartDefaultResult の string → selectedOptions: string[] 変換ポイント
+    return { selectedOptions: [defaultValue], freeText: "" };
   }
 
-  return { selectedOption: null, freeText: defaultValue };
+  return { selectedOptions: [], freeText: defaultValue };
 }
 
 function isValidCronField(field: string, min: number, max: number): boolean {
@@ -188,6 +215,7 @@ function applySmartDefaults(
     : {
         ...createQuestionAnswer(smartDefaults.timing, QUESTIONS[2].options),
         scheduleConfig:
+          smartDefaults.timing === "scheduled" ||
           smartDefaults.timing === "定期実行"
             ? DEFAULT_SCHEDULE_CONFIG
             : undefined,
@@ -214,6 +242,14 @@ function validateCronExpression(value: string): string | null {
   return isValidFiveFieldCronExpression(trimmed)
     ? null
     : "cron式の形式が正しくありません";
+}
+
+function resolveGenerationMethod(
+  answers: ConversationAnswers,
+): "complete" | "skip" {
+  return QUESTION_KEYS.every((key) => isQuestionAnswered(answers[key]))
+    ? "complete"
+    : "skip";
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -265,20 +301,26 @@ export const ConversationRoundStep = ({
 
   const handleOptionSelect = (key: QuestionKey, option: string) => {
     setInternalAnswers((prev) => {
+      const current = prev[key].selectedOptions;
+      const isSelected = current.includes(option);
+      const nextSelectedOptions = isSelected
+        ? current.filter((o) => o !== option) // 解除
+        : [...current, option]; // 追加
+
       const next: ConversationAnswers = {
         ...prev,
-        [key]: { ...prev[key], selectedOption: option },
+        [key]: { ...prev[key], selectedOptions: nextSelectedOptions },
       };
 
       if (key === "q3") {
+        const hasSchedule = nextSelectedOptions.includes("定期実行");
         next.q3 = {
           ...next.q3,
-          scheduleConfig:
-            option === "定期実行"
-              ? (next.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG)
-              : undefined,
+          scheduleConfig: hasSchedule
+            ? (next.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG)
+            : undefined,
         };
-        setScheduleTouched(false);
+        if (!hasSchedule) setScheduleTouched(false);
       }
 
       return next;
@@ -301,15 +343,20 @@ export const ConversationRoundStep = ({
         ...prev,
         q3: {
           ...prev.q3,
-          selectedOption: prev.q3.selectedOption ?? "定期実行",
+          // cron 入力中は「定期実行」が selectedOptions に含まれていることを保証する。
+          // handleOptionSelect 経由で通常は含まれているが、万が一含まれていない場合は自動追加する。
+          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
+            ? prev.q3.selectedOptions
+            : [...prev.q3.selectedOptions, "定期実行"],
           scheduleConfig: {
+            ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             cronExpression: value,
-            timezone: prev.q3.scheduleConfig?.timezone ?? DEFAULT_TIMEZONE,
           },
         },
       };
       return next;
     });
+    setScheduleTouched(true);
   };
 
   const handleTimezoneChange = (value: string) => {
@@ -318,11 +365,12 @@ export const ConversationRoundStep = ({
         ...prev,
         q3: {
           ...prev.q3,
-          selectedOption: prev.q3.selectedOption ?? "定期実行",
+          // タイムゾーン変更時も「定期実行」の selectedOptions 維持を保証する。
+          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
+            ? prev.q3.selectedOptions
+            : [...prev.q3.selectedOptions, "定期実行"],
           scheduleConfig: {
-            cronExpression:
-              prev.q3.scheduleConfig?.cronExpression ??
-              DEFAULT_SCHEDULE_CONFIG.cronExpression,
+            ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             timezone: value,
           },
         },
@@ -341,7 +389,7 @@ export const ConversationRoundStep = ({
 
   const handleConfirmGenerate = () => {
     setShowSummaryCard(false);
-    onGenerate("skip");
+    onGenerate(resolveGenerationMethod(internalAnswers));
   };
 
   // ─── QuestionCard レンダラ（インライン） ────────────────────────────────────
@@ -350,7 +398,7 @@ export const ConversationRoundStep = ({
     const q = QUESTIONS[idx];
     const key = q.key as QuestionKey;
     const answer = internalAnswers[key];
-    const selected = answer.selectedOption;
+    const selectedOptions = answer.selectedOptions;
     const freeTextId = `${key}-free-text`;
     const freeTextLabel = `Q${idx + 1} 自由入力`;
 
@@ -359,7 +407,7 @@ export const ConversationRoundStep = ({
     const scheduleConfig =
       key === "q3" ? (answer.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG) : null;
     const scheduleError =
-      key === "q3" && selected === "定期実行" && scheduleTouched
+      key === "q3" && selectedOptions.includes("定期実行") && scheduleTouched
         ? validateCronExpression(scheduleConfig?.cronExpression ?? "")
         : null;
 
@@ -372,7 +420,7 @@ export const ConversationRoundStep = ({
           <p className="text-sm font-medium text-[var(--text-primary)]">
             {labelText}
           </p>
-          {selected && (
+          {selectedOptions.length > 0 && (
             <span className="rounded-full bg-[var(--bg-primary)] px-2 py-1 text-[11px] text-[var(--text-secondary)]">
               選択済み
             </span>
@@ -385,10 +433,10 @@ export const ConversationRoundStep = ({
               key={opt}
               type="button"
               onClick={() => handleOptionSelect(key, opt)}
-              aria-pressed={selected === opt}
+              aria-pressed={selectedOptions.includes(opt)}
               className={[
                 "px-3 py-1.5 rounded-lg text-sm border transition-colors",
-                selected === opt
+                selectedOptions.includes(opt)
                   ? "bg-[var(--status-primary)] text-[var(--text-inverse)] border-[var(--status-primary)]"
                   : "border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]",
               ].join(" ")}
@@ -415,7 +463,7 @@ export const ConversationRoundStep = ({
           />
         </div>
 
-        {key === "q3" && selected === "定期実行" && (
+        {key === "q3" && selectedOptions.includes("定期実行") && (
           <div className="grid gap-3 rounded-lg border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] p-3 md:grid-cols-2">
             <div className="flex flex-col gap-1">
               <label
@@ -512,6 +560,10 @@ export const ConversationRoundStep = ({
           formData={formData}
           onDismiss={handleDismissSummary}
           onConfirm={handleConfirmGenerate}
+          onCancel={() => {
+            setShowSummaryCard(false);
+            onBack();
+          }}
         />
       )}
 

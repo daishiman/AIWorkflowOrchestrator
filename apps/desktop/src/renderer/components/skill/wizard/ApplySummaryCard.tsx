@@ -54,7 +54,7 @@ function getUnansweredDefaults(
   return QUESTION_KEYS.flatMap((key) => {
     const answer = answers[key];
     const isUnanswered =
-      answer.selectedOption === null && answer.freeText.trim() === "";
+      answer.selectedOptions.length === 0 && answer.freeText.trim() === "";
     if (!isUnanswered) return [];
     const defaultValue = smartDefaults[DEFAULT_KEY_BY_QUESTION[key]];
     if (!defaultValue) return [];
@@ -68,6 +68,7 @@ export interface ApplySummaryCardProps {
   formData: SkillInfoFormData;
   onDismiss: () => void;
   onConfirm: () => void;
+  onCancel?: () => void;
 }
 
 /**
@@ -82,10 +83,12 @@ export const ApplySummaryCard = ({
   formData,
   onDismiss,
   onConfirm,
+  onCancel,
 }: ApplySummaryCardProps) => {
   const isQ5Required = formData.category === "external-integration";
   const isQ5Unanswered =
-    answers.q5.selectedOption === null && answers.q5.freeText.trim() === "";
+    answers.q5.selectedOptions.length === 0 &&
+    answers.q5.freeText.trim() === "";
 
   const unansweredWithDefaults = getUnansweredDefaults(answers, smartDefaults);
 
@@ -127,13 +130,24 @@ export const ApplySummaryCard = ({
         </p>
       )}
 
-      <button
-        onClick={onConfirm}
-        type="button"
-        className="w-full py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)] text-sm font-medium"
-      >
-        生成する
-      </button>
+      <div className="flex gap-2">
+        {onCancel && (
+          <button
+            onClick={onCancel}
+            type="button"
+            className="flex-1 py-2 rounded-lg border border-[var(--border-primary)] text-[var(--text-primary)] text-sm"
+          >
+            キャンセル
+          </button>
+        )}
+        <button
+          onClick={onConfirm}
+          type="button"
+          className="flex-1 py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)] text-sm font-medium"
+        >
+          生成する
+        </button>
+      </div>
     </section>
   );
 };

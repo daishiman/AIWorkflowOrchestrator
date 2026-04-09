@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-04-09T01:43:45.156Z",
+  "route": "/advanced/skill-create-wizard?skipAuth=true",
+  "captures": [
+    {
+      "file": "smart-defaults-applied.png",
+      "path": "screenshots/smart-defaults-applied.png"
+    },
+    {
+      "file": "q3-schedule-expanded.png",
+      "path": "screenshots/q3-schedule-expanded.png"
+    },
+    {
+      "file": "q1-single-select.png",
+      "path": "screenshots/q1-single-select.png"
+    },
+    {
+      "file": "q1-multi-select.png",
+      "path": "screenshots/q1-multi-select.png"
+    },
+    {
+      "file": "q1-all-deselected.png",
+      "path": "screenshots/q1-all-deselected.png"
+    },
+    {
+      "file": "q3-schedule-plus-manual.png",
+      "path": "screenshots/q3-schedule-plus-manual.png"
+    },
+    {
+      "file": "q3-schedule-collapsed.png",
+      "path": "screenshots/q3-schedule-collapsed.png"
+    },
+    {
+      "file": "apply-summary-card-defaults.png",
+      "path": "screenshots/apply-summary-card-defaults.png"
+    },
+    {
+      "file": "keyboard-focus-button.png",
+      "path": "screenshots/keyboard-focus-button.png"
+    }
+  ]
+}

@@ -144,6 +144,27 @@ describe("GenerateStep", () => {
       expect(screen.getByText("ファイル構造を解析中...")).toBeInTheDocument();
     });
 
+    it("generationProgress が message 未設定時に表示される", () => {
+      renderStep({
+        stage: "planning",
+        percent: 10,
+        message: "",
+        generationProgress: "計画を生成中...",
+      });
+      expect(screen.getByText("計画を生成中...")).toBeInTheDocument();
+    });
+
+    it("message が generationProgress より優先される", () => {
+      renderStep({
+        stage: "planning",
+        percent: 10,
+        message: "優先メッセージ",
+        generationProgress: "計画を生成中...",
+      });
+      expect(screen.getByText("優先メッセージ")).toBeInTheDocument();
+      expect(screen.queryByText("計画を生成中...")).not.toBeInTheDocument();
+    });
+
     it("idle ではメッセージが表示されない", () => {
       renderStep({ stage: "idle", message: "test" });
       expect(screen.queryByText("test")).not.toBeInTheDocument();
@@ -281,6 +302,7 @@ describe("GenerateStep", () => {
     const planResult: PlanResult = {
       type: "integrated_api",
       planId: "plan-001",
+      skillSpec: "# generated skill spec",
       estimatedSteps: 3,
     };
 
@@ -301,6 +323,39 @@ describe("GenerateStep", () => {
       expect(onExecutePlan).toHaveBeenCalledOnce();
     });
 
+    it("planResult があるときはキャンセルボタンが 1 つだけ表示される", () => {
+      renderStep({
+        planResult,
+        onCancelPlan: vi.fn(),
+      });
+
+      expect(
+        screen.getAllByRole("button", { name: "キャンセル" }),
+      ).toHaveLength(1);
+    });
+
+    it("terminal_handoff の guidance が表示される", () => {
+      renderStep({
+        planResult: {
+          type: "terminal_handoff",
+          planId: "plan-002",
+          guidance: {
+            reason: "terminal での実行が必要です",
+            terminalCommand: "codex run --handoff",
+          },
+        },
+        onCancelPlan: vi.fn(),
+      });
+
+      expect(
+        screen.getByText("terminal での実行が必要です"),
+      ).toBeInTheDocument();
+      expect(screen.getByText("codex run --handoff")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "実行する" }),
+      ).not.toBeInTheDocument();
+    });
+
     it("LLM エラー時は「最初からやり直す」ボタンが表示される", () => {
       const onCancelPlan = vi.fn();
       renderStep({
@@ -316,6 +371,18 @@ describe("GenerateStep", () => {
       const button = screen.getByRole("button", { name: "最初からやり直す" });
       fireEvent.click(button);
       expect(onCancelPlan).toHaveBeenCalledOnce();
+    });
+
+    it("isGenerating=true のとき実行ボタンが disabled になる", () => {
+      const onExecutePlan = vi.fn();
+      renderStep({
+        planResult,
+        onExecutePlan,
+        onCancelPlan: vi.fn(),
+        isGenerating: true,
+      });
+
+      expect(screen.getByRole("button", { name: "実行する" })).toBeDisabled();
     });
   });
 
