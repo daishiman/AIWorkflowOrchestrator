@@ -171,6 +171,8 @@ export type {
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorExecuteResponse,
+  VerifyCheckResult,
+  VerifyResult,
   RuntimeSkillCreatorVerifyCheckSeverity,
   RuntimeSkillCreatorVerifyCheck,
   RuntimeSkillCreatorVerifyDetailRoute,

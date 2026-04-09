@@ -34,6 +34,7 @@ import type {
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
   LLMAdapterStatusPayload,
+  VerifyResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -205,6 +206,15 @@ export interface SkillCreatorAPI {
     skillName: string,
     suggestions: RuntimeSkillCreatorImproveSuggestion[],
   ) => Promise<IpcResult<ApplyImprovementResult>>;
+
+  /**
+   * Runtime verify: スキル検証を要求する
+   */
+  verifySkill: (
+    skillName: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ) => Promise<IpcResult<VerifyResult>>;
 
   /**
    * Runtime verify detail: 現在の verify surface を取得する
@@ -573,6 +583,17 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT, {
       skillName,
       suggestions,
+    }),
+
+  verifySkill: (
+    skillName: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ): Promise<IpcResult<VerifyResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_VERIFY, {
+      skillName,
+      authMode,
+      apiKey,
     }),
 
   getVerifyDetail: (

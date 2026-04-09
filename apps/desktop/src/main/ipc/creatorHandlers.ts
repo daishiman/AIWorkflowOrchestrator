@@ -11,6 +11,7 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   LLMAdapterStatus,
   LLMAdapterStatusPayload,
+  VerifyResult,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   RuntimeSkillCreatorReverifyResponse,
@@ -398,6 +399,41 @@ export function registerRuntimeSkillCreatorHandlers(
             error,
             "workflow user input の送信に失敗しました",
           ),
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_VERIFY,
+    async (
+      event: IpcMainInvokeEvent,
+      args: {
+        skillName: string;
+        authMode?: AuthMode;
+        apiKey?: string | null;
+      },
+    ): Promise<IpcResult<VerifyResult>> => {
+      validateSender(event, IPC_CHANNELS.SKILL_CREATOR_VERIFY, mainWindow);
+
+      if (isBlank(args?.skillName)) {
+        return validationError("skillName が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const result = await runtimeSkillCreatorService.verify(
+          args.skillName.trim(),
+          args.authMode ?? "api-key",
+          args.apiKey ?? null,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(error, "verify の実行に失敗しました"),
         };
       }
     },
@@ -831,6 +867,7 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VERIFY);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL);

@@ -84,6 +84,9 @@
       "@repo/shared/services/logging/conversion-logger": [
         "../../packages/shared/src/services/logging/conversion-logger.ts"
       ],
+      "@repo/shared/services/skillCreator": [
+        "../../packages/shared/src/services/skillCreator/index.ts"
+      ],
       "@repo/shared/repositories": [
         "../../packages/shared/src/repositories/index.ts"
       ],
