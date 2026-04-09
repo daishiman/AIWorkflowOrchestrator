@@ -97,6 +97,15 @@ function isQuestionAnswered(answer: QuestionAnswer): boolean {
   );
 }
 
+const QUESTION_KEYS = [
+  "q1",
+  "q2",
+  "q3",
+  "q4",
+  "q5",
+  "q6",
+] as const satisfies readonly QuestionKey[];
+
 function createEmptyAnswers(): ConversationAnswers {
   return {
     q1: { selectedOption: null, freeText: "" },
@@ -255,6 +264,14 @@ function validateCronExpression(value: string): string | null {
     : "cron式の形式が正しくありません";
 }
 
+function resolveGenerationMethod(
+  answers: ConversationAnswers,
+): "complete" | "skip" {
+  return QUESTION_KEYS.every((key) => isQuestionAnswered(answers[key]))
+    ? "complete"
+    : "skip";
+}
+
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface ConversationRoundStepProps {
@@ -380,7 +397,7 @@ export const ConversationRoundStep = ({
 
   const handleConfirmGenerate = () => {
     setShowSummaryCard(false);
-    onGenerate("skip");
+    onGenerate(resolveGenerationMethod(internalAnswers));
   };
 
   // ─── QuestionCard レンダラ（インライン） ────────────────────────────────────

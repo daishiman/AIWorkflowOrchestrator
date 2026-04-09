@@ -32,6 +32,22 @@ const defaultAnswers: ConversationAnswers = {
   q6: { selectedOption: null, freeText: "" },
 };
 
+const completeAnswers: ConversationAnswers = {
+  q1: { selectedOption: "自分のみ", freeText: "" },
+  q2: { selectedOption: "テキスト", freeText: "" },
+  q3: {
+    selectedOption: "定期実行",
+    freeText: "",
+    scheduleConfig: {
+      cronExpression: "0 9 * * 1-5",
+      timezone: "Asia/Tokyo",
+    },
+  },
+  q4: { selectedOption: "通知", freeText: "" },
+  q5: { selectedOption: "Slack", freeText: "" },
+  q6: { selectedOption: "Markdown", freeText: "" },
+};
+
 const defaultSmartDefaults: SmartDefaultResult = {
   who: null,
   input: null,
@@ -410,6 +426,22 @@ describe("ConversationRoundStep", () => {
       fireEvent.click(screen.getByRole("button", { name: /今すぐ生成する/ }));
       fireEvent.click(screen.getByRole("button", { name: /^生成する$/ }));
       expect(mockOnGenerate).toHaveBeenCalledWith("skip");
+    });
+
+    it("全問回答済みのときサマリーカードの「生成する」クリックで onGenerate('complete') が呼ばれる", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={completeAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /今すぐ生成する/ }));
+      fireEvent.click(screen.getByRole("button", { name: /^生成する$/ }));
+      expect(mockOnGenerate).toHaveBeenCalledWith("complete");
     });
   });
 

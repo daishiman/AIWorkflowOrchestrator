@@ -10,7 +10,14 @@
 | 前提Phase  | Phase 11                     |
 | 後続Phase  | Phase 13                     |
 | 作成日     | 2026-04-07                   |
-| ステータス | pending                      |
+| ステータス | completed                    |
+
+## 完了記録（2026-04-08）
+
+- `outputs/phase-12/implementation-guide.md` を含む canonical 6 成果物を作成・整合確認済み。
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W3-seq-04 進捗表現を completed へ更新済み。
+- `artifacts.json` / `outputs/artifacts.json` の `status` と `phases` を current facts に同期済み。
+- Phase 11 の `outputs/phase-11/discovered-issues.md`（0 件）を補完し、Phase 12 記述との整合を確保済み。
 
 ## 目的
 
@@ -43,7 +50,7 @@ Part 1（中学生レベル）と Part 2（開発者レベル）の 2 部構成�
 - `trackEvent` は renderer 内部の軽量な計装関数であること
 - `SkillWizardEvents` を型安全な payload map として扱うこと
 - `skill_wizard_started` は空 payload であり、source 依存を持たないこと
-- `SkillCategory` の参照元が `packages/shared/src/types/skill.ts` であること
+- `SkillCategory` の参照元が `packages/shared/src/types/skillCreator.ts` であること
 - `SkillAnalytics` / `AnalyticsStore` は execution-centric であり、W3 の UI 計装とは分離して扱うこと
 - Phase 11 は NON_VISUAL であり、スクリーンショットではなく console / automation evidence を主証跡にすること
 
@@ -166,16 +173,16 @@ Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の完了を 1 つの成果物に�
 
 ## 完了条件
 
-- [ ] 実行タスクで定義した成果物を全件作成
-- [ ] Task 12-1 実装ガイドが Part 1 / Part 2 で完成していること
-- [ ] Task 12-2 Step 1-A / 1-B / 1-C / 1-D / 1-E / 1-F / 1-G / Step 2 が全て実施されていること
-- [ ] Task 12-3 更新履歴が作成されていること
-- [ ] Task 12-4 未タスク検出レポートが作成されていること（0 件でも）
-- [ ] Task 12-5 フィードバックレポートが作成されていること（0 件でも）
-- [ ] Task 12-6 仕様準拠チェックが PASS であること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] 実行タスクで定義した成果物を全件作成
+- [x] Task 12-1 実装ガイドが Part 1 / Part 2 で完成していること
+- [x] Task 12-2 Step 1-A / 1-B / 1-C / 1-D / 1-E / 1-F / 1-G / Step 2 が全て実施されていること
+- [x] Task 12-3 更新履歴が作成されていること
+- [x] Task 12-4 未タスク検出レポートが作成されていること（0 件でも）
+- [x] Task 12-5 フィードバックレポートが作成されていること（0 件でも）
+- [x] Task 12-6 仕様準拠チェックが PASS であること
+- [x] 矛盾がないことを確認
+- [x] 漏れがないことを確認
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -187,10 +194,10 @@ Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の完了を 1 つの成果物に�
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次のPhase
 

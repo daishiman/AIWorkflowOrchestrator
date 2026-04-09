@@ -10,7 +10,7 @@
 | 依存タスク   | W2-seq-03a                                                                                                                               |
 | 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`, `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx` |
 | 作成日       | 2026-04-07                                                                                                                               |
-| ステータス   | pending                                                                                                                                  |
+| ステータス   | completed                                                                                                                                |
 
 ## 概要
 
