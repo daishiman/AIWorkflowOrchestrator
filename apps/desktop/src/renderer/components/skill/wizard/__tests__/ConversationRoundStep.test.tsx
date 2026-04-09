@@ -294,7 +294,7 @@ describe("ConversationRoundStep", () => {
           answers={{
             ...defaultAnswers,
             q3: {
-              selectedOption: "定期実行",
+              selectedOptions: ["定期実行"],
               freeText: "",
               scheduleConfig: {
                 cronExpression: "0 9 * * *",

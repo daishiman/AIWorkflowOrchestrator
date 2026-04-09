@@ -80,9 +80,11 @@ const TIMEZONE_OPTIONS =
       ];
 
 function isQuestionAnswered(answer: QuestionAnswer): boolean {
+  const selectedOptions = answer.selectedOptions ?? [];
+  const freeText = answer.freeText ?? "";
   return (
-    answer.selectedOptions.length > 0 ||
-    answer.freeText.trim().length > 0 ||
+    selectedOptions.length > 0 ||
+    freeText.trim().length > 0 ||
     answer.scheduleConfig !== undefined
   );
 }
@@ -230,7 +232,7 @@ export const ConversationRoundStep = ({
 
   const handleOptionSelect = (key: QuestionKey, option: string) => {
     setInternalAnswers((prev) => {
-      const current = prev[key].selectedOptions;
+      const current = prev[key].selectedOptions ?? [];
       const isSelected = current.includes(option);
       const nextSelectedOptions = isSelected
         ? current.filter((o) => o !== option) // 解除
@@ -271,15 +273,16 @@ export const ConversationRoundStep = ({
 
   const handleCronChange = (value: string) => {
     setInternalAnswers((prev) => {
+      const selectedOptions = prev.q3.selectedOptions ?? [];
       const next: ConversationAnswers = {
         ...prev,
         q3: {
           ...prev.q3,
           // cron 入力中は「定期実行」が selectedOptions に含まれていることを保証する。
           // handleOptionSelect 経由で通常は含まれているが、万が一含まれていない場合は自動追加する。
-          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
-            ? prev.q3.selectedOptions
-            : [...prev.q3.selectedOptions, "定期実行"],
+          selectedOptions: selectedOptions.includes("定期実行")
+            ? selectedOptions
+            : [...selectedOptions, "定期実行"],
           scheduleConfig: {
             ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             cronExpression: value,
@@ -293,14 +296,15 @@ export const ConversationRoundStep = ({
 
   const handleTimezoneChange = (value: string) => {
     setInternalAnswers((prev) => {
+      const selectedOptions = prev.q3.selectedOptions ?? [];
       const next: ConversationAnswers = {
         ...prev,
         q3: {
           ...prev.q3,
           // タイムゾーン変更時も「定期実行」の selectedOptions 維持を保証する。
-          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
-            ? prev.q3.selectedOptions
-            : [...prev.q3.selectedOptions, "定期実行"],
+          selectedOptions: selectedOptions.includes("定期実行")
+            ? selectedOptions
+            : [...selectedOptions, "定期実行"],
           scheduleConfig: {
             ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             timezone: value,
@@ -314,7 +318,8 @@ export const ConversationRoundStep = ({
 
   const handleShowSummary = () => {
     const q3 = internalAnswers.q3;
-    if (q3.selectedOptions.includes("定期実行")) {
+    const q3SelectedOptions = q3.selectedOptions ?? [];
+    if (q3SelectedOptions.includes("定期実行")) {
       const validation = validateSkillWizardScheduleConfig(
         q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
       );
@@ -334,7 +339,8 @@ export const ConversationRoundStep = ({
 
   const handleConfirmGenerate = () => {
     const q3 = internalAnswers.q3;
-    if (q3.selectedOptions.includes("定期実行")) {
+    const q3SelectedOptions = q3.selectedOptions ?? [];
+    if (q3SelectedOptions.includes("定期実行")) {
       const validation = validateSkillWizardScheduleConfig(
         q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
       );
@@ -356,7 +362,8 @@ export const ConversationRoundStep = ({
     const q = QUESTIONS[idx];
     const key = q.key as QuestionKey;
     const answer = internalAnswers[key];
-    const selectedOptions = answer.selectedOptions;
+    const selectedOptions = answer.selectedOptions ?? [];
+    const freeText = answer.freeText ?? "";
     const freeTextId = `${key}-free-text`;
     const freeTextLabel = `Q${idx + 1} 自由入力`;
 
@@ -423,7 +430,7 @@ export const ConversationRoundStep = ({
           </label>
           <textarea
             id={freeTextId}
-            value={answer.freeText}
+            value={freeText}
             onChange={(e) => handleFreeTextChange(key, e.target.value)}
             placeholder={`${q.label}の補足を入力`}
             rows={2}
