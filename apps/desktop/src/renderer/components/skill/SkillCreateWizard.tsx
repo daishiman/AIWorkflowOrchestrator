@@ -412,6 +412,8 @@ export const SkillCreateWizard = React.forwardRef<
   // TASK-SC-07: LLM 生成フロー state
   const [generationMode, setGenerationMode] =
     useState<GenerationMode>("template");
+  /** LLM ラジオが一度でも選択されたか（テンプレート復帰時の UI 分岐に使用） */
+  const [hasActivatedLlmMode, setHasActivatedLlmMode] = useState(false);
   const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
     null,
   );
@@ -430,13 +432,12 @@ export const SkillCreateWizard = React.forwardRef<
     llmGenerationRequestIdRef.current += 1;
     templateGenerationRequestIdRef.current += 1;
   };
-  // アンマウント時に Store をクリア
+  // アンマウント時にリクエストを無効化（clearGenerationState はハンドラ側で対称クリア済み）
   useEffect(() => {
     return () => {
       llmGenerationRequestIdRef.current += 1;
-      clearGenerationState();
     };
-  }, [clearGenerationState]);
+  }, []);
 
   // ── ハンドラ（W2-seq-03a） ────────────────────────────────────────────
 
@@ -457,6 +458,21 @@ export const SkillCreateWizard = React.forwardRef<
     setLocalPlanResult(null);
     generationLockRef.current = false;
     clearGenerationState();
+  };
+
+  /**
+   * LLM モードから切り替え後のテンプレートモード Step 0 → Step 1 遷移。
+   * llmDescription を purpose として formData に反映してから ConversationRoundStep へ。
+   */
+  const handleStep0NextFromLlm = () => {
+    const newFormData = { ...formData, purpose: llmDescription };
+    setFormData(newFormData);
+    const defaults = inferSmartDefaults(newFormData);
+    setSmartDefaults(defaults);
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+    setHasExternalIntegration(integration.hasExternalIntegration);
+    setExternalToolName(integration.externalToolName);
+    goNext();
   };
 
   /**
@@ -591,7 +607,10 @@ export const SkillCreateWizard = React.forwardRef<
     invalidateGenerationRequests();
     const requestId = llmGenerationRequestIdRef.current;
     setLocalPlanResult(null);
-    clearGenerationState();
+    // clearGenerationState は executePlan/cancelPlan の対称クリアで呼ぶ（W-10/W-11 の二重呼出防止）
+    setGenerationErrorMsg(null);
+    setCurrentPlanResult(null);
+    setCurrentPlanId(null);
     resetStreamingProgress();
     setSkillPath(null);
     setStoreIsGenerating(true);
@@ -620,6 +639,8 @@ export const SkillCreateWizard = React.forwardRef<
           data.error?.message ?? "スキルプランの生成に失敗しました";
         setGenerationErrorMsg(errMsg);
         setGenerationProgressMsg(null);
+        setCurrentPlanResult(null); // E-2b: 論理エラー時も plan state をクリア
+        setCurrentPlanId(null);
         return;
       }
       setLocalPlanResult(result.data); // ローカル state（localPlanResult）
@@ -864,26 +885,32 @@ export const SkillCreateWizard = React.forwardRef<
                 name="generationMode"
                 value="llm"
                 checked={generationMode === "llm"}
-                onChange={() => setGenerationMode("llm")}
+                onChange={() => {
+                  setGenerationMode("llm");
+                  setHasActivatedLlmMode(true);
+                }}
               />
               LLM で生成
             </label>
           </div>
 
-          {generationMode === "template" ? (
+          {generationMode === "template" && !hasActivatedLlmMode ? (
+            /* テンプレートモード（通常）: フル SkillInfoStep */
             <SkillInfoStep
               formData={formData}
               onFormDataChange={setFormData}
               onNext={handleStep0Next}
             />
           ) : (
-            /* LLM モード: シンプルな description 入力（AC-1 / AC-2） */
+            /* LLM モード or LLM→テンプレート切替後: 共通の description 入力 UI
+             * aria-label="目的・背景" でアクセシブル名を統一（W-6c: getByLabelText） */
             <div className="flex flex-col gap-4">
               <label htmlFor="llm-description" className="text-sm font-medium">
                 スキルの説明
               </label>
               <textarea
                 id="llm-description"
+                aria-label="目的・背景"
                 className="w-full rounded border p-2 text-sm"
                 rows={4}
                 value={llmDescription}
@@ -895,7 +922,11 @@ export const SkillCreateWizard = React.forwardRef<
                   type="button"
                   className="rounded bg-blue-600 px-4 py-2 text-sm text-white"
                   disabled={llmDescription.trim().length === 0}
-                  onClick={() => void handleLlmGenerate()}
+                  onClick={
+                    generationMode === "llm"
+                      ? () => void handleLlmGenerate()
+                      : handleStep0NextFromLlm
+                  }
                 >
                   次へ
                 </button>

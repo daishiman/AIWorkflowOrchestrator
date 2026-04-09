@@ -29,6 +29,14 @@ vi.mock("../../../store", () => ({
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,
+  useCurrentPlanId: () => null,
+  useCurrentPlanResult: () => null,
+  useSetIsSkillGenerating: () => vi.fn(),
+  useSetGenerationProgress: () => vi.fn(),
+  useSetGenerationError: () => vi.fn(),
+  useSetCurrentPlanId: () => vi.fn(),
+  useSetCurrentPlanResult: () => vi.fn(),
+  useResetStreamingProgress: () => vi.fn(),
 }));
 
 vi.mock("../../../hooks/useStreamingProgress", () => ({

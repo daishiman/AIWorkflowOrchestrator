@@ -567,6 +567,10 @@ export const ConversationRoundStep = ({
           formData={formData}
           onDismiss={handleDismissSummary}
           onConfirm={handleConfirmGenerate}
+          onCancel={() => {
+            setShowSummaryCard(false);
+            onBack();
+          }}
         />
       )}
 
