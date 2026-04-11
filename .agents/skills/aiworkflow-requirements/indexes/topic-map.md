@@ -1,6 +1,7 @@
 # トピックマップ
 
 > 自動生成: 2026-04-09
+> 自動生成: 2026-04-11
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -501,7 +502,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L439 |
+| 続き | L440 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -2544,8 +2545,8 @@ node scripts/list-specs.js --topics
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L271 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
 
 ### references/arch-state-management.md
 
@@ -2573,6 +2574,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
+| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 
 ### references/arch-ui-components-details.md
 
@@ -3059,6 +3061,12 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L576 |
 | W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L602 |
 | UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L619 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L484 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L518 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L552 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L575 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L601 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L618 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3394,18 +3402,14 @@ node scripts/list-specs.js --topics
 | 実装パターン（将来参照用） | L21 |
 | 苦戦箇所 | L110 |
 | 非ブロッカー改善候補（skill-feedback-report.md より） | L121 |
-| 依存関係 | L161 |
-| 関連ファイル | L173 |
-| 苦戦箇所 | L108 |
-| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L159 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L185 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L202 |
-| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L218 |
-| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L235 |
-| Google Calendar スキル新規追加 教訓（2026-04-08） | L251 |
-| 依存関係 | L267 |
-| 関連ファイル | L279 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L161 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L187 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L204 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L220 |
+| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
+| 依存関係 | L269 |
+| 関連ファイル | L281 |
 
 ### references/lessons-learned-templates.md
 
