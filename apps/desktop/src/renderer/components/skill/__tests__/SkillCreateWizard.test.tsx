@@ -89,8 +89,8 @@ function fillStep0(
   fireEvent.click(screen.getByRole("button", { name: category }));
 }
 
-async function advanceToStep1() {
-  fillStep0();
+async function advanceToStep1(purpose?: string) {
+  fillStep0(purpose);
   fireEvent.click(screen.getByRole("button", { name: "次へ" }));
   await act(async () => {
     await Promise.resolve();
@@ -98,7 +98,9 @@ async function advanceToStep1() {
 }
 
 async function advanceToComplete() {
-  await advanceToStep1();
+  // "毎日" を含まないpurposeを使用する。
+  // "毎日" を含むとSmartDefaultsが"定期実行"を選択し、cron式の空バリデーションが発動するため。
+  await advanceToStep1("Slack通知を送るための目的説明");
   fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
   fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
   await act(async () => {
@@ -315,7 +317,7 @@ describe("SkillCreateWizard", () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
       renderWizard(mockOnClose);
 
-      await advanceToStep1();
+      await advanceToStep1("Slack通知を送るための目的説明");
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -329,7 +331,7 @@ describe("SkillCreateWizard", () => {
       mockCreateSkill.mockResolvedValue("");
       renderWizard(mockOnClose);
 
-      await advanceToStep1();
+      await advanceToStep1("Slack通知を送るための目的説明");
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));

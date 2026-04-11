@@ -7,7 +7,8 @@ import type {
 } from "@repo/shared/types/skill-schedule";
 import { Button } from "../../../components/atoms/Button";
 import { Icon } from "../../../components/atoms/Icon";
-import { CronInput } from "./CronInput";
+import { VisualCronPicker } from "../../../components/schedule/VisualCronPicker";
+import { validateCronExpression } from "../../../utils/scheduleConfigValidator";
 
 export interface ScheduleDialogProps {
   /** 編集対象のスケジュール（新規作成時はundefined） */
@@ -54,6 +55,8 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
     );
     const [enabled, setEnabled] = useState(schedule?.enabled ?? true);
     const [isSaving, setIsSaving] = useState(false);
+    const cronValidationError =
+      scheduleType === "cron" ? validateCronExpression(cronExpression) : null;
 
     // ESCキーでダイアログを閉じる
     useEffect(() => {
@@ -68,6 +71,7 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
 
     const handleSave = useCallback(async () => {
       if (!skillName.trim()) return;
+      if (scheduleType === "cron" && cronValidationError) return;
 
       setIsSaving(true);
       try {
@@ -114,6 +118,7 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
       runAt,
       eventType,
       enabled,
+      cronValidationError,
       onSave,
       onClose,
       schedule,
@@ -215,7 +220,18 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
 
           {/* タイプ別の設定 */}
           {scheduleType === "cron" && (
-            <CronInput value={cronExpression} onChange={setCronExpression} />
+            <div className="space-y-2">
+              <VisualCronPicker
+                value={cronExpression}
+                onChange={setCronExpression}
+                disabled={isSaving}
+              />
+              {cronValidationError && (
+                <p role="alert" className="text-xs text-red-500">
+                  {cronValidationError}
+                </p>
+              )}
+            </div>
           )}
 
           {scheduleType === "interval" && (
@@ -317,7 +333,11 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
               variant="primary"
               onClick={handleSave}
               loading={isSaving}
-              disabled={!skillName.trim()}
+              disabled={
+                !skillName.trim() ||
+                isSaving ||
+                (scheduleType === "cron" && Boolean(cronValidationError))
+              }
             >
               {isEditing ? "更新" : "作成"}
             </Button>

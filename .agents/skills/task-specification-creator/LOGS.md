@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 「よくある漏れ」テーブルに Feedback VSCPKR-01（JSDoc 内 `*/` が esbuild パースエラーの原因になる）・VSCPKR-02（happy-dom 環境で `vi.stubGlobal("window", ...)` 禁止 / `Object.defineProperty` 使用必須）を追記
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-VSCPKR-001〜004 を追加（esbuild JSDoc ピットフォール / vi.stubGlobal 禁止 / 純粋関数設計 / カバレッジ早期確認）
+- 未タスク仕様書2件を新規作成（`task-cron-semantic-validation-improvements.md` / `task-cron-converter-weekdays-guard.md`）
+
+### 背景
+
+TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポート（SK-01/SK-02/WF-01/DP-02）の知見をスキルへ反映。esbuild JSDoc ピットフォールと happy-dom vi.stubGlobal 禁止ルールは Electron レンダラープロセステストで繰り返し踏みやすいパターンのため優先的に記録。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -38,6 +52,18 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 `skill-feedback-report.md` の EC-09 文字数ミス教訓（`"十文字以上の目的"` は7文字）を「よくある漏れ」として体系化した。
 テスト境界値に日本語漢数字が含まれる場合の実文字数確認を Phase 4 のガードとして定着させる。
 
+## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
+- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
+- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
+
+### 背景
+W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
+manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -51,18 +77,6 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 
 UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 の Phase 12 close-out として、全成果物を同波で同期した。
 `skill-lifecycle-execution-input` textarea 削除タスクは実装・テスト・全成果物が完了し、Phase 13（PR作成）blocked 状態へ移行した。
-
-## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
-- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
-- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
-
-### 背景
-W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
-manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
