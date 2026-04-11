@@ -1,16 +1,23 @@
 import { useState } from "react";
-import type {
-  SkillCategory,
-  SkillInfoFormData,
+import {
+  getSkillCategoryLabel,
+  type SkillCategory,
+  type SkillInfoFormData,
 } from "@repo/shared/types/skillCreator";
 
-const CATEGORY_OPTIONS: { value: SkillCategory; label: string }[] = [
-  { value: "automation", label: "自動化" },
-  { value: "external-integration", label: "外部連携" },
-  { value: "data-analysis", label: "データ分析" },
-  { value: "code-support", label: "コードサポート" },
-  { value: "other", label: "その他" },
+const CATEGORY_VALUES: SkillCategory[] = [
+  "automation",
+  "external-integration",
+  "data-analysis",
+  "code-support",
+  "other",
 ];
+
+const CATEGORY_OPTIONS: { value: SkillCategory; label: string }[] =
+  CATEGORY_VALUES.map((value) => ({
+    value,
+    label: getSkillCategoryLabel(value),
+  }));
 
 interface SkillInfoStepProps {
   /** スキル名・目的・カテゴリをまとめたフォーム全体の入力値。 */
