@@ -12,6 +12,34 @@
 ### 背景
 docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sync を残しておくことで、format を purpose から誤推論する再発を防げる。
 
+## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
+## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 「よくある漏れ」テーブルに Feedback VSCPKR-01（JSDoc 内 `*/` が esbuild パースエラーの原因になる）・VSCPKR-02（happy-dom 環境で `vi.stubGlobal("window", ...)` 禁止 / `Object.defineProperty` 使用必須）を追記
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-VSCPKR-001〜004 を追加（esbuild JSDoc ピットフォール / vi.stubGlobal 禁止 / 純粋関数設計 / カバレッジ早期確認）
+- 未タスク仕様書2件を新規作成（`task-cron-semantic-validation-improvements.md` / `task-cron-converter-weekdays-guard.md`）
+
+### 背景
+
+TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポート（SK-01/SK-02/WF-01/DP-02）の知見をスキルへ反映。esbuild JSDoc ピットフォールと happy-dom vi.stubGlobal 禁止ルールは Electron レンダラープロセステストで繰り返し踏みやすいパターンのため優先的に記録。
+
+---
+
+## 2026-04-11 - UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001 Phase 12 close-out
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに `[FB-04]`（Phase 12 close-out での ledger/lane/artifacts 5点同期漏れ）エントリ追加（v10.09.41）
+- `assets/phase12-task-spec-compliance-template.md` に FB-04 三者同期チェックリストブロック（5ファイル）を追加
+- `references/phase-12-documentation-guide.md` の Task 12-2 に FB-04 三者同期チェックセクション追加
+- `.agents/skills/task-specification-creator/` mirror へ同波同期（diff 0）
+
+### 背景
+`UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` Phase 12 実行中に、`task-workflow.md` / `task-workflow-completed.md` / `lane/index.md` / `outputs/artifacts.json` / `.claude/skills/task-specification-creator/outputs/artifacts.json` の5点を同一 wave で更新する必要があることが段階的に判明した。この知見を Phase 12 必須完了条件として標準化した。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -2005,3 +2033,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs）|
 | 結果 | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。 |
 | 検証 | vitest 101/101 PASS、typecheck PASS（EXIT:0）|
+
+## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
+- `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
+- `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
+- `aiworkflow-requirements/LOGS.md` に 2026-04-11 ヘッドライン追加
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-CLM-001〜003 追加
+
+### 背景
+
+UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止が主な知見。SKILL.md 2ファイル同波更新。

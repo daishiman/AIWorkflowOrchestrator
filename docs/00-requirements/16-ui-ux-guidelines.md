@@ -2188,6 +2188,67 @@ LLM選択機能はシステムプロンプト機能（16.18）と統合され、
 
 ---
 
+## スケジュール設定 UI（TASK-UI-SCHEDULE-VISUAL-PICKER-001）
+
+### 概要
+
+VisualCronPicker はスケジュール設定を視覚的に行うコンポーネント。
+直接 cron 式を入力する代わりに、ボタンとドロップダウンで設定できる。
+
+### 使用シーン
+
+- `ScheduleDialog`: スケジュール新規作成・編集
+- `ConversationRoundStep`（スキルウィザード）: スキルのスケジュール設定
+
+### FrequencySelector 選択肢
+
+| 値           | 表示ラベル | TimePickerSection | 追加 UI            |
+| ------------ | ---------- | ----------------- | ------------------ |
+| every-minute | 毎分       | 非表示            | なし               |
+| every-hour   | 毎時       | 分のみ表示        | なし               |
+| daily        | 毎日       | 表示              | なし               |
+| weekly       | 毎週       | 表示              | WeekdaySelector    |
+| monthly      | 毎月       | 表示              | DayOfMonthSelector |
+| custom       | カスタム   | 非表示            | 直接入力欄         |
+
+### WeekdaySelector
+
+- 曜日順: 月・火・水・木・金・土・日
+- 初期状態: 全て未選択
+- 複数選択可
+- aria-label: `"月曜日"` 〜 `"日曜日"`
+- 内部の weekday 値は `1=月 ... 6=土, 0=日` を使用する
+
+### TimePickerSection
+
+- 時: 0〜23（24時間制、24 選択肢）
+- 分: 0/5/10/.../55（5分刻み、12 選択肢）
+- aria-label: `"時"` / `"分"`
+
+### エラー表示
+
+- `role="alert"` で inline 表示
+- 毎週で曜日が 0 件のとき表示（保存不可）
+
+### AdvancedToggle
+
+- 「高度な設定」ボタンで直接入力モードに切り替え
+- `showAdvancedToggle` が `false` の場合は表示しない
+- 複雑な cron 式（ステップ値・範囲など）は自動で custom モードになる
+- `value` が custom / 逆変換不能な式のときは direct input を初期表示する
+
+### CronPreview
+
+- 自然言語（例: `"毎週 月・水・金 09:00"`）と cron 式（`code` 要素）を表示
+- ja/en 両ロケール対応
+
+### 関連実装
+
+- `TASK-UI-SCHEDULE-VISUAL-PICKER-001`: 初期実装
+- 実装ガイド: `docs/30-workflows/TASK-UI-SCHEDULE-VISUAL-PICKER-001/outputs/phase-12/implementation-guide.md`
+
+---
+
 ## 関連ドキュメント
 
 - [テクノロジースタック](./03-technology-stack.md)

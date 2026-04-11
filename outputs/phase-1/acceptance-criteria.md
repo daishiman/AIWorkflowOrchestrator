@@ -1,24 +1,19 @@
-# Phase 1 タスク3: 受入条件（AC）定義書
+# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## 調査日: 2026-04-08
+## 受け入れ基準一覧
 
-## 受入条件一覧
+| ID   | 受け入れ基準                                                                                                                                 | 検証方法                                                         |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| AC-1 | 全 `SkillCategory` 値（5件: automation / external-integration / data-analysis / code-support / other）に対応する日本語ラベルが定義されている | ユニットテスト TC-01〜TC-06                                      |
+| AC-2 | `SKILL_CATEGORY_LABELS` 定数と `getSkillCategoryLabel()` 関数がエクスポートされ、UIコンポーネントから参照可能                                | `grep -n "export.*SKILL_CATEGORY_LABELS\|getSkillCategoryLabel"` |
+| AC-3 | 新しい `SkillCategory` 値が追加された場合にTypeScriptの型チェックでラベル未定義を検出できる（`Record<SkillCategory, string>` 型を活用）      | `pnpm --filter @repo/shared typecheck`                           |
 
-| AC    | 条件                                                                                                                  | 検証方法       |
-| ----- | --------------------------------------------------------------------------------------------------------------------- | -------------- |
-| AC-1  | SkillCreateWizard の Step 0 正本である SkillInfoStep に「LLM で生成」と「テンプレートから作成」の選択 UI が表示される | 自動テスト     |
-| AC-2  | 「LLM で生成」選択 → GenerateStep へ直接遷移し planSkill が呼ばれる                                                   | 自動テスト     |
-| AC-3  | GenerateStep で plan 結果（type, estimatedSteps, guidance）が正しく表示される                                         | 自動テスト     |
-| AC-4  | GenerateStep の「実行する」ボタンで executePlan が呼ばれ、成功時 CompleteStep に遷移する                              | 自動テスト     |
-| AC-5  | GenerateStep の「キャンセル」ボタンで plan をクリアし SkillInfoStep に戻る                                            | 自動テスト     |
-| AC-6  | generationProgress が GenerateStep に表示される（ローディング状態）                                                   | 自動テスト     |
-| AC-7  | planSkill / executePlan のエラー時、GenerateStep にエラーメッセージが表示される                                       | 自動テスト     |
-| AC-8  | 「テンプレートから作成」フローが既存のまま動作する（非破壊）                                                          | 自動テスト     |
-| AC-9  | PlanResult 型は agentSlice.ts からの Single Source of Truth を使用する                                                | コードレビュー |
-| AC-10 | Hybrid State Pattern の対称クリアが handleCancelPlan / handleExecutePlan の両方で行われる                             | 自動テスト     |
+## 検証コマンド
 
-## 統合テスト連携
+```bash
+# AC-1 / AC-2: テスト実行
+pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts
 
-- planSkill: window.skillCreatorAPI.planSkill(description) で呼ぶ
-- executePlan: window.skillCreatorAPI.executePlan(planId, skillSpec) で呼ぶ
-- テストは window.skillCreatorAPI を mock
+# AC-3: 型チェック
+pnpm --filter @repo/shared typecheck
+```

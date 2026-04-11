@@ -100,6 +100,7 @@ runtime lane の API キー設定補助導線で利用する UI 状態型。cano
 
 W0 のスキルウィザード共有型。canonical source は `packages/shared/src/types/skillCreator.ts`。  
 `packages/shared/src/types/skill.ts` には別概念の `SkillCategory` が既に存在するため、公開経路は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
+`SKILL_CATEGORY_LABELS` と `getSkillCategoryLabel()` は `SkillCategory` の UI 表示契約であり、表示ラベルの正本も `packages/shared/src/types/skillCreator.ts` に置く。
 
 | 型名 | 役割 |
 | --- | --- |

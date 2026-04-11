@@ -1,41 +1,65 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
 ## タスク概要
 
-`SkillLifecyclePanel.tsx` からテキストエリアを削除し、ウィザード遷移ボタンへ置き換える。
+`SkillCategory`（英語識別子）をUI表示用の日本語ラベルにマッピングする定数・関数を `packages/shared/src/types/skillCreator.ts` に追加する。
 
-## 現状分析（Step 0 P50チェック結果）
+## P50チェック結果（既実装状態確認）
 
-| 対象                                       | 状態                              |
-| ------------------------------------------ | --------------------------------- |
-| `skill-lifecycle-request-input` textarea   | PR #2036で削除済み                |
-| `skill-lifecycle-open-wizard-button`       | PR #2036で追加済み                |
-| `skill-lifecycle-execution-input` textarea | 行1793に残存（本タスクで削除）    |
-| `executionPrompt` state                    | 行438-440に残存（本タスクで削除） |
+```
+grep -n "SKILL_CATEGORY_LABELS\|getSkillCategoryLabel" packages/shared/src/types/skillCreator.ts
+→ No matches found（未実装を確認）
+```
 
-## 受け入れ基準
+**判定**: 重複実装なし。本タスクで新規実装する。
 
-| AC番号 | 基準                                                          | 状態           |
-| ------ | ------------------------------------------------------------- | -------------- |
-| AC-1   | `skill-lifecycle-request-input` textarea が削除               | 完了済み       |
-| AC-2   | `skill-lifecycle-execution-input` textarea が削除             | 本タスクで実施 |
-| AC-3   | `data-testid="skill-lifecycle-open-wizard-button"` ボタン追加 | 完了済み       |
-| AC-4   | `executionPrompt` state がコード上に残らない                  | 本タスクで実施 |
-| AC-5   | 既存テストファイル6本が全てPASS                               | 本タスクで実施 |
-| AC-6   | Phase 9 QA基準                                                | 本タスクで実施 |
-| AC-7   | SkillCreateWizard本体実装なし                                 | スコープ外     |
-| AC-8   | IPCチャンネル変更なし                                         | スコープ外     |
+## SkillCategory型定義（現状確認）
 
-## スコープ
+```typescript
+// packages/shared/src/types/skillCreator.ts L948-L953
+export type SkillCategory =
+  | "automation"
+  | "external-integration"
+  | "data-analysis"
+  | "code-support"
+  | "other";
+```
 
-**含む:**
+5値が確認済み。
 
-- `SkillLifecyclePanel.tsx` の `skill-lifecycle-execution-input` textarea削除
-- `executionPrompt` state・ハンドラの削除
-- `canExecuteSkill`・`handleExecute`・`handlePlanImprovement` の更新
-- 既存テストファイル6本への `skill-lifecycle-execution-input` 非存在テスト追加
+## 命名規則確認
 
-**含まない:**
+| 対象                                                                           | パターン         | 確認 |
+| ------------------------------------------------------------------------------ | ---------------- | ---- |
+| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE | ✅   |
+| 関数                                                                           | camelCase        | ✅   |
 
-- `SkillCreateWizard` 本体の実装
-- IPCチャンネルの変更
+## 機能要件
+
+| ID   | 要件                                                                            |
+| ---- | ------------------------------------------------------------------------------- |
+| FR-1 | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
+| FR-2 | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
+| FR-3 | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
+| FR-4 | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
+
+## マッピング定義
+
+| SkillCategory          | 日本語ラベル   | 文字数 |
+| ---------------------- | -------------- | ------ |
+| `automation`           | 自動化         | 3      |
+| `external-integration` | 外部連携       | 4      |
+| `data-analysis`        | データ分析     | 5      |
+| `code-support`         | コードサポート | 7      |
+| `other`                | その他         | 3      |
+
+## 非機能要件
+
+- UIコンポーネントから参照可能なエクスポート
+- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel に広げない）
+
+## タスク分類
+
+- 種別: **実装タスク / 非UIタスク / NON_VISUAL**
+- スケール: small
+- UI実装: なし（Phase 11は手動テスト中心）

@@ -501,7 +501,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L439 |
+| 続き | L440 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -3080,6 +3080,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L143 |
 | クイックリファレンス: カテゴリ別検索ガイド | L163 |
 | 分割ファイル一覧 | L167 |
+| 分割ファイル一覧 | L142 |
+| クイックリファレンス: カテゴリ別検索ガイド | L160 |
+| 分割ファイル一覧 | L164 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 

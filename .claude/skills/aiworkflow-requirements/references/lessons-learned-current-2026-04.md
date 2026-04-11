@@ -756,3 +756,80 @@
 > - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 教訓（L-HP-001/002/003）と TASK-FIX-WORKTREE-CONFLICT-001 教訓（L-WC-001/002/003）は [lessons-learned-health-policy-worktree-2026-04.md](lessons-learned-health-policy-worktree-2026-04.md) へ移動しました。
 > - スキルウィザード関連教訓（L-CRS-001/002, L-SMART-DEFAULT-001/002, L-HEALTH-DI-001/002, L-SKILL-INFO-STEP-001/002, L-WIZARD-EXPORT-001/002, L-GOOGLE-CAL-001/002）は [lessons-learned-skill-wizard-redesign.md](lessons-learned-skill-wizard-redesign.md) へ移動しました。
 > - W3-seq-04 使用率計装教訓（L-W3-TRACK-001/002, L-WIZARD-LANE-CLEANUP-001）は [lessons-learned-w3-usage-tracking-2026-04.md](lessons-learned-w3-usage-tracking-2026-04.md) へ移動しました。
+
+---
+
+## TASK-UI-SCHEDULE-VISUAL-PICKER-001 教訓（2026-04-09）
+
+### L-VSCPKR-001: JSDoc コメント内 `*/` は esbuild パースエラーの原因になる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `cronParser.ts` の JSDoc コメント内に `*/` を含む説明（例: `ステップ値 */n`）があると esbuild がコメント終端と誤認識しパースエラーになる |
+| 原因       | esbuild は `/*` 〜 `*/` をコメントとして解析するため、JSDoc 内に `*/` が含まれると誤って終端と判定される |
+| 解決策     | `*/` を `* /` とスペースで分割するか、コードブロック（\`\`\`）形式でサンプルを記述する。cron 式（例: `*/5`）は JSDoc の `@example` 内でも `* /5` と書く |
+| 再発防止   | cron 式や数式を JSDoc コメントで説明する際は `*/` を避けるルールを周知する。Phase 5 実装後に `npx tsc --noEmit` を早期実行してパースエラーを検出する |
+| 関連タスク | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / SK-01 |
+
+### L-VSCPKR-002: happy-dom 環境での `vi.stubGlobal("window", ...)` は React を破壊する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | 統合テストで `vi.stubGlobal("window", { api: mockApi })` を使うと React 内部の `instanceof HTMLElement` チェックが常に `false` になり、コンポーネントのレンダリングが壊れる |
+| 原因       | `vi.stubGlobal` でウィンドウ全体を差し替えると、happy-dom の `HTMLElement` プロトタイプチェーンが切断され、React の DOM 検証ロジックが正常に動作しなくなる |
+| 解決策     | `window.api` などの Electron Preload API のモックには `Object.defineProperty(window, "api", { value: mockApi, writable: true, configurable: true })` を使用する |
+| 再発防止   | テスト設定ガイドに「window.api のモックは Object.defineProperty を使うこと / vi.stubGlobal("window", ...) は禁止」を明記する |
+| 関連タスク | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / SK-02 |
+
+### L-VSCPKR-003: 変換ユーティリティを純粋関数として設計すると Vitest テストが単純化される
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 知見       | `visualConfigToCron()` / `cronToVisualConfig()` をすべて副作用のない純粋関数として実装したことで、Vitest でモックが不要になりテストが単純化された |
+| 効果       | React コンポーネント外でも利用可能なユーティリティになり、CLI / API での再利用が容易になる |
+| 適用範囲   | UI とデータ変換を分離する際、変換ユーティリティは必ず純粋関数として実装し、`useXxx` hook 内には変換ロジックを書かない |
+| 関連タスク | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / DP-02 |
+
+### L-VSCPKR-004: カバレッジ確認は Phase 7 先送りせず Phase 5-6 でインクリメンタルに行う
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 7 でまとめてカバレッジを確認した結果、`cronHumanizer` の英語 locale ブランチが未カバーと判明し Phase 6 へ手戻りが発生した |
+| 原因       | 実装・テスト追加を Phase 5-6 で行い、カバレッジ確認を Phase 7 に先送りしていた |
+| 解決策     | 各ファイルを実装するたびに `npx vitest run --coverage` を実行し、branch coverage を都度確認する |
+| 再発防止   | Phase 5-6 の完了条件チェックリストに「変更ファイルのブランチカバレッジ確認」を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / WF-01 |
+
+---
+
+## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+
+### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
+| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
+| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
+| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
+| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
+| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
+| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 12 compliance check が台帳 parity チェックで FAIL し、全体が BLOCKED になるまで artifacts.json の不一致が検出されなかった |
+| 原因       | Phase 12 標準フローに「repo root `artifacts.json` ↔ `outputs/artifacts.json` ↔ phase spec artifact 名」の3点同期チェックが含まれていなかった |
+| 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
