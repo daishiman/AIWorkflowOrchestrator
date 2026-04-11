@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2862,
+  "totalKeywords": 2869,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1171,6 +1171,7 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -1582,6 +1583,7 @@
       "security-electron-ipc-advanced.md",
       "security-skill-execution-permission.md",
       "security-skill-execution.md",
+      "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
@@ -1997,6 +1999,7 @@
       "security-implementation.md",
       "security-skill-execution-permission.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -2231,6 +2234,7 @@
       "api-ipc-auth.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
     ],
     "イベントチャネル": [
@@ -2717,6 +2721,7 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-examples.md",
       "task-workflow-completed-skill-create-ui-integration.md",
@@ -3654,6 +3659,7 @@
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -7439,6 +7445,24 @@
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
+    "WIZARD": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "ui-ux-navigation-chat-patterns.md"
+    ],
+    "FB": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "フィールド独立推論性": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
     "VALIDATION": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -7532,14 +7556,6 @@
     "コンフリクト解消": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md"
-    ],
-    "WIZARD": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
-      "ui-ux-navigation-chat-patterns.md"
     ],
     "ROUND": [
       "lessons-learned-current-2026-04.md",
@@ -7989,10 +8005,12 @@
       "ui-ux-panels.md"
     ],
     "close": [
-      "lessons-learned-phase12-lifecycle-early-b.md"
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "task-workflow-completed-recent-2026-04d.md"
     ],
     "out": [
       "lessons-learned-phase12-lifecycle-early-b.md",
+      "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-phases.md"
     ],
     "ESBUILD": [
@@ -8417,11 +8435,13 @@
     ],
     "multi": [
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "select": [
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "種別追加": [
@@ -8746,6 +8766,18 @@
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "依存関係": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "生成フロー接続": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "options": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "QuestionAnswer": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "複数選択対応": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "templates": [
@@ -12053,6 +12085,9 @@
     "テンプレート改善": [
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed.md"
+    ],
+    "clarification": [
+      "task-workflow-completed-recent-2026-04d.md"
     ],
     "impl": [
       "task-workflow-completed-recent-2026-04d.md"

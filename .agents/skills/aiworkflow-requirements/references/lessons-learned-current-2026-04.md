@@ -1,6 +1,37 @@
 # Lessons Learned（current）2026-04
 > 親ファイル: [lessons-learned-current.md](lessons-learned-current.md)
 
+## UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11）
+
+### L-FB03-001: `format` は `category` からのみ推論する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `format` を `purpose` からも推論するように読める文言が残ると、仕様の責務境界が崩れる |
+| 解決策 | `purpose -> tool/timing`、`category -> format` を矢印で固定し、`format` を category-only と明記する |
+| 標準ルール | `format` の説明には必ず category-only を書く |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+### L-FB03-002: `purpose` と `category` の責務は分離して書く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ひとつの説明文で `purpose` と `category` をまとめると、どちらが何を決めるか曖昧になる |
+| 解決策 | 役割を 1 行ずつ分け、`purpose` は tool/timing、`category` は format と固定した |
+| 標準ルール | field independence は表でなくてもよいが、責務は必ず 2 行以上に分けて書く |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+### L-FB03-003: docs-only close-out でも same-wave sync を省略しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装変更がなくても、`task-workflow` / `LOGS` / `SKILL` / `artifacts.json` がずれると後続レビューで再誤解が起きる |
+| 解決策 | docs-only でも Phase 12 成果物 6 件と skill / log / lesson を同 wave で更新した |
+| 標準ルール | docs-only close-out でも artifacts・台帳・lesson・log は同時更新する |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+---
+
 ## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
 
 ### L-SC-E2E-001: IPC handlerMap モックパターン
