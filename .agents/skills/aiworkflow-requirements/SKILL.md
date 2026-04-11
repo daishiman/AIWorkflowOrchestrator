@@ -146,29 +146,13 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 ### references/（ガイドライン）
 
-<<<<<<< Updated upstream
-| ファイル                       | 内容                                                                                                               |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `spec-guidelines.md`           | 命名規則・記述ガイドライン                                                                                         |
-| `spec-splitting-guidelines.md` | 大規模ファイル分割ガイドライン                                                                                     |
-| `ui-result-panel-pattern.md`   | ResultPanel コンポーネント設計パターン（ErrorBanner/DetailPanel/react.memo/local state 判断基準）— TASK-RT-03 確立 |
-| `lessons-learned-skill-wizard-redesign.md` | Skill Wizard Redesign（W2-seq-03a / W3-seq-04）実装知見・SkillCreateWizard オーケストレーション・inferSmartDefaults・再入防止パターン・trackEvent 計装（skill_wizard_started 等 5 イベント）・NON_VISUAL 証跡パターン |
-||||||| Stash base
-| ファイル                       | 内容                                                                                                               |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `spec-guidelines.md`           | 命名規則・記述ガイドライン                                                                                         |
-| `spec-splitting-guidelines.md` | 大規模ファイル分割ガイドライン                                                                                     |
-| `ui-result-panel-pattern.md`   | ResultPanel コンポーネント設計パターン（ErrorBanner/DetailPanel/react.memo/local state 判断基準）— TASK-RT-03 確立 |
-| `lessons-learned-skill-wizard-redesign.md` | Skill Wizard Redesign（W2-seq-03a）実装知見・SkillCreateWizard オーケストレーション・inferSmartDefaults・再入防止パターン |
-=======
 | ファイル                                         | 内容                                                                                                                                                                                                                     |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `spec-guidelines.md`                             | 命名規則・記述ガイドライン                                                                                                                                                                                               |
 | `spec-splitting-guidelines.md`                   | 大規模ファイル分割ガイドライン                                                                                                                                                                                           |
 | `ui-result-panel-pattern.md`                     | ResultPanel コンポーネント設計パターン（ErrorBanner/DetailPanel/react.memo/local state 判断基準）— TASK-RT-03 確立                                                                                                       |
-| `lessons-learned-skill-wizard-redesign.md`       | Skill Wizard Redesign（W2-seq-03a）実装知見・SkillCreateWizard オーケストレーション・inferSmartDefaults・再入防止パターン                                                                                                |
+| `lessons-learned-skill-wizard-redesign.md`       | Skill Wizard Redesign（W2-seq-03a / W3-seq-04）実装知見・SkillCreateWizard オーケストレーション・inferSmartDefaults・再入防止パターン・trackEvent 計装（skill_wizard_started 等 5 イベント）・NON_VISUAL 証跡パターン   |
 | `lessons-learned-skill-wizard-llm-connection.md` | TASK-SC-07 SkillCreateWizard LLM Connection 実装知見（L-SC07-001〜008: generationMode管理・skillSpec必須化・対称クリア・request-idガード・snapshot再読込・smartDefaults分離・deprecated管理・generationLockRef排他制御） |
->>>>>>> Stashed changes
 
 ### 連携スキル
 
