@@ -6,10 +6,45 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-08: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（LLM専用化・SmartDefault・GenerateStep再入防止・CompleteStep skillPath表示）](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+### タスク: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 SmartDefault AC-4 フォールバック仕様のフィールド独立推論性明示化（2026-04-11）
+
+| 項目       | 値                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001                                           |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 complete / Phase 13 blocked）**                  |
+| タイプ     | docs / workflow-sync / skill-sync                                                               |
+| 優先度     | 高                                                                                               |
+| 完了日     | 2026-04-11                                                                                       |
+| 対象       | `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/`                      |
+| 成果物     | `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/outputs/phase-12/`   |
+| 元未タスク | なし（docs-only close-out / 実装変更不要）                                                      |
+
+#### 実施内容
+
+- `phase-2-design.md` / `phase-4-test-creation.md` / `phase-5-implementation.md` / `phase-6-test-expansion.md` / `phase-12-documentation.md` を category-only format に是正
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成
+- `task-workflow.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を同波で更新
+- `artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同値化
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001`: PASS
+- `node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js --scan docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001 --output .tmp/unassigned-candidates.json`: PASS（0件）
+- `diff -qr docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/artifacts.json docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/outputs/artifacts.json`: PASS
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 解決策 |
+| --- | --- | --- |
+| `format` を `purpose` から誤推論する説明の残存 | Phase 12 の文言が `category-only` を明示しないまま残る | `purpose` は tool / timing、`category` は format と責務分離して明記する |
+
+---
+
 ### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
 
 | 項目       | 値                                                                                                  |

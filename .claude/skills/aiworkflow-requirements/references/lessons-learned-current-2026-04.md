@@ -1,6 +1,37 @@
 # Lessons Learned（current）2026-04
 > 親ファイル: [lessons-learned-current.md](lessons-learned-current.md)
 
+## UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11）
+
+### L-FB03-001: `format` は `category` からのみ推論する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `format` を `purpose` からも推論するように読める文言が残ると、仕様の責務境界が崩れる |
+| 解決策 | `purpose -> tool/timing`、`category -> format` を矢印で固定し、`format` を category-only と明記する |
+| 標準ルール | `format` の説明には必ず category-only を書く |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+### L-FB03-002: `purpose` と `category` の責務は分離して書く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ひとつの説明文で `purpose` と `category` をまとめると、どちらが何を決めるか曖昧になる |
+| 解決策 | 役割を 1 行ずつ分け、`purpose` は tool/timing、`category` は format と固定した |
+| 標準ルール | field independence は表でなくてもよいが、責務は必ず 2 行以上に分けて書く |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+### L-FB03-003: docs-only close-out でも same-wave sync を省略しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装変更がなくても、`task-workflow` / `LOGS` / `SKILL` / `artifacts.json` がずれると後続レビューで再誤解が起きる |
+| 解決策 | docs-only でも Phase 12 成果物 6 件と skill / log / lesson を同 wave で更新した |
+| 標準ルール | docs-only close-out でも artifacts・台帳・lesson・log は同時更新する |
+| 関連タスク | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 |
+
+---
+
 ## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
 
 ### L-SC-E2E-001: IPC handlerMap モックパターン
@@ -768,6 +799,40 @@
 | 解決策     | 各ファイルを実装するたびに `npx vitest run --coverage` を実行し、branch coverage を都度確認する |
 | 再発防止   | Phase 5-6 の完了条件チェックリストに「変更ファイルのブランチカバレッジ確認」を追加する |
 | 関連タスク | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / WF-01 |
+
+---
+
+## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+
+### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
+| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
+| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
+| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
+| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
+| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
+| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 12 compliance check が台帳 parity チェックで FAIL し、全体が BLOCKED になるまで artifacts.json の不一致が検出されなかった |
+| 原因       | Phase 12 標準フローに「repo root `artifacts.json` ↔ `outputs/artifacts.json` ↔ phase spec artifact 名」の3点同期チェックが含まれていなかった |
+| 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
 
 ---
 

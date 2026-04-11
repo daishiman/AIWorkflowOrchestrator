@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/phase-2-design.md` 以降の文言を current facts 化し、`format` を `category-only` に明示
+- Phase 12 6成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を作成
+- `task-workflow.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を same-wave で同期
+- `artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同値化
+
+### 検証証跡
+
+- `validate-phase12-implementation-guide.js`: PASS
+- `detect-unassigned-tasks.js`: PASS（0件）
+- `diff -qr artifacts.json outputs/artifacts.json`: PASS
+
+---
+
 ### タスク: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（2026-04-08）
 
 | 項目       | 値                                                                  |
