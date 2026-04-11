@@ -4,7 +4,8 @@
  * TypeScript の型チェックによる型制約検証。
  * 実行時テストではなく、コンパイル時の型安全性を確認する。
  */
-import { describe, it, expectTypeOf } from "vitest";
+import { describe, it, expect, expectTypeOf } from "vitest";
+import { SKILL_CATEGORY_LABELS, getSkillCategoryLabel } from "../skillCreator";
 import type {
   ConversationAnswers,
   QuestionAnswer,
@@ -48,6 +49,15 @@ describe("SkillInfoFormData", () => {
 
 describe("SkillCategory", () => {
   it("有効なカテゴリ値を受け入れる", () => {
+    type ExpectedSkillCategory =
+      | "automation"
+      | "external-integration"
+      | "data-analysis"
+      | "code-support"
+      | "other";
+
+    expectTypeOf<SkillCategory>().toEqualTypeOf<ExpectedSkillCategory>();
+
     const categories: SkillCategory[] = [
       "automation",
       "external-integration",
@@ -162,5 +172,115 @@ describe("SkeletonQualityFeedback", () => {
     expectTypeOf<SkeletonQualityFeedback["generationMethod"]>().toEqualTypeOf<
       "complete" | "skip"
     >();
+  });
+});
+
+// UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: TC-01〜TC-09
+describe("SKILL_CATEGORY_LABELS", () => {
+  it("should have label for automation", () => {
+    // length: 3
+    expect(SKILL_CATEGORY_LABELS.automation).toBe("自動化");
+  });
+
+  it("should have label for external-integration", () => {
+    // length: 4
+    expect(SKILL_CATEGORY_LABELS["external-integration"]).toBe("外部連携");
+  });
+
+  it("should have label for data-analysis", () => {
+    // length: 5
+    expect(SKILL_CATEGORY_LABELS["data-analysis"]).toBe("データ分析");
+  });
+
+  it("should have label for code-support", () => {
+    // length: 7
+    expect(SKILL_CATEGORY_LABELS["code-support"]).toBe("コードサポート");
+  });
+
+  it("should have label for other", () => {
+    // length: 3
+    expect(SKILL_CATEGORY_LABELS.other).toBe("その他");
+  });
+
+  it("should cover all SkillCategory values", () => {
+    const expectedKeys: SkillCategory[] = [
+      "automation",
+      "external-integration",
+      "data-analysis",
+      "code-support",
+      "other",
+    ];
+    expect(Object.keys(SKILL_CATEGORY_LABELS)).toEqual(
+      expect.arrayContaining(expectedKeys),
+    );
+    expect(Object.keys(SKILL_CATEGORY_LABELS)).toHaveLength(
+      expectedKeys.length,
+    );
+  });
+});
+
+describe("getSkillCategoryLabel", () => {
+  it("should return correct label for automation", () => {
+    expect(getSkillCategoryLabel("automation")).toBe("自動化");
+  });
+
+  it("should return correct label for external-integration", () => {
+    expect(getSkillCategoryLabel("external-integration")).toBe("外部連携");
+  });
+
+  it("should return string type for all categories", () => {
+    const categories: SkillCategory[] = [
+      "automation",
+      "external-integration",
+      "data-analysis",
+      "code-support",
+      "other",
+    ];
+    categories.forEach((cat) => {
+      expect(typeof getSkillCategoryLabel(cat)).toBe("string");
+    });
+  });
+});
+
+// UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: TC-10〜TC-13 (Phase 6 拡充)
+describe("SKILL_CATEGORY_LABELS - edge cases", () => {
+  it("should have all non-empty string labels", () => {
+    Object.values(SKILL_CATEGORY_LABELS).forEach((label) => {
+      expect(typeof label).toBe("string");
+      expect(label.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("should not have undefined values", () => {
+    Object.values(SKILL_CATEGORY_LABELS).forEach((label) => {
+      expect(label).toBeDefined();
+    });
+  });
+
+  it("keys should match SkillCategory union values exactly", () => {
+    const skillCategories: SkillCategory[] = [
+      "automation",
+      "external-integration",
+      "data-analysis",
+      "code-support",
+      "other",
+    ];
+    const labelKeys = Object.keys(SKILL_CATEGORY_LABELS) as SkillCategory[];
+    expect(labelKeys.sort()).toEqual(skillCategories.sort());
+  });
+});
+
+describe("getSkillCategoryLabel - consistency", () => {
+  it("should return same value as direct SKILL_CATEGORY_LABELS lookup", () => {
+    const categories: SkillCategory[] = [
+      "automation",
+      "external-integration",
+      "data-analysis",
+      "code-support",
+      "other",
+    ];
+    categories.forEach((cat) => {
+      expect(getSkillCategoryLabel(cat)).toBe(SKILL_CATEGORY_LABELS[cat]);
+    });
   });
 });

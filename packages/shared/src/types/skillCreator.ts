@@ -953,6 +953,28 @@ export type SkillCategory =
   | "other";
 
 /**
+ * SkillCategory の UI表示用日本語ラベルマッピング。
+ * `satisfies Record<SkillCategory, string>` により、SkillCategory に新値が追加された場合に
+ * TypeScript の型チェックで未定義ラベルを検出できる（AC-3）。
+ */
+export const SKILL_CATEGORY_LABELS = {
+  automation: "自動化",
+  "external-integration": "外部連携",
+  "data-analysis": "データ分析",
+  "code-support": "コードサポート",
+  other: "その他",
+} as const satisfies Record<SkillCategory, string>;
+
+/**
+ * SkillCategory に対応する UI表示用日本語ラベルを返す。
+ * @param category - SkillCategory 型の値
+ * @returns 対応する日本語ラベル文字列
+ */
+export function getSkillCategoryLabel(category: SkillCategory): string {
+  return SKILL_CATEGORY_LABELS[category];
+}
+
+/**
  * Step 0 のフォームデータ。
  * `skillName` は任意入力で、省略も空文字も許容する。
  */
