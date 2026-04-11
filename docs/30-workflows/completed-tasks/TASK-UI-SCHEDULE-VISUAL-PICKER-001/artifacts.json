@@ -1,0 +1,123 @@
+{
+  "feature": "TASK-UI-SCHEDULE-VISUAL-PICKER-001",
+  "created": "2026-04-09T00:00:00.000Z",
+  "lastUpdated": "2026-04-09T05:05:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-01/requirements-summary.md"]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-02/design-summary.md"]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-03/design-review-result.md"]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-04/test-spec.md",
+        "apps/desktop/src/__tests__/utils/scheduleConfigValidator.test.ts",
+        "apps/desktop/src/__tests__/utils/cronConverter.test.ts",
+        "apps/desktop/src/__tests__/utils/cronParser.test.ts",
+        "apps/desktop/src/__tests__/utils/cronHumanizer.test.ts",
+        "apps/desktop/src/__tests__/components/schedule/WeekdaySelector.test.tsx",
+        "apps/desktop/src/__tests__/components/schedule/FrequencySelector.test.tsx",
+        "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.test.tsx",
+        "apps/desktop/src/__tests__/integration/scheduleIntegration.test.tsx"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-05/implementation-summary.md",
+        "apps/desktop/src/renderer/types/visualCronConfig.ts",
+        "apps/desktop/src/renderer/utils/cronConverter.ts",
+        "apps/desktop/src/renderer/utils/cronParser.ts",
+        "apps/desktop/src/renderer/utils/cronHumanizer.ts",
+        "apps/desktop/src/renderer/utils/scheduleConfigValidator.ts",
+        "apps/desktop/src/renderer/components/schedule/FrequencySelector.tsx",
+        "apps/desktop/src/renderer/components/schedule/WeekdaySelector.tsx",
+        "apps/desktop/src/renderer/components/schedule/TimePickerSection.tsx",
+        "apps/desktop/src/renderer/components/schedule/DayOfMonthSelector.tsx",
+        "apps/desktop/src/renderer/components/schedule/CronPreview.tsx",
+        "apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-06/test-extension-summary.md",
+        "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts",
+        "apps/desktop/src/__tests__/utils/cronParser.edge.test.ts",
+        "apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-07/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-08/refactoring-summary.md"]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-09/qa-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-09T04:50:19.689Z",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/ss-001.png",
+        "outputs/phase-11/screenshots/ss-002.png",
+        "outputs/phase-11/screenshots/ss-003.png",
+        "outputs/phase-11/screenshots/ss-004.png",
+        "outputs/phase-11/screenshots/ss-005.png",
+        "outputs/phase-11/screenshots/ss-006.png",
+        "outputs/phase-11/screenshots/ss-007.png",
+        "outputs/phase-11/screenshots/ss-008.png",
+        "outputs/phase-11/screenshots/ss-009.png",
+        "outputs/phase-11/screenshots/ss-010.png",
+        "apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.tsx",
+        "apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.html",
+        "apps/desktop/scripts/capture-task-ui-schedule-visual-picker-phase11.mjs"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-09T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "pending", "completedAt": null, "artifacts": [] }
+  }
+}
