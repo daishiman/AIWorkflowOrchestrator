@@ -317,19 +317,10 @@ export const ConversationRoundStep = ({
   };
 
   const handleShowSummary = () => {
-    const q3 = internalAnswers.q3;
-    const q3SelectedOptions = q3.selectedOptions ?? [];
-    if (q3SelectedOptions.includes("定期実行")) {
-      const validation = validateSkillWizardScheduleConfig(
-        q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
-      );
-      if (validation.cronExpression || validation.timezone) {
-        setShowSummaryCard(false);
-        setScheduleTouched(true);
-        setTimezoneTouched(true);
-        return;
-      }
-    }
+    // スケジュール入力欄のエラーを表示するためにタッチ状態を更新する。
+    // バリデーションエラーがあっても生成は妨げない（警告として表示のみ）。
+    setScheduleTouched(true);
+    setTimezoneTouched(true);
     setShowSummaryCard(true);
   };
 
@@ -338,20 +329,6 @@ export const ConversationRoundStep = ({
   };
 
   const handleConfirmGenerate = () => {
-    const q3 = internalAnswers.q3;
-    const q3SelectedOptions = q3.selectedOptions ?? [];
-    if (q3SelectedOptions.includes("定期実行")) {
-      const validation = validateSkillWizardScheduleConfig(
-        q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
-      );
-      if (validation.cronExpression || validation.timezone) {
-        setShowSummaryCard(false);
-        setScheduleTouched(true);
-        setTimezoneTouched(true);
-        return;
-      }
-    }
-
     setShowSummaryCard(false);
     onGenerate(resolveGenerationMethod(internalAnswers));
   };
