@@ -2546,6 +2546,15 @@ node scripts/list-specs.js --topics
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
 | LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
 | Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
+| TASK-SC-07 SkillCreateWizard current facts | L358 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L5 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L46 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L277 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L469 |
 
 ### references/arch-state-management.md
 
@@ -2574,6 +2583,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
+| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
 
 ### references/arch-ui-components-details.md
 
@@ -3326,7 +3336,10 @@ node scripts/list-specs.js --topics
 | L-RT05-002: input kind 切替時の stale state は useEffect + workflowSnapshot 監視で解消 | L22 |
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
-| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
+| L-MSO-001: SmartDefaultResult の型は不変を維持し、UI層で変換を吸収する | L61 |
+| L-MSO-003: トリガー型選択肢（Q3パターン）のフォールバックは Phase 2 設計で明文化する | L74 |
+| L-MSO-004: スクリーンショット取得ハーネスは終了処理をテンプレート化する | L88 |
+| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L101 |
 
 ### references/lessons-learned-skill-creator-ipc-handler-scope.md
 
@@ -3386,6 +3399,21 @@ node scripts/list-specs.js --topics
 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L6 |
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
+
+### references/lessons-learned-skill-wizard-llm-connection.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| L-SC07-001: generationMode のローカル state 管理と UI 切替の分離 | L20 |
+| L-SC07-002: executePlan の skillSpec 必須化（C-1 回避） | L31 |
+| L-SC07-003: Hybrid State Pattern における対称クリアの必要性 | L42 |
+| L-SC07-004: request-id ガードによる遅延レスポンスの破棄 | L53 |
+| L-SC07-005: getWorkflowState による snapshot 再読込パターン | L64 |
+| L-SC07-006: smartDefaults の推論と Q5 外部ツール解決の分離 | L75 |
+| L-SC07-007: DescribeStep の deprecated 管理と SkillInfoStep への移行 | L86 |
+| L-SC07-008: generationLockRef による二重実行防止 | L97 |
+| 応用候補 | L108 |
 
 ### references/lessons-learned-skill-wizard-redesign.md
 
