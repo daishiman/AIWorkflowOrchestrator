@@ -833,3 +833,37 @@
 | 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+---
+
+## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+
+### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
+| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
+| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
+| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
+| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
+| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
+| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 12 compliance check が台帳 parity チェックで FAIL し、全体が BLOCKED になるまで artifacts.json の不一致が検出されなかった |
+| 原因       | Phase 12 標準フローに「repo root `artifacts.json` ↔ `outputs/artifacts.json` ↔ phase spec artifact 名」の3点同期チェックが含まれていなかった |
+| 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
