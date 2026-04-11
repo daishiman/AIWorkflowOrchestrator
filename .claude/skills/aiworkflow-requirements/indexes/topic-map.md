@@ -501,7 +501,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L440 |
+| 続き | L453 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -3437,6 +3437,9 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L293 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L318 |
 | skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L352 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
+| 依存関係 | L293 |
+| 関連ファイル | L305 |
 
 ### references/lessons-learned-templates.md
 
@@ -4139,19 +4142,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 2026-03-01 - TASK-UI-05B spec_created 同期 + 参照切れ是正 | L5 |
-| 2026-03-01 - TASK-UI-05 completed-tasks 移管 | L32 |
-| 2026-03-01 - UT-UI-05-007 未タスク登録（UI仕様同期ガード） | L57 |
-| 2026-03-01 - TASK-UI-05 UI仕様書追補（未タスク6件 + 苦戦箇所） | L83 |
-| 2026-03-01 - TASK-UI-05 Phase 12再確認（苦戦箇所テンプレート追補） | L108 |
-| [実行日時: 2026-03-06T04:42:41.549Z] | L131 |
-| 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 最終同期 | L141 |
-| 2026-03-02 - TASK-10A-B 再監査（画面証跡ベース）と仕様同期 | L176 |
-| 2026-03-05 - UT-TASK-10A-B-001 完了同期（自動修正可能フィルタボタン） | L213 |
-| 2026-03-05 - UT-TASK-10A-B-001 再監査追補（light証跡ドリフト是正） | L241 |
-| 2026-03-05 - TASK-UI-01-C Phase 12準拠の再確認（指定ディレクトリ未タスク監査） | L270 |
-| 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 教訓同期追補 | L301 |
-| 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12仕様準拠の再確認 | L326 |
-| 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期 | L355 |
+| 2026-03-01 - TASK-UI-05 completed-tasks 移管 | L36 |
+| 2026-03-01 - UT-UI-05-007 未タスク登録（UI仕様同期ガード） | L65 |
+| 2026-03-01 - TASK-UI-05 UI仕様書追補（未タスク6件 + 苦戦箇所） | L95 |
+| 2026-03-01 - TASK-UI-05 Phase 12再確認（苦戦箇所テンプレート追補） | L124 |
+| [実行日時: 2026-03-06T04:42:41.549Z] | L151 |
+| 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 最終同期 | L161 |
+| 2026-03-02 - TASK-10A-B 再監査（画面証跡ベース）と仕様同期 | L196 |
+| 2026-03-05 - UT-TASK-10A-B-001 完了同期（自動修正可能フィルタボタン） | L233 |
+| 2026-03-05 - UT-TASK-10A-B-001 再監査追補（light証跡ドリフト是正） | L261 |
+| 2026-03-05 - TASK-UI-01-C Phase 12準拠の再確認（指定ディレクトリ未タスク監査） | L290 |
+| 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 教訓同期追補 | L321 |
+| 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12仕様準拠の再確認 | L346 |
+| 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期 | L375 |
 
 ### references/logs-archive-2026-03-task-10a-c-final-audit.md
 
