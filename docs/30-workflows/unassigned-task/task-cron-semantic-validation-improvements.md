@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 2082
 task_id: TASK-CRON-SEMANTIC-VALIDATION-001
 status: open
 priority: medium

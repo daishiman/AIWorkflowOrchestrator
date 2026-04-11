@@ -1,0 +1,144 @@
+{
+  "taskId": "UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001",
+  "taskName": "Phase 12 close-out ledger/lane/artifacts 三者同期チェックリスト標準化",
+  "taskType": "docs-only",
+  "createdAt": "2026-04-11",
+  "status": "phase12_completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/current-state.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/skill-md-entry-design.md",
+        "outputs/phase-2/compliance-template-design.md",
+        "outputs/phase-2/guide-step1a-design.md",
+        "outputs/phase-2/design-consistency-check.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-plan.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/change-log.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-results.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-log.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "visualMode": "NON_VISUAL",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "phase12_completed",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "requiresUserApproval": true,
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  ],
+  "targetFiles": [
+    ".claude/skills/task-specification-creator/SKILL.md",
+    ".claude/skills/task-specification-creator/assets/phase12-task-spec-compliance-template.md",
+    ".claude/skills/task-specification-creator/references/phase-12-documentation-guide.md"
+  ],
+  "acceptanceCriteria": [
+    "AC-1: SKILL.md の よくある漏れテーブルに [FB-04] エントリが追加されていること",
+    "AC-2: phase12-task-spec-compliance-template.md に三者同期チェックリストが追加されていること",
+    "AC-3: 同期対象ファイル（backlog/completed/lane-index/artifacts × 2）が全件明示されていること",
+    "AC-4: チェックリストが Phase 12 の必須完了条件として組み込まれていること",
+    "AC-5: phase-12-documentation-guide.md の Step 1-A に三者同期手順が追記されていること",
+    "AC-6: .agents/skills/ mirror が .claude/skills/ と同期されていること"
+  ]
+}
