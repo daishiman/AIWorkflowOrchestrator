@@ -16,6 +16,19 @@ TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポ
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001 Phase 12 close-out
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに `[FB-04]`（Phase 12 close-out での ledger/lane/artifacts 5点同期漏れ）エントリ追加（v10.09.41）
+- `assets/phase12-task-spec-compliance-template.md` に FB-04 三者同期チェックリストブロック（5ファイル）を追加
+- `references/phase-12-documentation-guide.md` の Task 12-2 に FB-04 三者同期チェックセクション追加
+- `.agents/skills/task-specification-creator/` mirror へ同波同期（diff 0）
+
+### 背景
+`UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` Phase 12 実行中に、`task-workflow.md` / `task-workflow-completed.md` / `lane/index.md` / `outputs/artifacts.json` / `.claude/skills/task-specification-creator/outputs/artifacts.json` の5点を同一 wave で更新する必要があることが段階的に判明した。この知見を Phase 12 必須完了条件として標準化した。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容

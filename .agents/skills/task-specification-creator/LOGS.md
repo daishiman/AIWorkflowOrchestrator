@@ -16,6 +16,19 @@ TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポ
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001 Phase 12 close-out
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに `[FB-04]`（Phase 12 close-out での ledger/lane/artifacts 5点同期漏れ）エントリ追加（v10.09.41）
+- `assets/phase12-task-spec-compliance-template.md` に FB-04 三者同期チェックリストブロック（5ファイル）を追加
+- `references/phase-12-documentation-guide.md` の Task 12-2 に FB-04 三者同期チェックセクション追加
+- `.agents/skills/task-specification-creator/` mirror へ同波同期（diff 0）
+
+### 背景
+`UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` Phase 12 実行中に、`task-workflow.md` / `task-workflow-completed.md` / `lane/index.md` / `outputs/artifacts.json` / `.claude/skills/task-specification-creator/outputs/artifacts.json` の5点を同一 wave で更新する必要があることが段階的に判明した。この知見を Phase 12 必須完了条件として標準化した。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -27,6 +40,34 @@ TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポ
 IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内部エンジン名衝突という再発防止すべき2点を知見化した。
 
 ---
+
+## 2026-04-09 - TASK-SC-07 Phase 12 current facts sync
+
+### 変更内容
+- `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
+- `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
+- `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
+- `.claude/skills/aiworkflow-requirements/references/arch-state-management-skill-creator.md` / `arch-ui-components-core.md` を current facts に更新
+- `aiworkflow-requirements/indexes/topic-map.md` と `aiworkflow-requirements/LOGS.md` を同波で同期
+
+### 背景
+TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
+Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
+
+## 2026-04-09 - skill-wizard-multi-select-options Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-wizard-multi-select-options/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 完成
+- `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成（canonical 6成果物 PASS）
+- Phase 9〜12 全 outputs を作成し Phase 1-12 outputs 完成
+- LOGS.md 2ファイル同波更新
+
+### 背景
+
+`QuestionAnswer.selectedOption: string | null` → `selectedOptions: string[]` の型移行タスク。
+SmartDefaultResult は変更なし（UI 層の `createQuestionAnswer` で変換を吸収）。
+Phase 12 canonical 6成果物を出力し close-out 完了。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
 
