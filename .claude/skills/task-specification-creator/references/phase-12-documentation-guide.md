@@ -60,6 +60,16 @@
 - Phase 11 が NON_VISUAL の場合でも `manual-test-checklist.md` など補助成果物の有無を記録する
 - state-only の修正は NON_VISUAL と判定し、manual-test-checklist.md と自動テスト結果を残す
 
+### FB-04: ledger / lane / artifacts 三者同期チェック（Task 12-2 必須）
+
+- `system-spec-update-summary.md` に、以下 5 対象の同期結果を **同一 wave** で記録する
+- `task-workflow.md`（backlog ledger）: 完了タスクが open 側に残っていないことを確認する
+- `task-workflow-completed.md`（completed ledger）: 完了タスク記録を current facts に合わせる
+- `lane/index.md`（lane index）: lane 状態とタスク参照を更新する（lane 非採用 workflow は N/A 理由を残す）
+- `outputs/artifacts.json`（workflow artifacts）: status / phase artifacts を current facts に合わせる
+- `.claude/skills/task-specification-creator/outputs/artifacts.json`（skill artifacts）: status / artifact metadata を current facts に合わせる
+- `artifacts.json` 系 2 ファイルは片側のみ更新を禁止し、差分理由がある場合は両方に明記する
+
 ### 設計タスク（docs-only）での注意
 
 設計タスクであっても Step 1-A〜Step 2 の**実ファイル更新は必須**である。
@@ -98,7 +108,7 @@
 - duplicate source / ID collision のような source document 側の既知ドリフトは、今回差分起因でない限り `baseline / wider governance` として扱い、重複した新規未タスクを増やさない
 - `scope-definition.md` など既存成果物へ implementation anchor を追記した時は、target source path の実在確認と `system-spec-update-summary.md` / `documentation-changelog.md` への同値記録をセットで行う
 - Phase 12 再監査で follow-up 自体を同一 wave 内に解消した場合は、open set から除外し、`docs/30-workflows/completed-tasks/unassigned-task/` へ完了移管した path を current fact として残す
-- `open` と `done` を同じ表に並べる場合は、`status` 列か等価な記法で未完了と完了移管を明示し、`documentation-changelog.md` / `system-spec-update-summary.md` / `task-workflow-backlog.md` の記述粒度をそろえる
+- `open` と `done` を同じ表に並べる場合は、`status` 列か等価な記法で未完了と完了移管を明示し、`documentation-changelog.md` / `system-spec-update-summary.md` / `task-workflow.md` の記述粒度をそろえる
 
 ## Task 12-5: skill feedback
 
@@ -119,6 +129,7 @@
 - `outputs/phase-11/manual-test-result.md` が `not_run` のままなら Phase 11 / 12 を completed にしない
 - internal adapter の実装だけで public IPC / preload contract 更新済みとは記録しない
 - Phase 13 は user approval 未取得なら `blocked` を維持し、completed へ進めない
+- **[FB-04]** `task-workflow.md` / `task-workflow-completed.md` / `lane/index.md` / `outputs/artifacts.json` / skill artifacts の 5 対象が同一 wave で PASS（lane 非採用時のみ N/A 可）であることを確認する
 - skill を更新した場合は canonical `.claude/skills/...` と mirror `.agents/skills/...` の parity も記録する
 - compliance-check は自己申告 PASS で閉じず、validator 実測値、artifact existence、mirror parity、Phase 11 evidence の実ファイル根拠を結び付けて記録する
 
