@@ -2555,6 +2555,8 @@ node scripts/list-specs.js --topics
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
 | LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L277 |
 | Workflow Snapshot State 配置ルール（TASK-SDK-04） | L469 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
 
 ### references/arch-state-management.md
 
@@ -2584,6 +2586,7 @@ node scripts/list-specs.js --topics
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 | SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
+| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 
 ### references/arch-ui-components-details.md
 
