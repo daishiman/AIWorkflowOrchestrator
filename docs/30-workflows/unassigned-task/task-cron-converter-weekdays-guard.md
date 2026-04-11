@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 2081
 task_id: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
 status: open
 priority: medium
