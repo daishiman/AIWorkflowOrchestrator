@@ -19,6 +19,7 @@ import type {
 } from "@repo/shared/types/skillCreator";
 import { ApplySummaryCard } from "./ApplySummaryCard";
 import { InterviewProgressBar } from "./InterviewProgressBar";
+import { validateSkillWizardScheduleConfig } from "../../../utils/scheduleConfigValidator";
 
 // ─── 問定義 ──────────────────────────────────────────────────────────────────
 
@@ -79,9 +80,11 @@ const TIMEZONE_OPTIONS =
       ];
 
 function isQuestionAnswered(answer: QuestionAnswer): boolean {
+  const selectedOptions = answer.selectedOptions ?? [];
+  const freeText = answer.freeText ?? "";
   return (
-    answer.selectedOptions.length > 0 ||
-    answer.freeText.trim().length > 0 ||
+    selectedOptions.length > 0 ||
+    freeText.trim().length > 0 ||
     answer.scheduleConfig !== undefined
   );
 }
@@ -139,67 +142,6 @@ function createQuestionAnswer(
   return { selectedOptions: [], freeText: defaultValue };
 }
 
-function isValidCronField(field: string, min: number, max: number): boolean {
-  const parts = field.split(",");
-  if (parts.length === 0) {
-    return false;
-  }
-
-  return parts.every((part) => {
-    const trimmed = part.trim();
-    if (!trimmed) {
-      return false;
-    }
-
-    const [base, stepPart] = trimmed.split("/");
-    if (stepPart !== undefined && !/^\d+$/.test(stepPart)) {
-      return false;
-    }
-
-    const step = stepPart ? Number(stepPart) : null;
-    if (step !== null && (step < 1 || !Number.isInteger(step))) {
-      return false;
-    }
-
-    if (base === "*") {
-      return true;
-    }
-
-    if (/^\d+$/.test(base)) {
-      const value = Number(base);
-      return value >= min && value <= max;
-    }
-
-    const rangeMatch = base.match(/^(\d+)-(\d+)$/);
-    if (!rangeMatch) {
-      return false;
-    }
-
-    const start = Number(rangeMatch[1]);
-    const end = Number(rangeMatch[2]);
-    return start >= min && end <= max && start <= end;
-  });
-}
-
-function isValidFiveFieldCronExpression(expression: string): boolean {
-  const fields = expression.trim().split(/\s+/);
-  if (fields.length !== 5) {
-    return false;
-  }
-
-  const validators: Array<[number, number]> = [
-    [0, 59],
-    [0, 23],
-    [1, 31],
-    [1, 12],
-    [0, 7],
-  ];
-
-  return fields.every((field, index) =>
-    isValidCronField(field, validators[index][0], validators[index][1]),
-  );
-}
-
 function applySmartDefaults(
   answers: ConversationAnswers,
   smartDefaults: SmartDefaultResult,
@@ -233,17 +175,6 @@ function applySmartDefaults(
   return { q1, q2, q3, q4, q5, q6 };
 }
 
-function validateCronExpression(value: string): string | null {
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return "cron式を入力してください";
-  }
-
-  return isValidFiveFieldCronExpression(trimmed)
-    ? null
-    : "cron式の形式が正しくありません";
-}
-
 function resolveGenerationMethod(
   answers: ConversationAnswers,
 ): "complete" | "skip" {
@@ -251,7 +182,6 @@ function resolveGenerationMethod(
     ? "complete"
     : "skip";
 }
-
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface ConversationRoundStepProps {
@@ -289,6 +219,7 @@ export const ConversationRoundStep = ({
   );
   const [showSummaryCard, setShowSummaryCard] = useState(false);
   const [scheduleTouched, setScheduleTouched] = useState(false);
+  const [timezoneTouched, setTimezoneTouched] = useState(false);
 
   const isQ5Required = formData.category === "external-integration";
   const currentQuestion = currentPage === 1 ? 1 : 4;
@@ -301,7 +232,7 @@ export const ConversationRoundStep = ({
 
   const handleOptionSelect = (key: QuestionKey, option: string) => {
     setInternalAnswers((prev) => {
-      const current = prev[key].selectedOptions;
+      const current = prev[key].selectedOptions ?? [];
       const isSelected = current.includes(option);
       const nextSelectedOptions = isSelected
         ? current.filter((o) => o !== option) // 解除
@@ -320,7 +251,10 @@ export const ConversationRoundStep = ({
             ? (next.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG)
             : undefined,
         };
-        if (!hasSchedule) setScheduleTouched(false);
+        if (!hasSchedule) {
+          setScheduleTouched(false);
+          setTimezoneTouched(false);
+        }
       }
 
       return next;
@@ -339,15 +273,16 @@ export const ConversationRoundStep = ({
 
   const handleCronChange = (value: string) => {
     setInternalAnswers((prev) => {
+      const selectedOptions = prev.q3.selectedOptions ?? [];
       const next: ConversationAnswers = {
         ...prev,
         q3: {
           ...prev.q3,
           // cron 入力中は「定期実行」が selectedOptions に含まれていることを保証する。
           // handleOptionSelect 経由で通常は含まれているが、万が一含まれていない場合は自動追加する。
-          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
-            ? prev.q3.selectedOptions
-            : [...prev.q3.selectedOptions, "定期実行"],
+          selectedOptions: selectedOptions.includes("定期実行")
+            ? selectedOptions
+            : [...selectedOptions, "定期実行"],
           scheduleConfig: {
             ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             cronExpression: value,
@@ -361,14 +296,15 @@ export const ConversationRoundStep = ({
 
   const handleTimezoneChange = (value: string) => {
     setInternalAnswers((prev) => {
+      const selectedOptions = prev.q3.selectedOptions ?? [];
       const next: ConversationAnswers = {
         ...prev,
         q3: {
           ...prev.q3,
           // タイムゾーン変更時も「定期実行」の selectedOptions 維持を保証する。
-          selectedOptions: prev.q3.selectedOptions.includes("定期実行")
-            ? prev.q3.selectedOptions
-            : [...prev.q3.selectedOptions, "定期実行"],
+          selectedOptions: selectedOptions.includes("定期実行")
+            ? selectedOptions
+            : [...selectedOptions, "定期実行"],
           scheduleConfig: {
             ...(prev.q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG),
             timezone: value,
@@ -377,9 +313,23 @@ export const ConversationRoundStep = ({
       };
       return next;
     });
+    setTimezoneTouched(true);
   };
 
   const handleShowSummary = () => {
+    const q3 = internalAnswers.q3;
+    const q3SelectedOptions = q3.selectedOptions ?? [];
+    if (q3SelectedOptions.includes("定期実行")) {
+      const validation = validateSkillWizardScheduleConfig(
+        q3.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
+      );
+      if (validation.cronExpression || validation.timezone) {
+        setShowSummaryCard(false);
+        setScheduleTouched(true);
+        setTimezoneTouched(true);
+        return;
+      }
+    }
     setShowSummaryCard(true);
   };
 
@@ -398,7 +348,8 @@ export const ConversationRoundStep = ({
     const q = QUESTIONS[idx];
     const key = q.key as QuestionKey;
     const answer = internalAnswers[key];
-    const selectedOptions = answer.selectedOptions;
+    const selectedOptions = answer.selectedOptions ?? [];
+    const freeText = answer.freeText ?? "";
     const freeTextId = `${key}-free-text`;
     const freeTextLabel = `Q${idx + 1} 自由入力`;
 
@@ -406,9 +357,19 @@ export const ConversationRoundStep = ({
       isQ5Required && key === "q5" ? `${q.label}（必須★）` : q.label;
     const scheduleConfig =
       key === "q3" ? (answer.scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG) : null;
+    const scheduleValidation =
+      key === "q3" && selectedOptions.includes("定期実行")
+        ? validateSkillWizardScheduleConfig(
+            scheduleConfig ?? DEFAULT_SCHEDULE_CONFIG,
+          )
+        : null;
     const scheduleError =
       key === "q3" && selectedOptions.includes("定期実行") && scheduleTouched
-        ? validateCronExpression(scheduleConfig?.cronExpression ?? "")
+        ? (scheduleValidation?.cronExpression ?? null)
+        : null;
+    const timezoneError =
+      key === "q3" && selectedOptions.includes("定期実行") && timezoneTouched
+        ? (scheduleValidation?.timezone ?? null)
         : null;
 
     return (
@@ -455,7 +416,7 @@ export const ConversationRoundStep = ({
           </label>
           <textarea
             id={freeTextId}
-            value={answer.freeText}
+            value={freeText}
             onChange={(e) => handleFreeTextChange(key, e.target.value)}
             placeholder={`${q.label}の補足を入力`}
             rows={2}
@@ -510,6 +471,10 @@ export const ConversationRoundStep = ({
                 id="schedule-timezone"
                 value={scheduleConfig?.timezone ?? DEFAULT_TIMEZONE}
                 onChange={(e) => handleTimezoneChange(e.target.value)}
+                aria-invalid={Boolean(timezoneError)}
+                aria-describedby={
+                  timezoneError ? "schedule-timezone-error" : undefined
+                }
                 className="w-full rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]"
               >
                 {TIMEZONE_OPTIONS.map((timezone) => (
@@ -521,6 +486,15 @@ export const ConversationRoundStep = ({
               <p className="text-[11px] text-[var(--text-secondary)]">
                 実行基準の地域を選びます。
               </p>
+              {timezoneError && (
+                <p
+                  id="schedule-timezone-error"
+                  role="alert"
+                  className="text-xs text-red-600"
+                >
+                  {timezoneError}
+                </p>
+              )}
             </div>
           </div>
         )}

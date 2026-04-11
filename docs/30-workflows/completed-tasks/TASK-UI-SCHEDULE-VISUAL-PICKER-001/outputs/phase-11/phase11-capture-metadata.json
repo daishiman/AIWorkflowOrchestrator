@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-04-09T04:50:19.689Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5186",
+  "harnessPath": "/phase11-task-ui-schedule-visual-picker.html",
+  "screenshots": [
+    {
+      "id": "ss-001",
+      "scenario": 1,
+      "file": "screenshots/ss-001.png",
+      "description": "VisualCronPicker 初期表示（毎日 09:00 の既定状態）",
+      "state": "initial-default",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-001&preset=empty",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:45.470Z",
+      "required": true
+    },
+    {
+      "id": "ss-002",
+      "scenario": 1,
+      "file": "screenshots/ss-002.png",
+      "description": "毎日 9:00 設定後・CronPreview 表示",
+      "state": "configured-daily",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-002&preset=daily",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:45.819Z",
+      "required": true
+    },
+    {
+      "id": "ss-003",
+      "scenario": 2,
+      "file": "screenshots/ss-003.png",
+      "description": "WeekdaySelector で月水金選択状態",
+      "state": "weekday-selected",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-003&preset=daily",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:46.519Z",
+      "required": true
+    },
+    {
+      "id": "ss-004",
+      "scenario": 3,
+      "file": "screenshots/ss-004.png",
+      "description": "DayOfMonthSelector で 1 日選択状態",
+      "state": "dom-selected",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-004&preset=monthly",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:46.854Z",
+      "required": true
+    },
+    {
+      "id": "ss-005",
+      "scenario": 4,
+      "file": "screenshots/ss-005.png",
+      "description": "既存スケジュール読み込み直後（逆変換確認）",
+      "state": "loaded-from-store",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-005&preset=weekly",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:47.178Z",
+      "required": true
+    },
+    {
+      "id": "ss-006",
+      "scenario": 5,
+      "file": "screenshots/ss-006.png",
+      "description": "AdvancedToggle ON・直接入力状態",
+      "state": "advanced-mode",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-006&preset=custom",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:47.547Z",
+      "required": true
+    },
+    {
+      "id": "ss-007",
+      "scenario": 6,
+      "file": "screenshots/ss-007.png",
+      "description": "曜日未選択エラー表示状態",
+      "state": "validation-error",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-007&preset=weekly",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:48.195Z",
+      "required": true
+    },
+    {
+      "id": "ss-008",
+      "scenario": 7,
+      "file": "screenshots/ss-008.png",
+      "description": "キーボードフォーカスリング表示状態",
+      "state": "keyboard-focus",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-008&preset=daily",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:48.726Z",
+      "required": true
+    },
+    {
+      "id": "ss-009",
+      "scenario": 8,
+      "file": "screenshots/ss-009.png",
+      "description": "ウィンドウ幅 800px での全体レイアウト",
+      "state": "small-screen",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=ss-009&preset=daily",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 800,
+        "height": 980
+      },
+      "capturedAt": "2026-04-09T04:49:49.051Z",
+      "required": true
+    },
+    {
+      "id": "ss-010",
+      "scenario": 9,
+      "file": "screenshots/ss-010.png",
+      "description": "cronExpression / timezone のエラー表示状態",
+      "state": "validation-error-skill-wizard",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=wizard&scenario=ss-010",
+      "selector": "[data-testid=\"phase11-wizard-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 1200
+      },
+      "capturedAt": "2026-04-09T04:50:19.682Z",
+      "required": true
+    }
+  ]
+}

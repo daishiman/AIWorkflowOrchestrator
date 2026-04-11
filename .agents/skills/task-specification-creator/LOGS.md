@@ -3,6 +3,33 @@
 ## 役割
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
+## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 「よくある漏れ」テーブルに Feedback VSCPKR-01（JSDoc 内 `*/` が esbuild パースエラーの原因になる）・VSCPKR-02（happy-dom 環境で `vi.stubGlobal("window", ...)` 禁止 / `Object.defineProperty` 使用必須）を追記
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-VSCPKR-001〜004 を追加（esbuild JSDoc ピットフォール / vi.stubGlobal 禁止 / 純粋関数設計 / カバレッジ早期確認）
+- 未タスク仕様書2件を新規作成（`task-cron-semantic-validation-improvements.md` / `task-cron-converter-weekdays-guard.md`）
+
+### 背景
+
+TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12 スキルフィードバックレポート（SK-01/SK-02/WF-01/DP-02）の知見をスキルへ反映。esbuild JSDoc ピットフォールと happy-dom vi.stubGlobal 禁止ルールは Electron レンダラープロセステストで繰り返し踏みやすいパターンのため優先的に記録。
+
+---
+
+## 2026-04-11 - UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001 Phase 12 close-out
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに `[FB-04]`（Phase 12 close-out での ledger/lane/artifacts 5点同期漏れ）エントリ追加（v10.09.41）
+- `assets/phase12-task-spec-compliance-template.md` に FB-04 三者同期チェックリストブロック（5ファイル）を追加
+- `references/phase-12-documentation-guide.md` の Task 12-2 に FB-04 三者同期チェックセクション追加
+- `.agents/skills/task-specification-creator/` mirror へ同波同期（diff 0）
+
+### 背景
+`UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` Phase 12 実行中に、`task-workflow.md` / `task-workflow-completed.md` / `lane/index.md` / `outputs/artifacts.json` / `.claude/skills/task-specification-creator/outputs/artifacts.json` の5点を同一 wave で更新する必要があることが段階的に判明した。この知見を Phase 12 必須完了条件として標準化した。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -14,6 +41,34 @@
 IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内部エンジン名衝突という再発防止すべき2点を知見化した。
 
 ---
+
+## 2026-04-09 - TASK-SC-07 Phase 12 current facts sync
+
+### 変更内容
+- `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
+- `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
+- `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
+- `.claude/skills/aiworkflow-requirements/references/arch-state-management-skill-creator.md` / `arch-ui-components-core.md` を current facts に更新
+- `aiworkflow-requirements/indexes/topic-map.md` と `aiworkflow-requirements/LOGS.md` を同波で同期
+
+### 背景
+TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
+Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
+
+## 2026-04-09 - skill-wizard-multi-select-options Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-wizard-multi-select-options/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 完成
+- `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成（canonical 6成果物 PASS）
+- Phase 9〜12 全 outputs を作成し Phase 1-12 outputs 完成
+- LOGS.md 2ファイル同波更新
+
+### 背景
+
+`QuestionAnswer.selectedOption: string | null` → `selectedOptions: string[]` の型移行タスク。
+SmartDefaultResult は変更なし（UI 層の `createQuestionAnswer` で変換を吸収）。
+Phase 12 canonical 6成果物を出力し close-out 完了。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
 
@@ -39,6 +94,18 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 `skill-feedback-report.md` の EC-09 文字数ミス教訓（`"十文字以上の目的"` は7文字）を「よくある漏れ」として体系化した。
 テスト境界値に日本語漢数字が含まれる場合の実文字数確認を Phase 4 のガードとして定着させる。
 
+## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
+- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
+- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
+
+### 背景
+W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
+manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -52,18 +119,6 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 
 UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 の Phase 12 close-out として、全成果物を同波で同期した。
 `skill-lifecycle-execution-input` textarea 削除タスクは実装・テスト・全成果物が完了し、Phase 13（PR作成）blocked 状態へ移行した。
-
-## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
-- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
-- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
-
-### 背景
-W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
-manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
