@@ -2,6 +2,16 @@
 
 ## 役割
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
+
+### 変更内容
+- `phase-2-design.md` / `phase-4-test-creation.md` / `phase-5-implementation.md` / `phase-6-test-expansion.md` / `phase-12-documentation.md` を `purpose -> tool/timing` と `category -> format` の責務分離に是正
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts 化
+- `task-workflow.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を同波更新
+
+### 背景
+docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sync を残しておくことで、format を purpose から誤推論する再発を防げる。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 ## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
 
