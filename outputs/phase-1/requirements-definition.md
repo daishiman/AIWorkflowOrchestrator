@@ -1,41 +1,81 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 1: 要件定義 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## タスク概要
+## 実施日時
 
-`SkillLifecyclePanel.tsx` からテキストエリアを削除し、ウィザード遷移ボタンへ置き換える。
+2026-04-08
 
-## 現状分析（Step 0 P50チェック結果）
+## 目的
 
-| 対象                                       | 状態                              |
-| ------------------------------------------ | --------------------------------- |
-| `skill-lifecycle-request-input` textarea   | PR #2036で削除済み                |
-| `skill-lifecycle-open-wizard-button`       | PR #2036で追加済み                |
-| `skill-lifecycle-execution-input` textarea | 行1793に残存（本タスクで削除）    |
-| `executionPrompt` state                    | 行438-440に残存（本タスクで削除） |
+`useMainlineExecutionAccess` フック内の独自 `apiKeyDegraded` 算出ロジックを削除し、`resolveHealthPolicy()` / `buildMainlineExecutionAccessState()` を経由する形へ統一するための要件を定義する。
 
-## 受け入れ基準
+## 対象
 
-| AC番号 | 基準                                                          | 状態           |
-| ------ | ------------------------------------------------------------- | -------------- |
-| AC-1   | `skill-lifecycle-request-input` textarea が削除               | 完了済み       |
-| AC-2   | `skill-lifecycle-execution-input` textarea が削除             | 本タスクで実施 |
-| AC-3   | `data-testid="skill-lifecycle-open-wizard-button"` ボタン追加 | 完了済み       |
-| AC-4   | `executionPrompt` state がコード上に残らない                  | 本タスクで実施 |
-| AC-5   | 既存テストファイル6本が全てPASS                               | 本タスクで実施 |
-| AC-6   | Phase 9 QA基準                                                | 本タスクで実施 |
-| AC-7   | SkillCreateWizard本体実装なし                                 | スコープ外     |
-| AC-8   | IPCチャンネル変更なし                                         | スコープ外     |
+- `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts`
+- `apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts`
+
+## 要件サマリー
+
+| 項目           | 内容                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| タスク分類     | NON_VISUAL / refactor                                                                                        |
+| 変更対象       | 1 hook + 1 test file                                                                                         |
+| 期待結果       | `healthPolicy` を生成して `buildMainlineExecutionAccessState()` に渡し、独自 `apiKeyDegraded` 算出を削除する |
+| インポート規則 | `resolveHealthPolicy` は `@repo/shared/types` から import する                                               |
+
+## 調査結果
+
+| 観点                                           | 結果                                                            |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| `selectedHealthStatus` の導出                  | `selectedProviderId` と `llmHealthStatus` から導出              |
+| `buildMainlineExecutionAccessState()` の受け口 | `healthPolicy?: HealthPolicy` を受け取れる                      |
+| `resolveHealthPolicy` の export                | `packages/shared/src/types/index.ts` から barrel export 済み    |
+| `apiKeyDegraded` の扱い                        | hook 内の独自算出は削除対象、shared 側の型/関数では継続利用あり |
+
+## HealthPolicyInput へのマッピング
+
+| HealthPolicyInput フィールド | マッピング元                   | 変換方法                   |
+| ---------------------------- | ------------------------------ | -------------------------- |
+| `connectionStatus`           | `selectedHealthStatus?.status` | `?? "disconnected"` で補完 |
+| `isApiKeyValid`              | `credentials.apiKeyValid`      | そのまま渡す               |
+| `apiKeyDegraded`             | 独自算出ロジックの代替         | `false` を渡す             |
+| `isRateLimited`              | hook 内に該当変数なし          | `false` を渡す             |
+| `lastHealthCheck`            | `selectedHealthStatus`         | `?? null` で補完           |
+
+## 受入基準
+
+| AC   | 内容                                                                         | 確認方法                                                                                                      |
+| ---- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| AC-1 | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | hook で `resolveHealthPolicy` の import と呼び出しを確認                                                      |
+| AC-2 | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | hook の呼び出し引数を確認                                                                                     |
+| AC-3 | `apiKeyDegraded` 独自算出ロジックが削除されている                            | hook 内の `const apiKeyDegraded = ...` が存在しないことを確認                                                 |
+| AC-4 | `@repo/shared/types` 経由でインポートしている                                | import 文を確認                                                                                               |
+| AC-5 | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
+| AC-6 | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              |
 
 ## スコープ
 
-**含む:**
+### 含む
 
-- `SkillLifecyclePanel.tsx` の `skill-lifecycle-execution-input` textarea削除
-- `executionPrompt` state・ハンドラの削除
-- `canExecuteSkill`・`handleExecute`・`handlePlanImprovement` の更新
-- 既存テストファイル6本への `skill-lifecycle-execution-input` 非存在テスト追加
+- `resolveHealthPolicy` の import 追加
+- `resolveHealthPolicy()` の呼び出し追加
+- `buildMainlineExecutionAccessState()` への `healthPolicy` 引き渡し
+- `apiKeyDegraded` の独自算出削除
+- フック用ユニットテストの更新
 
-**含まない:**
+### 含まない
 
-- `SkillCreateWizard` 本体の実装
-- IPCチャンネルの変更
+- `resolveHealthPolicy()` の実装変更
+- `buildMainlineExecutionAccessState()` の実装変更
+- UI 変更
+- スクリーンショット取得
+
+## 成果物
+
+| 成果物             | パス                                         | 説明                               |
+| ------------------ | -------------------------------------------- | ---------------------------------- |
+| 要件定義書         | `outputs/phase-1/requirements-definition.md` | 調査結果・要件定義                 |
+| 状態変数マッピング | `outputs/phase-1/state-mapping.md`           | HealthPolicyInput の詳細マッピング |
+
+## 結論
+
+Phase 2 へ進行可能。`outputs/phase-1/state-mapping.md` のマッピングを設計インプットとして使用する。
