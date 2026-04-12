@@ -1,0 +1,132 @@
+{
+  "taskId": "UT-SKILL-WIZARD-CATEGORY-UI-ICON-001",
+  "taskName": "skill-info-step-category-ui-icon",
+  "featureName": "skill-info-step-category-ui-icon",
+  "createdDate": "2026-04-11",
+  "status": "blocked",
+  "taskType": "UI task",
+  "phase11Type": "VISUAL",
+  "issueUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/2028",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-1"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-2"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "specFile": "phase-3-design-review.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-3"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "specFile": "phase-4-test-creation.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-4"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "specFile": "phase-5-implementation.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-5"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-6"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-7"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "specFile": "phase-8-refactoring.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-8"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "specFile": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-9"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "specFile": "phase-10-final-review.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-10"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "specFile": "phase-11-manual-test.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-11"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "specFile": "phase-12-documentation.md",
+      "status": "completed",
+      "outputDir": "outputs/phase-12"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "specFile": "phase-13-pr-creation.md",
+      "status": "blocked",
+      "outputDir": "outputs/phase-13"
+    }
+  ],
+  "targetFiles": [
+    {
+      "path": "apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx",
+      "operation": "modify",
+      "description": "CATEGORY_OPTIONS 拡張・CategoryOption 型追加・ボタン UI 変更"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx",
+      "operation": "modify",
+      "description": "アイコン・ツールチップ・A11y テスト追加"
+    },
+    {
+      "path": "apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs",
+      "operation": "add",
+      "description": "Phase 11 スクリーンショット capture script"
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: CATEGORY_OPTIONS に icon フィールド追加",
+    "AC-2: CATEGORY_OPTIONS に description フィールド追加",
+    "AC-3: ボタンにアイコン表示",
+    "AC-4: ホバー時ツールチップ（title 属性）",
+    "AC-5: aria-label 追加（A11y 改善）",
+    "AC-6: 既存動作（aria-pressed・クリック）維持",
+    "AC-7: テスト追加（アイコン・ツールチップ・A11y）",
+    "AC-8: typecheck / lint / test 全 PASS"
+  ],
+  "relatedIssues": ["UT-SKILL-WIZARD-VALIDATION-MIN-LENGTH-001"],
+  "parallelPrNote": "UT-SKILL-WIZARD-VALIDATION-MIN-LENGTH-001 と同一ファイル変更のため、並列実施時は PR を分離すること"
+}
