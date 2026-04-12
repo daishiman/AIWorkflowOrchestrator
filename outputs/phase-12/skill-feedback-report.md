@@ -1,30 +1,24 @@
-# Phase 12: スキルフィードバックレポート - UT-SKILL-WIZARD-W2-seq-03a
+# Phase 12: スキルフィードバックレポート - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
-## メタ情報
+## 総評
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
+- 重大課題: 0 件
+- 改善観点: 3 件
 
----
+## 改善観点
 
-## フィードバック件数: 3件
+| 対象                | 内容                                                                         | 優先度 |
+| ------------------- | ---------------------------------------------------------------------------- | ------ |
+| manual-test-report  | source-level PASS と environment blocker を分けて書く構成が読みやすい        | 中     |
+| ledger sync         | root ledger と `outputs/artifacts.json` を同一内容に保つと parity 確認が速い | 高     |
+| Phase 11 NON_VISUAL | visual review を別ファイルに分ける形式は、pure function task で分かりやすい  | 低     |
 
-### FB-01: inferSmartDefaults の分離が有効
+## 良かった点
 
-- **観点**: テスト可能性・再利用性
-- **内容**: `inferSmartDefaults` を `wizard/utils/inferSmartDefaults.ts` に分離することで、コンポーネントに依存せず単体テストが書きやすくなった。
-- **対応**: Phase 8 で実施済み
+- `cronConverter.ts` の guard は 1 箇所で完結している
+- `cronConverter.edge.test.ts` の追加で空曜日の回帰を明示できている
+- JSDoc が guard の意図を文章で補完している
 
-### FB-02: TASK-SC-07 テストのスキップ記録が有用
+## 結論
 
-- **観点**: テスト保守性
-- **内容**: `describe.skip` + TODO コメントにより、削除対象テストの理由が明確になった。後から経緯を追いやすい。
-- **対応**: Phase 5 で実施済み
-
-### FB-03: Phase 11 のスクリーンショット参照と path drift 是正を明示すると追跡しやすい
-
-- **観点**: 証跡密度・参照整合性
-- **内容**: `implementation-guide.md` に Phase 11 のスクリーンショット参照を追加し、`skill-wizard-redesign-lane/index.md` の W2-seq-03a path を current facts に揃えることで、PR 本文や後続レビューから証跡を追いやすくなった。
-- **対応**: Phase 12 final-doc sync で実施済み
+この task では、source-level の確認と ledger sync を分離した記録が機能している。

@@ -66,3 +66,20 @@
 #### lessons-learned
 
 - `references/lessons-learned-skill-wizard-redesign.md` を参照
+
+---
+
+## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 完了日: 2026-04-12
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+- AC一覧:
+  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
+  - AC-2: weekdays重複除去・昇順ソートPASS
+  - AC-5: JSDocに空weekdays挙動を明記 PASS
+- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。

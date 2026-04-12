@@ -1,34 +1,28 @@
-# Phase 12: 未タスク検出レポート - UT-SKILL-WIZARD-W2-seq-03a
+# Phase 12: 未タスク検出 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
-## メタ情報
+## 判定
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
+- 重大未タスク: 0 件
+- 軽微な未タスク: 0 件
 
----
+## 確認対象
 
-## 検出結果
+| 対象                         | 確認結果 | 補足                                                           |
+| ---------------------------- | -------- | -------------------------------------------------------------- |
+| `cronConverter.ts` の guard  | PASS     | weekly 空曜日の空文字返却が存在する                            |
+| `cronConverter.edge.test.ts` | PASS     | 空曜日ケースと weekly 正常系を含む                             |
+| `cronConverter.test.ts`      | PASS     | weekly / daily / monthly / custom の regression を保持している |
+| Phase 11 環境ブロッカー      | 対象外   | esbuild mismatch は product task ではない                      |
+| TODO / FIXME / HACK / XXX    | 未検出   | current task の範囲では未タスク化なし                          |
 
-未タスク件数: **1件**
+## 未タスクに含めなかった項目
 
-| #   | タスクID                                  | タスク名                                                     | 優先度 | 規模   |
-| --- | ----------------------------------------- | ------------------------------------------------------------ | ------ | ------ |
-| 1   | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 | SkillCreateWizard LLM生成フロー describe.skip クリーンアップ | 低     | 小規模 |
+| 項目                                    | 理由                                                    |
+| --------------------------------------- | ------------------------------------------------------- |
+| monthly / custom の追加ガード           | current task の範囲外であり、今回の AC には入っていない |
+| UI 側の追加バリデーション整理           | pure function の guard 追加とは別責務として扱う         |
+| `manual-test-report` の runtime blocker | 環境要因であり product backlog には入れていない         |
 
-### 検出詳細
+## 結論
 
-**UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001**
-
-- **発見箇所**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` 行 144（`describe.skip`）
-- **発見根拠**: W2-seq-03a で `generationMode` ラジオボタン UI を削除したことにより、旧 TASK-SC-07 の `planSkill`/`executePlan` フローに対する 30 テストが `describe.skip` でスキップ状態になっている。TODO コメントが明示的に本タスクの必要性を記録している。
-- **仕様書パス**: `docs/30-workflows/unassigned-task/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001.md`
-- **影響**: CI には現時点で影響なし。将来 `describe.skip` が外れた場合に 30 テストが一斉失敗するリスクあり。
-
-## スコープ外として識別した項目
-
-| 項目                                                   | 判断理由                  |
-| ------------------------------------------------------ | ------------------------- |
-| `wizard/index.ts` の `GenerationMode` エクスポート削除 | W2-seq-03b の担当スコープ |
-| `W3-seq-04` 計装タスクの実装                           | 別タスク（ready 状態）    |
+product 観点では、追加で起票する未タスクは残っていない。
