@@ -1,32 +1,30 @@
-# Phase 12: スキルフィードバックレポート — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 12: スキルフィードバックレポート - UT-SKILL-WIZARD-W2-seq-03a
 
-## 総評
+## メタ情報
 
-改善点あり。
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
-## 今回有効だったガード
+---
 
-| 観点                            | 効果                                                             |
-| ------------------------------- | ---------------------------------------------------------------- |
-| barrel export の negative test  | 古い export が戻る回帰を止められる                               |
-| type-level test                 | `SkillInfoStepProps` と `GenerationMode` の型 drift を止められる |
-| representative screenshot audit | UI 非変更 task でも screenshot verification 要求へ対応できる     |
-| stale artifact 削除             | Phase 12/13 の false green を防げる                              |
+## フィードバック件数: 3件
 
-## 改善として残した知見
+### FB-01: inferSmartDefaults の分離が有効
 
-| 項目                       | 内容                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------ |
-| deprecated file の依存方向 | `DescribeStep.tsx` のような残置ファイルは barrel を再参照させず、実装元へ直接依存させる          |
-| export task の Phase 11    | UI 変更がなくても screenshot verification 要求がある場合は代表証跡を current task に再リンクする |
-| Phase 12 hygiene           | canonical 6 成果物以外の stale artifact は同一ターンで除去する                                   |
+- **観点**: テスト可能性・再利用性
+- **内容**: `inferSmartDefaults` を `wizard/utils/inferSmartDefaults.ts` に分離することで、コンポーネントに依存せず単体テストが書きやすくなった。
+- **対応**: Phase 8 で実施済み
 
-## 改善点なしとしなかった理由
+### FB-02: TASK-SC-07 テストのスキップ記録が有用
 
-- stale artifact 混入が実際に発生していた
-- representative screenshot reuse の current-task 同期が抜けていた
-- type export を runtime test だけで閉じると drift を見逃しやすい
+- **観点**: テスト保守性
+- **内容**: `describe.skip` + TODO コメントにより、削除対象テストの理由が明確になった。後から経緯を追いやすい。
+- **対応**: Phase 5 で実施済み
 
-## 結論
+### FB-03: Phase 11 のスクリーンショット参照と path drift 是正を明示すると追跡しやすい
 
-`barrel export task でも Phase 11/12/13 の証跡同期まで含めて閉じる` という運用ガードが有効だと確認できた。
+- **観点**: 証跡密度・参照整合性
+- **内容**: `implementation-guide.md` に Phase 11 のスクリーンショット参照を追加し、`skill-wizard-redesign-lane/index.md` の W2-seq-03a path を current facts に揃えることで、PR 本文や後続レビューから証跡を追いやすくなった。
+- **対応**: Phase 12 final-doc sync で実施済み

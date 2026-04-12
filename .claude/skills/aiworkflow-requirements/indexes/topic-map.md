@@ -2539,22 +2539,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L4 |
-| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L43 |
-| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
-| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
-| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
-| TASK-SC-07 SkillCreateWizard current facts | L358 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
-| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L5 |
-| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L46 |
-| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
-| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
-| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L469 |
 | LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L5 |
 | ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L46 |
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
@@ -2589,8 +2573,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
-| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
-| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L210 |
 | SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L269 |
 
@@ -3438,23 +3420,16 @@ node scripts/list-specs.js --topics
 | W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L220 |
 | UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
 | Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
-| 依存関係 | L269 |
-| 関連ファイル | L281 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L293 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L318 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L352 |
-| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
-| 依存関係 | L293 |
-| 関連ファイル | L305 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L293 |
-| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L317 |
-| 依存関係 | L341 |
-| 関連ファイル | L353 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L365 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L390 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L424 |
-| UT-SKILL-WIZARD-W2-seq-03b Phase-12 close-out 教訓（2026-04-12） | L448 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L317 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L341 |
+| 依存関係 | L365 |
+| 関連ファイル | L377 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L389 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L414 |
+| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L448 |
+| UT-SKILL-WIZARD-W2-seq-03b Phase-12 close-out 教訓（2026-04-12） | L472 |
 
 ### references/lessons-learned-templates.md
 
