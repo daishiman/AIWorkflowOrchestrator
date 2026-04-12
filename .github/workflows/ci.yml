@@ -236,15 +236,52 @@ jobs:
           retention-days: 1
 
   e2e-desktop:
-    name: E2E Test (desktop)
+    name: E2E Test (desktop - wizard tracking)
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    needs: [build-shared]
+    timeout-minutes: 15
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
-      - name: Skip E2E in default CI
-        run: |
-          echo "E2E tests are skipped in default CI to keep feedback fast."
-          echo "Run manually when needed:"
-          echo "xvfb-run --auto-servernum pnpm --filter @repo/desktop exec playwright test"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Configure git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm-install-retry
+
+      - name: Download shared build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist/
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @repo/desktop exec playwright install --with-deps chromium
+
+      - name: Run E2E tests (skill-wizard-tracking)
+        run: pnpm --filter @repo/desktop exec playwright test e2e/skill-wizard-tracking.spec.ts --project=chromium
+        env:
+          CI: true
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-e2e-wizard-tracking
+          path: apps/desktop/playwright-report/
+          retention-days: 7
 
   check-module-sync:
     name: Module Sync Check

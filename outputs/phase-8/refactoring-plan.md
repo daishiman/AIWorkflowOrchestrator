@@ -51,3 +51,47 @@ const canExecuteSkill =
 ## リファクタリング総合判定
 
 **変更なし** — 全チェック項目で実装が適切であり、追加リファクタリングは不要。
+
+---
+
+# Phase 8: inferSmartDefaults 分離 — UT-SKILL-WIZARD-W2-seq-03a
+
+## 実施内容
+
+### inferSmartDefaults 関数の分離
+
+`inferSmartDefaults` 関数を `SkillCreateWizard.tsx` のインライン定義から専用ファイルに分離した。
+
+**変更前**:
+
+```
+SkillCreateWizard.tsx 内に export function inferSmartDefaults(...) { ... } を直接定義
+```
+
+**変更後**:
+
+```
+apps/desktop/src/renderer/components/skill/wizard/utils/inferSmartDefaults.ts
+  └── export function inferSmartDefaults(data: SkillInfoFormData): SmartDefaultResult
+
+SkillCreateWizard.tsx
+  ├── import { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";  // 内部利用
+  └── export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";  // テスト後方互換 re-export
+```
+
+### 後方互換性の維持
+
+テストファイル (`SkillCreateWizard.test.tsx`) が `SkillCreateWizard.tsx` から `inferSmartDefaults` を import しているため、
+`export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults"` による re-export でテストを破壊せずに移動を実現した。
+
+### テスト結果
+
+リファクタリング後に全29テストが Green であることを確認済み:
+
+```
+✓ src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx (29 tests) 520ms
+```
+
+## 実施日
+
+2026-04-11

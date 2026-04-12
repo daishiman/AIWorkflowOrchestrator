@@ -1,0 +1,6 @@
+{
+  "taskType": "NON_VISUAL",
+  "screenshotsRequired": false,
+  "reason": "ファイル削除タスクのため UI 変更なし。CLI 出力をテキスト証跡として記録。",
+  "alternatives": ["manual-test-result.md に CLI 出力証跡を記録済み"]
+}

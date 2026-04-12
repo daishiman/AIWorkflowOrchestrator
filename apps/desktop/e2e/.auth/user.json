@@ -10,7 +10,7 @@
         },
         {
           "name": "auth-storage",
-          "value": "{\"isAuthenticated\":true,\"isLoading\":false,\"user\":{\"id\":\"e2e-test-user\",\"email\":\"e2e@test.com\",\"user_metadata\":{\"full_name\":\"E2E Test User\"}},\"session\":{\"access_token\":\"mock-e2e-access-token\",\"refresh_token\":\"mock-e2e-refresh-token\",\"expires_at\":1774952280748}}"
+          "value": "{\"isAuthenticated\":true,\"isLoading\":false,\"user\":{\"id\":\"e2e-test-user\",\"email\":\"e2e@test.com\",\"user_metadata\":{\"full_name\":\"E2E Test User\"}},\"session\":{\"access_token\":\"mock-e2e-access-token\",\"refresh_token\":\"mock-e2e-refresh-token\",\"expires_at\":1775986907238}}"
         },
         {
           "name": "claude-auth-token",

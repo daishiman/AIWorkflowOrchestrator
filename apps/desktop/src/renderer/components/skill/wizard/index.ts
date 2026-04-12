@@ -1,8 +1,7 @@
 export { StepIndicator, stepStateStyles } from "./StepIndicator";
 export type { StepState, StepIndicatorProps } from "./StepIndicator";
-export { DescribeStep } from "./DescribeStep";
-export type { DescribeStepProps } from "./DescribeStep";
 export { SkillInfoStep } from "./SkillInfoStep";
+export type { SkillInfoStepProps } from "./SkillInfoStep";
 export { ConversationRoundStep } from "./ConversationRoundStep";
 export type { ConversationRoundStepProps } from "./ConversationRoundStep";
 export { InterviewProgressBar } from "./InterviewProgressBar";
@@ -15,9 +14,7 @@ export type {
   GenerationError,
   GenerationStage,
   GenerationErrorCode,
+  GenerationMode,
 } from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
 export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";
-
-/** LLM生成 or テンプレート生成のモード選択（TASK-SC-07） */
-export type GenerationMode = "llm" | "template";
