@@ -65,6 +65,9 @@ export type {
 
 export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
 
+// Skill Wizard semantic label map（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）
+export * from "./skill-wizard-label-map";
+
 // スキル実行型定義 (TASK-FIX-1-1-TYPE-ALIGNMENT: skill.tsに統合)
 // 以下の型はskill.tsからexport *で自動エクスポートされます:
 // - ExecutionState, ExecutionInfo, ExecutionContext

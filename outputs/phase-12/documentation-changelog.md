@@ -1,23 +1,82 @@
+<<<<<<< Updated upstream
+
+# Phase 12: 更新履歴 - UT-SKILL-WIZARD-W2-seq-03a
+
+||||||| Stash base
+
 # Phase 12: ドキュメント更新履歴 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## メタ情報
+=======
 
-| 項目     | 内容                                          |
+# ドキュメント更新履歴 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+
+> > > > > > > Stashed changes
+
+## 更新日: 2026-04-12
+
+<<<<<<< Updated upstream
+| 項目 | 内容 |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日 | 2026-04-11 |
+||||||| Stash base
+| 項目 | 内容 |
 | -------- | --------------------------------------------- | --- | --- | --- | --- | ---------- |
 | タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
-|          |                                               |     |     |     |     | Stash base |
-| 項目     | 内容                                          |
-| -------- | ----------                                    |
-| タスクID | TASK-SC-07                                    |
-| 作成日   | 2026-04-09                                    |
+| 作成日 | 2026-04-11 |
+| | | | | | | Stash base |
+| 項目 | 内容 |
+| -------- | ---------- |
+| タスクID | TASK-SC-07 |
+| 作成日 | 2026-04-09 |
+=======
 
----
+## Step 別結果
 
-| 項目     | 内容                                          |
+> > > > > > > Stashed changes
+
+| Step     | 更新対象                 | 更新内容                                                                 | 結果 |
+| -------- | ------------------------ | ------------------------------------------------------------------------ | ---- |
+| Step 1-A | タスク完了記録           | 関連ドキュメントリンク、変更履歴、`LOGS.md` 2件、`topic-map.md` を更新   | 完了 |
+| Step 1-B | 実装状況テーブル         | `validateCronExpression` の semantic 対応状況を完了へ更新                | 完了 |
+| Step 1-C | 関連タスクテーブル       | 完了日・実装ファイル・テストファイルを更新                               | 完了 |
+| Step 2   | 新規インターフェース追加 | `ValidateCronOptions` と `validateCronExpression` のシグネチャ変更を反映 | 完了 |
+
+<<<<<<< Updated upstream
+
+## 変更履歴
+
+||||||| Stash base
+| 項目 | 内容 |
 | -------- | --------------------------------------------- |
 | タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
+| 作成日 | 2026-04-11 |
+=======
+
+## 変更対象サマリー
+
+> > > > > > > Stashed changes
+
+<<<<<<< Updated upstream
+| フェーズ | 変更対象 | 変更内容 |
+| -------- | -------------------------------------------------------- | ---------------------------------------------------------- |
+| Phase 5 | `SkillCreateWizard.tsx` | TASK-SC-07 legacy ハンドラ削除、Step 0/2 レンダリング修正 |
+| Phase 5 | `SkillCreateWizard.test.tsx` | inferSmartDefaults・STEPS 単体テスト追加（29テスト Green） |
+| Phase 5 | `SkillCreateWizard.llm-generation.test.tsx` | TASK-SC-07 テストを `describe.skip` に変更 |
+| Phase 8 | `wizard/utils/inferSmartDefaults.ts` | 新規作成（分離リファクタリング） |
+| Phase 8 | `SkillCreateWizard.tsx` | inferSmartDefaults を re-export に変更 |
+| Phase 12 | `outputs/phase-12/implementation-guide.md` | Phase 11 スクリーンショット参照を追加 |
+| Phase 12 | `outputs/phase-12/system-spec-update-summary.md` | current facts の N/A を是正、visual evidence を補足 |
+| Phase 12 | `docs/30-workflows/skill-wizard-redesign-lane/index.md` | W2-seq-03a の path drift を current facts に是正 |
+| Phase 12 | `.claude/skills/aiworkflow-requirements/LOGS.md` | W2-seq-03a の current facts sync を追記 |
+| Phase 12 | `outputs/phase-12/skill-feedback-report.md` | 追加フィードバックを記録 |
+| Phase 12 | `outputs/phase-12/phase12-task-spec-compliance-check.md` | visual evidence / path drift のチェック項目を追加 |
+| Phase 12 | `outputs/phase-12/implementation-guide.md` | W2-seq-03a 実装ガイド（Part 1/2）作成 |
+| Phase 12 | `outputs/phase-12/system-spec-update-summary.md` | システム仕様更新サマリー作成 |
+| Phase 12 | `outputs/phase-12/unassigned-task-detection.md` | 未タスク検出レポート作成 |
+| Phase 12 | `outputs/phase-12/skill-feedback-report.md` | スキルフィードバックレポート作成 |
+| Phase 12 | `outputs/phase-12/phase12-task-spec-compliance-check.md` | 仕様準拠チェック作成 |
+||||||| Stash base
 
 ---
 
@@ -118,3 +177,26 @@
 
 今回の close-out では、カテゴリラベルの正本を shared type に集約し、画面側の表記揺れを解消した。  
 Phase 12 canonical 6 成果物は current task 版に更新済みだが、root ledger の同期は別途確認が必要である。
+=======
+| 成果物 | 変更種別 | 変更内容 |
+| ------ | -------- | -------- |
+| `scheduleConfigValidator.ts` JSDoc | 更新 | `@param options.semantic` の説明を追加 |
+| `outputs/phase-1/` | 更新 | 要件定義・受け入れ基準・ライブラリ評価計画を current facts に合わせて調整 |
+| `outputs/phase-2/` | 更新 | API設計・ライブラリ比較・設計一貫性を current facts に合わせて調整 |
+| `outputs/phase-3/` | 更新 | 設計レビュー結果（PASS）を current facts に整合 |
+| `outputs/phase-4/` | 更新 | テスト計画・テストケースの前提を current facts に整合 |
+| `outputs/phase-5/` | 更新 | 実装計画・変更ログを current facts に整合 |
+| `outputs/phase-6/` | 更新 | 拡充テストケース・回帰テスト結果を current facts に整合 |
+| `outputs/phase-7/` | 更新 | カバレッジレポートを current facts に整合 |
+| `outputs/phase-8/` | 更新 | リファクタリングログを current facts に整合 |
+| `outputs/phase-9/` | 更新 | 品質保証レポートを current facts に整合 |
+| `outputs/phase-10/` | 更新 | 最終レビュー結果を current facts に整合 |
+| `outputs/phase-11/` | 更新 | 手動テスト結果・チェックリスト・発見問題を current facts に整合 |
+| `outputs/phase-12/` | 更新 | 実装ガイド・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・root evidence を作成 |
+
+## 補足
+
+- `LOGS.md` 2件と `topic-map.md` の更新を同波で実施済み
+- 既存 UI 呼び出しは非 semantic のまま維持し、後方互換性を壊していない
+- `cron-parser@5.5.0` の実挙動に合わせて、到達不能と判定される式は安全側でエラーとして扱う
+  > > > > > > > Stashed changes

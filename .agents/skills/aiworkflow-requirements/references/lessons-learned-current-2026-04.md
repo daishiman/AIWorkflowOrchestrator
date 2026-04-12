@@ -836,29 +836,29 @@
 
 ---
 
-## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+## TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション（2026-04-12）
 
-### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
-| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
-| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
-| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-
-### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+### L-CRON-SEM-001: cron-parser@5.5.0 の DOM strict 判定（DOW 救済なし）
 
 | 項目       | 内容 |
 | ---------- | ---- |
-| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
-| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
-| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
-| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+| 症状       | `"0 0 31 2 *"` に対して `cron-parser` が例外を投げるか `interval.next()` が無限ループするかを事前確認していなかった。Phase 2 の仕様ではまだ挙動が未確定だった |
+| 原因       | `cron-parser@5.5.0` は DOM（day-of-month）と DOW（day-of-week）を独立して評価し、DOW が wildcard でも DOM の不達は救済しない。この strict 判定を Phase 2 の P50 チェックに含めていなかった |
+| 解決策     | `options.semantic: true` 時は「到達不能なスケジュールは全て拒否する安全側判定」として使う方針に確定。DOM strict を前提として `safe-side` として採用した |
+| 再発防止   | Phase 2 library P50 チェックに「DOM × DOW 組み合わせの実測確認（`"0 0 31 2 *"` 等）」を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
 
-### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+### L-CRON-SEM-002: `semantic: true` は opt-in safe-side として設計する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `semantic: true` で DOW wildcard（例: `* * 29 2 *` は4年に1度有効）まで拒否されるかという懸念が生じた |
+| 原因       | `semantic` フラグの意味論が「厳密な到達可能性チェック」か「緩やかなヒント」かが設計当初に明文化されていなかった |
+| 解決策     | `semantic: true` = 「次回実行時刻が計算できない場合は全て拒否する安全側判定」と明文化。呼び出し側が意図的に `options` を渡す opt-in 設計を維持し、既存 UI 呼び出しは non-semantic のまま |
+| 再発防止   | `ValidateCronOptions` の JSDoc に safe-side 判定である旨を明示する。新しい呼び出し経路を追加する場合は別タスクで semantic 有効化の意図を明示する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+### L-CRON-SEM-003: Phase 12 サマリーに外部同期一覧を必ず含める
 
 | 項目       | 内容 |
 | ---------- | ---- |
@@ -867,3 +867,32 @@
 | 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+---
+
+## UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 レガシーコード整理 教訓（2026-04-12）
+
+### L-DESCRIBE-STEP-001: 2ファイル同時削除 + barrel contract guard 標準フロー
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `DescribeStep.tsx` / `DescribeStep.test.tsx` の2ファイル同時削除時、barrel export の回帰を防ぐ guard がないと type-only export の再導入を見逃す |
+| 解決策     | Phase 4 で guard test 2種類（runtime: `wizard-exports.test.ts` / compile-time: `wizard-exports.typecheck.ts`）を削除前に作成し、`pnpm typecheck` + `pnpm test` PASS を削除の前提条件とする |
+| 標準フロー | (1) barrel contract guard 作成 → (2) 残留参照全量 `grep` → (3) 物理削除実行 → (4) typecheck + test 全通過確認 |
+| 再発防止   | ファイル削除タスクの Phase 4 では barrel contract guard の新規作成を標準タスクとして含める |
+| 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+
+### L-DESCRIBE-STEP-002: runtime guard と compile-time guard を別 surface で持つ理由
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `DescribeStepProps` は型定義のみの export（type-only export）であり、`value export` と異なり runtime では検出できない |
+| 解決策     | `wizard-exports.test.ts`（runtime: `expect(wizardExports).not.toHaveProperty('DescribeStep')`）に加えて `wizard-exports.typecheck.ts`（compile-time: `@ts-expect-error` ガード）を別ファイルで管理する |
+| 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
+| 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
+| 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+| 症状       | `system-spec-update-summary.md` に LOGS.md × 2 / topic-map.md / resource-map.md の更新記録を含めていなかったため、外部同期が完了しているかの判断が Phase 12 証跡だけでは不明瞭になった |
+| 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
+| 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
+| 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |

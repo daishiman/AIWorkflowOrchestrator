@@ -17,8 +17,13 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
   SkillCreateWizard,
   resolveExternalIntegration,
+  inferSmartDefaults,
+  STEPS,
 } from "../SkillCreateWizard";
-import type { ConversationAnswers } from "@repo/shared/types/skillCreator";
+import type {
+  ConversationAnswers,
+  SmartDefaultResult,
+} from "@repo/shared/types/skillCreator";
 
 const mockCreateSkill = vi.fn();
 const mockClearGenerationState = vi.fn();
@@ -373,6 +378,135 @@ describe("SkillCreateWizard", () => {
       expect(
         screen.getByText("Slack Webhook URL を設定する"),
       ).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // STEPS 配列テスト（Phase 4: W2-seq-03a STEPS名変更確認）
+  // ============================================================
+  describe("STEPS 配列", () => {
+    it("STEPS が ['スキル情報入力','詳細設定','生成','完了'] であること", () => {
+      expect(STEPS).toEqual(["スキル情報入力", "詳細設定", "生成", "完了"]);
+    });
+
+    it("STEPS の長さが 4 であること", () => {
+      expect(STEPS).toHaveLength(4);
+    });
+  });
+
+  // ============================================================
+  // inferSmartDefaults 単体テスト（Phase 4: TDD Red→Green）
+  // ============================================================
+  describe("inferSmartDefaults", () => {
+    it("purpose に 'Slack' を含む場合、tool='slack' を推論すること", () => {
+      const result: SmartDefaultResult = inferSmartDefaults({
+        skillName: "テスト",
+        purpose: "Slack通知を送る",
+        category: "automation",
+      });
+      expect(result.tool).toBe("slack");
+    });
+
+    it("purpose に 'SLACK'（大文字）を含む場合も tool='slack' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "SLACK通知を毎日送る",
+        category: null,
+      });
+      expect(result.tool).toBe("slack");
+    });
+
+    it("purpose に 'github' を含む場合、tool='github' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "GitHubのPRをレビューする",
+        category: null,
+      });
+      expect(result.tool).toBe("github");
+    });
+
+    it("purpose に 'notion' を含む場合、tool='notion' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "Notionページを更新する",
+        category: null,
+      });
+      expect(result.tool).toBe("notion");
+    });
+
+    it("purpose に '毎日' を含む場合、timing='scheduled' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "毎日レポートを生成する",
+        category: null,
+      });
+      expect(result.timing).toBe("scheduled");
+    });
+
+    it("purpose に '定期' を含む場合、timing='scheduled' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "定期的にデータを集計する",
+        category: null,
+      });
+      expect(result.timing).toBe("scheduled");
+    });
+
+    it("purpose に 'リアルタイム' を含む場合、timing='realtime' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "リアルタイムで通知する",
+        category: null,
+      });
+      expect(result.timing).toBe("realtime");
+    });
+
+    it("category='code-support' の場合、format='code' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "コードレビューを行う",
+        category: "code-support",
+      });
+      expect(result.format).toBe("code");
+    });
+
+    it("category='data-analysis' の場合、format='structured' を推論すること", () => {
+      const result = inferSmartDefaults({
+        purpose: "データを分析する",
+        category: "data-analysis",
+      });
+      expect(result.format).toBe("structured");
+    });
+
+    it("推論対象キーワードが含まれない場合、各フィールドが null を返すこと", () => {
+      const result = inferSmartDefaults({
+        purpose: "汎用的なタスク",
+        category: null,
+      });
+      expect(result.tool).toBeNull();
+      expect(result.timing).toBeNull();
+      expect(result.format).toBeNull();
+    });
+
+    it("purpose が空文字の場合、全フィールドが null を返すこと", () => {
+      const result = inferSmartDefaults({
+        purpose: "",
+        category: null,
+      });
+      expect(result.tool).toBeNull();
+      expect(result.timing).toBeNull();
+      expect(result.format).toBeNull();
+    });
+
+    it("inferenceLog が配列として返ること（推論0件でも）", () => {
+      const result = inferSmartDefaults({
+        purpose: "汎用タスク",
+        category: null,
+      });
+      expect(Array.isArray(result.inferenceLog)).toBe(true);
+    });
+
+    it("Slack を推論した場合 inferenceLog に根拠が記録されること", () => {
+      const result = inferSmartDefaults({
+        purpose: "slack通知を送る",
+        category: null,
+      });
+      expect(result.inferenceLog).toContain(
+        "purpose に 'slack' を検出 → tool = 'slack'",
+      );
     });
   });
 });

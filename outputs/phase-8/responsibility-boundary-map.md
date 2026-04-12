@@ -51,3 +51,54 @@ SkillLifecyclePanel（本タスク完了後の状態）
 ## 結論
 
 責務境界は適切に整理されており、漏れや循環依存なし。
+
+---
+
+# Phase 8: 責務境界マップ — UT-SKILL-WIZARD-W2-seq-03a（inferSmartDefaults 分離後）
+
+## コンポーネント責務境界（Phase 8 完了後）
+
+| コンポーネント/ファイル              | 責務                                                                              | 変更     |
+| ------------------------------------ | --------------------------------------------------------------------------------- | -------- |
+| `SkillCreateWizard.tsx`              | state管理・ハンドラ定義・Step間オーケストレーション（skillPath / onRetry を含む） | 変更     |
+| `wizard/utils/inferSmartDefaults.ts` | スマートデフォルト推論ロジック（**Phase 8 で SkillCreateWizard.tsx から移動**）   | 新設     |
+| `hooks/useSkillGeneration.ts`        | LLM生成の非同期処理・エラーハンドリング（オプション）                             | 未実施   |
+| `wizard/SkillInfoStep.tsx`           | Step 0 UI                                                                         | 変更なし |
+| `wizard/ConversationRoundStep.tsx`   | Step 1 UI                                                                         | 変更なし |
+| `wizard/GenerateStep.tsx`            | Step 2 UI（生成中専用）                                                           | 変更なし |
+| `wizard/CompleteStep.tsx`            | Step 3 UI                                                                         | 変更なし |
+
+## inferSmartDefaults 移動の詳細
+
+### 変更前
+
+```
+SkillCreateWizard.tsx
+  └── export function inferSmartDefaults(data: SkillInfoFormData): SmartDefaultResult
+       （コンポーネントファイル内にインライン定義）
+```
+
+### 変更後
+
+```
+wizard/utils/inferSmartDefaults.ts  ← 移動先（新設）
+  └── export function inferSmartDefaults(data: SkillInfoFormData): SmartDefaultResult
+
+SkillCreateWizard.tsx
+  ├── import { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults"
+  └── export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults"
+       （後方互換 re-export: テストが SkillCreateWizard.tsx から import しているため維持）
+```
+
+## 責務境界の確認
+
+| 確認項目                      | 結果   |
+| ----------------------------- | ------ |
+| inferSmartDefaults の単一責務 | 満足   |
+| 循環依存                      | なし   |
+| テスト後方互換性              | 維持   |
+| 全テスト Green                | 確認済 |
+
+## 実施日
+
+2026-04-11

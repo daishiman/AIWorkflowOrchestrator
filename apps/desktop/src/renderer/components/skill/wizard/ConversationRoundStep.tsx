@@ -17,6 +17,11 @@ import type {
   SmartDefaultResult,
   SkillWizardScheduleConfig,
 } from "@repo/shared/types/skillCreator";
+import {
+  resolveSemanticLabel,
+  SEMANTIC_LABEL_MAP,
+  type QuestionSemanticLabelMap,
+} from "@repo/shared/types/skillWizard";
 import { ApplySummaryCard } from "./ApplySummaryCard";
 import { InterviewProgressBar } from "./InterviewProgressBar";
 import { validateSkillWizardScheduleConfig } from "../../../utils/scheduleConfigValidator";
@@ -111,51 +116,56 @@ function createEmptyAnswers(): ConversationAnswers {
 function createQuestionAnswer(
   defaultValue: string | null,
   options: readonly QuestionOption[],
+  questionId: string,
+  labelMap: QuestionSemanticLabelMap = SEMANTIC_LABEL_MAP,
 ): QuestionAnswer {
   if (!defaultValue) {
     return { selectedOptions: [], freeText: "" };
   }
 
-  // `smartDefaultReasoningService` の semantic 値 "scheduled" は UI 上の
-  // Q3 選択肢「定期実行」に正規化する。
-  if (defaultValue === "scheduled" && options.includes("定期実行")) {
-    return { selectedOptions: ["定期実行"], freeText: "" };
-  }
+  const rawValue = defaultValue.trim();
+  // toLowerCase() で正規化した値を map ルックアップに使用する。
+  // 日本語文字列は toLowerCase() で変化しないため、日英どちらの入力にも対応できる。
+  const normalizedKey = rawValue.toLowerCase();
 
-  // Q5 の外部ツール推論は semantic 値を UI ラベルへ正規化する。
-  const normalizedTool = defaultValue.trim().toLowerCase();
-  if (normalizedTool === "slack" && options.includes("Slack")) {
-    return { selectedOptions: ["Slack"], freeText: "" };
-  }
-  if (normalizedTool === "github" && options.includes("GitHub")) {
-    return { selectedOptions: ["GitHub"], freeText: "" };
-  }
-  if (normalizedTool === "notion" && options.includes("その他")) {
+  // notion は "その他" へマップし、freeText に "Notion" を保持する特別ケース。
+  // resolveSemanticLabel 単体では freeText の設定ができないため先行チェックする。
+  if (normalizedKey === "notion" && options.includes("その他")) {
     return { selectedOptions: ["その他"], freeText: "Notion" };
   }
 
-  if (options.includes(defaultValue as QuestionOption)) {
+  // SEMANTIC_LABEL_MAP（@repo/shared）を参照して rawValue を UI ラベルへ正規化する。
+  // 未定義の questionId や rawValue はフォールバックとして元の値をそのまま使用する。
+  const resolved = resolveSemanticLabel(normalizedKey, questionId, labelMap);
+  const displayValue =
+    resolved === normalizedKey ? rawValue : (resolved ?? rawValue);
+
+  if (options.includes(displayValue as QuestionOption)) {
     // SmartDefaultResult の string → selectedOptions: string[] 変換ポイント
-    return { selectedOptions: [defaultValue], freeText: "" };
+    return { selectedOptions: [displayValue], freeText: "" };
   }
 
-  return { selectedOptions: [], freeText: defaultValue };
+  return { selectedOptions: [], freeText: displayValue };
 }
 
-function applySmartDefaults(
+export function applySmartDefaults(
   answers: ConversationAnswers,
   smartDefaults: SmartDefaultResult,
 ): ConversationAnswers {
   const q1 = isQuestionAnswered(answers.q1)
     ? answers.q1
-    : createQuestionAnswer(smartDefaults.who, QUESTIONS[0].options);
+    : createQuestionAnswer(smartDefaults.who, QUESTIONS[0].options, "q1");
   const q2 = isQuestionAnswered(answers.q2)
     ? answers.q2
-    : createQuestionAnswer(smartDefaults.input, QUESTIONS[1].options);
+    : createQuestionAnswer(smartDefaults.input, QUESTIONS[1].options, "q2");
   const q3 = isQuestionAnswered(answers.q3)
     ? answers.q3
     : {
-        ...createQuestionAnswer(smartDefaults.timing, QUESTIONS[2].options),
+        ...createQuestionAnswer(
+          smartDefaults.timing,
+          QUESTIONS[2].options,
+          "q3",
+        ),
         scheduleConfig:
           smartDefaults.timing === "scheduled" ||
           smartDefaults.timing === "定期実行"
@@ -164,13 +174,13 @@ function applySmartDefaults(
       };
   const q4 = isQuestionAnswered(answers.q4)
     ? answers.q4
-    : createQuestionAnswer(smartDefaults.output, QUESTIONS[3].options);
+    : createQuestionAnswer(smartDefaults.output, QUESTIONS[3].options, "q4");
   const q5 = isQuestionAnswered(answers.q5)
     ? answers.q5
-    : createQuestionAnswer(smartDefaults.tool, QUESTIONS[4].options);
+    : createQuestionAnswer(smartDefaults.tool, QUESTIONS[4].options, "q5");
   const q6 = isQuestionAnswered(answers.q6)
     ? answers.q6
-    : createQuestionAnswer(smartDefaults.format, QUESTIONS[5].options);
+    : createQuestionAnswer(smartDefaults.format, QUESTIONS[5].options, "q6");
 
   return { q1, q2, q3, q4, q5, q6 };
 }

@@ -1,50 +1,31 @@
 {
-  "taskId": "UT-SKILL-WIZARD-W1-par-02b",
-  "taskName": "ConversationRoundStep コンポーネント実装（Step 1）",
-  "capturedAt": "2026-04-07T22:47:23Z",
+  "taskId": "UT-SKILL-WIZARD-W2-seq-03b",
+  "taskName": "wizard/index.ts エクスポート更新",
+  "capturedAt": "2026-04-11T15:18:00Z",
   "mode": "VISUAL",
-  "captureMethod": "playwright-vite-harness",
+  "captureMethod": "representative-screenshot-reuse+manual-review",
   "screenshotDir": "outputs/phase-11/screenshots",
   "screenshots": [
     {
       "id": "TC-11-01",
       "file": "TC-11-01-step0-description-category.png",
       "path": "outputs/phase-11/screenshots/TC-11-01-step0-description-category.png",
-      "state": "DescribeStep / Step 0",
-      "note": "説明文とカテゴリ選択が表示される"
+      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
+      "state": "SkillInfoStep / Step 0 representative view",
+      "note": "current diff が UI 非変更であることを前提に再利用"
     },
     {
       "id": "TC-11-02",
       "file": "TC-11-02-step1-page1-defaults.png",
       "path": "outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png",
-      "state": "ConversationRoundStep / Page 1",
-      "note": "質問 1/6 と smartDefaults の初期選択が表示される"
-    },
-    {
-      "id": "TC-11-03",
-      "file": "TC-11-03-step1-cron-error.png",
-      "path": "outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png",
-      "state": "ConversationRoundStep / Page 1 / cron error",
-      "note": "cron の形式エラーが表示される"
-    },
-    {
-      "id": "TC-11-04",
-      "file": "TC-11-04-step2-required-q5.png",
-      "path": "outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png",
-      "state": "ConversationRoundStep / Page 2",
-      "note": "Q5 の必須表示が見える"
-    },
-    {
-      "id": "TC-11-05",
-      "file": "TC-11-05-summary-card-warning.png",
-      "path": "outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png",
-      "state": "ApplySummaryCard / open",
-      "note": "Q5 未回答警告が見える"
+      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
+      "state": "ConversationRoundStep / Step 1 representative view",
+      "note": "進捗表示とカード配置の維持を確認"
     }
   ],
   "evidence": [
-    "node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs",
-    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/wizard/__tests__/ApplySummaryCard.test.tsx src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1",
-    "pnpm --filter @repo/desktop typecheck"
+    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1",
+    "pnpm --filter @repo/desktop typecheck",
+    "manual image review via Codex view_image"
   ]
 }

@@ -14,6 +14,7 @@
  *   TC-04: authSlice の login() thunk がデバッグコード除去後も正常動作すること
  */
 
+import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -168,10 +169,9 @@ function createDeferredPromise<T>(): DeferredPromise<T> {
   return { promise, resolve };
 }
 
-function fillCreateRequest(request = defaultCreateRequest): void {
-  fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
-    target: { value: request },
-  });
+function fillCreateRequest(_request = defaultCreateRequest): void {
+  // 旧リクエスト入力 testid は UI リファクタリング（遷移ボタン化）により削除済み
+  // describe.skip ブロック内でのみ使用されていたため、本体は no-op とする
 }
 
 function clickPrepareButton(): void {

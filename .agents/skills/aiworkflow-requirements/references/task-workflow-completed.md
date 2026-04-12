@@ -6,12 +6,34 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-12: UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI 到達確認テスト追加](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-11: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（アイコン / tooltip / a11y / screenshot evidence）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-08: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（LLM専用化・SmartDefault・GenerateStep再入防止・CompleteStep skillPath表示）](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+## 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync
+
+### 変更内容
+
+- `apps/desktop/e2e/skill-wizard-tracking.spec.ts` に onboarding store mock 注入と current UI に合わせた step1 完了フローを反映
+- `apps/desktop/e2e/helpers/wizard-tracking-stub.ts` に trackEvent capture / onboarding store / skill API stub を統合
+- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/phase-11-manual-test.md` を NON_VISUAL 判定へ是正し、代替証跡方針を current facts に同期
+- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` に Phase 11 証跡導線を追記
+- `.claude/skills/aiworkflow-requirements/LOGS.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` を同波で更新
+
+### 検証証跡
+
+- `pnpm --filter @repo/desktop exec playwright test e2e/skill-wizard-tracking.spec.ts --project=chromium`: PASS（7 passed）
+- `phase-11/manual-test-result.md`: NON_VISUAL 判定 / 代替証跡
+- `phase-11/manual-test-checklist.md`: PASS
+
+#### 苦戦箇所
+
+- `skill_wizard_step1_completed` は current UI では `method: "skip"` になるため、CompleteStep 到達確認とイベント期待値を分離した
+
 ### タスク: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 SmartDefault AC-4 フォールバック仕様のフィールド独立推論性明示化（2026-04-11）
 
 | 項目       | 値                                                                                               |

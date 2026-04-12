@@ -9,7 +9,7 @@
  * - formData / answers / smartDefaults / generationMethod / skillPath /
  *   hasExternalIntegration / externalToolName state を追加
  * - STEPS を ["スキル情報入力","詳細設定","生成","完了"] に変更
- * - Step 0: DescribeStep → SkillInfoStep
+ * - Step 0: DescribeStep の役割を SkillInfoStep に統合
  * - Step 1: ConversationRoundStep（onGenerate(method) 接続）
  * - Step 2: GenerateStep（generationMode prop 削除）
  * - Step 3: CompleteStep（skillPath / action cards / onRetry 接続）

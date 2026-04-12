@@ -1,8 +1,67 @@
+<<<<<<< Updated upstream
+
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W2-seq-03b
+
+## 実施日時
+
+2026-04-12
+
+## テスト方式
+
+`SCREENSHOT + NON_VISUAL`
+
+- current task の差分は export / type / deprecated 注記のみ
+- ユーザー要求に従い、既存の代表スクリーンショットを current workflow へ再リンクして目視監査した
+- contract 変更は `typecheck` と targeted vitest で固定した
+
+## シナリオ 1: contract / typecheck 確認
+
+| ステップ | 操作                                                                                                                        | 結果                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| 1        | `pnpm --filter @repo/desktop typecheck`                                                                                     | ✅ 正常終了         |
+| 2        | `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1` | ✅ `13 passed (13)` |
+| 3        | `SkillCreateWizard.tsx` / `GenerateStep.tsx` / `DescribeStep.tsx` の import 関係確認                                        | ✅ 整合             |
+
+## シナリオ 2: 代表スクリーンショット監査
+
+| 証跡                                                                   | 観点                                            | 結果        |
+| ---------------------------------------------------------------------- | ----------------------------------------------- | ----------- |
+| `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png` | Step 0 のレイアウト、カテゴリ UI、ボタン配置    | ✅ 破綻なし |
+| `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`       | Step 1 の進捗表示、カード配置、入力欄レイアウト | ✅ 破綻なし |
+
+## シナリオ 3: current diff 妥当性確認
+
+| 確認項目                                                                   | 結果 |
+| -------------------------------------------------------------------------- | ---- | --- | --- | --- | --- | ---------- |
+| `wizard/index.ts` の差分が export / type のみであること                    | ✅   |
+| `SkillInfoStep.tsx` の差分が props export 化のみであること                 | ✅   |
+| `DescribeStep.tsx` の差分が deprecated 注記 + 型 import 整理のみであること | ✅   |
+|                                                                            |      |     |     |     |     | Stash base |
+
 # Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W1-par-02b
 
-## 判定
+=======
 
+# 手動テスト結果 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+
+> > > > > > > Stashed changes
+
+## 判定: NON_VISUAL（スクリーンショット不要）
+
+<<<<<<< Updated upstream
+**PASS**
+||||||| Stash base
 PASS
+=======
+本タスクは `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts` のバリデーターロジックのみの変更。UIコンポーネント変更なし。
+
+> > > > > > > Stashed changes
+
+<<<<<<< Updated upstream
+
+- visual regression を示す兆候は見つからなかった
+- representative screenshot audit と static contract check の両面で整合している
+  ||||||| Stash base
 
 ## 実施概要
 
@@ -109,4 +168,24 @@ UI/UXコンポーネントの目視確認。自動テストでカバーしにく
 - [x] Step 3（CompleteStep）の action cards が全て表示される
 - [x] Step 3（CompleteStep）に `skillPath` が表示される
 - [x] handleRetry で Step 0 に戻り前回入力が復元される
-- [x] hasExternalIntegration=true 時に外部連携ツール名が表示される
+- [x] # hasExternalIntegration=true 時に外部連携ツール名が表示される
+
+## 検証内容
+
+### コード動作確認
+
+| 確認項目                                       | 方法                     | 結果 |
+| ---------------------------------------------- | ------------------------ | ---- |
+| semantic=true で `"0 0 31 2 *"` がエラーを返す | vitest TC-01 PASS        | ✅   |
+| semantic=true で正常な cron が null を返す     | vitest TC-02〜TC-04 PASS | ✅   |
+| options 未指定で従来動作が維持される           | vitest TC-05〜TC-06 PASS | ✅   |
+| 4月・6月・9月・11月の31日もエラー              | vitest TC-10〜TC-13 PASS | ✅   |
+| TypeScript 型チェック PASS                     | tsc --noEmit             | ✅   |
+| ESLint PASS（既存警告のみ）                    | pnpm lint                | ✅   |
+| 全テスト 42件 PASS                             | vitest run               | ✅   |
+
+## 発見された問題
+
+なし。
+
+> > > > > > > Stashed changes

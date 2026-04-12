@@ -1,16 +1,60 @@
+<<<<<<< Updated upstream
+
+# Phase 12: 未タスク検出レポート - UT-SKILL-WIZARD-W2-seq-03a
+
+||||||| Stash base
+
 # Phase 12: 未タスク検出 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## メタ情報
+=======
 
-| 項目     | 内容                                          |
-| -------- | --------------------------------------------- | --- | --- | --- | --- | ---------- |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
-|          |                                               |     |     |     |     | Stash base |
-| 項目     | 内容                                          |
-| -------- | ----------                                    |
-| タスクID | TASK-SC-07                                    |
-| 作成日   | 2026-04-09                                    |
+# 未タスク検出 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+
+> > > > > > > Stashed changes
+
+## 検出結果: 未タスクなし
+
+<<<<<<< Updated upstream
+| 項目 | 内容 |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日 | 2026-04-11 |
+
+---
+
+## 検出結果
+
+未タスク件数: **1件**
+
+| #   | タスクID                                  | タスク名                                                     | 優先度 | 規模   |
+| --- | ----------------------------------------- | ------------------------------------------------------------ | ------ | ------ |
+| 1   | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 | SkillCreateWizard LLM生成フロー describe.skip クリーンアップ | 低     | 小規模 |
+
+### 検出詳細
+
+**UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001**
+
+- **発見箇所**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` 行 144（`describe.skip`）
+- **発見根拠**: W2-seq-03a で `generationMode` ラジオボタン UI を削除したことにより、旧 TASK-SC-07 の `planSkill`/`executePlan` フローに対する 30 テストが `describe.skip` でスキップ状態になっている。TODO コメントが明示的に本タスクの必要性を記録している。
+- **仕様書パス**: `docs/30-workflows/unassigned-task/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001.md`
+- **影響**: CI には現時点で影響なし。将来 `describe.skip` が外れた場合に 30 テストが一斉失敗するリスクあり。
+
+## スコープ外として識別した項目
+
+| 項目                                                   | 判断理由                                      |
+| ------------------------------------------------------ | --------------------------------------------- | --- | --- | --- | --- | ---------- |
+| `wizard/index.ts` の `GenerationMode` エクスポート削除 | W2-seq-03b の担当スコープ                     |
+| `W3-seq-04` 計装タスクの実装                           | 別タスク（ready 状態）                        |
+|                                                        |                                               |     |     |     |     | Stash base |
+| 項目                                                   | 内容                                          |
+| --------                                               | --------------------------------------------- | --- | --- | --- | --- | ---------- |
+| タスクID                                               | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+| 作成日                                                 | 2026-04-11                                    |
+|                                                        |                                               |     |     |     |     | Stash base |
+| 項目                                                   | 内容                                          |
+| --------                                               | ----------                                    |
+| タスクID                                               | TASK-SC-07                                    |
+| 作成日                                                 | 2026-04-09                                    |
 
 ---
 
@@ -126,3 +170,18 @@
 
 実装を止めるべき未タスクは 1 件だけ残った。  
 コードと UI の label drift は解消済みだが、台帳の同期が終わるまで Phase 12 の最終合格は保留とする。
+=======
+| 検出ソース | 確認内容 | 結果 | 補足 |
+| ---------- | -------- | ---- | ---- |
+| 元タスク仕様書のスコープ外事項 | バックエンド変更（`ScheduleStore` / `SkillScheduler`） | 対象外 | 本タスクでは変更不要 |
+| 元タスク仕様書のスコープ外事項 | IPC チャンネルの変更 | 対象外 | 本タスクでは変更不要 |
+| Phase 10 MINOR 指摘事項 | `cron-parser` の挙動差分 | 解決済み | Phase 5 で safe-side の判定に確定 |
+| コードコメントの TODO/FIXME | `scheduleConfigValidator.ts` と関連テスト | 該当なし | 未タスク化不要 |
+| 将来の拡張候補 | DOM/DOW の説明強化 | 保留 | 現時点では優先度低 |
+
+## 結論
+
+- 新規タスク化が必要な項目はありません
+- `validateSkillWizardScheduleConfig` は呼び出し元判断で semantic を有効化する設計のままで問題ありません
+- `options.semantic` の自動有効化は、現在の NON_VISUAL 範囲では不要です
+  > > > > > > > Stashed changes
