@@ -2,6 +2,7 @@
  * @file DescribeStep.tsx
  * @description スキル作成ウィザードの説明入力ステップ
  * @task TASK-10A-C
+ * @deprecated UT-SKILL-WIZARD-W2-seq-03b により廃止。SkillInfoStep を使用してください。
  */
 
 import React from "react";
@@ -9,7 +10,7 @@ import {
   getSkillCategoryLabel,
   type SkillCategory,
 } from "@repo/shared/types/skillCreator";
-import type { GenerationMode } from "./index";
+import type { GenerationMode } from "./GenerateStep";
 
 const CATEGORY_VALUES: SkillCategory[] = [
   "automation",

@@ -20,21 +20,21 @@ Phase 4 の基本テストを拡充し、エッジケース・回帰テストで
 
 ### 削除エクスポートの詳細確認
 
-| ケース                                             | 期待結果                                  |
-| -------------------------------------------------- | ----------------------------------------- |
-| `DescribeStep` を named import した場合の型エラー  | TypeScript コンパイルエラーが発生すること |
-| `ConfigureStep` を named import した場合の型エラー | TypeScript コンパイルエラーが発生すること |
-| `GenerationMode` を型 import した場合の型エラー    | TypeScript コンパイルエラーが発生すること |
-| `WizardOptions` を型 import した場合の型エラー     | TypeScript コンパイルエラーが発生すること |
+| ケース                                               | 期待結果               |
+| ---------------------------------------------------- | ---------------------- | -------------------------- |
+| `DescribeStep` が runtime export として見えないこと  | `undefined` であること |
+| `ConfigureStep` が依然として barrel に存在しないこと | `undefined` であること |
+| `WizardOptions` が依然として barrel に存在しないこと | `undefined` であること |
+| `GenerationMode` が barrel 経由で union 型になること | `"llm"                 | "template"` と一致すること |
 
 ### 追加エクスポートの詳細確認
 
-| ケース                                                          | 期待結果                             |
-| --------------------------------------------------------------- | ------------------------------------ |
-| `SkillInfoStep` が React コンポーネントとして使用可能か         | JSX でレンダリングできること         |
-| `ConversationRoundStep` が React コンポーネントとして使用可能か | JSX でレンダリングできること         |
-| `SkillInfoStepProps` が型として利用可能か                       | 型アノテーションとして使用できること |
-| `ConversationRoundStepProps` が型として利用可能か               | 型アノテーションとして使用できること |
+| ケース                                                          | 期待結果                                       |
+| --------------------------------------------------------------- | ---------------------------------------------- |
+| `SkillInfoStep` が React コンポーネントとして使用可能か         | `function` export であること                   |
+| `ConversationRoundStep` が React コンポーネントとして使用可能か | `function` export であること                   |
+| `SkillInfoStepProps` が型として利用可能か                       | `formData` / `onNext` の型が期待通りであること |
+| `GenerationMode` が public type として利用可能か                | `GenerateStep` 由来の再転送型であること        |
 
 ### 維持エクスポートの回帰テスト
 
@@ -43,13 +43,15 @@ Phase 4 の基本テストを拡充し、エッジケース・回帰テストで
 | `StepIndicator` の props 型が変わっていないか | `StepIndicatorProps` の型シグネチャが維持されること |
 | `GenerateStep` の props 型が変わっていないか  | `GenerateStepProps` の型シグネチャが維持されること  |
 | `CompleteStep` の props 型が変わっていないか  | `CompleteStepProps` の型シグネチャが維持されること  |
+| `InterviewProgressBar` が維持されているか     | barrel から `defined` で参照できること              |
+| `ApplySummaryCard` が維持されているか         | barrel から `defined` で参照できること              |
 
 ### バレルエクスポート整合テスト
 
-| ケース                                              | 期待結果                                     |
-| --------------------------------------------------- | -------------------------------------------- |
-| `index.ts` からの再エクスポートが循環参照を生まない | ビルドエラーが発生しないこと                 |
-| `index.ts` のエクスポート数が正しいか               | 削除5件・追加4件・維持6件で合計9件になること |
+| ケース                                              | 期待結果                                                    |
+| --------------------------------------------------- | ----------------------------------------------------------- |
+| `index.ts` からの再エクスポートが循環参照を生まない | `DescribeStep.tsx` が `GenerateStep` 直接参照で安定すること |
+| `index.ts` の公開 contract が正しいか               | 削除・追加・維持・再転送の期待値と一致すること              |
 
 ## 参照資料
 

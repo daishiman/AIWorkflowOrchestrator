@@ -1,39 +1,27 @@
-# Phase 4: Red テスト実行記録 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 4: Red テスト実行記録 — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 概要
 
-TDD 方式に従い、テスト更新後・実装前の Red 状態を確認した。
+TDD 方式に従い、テスト作成後・実装前の Red 状態を確認した。
 
-## 実行日時
-
-2026-04-08（実装前 Red フェーズ）
-
-## Red ケース
-
-テストを追加した時点（コンポーネント実装前）では以下が失敗する：
+## 実行結果
 
 ```
-FAIL  SkillLifecyclePanel.test.tsx
+FAIL  src/renderer/components/skill/__tests__/wizard-exports.test.ts
+  > wizard/index.ts 削除エクスポート確認
+    > DescribeStep がエクスポートされていないこと
 
-  × ウィザード遷移化 - 削除要素の非存在確認
-    × テキストエリア（skill-lifecycle-execution-input）が存在しない
-      Expected: null
-      Received: <textarea data-testid="skill-lifecycle-execution-input" ...>
+AssertionError: expected { $$typeof: Symbol(react.forward_ref), render: [Function] } to be undefined
 
-  × ウィザード遷移化 - 回帰テスト: 削除要素の永続的非存在
-    × [回帰] テキストエリア（execution-input）が復活していない
-      Expected: null
-      Received: <textarea data-testid="skill-lifecycle-execution-input" ...>
+Test Files  1 failed (1)
+    Tests  1 failed | 6 passed (7)
+Start at  23:47:56
+Duration  3.09s
 ```
 
-## 確認結果
+## 判定
 
-| 項目       | 結果                                                         |
-| ---------- | ------------------------------------------------------------ |
-| Red ケース | 2件（TC-04, TC-05）                                          |
-| エラー種別 | textarea が残存しているため queryByTestId が non-null を返す |
-| Red 確認   | **完了**                                                     |
+- TC-01 (DescribeStep 非存在確認): ❌ FAIL（期待通り）
+- TC-02〜TC-07: ✅ PASS
 
-## 次のアクション
-
-Red 確認完了。Phase 5（実装）へ進む。
+Red 状態確認完了。Phase 5 実装で TC-01 を Green にする。
