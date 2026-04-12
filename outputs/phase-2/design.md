@@ -1,62 +1,68 @@
-# Phase 2 実行記録: 設計
+# Phase 2: 設計書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## 実行日: 2026-04-06
+## 配置場所の決定
 
-## useAuthKeyManagement フックインターフェース
+**方針**: `packages/shared/src/types/skillCreator.ts` の末尾に追加する。
+
+**理由**:
+
+- `SkillCategory` 型と同一ファイルに配置することで、型変更時に定数更新の漏れを防ぐ
+- 新規ファイル作成は不要（small スケールタスク）
+- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel 触らない）
+
+## インターフェース設計
+
+### 定数設計
 
 ```typescript
-export interface UseAuthKeyManagementReturn {
-  status: ApiKeyStatus;
-  keySource: "saved" | "env-fallback" | null;
-  inputValue: string;
-  isSubmitting: boolean;
-  validationError: string | null;
-  apiError: string | null;
-  setInputValue: (value: string) => void;
-  handleSave: () => Promise<boolean>;
-  handleDelete: () => Promise<boolean>;
-  refresh: () => Promise<void>;
-}
+/**
+ * SkillCategory の UI表示用日本語ラベルマッピング。
+ * Record<SkillCategory, string> 型により、SkillCategory に新値が追加された場合に
+ * TypeScript の型チェックで未定義ラベルを検出できる（AC-3）。
+ */
+export const SKILL_CATEGORY_LABELS: Record<SkillCategory, string> = {
+  automation: "自動化",
+  "external-integration": "外部連携",
+  "data-analysis": "データ分析",
+  "code-support": "コードサポート",
+  other: "その他",
+} as const;
+```
 
-export interface UseAuthKeyManagementOptions {
-  onStatusChange?: (status: ApiKeyStatus) => void;
+### 関数設計
+
+```typescript
+/**
+ * SkillCategory に対応する日本語表示ラベルを返す。
+ * @param category - SkillCategory 型の値
+ * @returns 日本語ラベル文字列
+ */
+export function getSkillCategoryLabel(category: SkillCategory): string {
+  return SKILL_CATEGORY_LABELS[category];
 }
 ```
 
-## 型統一方針
+## 型安全性設計
 
-ApiKeyStatus を拡張して check-failed を追加:
+| 観点         | 設計方針                                                           |
+| ------------ | ------------------------------------------------------------------ |
+| 型網羅性     | `Record<SkillCategory, string>` により全値のラベルが必須（AC-3）   |
+| immutability | `as const` アサーションで定数値の変更を防ぐ                        |
+| エクスポート | Named export（`export const` / `export function`）で外部参照を明示 |
 
-- "not_set" | "validating" | "configured" | "error" | "check-failed"
+## 設計判断記録
 
-移行マッピング:
+| 判断事項                 | 採用方針                    | 理由                                          |
+| ------------------------ | --------------------------- | --------------------------------------------- |
+| 配置ファイル             | 既存 `skillCreator.ts` 末尾 | SkillCategory型と同居・管理コスト最小         |
+| 関数 vs 定数直接参照     | 両方提供                    | 関数はAPI抽象化・定数は型安全な網羅チェック用 |
+| `as const` アサーション  | 使用する                    | ラベル文字列の誤変更防止                      |
+| ハイフン含む値のキー記法 | `"external-integration"`    | TypeScriptのquoted key記法で対応              |
 
-- AuthKeyStatus "saved" → ApiKeyStatus "configured" + keySource="saved"
-- AuthKeyStatus "env-fallback" → ApiKeyStatus "configured" + keySource="env-fallback"
-- AuthKeyStatus "not-set" → ApiKeyStatus "not_set"
-- AuthKeyStatus "check-failed" → ApiKeyStatus "check-failed"
+## 検証マトリクス
 
-## コンポーネント統合設計
-
-ApiKeySettingsPanel: Option A（委譲パターン）採用
-
-```typescript
-export function ApiKeySettingsPanel({ onStatusChange }: ApiKeySettingsPanelProps) {
-  return <AuthKeySection onStatusChange={onStatusChange} />;
-}
-```
-
-## IPC 4層整合性確認
-
-新規 IPC チャンネル追加なし。既存 authKey.{exists, set, delete} を使用。
-
-## タスク100%実行確認
-
-- [x] タスク1: concern 分解・topology
-- [x] タスク2: フックインターフェース設計
-- [x] タスク3: 型統一設計
-- [x] タスク4: コンポーネント統合設計
-- [x] タスク5: IPC 4層整合確認
-- [x] タスク6: 型互換性検証テーブル
-- [x] タスク7: ファイル変更計画
-- [x] タスク8: SubAgent lane 設計
+| テスト対象     | テストコマンド                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| ユニットテスト | `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts` |
+| 型チェック     | `pnpm --filter @repo/shared typecheck`                                                       |
+| lint           | `pnpm --filter @repo/shared lint`                                                            |

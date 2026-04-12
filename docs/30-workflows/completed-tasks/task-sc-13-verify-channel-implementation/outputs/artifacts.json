@@ -15,7 +15,7 @@
     {
       "phase": 1,
       "name": "要件定義",
-      "status": "completed",
+      "status": "not-started",
       "specFile": "phase-1-requirements.md",
       "outputDir": "outputs/phase-1",
       "artifacts": [
@@ -27,7 +27,7 @@
     {
       "phase": 2,
       "name": "設計",
-      "status": "completed",
+      "status": "not-started",
       "specFile": "phase-2-design.md",
       "outputDir": "outputs/phase-2",
       "artifacts": [
@@ -44,6 +44,7 @@
       "outputDir": "outputs/phase-3",
       "artifacts": [
         "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/type-compatibility-final.md",
         "outputs/phase-3/minor-tracking.md"
       ]
     },
@@ -142,7 +143,7 @@
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "completed",
+      "status": "not-started",
       "specFile": "phase-12-documentation.md",
       "outputDir": "outputs/phase-12",
       "artifacts": [

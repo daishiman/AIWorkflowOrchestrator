@@ -1,41 +1,28 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 1: 要件定義書
 
-## タスク概要
+## タスクID: UT-SKILL-WIZARD-W2-seq-03a
 
-`SkillLifecyclePanel.tsx` からテキストエリアを削除し、ウィザード遷移ボタンへ置き換える。
+## 機能要件
 
-## 現状分析（Step 0 P50チェック結果）
+- description / options / generationMode state の完全削除
+- 全 template 条件分岐の除去
+- inferSmartDefaults(formData) 純粋関数の実装（purpose小文字化、slack/github/notion大小文字不問検出）
+- handleStep0Next() - formData→smartDefaults推論→Step 1遷移
+- handleGenerate(method: "complete" | "skip") - generationLockRef + isGenerating で二重呼び出し防止
+- handleQualityFeedback(satisfied: boolean) - trackEvent呼び出し
+- handleRetry() - formData保持、answers/smartDefaults/skillPath等リセット、Step 0復帰
+- STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"]
+- Step 3 で skillPath を表示
+- hasExternalIntegration / externalToolName を CompleteStep に接続
 
-| 対象                                       | 状態                              |
-| ------------------------------------------ | --------------------------------- |
-| `skill-lifecycle-request-input` textarea   | PR #2036で削除済み                |
-| `skill-lifecycle-open-wizard-button`       | PR #2036で追加済み                |
-| `skill-lifecycle-execution-input` textarea | 行1793に残存（本タスクで削除）    |
-| `executionPrompt` state                    | 行438-440に残存（本タスクで削除） |
+## 非機能要件
 
-## 受け入れ基準
+- TypeScript 型エラー 0件
+- ESLint エラー 0件
+- 全テスト Green（vitest）
 
-| AC番号 | 基準                                                          | 状態           |
-| ------ | ------------------------------------------------------------- | -------------- |
-| AC-1   | `skill-lifecycle-request-input` textarea が削除               | 完了済み       |
-| AC-2   | `skill-lifecycle-execution-input` textarea が削除             | 本タスクで実施 |
-| AC-3   | `data-testid="skill-lifecycle-open-wizard-button"` ボタン追加 | 完了済み       |
-| AC-4   | `executionPrompt` state がコード上に残らない                  | 本タスクで実施 |
-| AC-5   | 既存テストファイル6本が全てPASS                               | 本タスクで実施 |
-| AC-6   | Phase 9 QA基準                                                | 本タスクで実施 |
-| AC-7   | SkillCreateWizard本体実装なし                                 | スコープ外     |
-| AC-8   | IPCチャンネル変更なし                                         | スコープ外     |
+## 実装状況（2026-04-11）
 
-## スコープ
-
-**含む:**
-
-- `SkillLifecyclePanel.tsx` の `skill-lifecycle-execution-input` textarea削除
-- `executionPrompt` state・ハンドラの削除
-- `canExecuteSkill`・`handleExecute`・`handlePlanImprovement` の更新
-- 既存テストファイル6本への `skill-lifecycle-execution-input` 非存在テスト追加
-
-**含まない:**
-
-- `SkillCreateWizard` 本体の実装
-- IPCチャンネルの変更
+- 新state・ハンドラは実装済み
+- 削除対象の generationMode / hasActivatedLlmMode / llmDescription state が残存
+- Step 0 のテンプレート切替UIが残存
