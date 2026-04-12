@@ -1,53 +1,27 @@
-# Phase 8: リファクタリング計画 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 8: リファクタリング計画 — UT-SKILL-WIZARD-W2-seq-03b
 
-## チェック項目と結果
+## 実施内容
 
-### 1. `defaultExecutionPrompt` 定数が他の場所でも参照されているか
+### 1. エクスポートのグループ化コメント整理
 
-`defaultExecutionPrompt` は `SkillLifecyclePanel.tsx` 内の定数として定義されており、
-`handleExecute`・`handlePlanImprovement` の2箇所で参照されている。
+`wizard/index.ts` は変更後すでに読みやすい順序になっている。
+追加のグループ化コメントは不要と判断（コードの自己説明性が高い）。
 
-外部モジュールへの露出なし。コンポーネント内部で完結している。
+### 2. 廃止ファイルの処理
 
-**判定**: 変更なし、理由: 定数の責務境界が正しく閉じている
+`DescribeStep.tsx` に `@deprecated` JSDoc を付与済み。
+`ConfigureStep.tsx` はすでに削除済みのため対応不要。
 
-### 2. `executionPrompt` state 削除後の残存参照がないか
+### 3. 型の重複解消
 
-削除後の `SkillLifecyclePanel.tsx` を確認:
+- Before: `wizard/index.ts` が `GenerationMode` をインライン定義 + `GenerateStep.tsx` も同型を定義
+- After: `wizard/index.ts` は `GenerateStep.tsx` からの再転送のみ（Single Source of Truth）
 
-- `executionPrompt` の `useState` 宣言: 削除済み
-- `setExecutionPrompt` の参照: 削除済み（textarea の onChange も削除）
-- `executionPrompt.trim()` の参照: 削除済み（canExecuteSkill / handleExecute / handlePlanImprovement）
+## 変更不要と判断した項目
 
-**判定**: 変更なし、理由: 全参照が正しく除去されている
+- `InterviewProgressBar` / `ApplySummaryCard` のエクスポート順序: 仕様外だが既存の順序を維持する
+- コメントブロックの追加: 現状のシンプルな barrel export として十分
 
-### 3. `canExecuteSkill` のロジックが簡潔になったか
+## 判定
 
-削除前:
-
-```typescript
-const canExecuteSkill =
-  Boolean(createdSkillName) &&
-  !isExecuting &&
-  executionPrompt.trim().length > 0 &&
-  skillExecutionStatus !== "review" &&
-  skillExecutionStatus !== "reuse_ready";
-```
-
-削除後:
-
-```typescript
-const canExecuteSkill =
-  Boolean(createdSkillName) &&
-  !isExecuting &&
-  skillExecutionStatus !== "review" &&
-  skillExecutionStatus !== "reuse_ready";
-```
-
-条件が1つ減り、よりシンプルになった。追加リファクタは不要。
-
-**判定**: 変更なし（すでに適切な形に変更済み）
-
-## リファクタリング総合判定
-
-**変更なし** — 全チェック項目で実装が適切であり、追加リファクタリングは不要。
+リファクタリング実施済み（`GenerationMode` の Single Source of Truth 化）。追加変更なし。

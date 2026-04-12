@@ -119,6 +119,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 12    | ドキュメント更新 | implementation guide、spec sync、未タスク、feedback を完了する                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | 13    | PR作成           | user の明示承認後のみ実施する                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
+
 ## Task仕様ナビ
 
 | Task                     | 責務                       | パターン | 入力             | 出力                  |

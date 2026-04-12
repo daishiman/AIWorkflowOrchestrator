@@ -44,7 +44,7 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
   },
 ];
 
-interface SkillInfoStepProps {
+export interface SkillInfoStepProps {
   /** スキル名・目的・カテゴリをまとめたフォーム全体の入力値。 */
   formData: SkillInfoFormData;
   /** フォーム変更時に親へ全体値を通知する。 */

@@ -30,22 +30,28 @@
 ### 削除エクスポートの非存在確認テスト
 
 ```typescript
-// wizard/index.ts のエクスポートチェック
+import { describe, it, expect, expectTypeOf } from "vitest";
+import * as wizardIndex from "../wizard/index";
+import type { GenerationMode, SkillInfoStepProps } from "../wizard";
+import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
+
 describe("wizard/index.ts 削除エクスポート確認", () => {
   it("DescribeStep がエクスポートされていないこと", () => {
-    // @ts-expect-error 削除済みのためエラーが期待される
-    const module = require("../wizard/index");
-    expect(module.DescribeStep).toBeUndefined();
+    expect(
+      (wizardIndex as Record<string, unknown>)["DescribeStep"],
+    ).toBeUndefined();
   });
 
   it("ConfigureStep がエクスポートされていないこと", () => {
-    const module = require("../wizard/index");
-    expect(module.ConfigureStep).toBeUndefined();
+    expect(
+      (wizardIndex as Record<string, unknown>)["ConfigureStep"],
+    ).toBeUndefined();
   });
 
-  it("GenerationMode 型エクスポートが存在しないこと", () => {
-    // TypeScript コンパイル時チェック（型レベルのテスト）
-    // import type { GenerationMode } from "../wizard/index" が型エラーになること
+  it("WizardOptions がエクスポートされていないこと", () => {
+    expect(
+      (wizardIndex as Record<string, unknown>)["WizardOptions"],
+    ).toBeUndefined();
   });
 });
 ```
@@ -55,15 +61,13 @@ describe("wizard/index.ts 削除エクスポート確認", () => {
 ```typescript
 describe("wizard/index.ts 追加エクスポート確認", () => {
   it("SkillInfoStep がエクスポートされていること", () => {
-    const { SkillInfoStep } = require("../wizard/index");
-    expect(SkillInfoStep).toBeDefined();
-    expect(typeof SkillInfoStep).toBe("function");
+    expect(wizardIndex.SkillInfoStep).toBeDefined();
+    expect(typeof wizardIndex.SkillInfoStep).toBe("function");
   });
 
   it("ConversationRoundStep がエクスポートされていること", () => {
-    const { ConversationRoundStep } = require("../wizard/index");
-    expect(ConversationRoundStep).toBeDefined();
-    expect(typeof ConversationRoundStep).toBe("function");
+    expect(wizardIndex.ConversationRoundStep).toBeDefined();
+    expect(typeof wizardIndex.ConversationRoundStep).toBe("function");
   });
 });
 ```
@@ -73,18 +77,28 @@ describe("wizard/index.ts 追加エクスポート確認", () => {
 ```typescript
 describe("wizard/index.ts 維持エクスポート確認", () => {
   it("StepIndicator が引き続きエクスポートされていること", () => {
-    const { StepIndicator } = require("../wizard/index");
-    expect(StepIndicator).toBeDefined();
+    expect(wizardIndex.StepIndicator).toBeDefined();
   });
 
   it("GenerateStep が引き続きエクスポートされていること", () => {
-    const { GenerateStep } = require("../wizard/index");
-    expect(GenerateStep).toBeDefined();
+    expect(wizardIndex.GenerateStep).toBeDefined();
   });
 
   it("CompleteStep が引き続きエクスポートされていること", () => {
-    const { CompleteStep } = require("../wizard/index");
-    expect(CompleteStep).toBeDefined();
+    expect(wizardIndex.CompleteStep).toBeDefined();
+  });
+});
+
+describe("wizard/index.ts 型契約確認", () => {
+  it("GenerationMode が barrel 経由で期待どおりの union 型で参照できること", () => {
+    expectTypeOf<GenerationMode>().toEqualTypeOf<"llm" | "template">();
+  });
+
+  it("SkillInfoStepProps が barrel 経由で期待どおりの型で参照できること", () => {
+    expectTypeOf<
+      SkillInfoStepProps["formData"]
+    >().toEqualTypeOf<SkillInfoFormData>();
+    expectTypeOf<SkillInfoStepProps["onNext"]>().toEqualTypeOf<() => void>();
   });
 });
 ```
@@ -92,10 +106,11 @@ describe("wizard/index.ts 維持エクスポート確認", () => {
 ### TypeScript 型チェックテスト
 
 ```typescript
-// 型テスト（tsd または expect-type を使用）
-import type { SkillInfoStepProps } from "../wizard/index";
-import type { ConversationRoundStepProps } from "../wizard/index";
-// 上記 import が型エラーなしでコンパイルされることを確認
+// expectTypeOf を使った型契約テスト
+expectTypeOf<GenerationMode>().toEqualTypeOf<"llm" | "template">();
+expectTypeOf<
+  SkillInfoStepProps["formData"]
+>().toEqualTypeOf<SkillInfoFormData>();
 ```
 
 ## 参照資料
@@ -110,7 +125,7 @@ import type { ConversationRoundStepProps } from "../wizard/index";
 ## 実行手順
 
 1. Phase 3 成果物を確認し、ゲート判定が PASS であることを確認する。
-2. テストファイルを `__tests__/wizard-index-exports.test.ts` に作成する。
+2. テストファイルを `__tests__/wizard-exports.test.ts` に作成する。
 3. 全テストケースが Red（失敗）状態であることを確認する。
 4. テスト仕様書として成果物を出力する。
 
@@ -125,9 +140,7 @@ import type { ConversationRoundStepProps } from "../wizard/index";
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] 削除エクスポート5件の非存在テストが定義されていること
-- [ ] 追加エクスポート4件の存在テストが定義されていること
-- [ ] 維持エクスポート6件の存在テストが定義されていること
+- [ ] 削除契約・追加契約・維持契約・型契約のテストが定義されていること
 - [ ] 全テストが Red（失敗）状態であることが確認されていること
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認

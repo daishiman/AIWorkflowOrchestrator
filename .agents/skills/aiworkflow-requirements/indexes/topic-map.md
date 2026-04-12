@@ -2568,6 +2568,15 @@ node scripts/list-specs.js --topics
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
 | LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L271 |
 | Workflow Snapshot State 配置ルール（TASK-SDK-04） | L372 |
+| TASK-SC-07 SkillCreateWizard current facts | L358 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L5 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L46 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L277 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L469 |
 
 ### references/arch-state-management.md
 
@@ -2596,6 +2605,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
+| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
 | SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
 | SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L210 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L210 |
@@ -3133,6 +3143,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L142 |
 | クイックリファレンス: カテゴリ別検索ガイド | L160 |
 | 分割ファイル一覧 | L164 |
+| 分割ファイル一覧 | L142 |
+| クイックリファレンス: カテゴリ別検索ガイド | L160 |
+| 分割ファイル一覧 | L164 |
 | 分割ファイル一覧 | L147 |
 | クイックリファレンス: カテゴリ別検索ガイド | L167 |
 | 分割ファイル一覧 | L171 |
@@ -3480,6 +3493,9 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L293 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L318 |
 | skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L352 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
+| 依存関係 | L293 |
+| 関連ファイル | L305 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
 | 依存関係 | L293 |
 | 関連ファイル | L305 |

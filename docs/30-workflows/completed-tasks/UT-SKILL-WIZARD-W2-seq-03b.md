@@ -21,10 +21,10 @@ dependencies: [UT-SKILL-WIZARD-W1-par-02a, UT-SKILL-WIZARD-W1-par-02b]
 | ---------- | ----------------------------------------------------------------------- |
 | タスクID   | UT-SKILL-WIZARD-W2-seq-03b                                              |
 | 由来       | UT-SKILL-WIZARD-W1-par-02a Phase 12 未タスク検出レポート（W2 引き継ぎ） |
-| ステータス | unassigned                                                              |
+| ステータス | resolved by `docs/30-workflows/W2-seq-03b-wizard-exports/`              |
 | 優先度     | low                                                                     |
 | 作成日     | 2026-04-07                                                              |
-| 関連仕様書 | skill-wizard-redesign-lane/W2-seq-03b-wizard-exports/index.md           |
+| 関連仕様書 | `docs/30-workflows/W2-seq-03b-wizard-exports/index.md`                  |
 
 ## 目的
 
@@ -36,8 +36,8 @@ Wave 1（W1-par-02a/02b/02c）の全実装完了後、廃止コンポーネン�
 
 W1-par-02a で `DescribeStep` エクスポートを削除・`GenerationMode` 型を `GenerateStep.tsx` に移動し、  
 `wizard/index.ts` の一部整理は完了している。  
-しかし `ConfigureStep` 関連エクスポートの完全削除と `ConversationRoundStep` の追加は  
-W1-par-02b 実装完了を待つ必要があるため、本タスク（W2-seq-03b）で確定させる。
+ただし current implementation では `ConfigureStep` は既に存在せず、W2-seq-03b の主対象は
+`DescribeStep` / `DescribeStepProps` / inline `GenerationMode` の整理と `SkillInfoStepProps` 公開で閉じた。
 
 ### 苦戦箇所（W1-par-02a より引き継ぎ）
 
@@ -49,13 +49,11 @@ W1-par-02b 実装完了を待つ必要があるため、本タスク（W2-seq-03
 
 1. W1-par-02a/02b/02c/02d の完了を確認する（前提確認）
 2. 以下のエクスポートを `wizard/index.ts` から削除する:
-   - `DescribeStep`（W1-par-02a で削除済みの場合はスキップ）
-   - `ConfigureStep`
-   - `WizardOptions` 型
-   - `ConfigureStepProps` 型
+   - `DescribeStep`
+   - `DescribeStepProps`
+   - inline `GenerationMode`
 3. 以下のエクスポートが存在することを確認（なければ追加）:
-   - `SkillInfoStep` / `SkillInfoStepProps`
-   - `ConversationRoundStep` / `ConversationRoundStepProps`
+   - `SkillInfoStepProps`
    - `GenerationMode`（`GenerateStep.tsx` から re-export）
 4. 不要な未使用エクスポートが残っていないか全量チェックする
 5. ビルド確認・インポートチェックを実施する
@@ -65,7 +63,7 @@ W1-par-02b 実装完了を待つ必要があるため、本タスク（W2-seq-03
 
 | 参照資料                          | パス                                                                                       |
 | --------------------------------- | ------------------------------------------------------------------------------------------ |
-| W2-seq-03b 詳細仕様書（index.md） | docs/30-workflows/skill-wizard-redesign-lane/W2-seq-03b-wizard-exports/index.md            |
+| W2-seq-03b 詳細仕様書（index.md） | docs/30-workflows/W2-seq-03b-wizard-exports/index.md                                       |
 | wizard/index.ts 現行ファイル      | apps/desktop/src/renderer/components/skill/wizard/index.ts                                 |
 | W1-par-02a Phase 12 未タスク検出  | docs/30-workflows/W1-par-02a-skill-info-step/outputs/phase-12/unassigned-task-detection.md |
 | 共有型定義                        | packages/shared/src/types/skillCreator.ts                                                  |
@@ -73,8 +71,8 @@ W1-par-02b 実装完了を待つ必要があるため、本タスク（W2-seq-03
 ## 受入基準
 
 - [ ] W1-par-02a/02b/02c の全実装が前提として完了している
-- [ ] `DescribeStep` / `ConfigureStep` / `WizardOptions` のエクスポートが存在しない
-- [ ] `SkillInfoStep` / `ConversationRoundStep` のエクスポートが正しく追加されている
+- [ ] `DescribeStep` / `DescribeStepProps` / inline `GenerationMode` のエクスポートが存在しない
+- [ ] `SkillInfoStepProps` の型 export が正しく公開されている
 - [ ] `GenerationMode` 型が `GenerateStep.tsx` から正しく re-export されている
 - [ ] `pnpm typecheck` がエラーなく通過する
 - [ ] `wizard/index.ts` を import している既存コードが壊れていない

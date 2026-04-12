@@ -18,21 +18,20 @@ Phase 4 で定義した Red テストを Green へ移行する最小実装（エ
 
 ## Before/After テーブル（実装記録用）
 
-| エクスポート                 | Before | After | 操作 | 実装状況 |
-| ---------------------------- | ------ | ----- | ---- | -------- |
-| `DescribeStep`               | あり   | なし  | 削除 | [ ]      |
-| `DescribeStepProps`          | あり   | なし  | 削除 | [ ]      |
-| `ConfigureStep`              | あり   | なし  | 削除 | [ ]      |
-| `WizardOptions`              | あり   | なし  | 削除 | [ ]      |
-| `ConfigureStepProps`         | あり   | なし  | 削除 | [ ]      |
-| `GenerationMode`             | あり   | なし  | 削除 | [ ]      |
-| `SkillInfoStep`              | なし   | あり  | 追加 | [ ]      |
-| `SkillInfoStepProps`         | なし   | あり  | 追加 | [ ]      |
-| `ConversationRoundStep`      | なし   | あり  | 追加 | [ ]      |
-| `ConversationRoundStepProps` | なし   | あり  | 追加 | [ ]      |
-| `StepIndicator` 等           | あり   | あり  | 維持 | [ ]      |
-| `GenerateStep` 等            | あり   | あり  | 維持 | [ ]      |
-| `CompleteStep` 等            | あり   | あり  | 維持 | [ ]      |
+| エクスポート                                 | Before | After | 操作           | 実装状況 |
+| -------------------------------------------- | ------ | ----- | -------------- | -------- |
+| `DescribeStep`                               | あり   | なし  | 削除           | [ ]      |
+| `DescribeStepProps`                          | あり   | なし  | 削除           | [ ]      |
+| inline `GenerationMode` 定義                 | あり   | なし  | 削除           | [ ]      |
+| `SkillInfoStepProps`                         | なし   | あり  | 追加           | [ ]      |
+| `GenerationMode`（`GenerateStep` 再転送）    | なし   | あり  | 追加（再転送） | [ ]      |
+| `StepIndicator` / `stepStateStyles` / 関連型 | あり   | あり  | 維持           | [ ]      |
+| `SkillInfoStep`                              | あり   | あり  | 維持           | [ ]      |
+| `ConversationRoundStep` / 関連型             | あり   | あり  | 維持           | [ ]      |
+| `InterviewProgressBar` / 関連型              | あり   | あり  | 維持           | [ ]      |
+| `ApplySummaryCard` / 関連型                  | あり   | あり  | 維持           | [ ]      |
+| `GenerateStep` / 関連型                      | あり   | あり  | 維持           | [ ]      |
+| `CompleteStep` / 関連型                      | あり   | あり  | 維持           | [ ]      |
 
 ## 実装手順
 
@@ -44,21 +43,20 @@ Phase 4 で定義した Red テストを Green へ移行する最小実装（エ
 // 削除する行
 export { DescribeStep } from "./DescribeStep";
 export type { DescribeStepProps } from "./DescribeStep";
-export { ConfigureStep } from "./ConfigureStep";
-export type { WizardOptions, ConfigureStepProps } from "./ConfigureStep";
 export type GenerationMode = "llm" | "template";
 ```
 
 ### Step 2: 追加作業
 
-`apps/desktop/src/renderer/components/skill/wizard/index.ts` に以下を追加する：
+`apps/desktop/src/renderer/components/skill/wizard/index.ts` と周辺ファイルに以下を追加する：
 
 ```typescript
 // 追加する行
-export { SkillInfoStep } from "./SkillInfoStep";
 export type { SkillInfoStepProps } from "./SkillInfoStep";
-export { ConversationRoundStep } from "./ConversationRoundStep";
-export type { ConversationRoundStepProps } from "./ConversationRoundStep";
+export type { GenerationMode } from "./GenerateStep";
+
+// SkillInfoStep.tsx
+export interface SkillInfoStepProps {
 ```
 
 ### Step 3: 型チェック確認
@@ -69,32 +67,40 @@ pnpm --filter @repo/desktop typecheck
 
 エラーがないことを確認する。
 
-### Step 4: ビルド確認
+### Step 4: targeted test + 型チェック確認
 
 ```bash
-pnpm --filter @repo/desktop build
+pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1
 ```
 
-ビルドが成功することを確認する。
+targeted export test と typecheck がともに通ることを確認する。
 
 ## 変更後の index.ts 全体像
 
 ```typescript
 // wizard/index.ts（変更後）
 
-// 新規追加
+export { StepIndicator, stepStateStyles } from "./StepIndicator";
+export type { StepState, StepIndicatorProps } from "./StepIndicator";
+// DescribeStep / DescribeStepProps は削除
 export { SkillInfoStep } from "./SkillInfoStep";
 export type { SkillInfoStepProps } from "./SkillInfoStep";
 export { ConversationRoundStep } from "./ConversationRoundStep";
 export type { ConversationRoundStepProps } from "./ConversationRoundStep";
-
-// 維持
-export { StepIndicator } from "./StepIndicator";
-export type { StepIndicatorProps } from "./StepIndicator";
+export { InterviewProgressBar } from "./InterviewProgressBar";
+export type { InterviewProgressBarProps } from "./InterviewProgressBar";
+export { ApplySummaryCard } from "./ApplySummaryCard";
+export type { ApplySummaryCardProps } from "./ApplySummaryCard";
 export { GenerateStep } from "./GenerateStep";
-export type { GenerateStepProps } from "./GenerateStep";
+export type {
+  GenerateStepProps,
+  GenerationError,
+  GenerationStage,
+  GenerationErrorCode,
+  GenerationMode,
+} from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
-export type { CompleteStepProps } from "./CompleteStep";
+export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";
 ```
 
 ## 参照資料
@@ -112,7 +118,7 @@ export type { CompleteStepProps } from "./CompleteStep";
 2. Step 1 で削除作業を実施する。
 3. Step 2 で追加作業を実施する。
 4. Step 3 で型チェックを確認する。
-5. Step 4 でビルドを確認する。
+5. Step 4 で targeted export test を確認する。
 6. Phase 4 のテストが全て Green になることを確認する。
 
 ## 成果物
@@ -126,9 +132,8 @@ export type { CompleteStepProps } from "./CompleteStep";
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] 削除エクスポート5件が全て除去されていること
-- [ ] 追加エクスポート4件が全て追加されていること
-- [ ] 維持エクスポートに変更がないこと
+- [ ] `DescribeStep` 系削除・`SkillInfoStepProps` 公開・`GenerationMode` 再転送化が完了していること
+- [ ] 維持エクスポートに不要な変更がないこと
 - [ ] `pnpm typecheck` がエラーなしで通過すること
 - [ ] Phase 4 の全テストが Green になっていること
 - [ ] 矛盾がないことを確認
@@ -140,7 +145,7 @@ export type { CompleteStepProps } from "./CompleteStep";
 1. 参照資料の確認
 2. 削除作業（Step 1）
 3. 追加作業（Step 2）
-4. 型チェック・ビルド確認（Step 3〜4）
+4. 型チェック・targeted test 確認（Step 3〜4）
 5. テスト Green 確認
 6. 成果物出力
 

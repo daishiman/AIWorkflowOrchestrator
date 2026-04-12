@@ -1,4 +1,4 @@
-# Phase 11: スクリーンショットカバレッジ — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 11: スクリーンショットカバレッジ — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 判定
 
@@ -6,16 +6,14 @@ PASS
 
 ## カバレッジ
 
-| 確認項目                                  | 状態 | 証跡                                                                 |
-| ----------------------------------------- | ---- | -------------------------------------------------------------------- |
-| `skill-lifecycle-open-wizard-button` 表示 | PASS | `skill-lifecycle-panel-light.png` / `skill-lifecycle-panel-dark.png` |
-| `skill-lifecycle-request-input` 非存在    | PASS | 同上                                                                 |
-| `skill-lifecycle-execution-input` 非存在  | PASS | 同上                                                                 |
-| light theme 表示                          | PASS | `skill-lifecycle-panel-light.png`                                    |
-| dark theme 表示                           | PASS | `skill-lifecycle-panel-dark.png`                                     |
+| 確認項目                                | 状態 | 証跡                                                                  |
+| --------------------------------------- | ---- | --------------------------------------------------------------------- |
+| Step 0 の代表画面にレイアウト崩れがない | PASS | `TC-11-01-step0-description-category.png`                             |
+| Step 1 の代表画面にレイアウト崩れがない | PASS | `TC-11-02-step1-page1-defaults.png`                                   |
+| current diff が UI 非変更である         | PASS | `wizard/index.ts` / `SkillInfoStep.tsx` / `DescribeStep.tsx` 差分確認 |
+| current task に証跡が再リンクされている | PASS | `evidence-index.md` / `phase11-capture-metadata.json`                 |
 
 ## 所見
 
-- ボタンは両テーマで崩れず表示される
-- textarea は両テーマとも確認できない
-- current task の visual evidence は task 専用フォルダの light / dark 2 枚で十分にカバーされる
+- export contract 更新だけでは画面構造は変わっていない
+- representative capture reuse で今回必要な visual audit は満たせる
