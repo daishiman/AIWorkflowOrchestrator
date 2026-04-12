@@ -73,6 +73,21 @@ TASK-SC-07（SkillCreateWizard LLM Connection）の Phase 12 close-out として
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-W3-seq-04 impl-spec-to-skill-sync
+
+### 変更内容
+- `aiworkflow-requirements/LOGS.md` に W3-seq-04 impl-spec-to-skill-sync エントリを追加（2026-04-11）
+- `aiworkflow-requirements/references/lessons-learned-w3-usage-tracking-2026-04.md`: L-W3-TRACK-001（console.debug→console.info）・L-W3-TRACK-002（5計装ポイント責務分離）を更新
+- `aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md`: `skill_wizard_next_action` payload・`skill_wizard_open.source` 記述を更新
+- `aiworkflow-requirements/references/task-workflow-completed-recent-2026-04d.md`: W3-seq-04 完了記録（5計装ポイント詳細）を追加
+- `.agents/` mirror sync 完了（13ファイル同期）/ generate-index.js PASS（2862 keywords）/ diff -qr 差分なし
+
+### 背景
+W3-seq-04（使用率計装）の実装内容（trackEvent renderer-local 抽象・5計装ポイント確定）を仕様書に反映。
+skill-feedback-report の artifacts.json parity 要件は既存 SKILL.md の Feedback 2 / Feedback 10 で対応済み。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容

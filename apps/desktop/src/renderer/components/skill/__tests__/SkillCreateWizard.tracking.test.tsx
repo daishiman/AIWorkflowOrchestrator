@@ -171,6 +171,14 @@ function getEventCalls(eventName: keyof trackEventModule.SkillWizardEvents) {
   return mockTrackEvent.mock.calls.filter(([name]) => name === eventName);
 }
 
+function createDeferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((res) => {
+    resolve = res;
+  });
+  return { promise, resolve };
+}
+
 describe("SkillCreateWizard 計装テスト（W3-seq-04）", () => {
   const mockOnClose = vi.fn();
 
@@ -305,7 +313,7 @@ describe("SkillCreateWizard 計装テスト（W3-seq-04）", () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("TC-11: open_editor 押下で next_action(open_editor) が発火する", async () => {
+  it("TC-11: open_editor 押下で next_action(edit) が発火する", async () => {
     render(<SkillCreateWizard onClose={mockOnClose} />);
     await generateWith("complete");
     await screen.findByTestId("complete-step");
@@ -313,12 +321,12 @@ describe("SkillCreateWizard 計装テスト（W3-seq-04）", () => {
     fireEvent.click(screen.getByTestId("complete-step-action-open-editor"));
 
     expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_next_action", {
-      action: "open_editor",
+      action: "edit",
     });
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("TC-12: create_another 押下で next_action(create_another) が発火する", async () => {
+  it("TC-12: create_another 押下で next_action(close) が発火する", async () => {
     render(<SkillCreateWizard onClose={mockOnClose} />);
     await generateWith("complete");
     await screen.findByTestId("complete-step");
@@ -326,10 +334,128 @@ describe("SkillCreateWizard 計装テスト（W3-seq-04）", () => {
     fireEvent.click(screen.getByTestId("complete-step-action-create-another"));
 
     expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_next_action", {
-      action: "create_another",
+      action: "close",
     });
     expect(mockOnClose).not.toHaveBeenCalled();
     expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
+  });
+
+  // ── Phase 4+6: 新規計装テスト（W3-seq-04 追加イベント） ────────────────────
+
+  it("TC-SCW-01: マウント時に skill_wizard_open が source:direct で発火する", () => {
+    render(<SkillCreateWizard onClose={mockOnClose} />);
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_open", {
+      source: "direct",
+    });
+  });
+
+  it("TC-SCW-02: source=lifecycle_panel を渡すと skill_wizard_open が lifecycle_panel で発火する", () => {
+    render(
+      <SkillCreateWizard onClose={mockOnClose} source="lifecycle_panel" />,
+    );
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_open", {
+      source: "lifecycle_panel",
+    });
+  });
+
+  it("TC-SCW-03: Step 0 完了時に skill_wizard_step_complete が step:0 で発火する", async () => {
+    render(<SkillCreateWizard onClose={mockOnClose} />);
+    await advanceToStep1();
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_step_complete", {
+      step: 0,
+      stepName: "スキル情報入力",
+    });
+  });
+
+  it("TC-SCW-04: Step 1 完了時に skill_wizard_step_complete が step:1 で発火する", async () => {
+    render(<SkillCreateWizard onClose={mockOnClose} />);
+    await generateWith("complete");
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_step_complete", {
+      step: 1,
+      stepName: "詳細設定",
+    });
+  });
+
+  it("TC-SCW-05: Step 2 生成成功時に skill_wizard_step_complete が step:2 で発火する", async () => {
+    render(<SkillCreateWizard onClose={mockOnClose} />);
+    await generateWith("complete");
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_step_complete", {
+      step: 2,
+      stepName: "生成",
+    });
+  });
+
+  it("TC-SCW-06: Step 3 未到達でアンマウントすると skill_wizard_abandon が発火する", () => {
+    const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+    vi.clearAllMocks();
+    unmount();
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_abandon", {
+      lastStep: 0,
+    });
+  });
+
+  it("TC-SCW-07: Step 3 到達後にアンマウントすると skill_wizard_abandon が発火しない", async () => {
+    const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+    await generateWith("complete");
+    await screen.findByTestId("complete-step");
+    vi.clearAllMocks();
+    unmount();
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      "skill_wizard_abandon",
+      expect.anything(),
+    );
+  });
+
+  it("TC-SCW-M: アンマウント時の lastStep が currentStep の値と一致する（Step 1 で離脱）", async () => {
+    const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+    await advanceToStep1();
+    vi.clearAllMocks();
+    unmount();
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_abandon", {
+      lastStep: 1,
+    });
+  });
+
+  it("TC-SCW-08: 完了後に別のスキルを作ってからアンマウントすると abandon が再発火する", async () => {
+    const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+    await generateWith("complete");
+    await screen.findByTestId("complete-step");
+    fireEvent.click(screen.getByTestId("complete-step-action-create-another"));
+    await screen.findByTestId("wizard-step-info");
+    vi.clearAllMocks();
+    unmount();
+    expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_abandon", {
+      lastStep: 0,
+    });
+  });
+
+  it("TC-SCW-09: テンプレート生成中にアンマウントしても遅延成功イベントが発火しない", async () => {
+    const deferred = createDeferred<string | null>();
+    mockCreateSkill.mockReturnValueOnce(deferred.promise);
+
+    const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+    await generateWith("complete");
+    expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+
+    vi.clearAllMocks();
+    unmount();
+
+    await act(async () => {
+      deferred.resolve("/mock/skills/late-skill");
+      await deferred.promise;
+    });
+
+    expect(getEventCalls("skill_wizard_generation_completed")).toHaveLength(0);
+    expect(
+      mockTrackEvent.mock.calls.filter(
+        ([eventName, payload]) =>
+          eventName === "skill_wizard_step_complete" &&
+          typeof payload === "object" &&
+          payload !== null &&
+          "step" in payload &&
+          payload.step === 2,
+      ),
+    ).toHaveLength(0);
   });
 });
 

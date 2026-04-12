@@ -152,7 +152,9 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（handleGenerate 冒頭） |
 | `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後・失敗時は発火しない） |
 | `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
-| `skill_wizard_next_action` | `{ action: "execute" \| "open_editor" \| "create_another" }` | SkillCreateWizard（handleExecuteNow / handleOpenInEditor / handleCreateAnother） |
+| `skill_wizard_next_action` | `{ action: "edit" \| "execute" \| "close" }` | CompleteStep（アクションカード onClick） |
+
+`skill_wizard_open` の `source` は呼び出し元で設定し、`App.tsx` の `/advanced/skill-create-wizard` は `direct`、`SkillManagementPanel.tsx` は create / lifecycle 起点に応じて `direct` / `lifecycle_panel` を渡す。`skill_wizard_next_action` は CompleteStep 側で 1 回だけ発火し、SkillCreateWizard 側での重複送信はしない。
 
 **設計方針**: dev 環境は `console.info` でログ出力、prod は no-op。将来的に内部 sink を analytics adapter に差し替え可能（呼び出し側は変えない）。SkillAnalytics / AnalyticsStore（execution-centric）とは直接接続しない。
 
