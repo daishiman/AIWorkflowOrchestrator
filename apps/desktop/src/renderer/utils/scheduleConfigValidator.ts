@@ -1,17 +1,31 @@
 /**
  * @file scheduleConfigValidator.ts
  * @description SkillWizardScheduleConfig の cronExpression / timezone 共通バリデーション
- * @task TASK-UI-SCHEDULE-VISUAL-PICKER-001
+ * @task TASK-UI-SCHEDULE-VISUAL-PICKER-001, TASK-UI-SCHEDULE-CRON-SEMANTIC-001
  *
  * ConversationRoundStep と ScheduleDialog の両方から再利用される。
- * semantic validation（next-run 計算など）は行わない。
+ * options.semantic が true の場合のみ next-run 計算による意味論的バリデーションを実行する。
  */
 
+import { CronExpressionParser } from "cron-parser";
 import type { SkillWizardScheduleConfig } from "@repo/shared/types/skillCreator";
 
 export interface ScheduleConfigValidationResult {
   cronExpression?: string;
   timezone?: string;
+}
+
+/**
+ * validateCronExpression のオプション設定
+ */
+export interface ValidateCronOptions {
+  /**
+   * true の場合、構文・値域チェックに加えて next-execution-time 計算による
+   * 意味論的バリデーション（到達可能性チェック）を実行する。
+   * false または省略した場合は従来の構文チェックのみ実行（後方互換）。
+   * @default false
+   */
+  semantic?: boolean;
 }
 
 // 各フィールドの有効範囲: [分, 時, 日, 月, 曜日]
@@ -53,10 +67,17 @@ function isValidCronField(field: string, min: number, max: number): boolean {
 
 /**
  * cron 式の 5 フィールド構文とフィールド値の範囲を検証する。
- * semantic validation（next-run 計算など）は行わない。
+ * options.semantic が true の場合は next-execution-time 計算による到達可能性チェックも実行する。
+ *
+ * @param value - 検証対象の cron 式文字列
+ * @param options - バリデーションオプション
+ * @param options.semantic - true の場合、意味論的検証（next-run 計算）を追加実行する（デフォルト: false）
  * @returns エラーメッセージ文字列、または有効なら null
  */
-export function validateCronExpression(value: string): string | null {
+export function validateCronExpression(
+  value: string,
+  options?: ValidateCronOptions,
+): string | null {
   const trimmed = value.trim();
 
   if (!trimmed) {
@@ -72,7 +93,21 @@ export function validateCronExpression(value: string): string | null {
     isValidCronField(field, FIELD_RANGES[idx][0], FIELD_RANGES[idx][1]),
   );
 
-  return allValid ? null : "cron式の形式が正しくありません";
+  if (!allValid) {
+    return "cron式の形式が正しくありません";
+  }
+
+  // [5] semantic チェック（options.semantic === true の場合のみ実行・後方互換保証）
+  if (options?.semantic === true) {
+    try {
+      const interval = CronExpressionParser.parse(trimmed);
+      interval.next();
+    } catch {
+      return "指定した日付の組み合わせは存在しません（例: 2月31日）";
+    }
+  }
+
+  return null;
 }
 
 /**

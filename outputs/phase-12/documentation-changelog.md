@@ -1,38 +1,36 @@
-# Phase 12: ドキュメント更新履歴 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+# ドキュメント更新履歴 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## メタ情報
+## 更新日: 2026-04-12
 
-| 項目    | 内容                                     |
-| ------- | ---------------------------------------- |
-| Phase   | 12                                       |
-| Task ID | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 |
-| Task名  | cronConverter 空曜日ガード処理追加       |
-| 作成日  | 2026-04-12                               |
+## Step 別結果
 
-## 変更対象
+| Step     | 更新対象                 | 更新内容                                                                 | 結果 |
+| -------- | ------------------------ | ------------------------------------------------------------------------ | ---- |
+| Step 1-A | タスク完了記録           | 関連ドキュメントリンク、変更履歴、`LOGS.md` 2件、`topic-map.md` を更新   | 完了 |
+| Step 1-B | 実装状況テーブル         | `validateCronExpression` の semantic 対応状況を完了へ更新                | 完了 |
+| Step 1-C | 関連タスクテーブル       | 完了日・実装ファイル・テストファイルを更新                               | 完了 |
+| Step 2   | 新規インターフェース追加 | `ValidateCronOptions` と `validateCronExpression` のシグネチャ変更を反映 | 完了 |
 
-| 区分    | ファイル                                                 | 要約                                                   |
-| ------- | -------------------------------------------------------- | ------------------------------------------------------ |
-| ledger  | `outputs/artifacts.json`                                 | root ledger と同一内容に同期した                       |
-| phase10 | `outputs/phase-10/ac-verification.md`                    | AC-1〜AC-5 を current facts で再記録した               |
-| phase11 | `outputs/phase-11/manual-test-checklist.md`              | NON_VISUAL と runtime blocker を分離した               |
-| phase11 | `outputs/phase-11/discovered-issues.md`                  | product blocker 0 件、environment issue 1 件を記録した |
-| phase11 | `outputs/phase-11/manual-test-report.md`                 | source-level PASS を要約した                           |
-| phase11 | `outputs/phase-11/ui-sanity-visual-review.md`            | visual review を NON_VISUAL として整理した             |
-| phase11 | `outputs/phase-11/phase11-capture-metadata.json`         | capture metadata を current task に統一した            |
-| phase12 | `outputs/phase-12/system-spec-update-summary.md`         | ledger sync と interface N/A を整理した                |
-| phase12 | `outputs/phase-12/unassigned-task-detection.md`          | product-side の未タスク 0 件を記録した                 |
-| phase12 | `outputs/phase-12/skill-feedback-report.md`              | current facts から得た改善観点を整理した               |
-| phase12 | `outputs/phase-12/phase12-task-spec-compliance-check.md` | canonical 6 成果物の整合を確認した                     |
+## 変更対象サマリー
 
-## current facts
+| 成果物                             | 変更種別 | 変更内容                                                                                       |
+| ---------------------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `scheduleConfigValidator.ts` JSDoc | 更新     | `@param options.semantic` の説明を追加                                                         |
+| `outputs/phase-1/`                 | 更新     | 要件定義・受け入れ基準・ライブラリ評価計画を current facts に合わせて調整                      |
+| `outputs/phase-2/`                 | 更新     | API設計・ライブラリ比較・設計一貫性を current facts に合わせて調整                             |
+| `outputs/phase-3/`                 | 更新     | 設計レビュー結果（PASS）を current facts に整合                                                |
+| `outputs/phase-4/`                 | 更新     | テスト計画・テストケースの前提を current facts に整合                                          |
+| `outputs/phase-5/`                 | 更新     | 実装計画・変更ログを current facts に整合                                                      |
+| `outputs/phase-6/`                 | 更新     | 拡充テストケース・回帰テスト結果を current facts に整合                                        |
+| `outputs/phase-7/`                 | 更新     | カバレッジレポートを current facts に整合                                                      |
+| `outputs/phase-8/`                 | 更新     | リファクタリングログを current facts に整合                                                    |
+| `outputs/phase-9/`                 | 更新     | 品質保証レポートを current facts に整合                                                        |
+| `outputs/phase-10/`                | 更新     | 最終レビュー結果を current facts に整合                                                        |
+| `outputs/phase-11/`                | 更新     | 手動テスト結果・チェックリスト・発見問題を current facts に整合                                |
+| `outputs/phase-12/`                | 更新     | 実装ガイド・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・root evidence を作成 |
 
-- `cronConverter.ts` は weekly 空曜日で空文字を返す
-- `cronConverter.edge.test.ts` は空曜日ケースを含む
-- `cronConverter.test.ts` は weekly / daily / monthly / custom を保持している
-- Phase 11 は NON_VISUAL
-- runtime vitest は esbuild host/binary mismatch で停止した
+## 補足
 
-## 結論
-
-この task のドキュメント更新は、source-level の current facts と ledger sync を中心に再構成された。
+- `LOGS.md` 2件と `topic-map.md` の更新を同波で実施済み
+- 既存 UI 呼び出しは非 semantic のまま維持し、後方互換性を壊していない
+- `cron-parser@5.5.0` の実挙動に合わせて、到達不能と判定される式は安全側でエラーとして扱う

@@ -1,28 +1,17 @@
-# Phase 12: 未タスク検出 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+# 未タスク検出 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 判定
+## 検出結果: 未タスクなし
 
-- 重大未タスク: 0 件
-- 軽微な未タスク: 0 件
-
-## 確認対象
-
-| 対象                         | 確認結果 | 補足                                                           |
-| ---------------------------- | -------- | -------------------------------------------------------------- |
-| `cronConverter.ts` の guard  | PASS     | weekly 空曜日の空文字返却が存在する                            |
-| `cronConverter.edge.test.ts` | PASS     | 空曜日ケースと weekly 正常系を含む                             |
-| `cronConverter.test.ts`      | PASS     | weekly / daily / monthly / custom の regression を保持している |
-| Phase 11 環境ブロッカー      | 対象外   | esbuild mismatch は product task ではない                      |
-| TODO / FIXME / HACK / XXX    | 未検出   | current task の範囲では未タスク化なし                          |
-
-## 未タスクに含めなかった項目
-
-| 項目                                    | 理由                                                    |
-| --------------------------------------- | ------------------------------------------------------- |
-| monthly / custom の追加ガード           | current task の範囲外であり、今回の AC には入っていない |
-| UI 側の追加バリデーション整理           | pure function の guard 追加とは別責務として扱う         |
-| `manual-test-report` の runtime blocker | 環境要因であり product backlog には入れていない         |
+| 検出ソース                     | 確認内容                                               | 結果     | 補足                              |
+| ------------------------------ | ------------------------------------------------------ | -------- | --------------------------------- |
+| 元タスク仕様書のスコープ外事項 | バックエンド変更（`ScheduleStore` / `SkillScheduler`） | 対象外   | 本タスクでは変更不要              |
+| 元タスク仕様書のスコープ外事項 | IPC チャンネルの変更                                   | 対象外   | 本タスクでは変更不要              |
+| Phase 10 MINOR 指摘事項        | `cron-parser` の挙動差分                               | 解決済み | Phase 5 で safe-side の判定に確定 |
+| コードコメントの TODO/FIXME    | `scheduleConfigValidator.ts` と関連テスト              | 該当なし | 未タスク化不要                    |
+| 将来の拡張候補                 | DOM/DOW の説明強化                                     | 保留     | 現時点では優先度低                |
 
 ## 結論
 
-product 観点では、追加で起票する未タスクは残っていない。
+- 新規タスク化が必要な項目はありません
+- `validateSkillWizardScheduleConfig` は呼び出し元判断で semantic を有効化する設計のままで問題ありません
+- `options.semantic` の自動有効化は、現在の NON_VISUAL 範囲では不要です

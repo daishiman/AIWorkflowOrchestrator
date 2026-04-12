@@ -3425,12 +3425,12 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L293 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L317 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L341 |
-| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L365 |
-| 依存関係 | L389 |
-| 関連ファイル | L401 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L413 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L438 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L472 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L365 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L389 |
+| 依存関係 | L413 |
+| 関連ファイル | L425 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
 
 ### references/lessons-learned-templates.md
 
@@ -4685,6 +4685,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

@@ -4,6 +4,39 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync（SKILL.md Trigger 補完）
+
+### 変更内容
+- `SKILL.md` description Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` / `意味論的バリデーション` / `到達可能性チェック` / `cron-parser@5.5.0` / `TASK-UI-SCHEDULE-CRON-SEMANTIC-001` を追加
+- `task-specification-creator/SKILL.md` 「よくある漏れ」テーブルに FB-CRONVL-001/002 追記・v10.09.45 changelog 追加
+- `task-specification-creator/LOGS.md` に impl-spec-to-skill-sync エントリ追加
+- LOGS.md 2ファイル同波更新
+
+### 背景
+2026-04-12 の impl-spec-to-skill-sync では resource-map・lessons-learned・task-workflow-completed の更新を実施したが、SKILL.md Trigger キーワード追加と task-specification-creator FB-CRONVL 反映が未実施のまま残っていた。本エントリで漏れを解消。
+
+## 2026-04-12 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `indexes/resource-map.md` に TASK-UI-SCHEDULE-CRON-SEMANTIC-001 エントリを追加（スケジュール cron 意味論的バリデーション / `ValidateCronOptions` / `cron-parser@5.5.0` safe-side）
+- `references/lessons-learned-current-2026-04.md` に L-CRON-SEM-001〜003 教訓を追加（DOM strict / opt-in safe-side / Phase 12 外部同期一覧）
+- `references/task-workflow-completed-recent-2026-04e.md` に TASK-UI-SCHEDULE-CRON-SEMANTIC-001 完了記録を追加
+- `lessons-learned-current-2026-04.md` 内の UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 セクション重複（L-CLM-001〜003 が2回出現）を修正
+- `generate-index.js` 実行（442ファイル / 2914キーワード）/ mirror sync（indexes/ + references/2ファイル）
+
+### 背景
+Phase 12 close-out で LOGS.md / topic-map.md を更新したが、resource-map.md エントリ・lessons-learned 教訓・task-workflow-completed 完了記録が未追加のままだった。impl-spec-to-skill-sync で漏れを解消した。
+
+## 2026-04-12 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 Phase 12 close-out sync
+
+### 変更内容
+- `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` の current facts を TASK-UI-SCHEDULE-CRON-SEMANTIC-001 向けに更新
+- `.claude/skills/task-specification-creator/LOGS.md` を同波で更新
+- `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` に `ValidateCronOptions` / `semantic` / `cron-parser` の索引を追加
+
+### 背景
+Phase 12 の閉じ作業では、成果物だけでなく LOGS と topic-map まで current facts に揃える必要がある。
+
 ## 最新更新ヘッドライン
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |

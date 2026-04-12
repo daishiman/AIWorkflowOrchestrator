@@ -1,127 +1,91 @@
-# Phase 12: 実装ガイド - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+# 実装ガイド - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## メタ情報
-
-| 項目    | 内容                                      |
-| ------- | ----------------------------------------- |
-| Task ID | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001  |
-| 作成日  | 2026-04-12                                |
-| 対象    | `cronConverter.ts` の weekly 空曜日ガード |
-| 状態    | completed                                 |
-
----
-
-## Part 1: 中学生向け説明
-
-### 何を直したのか
-
-スケジュール画面では「毎週、月・水・金に動く」のような設定を cron という命令文に変える。  
-そのとき曜日が 1 つも選ばれていないのに、命令文だけを無理に作ると、空っぽの材料で料理名だけ書いたメモのように壊れたものになる。
-
-### なぜ必要か
-
-- 変な命令文を返すと、あとで使う側が困る
-- 画面側のチェックだけに頼ると、別の呼び出し方で抜けることがある
-- 変換する場所で止めると、壊れた値が広がらない
-
-### 何をするか
-
-- 曜日が空の weekly 設定を見つける
-- その場で空文字を返す
-- 無理に cron 文を作らない
+## Part 1: 中学生レベルの説明
 
 ### たとえ話
 
-曜日は弁当のおかずみたいなもの。  
-おかずが 1 つも入っていないのに「月・水・金の弁当」とラベルだけ貼ると、中身と札が合わない。  
-この修正は、札を貼る前に中身を確認して、空なら空のまま返す動きに近い。
+カレンダーにない日付は、どれだけ待っても来ません。たとえば「2月31日」は存在しないので、「毎年2月31日に実行してください」と言っても、実行日は永遠に来ません。
 
----
+### 何が変わったか
 
-## Part 2: 開発者向け説明
+`validateCronExpression` に `semantic` という追加スイッチを入れました。
 
-### current contract
+- `semantic` を付けないときは、今まで通り「書き方が正しいか」だけを見ます
+- `semantic: true` を付けたときだけ、「その日付が本当に存在するか」まで見ます
 
-```ts
-export type FrequencyType =
-  | "every-minute"
-  | "every-hour"
-  | "daily"
-  | "weekly"
-  | "monthly"
-  | "custom";
+### 変更ファイル
 
-export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+| ファイル                                                                | 変更種別 | 変更内容                                                                                                               |
+| ----------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`            | 修正     | `ValidateCronOptions` インターフェース追加、`validateCronExpression` シグネチャ拡張、semantic ロジック追加、JSDoc 更新 |
+| `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` | 修正     | TC-01〜TC-16（semantic validation テスト）追加                                                                         |
+| `apps/desktop/package.json`                                             | 修正     | `cron-parser@5.5.0` を `dependencies` に追加                                                                           |
 
-export interface VisualCronConfig {
-  frequency: FrequencyType;
-  hour: number;
-  minute: number;
-  weekdays: Weekday[];
-  dayOfMonth: number;
-  rawCronExpression?: string;
+## Part 2: 技術者向けの説明
+
+### API 変更
+
+```typescript
+export interface ValidateCronOptions {
+  /** true の場合、cron-parser を使用して意味論的バリデーション（next-execution-time 計算）を実行する */
+  semantic?: boolean;
 }
-
-export function visualConfigToCron(config: VisualCronConfig): string;
 ```
 
-### 実装ポイント
-
-| 項目   | 内容                                                                 |
-| ------ | -------------------------------------------------------------------- |
-| 対象   | `apps/desktop/src/renderer/utils/cronConverter.ts`                   |
-| ガード | `frequency === "weekly"` かつ `weekdays.length === 0` で `""` を返す |
-| 正常系 | `weekdays` は重複除去と昇順ソートの後に join する                    |
-| JSDoc  | 空曜日時の返り値と意図を `@returns` / `@remarks` に記載する          |
-
-### 使用例
-
-```ts
-visualConfigToCron({
-  frequency: "weekly",
-  hour: 9,
-  minute: 0,
-  weekdays: [1, 3, 5],
-  dayOfMonth: 1,
-});
-// "0 9 * * 1,3,5"
-
-visualConfigToCron({
-  frequency: "weekly",
-  hour: 9,
-  minute: 0,
-  weekdays: [],
-  dayOfMonth: 1,
-});
-// ""
+```typescript
+/**
+ * cron 式を検証する。
+ * @param value - 検証する cron 式（5フィールド形式）
+ * @param options - オプション（省略時は従来の構文・値域チェックのみ）
+ * @param options.semantic - true の場合、next-execution-time 計算による意味論的バリデーションを追加する
+ * @returns エラーメッセージ文字列（エラーなしの場合は null）
+ */
+export function validateCronExpression(
+  value: string,
+  options?: ValidateCronOptions,
+): string | null;
 ```
 
-### エラーとエッジケース
+### 実装の要点
 
-- `weekdays` が空の weekly 設定は空文字になる
-- `weekdays` に重複や順不同があっても、weekly の cron は正規化される
-- `custom` で `rawCronExpression` が空なら空文字になる
-- `monthly` は `dayOfMonth` をそのまま使う
-- この関数は例外を投げず、入力に応じて文字列を返す
+```typescript
+import { CronExpressionParser } from "cron-parser";
 
-### 設定可能なパラメータと定数
+if (options?.semantic === true) {
+  try {
+    const interval = CronExpressionParser.parse(trimmed);
+    interval.next();
+  } catch {
+    return "指定した日付の組み合わせは存在しません（例: 2月31日）";
+  }
+}
+```
 
-| 名前                | 種別            | 役割                    |
-| ------------------- | --------------- | ----------------------- |
-| `frequency`         | `FrequencyType` | 変換分岐を決める        |
-| `hour`              | number          | 時刻の時を決める        |
-| `minute`            | number          | 時刻の分を決める        |
-| `weekdays`          | `Weekday[]`     | weekly の曜日を決める   |
-| `dayOfMonth`        | number          | monthly の日付を決める  |
-| `rawCronExpression` | string          | custom の生 cron を渡す |
+- `semantic` は opt-in です。既存呼び出しはそのまま動きます
+- `validateSkillWizardScheduleConfig` は変更していません。呼び出し元が必要な場合だけ `semantic` を渡します
+- `cron-parser@5.5.0` は day-of-week を使った救済を保証しません。安全側に倒して、到達不能と判断したものはエラーにしています
 
-### 検証メモ
+### 使い方
 
-- weekly 空曜日ガードは source review で確認済み
-- edge test に空曜日ケースが存在する
-- runtime vitest はこの workspace で esbuild mismatch により停止した
+```typescript
+// 従来どおり: 構文・値域チェックのみ
+validateCronExpression("0 0 31 2 *"); // null
 
-### まとめ
+// 意味論チェックを有効化
+validateCronExpression("0 0 31 2 *", { semantic: true });
+// → "指定した日付の組み合わせは存在しません（例: 2月31日）"
 
-weekly 空曜日の変換は、壊れた cron 文を返さないための最小ガードとして機能している。  
-JSDoc と test file の両方で意図が追えるため、呼び出し側の読み違いが起きにくい。
+// 到達可能な式は通す
+validateCronExpression("0 0 * * *", { semantic: true }); // null
+```
+
+### テスト結果
+
+- 全 42 テスト PASS（TC-01〜TC-16 + SCV-01〜SCV-12 + エッジケース）
+- TypeScript 型チェック PASS
+- ESLint PASS（0 errors）
+- カバレッジ: Line 100% / Branch 86.84%（目標 90%/85% 達成）
+
+## 関連 Issue
+
+[#2074](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2074)
