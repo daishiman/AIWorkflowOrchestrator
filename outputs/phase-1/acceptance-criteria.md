@@ -1,19 +1,15 @@
-# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 受け入れ基準一覧
 
-| ID   | 受け入れ基準                                                                                                                                 | 検証方法                                                         |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| AC-1 | 全 `SkillCategory` 値（5件: automation / external-integration / data-analysis / code-support / other）に対応する日本語ラベルが定義されている | ユニットテスト TC-01〜TC-06                                      |
-| AC-2 | `SKILL_CATEGORY_LABELS` 定数と `getSkillCategoryLabel()` 関数がエクスポートされ、UIコンポーネントから参照可能                                | `grep -n "export.*SKILL_CATEGORY_LABELS\|getSkillCategoryLabel"` |
-| AC-3 | 新しい `SkillCategory` 値が追加された場合にTypeScriptの型チェックでラベル未定義を検出できる（`Record<SkillCategory, string>` 型を活用）      | `pnpm --filter @repo/shared typecheck`                           |
-
-## 検証コマンド
-
-```bash
-# AC-1 / AC-2: テスト実行
-pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts
-
-# AC-3: 型チェック
-pnpm --filter @repo/shared typecheck
-```
+| ID    | 受け入れ基準                                                                                 | 検証方法                                  |
+| ----- | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| AC-01 | `wizard/index.ts` から `DescribeStep` のエクスポートが削除されていること                     | grep で非存在確認 + TypeScript コンパイル |
+| AC-02 | `wizard/index.ts` から `DescribeStepProps` の型エクスポートが削除されていること              | grep で非存在確認 + TypeScript コンパイル |
+| AC-03 | `wizard/index.ts` から `GenerationMode` のインライン定義が削除されていること                 | grep で非存在確認                         |
+| AC-04 | `wizard/index.ts` から `SkillInfoStepProps` の型エクスポートが存在すること                   | TypeScript コンパイル + import テスト     |
+| AC-05 | `SkillInfoStep.tsx` の `SkillInfoStepProps` が `export` 付きで定義されていること             | grep で確認                               |
+| AC-06 | `GenerationMode` が `wizard/index.ts` から引き続きインポート可能であること（再エクスポート） | TypeScript コンパイルで確認               |
+| AC-07 | `StepIndicator`/`GenerateStep`/`CompleteStep` が引き続きエクスポートされていること           | TypeScript コンパイル + テスト            |
+| AC-08 | `pnpm --filter @repo/desktop typecheck` がエラー 0 件で通過すること                          | CI 実行                                   |
+| AC-09 | `DescribeStep.tsx` に `@deprecated` JSDoc が付与されていること                               | コードレビュー                            |

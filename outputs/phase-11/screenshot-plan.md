@@ -1,27 +1,21 @@
-# Phase 11: スクリーンショット計画 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 11: スクリーンショット計画 — UT-SKILL-WIZARD-W2-seq-03b
 
-## メタ情報
+## 方針
 
-- タスクID: UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
-- 対象: `SkillLifecyclePanel` のテキストエリア削除・ウィザードボタン化
-- 撮影日時: 2026-04-08
-- 方式: Playwright + Vite harness
+current task の差分は export / type / deprecated 注記のみであり、新規 UI キャプチャは不要。
+ただし screenshot verification 要求があるため、既存の代表画像を current workflow へ再リンクして目視監査する。
 
-## 撮影対象
+## 使用する代表証跡
 
-| TC       | テーマ | 期待状態                                                               | 出力ファイル                                                                                                     |
-| -------- | ------ | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| TC-11-01 | light  | `skill-lifecycle-open-wizard-button` が表示され、textarea が存在しない | `outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png` |
-| TC-11-02 | dark   | `skill-lifecycle-open-wizard-button` が表示され、textarea が存在しない | `outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png`  |
+| ID       | ファイル                                                               | 用途                        |
+| -------- | ---------------------------------------------------------------------- | --------------------------- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png` | Step 0 のレイアウト整合確認 |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`       | Step 1 のレイアウト整合確認 |
 
-## 撮影条件
+## 補助証跡
 
-- ハーネス: `apps/desktop/src/renderer/phase11-task-skill-lifecycle-severity-filter.html`
-- ターゲット: `SkillLifecyclePanel`
-- ビューポート: `1440 x 1100`
-- 確認観点: ボタン表示、textarea 非存在、light / dark の見え方
-
-## 補足
-
-- current task の visual evidence は、task 専用フォルダ `UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/` に保存する
-- 画面全体の安定性を見たいので full page capture を採用する
+| 証跡                      | ファイル                                 |
+| ------------------------- | ---------------------------------------- |
+| typecheck 結果            | `outputs/phase-11/manual-test-result.md` |
+| targeted export test 結果 | `outputs/phase-11/manual-test-result.md` |
+| current task の証跡対応表 | `outputs/phase-11/evidence-index.md`     |

@@ -1,0 +1,324 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W2-seq-03b",
+  "taskName": "wizard/index.ts エクスポート更新",
+  "workflowDir": "docs/30-workflows/W2-seq-03b-wizard-exports",
+  "createdAt": "2026-04-07T00:00:00Z",
+  "lastUpdated": "2026-04-12T00:00:00Z",
+  "status": "phase13_blocked",
+  "metadata": {
+    "taskType": "feat",
+    "classification": "docs-only / export-contract task",
+    "wave": "W2",
+    "executionOrder": "sequential",
+    "dependencies": "W1-par-02a, W1-par-02b, W1-par-02c"
+  },
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-1/impact-scope-map.md",
+          "description": "影響範囲マップ",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/export-design.md",
+          "description": "エクスポート設計書",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-2/change-diff-table.md",
+          "description": "変更差分テーブル",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-2/test-strategy.md",
+          "description": "テスト戦略",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-3/contradiction-checklist.md",
+          "description": "矛盾チェックリスト",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts",
+          "description": "barrel export 契約テスト",
+          "type": "code"
+        },
+        {
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-4/red-test-result.md",
+          "description": "Red テスト実行記録",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/index.ts",
+          "description": "barrel export 更新",
+          "type": "code"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx",
+          "description": "SkillInfoStepProps export 公開",
+          "type": "code"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx",
+          "description": "deprecated 注記と直接型依存化",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "description": "拡張テストケース",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-6/regression-test-result.md",
+          "description": "回帰テスト結果",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-6/edge-case-result.md",
+          "description": "エッジケース結果",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-plan.md",
+          "description": "カバレッジ計画",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-7/traceability-coverage-report.md",
+          "description": "トレーサビリティ網羅率",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-7/uncovered-analysis-plan.md",
+          "description": "未到達分析",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタリング計画",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-8/post-refactor-test-plan.md",
+          "description": "リファクタ後テスト計画",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-8/responsibility-boundary-map.md",
+          "description": "責務境界マップ",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "file": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-9/risk-register.md",
+          "description": "リスク台帳",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-9/causal-loop-check.md",
+          "description": "因果ループ監査",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-10/corrective-action-plan.md",
+          "description": "是正計画",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-10/release-readiness-checklist.md",
+          "description": "出荷準備チェックリスト",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "証跡インデックス",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-11/screenshots/",
+          "description": "代表スクリーンショット再利用証跡",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "blocked",
+      "blockedReason": "ユーザー明示承認待ち（commit / push / PR 作成禁止）",
+      "artifacts": [
+        {
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報（blocked placeholder）",
+          "type": "document"
+        },
+        {
+          "path": "outputs/phase-13/pr-creation-result.md",
+          "description": "PR作成結果（blocked placeholder）",
+          "type": "document"
+        }
+      ]
+    }
+  }
+}

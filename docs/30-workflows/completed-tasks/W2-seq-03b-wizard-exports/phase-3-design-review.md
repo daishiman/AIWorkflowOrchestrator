@@ -20,22 +20,22 @@ Phase 2 のエクスポート設計の矛盾・漏れ・整合性をレビュー
 
 ### 矛盾チェック
 
-| 確認項目                                                                   | 判定 | 備考 |
-| -------------------------------------------------------------------------- | ---- | ---- |
-| 削除エクスポート5件が Phase 1 影響範囲マップと一致しているか               | [ ]  |      |
-| 追加エクスポート4件が W1-par-02a/W1-par-02b コンポーネントと一致しているか | [ ]  |      |
-| 維持エクスポート6件に変更が加えられていないか                              | [ ]  |      |
-| Before/After テーブルに重複・欠落がないか                                  | [ ]  |      |
+| 確認項目                                                                       | 判定 | 備考 |
+| ------------------------------------------------------------------------------ | ---- | ---- |
+| `DescribeStep` 系削除と `GenerationMode` 再転送方針が Phase 1 と一致しているか | [ ]  |      |
+| `SkillInfoStepProps` 公開が `SkillInfoStep.tsx` の実装と一致しているか         | [ ]  |      |
+| 既存 export 群に不要な変更が加えられていないか                                 | [ ]  |      |
+| Before/After テーブルに重複・欠落がないか                                      | [ ]  |      |
 
 ### 漏れチェック
 
-| 確認項目                                                                              | 判定 | 備考 |
-| ------------------------------------------------------------------------------------- | ---- | ---- |
-| `DescribeStep` / `DescribeStepProps` が削除リストに含まれているか                     | [ ]  |      |
-| `ConfigureStep` / `WizardOptions` / `ConfigureStepProps` が削除リストに含まれているか | [ ]  |      |
-| `GenerationMode` 型が削除リストに含まれているか                                       | [ ]  |      |
-| `SkillInfoStep` / `SkillInfoStepProps` が追加リストに含まれているか                   | [ ]  |      |
-| `ConversationRoundStep` / `ConversationRoundStepProps` が追加リストに含まれているか   | [ ]  |      |
+| 確認項目                                                                                       | 判定 | 備考 |
+| ---------------------------------------------------------------------------------------------- | ---- | ---- |
+| `DescribeStep` / `DescribeStepProps` が削除リストに含まれているか                              | [ ]  |      |
+| inline `GenerationMode` 削除と `GenerateStep` 再転送が両方記録されているか                     | [ ]  |      |
+| `SkillInfoStepProps` が追加リストに含まれているか                                              | [ ]  |      |
+| `ConfigureStep` 系が baseline で既に不存在であり、今回の実差分外と明記されているか             | [ ]  |      |
+| 維持 export（ConversationRoundStep / InterviewProgressBar / ApplySummaryCard）が漏れていないか | [ ]  |      |
 
 ### 整合性チェック
 

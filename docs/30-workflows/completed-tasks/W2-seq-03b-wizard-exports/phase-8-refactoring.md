@@ -14,35 +14,26 @@
 
 ## 目的
 
-`wizard/index.ts` の実装を品質・可読性・保守性の観点でリファクタリングし、全テストが Green のまま維持されることを確認する。
+`wizard/index.ts` 周辺の export contract を簡潔に保ち、deprecated `DescribeStep.tsx` の依存を安定化させた状態で全テスト Green を維持する。
 
 ## リファクタリング観点
 
-### 1. エクスポートの順序整理
+### 1. バレル契約の最小化
 
-可読性のためにエクスポートをグループ化し、コメントで区分けする。
+今回のタスクで必要な変更だけを `wizard/index.ts` に残し、既存 export 群の順序や責務を不用意に崩さない。
 
 ```typescript
-// wizard/index.ts（リファクタリング後）
+// wizard/index.ts（リファクタリング後の要点）
 
-// ── ウィザード UI コンポーネント（新規）──────────────────────
+// DescribeStep / DescribeStepProps は削除
 export { SkillInfoStep } from "./SkillInfoStep";
 export type { SkillInfoStepProps } from "./SkillInfoStep";
-export { ConversationRoundStep } from "./ConversationRoundStep";
-export type { ConversationRoundStepProps } from "./ConversationRoundStep";
-
-// ── ウィザード UI コンポーネント（既存）──────────────────────
-export { StepIndicator } from "./StepIndicator";
-export type { StepIndicatorProps } from "./StepIndicator";
-export { GenerateStep } from "./GenerateStep";
-export type { GenerateStepProps } from "./GenerateStep";
-export { CompleteStep } from "./CompleteStep";
-export type { CompleteStepProps } from "./CompleteStep";
+export type { GenerationMode } from "./GenerateStep";
 ```
 
-### 2. 廃止ファイルの整理
+### 2. deprecated ファイルの依存整理
 
-`DescribeStep.tsx` と `ConfigureStep.tsx` が削除またはアーカイブ対象かを確認し、残留する場合は `@deprecated` JSDoc を付与する。
+`DescribeStep.tsx` は移行期間中も残るため、`@deprecated` を明示し、型 import を barrel ではなく `GenerateStep.tsx` へ直接向ける。
 
 ```typescript
 // DescribeStep.tsx（廃止時の対処）
@@ -67,8 +58,7 @@ export function DescribeStep() { ... }
 | `wizard/StepIndicator.tsx`         | ステップインジケーター UI                | 維持     |
 | `wizard/GenerateStep.tsx`          | Step 2 UI（LLM生成）                     | 維持     |
 | `wizard/CompleteStep.tsx`          | Step 3 UI（完了画面）                    | 維持     |
-| `wizard/DescribeStep.tsx`          | 廃止（@deprecated）                      | 廃止     |
-| `wizard/ConfigureStep.tsx`         | 廃止（@deprecated）                      | 廃止     |
+| `wizard/DescribeStep.tsx`          | deprecated 旧 UI（移行期間の互換用）     | 維持     |
 
 ## 参照資料
 
@@ -82,9 +72,8 @@ export function DescribeStep() { ... }
 ## 実行手順
 
 1. Phase 7 成果物を確認する。
-2. エクスポートの順序とグループ化コメントを整理する。
-3. `DescribeStep.tsx` / `ConfigureStep.tsx` の廃止処理（@deprecated）を実施する。
-4. リファクタリング後に全テストが Green であることを確認する。
+2. `DescribeStep.tsx` の依存整理と `@deprecated` 付与を実施する。
+3. リファクタリング後に全テストが Green であることを確認する。
 
 ## 成果物
 
@@ -97,8 +86,8 @@ export function DescribeStep() { ... }
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] エクスポートがグループ化・コメント化されていること
-- [ ] 廃止ファイルに `@deprecated` が付与されていること（必要な場合）
+- [ ] export contract が最小変更に保たれていること
+- [ ] `DescribeStep.tsx` に `@deprecated` が付与され、barrel 依存が除去されていること
 - [ ] リファクタリング後に全テストが Green であること
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認
@@ -107,8 +96,8 @@ export function DescribeStep() { ... }
 ## サブタスク管理
 
 1. 参照資料の確認
-2. エクスポート順序・コメント整理
-3. 廃止ファイルの @deprecated 付与
+2. `DescribeStep.tsx` の依存整理
+3. `@deprecated` 付与
 4. リファクタ後テスト確認
 5. 成果物出力
 

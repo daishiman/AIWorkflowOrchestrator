@@ -21,64 +21,81 @@
 ### Before（現行）
 
 ```typescript
-// ---- 削除対象 ----
-export { DescribeStep } from "./DescribeStep";
-export type { DescribeStepProps } from "./DescribeStep";
-export { ConfigureStep } from "./ConfigureStep";
-export type { WizardOptions, ConfigureStepProps } from "./ConfigureStep";
-export type GenerationMode = "llm" | "template";
-
-// ---- 維持対象 ----
 export { StepIndicator } from "./StepIndicator";
 export type { StepIndicatorProps } from "./StepIndicator";
+export { DescribeStep } from "./DescribeStep";
+export type { DescribeStepProps } from "./DescribeStep";
+export { SkillInfoStep } from "./SkillInfoStep";
+export { ConversationRoundStep } from "./ConversationRoundStep";
+export type { ConversationRoundStepProps } from "./ConversationRoundStep";
+export { InterviewProgressBar } from "./InterviewProgressBar";
+export type { InterviewProgressBarProps } from "./InterviewProgressBar";
+export { ApplySummaryCard } from "./ApplySummaryCard";
+export type { ApplySummaryCardProps } from "./ApplySummaryCard";
 export { GenerateStep } from "./GenerateStep";
-export type { GenerateStepProps } from "./GenerateStep";
+export type {
+  GenerateStepProps,
+  GenerationError,
+  GenerationStage,
+  GenerationErrorCode,
+} from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
-export type { CompleteStepProps } from "./CompleteStep";
+export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";
+
+/** LLM生成 or テンプレート生成のモード選択（TASK-SC-07） */
+export type GenerationMode = "llm" | "template";
 ```
 
 ### After（変更後）
 
 ```typescript
-// ---- 新規追加 ----
+export { StepIndicator, stepStateStyles } from "./StepIndicator";
+export type { StepState, StepIndicatorProps } from "./StepIndicator";
+// DescribeStep / DescribeStepProps は削除
 export { SkillInfoStep } from "./SkillInfoStep";
 export type { SkillInfoStepProps } from "./SkillInfoStep";
 export { ConversationRoundStep } from "./ConversationRoundStep";
 export type { ConversationRoundStepProps } from "./ConversationRoundStep";
-
-// ---- 維持（変更なし）----
-export { StepIndicator } from "./StepIndicator";
-export type { StepIndicatorProps } from "./StepIndicator";
+export { InterviewProgressBar } from "./InterviewProgressBar";
+export type { InterviewProgressBarProps } from "./InterviewProgressBar";
+export { ApplySummaryCard } from "./ApplySummaryCard";
+export type { ApplySummaryCardProps } from "./ApplySummaryCard";
 export { GenerateStep } from "./GenerateStep";
-export type { GenerateStepProps } from "./GenerateStep";
+export type {
+  GenerateStepProps,
+  GenerationError,
+  GenerationStage,
+  GenerationErrorCode,
+  GenerationMode,
+} from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
-export type { CompleteStepProps } from "./CompleteStep";
+export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";
 ```
 
 ## 変更差分テーブル
 
-| エクスポート                           | 変更前 | 変更後 | 操作 |
-| -------------------------------------- | ------ | ------ | ---- |
-| `DescribeStep`                         | あり   | なし   | 削除 |
-| `DescribeStepProps`                    | あり   | なし   | 削除 |
-| `ConfigureStep`                        | あり   | なし   | 削除 |
-| `WizardOptions`                        | あり   | なし   | 削除 |
-| `ConfigureStepProps`                   | あり   | なし   | 削除 |
-| `GenerationMode`                       | あり   | なし   | 削除 |
-| `SkillInfoStep`                        | なし   | あり   | 追加 |
-| `SkillInfoStepProps`                   | なし   | あり   | 追加 |
-| `ConversationRoundStep`                | なし   | あり   | 追加 |
-| `ConversationRoundStepProps`           | なし   | あり   | 追加 |
-| `StepIndicator` / `StepIndicatorProps` | あり   | あり   | 維持 |
-| `GenerateStep` / `GenerateStepProps`   | あり   | あり   | 維持 |
-| `CompleteStep` / `CompleteStepProps`   | あり   | あり   | 維持 |
+| エクスポート                                 | 変更前 | 変更後 | 操作           |
+| -------------------------------------------- | ------ | ------ | -------------- |
+| `DescribeStep`                               | あり   | なし   | 削除           |
+| `DescribeStepProps`                          | あり   | なし   | 削除           |
+| inline `GenerationMode` 定義                 | あり   | なし   | 削除           |
+| `SkillInfoStepProps`                         | なし   | あり   | 追加           |
+| `GenerationMode`（`GenerateStep` 再転送）    | なし   | あり   | 追加（再転送） |
+| `StepIndicator` / `stepStateStyles` / 関連型 | あり   | あり   | 維持           |
+| `SkillInfoStep`                              | あり   | あり   | 維持           |
+| `ConversationRoundStep` / 関連型             | あり   | あり   | 維持           |
+| `InterviewProgressBar` / 関連型              | あり   | あり   | 維持           |
+| `ApplySummaryCard` / 関連型                  | あり   | あり   | 維持           |
+| `GenerateStep` / 関連型                      | あり   | あり   | 維持           |
+| `CompleteStep` / 関連型                      | あり   | あり   | 維持           |
 
 ## 実装方針
 
-1. 削除対象エクスポート（5項目）を `index.ts` から除去する。
-2. 追加対象エクスポート（4項目）を `index.ts` に追記する。
-3. 維持対象エクスポート（6項目）は変更しない。
-4. TypeScript の型チェック (`pnpm typecheck`) でエラーがないことを確認する。
+1. `DescribeStep` / `DescribeStepProps` を `index.ts` から除去する。
+2. `SkillInfoStepProps` を `SkillInfoStep.tsx` から public type として再公開する。
+3. inline `GenerationMode` を削除し、`GenerateStep.tsx` からの再転送へ置き換える。
+4. 既存 export 群（StepIndicator / SkillInfoStep / ConversationRoundStep / InterviewProgressBar / ApplySummaryCard / GenerateStep / CompleteStep）は変更しない。
+5. TypeScript の型チェック (`pnpm typecheck`) でエラーがないことを確認する。
 
 ## 参照資料
 
@@ -108,7 +125,7 @@ export type { CompleteStepProps } from "./CompleteStep";
 
 - [ ] 実行タスクで定義した成果物を全件作成
 - [ ] Before/After テーブルが完成していること
-- [ ] 削除5件・追加4件・維持6件が確定していること
+- [ ] `DescribeStep` 系削除・`SkillInfoStepProps` 公開・`GenerationMode` 再転送化が確定していること
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認
 - [ ] 本Phase内の全タスクを100%実行完了

@@ -1,30 +1,30 @@
-# Phase 10: 最終レビュー結果 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+# Phase 10: 最終レビュー結果 — UT-SKILL-WIZARD-W2-seq-03b
 
-## 実施日時
+## 判定: **PASS**
 
-2026-04-08
+## 要件達成確認
 
-## AC チェック一覧
+| 要件                                                                                 | 達成状況 | 根拠                   |
+| ------------------------------------------------------------------------------------ | -------- | ---------------------- |
+| `DescribeStep` エクスポートが削除されていること                                      | ✅       | Phase 5 実装サマリー   |
+| `DescribeStepProps` エクスポートが削除されていること                                 | ✅       | Phase 5 実装サマリー   |
+| `GenerationMode` インライン定義が削除されていること                                  | ✅       | Phase 5 実装サマリー   |
+| `SkillInfoStepProps` エクスポートが追加されていること                                | ✅       | Phase 5 実装サマリー   |
+| `GenerationMode` が `wizard` から引き続き参照可能であること（`GenerateStep` 再転送） | ✅       | Phase 9 品質レポート   |
+| 維持エクスポート（StepIndicator/GenerateStep/CompleteStep）が変更されていないこと    | ✅       | Phase 6 回帰テスト結果 |
 
-| AC   | 受入基準                                                                     | 確認方法                                                                                                      | 結果 |
-| ---- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---- |
-| AC-1 | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts` で import / 呼び出し確認                      | PASS |
-| AC-2 | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | 同ファイルの呼び出し引数を確認                                                                                | PASS |
-| AC-3 | `apiKeyDegraded` の独自算出ロジックが削除されている                          | hook 内に `const apiKeyDegraded = ...` が存在しないことを確認                                                 | PASS |
-| AC-4 | `@repo/shared/types` 経由で import している                                  | import 文を確認                                                                                               | PASS |
-| AC-5 | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` | PASS |
-| AC-6 | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              | PASS |
+## 品質基準達成確認
 
-## 判定
+| 基準                     | 達成状況 | 根拠                   |
+| ------------------------ | -------- | ---------------------- |
+| 全テスト Green（13/13）  | ✅       | Phase 6 テスト実行結果 |
+| TypeScript 型エラー 0 件 | ✅       | Phase 9 品質レポート   |
+| ESLint エラー 0 件       | ✅       | Phase 9 品質レポート   |
 
-**PASS**
+## 依存関係確認
 
-## 補足
-
-- `healthPolicy` は hook 側で生成し、`buildMainlineExecutionAccessState()` に集約して渡している
-- 旧 `apiKeyDegraded` 変数は hook から削除済み
-- `resolveHealthPolicy` は `@repo/shared/types` の barrel export を使用している
-
-## 結論
-
-タスク UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 は完了。Phase 11 / Phase 12 へ進行可能。
+| 依存タスク                              | 状態                                        |
+| --------------------------------------- | ------------------------------------------- |
+| W1-par-02a（SkillInfoStep）完了         | ✅ `SkillInfoStep.tsx` 存在確認済み         |
+| W1-par-02b（ConversationRoundStep）完了 | ✅ `ConversationRoundStep.tsx` 存在確認済み |
+| W1-par-02c（CompleteStep）完了          | ✅ `CompleteStep.tsx` 存在確認済み          |

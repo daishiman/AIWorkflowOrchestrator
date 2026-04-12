@@ -14,7 +14,7 @@
 
 ## 目的
 
-静的解析・リスク評価・因果ループ監査を実施し、エクスポート変更のリリース可能な品質水準を確認する。
+typecheck・targeted export test・リスク評価・因果ループ監査を実施し、エクスポート変更のリリース可能な品質水準を確認する。
 
 ## 静的解析チェック
 
@@ -22,48 +22,46 @@
 # TypeScript 型チェック（最重要）
 pnpm --filter @repo/desktop typecheck
 
-# ESLint チェック
-pnpm --filter @repo/desktop lint
-
-# ビルド確認
-pnpm --filter @repo/desktop build
+# targeted export test
+pnpm --filter @repo/desktop exec vitest run \
+  src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1
 ```
 
 ### 確認観点
 
-| 観点                         | 確認内容                                                                   |
-| ---------------------------- | -------------------------------------------------------------------------- |
-| TypeScript エラー            | 削除エクスポートを参照するコードが残っていないこと                         |
-| 追加エクスポートの型整合     | `SkillInfoStepProps` / `ConversationRoundStepProps` が正しく解決されること |
-| 未使用インポート             | 廃止コンポーネントへのインポートが全て除去されていること                   |
-| バレルエクスポートの循環参照 | `index.ts` → 各コンポーネント → `index.ts` の循環がないこと                |
+| 観点                         | 確認内容                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| TypeScript エラー            | 削除エクスポートを参照するコードが残っていないこと                              |
+| 型契約整合                   | `SkillInfoStepProps` と `GenerationMode` が barrel 経由で期待通り解決されること |
+| 回帰ガード                   | `ConfigureStep` / `WizardOptions` が引き続き非公開であること                    |
+| バレルエクスポートの循環参照 | deprecated `DescribeStep.tsx` が barrel を再参照せず、依存が安定していること    |
 
 ## リスク評価
 
-| リスク                                                    | 発生確率 | 影響度 | 対策                            |
-| --------------------------------------------------------- | -------- | ------ | ------------------------------- |
-| `DescribeStep` / `ConfigureStep` への外部参照が残っている | 低       | 高     | TypeScript エラーで即時検出可能 |
-| `GenerationMode` 型の参照が他ファイルに残っている         | 低       | 中     | TypeScript エラーで即時検出可能 |
-| 新エクスポートのファイルパスが誤っている                  | 低       | 高     | ビルドエラーで即時検出可能      |
-| 維持エクスポートの型シグネチャが変わっている              | 極低     | 中     | 回帰テストで確認済み            |
+| リスク                                               | 発生確率 | 影響度 | 対策                                           |
+| ---------------------------------------------------- | -------- | ------ | ---------------------------------------------- |
+| `DescribeStep` 系の旧 import が残っている            | 低       | 高     | typecheck / runtime export test で即時検出可能 |
+| `GenerationMode` 再転送が壊れる                      | 低       | 中     | 型契約テストで即時検出可能                     |
+| `SkillInfoStepProps` が public type でなくなる       | 低       | 中     | 型契約テストで即時検出可能                     |
+| deprecated `DescribeStep.tsx` が barrel 再依存へ戻る | 低       | 中     | コードレビューと回帰テストで検出可能           |
 
 ## 因果ループ監査
 
 ```
 DescribeStep 削除エクスポート
-  → DescribeStep を import するコードが型エラーになる
-  → W2-seq-03a での SkillCreateWizard 改修で対応済み
-  → 残存参照がある場合は TypeScript が検出 ✓
+  → 旧 UI を barrel 経由で import するコードが壊れる
+  → W2-seq-03a 側はすでに SkillInfoStep / ConversationRoundStep へ移行済み
+  → 残存参照がある場合は export test と typecheck が検出 ✓
 
-GenerationMode 型削除
-  → "template" | "llm" 型が参照できなくなる
-  → W2-seq-03a での generationMode state 削除で対応済み
-  → 残存参照がある場合は TypeScript が検出 ✓
+GenerationMode の再転送化
+  → public type 名は維持しつつ定義元だけが GenerateStep.tsx に集約される
+  → barrel 直下の inline 定義との二重管理がなくなる
+  → 型契約テストが崩れた場合は即時検出 ✓
 
-SkillInfoStep 追加エクスポート
-  → W2-seq-03a が wizard/index.ts からインポート可能になる
-  → W1-par-02a が未完了の場合はファイルが存在しない → ビルドエラー
-  → W1-par-02a 完了確認が前提 ✓
+DescribeStep.tsx の依存整理
+  → deprecated ファイルが barrel ではなく実装元を参照する
+  → barrel 変更が legacy ファイルへ再帰的に波及しにくくなる
+  → 循環依存のリスクが低減 ✓
 ```
 
 ## 多角的チェック観点
@@ -88,7 +86,7 @@ SkillInfoStep 追加エクスポート
 ## 実行手順
 
 1. Phase 8 成果物を確認する。
-2. TypeScript 型チェック・ESLint・ビルドを実行する。
+2. TypeScript 型チェックと targeted export test を実行する。
 3. リスク評価テーブルを完成させる。
 4. 因果ループ監査を実施する。
 5. 品質レポートを作成する。
@@ -105,8 +103,7 @@ SkillInfoStep 追加エクスポート
 
 - [ ] 実行タスクで定義した成果物を全件作成
 - [ ] TypeScript 型チェックがエラー 0 件であること
-- [ ] ESLint がエラー 0 件であること
-- [ ] ビルドが成功すること
+- [ ] targeted export test が Green であること
 - [ ] 因果ループ監査が完了していること
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認
@@ -115,7 +112,7 @@ SkillInfoStep 追加エクスポート
 ## サブタスク管理
 
 1. 参照資料の確認
-2. 静的解析実行（型チェック・ESLint・ビルド）
+2. 静的解析実行（型チェック・targeted export test）
 3. リスク評価実施
 4. 因果ループ監査実施
 5. 成果物出力

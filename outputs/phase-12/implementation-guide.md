@@ -1,118 +1,109 @@
-# Phase 12: 実装ガイド - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 12: 実装ガイド — UT-SKILL-WIZARD-W2-seq-03b
 
-## メタ情報
+## Part 1: 中学生向けの説明
 
-| 項目     | 内容                                             |
-| -------- | ------------------------------------------------ |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001    |
-| 作成日   | 2026-04-11                                       |
-| 対象     | `SkillCategory` の日本語ラベルマッピング共有契約 |
-| 状態     | completed（Phase 12 canonical 6 を更新済み）     |
+### この変更は何か
 
----
+画面そのものを作り替えたのではなく、部品をまとめて外に見せる「案内板」を整理した変更です。
 
-## Part 1: 中学生向け説明
+たとえば、学校の職員室の前にある案内板を思い浮かべると分かりやすいです。
+部屋そのものは変えていなくても、案内板に古い教室名が残っていると、見る人は間違った部屋へ行きます。
+今回やったことは、その案内板から古い名前を消して、今も使う名前だけを正しく並べ直したのに近いです。
 
-### 何を直したのか
+### なぜ必要だったか
 
-スキルのカテゴリ名は、もともと `automation` や `code-support` のような英語の札でした。  
-今回は、その札を日本語の札に変える仕組みを 1 か所にまとめました。
+- `wizard/index.ts` に古い案内が残ると、別のファイルが間違った部品名を使いやすい
+- `GenerationMode` を 2 か所で持つと、どちらが本物か分かりにくい
+- `SkillInfoStepProps` が外から見えないと、正しい型を安全に使えない
 
-たとえば、引き出しに英語の番号だけが書いてあると、使う人は中身をすぐに思い出しにくいです。  
-そこで、番号の横に「自動化」「外部連携」などの日本語の名前を貼るイメージです。
+### 何を変えたか
 
-### なぜ必要か
+| 変更               | 内容                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| 古い案内を外した   | `DescribeStep` / `DescribeStepProps` / inline `GenerationMode` を barrel から外した |
+| 新しい案内を足した | `SkillInfoStepProps` を公開した                                                     |
+| 1 か所にまとめた   | `GenerationMode` は `GenerateStep.tsx` を正本にした                                 |
+| 迷いを減らした     | deprecated `DescribeStep.tsx` も barrel ではなく実装元から型を読むようにした        |
 
-- 人が見たときに意味がわかりやすいからです
-- 画面ごとに違う名前を書かなくてよくなるからです
-- 1つの名前を直せば、関係する画面にまとめて反映できるからです
+### 見た目への影響
 
-### 何をするか
+見た目は変えていません。
+そのため、代表画面のスクリーンショットを確認し、「案内板だけ直して部屋の見た目は変わっていない」ことを確かめました。
 
-- `SkillCategory` の 5 つの値に日本語ラベルを付ける
-- そのラベルを `skillCreator.ts` に集める
-- 画面では、そのラベルをそのまま使う
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
 
----
+## Part 2: 技術者向けの詳細
 
-## Part 2: 開発者向け説明
+### 変更対象
 
-### 変更点サマリー
-
-| ファイル                                                                                    | 変更内容                                                                                    |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `packages/shared/src/types/skillCreator.ts`                                                 | `SKILL_CATEGORY_LABELS` と `getSkillCategoryLabel()` を公開し、`satisfies` で型網羅性を固定 |
-| `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`                           | `SkillCategory` の union 劣化を検出する型テストを追加                                       |
-| `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`                       | カテゴリ表示を shared helper から生成するように変更                                         |
-| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                        | deprecated step でも shared helper を参照し、`コード支援` の drift を解消                   |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx`         | canonical label が option として描画されることを追加検証                                    |
-| `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/*`                         | 参照リンク、AC、品質確認、Phase 12 台帳を current facts に同期                              |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | Skill Wizard Shared Contracts へラベル共有契約を追記                                        |
+- `apps/desktop/src/renderer/components/skill/wizard/index.ts`
+- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`
+- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`
+- `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts`
 
 ### current contract
 
 ```ts
-export type SkillCategory =
-  | "automation"
-  | "external-integration"
-  | "data-analysis"
-  | "code-support"
-  | "other";
+export { SkillInfoStep } from "./SkillInfoStep";
+export type { SkillInfoStepProps } from "./SkillInfoStep";
 
-export const SKILL_CATEGORY_LABELS = {
-  automation: "自動化",
-  "external-integration": "外部連携",
-  "data-analysis": "データ分析",
-  "code-support": "コードサポート",
-  other: "その他",
-} as const satisfies Record<SkillCategory, string>;
-
-export function getSkillCategoryLabel(category: SkillCategory): string {
-  return SKILL_CATEGORY_LABELS[category];
-}
+export type {
+  GenerateStepProps,
+  GenerationError,
+  GenerationStage,
+  GenerationErrorCode,
+  GenerationMode,
+} from "./GenerateStep";
 ```
 
-### target delta
-
-- 共有型の正本を 1 か所に置く
-- UI はその正本を読む
-- 新しいカテゴリ追加時は TypeScript がラベル漏れを止める
+```ts
+export interface SkillInfoStepProps {
+  formData: SkillInfoFormData;
+  onFormDataChange: (data: SkillInfoFormData) => void;
+  onNext: () => void;
+}
+```
 
 ### 使用例
 
 ```ts
-import {
-  getSkillCategoryLabel,
-  type SkillCategory,
-} from "@repo/shared/types/skillCreator";
-
-const category: SkillCategory = "external-integration";
-const label = getSkillCategoryLabel(category); // "外部連携"
+import type { GenerationMode, SkillInfoStepProps } from "./wizard";
 ```
 
-### エラーとエッジケース
+`SkillCreateWizard.tsx` は `GenerationMode` を barrel 経由で参照し続ける。
+deprecated `DescribeStep.tsx` は barrel ループを避けるため、`./GenerateStep` から直接 `GenerationMode` を読む。
 
-- 新しい `SkillCategory` を増やしてラベルを追加し忘れると、`satisfies Record<SkillCategory, string>` がコンパイルで止める
-- `DescribeStep` のような旧画面が別表記を持っても、shared helper 参照に寄せたので drift を防げる
-- `@repo/shared` root barrel には広げず、`@repo/shared/types/skillCreator` の subpath で閉じる
+### エラーハンドリングと失敗モード
 
-### 設定可能なパラメータと定数
+| 失敗モード                                           | 影響                                                                  | 防ぎ方                                            |
+| ---------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------- |
+| `GenerationMode` の再転送を消す                      | `SkillCreateWizard.tsx` と deprecated `DescribeStep.tsx` が型エラー化 | `GenerateStep.tsx` を正本として再転送を維持する   |
+| `SkillInfoStepProps` を非公開に戻す                  | barrel 経由の型 import が壊れる                                       | `wizard-exports.test.ts` で type-level に固定する |
+| deprecated `DescribeStep.tsx` が barrel を再参照する | 依存がねじれ、保守時に誤読しやすい                                    | `./GenerateStep` へ直接依存させる                 |
 
-| 名前                    | 種別        | 役割                                          |
-| ----------------------- | ----------- | --------------------------------------------- |
-| `SkillCategory`         | type        | 5 つのカテゴリ値を固定する                    |
-| `SKILL_CATEGORY_LABELS` | const       | UI 表示用の日本語ラベル正本                   |
-| `getSkillCategoryLabel` | function    | 表示名を 1 つ返す共通 API                     |
-| `CATEGORY_VALUES`       | local const | `SkillInfoStep` / `DescribeStep` の表示順制御 |
+### エッジケース
 
-### 検証メモ
+- `ConfigureStep` / `WizardOptions` / `ConfigureStepProps` は current repo では既に存在しない
+- `DescribeStep.tsx` 自体は互換性維持のため残っているが、barrel からは公開しない
+- UI 実装変更ではないため、Phase 11 は representative screenshot audit と static verification の組み合わせで閉じた
 
-- TypeScript 型チェックは PASS
-- ESLint は PASS
-- `vitest` はこの環境で esbuild バイナリ不整合により起動失敗したため、追加確認は別 wave が必要
-- 新規スクリーンショットは未作成。今回はラベル共有と drift 解消が主で、レイアウト変更ではない
+### 設定値・固定値
 
-### まとめ
+| 項目             | 値                    | 役割                                      |
+| ---------------- | --------------------- | ----------------------------------------- |
+| `GenerationMode` | `"llm" \| "template"` | 生成方式の型                              |
+| export test 件数 | `13`                  | runtime / negative / type contract の合計 |
 
-この更新で、カテゴリ名は shared の 1 つの正本に集まりました。  
-画面側はその正本を読むだけになり、表示名のズレを減らせます。
+### 検証結果
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1`
+  - `13 passed (13)`
+- `pnpm --filter @repo/desktop typecheck`
+  - エラー 0 件
+
+### 依存タスク
+
+- W1-par-02a（SkillInfoStep）
+- W1-par-02b（ConversationRoundStep）
+- W1-par-02c（CompleteStep）

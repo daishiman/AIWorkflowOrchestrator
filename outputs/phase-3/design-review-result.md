@@ -1,57 +1,41 @@
-# Phase 3: 設計レビュー結果 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+# Phase 3: 設計レビュー結果 — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 判定: **PASS**
 
----
+## 矛盾チェック
 
-## レビュー観点チェック結果
+| 確認項目                                                  | 判定 | 備考                                                             |
+| --------------------------------------------------------- | ---- | ---------------------------------------------------------------- |
+| 削除エクスポートが Phase 1 影響範囲マップと一致しているか | OK   | DescribeStep / DescribeStepProps / GenerationMode インライン定義 |
+| 追加エクスポートが新コンポーネントと一致しているか        | OK   | SkillInfoStepProps を SkillInfoStep.tsx から export するよう修正 |
+| 維持エクスポートに変更が加えられていないか                | OK   | StepIndicator / GenerateStep / CompleteStep は変更なし           |
+| Before/After テーブルに重複・欠落がないか                 | OK   | change-diff-table.md 確認済み                                    |
 
-### 1. スコープ最小化
+## 漏れチェック
 
-| チェック項目                               | 判定 | 備考                                 |
-| ------------------------------------------ | ---- | ------------------------------------ |
-| 変更対象が1ファイルに絞られているか        | PASS | `useMainlineExecutionAccess.ts` のみ |
-| 新規実装がゼロか（既存 API 呼び出しのみ）  | PASS | resolveHealthPolicy は実装済み       |
-| 他の Hook / Component への波及変更がないか | PASS | スコープ外への変更なし               |
-| テスト以外のファイルが追加されていないか   | PASS | 新規ファイル作成なし                 |
+| 確認項目                                                                              | 判定 | 備考                               |
+| ------------------------------------------------------------------------------------- | ---- | ---------------------------------- |
+| `DescribeStep` / `DescribeStepProps` が削除リストに含まれているか                     | OK   | 削除対象                           |
+| `ConfigureStep` / `WizardOptions` / `ConfigureStepProps` が削除リストに含まれているか | OK   | すでに存在しないためスキップ       |
+| `GenerationMode` 型が削除リストに含まれているか                                       | OK   | インライン定義を削除し再転送に変更 |
+| `SkillInfoStep` / `SkillInfoStepProps` が追加リストに含まれているか                   | OK   | SkillInfoStepProps の追加を確認    |
+| `ConversationRoundStep` / `ConversationRoundStepProps` が追加リストに含まれているか   | OK   | すでに存在するためスキップ         |
 
-### 2. 型安全性
+## 整合性チェック
 
-| チェック項目                                                 | 判定 | 備考                                          |
-| ------------------------------------------------------------ | ---- | --------------------------------------------- |
-| HealthPolicyInput の全フィールドに型安全な値が渡されているか | PASS | 型キャスト不要（ConnectionStatus と完全一致） |
-| connectionStatus の型キャストが安全か                        | PASS | `?? "disconnected"` で undefined 除去         |
-| resolveHealthPolicy 戻り値型が正しく使われているか           | PASS | healthPolicy: HealthPolicy として渡す         |
-| pnpm typecheck が PASS することが設計上保証されているか      | PASS | 型キャストなし、型安全な変換のみ              |
+| 確認項目                                                                                   | 判定 | 備考                                                       |
+| ------------------------------------------------------------------------------------------ | ---- | ---------------------------------------------------------- |
+| W2-seq-03a が参照する `SkillInfoStep` / `ConversationRoundStep` のimportパスが正しいか     | OK   | `wizard/index.ts` からエクスポートされる                   |
+| W1-par-02a/W1-par-02b の成果物（新コンポーネントファイル）が存在することが確認されているか | OK   | SkillInfoStep.tsx / ConversationRoundStep.tsx 存在確認済み |
+| 削除後に TypeScript の型エラーが発生しないことが見込まれているか                           | OK   | GenerationMode を GenerateStep から再転送するため問題なし  |
 
-### 3. 後方互換性
+## 依存関係チェック
 
-| チェック項目                                                   | 判定 | 備考                                        |
-| -------------------------------------------------------------- | ---- | ------------------------------------------- |
-| 削除される apiKeyDegraded が他の箇所で参照されていないか       | PASS | grep 確認済み（Hook 内のみの使用）          |
-| buildMainlineExecutionAccessState() の他の引数が変更されないか | PASS | healthPolicy 追加のみ、既存引数は維持       |
-| 既存テストが破壊されない設計になっているか                     | PASS | 既存テストは追加の spy なしで継続 PASS      |
-| resolveHealthPolicy の動作が既存の apiKeyDegraded と等価か     | PASS | HealthPolicy 経由で同等の判定ロジックを実現 |
-
-### 4. インポート規則
-
-| チェック項目                                                         | 判定 | 備考                          |
-| -------------------------------------------------------------------- | ---- | ----------------------------- |
-| resolveHealthPolicy が @repo/shared/types からインポートされているか | PASS | AC-4 準拠                     |
-| サブパス直接指定が禁止されているか                                   | PASS | health-policy.ts 直接参照なし |
-| プロジェクトの既存インポートスタイルと統一されているか               | PASS | ダブルクォート、named import  |
-
-### 5. 設計完全性
-
-| チェック項目                                  | 判定 | 備考                              |
-| --------------------------------------------- | ---- | --------------------------------- |
-| FR-01〜FR-03 に対応する設計が存在するか       | PASS | 4ステップが全 FR をカバー         |
-| AC-1〜AC-6 が検証可能な形式で定義されているか | PASS | Phase 1 に grep 検証コマンド記載  |
-| NFR-01〜NFR-03 の設計対応があるか             | PASS | 型安全・後方互換・import 規則対応 |
-| リスクと対策が定義されているか                | PASS | Phase 2 リスクテーブル記載        |
-
----
+| 確認項目                                                                        | 判定 | 備考                                                 |
+| ------------------------------------------------------------------------------- | ---- | ---------------------------------------------------- |
+| W1-par-02a/W1-par-02b/W1-par-02c の完了が前提となっていることが確認されているか | OK   | 各コンポーネントファイルの存在を確認済み             |
+| W2-seq-03b → W2-seq-03a 参照可能化の協調順序が明確になっているか                | OK   | SkillInfoStepProps export 追加により型安全に利用可能 |
 
 ## 総合判定: PASS
 
-Phase 4（テスト作成 TDD Red）へ進む。
+Phase 4（テスト作成）へ進む。
