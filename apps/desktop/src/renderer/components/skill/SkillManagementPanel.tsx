@@ -243,6 +243,9 @@ export function SkillManagementPanel({
   onClose,
 }: SkillManagementPanelProps = {}) {
   const [currentView, setCurrentView] = useState<View>("list");
+  const [skillCreateSource, setSkillCreateSource] = useState<
+    "lifecycle_panel" | "direct"
+  >("direct");
   const [selectedSkill, setSelectedSkill] = useState<ImportedSkill | null>(
     null,
   );
@@ -460,7 +463,10 @@ export function SkillManagementPanel({
         data-testid="skill-management-panel-create-view"
         data-route-kind="secondary"
       >
-        <SkillCreateWizard onClose={handleBackToList} />
+        <SkillCreateWizard
+          onClose={handleBackToList}
+          source={skillCreateSource}
+        />
       </div>
     );
   }
@@ -473,8 +479,14 @@ export function SkillManagementPanel({
       >
         <SkillLifecyclePanel
           onClose={handleBackToList}
-          onOpenWizard={() => setCurrentView("create")}
-          onOpenSkillWizard={() => setCurrentView("create")}
+          onOpenWizard={() => {
+            setSkillCreateSource("lifecycle_panel");
+            setCurrentView("create");
+          }}
+          onOpenSkillWizard={() => {
+            setSkillCreateSource("lifecycle_panel");
+            setCurrentView("create");
+          }}
           onOpenSettings={() => setGlobalCurrentView("settings")}
         />
       </div>
@@ -519,7 +531,10 @@ export function SkillManagementPanel({
           </button>
           <button
             className={`${buttonStyles.secondary} min-h-[44px]`}
-            onClick={() => setCurrentView("create")}
+            onClick={() => {
+              setSkillCreateSource("direct");
+              setCurrentView("create");
+            }}
             data-testid="skill-management-create-button"
           >
             詳細ウィザード

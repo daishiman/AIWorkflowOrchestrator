@@ -1,0 +1,110 @@
+{
+  "taskId": "UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001",
+  "taskName": "SmartDefault AC-4 フォールバック仕様のフィールド独立推論性明示化",
+  "taskType": "docs-only",
+  "status": "phase13_blocked",
+  "createdAt": "2026-04-11",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/field-independence-analysis.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design-spec.md",
+        "outputs/phase-2/change-target-files.md",
+        "outputs/phase-2/field-independence-description-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/test-command-suite.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-record.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/expanded-test-cases.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-record.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": ["outputs/phase-13/pr-checklist.md"]
+    }
+  ]
+}

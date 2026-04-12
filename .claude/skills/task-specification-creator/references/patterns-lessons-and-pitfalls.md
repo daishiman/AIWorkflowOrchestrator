@@ -115,6 +115,17 @@
 - **発見日**: 2026-01-26
 - **関連タスク**: TASK-3-1-D
 
+### `describe.skip` 内 testid 残存の CI 非検出問題（UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001）
+
+- **状況**: UI リファクタリング（textarea → ボタン遷移化）で `skill-lifecycle-request-input` testid を削除した後、`describe.skip` ブロック内の旧参照を見落とした
+- **問題**: `describe.skip` で囲まれたテストは CI で実行されないため、旧 testid への参照が無音で残り続ける。型エラーにも CI 失敗にもならない「死角」
+- **教訓**:
+  1. testid 削除・改名後は `grep -rn "削除したtestid" apps/` でスキップブロック内を含む全参照を確認する
+  2. Phase 5（実装）の完了チェックに「testid 削除タスクの場合、grep による全参照確認」を明示する
+  3. describe.skip ブロックは「後で直す」ではなく「同一 wave で旧参照を削除」を原則にする
+- **発見日**: 2026-04-11
+- **関連タスク**: UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001
+
 ### Notification 統合の段階導入で既存テストを壊さない
 
 - **状況**: `RuntimeSkillCreatorFacade` に通知サービスと before-quit ガードを追加した

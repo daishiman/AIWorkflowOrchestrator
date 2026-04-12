@@ -162,25 +162,25 @@ TC-11-03-generate-step-retry-button.png
 
 ### L-CRS-001: ConversationRoundStep semantic デフォルト正規化の設計的分散
 
-| 項目       | 内容                                                                                                                                                                                                                                         |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | `normalizeSelectedOption()` の switch 文が q1/q3/q5/q6 の 4 ケースに分散しており、新しい `SmartDefaultResult` フィールドを追加する際に「型定義（`ConversationAnswers`）」「マッピング（`QUESTION_OPTION_VALUES`）」「switch 文」の 3 箇所を同時更新する必要がある |
-| 再発条件   | SmartDefaultResult のフィールドが増えるたびに normalizeSelectedOption の switch 文に新ケースを追加し忘れると、新フィールドのデフォルト値が正規化されずに raw 値のままUIラベルとして表示される                                                   |
-| 解決策     | 将来的には `SEMANTIC_LABEL_MAP: Record<QuestionKey, Record<string, string>>` のような宣言的マッピングテーブルに集約することで更新箇所を 1 箇所に削減できる。現在の switch 文は各 QuestionKey に対応するマッピングを 1 オブジェクトに統一する形にリファクタリング可能 |
-| 標準ルール | semantic デフォルト正規化ロジックは宣言的テーブルで管理し、新フィールド追加時はテーブル 1 箇所の更新で完結するよう設計する                                                                                                                      |
-| 関連タスク | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                               |
-| 対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                                                                                                                                                               |
+| 項目         | 内容                                                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | `normalizeSelectedOption()` の switch 文が q1/q3/q5/q6 の 4 ケースに分散しており、新しい `SmartDefaultResult` フィールドを追加する際に「型定義（`ConversationAnswers`）」「マッピング（`QUESTION_OPTION_VALUES`）」「switch 文」の 3 箇所を同時更新する必要がある    |
+| 再発条件     | SmartDefaultResult のフィールドが増えるたびに normalizeSelectedOption の switch 文に新ケースを追加し忘れると、新フィールドのデフォルト値が正規化されずに raw 値のままUIラベルとして表示される                                                                        |
+| 解決策       | 将来的には `SEMANTIC_LABEL_MAP: Record<QuestionKey, Record<string, string>>` のような宣言的マッピングテーブルに集約することで更新箇所を 1 箇所に削減できる。現在の switch 文は各 QuestionKey に対応するマッピングを 1 オブジェクトに統一する形にリファクタリング可能 |
+| 標準ルール   | semantic デフォルト正規化ロジックは宣言的テーブルで管理し、新フィールド追加時はテーブル 1 箇所の更新で完結するよう設計する                                                                                                                                           |
+| 関連タスク   | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                                                       |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                                                                                                                                                                                        |
 
 ### L-CRS-002: worktree と main ブランチの仕様書ステータス同期不整合
 
-| 項目       | 内容                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 項目       | 内容                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 課題       | main ブランチで完了済みのタスク（`ut-health-policy-runtime-injection`）の spec files が worktree 内に `spec_created` ステータスのまま残留した。worktree が別タスク専用に切られた際に main 側の完了状態が worktree に反映されないことが原因 |
-| 再発条件   | worktree 作成後に main 側でタスクが完了し `docs/30-workflows/` から spec が削除・移動された場合、worktree では依然として旧 spec が存在し続ける                                                                                    |
-| 解決策     | worktree 作成時（または作業開始時）に `docs/30-workflows/` の仕様書ステータスを `git diff main -- docs/30-workflows/` で main と照合する。main 側で削除済みの spec は worktree からも削除またはアーカイブへ移動する              |
-| 標準ルール | worktree 独立性を保ちつつ、Phase 1 のタスク開始時チェックとして「main ブランチでの完了済み spec の残留がないか」を確認する手順を追加する                                                                                          |
-| 関連タスク | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                  |
-| 関連削除   | `docs/30-workflows/ut-health-policy-runtime-injection/` 削除（worktree 内残留解消）                                                                                                                                             |
+| 再発条件   | worktree 作成後に main 側でタスクが完了し `docs/30-workflows/` から spec が削除・移動された場合、worktree では依然として旧 spec が存在し続ける                                                                                             |
+| 解決策     | worktree 作成時（または作業開始時）に `docs/30-workflows/` の仕様書ステータスを `git diff main -- docs/30-workflows/` で main と照合する。main 側で削除済みの spec は worktree からも削除またはアーカイブへ移動する                        |
+| 標準ルール | worktree 独立性を保ちつつ、Phase 1 のタスク開始時チェックとして「main ブランチでの完了済み spec の残留がないか」を確認する手順を追加する                                                                                                   |
+| 関連タスク | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                             |
+| 関連削除   | `docs/30-workflows/ut-health-policy-runtime-injection/` 削除（worktree 内残留解消）                                                                                                                                                        |
 
 ---
 
@@ -266,6 +266,30 @@ TC-11-03-generate-step-retry-button.png
 
 ---
 
+## UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11）
+
+### L-SKIP-001: `describe.skip` 内 testid の CI 非検出問題
+
+| 項目             | 内容                                                                                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001                                                                                                                                                                           |
+| 課題             | UI リファクタリング（`skill-lifecycle-request-input` textarea → 遷移ボタン化）後、削除した testid への参照が `describe.skip` ブロック内に残存していた。CI はスキップブロックを実行しないため、旧参照が無音で残り続ける |
+| 再現条件         | testid を削除・改名する UI 変更時に、`describe.skip` で囲まれたテストブロックが存在する場合                                                                                                                            |
+| 解決策           | testid 削除後に `grep -rn "削除したtestid" apps/desktop/src/renderer/components/` でスキップブロック内を含む全参照を確認し、残存していれば同一 wave で削除する                                                         |
+| 標準ルール       | testid 削除・改名タスクでは Phase 5 完了チェックとして `grep -rn` による全参照確認を必須にする。`describe.skip` は CI から見えない「死角」であり、スキップブロック内の旧参照は next cleanup タスクに積み残されやすい   |
+| 影響ファイル     | `SkillLifecyclePanel.llm-generation.test.tsx`（11 箇所削除）、`SkillLifecyclePanel.auth-regression.test.tsx`（fillCreateRequest を no-op 化）                                                                          |
+| 削除フィクスチャ | `indexes-skill/SKILL.md`（用途廃止のフィクスチャスキル）                                                                                                                                                               |
+
+### L-SKIP-002: NON_VISUAL タスクの describe.skip 内 cleanup チェックリスト不在
+
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 5（実装）の完了チェックリストに「削除 testid の describe.skip 内残存確認」が明示されておらず、FB-02 として Phase 12 で初めて検出された |
+| 解決策     | Phase 5 仕様書テンプレートに「testid 削除タスクの場合、`grep -rn "<削除testid>" apps/` でスキップブロック内残存を確認する」を追加する        |
+| 関連スキル | task-specification-creator Phase 5 チェックリスト / patterns-lessons-and-pitfalls.md                                                         |
+
+---
+
 ## 依存関係
 
 | 方向 | タスクID                                                    | 内容                                              |
@@ -289,3 +313,84 @@ TC-11-03-generate-step-retry-button.png
 | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | Store統合テスト          |
 | `docs/30-workflows/completed-tasks/W2-seq-03a-skill-create-wizard/`                                 | タスク仕様書ディレクトリ |
 | `outputs/phase-12/skill-feedback-report.md`                                                         | フィードバックレポート   |
+
+## UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11）
+
+### L-FB03-001: `format` は `category` からのみ推論する
+
+- **症状**: `format` が `purpose` でも推論されるように読めると、設計レビューで責務境界が曖昧になる
+- **解決策**: `purpose -> tool/timing` と `category -> format` を文書上で分離し、`format` は category-only と固定した
+- **標準ルール**: `format` の説明は category-only を最初に書く
+- **関連タスク**: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001
+
+### L-FB03-002: `purpose` と `category` の責務は同じ段落に閉じ込めない
+
+- **症状**: 1 文でまとめると、どのフィールドが何を決めるか読み手が迷う
+- **解決策**: `purpose` と `category` を見出しレベルで分け、表でも役割を分離した
+- **標準ルール**: field independence は見出しと表の両方で二重化して書く
+- **関連タスク**: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001
+
+### L-FB03-003: docs-only close-out でも artifacts / logs / lessons の同波更新が必要
+
+- **症状**: 実装変更がなくても、台帳・ログ・lesson がずれると後続の Phase 13 で誤読が残る
+- **解決策**: outputs 6件に加えて `task-workflow` / `LOGS` / `SKILL` / lessons を same-wave で更新した
+- **標準ルール**: docs-only close-out でも completed ledger と skill logs を必ず更新する
+- **関連タスク**: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001
+
+---
+
+## TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09）
+
+### L-SC07-LLM-001: Request-ID ガード / キャンセル競合回避パターン
+
+| 項目       | 内容                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `planSkill` → `executePlan` の非同期フロー中にユーザーがウィザードを閉じると、旧リクエストの応答が後続の state に混入し、`generationError` が残留したまま次回フローが開始される               |
+| 原因       | キャンセル後も `setGenerationError` / `setGenerationProgress` のコールバックが発火し続ける                                                                                                        |
+| 解決策     | `requestIdRef = useRef(0)` でリクエスト番号を単調増加させ、コールバック冒頭で `if (requestId !== requestIdRef.current) return` による失効チェックを行う。キャンセル時は `resetStreamingProgress()` を呼んで全 streaming state を初期化する |
+| 標準ルール | 非同期ウィザードフローでは必ずリクエスト ID ガードを実装する。`useRef` で同期的にチェックし、`useState` のコールバックは失効後に発火しても state を汚染しないようにする                           |
+| 関連タスク | TASK-SC-07                                                                                                                                                                                       |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                                                                                                             |
+
+### L-SC07-LLM-002: getWorkflowState による fail snapshot 検出
+
+| 項目       | 内容                                                                                                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `executePlan` が `terminal_handoff` を返した場合、UI が成功画面に遷移してしまい、失敗が検出されない                                                                   |
+| 解決策     | `executePlan` 完了後に `getWorkflowState(planId)` を再呼び出しし、`phase === 'terminal_handoff'` を検出した場合は `generationError` を設定して GenerateStep にとどまる |
+| 標準ルール | LLM 生成フロー完了後は必ず `getWorkflowState` で snapshot を再取得し、`terminal_handoff` / `failed` フェーズを明示的にチェックする                                     |
+| 関連タスク | TASK-SC-07                                                                                                                                                           |
+
+### L-SC07-LLM-003: scheduleバリデーション競合（生成フローのブロック防止）
+
+| 項目       | 内容                                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `ConversationRoundStep` に schedule 関連の validation が残っており、cron 文字列が不完全な状態でも「Invalid」判定が発火し、生成ボタンが disabled のまま解除されなかった                     |
+| 原因       | schedule/timing バリデーションは「保存確定時」に行うべき責務だが、実装では `canProceed` 計算に混入していた                                                                                  |
+| 解決策     | schedule バリデーションは `ConversationRoundStep` の `canProceed` から除外し、ウィザード完了直前（`persistSkill` 呼び出し前）のみで検証する設計に統一した（コミット `97ff1d08d`, `39be7030b`） |
+| 標準ルール | ウィザードの「進む/生成」ボタンの活性化条件に保存系バリデーションを混ぜない。段階的な入力フローでは「今このステップで必要な情報が揃っているか」のみで `canProceed` を判定する               |
+| 関連タスク | TASK-SC-07, UT-SKILL-WIZARD-W3-seq-04                                                                                                                                                    |
+
+---
+
+## skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09）
+
+### L-MULTISEL-001: selectedOptions: string[] への型移行とトグル選択設計
+
+| 項目       | 内容                                                                                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `QuestionAnswer.selectedOption: string \| null` の旧設計では、複数選択時に全選択肢を一つの文字列に連結するか複数の `QuestionAnswer` を作成するかの決定が曖昧だった     |
+| 解決策     | `selectedOptions: string[]` に一本化し、トグル選択は `includes` 判定 + 配列の追加・除去で実装。`SmartDefaultResult` のフィールドを `string[]` に統一して連携させた     |
+| 標準ルール | 複数選択 state は `string \| null` の union 型ではなく `string[]` で管理する。空選択は `[]`（空配列）で表現し、null は使わない                                         |
+| 関連タスク | skill-wizard-multi-select-options, #2078                                                                                                                               |
+
+### L-MULTISEL-002: SmartDefault連携時の既存選択との配列マージ
+
+| 項目       | 内容                                                                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `inferSmartDefaults()` の結果を `ConversationRoundStep` に渡す際、ユーザーが手動で選択した選択肢とSmartDefault推論値が上書き競合した                                         |
+| 解決策     | SmartDefault値を「初期値」として扱い、ユーザーがトグル操作を行った後は SmartDefault を適用しない。`hasUserModified` フラグで手動操作済みを検出し、二重適用を防ぐ              |
+| 標準ルール | 推論デフォルト値とユーザー入力の競合防止には「ユーザーが一度でも触れたらデフォルトを上書きしない」の原則を適用する                                                         |
+| 関連タスク | skill-wizard-multi-select-options, #2078                                                                                                                                   |
+
+> 詳細な W3-seq-04 使用率計装パターン（L-W3-TRACK-001/002）は → [lessons-learned-w3-usage-tracking-2026-04.md](lessons-learned-w3-usage-tracking-2026-04.md) を参照
