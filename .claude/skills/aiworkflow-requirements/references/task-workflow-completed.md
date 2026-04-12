@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04d.md)
+- [2026-04-11: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（アイコン / tooltip / a11y / screenshot evidence）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-08: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（LLM専用化・SmartDefault・GenerateStep再入防止・CompleteStep skillPath表示）](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
@@ -44,6 +45,39 @@
 | `format` を `purpose` から誤推論する説明の残存 | Phase 12 の文言が `category-only` を明示しないまま残る | `purpose` は tool / timing、`category` は format と責務分離して明記する |
 
 ---
+
+
+### タスク: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（2026-04-11）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001                                                                |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | ui / docs / workflow-sync                                                                           |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-11                                                                                          |
+| 対象       | `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` のカテゴリ選択 UI 改善       |
+| 成果物     | `docs/30-workflows/skill-info-step-category-ui-icon/`                                               |
+| 元未タスク | なし（仕様起点の横断改善。新規 unassigned task は不要）                                               |
+
+#### 実施内容
+
+- `SkillInfoStep.tsx` のカテゴリボタンに icon / `title` / `aria-label` / `aria-pressed` を追加し、視認性と a11y を両立した
+- `SkillInfoStep.test.tsx` を `within(button)` ベースの検証へ強化し、icon / tooltip / 選択状態の current facts を固定した
+- Phase 11 用の capture script `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs` を追加し、SS-01〜SS-04 の visual evidence を生成した
+- `outputs/phase-11/` に `screenshot-plan.json` / `phase11-capture-metadata.json` / `screenshot-coverage.md` / 4 枚の PNG を保存し、スクリーンショット参照を Phase 12 に反映した
+- `docs/30-workflows/skill-info-step-category-ui-icon/index.md` / `artifacts.json` / `outputs/artifacts.json` を `completed` / `phase13_blocked` で同期した
+- `task-workflow-completed.md` / `task-workflow.md` / `.claude/skills/aiworkflow-requirements/LOGS.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
+
+#### 検証証跡
+
+- `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs`: PASS（SS-01〜SS-04 を取得）
+- `outputs/phase-11/screenshots/ss-01-initial.png` / `ss-02-automation.png` / `ss-03-tooltip.png` / `ss-04-all-icons.png`: 生成済み
+- `outputs/phase-12/implementation-guide.md`: screenshot references 反映済み
+- `outputs/phase-12/skill-feedback-report.md`: overlay capture の注意点を反映済み
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx --maxWorkers 1`: 環境依存の `esbuild` バージョン不一致で再検証保留
+
+UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 の Phase 11/12 反映により、UI 実装・証跡・仕様書・完了台帳の current facts を同波で閉じた。
 
 ### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
 

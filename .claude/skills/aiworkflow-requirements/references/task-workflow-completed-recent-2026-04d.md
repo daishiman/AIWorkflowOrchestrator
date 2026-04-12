@@ -217,13 +217,15 @@
 
 - `apps/desktop/src/renderer/utils/trackEvent.ts` に薄い抽象を実装
 - 既存の `SkillAnalytics` / `AnalyticsStore` とは独立した renderer-local util
-- 現フェーズでは console.debug ロギングのみ（将来的な IPC 接続を想定した interface 設計）
+- 現フェーズでは console.info ロギングのみ（将来的な IPC 接続を想定した interface 設計）
 
-**SkillCreateWizard.tsx（3計装ポイント）**
+**SkillCreateWizard.tsx / CompleteStep.tsx（5計装ポイント）**
 
 - `skill_wizard_started`: ウィザード表示時（`useEffect` mount）
 - `skill_wizard_step1_completed`: Step 0 → Step 1 遷移時（`handleStep0Next` 内）
-- `skill_wizard_next_action`: 完了後のアクション選択時（`handleNextAction` 内）
+- `skill_wizard_open`: ウィザード起点（`source: "lifecycle_panel" | "direct"`）
+- `skill_wizard_abandon`: 未完了アンマウント時（cleanup）
+- `skill_wizard_next_action`: 完了後のアクション選択時（`CompleteStep` の action cards）
 
 **ConversationRoundStep.tsx（2計装ポイント）**
 
