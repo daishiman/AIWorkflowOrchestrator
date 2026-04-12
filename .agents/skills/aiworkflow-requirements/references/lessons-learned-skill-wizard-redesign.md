@@ -170,6 +170,14 @@ TC-11-03-generate-step-retry-button.png
 | 標準ルール   | semantic デフォルト正規化ロジックは宣言的テーブルで管理し、新フィールド追加時はテーブル 1 箇所の更新で完結するよう設計する                                                                                                                                           |
 | 関連タスク   | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                                                       |
 | 対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                                                                                                                                                                                        |
+| 項目         | 内容                                                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | `normalizeSelectedOption()` の switch 文が q1/q3/q5/q6 の 4 ケースに分散しており、新しい `SmartDefaultResult` フィールドを追加する際に「型定義（`ConversationAnswers`）」「マッピング（`QUESTION_OPTION_VALUES`）」「switch 文」の 3 箇所を同時更新する必要がある    |
+| 再発条件     | SmartDefaultResult のフィールドが増えるたびに normalizeSelectedOption の switch 文に新ケースを追加し忘れると、新フィールドのデフォルト値が正規化されずに raw 値のままUIラベルとして表示される                                                                        |
+| 解決策       | 将来的には `SEMANTIC_LABEL_MAP: Record<QuestionKey, Record<string, string>>` のような宣言的マッピングテーブルに集約することで更新箇所を 1 箇所に削減できる。現在の switch 文は各 QuestionKey に対応するマッピングを 1 オブジェクトに統一する形にリファクタリング可能 |
+| 標準ルール   | semantic デフォルト正規化ロジックは宣言的テーブルで管理し、新フィールド追加時はテーブル 1 箇所の更新で完結するよう設計する                                                                                                                                           |
+| 関連タスク   | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                                                       |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                                                                                                                                                                                        |
 
 ### L-CRS-002: worktree と main ブランチの仕様書ステータス同期不整合
 
@@ -305,14 +313,14 @@ TC-11-03-generate-step-retry-button.png
 
 ### L-CRS-002: worktree と main ブランチの仕様書ステータス同期不整合
 
-| 項目       | 内容                                                                                                                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 項目       | 内容                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 課題       | main ブランチで完了済みのタスク（`ut-health-policy-runtime-injection`）の spec files が worktree 内に `spec_created` ステータスのまま残留した。worktree が別タスク専用に切られた際に main 側の完了状態が worktree に反映されないことが原因 |
-| 再発条件   | worktree 作成後に main 側でタスクが完了し `docs/30-workflows/` から spec が削除・移動された場合、worktree では依然として旧 spec が存在し続ける                                                                                    |
-| 解決策     | worktree 作成時（または作業開始時）に `docs/30-workflows/` の仕様書ステータスを `git diff main -- docs/30-workflows/` で main と照合する。main 側で削除済みの spec は worktree からも削除またはアーカイブへ移動する              |
-| 標準ルール | worktree 独立性を保ちつつ、Phase 1 のタスク開始時チェックとして「main ブランチでの完了済み spec の残留がないか」を確認する手順を追加する                                                                                          |
-| 関連タスク | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                  |
-| 関連削除   | `docs/30-workflows/ut-health-policy-runtime-injection/` 削除（worktree 内残留解消）                                                                                                                                             |
+| 再発条件   | worktree 作成後に main 側でタスクが完了し `docs/30-workflows/` から spec が削除・移動された場合、worktree では依然として旧 spec が存在し続ける                                                                                             |
+| 解決策     | worktree 作成時（または作業開始時）に `docs/30-workflows/` の仕様書ステータスを `git diff main -- docs/30-workflows/` で main と照合する。main 側で削除済みの spec は worktree からも削除またはアーカイブへ移動する                        |
+| 標準ルール | worktree 独立性を保ちつつ、Phase 1 のタスク開始時チェックとして「main ブランチでの完了済み spec の残留がないか」を確認する手順を追加する                                                                                                   |
+| 関連タスク | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001                                                                                                                                                                                             |
+| 関連削除   | `docs/30-workflows/ut-health-policy-runtime-injection/` 削除（worktree 内残留解消）                                                                                                                                                        |
 
 ---
 
@@ -395,6 +403,30 @@ TC-11-03-generate-step-retry-button.png
 - **状況**: `googleapis ^144.0.0` を `.claude/skills/google/package.json` に配置したが、workspace の pnpm に認識されるか確認が必要だった。
 - **解決策**: スキルディレクトリを独立 package として扱い、`node_modules` は `scripts/` 実行時に `pnpm install` で解決する設計とした。
 - **適用**: Claude Code スキルでのみ使う外部 npm パッケージは、スキルディレクトリ直下の `package.json` に閉じ込める。
+
+---
+
+## UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11）
+
+### L-SKIP-001: `describe.skip` 内 testid の CI 非検出問題
+
+| 項目             | 内容                                                                                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001                                                                                                                                                                           |
+| 課題             | UI リファクタリング（`skill-lifecycle-request-input` textarea → 遷移ボタン化）後、削除した testid への参照が `describe.skip` ブロック内に残存していた。CI はスキップブロックを実行しないため、旧参照が無音で残り続ける |
+| 再現条件         | testid を削除・改名する UI 変更時に、`describe.skip` で囲まれたテストブロックが存在する場合                                                                                                                            |
+| 解決策           | testid 削除後に `grep -rn "削除したtestid" apps/desktop/src/renderer/components/` でスキップブロック内を含む全参照を確認し、残存していれば同一 wave で削除する                                                         |
+| 標準ルール       | testid 削除・改名タスクでは Phase 5 完了チェックとして `grep -rn` による全参照確認を必須にする。`describe.skip` は CI から見えない「死角」であり、スキップブロック内の旧参照は next cleanup タスクに積み残されやすい   |
+| 影響ファイル     | `SkillLifecyclePanel.llm-generation.test.tsx`（11 箇所削除）、`SkillLifecyclePanel.auth-regression.test.tsx`（fillCreateRequest を no-op 化）                                                                          |
+| 削除フィクスチャ | `indexes-skill/SKILL.md`（用途廃止のフィクスチャスキル）                                                                                                                                                               |
+
+### L-SKIP-002: NON_VISUAL タスクの describe.skip 内 cleanup チェックリスト不在
+
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 5（実装）の完了チェックリストに「削除 testid の describe.skip 内残存確認」が明示されておらず、FB-02 として Phase 12 で初めて検出された |
+| 解決策     | Phase 5 仕様書テンプレートに「testid 削除タスクの場合、`grep -rn "<削除testid>" apps/` でスキップブロック内残存を確認する」を追加する        |
+| 関連スキル | task-specification-creator Phase 5 チェックリスト / patterns-lessons-and-pitfalls.md                                                         |
 
 ---
 

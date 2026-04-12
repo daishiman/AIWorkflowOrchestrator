@@ -3421,12 +3421,14 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
 | Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
-| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L293 |
-| 依存関係 | L317 |
-| 関連ファイル | L329 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L341 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L366 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L400 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L293 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L317 |
+| 依存関係 | L341 |
+| 関連ファイル | L353 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L365 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L390 |
+| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L424 |
+| UT-SKILL-WIZARD-W2-seq-03b Phase-12 close-out 教訓（2026-04-12） | L448 |
 
 ### references/lessons-learned-templates.md
 
