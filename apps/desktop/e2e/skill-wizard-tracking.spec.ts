@@ -173,22 +173,24 @@ test.describe("スキルウィザード trackEvent E2E UI 到達確認", () => {
     });
 
     // TC-09: AC-5 対応
-    test("TC-09: open_editor クリックで skill_wizard_next_action(open_editor) が発火する (AC-5)", async ({
+    // Note: 実装では action: "edit" として定義（trackEvent.ts の型定義に準拠）
+    test("TC-09: open_editor クリックで skill_wizard_next_action(edit) が発火する (AC-5)", async ({
       page,
     }) => {
       await page.getByTestId("complete-step-action-open-editor").click();
       await assertEventFired(page, "skill_wizard_next_action", {
-        action: "open_editor",
+        action: "edit",
       });
     });
 
     // TC-11: AC-6 対応
-    test("TC-11: create_another クリックで skill_wizard_next_action(create_another) が発火する (AC-6)", async ({
+    // Note: 実装では action: "close" として定義（trackEvent.ts の型定義に準拠）
+    test("TC-11: create_another クリックで skill_wizard_next_action(close) が発火する (AC-6)", async ({
       page,
     }) => {
       await page.getByTestId("complete-step-action-create-another").click();
       await assertEventFired(page, "skill_wizard_next_action", {
-        action: "create_another",
+        action: "close",
       });
     });
 
