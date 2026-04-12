@@ -7,7 +7,7 @@
  *
  * AC-2: LLM選択 -> planSkill 呼出
  * AC-4: executePlan -> CompleteStep 遷移
- * AC-5: キャンセル -> DescribeStep 戻り
+ * AC-5: キャンセル -> SkillInfoStep 戻り
  * AC-8: テンプレートフロー非破壊
  * AC-9: PlanResult Single Source of Truth
  * AC-10: 対称クリア
@@ -189,7 +189,7 @@ describe.skip("SkillCreateWizard LLM生成フロー", () => {
   // AC-1: 生成モード選択UI
   // ============================================================
   describe("AC-1: 生成モード選択UI", () => {
-    it("DescribeStep に生成モード選択のラジオボタンが表示される", () => {
+    it("SkillInfoStep に生成モード選択のラジオボタンが表示される", () => {
       render(<SkillCreateWizard onClose={vi.fn()} />);
       expect(
         screen.getByRole("radio", { name: /テンプレート/ }),
@@ -529,10 +529,10 @@ describe.skip("SkillCreateWizard LLM生成フロー", () => {
   });
 
   // ============================================================
-  // W-6 (AC-5): キャンセル -> DescribeStep
+  // W-6 (AC-5): キャンセル -> SkillInfoStep
   // ============================================================
-  describe("AC-5: キャンセル -> DescribeStep戻り", () => {
-    it("W-6: キャンセルクリックで DescribeStep に戻る", async () => {
+  describe("AC-5: キャンセル -> SkillInfoStep戻り", () => {
+    it("W-6: キャンセルクリックで SkillInfoStep に戻る", async () => {
       mockStoreState.currentPlanId = "plan-001";
       mockStoreState.currentPlanResult = {
         type: "integrated_api",
@@ -561,7 +561,7 @@ describe.skip("SkillCreateWizard LLM生成フロー", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
 
-      // DescribeStep に戻っている
+      // SkillInfoStep に戻っている
       expect(screen.getByRole("textbox")).toBeInTheDocument();
       expect(screen.getByText("スキルの説明")).toBeInTheDocument();
     });

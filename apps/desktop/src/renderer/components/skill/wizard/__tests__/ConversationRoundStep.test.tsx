@@ -10,12 +10,20 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, within } from "@testing-library/react";
-import { ConversationRoundStep } from "../ConversationRoundStep";
+import {
+  ConversationRoundStep,
+  applySmartDefaults,
+} from "../ConversationRoundStep";
 import type {
   SkillInfoFormData,
   ConversationAnswers,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
+import {
+  SEMANTIC_LABEL_MAP,
+  resolveSemanticLabel,
+  type QuestionSemanticLabelMap,
+} from "@repo/shared/types/skillWizard";
 
 const defaultFormData: SkillInfoFormData = {
   skillName: "",
@@ -901,6 +909,338 @@ describe("ConversationRoundStep", () => {
       );
       fireEvent.click(screen.getByRole("button", { name: /戻る/ }));
       expect(mockOnBack).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+// ============================================================
+// UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001
+// resolveSemanticLabel / applySmartDefaults 単体テスト
+// ============================================================
+
+const emptyAnswers: ConversationAnswers = {
+  q1: { selectedOptions: [], freeText: "" },
+  q2: { selectedOptions: [], freeText: "" },
+  q3: { selectedOptions: [], freeText: "" },
+  q4: { selectedOptions: [], freeText: "" },
+  q5: { selectedOptions: [], freeText: "" },
+  q6: { selectedOptions: [], freeText: "" },
+};
+
+describe("resolveSemanticLabel / applySmartDefaults（semantic default 入力元拡張対応）", () => {
+  // ------------------------------------------
+  // TC-01〜TC-06: resolveSemanticLabel 正規化ロジック
+  // ------------------------------------------
+  describe("TC-01〜TC-06: 正規化ロジックの検証", () => {
+    it("TC-01: q1 '自分だけ' が '自分のみ' に変換される", () => {
+      // length: 4 ("自分だけ".length === 4)
+      const result = resolveSemanticLabel("自分だけ", "q1");
+      expect(result).toBe("自分のみ");
+    });
+
+    it("TC-02: q5 'slack' が 'Slack' に変換される", () => {
+      // length: 5 ("slack".length === 5)
+      const result = resolveSemanticLabel("slack", "q5");
+      expect(result).toBe("Slack");
+    });
+
+    it("TC-03: q5 'github' が 'GitHub' に変換される", () => {
+      // length: 6 ("github".length === 6)
+      const result = resolveSemanticLabel("github", "q5");
+      expect(result).toBe("GitHub");
+    });
+
+    it("TC-04: undefined 入力は undefined を返す", () => {
+      const result = resolveSemanticLabel(undefined, "q1");
+      expect(result).toBeUndefined();
+    });
+
+    it("TC-05: 未定義 questionId はフォールバックして値をそのまま返す", () => {
+      // length: 2 ("任意".length === 2)
+      const result = resolveSemanticLabel("任意", "q99");
+      expect(result).toBe("任意");
+    });
+
+    it("TC-06: マッピング未定義の rawValue はそのまま返す", () => {
+      // length: 5 ("存在しない".length === 5) + "値" = 6
+      const result = resolveSemanticLabel("存在しない値", "q1");
+      expect(result).toBe("存在しない値");
+    });
+  });
+
+  // ------------------------------------------
+  // TC-07: DI（依存性注入）の検証
+  // ------------------------------------------
+  describe("TC-07: DI（カスタム labelMap）の検証", () => {
+    it("TC-07: カスタム labelMap を渡した場合に正しく変換される", () => {
+      // length: 3 ("foo".length === 3)
+      const customMap: QuestionSemanticLabelMap = {
+        qX: { foo: "bar" },
+      };
+      const result = resolveSemanticLabel("foo", "qX", customMap);
+      expect(result).toBe("bar");
+    });
+  });
+
+  // ------------------------------------------
+  // TC-08〜TC-10: applySmartDefaults の全フィールド検証
+  // ------------------------------------------
+  describe("TC-08〜TC-10: applySmartDefaults の変換検証", () => {
+    it("TC-08: smartDefaults.who='自分だけ' が q1='自分のみ' に変換される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: "自分だけ",
+        input: null,
+        timing: null,
+        output: null,
+        tool: null,
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q1.selectedOptions).toContain("自分のみ");
+    });
+
+    it("TC-09: smartDefaults.timing='scheduled' が q3='定期実行' に変換される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: "scheduled",
+        output: null,
+        tool: null,
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q3.selectedOptions).toContain("定期実行");
+    });
+
+    it("TC-10: smartDefaults.tool='slack' が q5='Slack' に変換される（回帰テスト）", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: "slack",
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q5.selectedOptions).toContain("Slack");
+    });
+  });
+
+  // ------------------------------------------
+  // TC-11: エッジケース
+  // ------------------------------------------
+  describe("TC-11: エッジケースのハンドリング", () => {
+    it("TC-11: 空文字列入力は空文字列をそのまま返す", () => {
+      // length: 0 ("".length === 0)
+      const result = resolveSemanticLabel("", "q1");
+      expect(result).toBe("");
+    });
+  });
+
+  // ------------------------------------------
+  // TC-12: @repo/shared からの import 確認
+  // ------------------------------------------
+  describe("TC-12: @repo/shared からの import 確認", () => {
+    it("TC-12: SEMANTIC_LABEL_MAP が @repo/shared から import できる", () => {
+      expect(SEMANTIC_LABEL_MAP).toBeDefined();
+    });
+
+    it("TC-12b: SEMANTIC_LABEL_MAP が q1〜q6 のキーを持つ", () => {
+      expect(SEMANTIC_LABEL_MAP).toHaveProperty("q1");
+      expect(SEMANTIC_LABEL_MAP).toHaveProperty("q3");
+      expect(SEMANTIC_LABEL_MAP).toHaveProperty("q5");
+    });
+  });
+
+  // ------------------------------------------
+  // Phase 6: 英語入力・フォールバック動作検証
+  // ------------------------------------------
+  describe("Phase 6: 英語入力・略称のフォールバック動作", () => {
+    it('英語入力 "myself only" はマップ未定義のためそのまま返す', () => {
+      // length: 11 ("myself only".length === 11)
+      const input = "myself only";
+      expect(resolveSemanticLabel(input, "q1")).toBe("myself only");
+    });
+
+    it('英語入力 "just me" はマップ未定義のためそのまま返す', () => {
+      // length: 7 ("just me".length === 7)
+      const input = "just me";
+      expect(resolveSemanticLabel(input, "q1")).toBe("just me");
+    });
+
+    it('英語入力 "daily" はマップ未定義のためそのまま返す', () => {
+      // length: 5 ("daily".length === 5)
+      const input = "daily";
+      expect(resolveSemanticLabel(input, "q3")).toBe("daily");
+    });
+
+    it('英語入力 "weekly" はマップ未定義のためそのまま返す', () => {
+      // length: 6 ("weekly".length === 6)
+      const input = "weekly";
+      expect(resolveSemanticLabel(input, "q6")).toBe("weekly");
+    });
+
+    it('表記揺れ "自分だけ" は q1 マッピングで "自分のみ" に変換される', () => {
+      // length: 4 ("自分だけ".length === 4)
+      const input = "自分だけ";
+      expect(resolveSemanticLabel(input, "q1")).toBe("自分のみ");
+    });
+
+    it('正準形入力 "自分のみ" はそのまま返す（マップにないが同値）', () => {
+      // length: 4 ("自分のみ".length === 4)
+      const input = "自分のみ";
+      // q1 map: { 自分だけ: "自分のみ" } → "自分のみ" はキーにないのでフォールバック
+      expect(resolveSemanticLabel(input, "q1")).toBe("自分のみ");
+    });
+  });
+
+  // ------------------------------------------
+  // Phase 6: 異常系・境界値テスト
+  // ------------------------------------------
+  describe("Phase 6: 異常系・境界値入力のハンドリング", () => {
+    it('数値文字列 "123" はそのまま返す', () => {
+      // length: 3 ("123".length === 3)
+      expect(resolveSemanticLabel("123", "q1")).toBe("123");
+    });
+
+    it('特殊文字 "@#$%" はそのまま返す', () => {
+      // length: 4 ("@#$%".length === 4)
+      expect(resolveSemanticLabel("@#$%", "q1")).toBe("@#$%");
+    });
+
+    it('全角スペース "　" はそのまま返す', () => {
+      // 全角スペース (U+3000) length === 1
+      expect(resolveSemanticLabel("　", "q1")).toBe("　");
+    });
+
+    it('全角半角混在 "自分only" はそのまま返す', () => {
+      // length: 6 ("自分only".length === 6)
+      expect(resolveSemanticLabel("自分only", "q1")).toBe("自分only");
+    });
+
+    it('英数字+日本語混在 "Daily毎日" はそのまま返す', () => {
+      // length: 7 ("Daily毎日".length === 7)
+      expect(resolveSemanticLabel("Daily毎日", "q3")).toBe("Daily毎日");
+    });
+  });
+
+  // ------------------------------------------
+  // Phase 6: applySmartDefaults 回帰テスト（q1〜q6 全エントリ）
+  // ------------------------------------------
+  describe("Phase 6: applySmartDefaults 回帰テスト（Phase 5 実装変更後）", () => {
+    it("shared 外部化後も q6 format='週次' → freeText='週に1回' の変換が維持される", () => {
+      // Q6 options: ["Markdown", "プレーンテキスト", "JSON", "箇条書き"]
+      // "週に1回" は options にないため freeText に格納される
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: null,
+        format: "週次",
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q6.freeText).toBe("週に1回");
+    });
+
+    it("smartDefaults.format='Markdown' が q6='Markdown' として選択される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: null,
+        format: "Markdown",
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q6.selectedOptions).toContain("Markdown");
+      expect(result.q6.freeText).toBe("");
+    });
+
+    it("smartDefaults.format='JSON' が q6='JSON' として選択される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: null,
+        format: "JSON",
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q6.selectedOptions).toContain("JSON");
+      expect(result.q6.freeText).toBe("");
+    });
+
+    it("who=null のとき q1 は空選択のまま（defaultValue なし）", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: null,
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q1.selectedOptions).toHaveLength(0);
+      expect(result.q1.freeText).toBe("");
+    });
+
+    it("q5 tool='github' → 'GitHub' 変換が維持される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: "github",
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q5.selectedOptions).toContain("GitHub");
+    });
+
+    it("smartDefaults.tool='Jira' は元の表記を保持して q5 自由入力に入る", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: "Jira",
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q5.selectedOptions).toHaveLength(0);
+      expect(result.q5.freeText).toBe("Jira");
+    });
+
+    it("smartDefaults.tool='notion' が q5='その他' + freeText='Notion' に変換される", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: null,
+        input: null,
+        timing: null,
+        output: null,
+        tool: "notion",
+        format: null,
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q5.selectedOptions).toContain("その他");
+      expect(result.q5.freeText).toBe("Notion");
+    });
+
+    it("inferSmartDefaults が返す全フィールドを一括変換できる", () => {
+      const smartDefaults: SmartDefaultResult = {
+        who: "自分だけ",
+        input: null,
+        timing: "scheduled",
+        output: null,
+        tool: "slack",
+        format: "週次",
+      };
+      const result = applySmartDefaults(emptyAnswers, smartDefaults);
+      expect(result.q1.selectedOptions).toContain("自分のみ");
+      expect(result.q3.selectedOptions).toContain("定期実行");
+      expect(result.q5.selectedOptions).toContain("Slack");
+      // "週次" → resolveSemanticLabel → "週に1回"（Q6 options にないため freeText に格納）
+      expect(result.q6.freeText).toBe("週に1回");
     });
   });
 });

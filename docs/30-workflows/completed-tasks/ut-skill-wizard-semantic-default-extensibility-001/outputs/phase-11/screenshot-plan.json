@@ -1,0 +1,8 @@
+{
+  "mode": "NON_VISUAL",
+  "reason": "リファクタリングタスクのため UI 変更なし。ConversationRoundStep.tsx の内部ロジック（resolveSemanticLabel 変換テーブル）を @repo/shared に移動するのみ。",
+  "taskId": "UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001",
+  "phase": 11,
+  "screenshots": [],
+  "alternativeEvidence": "outputs/phase-11/vitest-verbose.log"
+}

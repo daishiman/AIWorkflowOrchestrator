@@ -1,0 +1,32 @@
+{
+  "taskId": "UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001",
+  "taskName": "DescribeStep.tsx / DescribeStep.test.tsx 物理削除",
+  "completedAt": "2026-04-11",
+  "phases": [
+    { "phase": 1, "name": "要件定義", "status": "completed" },
+    { "phase": 2, "name": "設計", "status": "completed" },
+    { "phase": 3, "name": "設計レビューゲート", "status": "completed" },
+    { "phase": 4, "name": "テスト作成", "status": "completed" },
+    { "phase": 5, "name": "実装", "status": "completed" },
+    { "phase": 6, "name": "テスト拡充", "status": "completed" },
+    { "phase": 7, "name": "テストカバレッジ確認", "status": "completed" },
+    { "phase": 8, "name": "リファクタリング", "status": "completed" },
+    { "phase": 9, "name": "品質保証", "status": "completed" },
+    { "phase": 10, "name": "最終レビューゲート", "status": "completed" },
+    { "phase": 11, "name": "手動テスト検証", "status": "completed" },
+    { "phase": 12, "name": "ドキュメント更新", "status": "completed" },
+    { "phase": 13, "name": "PR作成", "status": "blocked" }
+  ],
+  "keyArtifacts": {
+    "implementationGuide": "outputs/phase-12/implementation-guide.md",
+    "guardTest": "apps/desktop/src/renderer/components/skill/wizard/__tests__/wizard-exports.test.ts",
+    "qualityReport": "outputs/phase-9/quality-report.md"
+  },
+  "acceptanceCriteria": {
+    "AC-1": "PASS",
+    "AC-2": "PASS",
+    "AC-3": "PASS",
+    "AC-4": "PASS",
+    "AC-5": "PASS"
+  }
+}

@@ -12,6 +12,30 @@
 ### 背景
 docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sync を残しておくことで、format を purpose から誤推論する再発を防げる。
 
+## 2026-04-12 - UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` Phase 4 行に barrel contract guard 標準ステップ追加（Feedback DESCRIBE-STEP-002）
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-DESCRIBE-STEP-001/002 追加（2ファイル同時削除 + barrel contract guard 標準フロー / runtime vs compile-time guard 設計理由）
+- LOGS.md 2ファイル・mirror 同波更新
+
+### 背景
+skill-feedback-report.md の FB-TASK-01/02（ファイル削除タスクの barrel contract guard 標準化）を反映。
+type-only export を持つコンポーネント削除時の runtime/compile-time 二重ガードパターンを aiworkflow-requirements に体系化。
+
+---
+
+## 2026-04-11 - UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 Phase 12 close-out sync
+
+### 変更内容
+- `wizard-exports.typecheck.ts` を新規追加し、`DescribeStepProps` type-only export の再導入を compile-time でも検出するようにした
+- `wizard-exports.test.ts` の current facts コメントを runtime guard / compile-time guard 分離へ更新
+- `SKILL.md` canonical / mirror の Phase 12 漏れテーブルに runtime / compile-time 二重ガードの標準パターンを追記
+- `.agents/skills/task-specification-creator/` mirror へ同波同期（diff 0）
+
+### 背景
+`wizard-exports.test.ts` の runtime property check だけでは `DescribeStepProps` のような type-only export 再導入を拾えないため、compile-time guard を別ファイルで持つ必要があった。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
