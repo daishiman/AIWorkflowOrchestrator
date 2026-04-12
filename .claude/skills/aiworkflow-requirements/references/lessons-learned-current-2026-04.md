@@ -901,3 +901,27 @@
 | 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+---
+
+## UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 レガシーコード整理 教訓（2026-04-12）
+
+### L-DESCRIBE-STEP-001: 2ファイル同時削除 + barrel contract guard 標準フロー
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `DescribeStep.tsx` / `DescribeStep.test.tsx` の2ファイル同時削除時、barrel export の回帰を防ぐ guard がないと type-only export の再導入を見逃す |
+| 解決策     | Phase 4 で guard test 2種類（runtime: `wizard-exports.test.ts` / compile-time: `wizard-exports.typecheck.ts`）を削除前に作成し、`pnpm typecheck` + `pnpm test` PASS を削除の前提条件とする |
+| 標準フロー | (1) barrel contract guard 作成 → (2) 残留参照全量 `grep` → (3) 物理削除実行 → (4) typecheck + test 全通過確認 |
+| 再発防止   | ファイル削除タスクの Phase 4 では barrel contract guard の新規作成を標準タスクとして含める |
+| 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+
+### L-DESCRIBE-STEP-002: runtime guard と compile-time guard を別 surface で持つ理由
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `DescribeStepProps` は型定義のみの export（type-only export）であり、`value export` と異なり runtime では検出できない |
+| 解決策     | `wizard-exports.test.ts`（runtime: `expect(wizardExports).not.toHaveProperty('DescribeStep')`）に加えて `wizard-exports.typecheck.ts`（compile-time: `@ts-expect-error` ガード）を別ファイルで管理する |
+| 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
+| 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
+| 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
