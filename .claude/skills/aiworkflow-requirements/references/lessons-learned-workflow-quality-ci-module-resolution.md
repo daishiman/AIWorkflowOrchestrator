@@ -28,12 +28,12 @@
 
 #### 1. Phase 10 MINORの残置（レポート仕様ドリフト）
 
-| 項目       | 内容                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **課題**   | コア検証は完了していたが、レポート仕様（修正ガイダンス/件数サマリー/`printSummary`シグネチャ）がPhase 2設計と一致しなかった               |
-| **原因**   | 検出ロジックとCI統合を優先し、出力フォーマット整備を後段に回した                                                                          |
+| 項目       | 内容                                                                                                                                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **課題**   | コア検証は完了していたが、レポート仕様（修正ガイダンス/件数サマリー/`printSummary`シグネチャ）がPhase 2設計と一致しなかった                                                                              |
+| **原因**   | 検出ロジックとCI統合を優先し、出力フォーマット整備を後段に回した                                                                                                                                         |
 | **解決策** | MINOR 3件を `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` に統合し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に起票してP3 3ステップを完了した |
-| **教訓**   | Phase 10のMINORは「次回対応メモ」ではなく、同日中に未タスク化して追跡可能な状態にする                                                     |
+| **教訓**   | Phase 10のMINORは「次回対応メモ」ではなく、同日中に未タスク化して追跡可能な状態にする                                                                                                                    |
 
 #### 2. Phase 12証跡と仕様書本体状態の同期漏れリスク
 
@@ -48,7 +48,7 @@
 
 | 項目       | 内容                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| **課題**   | `audit-unassigned-tasks.js` で全体違反（既存68件）が出るため、今回対象の未タスク品質判定と混同しやすかった        |
+| **課題**   | `audit-unassigned-tasks.js` で全体違反（既存72件）が出るため、今回対象の未タスク品質判定と混同しやすかった        |
 | **原因**   | 全件監査結果をそのまま「今回不備」と解釈しやすい出力形式だった                                                    |
 | **解決策** | 全体監査と対象ファイル個別確認を分離し、`task-imp-module-sync-report-enhancement.md` のテンプレ準拠を個別確認した |
 | **教訓**   | 監査は「全体健全性」と「今回差分」を分けて報告しないと、是正優先順位が崩れる                                      |
@@ -162,13 +162,13 @@ afterEach(() => {
 
 ### 成果物
 
-| 成果物             | パス                                                                                                 |
-| ------------------ | ---------------------------------------------------------------------------------------------------- |
-| CIガードスクリプト | `scripts/check-shared-module-sync.ts`                                                                |
-| テスト（43件）     | `scripts/__tests__/check-shared-module-sync.test.ts`                                                 |
-| CI設定             | `.github/workflows/ci.yml`                                                                           |
-| 実装ガイド         | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/outputs/phase-12/implementation-guide.md` |
-| 未タスク指示書     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-module-sync-report-enhancement.md`                       |
+| 成果物             | パス                                                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| CIガードスクリプト | `scripts/check-shared-module-sync.ts`                                                                                                         |
+| テスト（43件）     | `scripts/__tests__/check-shared-module-sync.test.ts`                                                                                          |
+| CI設定             | `.github/workflows/ci.yml`                                                                                                                    |
+| 実装ガイド         | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/outputs/phase-12/implementation-guide.md`                                          |
+| 未タスク指示書     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-module-sync-report-enhancement.md` |
 
 ### 関連ドキュメント更新
 
@@ -384,4 +384,3 @@ grep -rn "unassigned-task/" docs/30-workflows/ .claude/skills/ | \
 5. **テスト実行**: `pnpm typecheck && cd apps/desktop && pnpm vitest run src/__tests__/*module-resolution*` で整合性を検証する
 
 ---
-

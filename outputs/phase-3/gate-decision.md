@@ -1,42 +1,55 @@
-# Phase 3: 設計レビューゲート判定 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 3: 設計レビューゲート判定 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
 ## ゲート判定結果
 
-| 項目       | 結果                            |
-| ---------- | ------------------------------- |
-| 判定       | **PASS (MINOR)**                |
-| 判定日     | 2026-04-08                      |
-| レビュアー | 自己レビュー（担当: daishiman） |
+| 項目       | 結果         |
+| ---------- | ------------ |
+| 判定       | **PASS**     |
+| 判定日     | 2026-04-11   |
+| レビュアー | 自己レビュー |
 
-## チェックリスト
+## 設計一貫性チェック
 
-### UI 削除設計
+| チェック項目                                                        | 判定基準                                                                 | 結果 |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---- |
+| `SKILL_CATEGORY_LABELS` の型が `Record<SkillCategory, string>`      | TypeScript で型エラーなし                                                | ✅   |
+| 5件全ての `SkillCategory` 値がキーとして存在する                    | automation / external-integration / data-analysis / code-support / other | ✅   |
+| `getSkillCategoryLabel()` が `SKILL_CATEGORY_LABELS` を参照している | 関数実装で定数を使用                                                     | ✅   |
+| `as const` アサーションが適切に付与されている                       | コンパイルエラーなし                                                     | ✅   |
 
-- [x] `skill-lifecycle-execution-input` textarea の削除対象を確認
-- [x] `skill-lifecycle-request-input` は既に削除済みであることを確認（PR #2036）
-- [x] `skill-lifecycle-open-wizard-button` は既に追加済みであることを確認（PR #2036）
+## AC整合チェック
 
-### state 整理設計
+| AC ID | 設計対応                                                                       | 充足判定 |
+| ----- | ------------------------------------------------------------------------------ | -------- |
+| AC-1  | 5件全値を `SKILL_CATEGORY_LABELS` に列挙                                       | ✅       |
+| AC-2  | `export const SKILL_CATEGORY_LABELS` + `export function getSkillCategoryLabel` | ✅       |
+| AC-3  | `Record<SkillCategory, string>` 型で型網羅性を保証                             | ✅       |
 
-- [x] `executionPrompt` の依存先（3箇所）をすべて確認
-- [x] `defaultExecutionPrompt` 定数による代替方針が整合している
-- [x] `canExecuteSkill` から `executionPrompt.trim().length > 0` 削除後も条件が正当
+## 命名規則チェック
 
-### テスト設計
+| 確認項目                                      | 期待パターン     | 結果                                              |
+| --------------------------------------------- | ---------------- | ------------------------------------------------- |
+| 定数名 `SKILL_CATEGORY_LABELS`                | UPPER_SNAKE_CASE | ✅（`WORKFLOW_MANIFEST_SCHEMA_VERSION` 等と一致） |
+| 関数名 `getSkillCategoryLabel`                | camelCase        | ✅                                                |
+| ハイフン含む値の記法 `"external-integration"` | quoted key記法   | ✅                                                |
 
-- [x] 6本のテストファイルへの影響確認（5本は変更不要）
-- [x] `SkillLifecyclePanel.test.tsx` への追加テストケースが設計に明示されている
-- [x] data-testid の変更影響を全量確認（`skill-lifecycle-execution-input` はテストで参照されていない）
+## リスクチェック
 
-### スコープ境界
+| リスク                                 | 評価                                                     | 対応           |
+| -------------------------------------- | -------------------------------------------------------- | -------------- |
+| `SkillCategory` が変更された場合の追従 | `Record<SkillCategory, string>` 型でTypeScriptが検出する | 設計で吸収済み |
+| root barrel の変更リスク               | 本タスクは subpath export に閉じる                       | 影響なし       |
+| 既存テストファイルへの影響             | 追加のみ・既存テストは不変                               | 影響なし       |
+| `as const` と `Record<T,U>` の型互換   | TypeScript で有効な組み合わせ                            | 問題なし       |
 
-- [x] `SkillCreateWizard` 本体実装がスコープ外であることを確認
-- [x] IPCチャンネル変更がスコープ外であることを確認
+## MINOR追跡テーブル
 
-## 矛盾チェック結果
-
-矛盾なし。
+| MINOR ID | 指摘内容 | 解決予定Phase | 備考 |
+| -------- | -------- | ------------- | ---- |
+| なし     | -        | -             | -    |
 
 ## 次フェーズへの条件
 
 Phase 4（テスト作成）へ進むことを承認する。
+
+矛盾なし・漏れなし・整合あり。

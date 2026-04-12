@@ -286,6 +286,37 @@ describe("ConversationRoundStep", () => {
       );
     });
 
+    it("timezone が不正な場合にエラーが表示され、サマリーに進まない", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q3: {
+              selectedOptions: ["定期実行"],
+              freeText: "",
+              scheduleConfig: {
+                cronExpression: "0 9 * * *",
+                timezone: "Mars/Phobos",
+              },
+            },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: /今すぐ生成する/ }));
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "無効なタイムゾーンです",
+      );
+      expect(mockOnGenerate).not.toHaveBeenCalled();
+      expect(
+        screen.queryByRole("region", { name: /サマリー|適用/ }),
+      ).not.toBeInTheDocument();
+    });
+
     it("「定期実行」を解除すると scheduleConfig がクリアされる（トグル方式）", () => {
       render(
         <ConversationRoundStep
