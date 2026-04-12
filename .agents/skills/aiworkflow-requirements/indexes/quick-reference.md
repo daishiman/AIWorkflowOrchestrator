@@ -48,19 +48,6 @@
 | canonical 6成果物 | `outputs/phase-12/*.md` |
 | lessons-learned | `references/lessons-learned-skill-wizard-redesign.md` |
 | 完了記録 | `references/task-workflow-completed-recent-2026-04d.md` |
-| 後続タスク | W3-seq-04（Skill生成実行処理） |
-
----
-
-### Skill Wizard Redesign (W2-seq-03a) 参照導線 [2026-04-08完了]
-
-| 目的 | 参照先 |
-| --- | --- |
-| 全体像 | `docs/30-workflows/skill-wizard-redesign-lane/index.md` |
-| タスク仕様書 | `docs/30-workflows/W2-seq-03a-skill-create-wizard/` |
-| canonical 6成果物 | `outputs/phase-12/*.md` |
-| lessons-learned | `references/lessons-learned-skill-wizard-redesign.md` |
-| 完了記録 | `references/task-workflow-completed-recent-2026-04d.md` |
 | 後続タスク | W3-seq-04（使用率計装 / trackEvent） |
 
 ---
@@ -74,6 +61,17 @@
 | Zustand store（skillCreatorStore / trackEvent） | `references/arch-state-management-skill-creator.md` |
 | lessons-learned（trackEvent / 計装パターン） | `references/lessons-learned-w3-usage-tracking-2026-04.md` |
 | 完了記録 | `references/task-workflow-completed-recent-2026-04d.md` |
+
+---
+
+### HealthPolicy 移管 / Worktree コンフリクト解消（2026-04-08）
+
+| 目的 | 参照先 |
+| --- | --- |
+| async hook flush・shared 集約・Phase 12 canonical 教訓（L-HP-001/002/003） | `references/lessons-learned-health-policy-worktree-2026-04.md` |
+| merge 戦略・command -v・gitattributes 教訓（L-WC-001/002/003） | `references/lessons-learned-health-policy-worktree-2026-04.md` |
+| Zustand store（skillCreatorStore / HealthPolicy） | `references/arch-state-management-skill-creator.md` |
+| IPC/Preload 教訓 参照 | `references/lessons-learned-ipc-preload-runtime.md` |
 
 ---
 

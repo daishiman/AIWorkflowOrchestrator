@@ -12,6 +12,11 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { CompleteStep } from "../CompleteStep";
 import type { CompleteStepProps } from "../CompleteStep";
+import * as trackEventModule from "../../../../utils/trackEvent";
+
+const mockTrackEvent = vi
+  .spyOn(trackEventModule, "trackEvent")
+  .mockImplementation(() => {});
 
 // ------------------------------------------
 // テスト用デフォルト Props
@@ -438,6 +443,69 @@ describe("CompleteStep", () => {
         externalToolName: "Slack",
       });
       expect(container).toMatchSnapshot();
+    });
+  });
+
+  // ==========================================================
+  // Phase 4+6: 計装テスト（trackEvent / W3-seq-04）
+  // ==========================================================
+  describe("計装（trackEvent）", () => {
+    it("TC-CS-01: 今すぐ実行するクリック時に skill_wizard_next_action action:execute が発火する", () => {
+      const onExecuteNow = vi.fn();
+      renderCompleteStep({ onExecuteNow });
+      fireEvent.click(screen.getByTestId("complete-step-action-execute"));
+      expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_next_action", {
+        action: "execute",
+      });
+      expect(onExecuteNow).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-CS-02: エディタで開くクリック時に skill_wizard_next_action action:edit が発火する", () => {
+      const onOpenInEditor = vi.fn();
+      renderCompleteStep({ onOpenInEditor });
+      fireEvent.click(screen.getByTestId("complete-step-action-open-editor"));
+      expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_next_action", {
+        action: "edit",
+      });
+      expect(onOpenInEditor).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-CS-03: 別のスキルを作るクリック時に skill_wizard_next_action action:close が発火する", () => {
+      const onCreateAnother = vi.fn();
+      renderCompleteStep({ onCreateAnother });
+      fireEvent.click(
+        screen.getByTestId("complete-step-action-create-another"),
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith("skill_wizard_next_action", {
+        action: "close",
+      });
+      expect(onCreateAnother).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-CS-04: 閉じるボタンクリック時に skill_wizard_next_action が発火しない", () => {
+      const onClose = vi.fn();
+      renderCompleteStep({ onClose });
+      fireEvent.click(screen.getByText("閉じる"));
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        "skill_wizard_next_action",
+        expect.anything(),
+      );
+    });
+
+    it("TC-CS-05: 同じネクストアクションを連打しても 1 回だけ発火する", () => {
+      const onExecuteNow = vi.fn();
+      renderCompleteStep({ onExecuteNow });
+
+      const button = screen.getByTestId("complete-step-action-execute");
+      fireEvent.click(button);
+      fireEvent.click(button);
+
+      expect(
+        mockTrackEvent.mock.calls.filter(
+          ([eventName]) => eventName === "skill_wizard_next_action",
+        ),
+      ).toHaveLength(1);
+      expect(onExecuteNow).toHaveBeenCalledTimes(1);
     });
   });
 });

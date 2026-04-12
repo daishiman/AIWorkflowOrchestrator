@@ -4,12 +4,44 @@ import type {
   SkillInfoFormData,
 } from "@repo/shared/types/skillCreator";
 
-const CATEGORY_OPTIONS: { value: SkillCategory; label: string }[] = [
-  { value: "automation", label: "自動化" },
-  { value: "external-integration", label: "外部連携" },
-  { value: "data-analysis", label: "データ分析" },
-  { value: "code-support", label: "コードサポート" },
-  { value: "other", label: "その他" },
+interface CategoryOption {
+  value: SkillCategory;
+  label: string;
+  icon: string;
+  description: string;
+}
+
+const CATEGORY_OPTIONS: CategoryOption[] = [
+  {
+    value: "automation",
+    label: "自動化",
+    icon: "⚡",
+    description: "繰り返し作業の自動化・スケジュール実行などのスキル",
+  },
+  {
+    value: "external-integration",
+    label: "外部連携",
+    icon: "🔗",
+    description: "外部API・Webhookなど外部サービスと連携するスキル",
+  },
+  {
+    value: "data-analysis",
+    label: "データ分析",
+    icon: "📊",
+    description: "データの集計・分析・可視化を行うスキル",
+  },
+  {
+    value: "code-support",
+    label: "コードサポート",
+    icon: "💻",
+    description: "コードレビュー・生成・リファクタリングを支援するスキル",
+  },
+  {
+    value: "other",
+    label: "その他",
+    icon: "📦",
+    description: "上記カテゴリに当てはまらないスキル",
+  },
 ];
 
 interface SkillInfoStepProps {
@@ -121,21 +153,24 @@ export function SkillInfoStep({
           aria-label="カテゴリを選択"
           className="flex flex-wrap gap-2"
         >
-          {CATEGORY_OPTIONS.map(({ value, label }) => {
+          {CATEGORY_OPTIONS.map(({ value, label, icon, description }) => {
             const isSelected = formData.category === value;
             return (
               <button
                 key={value}
                 type="button"
                 aria-pressed={isSelected}
+                aria-label={label}
+                title={description}
                 onClick={() => handleCategoryClick(value)}
-                className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
                   isSelected
                     ? "border-blue-500 bg-blue-100 text-blue-700"
                     : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
                 }`}
               >
-                {label}
+                <span aria-hidden="true">{icon}</span>
+                <span>{label}</span>
               </button>
             );
           })}

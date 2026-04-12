@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/phase-2-design.md` 以降の文言を current facts 化し、`format` を `category-only` に明示
+- Phase 12 6成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を作成
+- `task-workflow.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を same-wave で同期
+- `artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同値化
+
+### 検証証跡
+
+- `validate-phase12-implementation-guide.js`: PASS
+- `detect-unassigned-tasks.js`: PASS（0件）
+- `diff -qr artifacts.json outputs/artifacts.json`: PASS
+
+---
+
 ### タスク: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（2026-04-08）
 
 | 項目       | 値                                                                  |
@@ -200,13 +217,15 @@
 
 - `apps/desktop/src/renderer/utils/trackEvent.ts` に薄い抽象を実装
 - 既存の `SkillAnalytics` / `AnalyticsStore` とは独立した renderer-local util
-- 現フェーズでは console.debug ロギングのみ（将来的な IPC 接続を想定した interface 設計）
+- 現フェーズでは console.info ロギングのみ（将来的な IPC 接続を想定した interface 設計）
 
-**SkillCreateWizard.tsx（3計装ポイント）**
+**SkillCreateWizard.tsx / CompleteStep.tsx（5計装ポイント）**
 
 - `skill_wizard_started`: ウィザード表示時（`useEffect` mount）
 - `skill_wizard_step1_completed`: Step 0 → Step 1 遷移時（`handleStep0Next` 内）
-- `skill_wizard_next_action`: 完了後のアクション選択時（`handleNextAction` 内）
+- `skill_wizard_open`: ウィザード起点（`source: "lifecycle_panel" | "direct"`）
+- `skill_wizard_abandon`: 未完了アンマウント時（cleanup）
+- `skill_wizard_next_action`: 完了後のアクション選択時（`CompleteStep` の action cards）
 
 **ConversationRoundStep.tsx（2計装ポイント）**
 

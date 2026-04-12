@@ -107,7 +107,14 @@
       "Bash(pnpm --filter @repo/desktop test -- --run apps/desktop/src/renderer/store/slices/__tests__/llmSlice.selectors.test.ts)",
       "Bash(CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm vitest:*)",
       "Bash(pnpm vitest:*)",
-      "Bash(gh issue:*)"
+      "Bash(gh issue:*)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/LOGS.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/LOGS.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/keywords.json /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/keywords.json)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/quick-reference.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/quick-reference.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/resource-map.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/resource-map.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/topic-map.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/topic-map.md)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/indexes/keywords.json .agents/skills/aiworkflow-requirements/indexes/keywords.json)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/indexes/topic-map.md .agents/skills/aiworkflow-requirements/indexes/topic-map.md)"
     ],
     "deny": [],
     "ask": []

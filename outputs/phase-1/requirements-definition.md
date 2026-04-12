@@ -1,81 +1,115 @@
-# Phase 1: 要件定義 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## 実施日時
+## タスク概要
 
-2026-04-08
+`SkillCategory`（英語識別子）をUI表示用の日本語ラベルにマッピングする定数・関数を `packages/shared/src/types/skillCreator.ts` に追加する。
 
-## 目的
+## P50チェック結果（既実装状態確認）
 
-`useMainlineExecutionAccess` フック内の独自 `apiKeyDegraded` 算出ロジックを削除し、`resolveHealthPolicy()` / `buildMainlineExecutionAccessState()` を経由する形へ統一するための要件を定義する。
+```
+grep -n "SKILL_CATEGORY_LABELS\|getSkillCategoryLabel" packages/shared/src/types/skillCreator.ts
+→ No matches found（未実装を確認）
+```
 
-## 対象
+**判定**: 重複実装なし。本タスクで新規実装する。
 
-- `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts`
-- `apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts`
+## SkillCategory型定義（現状確認）
 
-## 要件サマリー
+```typescript
+// packages/shared/src/types/skillCreator.ts L948-L953
+export type SkillCategory =
+  | "automation"
+  | "external-integration"
+  | "data-analysis"
+  | "code-support"
+  | "other";
+```
 
-| 項目           | 内容                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| タスク分類     | NON_VISUAL / refactor                                                                                        |
-| 変更対象       | 1 hook + 1 test file                                                                                         |
-| 期待結果       | `healthPolicy` を生成して `buildMainlineExecutionAccessState()` に渡し、独自 `apiKeyDegraded` 算出を削除する |
-| インポート規則 | `resolveHealthPolicy` は `@repo/shared/types` から import する                                               |
+5値が確認済み。
 
-## 調査結果
+## 命名規則確認
 
-| 観点                                           | 結果                                                            |
-| ---------------------------------------------- | --------------------------------------------------------------- |
-| `selectedHealthStatus` の導出                  | `selectedProviderId` と `llmHealthStatus` から導出              |
-| `buildMainlineExecutionAccessState()` の受け口 | `healthPolicy?: HealthPolicy` を受け取れる                      |
-| `resolveHealthPolicy` の export                | `packages/shared/src/types/index.ts` から barrel export 済み    |
-| `apiKeyDegraded` の扱い                        | hook 内の独自算出は削除対象、shared 側の型/関数では継続利用あり |
+| 対象                                                                           | パターン                                                        | 確認 |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------- | ---- | --- | --- | --- | ---------- |
+| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE                                                | ✅   |
+| 関数                                                                           | camelCase                                                       | ✅   |
+|                                                                                |                                                                 |      |     |     |     | Stash base |
+| 観点                                                                           | 結果                                                            |
+| ----------------------------------------------                                 | --------------------------------------------------------------- |
+| `selectedHealthStatus` の導出                                                  | `selectedProviderId` と `llmHealthStatus` から導出              |
+| `buildMainlineExecutionAccessState()` の受け口                                 | `healthPolicy?: HealthPolicy` を受け取れる                      |
+| `resolveHealthPolicy` の export                                                | `packages/shared/src/types/index.ts` から barrel export 済み    |
+| `apiKeyDegraded` の扱い                                                        | hook 内の独自算出は削除対象、shared 側の型/関数では継続利用あり |
 
-## HealthPolicyInput へのマッピング
+---
 
-| HealthPolicyInput フィールド | マッピング元                   | 変換方法                   |
-| ---------------------------- | ------------------------------ | -------------------------- |
-| `connectionStatus`           | `selectedHealthStatus?.status` | `?? "disconnected"` で補完 |
-| `isApiKeyValid`              | `credentials.apiKeyValid`      | そのまま渡す               |
-| `apiKeyDegraded`             | 独自算出ロジックの代替         | `false` を渡す             |
-| `isRateLimited`              | hook 内に該当変数なし          | `false` を渡す             |
-| `lastHealthCheck`            | `selectedHealthStatus`         | `?? null` で補完           |
+| 対象                                                                           | パターン         | 確認 |
+| ------------------------------------------------------------------------------ | ---------------- | ---- |
+| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE | ✅   |
+| 関数                                                                           | camelCase        | ✅   |
 
-## 受入基準
+## 機能要件
 
-| AC   | 内容                                                                         | 確認方法                                                                                                      |
-| ---- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| AC-1 | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | hook で `resolveHealthPolicy` の import と呼び出しを確認                                                      |
-| AC-2 | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | hook の呼び出し引数を確認                                                                                     |
-| AC-3 | `apiKeyDegraded` 独自算出ロジックが削除されている                            | hook 内の `const apiKeyDegraded = ...` が存在しないことを確認                                                 |
-| AC-4 | `@repo/shared/types` 経由でインポートしている                                | import 文を確認                                                                                               |
-| AC-5 | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
-| AC-6 | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              |
+| ID                           | 要件                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------- | -------------------------- | --- | --- | --- | ---------- |
+| FR-1                         | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
+| FR-2                         | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
+| FR-3                         | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
+| FR-4                         | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
+|                              |                                                                                 |                            |     |     |     | Stash base |
+| HealthPolicyInput フィールド | マッピング元                                                                    | 変換方法                   |
+| ---------------------------- | ------------------------------                                                  | -------------------------- |
+| `connectionStatus`           | `selectedHealthStatus?.status`                                                  | `?? "disconnected"` で補完 |
+| `isApiKeyValid`              | `credentials.apiKeyValid`                                                       | そのまま渡す               |
+| `apiKeyDegraded`             | 独自算出ロジックの代替                                                          | `false` を渡す             |
+| `isRateLimited`              | hook 内に該当変数なし                                                           | `false` を渡す             |
+| `lastHealthCheck`            | `selectedHealthStatus`                                                          | `?? null` で補完           |
 
-## スコープ
+---
 
-### 含む
+| ID   | 要件                                                                            |
+| ---- | ------------------------------------------------------------------------------- |
+| FR-1 | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
+| FR-2 | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
+| FR-3 | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
+| FR-4 | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
 
-- `resolveHealthPolicy` の import 追加
-- `resolveHealthPolicy()` の呼び出し追加
-- `buildMainlineExecutionAccessState()` への `healthPolicy` 引き渡し
-- `apiKeyDegraded` の独自算出削除
-- フック用ユニットテストの更新
+## マッピング定義
 
-### 含まない
+| SkillCategory          | 日本語ラベル                                                                 | 文字数                                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --- | --- | --- | ---------- |
+| `automation`           | 自動化                                                                       | 3                                                                                                             |
+| `external-integration` | 外部連携                                                                     | 4                                                                                                             |
+| `data-analysis`        | データ分析                                                                   | 5                                                                                                             |
+| `code-support`         | コードサポート                                                               | 7                                                                                                             |
+| `other`                | その他                                                                       | 3                                                                                                             |
+|                        |                                                                              |                                                                                                               |     |     |     | Stash base |
+| AC                     | 内容                                                                         | 確認方法                                                                                                      |
+| ----                   | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| AC-1                   | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | hook で `resolveHealthPolicy` の import と呼び出しを確認                                                      |
+| AC-2                   | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | hook の呼び出し引数を確認                                                                                     |
+| AC-3                   | `apiKeyDegraded` 独自算出ロジックが削除されている                            | hook 内の `const apiKeyDegraded = ...` が存在しないことを確認                                                 |
+| AC-4                   | `@repo/shared/types` 経由でインポートしている                                | import 文を確認                                                                                               |
+| AC-5                   | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
+| AC-6                   | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              |
 
-- `resolveHealthPolicy()` の実装変更
-- `buildMainlineExecutionAccessState()` の実装変更
-- UI 変更
-- スクリーンショット取得
+---
 
-## 成果物
+| SkillCategory          | 日本語ラベル   | 文字数 |
+| ---------------------- | -------------- | ------ |
+| `automation`           | 自動化         | 3      |
+| `external-integration` | 外部連携       | 4      |
+| `data-analysis`        | データ分析     | 5      |
+| `code-support`         | コードサポート | 7      |
+| `other`                | その他         | 3      |
 
-| 成果物             | パス                                         | 説明                               |
-| ------------------ | -------------------------------------------- | ---------------------------------- |
-| 要件定義書         | `outputs/phase-1/requirements-definition.md` | 調査結果・要件定義                 |
-| 状態変数マッピング | `outputs/phase-1/state-mapping.md`           | HealthPolicyInput の詳細マッピング |
+## 非機能要件
 
-## 結論
+- UIコンポーネントから参照可能なエクスポート
+- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel に広げない）
 
-Phase 2 へ進行可能。`outputs/phase-1/state-mapping.md` のマッピングを設計インプットとして使用する。
+## タスク分類
+
+- 種別: **実装タスク / 非UIタスク / NON_VISUAL**
+- スケール: small
+- UI実装: なし（Phase 11は手動テスト中心）

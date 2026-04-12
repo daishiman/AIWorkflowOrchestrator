@@ -1,0 +1,174 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W3-USAGE-TRACKING-001",
+  "taskName": "スキルウィザード使用率計装（trackEvent / Wave 3）",
+  "workflowRoot": "docs/30-workflows/UT-SKILL-WIZARD-W3-USAGE-TRACKING-001",
+  "status": "phase13_blocked",
+  "taskClassification": "NON_VISUAL",
+  "createdDate": "2026-04-11",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/instrumentation-points.md",
+        "outputs/phase-1/existing-trackEvent-analysis.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/type-definition-design.md",
+        "outputs/phase-2/test-strategy.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": ["outputs/phase-3/design-review.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "artifacts": [
+        "apps/desktop/src/renderer/utils/trackEvent.ts",
+        "apps/desktop/src/renderer/App.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "artifacts": [
+        "apps/desktop/src/renderer/utils/__tests__/trackEvent.test.ts",
+        "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.tracking.test.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx",
+        "apps/desktop/src/renderer/__tests__/App.mainline-shell.test.tsx"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": [
+        "outputs/phase-7/test-results.log",
+        "outputs/phase-7/coverage-report.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["outputs/phase-9/qa-evidence.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": ["outputs/phase-10/ac-verification.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "artifacts": ["outputs/phase-11/manual-test-evidence.md"]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR 作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "blockedReason": "ユーザーの明示的な承認が必要",
+      "artifacts": []
+    }
+  ],
+  "sourceFiles": [
+    "apps/desktop/src/renderer/utils/trackEvent.ts",
+    "apps/desktop/src/renderer/App.tsx",
+    "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+    "apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx",
+    "apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx"
+  ],
+  "testFiles": [
+    "apps/desktop/src/renderer/utils/__tests__/trackEvent.test.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.tracking.test.tsx",
+    "apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx",
+    "apps/desktop/src/renderer/__tests__/App.mainline-shell.test.tsx"
+  ],
+  "testResults": {
+    "totalTests": 96,
+    "passed": 96,
+    "failed": 0,
+    "executedAt": "2026-04-11"
+  },
+  "coverageTargets": {
+    "trackEvent.ts": "100%",
+    "SkillCreateWizard.tsx": "90%+",
+    "CompleteStep.tsx": "90%+"
+  },
+  "coverageResults": {
+    "trackEvent.ts": "100%",
+    "note": "NON_VISUAL - Playwright E2E不要"
+  },
+  "dependencies": ["W2-seq-03a", "W2-seq-03b"],
+  "issueUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/2018"
+}

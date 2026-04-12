@@ -8,7 +8,13 @@
  */
 
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  within,
+} from "@testing-library/react";
 import { SkillInfoStep } from "../SkillInfoStep";
 import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
 
@@ -17,6 +23,39 @@ const defaultFormData: SkillInfoFormData = {
   purpose: "",
   category: null,
 };
+
+const CATEGORY_EXPECTATIONS = [
+  {
+    value: "automation",
+    label: "自動化",
+    icon: "⚡",
+    title: "繰り返し作業の自動化・スケジュール実行などのスキル",
+  },
+  {
+    value: "external-integration",
+    label: "外部連携",
+    icon: "🔗",
+    title: "外部API・Webhookなど外部サービスと連携するスキル",
+  },
+  {
+    value: "data-analysis",
+    label: "データ分析",
+    icon: "📊",
+    title: "データの集計・分析・可視化を行うスキル",
+  },
+  {
+    value: "code-support",
+    label: "コードサポート",
+    icon: "💻",
+    title: "コードレビュー・生成・リファクタリングを支援するスキル",
+  },
+  {
+    value: "other",
+    label: "その他",
+    icon: "📦",
+    title: "上記カテゴリに当てはまらないスキル",
+  },
+] as const;
 
 describe("SkillInfoStep", () => {
   describe("レンダリング", () => {
@@ -370,6 +409,136 @@ describe("SkillInfoStep", () => {
       expect(onFormDataChange).toHaveBeenCalledWith(
         expect.objectContaining({ category: "external-integration" }),
       );
+    });
+  });
+
+  describe("カテゴリアイコン・ツールチップ・A11y", () => {
+    it.each(CATEGORY_EXPECTATIONS)(
+      "%s ボタンが icon / title / a11y を正しく持つ",
+      ({ label, icon, title }) => {
+        render(
+          <SkillInfoStep
+            formData={defaultFormData}
+            onFormDataChange={vi.fn()}
+            onNext={vi.fn()}
+          />,
+        );
+        const button = screen.getByRole("button", { name: label });
+        expect(button).toHaveAccessibleName(label);
+        expect(button).toHaveAttribute("title", title);
+        expect(within(button).getByText(icon)).toHaveAttribute(
+          "aria-hidden",
+          "true",
+        );
+      },
+    );
+
+    it("全5カテゴリのボタンが個別の icon と title を持つ", () => {
+      render(
+        <SkillInfoStep
+          formData={defaultFormData}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />,
+      );
+      const expectations = CATEGORY_EXPECTATIONS.map(({ label, icon }) => {
+        const button = screen.getByRole("button", { name: label });
+        return {
+          label,
+          icon: within(button).getByText(icon),
+          title: button.getAttribute("title"),
+        };
+      });
+
+      expectations.forEach(({ label, icon, title }) => {
+        expect(icon).toHaveAttribute("aria-hidden", "true");
+        expect(title).toBe(
+          CATEGORY_EXPECTATIONS.find((entry) => entry.label === label)?.title,
+        );
+      });
+    });
+
+    it("aria-pressed は選択中のカテゴリだけ true になる", () => {
+      render(
+        <SkillInfoStep
+          formData={{ ...defaultFormData, category: "external-integration" }}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />,
+      );
+      CATEGORY_EXPECTATIONS.forEach(({ label, value }) => {
+        const button = screen.getByRole("button", { name: label });
+        expect(button).toHaveAttribute(
+          "aria-pressed",
+          value === "external-integration" ? "true" : "false",
+        );
+      });
+    });
+  });
+
+  // Phase 6: エッジケーステスト（TC-EC）
+  describe("カテゴリ選択エッジケース", () => {
+    it("formData.category が null のとき全ボタンが aria-pressed='false' であること", () => {
+      render(
+        <SkillInfoStep
+          formData={defaultFormData}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />,
+      );
+      CATEGORY_EXPECTATIONS.forEach(({ label }) => {
+        expect(screen.getByRole("button", { name: label })).toHaveAttribute(
+          "aria-pressed",
+          "false",
+        );
+      });
+    });
+  });
+
+  // Phase 6: A11y深掘りテスト（TC-A2）
+  describe("A11y 深掘り（aria-label / title 整合）", () => {
+    it("aria-label がカテゴリ名と一致し説明文を含まないこと（全5カテゴリ）", () => {
+      render(
+        <SkillInfoStep
+          formData={defaultFormData}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />,
+      );
+      const expected = [
+        { label: "自動化" },
+        { label: "外部連携" },
+        { label: "データ分析" },
+        { label: "コードサポート" },
+        { label: "その他" },
+      ];
+      expected.forEach(({ label }) => {
+        const btn = screen.getByRole("button", { name: label });
+        expect(btn.getAttribute("aria-label")).toBe(label);
+      });
+    });
+
+    it("title が説明文を含むこと（全5カテゴリ）", () => {
+      render(
+        <SkillInfoStep
+          formData={defaultFormData}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />,
+      );
+      const labels = [
+        "自動化",
+        "外部連携",
+        "データ分析",
+        "コードサポート",
+        "その他",
+      ];
+      labels.forEach((label) => {
+        const btn = screen.getByRole("button", { name: label });
+        const title = btn.getAttribute("title");
+        expect(title).toBeTruthy();
+        expect(title!.length).toBeGreaterThan(5);
+      });
     });
   });
 
