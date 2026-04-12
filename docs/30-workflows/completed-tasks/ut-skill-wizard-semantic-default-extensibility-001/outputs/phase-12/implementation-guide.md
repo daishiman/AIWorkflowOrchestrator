@@ -107,14 +107,16 @@ const customLabel = resolveSemanticLabel("notion", "q5", customMap);
 - `packages/shared/tsup.config.ts` の build entry 追加により shared dist 生成を確実にする
 - 既存のページング・スケジュール展開・外部ツール連携テストを回帰として維持する（72件全 PASS）
 
-### vitest.config.ts への alias 追加（注意事項）
+### vitest.config.ts への alias 追加（禁止事項）
 
-`@repo/shared/types/skillWizard` は value import を含むため、`tsconfigPaths` プラグインだけでは
-解決できない場合がある。`vitest.config.ts` の `resolve.alias` に直接追加する：
+`check-shared-module-sync.ts` の Check 3（exports→aliases）は `aliases.size > 0` になった瞬間に
+全 exports の alias 整合チェックを起動する。`@repo/shared/*` の explicit alias を 1 つでも追加すると
+既存の全 exports が "Missing" と報告され CI が失敗する。
 
-```typescript
-"@repo/shared/types/skillWizard": resolve(
-  __dirname,
-  "../../packages/shared/src/types/skill-wizard-label-map.ts",
-),
+**正規パターン**: `tsconfig.json` の `paths` に追加し、`tsconfigPaths()` プラグインで解決する。
+`vitest.config.ts` には `@repo/shared` の explicit alias を追加しないこと。
+
+```json
+// apps/desktop/tsconfig.json の compilerOptions.paths に追加
+"@repo/shared/types/skillWizard": ["../../packages/shared/src/types/skill-wizard-label-map.ts"]
 ```
