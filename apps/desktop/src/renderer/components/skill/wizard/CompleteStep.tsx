@@ -71,7 +71,7 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [webhookChecked, setWebhookChecked] = useState(false);
   const [testRunChecked, setTestRunChecked] = useState(false);
-  const nextActionHandledRef = useRef(false);
+  const handledActionsRef = useRef<Set<string>>(new Set());
 
   const handleSatisfied = useCallback(() => {
     if (feedbackSubmitted) return;
@@ -184,14 +184,13 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
             disabled={!action.handler}
             aria-disabled={!action.handler ? "true" : undefined}
             onClick={() => {
-              if (nextActionHandledRef.current) {
-                return;
+              if (!handledActionsRef.current.has(action.testId)) {
+                handledActionsRef.current.add(action.testId);
+                trackEvent("skill_wizard_next_action", {
+                  action: action.action,
+                });
+                action.handler?.();
               }
-              nextActionHandledRef.current = true;
-              trackEvent("skill_wizard_next_action", {
-                action: action.action,
-              });
-              action.handler?.();
             }}
             className={styles.card}
           >
