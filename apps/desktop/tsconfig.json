@@ -107,6 +107,9 @@
       ],
       "@repo/shared/types/skillCreatorExternalApi": [
         "../../packages/shared/src/types/skillCreatorExternalApi.ts"
+      ],
+      "@repo/shared/types/skillWizard": [
+        "../../packages/shared/src/types/skill-wizard-label-map.ts"
       ]
     }
   },

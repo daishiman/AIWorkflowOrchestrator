@@ -1,40 +1,41 @@
-# Phase 4: テスト仕様書 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 4: テスト仕様書 — UT-SKILL-WIZARD-W2-seq-03b
 
-## テストマトリクス
+## テストファイル
 
-| TC番号 | テスト名                                                   | 対象要素                             | 期待結果                  |
-| ------ | ---------------------------------------------------------- | ------------------------------------ | ------------------------- |
-| TC-01  | `renders wizard transition button`                         | `skill-lifecycle-open-wizard-button` | Green（既存）             |
-| TC-02  | `calls onOpenWizard when button is clicked`                | `onOpenSkillWizard` callback         | Green（既存）             |
-| TC-03  | `does not render skill-lifecycle-request-input`            | textarea 削除確認                    | Green（既存）             |
-| TC-04  | `does not render skill-lifecycle-execution-input`          | textarea 削除確認                    | **Red→Green（本タスク）** |
-| TC-05  | `[回帰] テキストエリア（execution-input）が復活していない` | 回帰テスト                           | **Red→Green（本タスク）** |
-| TC-06  | adapter-status テスト（2件）                               | 関連テスト                           | Green（影響なし）         |
-| TC-07  | approval テスト（9件）                                     | 関連テスト                           | Green（影響なし）         |
-| TC-08  | auth-regression テスト（9件/5件スキップ）                  | 関連テスト                           | Green（影響なし）         |
-| TC-09  | error-persistence テスト（9件）                            | 関連テスト                           | Green（影響なし）         |
-| TC-10  | llm-generation テスト（35件/13件スキップ）                 | 関連テスト                           | Green（影響なし）         |
+`apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts`
 
-## 更新対象テストファイル
+## テストケース一覧
 
-### SkillLifecyclePanel.test.tsx（追加）
+| TC    | describe             | it                                                                 | 期待結果              |
+| ----- | -------------------- | ------------------------------------------------------------------ | --------------------- |
+| TC-01 | 削除エクスポート確認 | DescribeStep がエクスポートされていないこと                        | `undefined`           |
+| TC-02 | 削除エクスポート確認 | ConfigureStep がエクスポートされていないこと                       | `undefined`           |
+| TC-03 | 削除エクスポート確認 | WizardOptions がエクスポートされていないこと                       | `undefined`           |
+| TC-04 | 追加エクスポート確認 | SkillInfoStep がエクスポートされていること                         | `function` 型         |
+| TC-05 | 追加エクスポート確認 | ConversationRoundStep がエクスポートされていること                 | `function` 型         |
+| TC-06 | 維持エクスポート確認 | StepIndicator が引き続きエクスポートされていること                 | defined               |
+| TC-07 | 維持エクスポート確認 | GenerateStep が引き続きエクスポートされていること                  | defined               |
+| TC-08 | 維持エクスポート確認 | CompleteStep が引き続きエクスポートされていること                  | defined               |
+| TC-09 | 維持エクスポート確認 | InterviewProgressBar が引き続きエクスポートされていること          | defined               |
+| TC-10 | 維持エクスポート確認 | ApplySummaryCard が引き続きエクスポートされていること              | defined               |
+| TC-11 | 型契約確認           | GenerationMode が barrel から期待どおりの union 型で参照できること | `"llm" \| "template"` |
+| TC-12 | 型契約確認           | SkillInfoStepProps.formData が SkillInfoFormData と一致すること    | type-equal            |
+| TC-13 | 型契約確認           | SkillInfoStepProps.onNext が `() => void` と一致すること           | type-equal            |
 
-```tsx
-// 削除要素の非存在確認 - 追加
-it("テキストエリア（skill-lifecycle-execution-input）が存在しない", () => {
-  renderPanel();
-  expect(screen.queryByTestId("skill-lifecycle-execution-input")).toBeNull();
-});
+## Red 状態確認（実装前）
 
-// 回帰テスト - 追加
-it("[回帰] テキストエリア（execution-input）が復活していない", () => {
-  renderPanel();
-  expect(screen.queryByTestId("skill-lifecycle-execution-input")).toBeNull();
-});
-```
-
-## baseline 確認
-
-Phase 4 実施前の baseline 全テスト状態（実装前）:
-
-- `SkillLifecyclePanel.test.tsx`: `skill-lifecycle-execution-input` テストが Red（テキストエリア残存のため）
+| TC    | 状態（実装前） | 理由                                           |
+| ----- | -------------- | ---------------------------------------------- |
+| TC-01 | ❌ FAIL        | `DescribeStep` がまだ `index.ts` にある        |
+| TC-02 | ✅ PASS        | `ConfigureStep` はすでに存在しない             |
+| TC-03 | ✅ PASS        | `WizardOptions` はすでに存在しない             |
+| TC-04 | ✅ PASS        | `SkillInfoStep` はすでにエクスポート済み       |
+| TC-05 | ✅ PASS        | `ConversationRoundStep` は既にエクスポート済み |
+| TC-06 | ✅ PASS        | `StepIndicator` は維持されている               |
+| TC-07 | ✅ PASS        | `GenerateStep` は維持されている                |
+| TC-08 | ✅ PASS        | `CompleteStep` は維持されている                |
+| TC-09 | ✅ PASS        | `InterviewProgressBar` は維持されている        |
+| TC-10 | ✅ PASS        | `ApplySummaryCard` は維持されている            |
+| TC-11 | ❌ FAIL        | inline 定義のため再転送 contract が未成立      |
+| TC-12 | ❌ FAIL        | `SkillInfoStepProps` が public type ではない   |
+| TC-13 | ❌ FAIL        | `SkillInfoStepProps` の barrel contract 未成立 |

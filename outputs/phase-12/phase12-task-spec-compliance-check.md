@@ -1,63 +1,47 @@
-# Phase 12 タスク仕様準拠チェック - TASK-SC-07
+# Phase 12: 仕様準拠チェック - UT-SKILL-WIZARD-W2-seq-03a
 
 ## メタ情報
 
-| 項目     | 内容                                 |
-| -------- | ------------------------------------ |
-| タスクID | TASK-SC-07                           |
-| 作成日   | 2026-04-09                           |
-| 対象     | `outputs/phase-12` canonical 6成果物 |
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
 ---
 
-## チェック 1: canonical 6成果物の存在
+## 成果物存在確認
 
-| 成果物                   | パス                                                     | 判定 |
-| ------------------------ | -------------------------------------------------------- | ---- |
-| 実装ガイド               | `outputs/phase-12/implementation-guide.md`               | PASS |
-| システム仕様更新サマリー | `outputs/phase-12/system-spec-update-summary.md`         | PASS |
-| 更新履歴                 | `outputs/phase-12/documentation-changelog.md`            | PASS |
-| 未タスク検出             | `outputs/phase-12/unassigned-task-detection.md`          | PASS |
-| スキルフィードバック     | `outputs/phase-12/skill-feedback-report.md`              | PASS |
-| 準拠チェック             | `outputs/phase-12/phase12-task-spec-compliance-check.md` | PASS |
-
----
-
-## チェック 2: 必須要件の反映
-
-| 要件                                                   | 判定 | 根拠                                                                                  |
-| ------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------- |
-| `SkillInfoStep` / LLM モードの併存                     | PASS | `implementation-guide.md` Part 2 と `arch-ui-components-core.md`                      |
-| `generationProgress` の表示                            | PASS | `GenerateStep` の current facts に反映                                                |
-| `executePlan(planId, skillSpec)` の `skillSpec` 必須化 | PASS | `SkillCreateWizard.tsx` / `implementation-guide.md`                                   |
-| `getWorkflowState(planId)` の snapshot 再読込          | PASS | `SkillCreateWizard.tsx` / `implementation-guide.md`                                   |
-| `persistResult.skillPath` の反映                       | PASS | `SkillCreateWizard.tsx` / `implementation-guide.md` / `system-spec-update-summary.md` |
-| `terminal_handoff` の guidance 表示                    | PASS | `GenerateStep` の current facts とテストに反映                                        |
-| `skillPath` と外部連携表示                             | PASS | `CompleteStep` の current facts と出力に反映                                          |
-| request-id guard / cancel 競合回避                     | PASS | `SkillCreateWizard.tsx` / `documentation-summary.md`                                  |
+| 成果物ファイル                                           | 存在 | 備考                     |
+| -------------------------------------------------------- | ---- | ------------------------ |
+| `outputs/phase-12/implementation-guide.md`               | ✅   | Part 1/Part 2 構成       |
+| `outputs/phase-12/system-spec-update-summary.md`         | ✅   | Step 1-A/B/C/Step 2 記録 |
+| `outputs/phase-12/documentation-changelog.md`            | ✅   | 変更履歴記録             |
+| `outputs/phase-12/unassigned-task-detection.md`          | ✅   | 0件確認                  |
+| `outputs/phase-12/skill-feedback-report.md`              | ✅   | 3件のフィードバック記録  |
+| `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   | 本ファイル               |
 
 ---
 
-## チェック 3: ドキュメント整合
+## 仕様準拠チェック
 
-| 観点                         | 判定 | 補足                                                 |
-| ---------------------------- | ---- | ---------------------------------------------------- |
-| タスクIDの一致               | PASS | 6成果物とも `TASK-SC-07` に統一                      |
-| Phase 11 証跡参照            | PASS | `implementation-guide.md` から参照あり               |
-| 旧 `DescribeStep` 依存の残存 | PASS | deprecated として扱い、正本は `SkillInfoStep` に統一 |
-| canonical 6成果物の命名      | PASS | `documentation-changelog.md` に揃えた                |
+| チェック項目                                                                                       | 判定    | 備考                                                |
+| -------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------- |
+| implementation-guide.md に Part 1 中学生向け説明が含まれる                                         | ✅ PASS |                                                     |
+| implementation-guide.md に Part 2 技術者向け説明が含まれる                                         | ✅ PASS | TypeScript 型・API シグネチャ・エッジケース記載あり |
+| implementation-guide.md に Phase 11 スクリーンショット参照が含まれる                               | ✅ PASS | `outputs/phase-11/screenshots/` を参照              |
+| system-spec-update-summary.md に Step 1-A/B/C が記録されている                                     | ✅ PASS |                                                     |
+| `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W2-seq-03a path が current facts に一致 | ✅ PASS | path drift を是正済み                               |
+| `.claude/skills/aiworkflow-requirements/LOGS.md` に current facts sync が記録されている            | ✅ PASS | 2026-04-12 の追記あり                               |
+| unassigned-task-detection.md が存在する（0件でも）                                                 | ✅ PASS | 0件                                                 |
+| skill-feedback-report.md が存在する（0件でも）                                                     | ✅ PASS | 3件                                                 |
+| 全テストが Green であること                                                                        | ✅ PASS | 236テスト合格                                       |
+| generationMode 削除が実装されていること                                                            | ✅ PASS | コメント内のみ残存                                  |
+| STEPS 配列が正しい値であること                                                                     | ✅ PASS | ["スキル情報入力","詳細設定","生成","完了"]         |
+| inferSmartDefaults が正しく推論すること                                                            | ✅ PASS | 13ケース確認                                        |
+| CompleteStep に skillPath / onRetry が接続されていること                                           | ✅ PASS |                                                     |
 
 ---
 
-## チェック 4: N/A 判定の妥当性
+## 最終判定
 
-| 項目                               | 判定 | 理由                                                                                                          |
-| ---------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------- |
-| `api-ipc-agent-core.md` の追加修正 | PASS | 既存契約が current facts と整合していたため                                                                   |
-| `topic-map` の追加更新             | PASS | `arch-state-management-skill-creator.md` / `arch-ui-components-core.md` の current facts section を索引化済み |
-
----
-
-## 総合判定
-
-PASS
+**PASS** — W2-seq-03a の Phase 12 canonical 6 成果物が揃い、Phase 11 visual evidence / lane index / LOGS の整合も確認済み。

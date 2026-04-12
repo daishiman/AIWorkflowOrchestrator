@@ -27,6 +27,7 @@ export default defineConfig({
     "src/types/execution-capability.ts",
     "src/types/skillCreator.ts",
     "src/types/skillCreatorExternalApi.ts",
+    "src/types/skill-wizard-label-map.ts",
     "src/services/skillCreator/index.ts",
     "src/types/llm/schemas/index.ts",
     "src/types/rag/index.ts",

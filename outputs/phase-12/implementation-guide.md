@@ -1,159 +1,118 @@
-# Phase 12: 実装ガイド - TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION
+# Phase 12: 実装ガイド - UT-SKILL-WIZARD-W2-seq-03a
 
 ## メタ情報
 
-| 項目     | 内容                                                 |
-| -------- | ---------------------------------------------------- |
-| タスクID | TASK-SC-07                                           |
-| 作成日   | 2026-04-09                                           |
-| 対象     | `SkillCreateWizard` の LLM / template 併用フロー     |
-| 状態     | completed（Phase 1-12 completed / Phase 13 blocked） |
+| 項目     | 内容                                       |
+| -------- | ------------------------------------------ |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a                 |
+| 作成日   | 2026-04-11                                 |
+| 対象     | SkillCreateWizard オーケストレーション更新 |
+| 状態     | completed（Phase 12 完了 / PR 未作成）     |
 
 ---
 
 ## Part 1: 中学生向け説明
 
-### 何を直したのか
+### SkillCreateWizard のオーケストレーション更新とは何か？
 
-`SkillCreateWizard` は、スキルを作るための案内役です。今回の修正で、作り方を 2 つに分けました。
+スキルを作るための「ウィザード（案内役）」を大幅に改良した話です。
 
-1. いつもの手順で作る道
-2. AI に先に計画を作ってもらう道
+以前は「テンプレートで作る方法」と「AIに考えてもらう方法」の2択がありました。でも2択があると使う人が迷ってしまいます。今回は「AIに考えてもらう方法」だけに統一しました。
 
-どちらを選んでも、最後は同じ完了画面にたどり着きます。  
-つまり、古い作り方を壊さずに、新しい AI 生成ルートを追加したということです。
+また、AIにスキルを作ってもらうとき、ユーザーが入力した「スキル名」「目的」「カテゴリ」から、AIへの質問の答えを自動で予測する「スマートデフォルト」機能を追加しました。たとえば「目的に `slack` / `Slack` / `SLACK` のどれが書かれていても、Q5の答え候補を `slack` として推論する」という感じです。これで、ユーザーが同じことを何度も入力する手間を省けます。
 
-### 画面の流れ
+完了画面では、生成したスキルのパスを見ながら品質フィードバックを送り、イメージと違ったら Step 0 に戻ってやり直せます。前回の入力は残るので、毎回最初から入力し直す必要はありません。
 
-1. Step 0 で作り方を選びます。
-   - `テンプレートから作成`
-   - `LLM で生成`
-2. テンプレート側では `SkillInfoStep` でスキル名・目的・カテゴリを入力します。
-3. LLM 側では短い説明文を入力して、AI に `planSkill` をお願いします。
-4. Step 1 では質問ラウンドで内容を固めます。
-5. Step 2 では計画結果と進捗を見ながら、`executePlan` で実行します。
-6. Step 3 では生成先のパスや次の行動を確認します。
+**例えば：**
 
-### なぜ「メモを2冊」使うのか
+- 「毎日Slackに通知を送る」と入力すると、自動で「タイミング：定期実行」「ツール：Slack」が選ばれる
+- カテゴリを「code-support（コードサポート）」にすると、自動で「出力形式：コード」が選ばれる
 
-今回の実装では、画面だけのメモと、みんなで共有するメモを分けています。
+**専門用語の説明：**
 
-- 画面だけのメモ: その場で見せるための状態
-- 共有するメモ: 別の画面や後続処理でも使う状態
-
-こうすると、画面はすぐに反応し、あとから見ても同じ内容をたどれます。  
-`clearGenerationState()` で共有メモを消し、ローカルの状態も合わせて初期化するので、前回の結果が残りっぱなしになりません。
+- **ウィザード**：複数の画面を順番に案内してくれる入力フォームのこと
+- **オーケストレーション**：複数のコンポーネント（部品）を指揮して動かす役割
+- **スマートデフォルト**：ユーザーの入力から自動で答えを予測する仕組み
+- **state（ステート）**：コンポーネントが持っている「今の状態」の情報
 
 ---
 
 ## Part 2: 技術者向け説明
 
-### 変更点サマリー
+### 変更概要
 
-| ファイル                                                                                         | 変更内容                                                                                                                                        |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | LLM / template のモード分岐、`planSkill` / `executePlan` / `getWorkflowState` 連携、`skillSpec` の正本使用、request-id ガード、対称クリアを実装 |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`                             | `generationProgress`、`planResult`、`terminal_handoff` guidance、実行ボタン/キャンセルボタンの表示条件を整理                                    |
-| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                             | `GenerationMode` の import 元を barrel に合わせて整理。現行 Step 0 の正本は `SkillInfoStep`                                                     |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx`              | `generationProgress`、`terminal_handoff`、`最初からやり直す`、`実行する` 非表示の回帰を追加                                                     |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | `skillSpec` 必須化、blank input、`getWorkflowState` failure snapshot、terminal handoff、mode switch を検証                                      |
+`SkillCreateWizard.tsx` から `description` / `options` / `generationMode` state と関連する全 `template` 分岐を除去し、LLM 専用化した。新たに `formData`/`answers`/`smartDefaults`/`generationMethod`/`skillPath`/`hasExternalIntegration`/`externalToolName` の state を追加し、`handleRetry` で Step 0 への復帰を接続する。`inferSmartDefaults` は `purpose` を小文字化して判定し、`slack`/`github`/`notion` を大小文字不問で推論する。生成開始時は `generationLockRef` と `clearGenerationState()` で再入とストア残留を抑える。
 
-### 実装後の current facts
+### STEPS 配列変更
 
-- Step 0 は `generationMode` のローカル state で切り替える。
-- `template` 側は `SkillInfoStep` を使う。
-- `llm` 側は説明文の textarea を使う。
-- `planSkill` の入力は LLM 説明文で、`PlanResult.skillSpec` が `executePlan` の正本になる。
-- `executePlan(planId, skillSpec)` の `skillSpec` は必須。
-- 実行後は `getWorkflowState(planId)` を再読込し、`verifyResult.status === "fail"` の snapshot をエラーとして扱う。
-- `terminal_handoff` は `suggestedCommand` 付きのエラーメッセージで返す。
-- `clearGenerationState()` は成功時とキャンセル時の両方で呼ぶ。
+```typescript
+// 変更前
+["説明入力", "設定", "生成", "完了"];
 
-### 主要 state
+// 変更後
+["スキル情報入力", "詳細設定", "生成", "完了"];
+```
 
-| state                    | 役割                                                   |
-| ------------------------ | ------------------------------------------------------ |
-| `formData`               | テンプレート側のスキル基本情報                         |
-| `answers`                | `ConversationRoundStep` の回答                         |
-| `smartDefaults`          | 目的文とカテゴリからの推論結果                         |
-| `generationMethod`       | テンプレート側の生成方法ラベル                         |
-| `generationMode`         | `template` / `llm` のモード切替                        |
-| `llmDescription`         | LLM モードの説明文                                     |
-| `localPlanResult`        | LLM 計画結果のローカル保持                             |
-| `skillPath`              | 完了後に表示する生成先パス                             |
-| `persistResult`          | snapshot から復元する生成結果（`skillPath` / `files`） |
-| `hasExternalIntegration` | 完了画面で外部連携チェックリストを出すか               |
-| `externalToolName`       | Slack / GitHub / Notion などの表示名                   |
-| `error`                  | テンプレート側の実行エラー                             |
-| `isGenerating`           | テンプレート側の実行中フラグ                           |
+### inferSmartDefaults 関数（分離先: `wizard/utils/inferSmartDefaults.ts`）
 
-### Store hooks
+```typescript
+export function inferSmartDefaults(
+  data: SkillInfoFormData,
+): SmartDefaultResult {
+  // purpose テキストからツール・タイミングを推論（大小文字不問）
+  // category から出力フォーマットを推論
+  // inferenceLog に推論根拠を記録
+}
+```
 
-| hook                        | 役割                                                 |
-| --------------------------- | ---------------------------------------------------- |
-| `useIsSkillGenerating`      | 共有生成状態の参照                                   |
-| `useGenerationProgress`     | 進捗メッセージの参照                                 |
-| `useGenerationError`        | 共有エラーの参照                                     |
-| `useCurrentPlanId`          | 実行中 planId の参照                                 |
-| `useCurrentPlanResult`      | 共有 planResult の参照                               |
-| `useSetIsSkillGenerating`   | 共有生成フラグの更新                                 |
-| `useSetGenerationProgress`  | 共有進捗の更新                                       |
-| `useSetGenerationError`     | 共有エラーの更新                                     |
-| `useSetCurrentPlanId`       | planId の更新                                        |
-| `useSetCurrentPlanResult`   | planResult の更新                                    |
-| `useClearGenerationState`   | 共有 state の一括リセット                            |
-| `useResetStreamingProgress` | `cancelled` ステージを次回生成に残さないための初期化 |
+**推論ルール**:
 
-### ハンドラ仕様
-
-| ハンドラ                 | 役割                                                                                                                            |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| `handleStep0Next()`      | `inferSmartDefaults(formData)` を実行し、Step 1 に進む                                                                          |
-| `handleGenerate(method)` | テンプレート側の生成を実行し、Step 2 → Step 3 を制御する                                                                        |
-| `handleLlmGenerate()`    | `planSkill(description)` を呼び、`localPlanResult` と store を更新する。request-id で遅延応答を防ぐ                             |
-| `handleExecutePlan()`    | `executePlan(planId, skillSpec)` を呼び、成功後に `getWorkflowState(planId)` を再読込する。`persistResult.skillPath` を反映する |
-| `handleCancelPlan()`     | LLM 計画を破棄して Step 0 に戻す                                                                                                |
-| `handleRetry()`          | 完了画面から Step 0 に戻し、前回の入力は保持したまま結果だけ初期化する                                                          |
-
-- `handleCancelPlan()` では `clearGenerationState()` に加えて `resetStreamingProgress()` を呼び、`cancelled` ステージが残らないようにする。
-- `handleExecutePlan()` 後は `getWorkflowState(planId)` の snapshot から `persistResult.skillPath` を復元する。
-- `handleLlmGenerate()` と template 側の生成では request-id を使い、遅延した古い応答を無視する。
+| 条件                                     | 結果                  |
+| ---------------------------------------- | --------------------- |
+| purpose に "slack"（大小文字不問）       | tool = "slack"        |
+| purpose に "github"（大小文字不問）      | tool = "github"       |
+| purpose に "notion"（大小文字不問）      | tool = "notion"       |
+| purpose に "毎日/毎週/定期/スケジュール" | timing = "scheduled"  |
+| purpose に "リアルタイム/即座/すぐに"    | timing = "realtime"   |
+| category === "code-support"              | format = "code"       |
+| category === "data-analysis"             | format = "structured" |
 
 ### API シグネチャ
 
-```ts
-planSkill(prompt: string, authMode?: string, apiKey?: string)
-executePlan(planId: string, skillSpec: string, authMode?: string, apiKey?: string)
-getWorkflowState(planId: string)
+```typescript
+handleStep0Next(): void
+handleGenerate(method: "complete" | "skip"): Promise<void>
+handleQualityFeedback(satisfied: boolean): void
+handleRetry(): void
+handleCancelGeneration(): void
 ```
 
-`getWorkflowState(planId)` は `persistResult?: { skillPath: string; files: string[] } | null` を返す snapshot API として扱う。
+### エッジケース
 
-### 重要な分岐
+- LLM 生成失敗時: `isGenerating=false` + エラー state で UI フィードバック
+- 二重呼び出し: `generationLockRef` + `isGenerating` で防止
+- 推論0件: `inferenceLog` が空配列で返る（エラーにならない）
+- `handleRetry`: `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` / `error` / `generationMethod` / `isGenerating` をリセット
 
-- 空の LLM 説明文は `planSkill` を呼ばない。
-- `planSkill` と `executePlan` が未接続でもクラッシュさせず、`generationError` を出す。
-- `planResult.type === "integrated_api"` のときだけ `実行する` を出す。
-- `planResult.type === "terminal_handoff"` のときは guidance を表示し、`実行する` は出さない。
-- `getWorkflowState()` の snapshot が fail のときは `CompleteStep` に進めない。
-- `persistResult.skillPath` があれば `CompleteStep` で表示する。
-- request-id を使って、遅れて返ってきた古い LLM / template 応答が最新 state を壊さないようにしている。
+### 変更ファイル一覧
 
-### Phase 11 証跡
+| ファイル                                                                                         | 変更内容                                                              |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | generationMode 削除、新 state/ハンドラ追加、Step 0/2 レンダリング修正 |
+| `apps/desktop/src/renderer/components/skill/wizard/utils/inferSmartDefaults.ts`                  | 新規作成（分離）                                                      |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                | inferSmartDefaults / STEPS 単体テスト追加                             |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | describe.skip（削除対象 TASK-SC-07 テスト）                           |
 
-Step 0 / Step 1 / Step 3 の視覚確認は既存の Phase 11 証跡を参照する。
+### Phase 11 visual evidence
 
-| 観点                      | ファイル                                                               |
-| ------------------------- | ---------------------------------------------------------------------- |
-| Step 0 のカテゴリ付き入力 | `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png` |
-| Step 1 の default 表示    | `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`       |
-| Step 1 の cron エラー     | `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`           |
-| Step 2 の Q5 必須表示     | `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`          |
-| summary card の警告       | `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`       |
+Phase 11 のスクリーンショットは、Step 0〜3 の見た目と回復導線が仕様どおりかを最終確認する根拠として参照した。
 
-### 注意事項
-
-- `DescribeStep.tsx` は現行の正本ではなく、互換性のために残る deprecated ファイル。
-- `skillSpec` は `executePlan` の必須引数で、description の代用にしない。
-- `clearGenerationState()` はローカル state だけでなく、共有 store も初期化する。
-- `resetStreamingProgress()` で cancelled ステージを次回生成に持ち越さない。
+| 画面                  | 参照先                                                                                                                                       | 確認観点                 |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| Step 0                | [TC-11-01-step0-description-category.png](../phase-11/screenshots/TC-11-01-step0-description-category.png)                                   | 初期入力とカテゴリ表示   |
+| Step 1                | [TC-11-02-step1-page1-defaults.png](../phase-11/screenshots/TC-11-02-step1-page1-defaults.png)                                               | smartDefaults の初期反映 |
+| Step 1 エラー         | [TC-11-03-step1-cron-error.png](../phase-11/screenshots/TC-11-03-step1-cron-error.png)                                                       | cron バリデーション表示  |
+| Step 2                | [TC-11-04-step2-required-q5.png](../phase-11/screenshots/TC-11-04-step2-required-q5.png)                                                     | Q5 必須表示              |
+| Step 3                | [TC-11-05-summary-card-warning.png](../phase-11/screenshots/TC-11-05-summary-card-warning.png)                                               | サマリー警告             |
+| Lifecycle panel light | [skill-lifecycle-panel-light.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png) | ウィザード導線の初期状態 |
+| Lifecycle panel dark  | [skill-lifecycle-panel-dark.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png)   | 同上のダーク表示         |

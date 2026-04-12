@@ -1,42 +1,30 @@
-# Phase 12: スキルフィードバックレポート - TASK-SC-07
+# Phase 12: スキルフィードバックレポート - UT-SKILL-WIZARD-W2-seq-03a
 
 ## メタ情報
 
-| 項目     | 内容       |
-| -------- | ---------- |
-| タスクID | TASK-SC-07 |
-| 作成日   | 2026-04-09 |
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
 ---
 
-## 総評
+## フィードバック件数: 3件
 
-- 重大課題: 0 件
-- 改善候補: 3 件
+### FB-01: inferSmartDefaults の分離が有効
 
----
+- **観点**: テスト可能性・再利用性
+- **内容**: `inferSmartDefaults` を `wizard/utils/inferSmartDefaults.ts` に分離することで、コンポーネントに依存せず単体テストが書きやすくなった。
+- **対応**: Phase 8 で実施済み
 
-## 改善候補
+### FB-02: TASK-SC-07 テストのスキップ記録が有用
 
-| 対象                          | 改善提案内容                                                                                                                                                      | 優先度 | 実施推奨 Phase         |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------- |
-| `SkillCreateWizard`           | `generationMode` / `llmDescription` / `localPlanResult` / `template flow` が 1 コンポーネントに集約されているため、LLM 専用ロジックを hook 化すると読みやすくなる | 中     | 次回のリファクタリング |
-| deprecated `DescribeStep.tsx` | 現行の正本は `SkillInfoStep` なので、全呼び出し元が切り替わったら deprecated ファイルを削除して二重定義を解消する                                                 | 低     | 依存切替完了後         |
-| Phase 12 補助成果物           | `outputs/phase-12` に canonical 6 成果物と legacy 補助ファイルが混在するため、命名規約を一本化すると検証コストが下がる                                            | 低     | 次の close-out         |
+- **観点**: テスト保守性
+- **内容**: `describe.skip` + TODO コメントにより、削除対象テストの理由が明確になった。後から経緯を追いやすい。
+- **対応**: Phase 5 で実施済み
 
----
+### FB-03: Phase 11 のスクリーンショット参照と path drift 是正を明示すると追跡しやすい
 
-## 良かった点
-
-- `skillSpec` を `executePlan` の必須引数として固定できた
-- `getWorkflowState(planId)` の再読込で failure snapshot を表現できた
-- request-id ガードで遅延応答の上書きを防げた
-- `generationProgress` を `GenerateStep` で見える化できた
-- Phase 11 の既存スクリーンショットを参照でき、視覚証跡の追跡が容易だった
-
----
-
-## 結論
-
-現状の仕様書・実装・証跡は整合している。  
-改善候補は保守性向上のための任意項目であり、今回の完了判定には影響しない。
+- **観点**: 証跡密度・参照整合性
+- **内容**: `implementation-guide.md` に Phase 11 のスクリーンショット参照を追加し、`skill-wizard-redesign-lane/index.md` の W2-seq-03a path を current facts に揃えることで、PR 本文や後続レビューから証跡を追いやすくなった。
+- **対応**: Phase 12 final-doc sync で実施済み

@@ -1,92 +1,41 @@
-# Phase 5: 実装概要 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 5: 実装サマリー
 
-## 実装の概要
+## タスクID: UT-SKILL-WIZARD-W2-seq-03a
 
-`SkillLifecyclePanel.tsx` から `skill-lifecycle-execution-input` textarea と `executionPrompt` state を削除した。
-実行プロンプトは `defaultExecutionPrompt` 定数（固定値）を使用するよう変更した。
+## 完了日: 2026-04-11
 
-## 変更内容
+## 実施内容
 
-### 1. `executionPrompt` state の削除
+### 削除した内容
 
-```diff
-- const [executionPrompt, setExecutionPrompt] = useState(
--   defaultExecutionPrompt,
-- );
-```
+- `SkillCreatorRuntimeApi` 型定義と `getSkillCreatorApi` 関数（TASK-SC-07 専用）
+- `handleLlmGenerate`（planSkill API 呼び出しハンドラ）
+- `handleExecutePlan`（executePlan API 呼び出しハンドラ）
+- `handleCancelPlan`（LLM モード版キャンセルハンドラ）
+- `handleCancelTemplateGeneration`（テンプレートモード版キャンセルハンドラ）
+- Step 0 の generationMode ラジオボタン UI
+- Step 0 の LLM テキストエリア UI
+- Step 2 の generationMode 条件分岐 props
 
-### 2. `canExecuteSkill` の更新
+### 追加した内容
 
-```diff
-  const canExecuteSkill =
-    Boolean(createdSkillName) &&
-    !isExecuting &&
--   executionPrompt.trim().length > 0 &&
-    skillExecutionStatus !== "review" &&
-    skillExecutionStatus !== "reuse_ready";
-```
+- `handleCancelGeneration`（生成中キャンセル → Step 0 復帰、formData 保持）
+- `inferSmartDefaults`, `STEPS` の export（テスト可能性向上）
 
-### 3. `handleExecute` の更新
-
-```diff
-  const handleExecute = async () => {
--   const trimmedPrompt = executionPrompt.trim();
-    if (!createdSkillName) {
-      setLocalError("先にスキルを生成してください。");
-      return;
-    }
--   if (!trimmedPrompt) {
--     setLocalError("実行内容を入力してください。");
--     return;
--   }
-    // ...
-    appendSessionEntry(setSessionEntries, {
-      role: "user",
-      title: "実行依頼",
--     detail: trimmedPrompt,
-+     detail: defaultExecutionPrompt,
-    });
-    // ...
-    if (skillExecutionStatus === "improve_ready") {
--     await reExecuteAfterImprovement(trimmedPrompt);
-+     await reExecuteAfterImprovement(defaultExecutionPrompt);
-    } else {
--     await executeSkill(trimmedPrompt);
-+     await executeSkill(defaultExecutionPrompt);
-    }
-  };
-```
-
-### 4. `handlePlanImprovement` の更新
-
-```diff
-- const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
-+ const runtimeFeedback = defaultExecutionPrompt;
-```
-
-### 5. textarea JSX の削除
-
-```diff
-- <textarea
--   value={executionPrompt}
--   onChange={(event) => setExecutionPrompt(event.target.value)}
--   rows={3}
--   placeholder="このスキルに何をさせるかを書いてください"
--   className="mt-4 w-full ..."
--   data-testid="skill-lifecycle-execution-input"
-- />
-```
-
-## テスト結果（Green）
+### STEPS 配列変更
 
 ```
-✓ SkillLifecyclePanel.test.tsx (39 tests) 936ms
-✓ SkillLifecyclePanel.llm-generation.test.tsx (35 tests | 13 skipped)
-✓ SkillLifecyclePanel.auth-regression.test.tsx (9 tests | 5 skipped)
-✓ SkillLifecyclePanel.error-persistence.test.tsx (9 tests)
-✓ SkillLifecyclePanel.approval.test.tsx (9 tests)
-✓ SkillLifecyclePanel.adapter-status.test.tsx (2 tests)
-
-Test Files  6 passed (6)
-Tests       85 passed | 18 skipped (103)
+変更前: ["説明入力", "設定", "生成", "完了"]
+変更後: ["スキル情報入力", "詳細設定", "生成", "完了"]
 ```
+
+### レンダリング変更
+
+- Step 0: `<SkillInfoStep>` のみ（ラジオボタン・LLMテキストエリア削除）
+- Step 2: `generationMode` 条件分岐なし、`onCancel={handleCancelGeneration}`
+
+## 変更ファイル一覧
+
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`（主要変更）
+- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`（inferSmartDefaults / STEPS テスト追加）
+- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`（TASK-SC-07 テストを describe.skip）

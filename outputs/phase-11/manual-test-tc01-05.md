@@ -1,11 +1,9 @@
-# Phase 11: 手動テスト詳細（TC01-05） — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# Phase 11: 手動テスト詳細（TC01-05） — UT-SKILL-WIZARD-W2-seq-03b
 
-本タスクは NON_VISUAL であり、TC-01〜05 の個別実施は行わない。起動確認と static verification の結果を別ファイルに記録する。
-
-| ケース | 状態 | 備考                            |
-| ------ | ---- | ------------------------------- |
-| TC-01  | N/A  | NON_VISUAL のため個別検証対象外 |
-| TC-02  | N/A  | NON_VISUAL のため個別検証対象外 |
-| TC-03  | N/A  | NON_VISUAL のため個別検証対象外 |
-| TC-04  | N/A  | NON_VISUAL のため個別検証対象外 |
-| TC-05  | N/A  | NON_VISUAL のため個別検証対象外 |
+| ケース | 状態 | 備考                                                 |
+| ------ | ---- | ---------------------------------------------------- |
+| TC-01  | PASS | `typecheck` 正常終了                                 |
+| TC-02  | PASS | `wizard-exports.test.ts` 13/13 PASS                  |
+| TC-03  | PASS | `DescribeStep` / `DescribeStepProps` 非公開確認      |
+| TC-04  | PASS | `SkillInfoStepProps` / `GenerationMode` 参照可能確認 |
+| TC-05  | PASS | current task 用 `evidence-index.md` 作成確認         |

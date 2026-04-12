@@ -138,7 +138,10 @@ vi.mock("../../../hooks/useCancelGeneration", () => ({
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 
-describe("SkillCreateWizard LLM生成フロー", () => {
+// TODO(W2-seq-03a): TASK-SC-07の planSkill/executePlan フローは W2-seq-03a で削除済み。
+// generationMode ラジオボタン UI が存在しないため全テストをスキップ。
+// 新フロー（createSkill ベース）は SkillCreateWizard.test.tsx でカバー済み。
+describe.skip("SkillCreateWizard LLM生成フロー", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockStoreState = {

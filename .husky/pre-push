@@ -1,5 +1,9 @@
 #!/bin/sh
+# shellcheck disable=SC2039
 # pre-push hook: プッシュ前にCI相当のチェックを実行
+# NOTE: huskyは `sh -e` でこのスクリプトを実行するため、
+# set +e でexit-on-errorを無効化してから処理を続ける
+set +e
 #
 # ⚠️  警告: --no-verify オプションは絶対禁止です！
 # このフックをスキップすると、CIで初めてエラーが検出され、
@@ -80,7 +84,7 @@ CHANGED_FILES=$(git diff --name-only "$REMOTE_REF" HEAD 2>/dev/null)
 DOCS_ONLY=true
 for file in $CHANGED_FILES; do
     case "$file" in
-        *.md|*.txt|.claude/*|docs/*|.husky/*|*.json|.github/*)
+        *.md|*.txt|.claude/*|.agents/*|docs/*|outputs/*|.husky/*|*.json|.github/*)
             # ドキュメント/設定ファイル - テストスキップ対象
             ;;
         *)

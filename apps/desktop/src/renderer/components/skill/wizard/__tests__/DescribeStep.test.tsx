@@ -57,6 +57,22 @@ describe("DescribeStep", () => {
     expect(screen.getByLabelText("スキルカテゴリ")).toBeInTheDocument();
   });
 
+  it("カテゴリオプションに canonical label が表示される", () => {
+    render(
+      <DescribeStep
+        description=""
+        onDescriptionChange={mockOnDescriptionChange}
+        category={null}
+        onCategoryChange={mockOnCategoryChange}
+        onNext={mockOnNext}
+      />,
+    );
+
+    expect(
+      screen.getByRole("option", { name: "コードサポート" }),
+    ).toBeInTheDocument();
+  });
+
   // ------------------------------------------
   // 2. description空で「次へ」disabled
   // ------------------------------------------

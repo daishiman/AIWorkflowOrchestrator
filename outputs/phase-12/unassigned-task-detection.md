@@ -1,44 +1,34 @@
-# Phase 12: 未タスク検出 - TASK-SC-07
+# Phase 12: 未タスク検出レポート - UT-SKILL-WIZARD-W2-seq-03a
 
 ## メタ情報
 
-| 項目     | 内容       |
-| -------- | ---------- |
-| タスクID | TASK-SC-07 |
-| 作成日   | 2026-04-09 |
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
 ---
 
-## 判定結果
+## 検出結果
 
-- 重大未タスク: 0 件
-- 軽微な改善候補: 0 件
+未タスク件数: **1件**
 
----
+| #   | タスクID                                  | タスク名                                                     | 優先度 | 規模   |
+| --- | ----------------------------------------- | ------------------------------------------------------------ | ------ | ------ |
+| 1   | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 | SkillCreateWizard LLM生成フロー describe.skip クリーンアップ | 低     | 小規模 |
 
-## 確認観点
+### 検出詳細
 
-| 観点                       | 判定 | 根拠                                                                                       |
-| -------------------------- | ---- | ------------------------------------------------------------------------------------------ |
-| LLM 生成ルート             | PASS | `planSkill`、`executePlan(planId, skillSpec)`、`getWorkflowState(planId)` の接続が実装済み |
-| テンプレートフローの非破壊 | PASS | `SkillInfoStep` と `ConversationRoundStep` の既存導線が維持されている                      |
-| 進捗表示                   | PASS | `generationProgress` が `GenerateStep` に表示される                                        |
-| 失敗時の復帰               | PASS | `terminal_handoff` / fail snapshot / blank description がそれぞれエラー処理される          |
-| スクリーンショット参照     | PASS | Phase 11 証跡が `outputs/phase-11/screenshots/` に存在する                                 |
-| 仕様書整合                 | PASS | `index.md` / `artifacts.json` / `arch-*` / logs が current facts に同期済み                |
+**UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001**
 
----
+- **発見箇所**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` 行 144（`describe.skip`）
+- **発見根拠**: W2-seq-03a で `generationMode` ラジオボタン UI を削除したことにより、旧 TASK-SC-07 の `planSkill`/`executePlan` フローに対する 30 テストが `describe.skip` でスキップ状態になっている。TODO コメントが明示的に本タスクの必要性を記録している。
+- **仕様書パス**: `docs/30-workflows/unassigned-task/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001.md`
+- **影響**: CI には現時点で影響なし。将来 `describe.skip` が外れた場合に 30 テストが一斉失敗するリスクあり。
 
-## 未タスクに含めなかった項目
+## スコープ外として識別した項目
 
-| 項目                      | 理由                                                                     |
-| ------------------------- | ------------------------------------------------------------------------ |
-| `DescribeStep.tsx` の削除 | deprecated ではあるが、現時点では互換維持のため残置が妥当                |
-| `generationSlice` の分割  | TASK-SC-10 の後続構造変更として切り出すべきため                          |
-| `topic-map` の再生成      | 現行の参照索引で current facts を追跡可能なため、今回の blocker ではない |
-
----
-
-## 結論
-
-TASK-SC-07 の Phase 12 時点で、実装を止めるべき重大未タスクは検出されなかった。
+| 項目                                                   | 判断理由                  |
+| ------------------------------------------------------ | ------------------------- |
+| `wizard/index.ts` の `GenerationMode` エクスポート削除 | W2-seq-03b の担当スコープ |
+| `W3-seq-04` 計装タスクの実装                           | 別タスク（ready 状態）    |
