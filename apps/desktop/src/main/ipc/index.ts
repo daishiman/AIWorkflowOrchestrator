@@ -57,6 +57,7 @@ import { registerSafetyGateHandlers } from "./safetyGateHandlers";
 import { registerApprovalHandlers } from "./approvalHandlers";
 import { registerDisclosureHandlers } from "./disclosureHandlers";
 import { registerAdvancedConsoleHandlers } from "./advancedConsoleHandlers";
+import { registerAnalyticsHandlers } from "./analyticsHandler";
 import { DefaultApprovalGate } from "../services/runtime/ApprovalGate";
 import { DefaultSafetyGate } from "../permissions/default-safety-gate";
 import { SkillCreatorService } from "../services/skill/SkillCreatorService";
@@ -1011,6 +1012,9 @@ export function registerAllIpcHandlers(
       },
     }),
   );
+
+  // --- Analytics handlers (UT-W3-ANALYTICS-ADAPTER-001) ---
+  track("registerAnalyticsHandlers", () => registerAnalyticsHandlers());
 
   // --- 9. Auth Mode handlers ---
   track("registerAuthKeyHandlers", () =>

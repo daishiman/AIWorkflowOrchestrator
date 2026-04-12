@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2910,
+  "totalKeywords": 2916,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1938,6 +1938,7 @@
     "UT": [
       "api-ipc-agent-safety.md",
       "api-ipc-sdk-type-contracts.md",
+      "api-ipc-system-core.md",
       "api-ipc-system-skill-creator.md",
       "arch-electron-services-details-part2.md",
       "arch-state-management-skill-creator.md",
@@ -2440,6 +2441,22 @@
     ],
     "チャット": [
       "api-ipc-system-core.md"
+    ],
+    "Analytics": [
+      "api-ipc-system-core.md"
+    ],
+    "ANALYTICS": [
+      "api-ipc-system-core.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "ADAPTER": [
+      "api-ipc-system-core.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
       "api-ipc-system-core.md",
@@ -7488,6 +7505,23 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
+    "trackEvent": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "analytics": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md"
+    ],
+    "adapter": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ui-adapter-status-retry.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "差し替え": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "VALIDATION": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -7694,6 +7728,16 @@
     "ラベルマッピング集約": [
       "lessons-learned-current-2026-04.md"
     ],
+    "DESCRIBE": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "DELETION": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "レガシーコード整理": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -7889,11 +7933,6 @@
     "HANDOFF": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "ADAPTER": [
-      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
@@ -8909,9 +8948,6 @@
     "より": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
-    "DESCRIBE": [
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
     "CLEANUP": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -9062,9 +9098,6 @@
       "lessons-learned-test-typesafety.md"
     ],
     "アダプター状態表示・リトライ導線": [
-      "lessons-learned-ui-adapter-status-retry.md"
-    ],
-    "adapter": [
       "lessons-learned-ui-adapter-status-retry.md"
     ],
     "status": [
@@ -9276,7 +9309,7 @@
     "使用率計装": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
-    "trackEvent": [
+    "接続": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "quality": [
@@ -9416,9 +9449,6 @@
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "空フィールドガード": [
-      "lessons-learned-workflow-quality-phase12-audit-validator.md"
-    ],
-    "analytics": [
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
     "schedule": [

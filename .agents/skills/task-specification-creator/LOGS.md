@@ -36,6 +36,35 @@ type-only export を持つコンポーネント削除時の runtime/compile-time
 ### 背景
 `wizard-exports.test.ts` の runtime property check だけでは `DescribeStepProps` のような type-only export 再導入を拾えないため、compile-time guard を別ファイルで持つ必要があった。
 
+## 2026-04-12 - UT-W3-ANALYTICS-ADAPTER-001 skill-feedback 反映（[UT-W3] よくある漏れ追記）
+
+### 変更内容
+
+- `SKILL.md` 「よくある漏れ」テーブルに **[UT-W3]** 3件を追記
+  - `implementation-guide.md` が current contract（trackEvent → analyticsAdapter → analytics:send）ではなく旧方針で記述される
+  - `artifacts.json` / `outputs/artifacts.json` parity 未確認のまま Phase 12 を閉じる
+  - Phase 12 Task 12-2/12-3/12-6 で `generate-index.js` 実行を省略してインデックスが stale になる
+- `SKILL.md` 変更履歴に v10.09.44 を追記
+
+---
+
+## 2026-04-12 - UT-W3-ANALYTICS-ADAPTER-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-W3-ANALYTICS-ADAPTER-001/outputs/phase-12/` に canonical 6成果物を整備（不足5ファイル新規作成 + implementation-guide 再構成）
+- `docs/30-workflows/UT-W3-ANALYTICS-ADAPTER-001/artifacts.json` と `outputs/artifacts.json` を `phase12_completed` + `phase13 blocked` で同期
+- `docs/30-workflows/UT-W3-ANALYTICS-ADAPTER-001/index.md` のメタ/Phase一覧ステータスを artifacts と同値化
+- `aiworkflow-requirements` 側の analytics / trackEvent / IPC 契約 / completed ledger current facts を同 wave で更新
+- `SKILL.md` 変更履歴に v10.09.43 を追記
+
+### 背景
+
+UT-W3-ANALYTICS-ADAPTER-001 では Phase 12 必須成果物の欠落（canonical 6成果物不足）と artifacts/index のステータス乖離が同時に発生していた。
+Phase 12 close-out と system spec 同期を単一 wave で完了させるため、workflow-local と global skill sync を分離記録して是正した。
+
+---
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync

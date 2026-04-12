@@ -1,4 +1,4 @@
-# 完了タスク記録 — 2026-04-08
+# 完了タスク記録 — 2026-04-08〜2026-04-12
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
@@ -254,3 +254,58 @@
 #### lessons-learned
 
 - `references/lessons-learned-current-2026-04.md` の L-W3-TRACK-001 / L-W3-TRACK-002 / L-WIZARD-LANE-CLEANUP-001 を参照
+
+---
+
+### タスク: UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter 差し替え（2026-04-12）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-W3-ANALYTICS-ADAPTER-001 |
+| ステータス | **完了（Phase 12 完了 / Phase 13 blocked）** |
+| タイプ | renderer analytics adapter / ipc contract / phase12 sync |
+| 優先度 | 中 |
+| 完了日 | 2026-04-12 |
+| 対象 | `trackEvent.ts` / `analyticsAdapter.ts` / `analyticsHandler.ts` / `preload/channels.ts` / `preload/index.ts` / `main/ipc/index.ts` |
+| 成果物 | `docs/30-workflows/UT-W3-ANALYTICS-ADAPTER-001/` |
+| PR | 未作成（ユーザー承認待ち） |
+
+#### 実施内容
+
+**trackEvent（公開 API 互換維持）**
+
+- `trackEvent<K>(eventName, payload): void` シグネチャは維持
+- dev: `console.info("[trackEvent]", ...)` のみ
+- prod: `getAnalyticsAdapter().send(eventName, payload)` を呼び出し
+
+**analyticsAdapter（Renderer）**
+
+- `window.electronAPI.store.get({ key: "analyticsOptOut" })` を参照し送信可否を判定
+- offline queue（上限 500、TTL 7日）を実装
+- `online` イベントで `flush()` を実行
+
+**analyticsHandler（Main IPC）**
+
+- `ipcMain.handle("analytics:send", ...)` で payload を検証
+- `electron-store`（`knowledge-studio`）の `analyticsOptOut` を最終判定
+- opt-out 時は `{ success: true, skipped: true }` を返す
+
+#### IPC 契約
+
+| チャネル | Request | Response |
+| --- | --- | --- |
+| `analytics:send` | `{ eventName, payload, timestamp, optedOut? }` | `{ success, skipped?, error? }` |
+
+#### 検証証跡
+
+- `outputs/phase-11/manual-test-result.md`（NON_VISUAL）
+- `outputs/phase-12/implementation-guide.md`
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
+#### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 |
+| --- | --- | --- |
+| 1 | `trackEvent` を dev でも adapter 送信してしまうと「開発ログのみ」要件を満たせない | dev で early return を入れ、prod のみ adapter 送信に固定 |
+| 2 | opt-out 判定を Renderer のみに置くと境界防衛が弱い | Main でも `analyticsOptOut` を判定して二重防衛に統一 |
+| 3 | Phase 12 close-out で `outputs/artifacts.json` が抜けやすい | root / outputs の 2 つの artifacts を同 wave で同期 |
