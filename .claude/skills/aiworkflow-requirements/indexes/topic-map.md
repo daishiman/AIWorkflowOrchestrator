@@ -1350,10 +1350,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L67 |
-| LLM Adapter Error Banner（TASK-RT-01） | L123 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L162 |
-| 続き | L271 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L68 |
+| LLM Adapter Error Banner（TASK-RT-01） | L124 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L163 |
+| 続き | L272 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1398,8 +1398,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L207 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L236 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L208 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L237 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3421,11 +3421,12 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
 | Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
-| 依存関係 | L293 |
-| 関連ファイル | L305 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L317 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L342 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L376 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L293 |
+| 依存関係 | L317 |
+| 関連ファイル | L329 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L341 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L366 |
+| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L400 |
 
 ### references/lessons-learned-templates.md
 
@@ -4673,6 +4674,11 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync | L7 |
 
+### references/task-workflow-completed-recent-2026-04e.md
+
+| セクション | 行 |
+|------------|----|
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4797,9 +4803,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L136 |
-| 完了タスク（機能別アーカイブ） | L144 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L253 |
+| 完了タスク（2026-03後半） | L170 |
+| 完了タスク（機能別アーカイブ） | L178 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L287 |
 
 ### references/task-workflow-history.md
 
@@ -4833,9 +4839,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L8 |
-| 利用順序 | L37 |
-| 関連ドキュメント | L42 |
+| 仕様書インデックス | L10 |
+| 利用順序 | L39 |
+| 関連ドキュメント | L44 |
 
 ### references/testing-accessibility.md
 

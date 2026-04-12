@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2909,
+  "totalKeywords": 2910,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2051,6 +2051,7 @@
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -7340,6 +7341,7 @@
     "実装知見": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-adapter-status-retry.md"
     ],
     "settings": [
@@ -7676,7 +7678,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "CATEGORY": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "LABEL": [
       "lessons-learned-current-2026-04.md"
@@ -8909,6 +8912,9 @@
     "CLEANUP": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
+    "ICON": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
     "依存関係": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -9652,7 +9658,8 @@
       "task-workflow-completed-recent-2026-04a.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04c.md",
-      "task-workflow-completed-recent-2026-04d.md"
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
