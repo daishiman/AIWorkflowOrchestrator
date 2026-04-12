@@ -1,21 +1,27 @@
-# Phase 1: 影響範囲マップ — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 1: 影響範囲マップ
 
-## 新規作成対象
+## 削除対象
 
-| ファイル                                                                                   | 種別 | 内容             |
-| ------------------------------------------------------------------------------------------ | ---- | ---------------- |
-| `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts`                | 新規 | 推論サービス本体 |
-| `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` | 新規 | ユニットテスト   |
+| 削除対象                                                       | ファイル              | 行番号（概算） |
+| -------------------------------------------------------------- | --------------------- | -------------- |
+| generationMode state                                           | SkillCreateWizard.tsx | 415-416        |
+| hasActivatedLlmMode state                                      | SkillCreateWizard.tsx | 418            |
+| llmDescription state                                           | SkillCreateWizard.tsx | 421            |
+| setGenerationMode / setHasActivatedLlmMode / setLlmDescription | SkillCreateWizard.tsx | 関連箇所       |
+| handleLlmGenerate()                                            | SkillCreateWizard.tsx | 588-666        |
+| handleExecutePlan()                                            | SkillCreateWizard.tsx | 669-800        |
+| handleCancelPlan()                                             | SkillCreateWizard.tsx | 803-813        |
+| handleCancelTemplateGeneration()                               | SkillCreateWizard.tsx | 816-820        |
+| handleStep0NextFromLlm()                                       | SkillCreateWizard.tsx | 469-478        |
+| Step 0 のテンプレート切替ラジオUI                              | SkillCreateWizard.tsx | 872-938        |
+| GenerateStep への generationMode 条件分岐 props                | SkillCreateWizard.tsx | 968-986        |
+| templateGenerationRequestIdRef                                 | SkillCreateWizard.tsx | 391            |
 
-## 変更対象（既存ファイル）
+## 保持する内容
 
-| ファイル                                             | 変更内容                                   |
-| ---------------------------------------------------- | ------------------------------------------ |
-| `packages/shared/src/services/skillCreator/index.ts` | `inferSmartDefaults` の barrel export 追加 |
-
-## 影響を受けるコンポーネント（将来の依存先）
-
-| コンポーネント/タスク   | 依存内容                                         |
-| ----------------------- | ------------------------------------------------ |
-| `SkillCreateWizard.tsx` | current facts で本サービスの利用を継続する       |
-| 追加の統合タスク        | current facts を前提に必要最小限の接続だけを扱う |
+| 保持対象                                                                       | 理由                                |
+| ------------------------------------------------------------------------------ | ----------------------------------- |
+| generationLockRef                                                              | 二重呼び出し防止（LLM生成でも必要） |
+| llmGenerationRequestIdRef                                                      | 非同期リクエスト識別に使用          |
+| handleLlmGenerate → 将来的に不要だが、このタスクでは handleGenerate で代替済み |
+| wizard/index.ts の GenerationMode 型                                           | W2-seq-03b の担当                   |

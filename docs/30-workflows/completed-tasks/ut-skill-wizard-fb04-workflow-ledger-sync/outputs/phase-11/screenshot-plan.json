@@ -1,0 +1,7 @@
+{
+  "taskId": "UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC-001",
+  "mode": "NON_VISUAL",
+  "reason": "docs-only タスク（skill template 更新のみ）。UIコンポーネント変更なし。",
+  "screenshotRequired": false,
+  "alternativeEvidence": "outputs/phase-11/manual-test-result.md（自動テスト代替）"
+}

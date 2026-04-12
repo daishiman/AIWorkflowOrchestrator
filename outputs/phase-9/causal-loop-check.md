@@ -1,96 +1,29 @@
-# Phase 9: 因果ループチェック — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 9: 因果ループ監査 — UT-SKILL-WIZARD-W2-seq-03b
 
-## 目的
+## 因果ループ分析
 
-`executionPrompt` state 削除後のコンポーネントで無限ループ・循環依存・副作用連鎖がないことを確認する。
+```
+DescribeStep 削除エクスポート
+  → DescribeStep を import するコードが型エラーになる
+  → SkillCreateWizard.tsx はすでに SkillInfoStep を使用中
+  → 残存参照がある場合は TypeScript が検出 ✓ （型チェック通過済み）
 
----
+GenerationMode 型のインライン定義削除
+  → wizard/index.ts から直接の定義が消える
+  → GenerateStep.tsx から再転送することで wizard から引き続き参照可能
+  → SkillCreateWizard.tsx の import type { GenerationMode } from "./wizard" は機能する ✓
+  → DescribeStep.tsx の import type { GenerationMode } from "./index" も機能する ✓
 
-## チェック1: `useState` の削除による他 state への波及
-
-削除した state:
-
-```typescript
-// 削除前
-const [executionPrompt, setExecutionPrompt] = useState(defaultExecutionPrompt);
+SkillInfoStepProps の export 追加
+  → wizard/index.ts からの型エクスポートが可能になる
+  → W2-seq-03a（SkillCreateWizard.tsx）が型安全に SkillInfoStepProps を参照できる ✓
 ```
 
-残存する state への影響確認:
+## 循環参照チェック
 
-- `createdSkillName`: `executionPrompt` に依存していない → 影響なし
-- `isExecuting`: `executionPrompt` に依存していない → 影響なし
-- `sessionEntries`: `handleExecute` 内の `appendSessionEntry` は `defaultExecutionPrompt` を直接参照 → 安全
+`DescribeStep.tsx` → `wizard/index.ts` → `DescribeStep.tsx` の循環は技術的に存在するが、
+TypeScript の型 import のみのため実行時問題なし。型チェック通過で確認済み。
 
-**判定: 問題なし**
+## 判定
 
----
-
-## チェック2: `canExecuteSkill` 変更による再レンダリングループ
-
-```typescript
-const canExecuteSkill =
-  Boolean(createdSkillName) &&
-  !isExecuting &&
-  skillExecutionStatus !== "review" &&
-  skillExecutionStatus !== "reuse_ready";
-```
-
-**分析**:
-
-- `canExecuteSkill` は計算プロパティ（state ではない）
-- `executionPrompt` state が削除されたことで、textarea の `onChange` による不要な再レンダリングが解消
-- `canExecuteSkill` が変わっても他の state を変更しない
-- ループ条件なし
-
-**判定: 問題なし**
-
----
-
-## チェック3: `handlePlanImprovement` の副作用連鎖
-
-変更前:
-
-```typescript
-const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
-```
-
-変更後:
-
-```typescript
-const runtimeFeedback = defaultExecutionPrompt;
-```
-
-**分析**:
-
-- 定数参照に変更されたため、state 変化による副作用なし
-- `runtimeFeedback` はローカル変数であり、外部に露出しない
-- 循環なし
-
-**判定: 問題なし**
-
----
-
-## チェック4: textarea 削除による DOM 更新ループ
-
-textarea の `onChange` → `setExecutionPrompt` → 再レンダリング → textarea 再描画
-
-このサイクルが削除された。再レンダリングの不要なトリガーが1つ減少。
-
-**判定: 問題なし（むしろ改善）**
-
----
-
-## チェック5: コンポーネントライフサイクルとの整合
-
-| ライフサイクル | 変更前の動作                    | 変更後の動作                            | 問題 |
-| -------------- | ------------------------------- | --------------------------------------- | ---- |
-| マウント       | `executionPrompt` state 初期化  | 初期化不要                              | なし |
-| ユーザー入力   | textarea → `setExecutionPrompt` | 入力なし（定数使用）                    | なし |
-| 実行           | `trimmedPrompt` を各関数に渡す  | `defaultExecutionPrompt` を各関数に渡す | なし |
-| アンマウント   | state クリーンアップ（自動）    | 同左（state 1つ減少）                   | なし |
-
----
-
-## 総合判定: 因果ループなし
-
-無限ループ・循環依存・意図しない副作用連鎖は検出されなかった。
+因果ループ問題なし。全連携が正常に機能している。

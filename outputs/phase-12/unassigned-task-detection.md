@@ -1,56 +1,34 @@
-# Phase 12: 未タスク検出 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 12: 未タスク検出レポート - UT-SKILL-WIZARD-W2-seq-03a
 
 ## メタ情報
 
-| 項目     | 内容                                          |
-| -------- | --------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
 ---
 
-## 判定結果
+## 検出結果
 
-- 重大未タスク: 1 件
-- 軽微な改善候補: 1 件
+未タスク件数: **1件**
 
----
+| #   | タスクID                                  | タスク名                                                     | 優先度 | 規模   |
+| --- | ----------------------------------------- | ------------------------------------------------------------ | ------ | ------ |
+| 1   | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 | SkillCreateWizard LLM生成フロー describe.skip クリーンアップ | 低     | 小規模 |
 
-## 重大未タスク
+### 検出詳細
 
-| 対象        | 内容                                                                                         | 影響度 | 対応方針                                                             |
-| ----------- | -------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------- |
-| root ledger | repo root の `artifacts.json` と `outputs/artifacts.json` が current task に同期されていない | 高     | 次 wave で ledger sync を行い、Phase 12 の parity check を成立させる |
+**UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001**
 
-### 影響の整理
+- **発見箇所**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` 行 144（`describe.skip`）
+- **発見根拠**: W2-seq-03a で `generationMode` ラジオボタン UI を削除したことにより、旧 TASK-SC-07 の `planSkill`/`executePlan` フローに対する 30 テストが `describe.skip` でスキップ状態になっている。TODO コメントが明示的に本タスクの必要性を記録している。
+- **仕様書パス**: `docs/30-workflows/unassigned-task/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001.md`
+- **影響**: CI には現時点で影響なし。将来 `describe.skip` が外れた場合に 30 テストが一斉失敗するリスクあり。
 
-- Phase 12 の事前チェックにある parity 条件をそのままは満たせない
-- canonical 6 成果物は current task 版に揃えたが、台帳側の正本が旧 task のまま残る
-- 以降の close-out で「何が正本か」がぶれやすい
+## スコープ外として識別した項目
 
----
-
-## 軽微な改善候補
-
-| 対象                       | 内容                                                                    | 影響度 | 対応方針                                    |
-| -------------------------- | ----------------------------------------------------------------------- | ------ | ------------------------------------------- |
-| UI shared label generation | `CATEGORY_VALUES` が `SkillInfoStep` / `DescribeStep` でまだ 2 箇所ある | 低     | 将来は 1 箇所へ寄せるか、共有順序定数を切る |
-
----
-
-## 確認観点
-
-| 観点                 | 判定 | 根拠                                                                  |
-| -------------------- | ---- | --------------------------------------------------------------------- |
-| shared label mapping | PASS | `skillCreator.ts` の canonical helper に集約済み                      |
-| Step 0 UI            | PASS | `SkillInfoStep` が canonical label を直接利用                         |
-| deprecated step      | PASS | `DescribeStep` も canonical label を利用し、`コード支援` drift を解消 |
-| テスト追加           | PASS | union 固定テストと option 表示テストを追加                            |
-| ledger parity        | FAIL | root ledger が current task に同期されていない                        |
-
----
-
-## 結論
-
-実装を止めるべき未タスクは 1 件だけ残った。  
-コードと UI の label drift は解消済みだが、台帳の同期が終わるまで Phase 12 の最終合格は保留とする。
+| 項目                                                   | 判断理由                  |
+| ------------------------------------------------------ | ------------------------- |
+| `wizard/index.ts` の `GenerationMode` エクスポート削除 | W2-seq-03b の担当スコープ |
+| `W3-seq-04` 計装タスクの実装                           | 別タスク（ready 状態）    |

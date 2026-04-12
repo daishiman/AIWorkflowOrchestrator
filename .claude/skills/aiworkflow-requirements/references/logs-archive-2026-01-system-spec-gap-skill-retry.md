@@ -218,7 +218,7 @@
 | 操作         | Phase 1-12 全フェーズ完了                                                                                 |
 | 対象ファイル | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`, `PermissionDialog.tsx`            |
 | 結果         | success                                                                                                   |
-| 備考         | 12種ツール対応テンプレート、折りたたみUI、ARIA属性。テスト53件追加、カバレッジ Lines:99.73% Branch:95.87% |
+| 備考         | 12種ツール対応テンプレート、折りたたみUI、ARIA属性。テスト72件追加、カバレッジ Lines:99.73% Branch:95.87% |
 
 ### 成果物
 
@@ -373,4 +373,3 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 | indexes/topic-map.md                       | ui-ux-components.mdのセクション行番号を更新                                  |
 
 ---
-

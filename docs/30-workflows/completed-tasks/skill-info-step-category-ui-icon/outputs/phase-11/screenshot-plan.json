@@ -1,0 +1,33 @@
+{
+  "taskId": "UT-SKILL-WIZARD-CATEGORY-UI-ICON-001",
+  "phase": 11,
+  "route": "/advanced/skill-create-wizard?skipAuth=true",
+  "captureMethod": "current-build-vite-playwright",
+  "generatedAt": "2026-04-11T03:19:17.838Z",
+  "screenshots": [
+    {
+      "id": "SS-01",
+      "state": "カテゴリ未選択（初期状態）",
+      "file": "screenshots/ss-01-initial.png",
+      "selector": "[data-testid=\"wizard-step-info\"]"
+    },
+    {
+      "id": "SS-02",
+      "state": "「自動化」カテゴリ選択済み",
+      "file": "screenshots/ss-02-automation.png",
+      "selector": "[data-testid=\"wizard-step-info\"]"
+    },
+    {
+      "id": "SS-03",
+      "state": "ホバー時ツールチップ表示",
+      "file": "screenshots/ss-03-tooltip.png",
+      "selector": "[data-testid=\"wizard-step-info\"]"
+    },
+    {
+      "id": "SS-04",
+      "state": "全カテゴリボタン（アイコン確認）",
+      "file": "screenshots/ss-04-all-icons.png",
+      "selector": "[data-testid=\"wizard-step-info\"]"
+    }
+  ]
+}

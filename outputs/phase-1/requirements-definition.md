@@ -1,65 +1,28 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 1: 要件定義書
 
-## タスク概要
-
-`SkillCategory`（英語識別子）をUI表示用の日本語ラベルにマッピングする定数・関数を `packages/shared/src/types/skillCreator.ts` に追加する。
-
-## P50チェック結果（既実装状態確認）
-
-```
-grep -n "SKILL_CATEGORY_LABELS\|getSkillCategoryLabel" packages/shared/src/types/skillCreator.ts
-→ No matches found（未実装を確認）
-```
-
-**判定**: 重複実装なし。本タスクで新規実装する。
-
-## SkillCategory型定義（現状確認）
-
-```typescript
-// packages/shared/src/types/skillCreator.ts L948-L953
-export type SkillCategory =
-  | "automation"
-  | "external-integration"
-  | "data-analysis"
-  | "code-support"
-  | "other";
-```
-
-5値が確認済み。
-
-## 命名規則確認
-
-| 対象                                                                           | パターン         | 確認 |
-| ------------------------------------------------------------------------------ | ---------------- | ---- |
-| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE | ✅   |
-| 関数                                                                           | camelCase        | ✅   |
+## タスクID: UT-SKILL-WIZARD-W2-seq-03a
 
 ## 機能要件
 
-| ID   | 要件                                                                            |
-| ---- | ------------------------------------------------------------------------------- |
-| FR-1 | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
-| FR-2 | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
-| FR-3 | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
-| FR-4 | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
-
-## マッピング定義
-
-| SkillCategory          | 日本語ラベル   | 文字数 |
-| ---------------------- | -------------- | ------ |
-| `automation`           | 自動化         | 3      |
-| `external-integration` | 外部連携       | 4      |
-| `data-analysis`        | データ分析     | 5      |
-| `code-support`         | コードサポート | 7      |
-| `other`                | その他         | 3      |
+- description / options / generationMode state の完全削除
+- 全 template 条件分岐の除去
+- inferSmartDefaults(formData) 純粋関数の実装（purpose小文字化、slack/github/notion大小文字不問検出）
+- handleStep0Next() - formData→smartDefaults推論→Step 1遷移
+- handleGenerate(method: "complete" | "skip") - generationLockRef + isGenerating で二重呼び出し防止
+- handleQualityFeedback(satisfied: boolean) - trackEvent呼び出し
+- handleRetry() - formData保持、answers/smartDefaults/skillPath等リセット、Step 0復帰
+- STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"]
+- Step 3 で skillPath を表示
+- hasExternalIntegration / externalToolName を CompleteStep に接続
 
 ## 非機能要件
 
-- UIコンポーネントから参照可能なエクスポート
-- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel に広げない）
+- TypeScript 型エラー 0件
+- ESLint エラー 0件
+- 全テスト Green（vitest）
 
-## タスク分類
+## 実装状況（2026-04-11）
 
-- 種別: **実装タスク / 非UIタスク / NON_VISUAL**
-- スケール: small
-- UI実装: なし（Phase 11は手動テスト中心）
+- 新state・ハンドラは実装済み
+- 削除対象の generationMode / hasActivatedLlmMode / llmDescription state が残存
+- Step 0 のテンプレート切替UIが残存

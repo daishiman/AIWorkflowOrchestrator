@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-09
+> 自動生成: 2026-04-12
 > 自動生成: 2026-04-11
 > 生成コマンド: node scripts/generate-index.js
 
@@ -502,7 +502,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L440 |
+| 続き | L453 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1351,10 +1351,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L66 |
-| LLM Adapter Error Banner（TASK-RT-01） | L122 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L161 |
-| 続き | L270 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L68 |
+| LLM Adapter Error Banner（TASK-RT-01） | L124 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L163 |
+| 続き | L272 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1399,8 +1399,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L205 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L234 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L208 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L237 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -2540,6 +2540,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L5 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L46 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L277 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L523 |
 | LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L4 |
 | ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L43 |
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
@@ -2574,6 +2581,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
+| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L210 |
+| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L269 |
 | SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L204 |
 
 ### references/arch-ui-components-details.md
@@ -3041,6 +3050,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L4 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L35 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L60 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L91 |
+| TASK-RT-06 教訓（2026-03-29） | L122 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L144 |
+| TASK-P0-04 教訓（2026-03-30） | L175 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L211 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L306 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L360 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L400 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L440 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L471 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L483 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L506 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L515 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L549 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L583 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L606 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L632 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L4 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L29 |
 | UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L60 |
@@ -3055,12 +3084,6 @@ node scripts/list-specs.js --topics
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L553 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L576 |
-| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L602 |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L619 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L484 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L518 |
 | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L552 |
@@ -3084,9 +3107,12 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L141 |
-| クイックリファレンス: カテゴリ別検索ガイド | L159 |
-| 分割ファイル一覧 | L163 |
+| 分割ファイル一覧 | L147 |
+| クイックリファレンス: カテゴリ別検索ガイド | L167 |
+| 分割ファイル一覧 | L171 |
+| 分割ファイル一覧 | L142 |
+| クイックリファレンス: カテゴリ別検索ガイド | L160 |
+| 分割ファイル一覧 | L164 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3333,7 +3359,10 @@ node scripts/list-specs.js --topics
 | L-RT05-002: input kind 切替時の stale state は useEffect + workflowSnapshot 監視で解消 | L22 |
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
-| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
+| L-MSO-001: SmartDefaultResult の型は不変を維持し、UI層で変換を吸収する | L61 |
+| L-MSO-003: トリガー型選択肢（Q3パターン）のフォールバックは Phase 2 設計で明文化する | L74 |
+| L-MSO-004: スクリーンショット取得ハーネスは終了処理をテンプレート化する | L88 |
+| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L101 |
 
 ### references/lessons-learned-skill-creator-ipc-handler-scope.md
 
@@ -3394,6 +3423,21 @@ node scripts/list-specs.js --topics
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
 
+### references/lessons-learned-skill-wizard-llm-connection.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| L-SC07-001: generationMode のローカル state 管理と UI 切替の分離 | L20 |
+| L-SC07-002: executePlan の skillSpec 必須化（C-1 回避） | L31 |
+| L-SC07-003: Hybrid State Pattern における対称クリアの必要性 | L42 |
+| L-SC07-004: request-id ガードによる遅延レスポンスの破棄 | L53 |
+| L-SC07-005: getWorkflowState による snapshot 再読込パターン | L64 |
+| L-SC07-006: smartDefaults の推論と Q5 外部ツール解決の分離 | L75 |
+| L-SC07-007: DescribeStep の deprecated 管理と SkillInfoStep への移行 | L86 |
+| L-SC07-008: generationLockRef による二重実行防止 | L97 |
+| 応用候補 | L108 |
+
 ### references/lessons-learned-skill-wizard-redesign.md
 
 | セクション | 行 |
@@ -3402,6 +3446,22 @@ node scripts/list-specs.js --topics
 | 実装パターン（将来参照用） | L21 |
 | 苦戦箇所 | L110 |
 | 非ブロッカー改善候補（skill-feedback-report.md より） | L121 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L161 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L187 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L204 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L220 |
+| UT-SKILL-WIZARD-W2-seq-03b wizard exports 教訓（2026-04-08） | L237 |
+| Google Calendar スキル新規追加 教訓（2026-04-08） | L253 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L269 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L293 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L317 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L341 |
+| 依存関係 | L365 |
+| 関連ファイル | L377 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L389 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L414 |
+| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L448 |
+| UT-SKILL-WIZARD-W2-seq-03b Phase-12 close-out 教訓（2026-04-12） | L472 |
 | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L161 |
 | W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L187 |
 | UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L204 |
@@ -4112,19 +4172,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 2026-03-01 - TASK-UI-05B spec_created 同期 + 参照切れ是正 | L5 |
-| 2026-03-01 - TASK-UI-05 completed-tasks 移管 | L32 |
-| 2026-03-01 - UT-UI-05-007 未タスク登録（UI仕様同期ガード） | L57 |
-| 2026-03-01 - TASK-UI-05 UI仕様書追補（未タスク6件 + 苦戦箇所） | L83 |
-| 2026-03-01 - TASK-UI-05 Phase 12再確認（苦戦箇所テンプレート追補） | L108 |
-| [実行日時: 2026-03-06T04:42:41.549Z] | L131 |
-| 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 最終同期 | L141 |
-| 2026-03-02 - TASK-10A-B 再監査（画面証跡ベース）と仕様同期 | L176 |
-| 2026-03-05 - UT-TASK-10A-B-001 完了同期（自動修正可能フィルタボタン） | L213 |
-| 2026-03-05 - UT-TASK-10A-B-001 再監査追補（light証跡ドリフト是正） | L241 |
-| 2026-03-05 - TASK-UI-01-C Phase 12準拠の再確認（指定ディレクトリ未タスク監査） | L270 |
-| 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 教訓同期追補 | L301 |
-| 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12仕様準拠の再確認 | L326 |
-| 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期 | L355 |
+| 2026-03-01 - TASK-UI-05 completed-tasks 移管 | L36 |
+| 2026-03-01 - UT-UI-05-007 未タスク登録（UI仕様同期ガード） | L65 |
+| 2026-03-01 - TASK-UI-05 UI仕様書追補（未タスク6件 + 苦戦箇所） | L95 |
+| 2026-03-01 - TASK-UI-05 Phase 12再確認（苦戦箇所テンプレート追補） | L124 |
+| [実行日時: 2026-03-06T04:42:41.549Z] | L151 |
+| 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 最終同期 | L161 |
+| 2026-03-02 - TASK-10A-B 再監査（画面証跡ベース）と仕様同期 | L196 |
+| 2026-03-05 - UT-TASK-10A-B-001 完了同期（自動修正可能フィルタボタン） | L233 |
+| 2026-03-05 - UT-TASK-10A-B-001 再監査追補（light証跡ドリフト是正） | L261 |
+| 2026-03-05 - TASK-UI-01-C Phase 12準拠の再確認（指定ディレクトリ未タスク監査） | L290 |
+| 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 教訓同期追補 | L321 |
+| 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12仕様準拠の再確認 | L346 |
+| 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期 | L375 |
 
 ### references/logs-archive-2026-03-task-10a-c-final-audit.md
 
@@ -4531,7 +4591,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L327 |
 | 続き | L331 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
@@ -4653,6 +4712,12 @@ node scripts/list-specs.js --topics
 |------------|----|
 
 ### references/task-workflow-completed-recent-2026-04d.md
+
+| セクション | 行 |
+|------------|----|
+| 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync | L7 |
+
+### references/task-workflow-completed-recent-2026-04e.md
 
 | セクション | 行 |
 |------------|----|
@@ -4781,9 +4846,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L100 |
-| 完了タスク（機能別アーカイブ） | L108 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+| 完了タスク（2026-03後半） | L170 |
+| 完了タスク（機能別アーカイブ） | L178 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L287 |
 | 完了タスク（2026-03後半） | L101 |
 | 完了タスク（機能別アーカイブ） | L109 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
@@ -4820,9 +4885,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L8 |
-| 利用順序 | L37 |
-| 関連ドキュメント | L42 |
+| 仕様書インデックス | L10 |
+| 利用順序 | L39 |
+| 関連ドキュメント | L44 |
 
 ### references/testing-accessibility.md
 
