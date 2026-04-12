@@ -1,0 +1,151 @@
+{
+  "workflowId": "UT-W3-ANALYTICS-ADAPTER-001",
+  "title": "trackEvent analytics adapter差し替え（本番分析基盤への接続）",
+  "issueNumber": 2058,
+  "status": "phase12_completed",
+  "createdAt": "2026-04-11",
+  "completedAt": "2026-04-12",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ipc-contract-design.md",
+        "outputs/phase-2/test-strategy.md",
+        "outputs/phase-2/dependency-consistency-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "gateResult": "PASS",
+      "artifacts": [
+        "outputs/phase-3/gate-decision.md",
+        "outputs/phase-3/contradiction-checklist.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "tddState": "Red→Green",
+      "artifacts": [
+        "outputs/phase-4/red-test-result.md",
+        "apps/desktop/src/renderer/utils/__tests__/analyticsAdapter.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "apps/desktop/src/renderer/utils/analyticsAdapter.ts",
+        "apps/desktop/src/main/ipc/analyticsHandler.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "testCount": 22,
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "coverage": {
+        "trackEvent.ts": "100%",
+        "analyticsAdapter.ts": "90%+",
+        "analyticsHandler.ts": "90%+"
+      },
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "changes": "onlineHandlerの重複登録防止・resetAnalyticsAdapter でリスナー除去",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "results": {
+        "typecheck": "PASS",
+        "lint": "PASS（新規ファイル）",
+        "test": "33/33 PASS"
+      },
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "gateResult": "PASS",
+      "acResults": "AC-1〜AC-9 全充足",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "type": "NON_VISUAL",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "phase12_completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "note": "コミット・PR作成はユーザー承認待ち"
+    }
+  ],
+  "dependencies": {
+    "upstream": ["UT-SKILL-WIZARD-W3-seq-04"],
+    "downstream": []
+  },
+  "metadata": {
+    "taskType": "implementation",
+    "uiTask": false,
+    "docsOnlyTask": false,
+    "phase11Type": "NON_VISUAL",
+    "targetFiles": [
+      "apps/desktop/src/renderer/utils/trackEvent.ts",
+      "apps/desktop/src/renderer/utils/analyticsAdapter.ts",
+      "apps/desktop/src/renderer/utils/__tests__/analyticsAdapter.test.ts",
+      "apps/desktop/src/main/ipc/analyticsHandler.ts",
+      "apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts",
+      "apps/desktop/src/preload/channels.ts",
+      "apps/desktop/src/preload/index.ts",
+      "apps/desktop/src/main/ipc/index.ts"
+    ]
+  }
+}

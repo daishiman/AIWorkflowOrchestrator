@@ -624,6 +624,21 @@ const permissionAPI: PermissionAPI = {
   clearAll: () => safeInvoke(IPC_CHANNELS.PERMISSION_CLEAR_ALL),
 };
 
+// Analytics API（UT-W3-ANALYTICS-ADAPTER-001）
+// Renderer → IPC → Main でイベントを送信。CSP制限を回避するためIPC経由。
+export interface AnalyticsAPI {
+  send: (request: {
+    eventName: string;
+    payload: Record<string, unknown>;
+    timestamp: number;
+    optedOut?: boolean;
+  }) => Promise<{ success: boolean; skipped?: boolean; error?: string }>;
+}
+
+const analyticsAPI: AnalyticsAPI = {
+  send: (request) => safeInvoke(IPC_CHANNELS.ANALYTICS_SEND, request),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -639,6 +654,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("permissionAPI", permissionAPI);
     contextBridge.exposeInMainWorld("skillCreatorAPI", skillCreatorAPI);
     contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI);
+    contextBridge.exposeInMainWorld("analyticsAPI", analyticsAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -663,4 +679,6 @@ if (process.contextIsolated) {
   (window as unknown as { skillCreatorAPI: SkillCreatorAPI }).skillCreatorAPI =
     skillCreatorAPI;
   (window as unknown as { chatEditAPI: ChatEditAPI }).chatEditAPI = chatEditAPI;
+  (window as unknown as { analyticsAPI: AnalyticsAPI }).analyticsAPI =
+    analyticsAPI;
 }
