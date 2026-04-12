@@ -14,6 +14,29 @@ docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sy
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
+## 2026-04-11 - UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `packages/shared/src/types/skill-wizard-label-map.ts` を新規作成し、`QuestionSemanticLabelMap` / `SEMANTIC_LABEL_MAP` / `resolveSemanticLabel()` を正本化
+- `packages/shared/tsup.config.ts` に `src/types/skill-wizard-label-map.ts` を追加して build entry を同期
+- `packages/shared/src/types/index.ts` で skill-wizard label map を barrel 再公開
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` で fallback casing を保持するよう `createQuestionAnswer()` を修正
+- `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` に `Markdown` / `JSON` / `Jira` / `notion` の回帰テストを追加
+- `packages/shared/package.json` / `apps/desktop/tsconfig.json` / `apps/desktop/vitest.config.ts` を subpath export に合わせて同期
+- `docs/30-workflows/ut-skill-wizard-semantic-default-extensibility-001/outputs/phase-12/` の canonical 6 成果物を更新
+
+### 検証
+
+- `pnpm --filter @repo/shared typecheck` PASS
+- `pnpm --filter @repo/shared build` PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` PASS（72 tests）
+
+### 背景
+
+semantic default の入力元拡張で、shared 側に正準ラベルマップを置きつつ、desktop 側の表示ラベル変換を壊さない必要があった。`notion` は freeText を保持するため UI 側の特別ケースとして残した。
+
 ## 2026-04-09 - TASK-UI-SCHEDULE-VISUAL-PICKER-001 impl-spec-to-skill-sync
 
 ### 変更内容

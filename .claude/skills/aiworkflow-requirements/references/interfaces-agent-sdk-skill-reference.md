@@ -127,6 +127,21 @@ W0 のスキルウィザード共有型。canonical source は `packages/shared/
 `createQuestionAnswer()` 側の `notion` 特別ケースは UI 自由入力欄の責務であり、
 shared 関数は「値を正規化する」ことに限定する。
 
+#### Skill Wizard Semantic Label Registry（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）
+
+`QuestionSemanticLabelMap` / `SEMANTIC_LABEL_MAP` / `resolveSemanticLabel()` の canonical source は
+`packages/shared/src/types/skill-wizard-label-map.ts`。`packages/shared/src/types/index.ts` の barrel で再公開し、
+`@repo/shared` 直下および `@repo/shared/types/skillWizard` の両方から参照できるようにする。
+
+| シンボル | 役割 | 主な参照経路 |
+| --- | --- | --- |
+| `QuestionSemanticLabelMap` | 質問ID → rawValue → displayLabel の 2 段階マップ型 | `@repo/shared` / `@repo/shared/types` |
+| `SEMANTIC_LABEL_MAP` | q1〜q6 の正準変換テーブル | `@repo/shared/types/skillWizard` |
+| `resolveSemanticLabel()` | rawValue を UI ラベルへ正規化する純粋関数 | `@repo/shared/types/skillWizard` |
+
+`createQuestionAnswer()` 側の `notion` 特別ケースは UI 自由入力欄の責務であり、
+shared 関数は「値を正規化する」ことに限定する。
+
 #### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。

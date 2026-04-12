@@ -501,7 +501,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L453 |
+| 続き | L468 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1203,7 +1203,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 完了タスク | L24 |
-| 関連ドキュメント | L63 |
+| 関連ドキュメント | L71 |
 
 ### references/ui-ux-agent-execution.md
 
