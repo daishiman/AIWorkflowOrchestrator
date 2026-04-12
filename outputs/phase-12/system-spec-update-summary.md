@@ -1,70 +1,56 @@
-# Phase 12: システム仕様更新サマリー - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 12: システム仕様更新サマリー — UT-SKILL-WIZARD-W2-seq-03b
 
-## メタ情報
+## Step 1: current facts 同期
 
-| 項目     | 内容                                          |
-| -------- | --------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
-| 判定     | completed                                     |
+### Step 1-A: workflow / outputs 同期
 
----
+| 対象                                                                    | 結果                                                     |
+| ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| `docs/30-workflows/W2-seq-03b-wizard-exports/index.md`                  | Phase 1-12 完了 / Phase 13 blocked へ更新                |
+| `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` | 新規作成                                                 |
+| `docs/30-workflows/W2-seq-03b-wizard-exports/artifacts.json`            | current task 用に新規作成                                |
+| `outputs/artifacts.json`                                                | current task 用に再同期                                  |
+| `outputs/phase-11/*`                                                    | representative screenshot audit を current task に再同期 |
 
-## Step 1-A: 完了記録・関連リンク更新
+### Step 1-B: 実装状況
 
-| 更新対象                                                                                       | 結果     | 備考                                                                                   |
-| ---------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
-| `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/index.md`                     | 更新済み | AC-2 を `@repo/shared/types/skillCreator` 経由に具体化し、親リンクを実在ファイルへ修正 |
-| `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/artifacts.json`               | 更新済み | Phase 12 に `system-spec-update-summary.md` を追加                                     |
-| `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/phase-2-design.md`            | 更新済み | 参照先を `packages/shared/package.json` に修正                                         |
-| `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/phase-9-quality-assurance.md` | 更新済み | subpath import 確認に合わせてコマンドを修正                                            |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md`    | 更新済み | Skill Wizard Shared Contracts にラベル共有契約を追記                                   |
-| `packages/shared/src/types/skillCreator.ts`                                                    | 更新済み | `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel()` を正本として公開                   |
-| `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`                              | 更新済み | `SkillCategory` union 固定の型ガードを追加                                             |
-| `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`                          | 更新済み | shared helper 由来のラベルを表示するよう変更                                           |
-| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                           | 更新済み | deprecated step も canonical label を参照するよう変更                                  |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx`            | 更新済み | canonical label の option 表示を回帰検証                                               |
+| 対象                                                 | 状態 | 根拠                                   |
+| ---------------------------------------------------- | ---- | -------------------------------------- |
+| `DescribeStep` / `DescribeStepProps` barrel 非公開化 | 完了 | `wizard/index.ts`                      |
+| inline `GenerationMode` 定義削除                     | 完了 | `wizard/index.ts`                      |
+| `GenerationMode` の `GenerateStep.tsx` 正本化        | 完了 | `wizard/index.ts` / `GenerateStep.tsx` |
+| `SkillInfoStepProps` の public export                | 完了 | `SkillInfoStep.tsx`                    |
+| deprecated `DescribeStep.tsx` の依存整理             | 完了 | `DescribeStep.tsx`                     |
 
----
+### Step 1-C: 関連ドキュメント
 
-## Step 1-B: 実装状況更新
+| 対象                                                              | 結果                                     |
+| ----------------------------------------------------------------- | ---------------------------------------- |
+| `docs/30-workflows/unassigned-task/UT-SKILL-WIZARD-W2-seq-03b.md` | 新 workflow path と current scope へ更新 |
+| Phase 11 evidence narrative                                       | current task に再同期                    |
+| Phase 13 blocked narrative                                        | current task に再同期                    |
 
-| 更新対象                                                                            | 反映内容                                                                    | 状態      |
-| ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------- |
-| `packages/shared/src/types/skillCreator.ts`                                         | `SKILL_CATEGORY_LABELS` を `satisfies Record<SkillCategory, string>` で固定 | completed |
-| `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`                   | `SkillCategory` が 5 値 union のままであることを型テストで固定              | completed |
-| `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`               | カテゴリボタンを shared helper から生成                                     | completed |
-| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                | deprecated step の `コード支援` drift を解消し、canonical label に統一      | completed |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx` | option 表示の canonical label を検証                                        | completed |
-| `SkillCategory` と UI ラベルの関係                                                  | `skillCreator.ts` のみを正本とし、画面側は参照専用に整理                    | completed |
+## Step 2: aiworkflow-requirements 更新判定
 
----
+**判定: no-op**
 
-## Step 1-C: 関連タスク整合
+理由:
 
-| タスク                                  | 判定 | 理由                                                                |
-| --------------------------------------- | ---- | ------------------------------------------------------------------- |
-| W0-seq-01 shared contracts              | 整合 | 現在の `SkillCategory` / `SkillInfoFormData` の共有契約と衝突しない |
-| `DescribeStep` deprecated cleanup       | 整合 | 正本は `SkillInfoStep` に寄せつつ、旧画面も canonical label に同期  |
-| `task-specification-creator` phase sync | 整合 | Phase 12 の canonical 6 成果物を current task に揃えた              |
-| `aiworkflow-requirements` contract sync | 整合 | shared type の参照経路を `@repo/shared/types/skillCreator` に閉じた |
+- 今回の変更は `apps/desktop` 内の local export contract 整理
+- 新規 IPC、shared type、system-wide interface は追加していない
+- aiworkflow-requirements 側には既に W2-seq-03b の教訓エントリが存在し、追加の system spec 本文更新までは不要
 
----
+## Phase 11 evidence 連携
 
-## Step 2: I/F 更新判定
+| 項目                       | 結果                                                       |
+| -------------------------- | ---------------------------------------------------------- |
+| `manual-test-checklist.md` | current task に同期済み                                    |
+| `manual-test-report.md`    | current task に同期済み                                    |
+| `evidence-index.md`        | 新規作成済み                                               |
+| representative screenshots | `TC-11-01` / `TC-11-02` を current workflow に再リンク済み |
 
-| 対象                             | 判定     | 内容                           |
-| -------------------------------- | -------- | ------------------------------ |
-| `SkillCategory`                  | 更新あり | 5 値 union として維持          |
-| `SKILL_CATEGORY_LABELS`          | 更新あり | canonical label 正本として公開 |
-| `getSkillCategoryLabel`          | 更新あり | UI 参照用の共通関数として公開  |
-| `SkillInfoStep` / `DescribeStep` | 更新あり | shared helper 参照に切り替え   |
-| Main / Preload IPC               | N/A      | この task では変更なし         |
+## 影響範囲
 
----
-
-## 結論
-
-UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の shared contract は、`skillCreator.ts` を正本として整理できた。  
-UI 側のボタンと select も canonical label を参照するようになり、`code-support` / `コード支援` の drift を解消した。  
-残る課題は root ledger 側の同期確認であり、これは別途 phase 12 compliance で扱う。
+- `SkillCreateWizard.tsx`: `GenerationMode` を barrel 経由で継続利用
+- deprecated `DescribeStep.tsx`: 型 import を `./GenerateStep` へ直接化
+- W2-seq-03a 以降の利用側: `SkillInfoStepProps` の型 import が安全に行える

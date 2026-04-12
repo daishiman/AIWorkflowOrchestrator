@@ -1,65 +1,51 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W2-seq-03b
 
 ## タスク概要
 
-`SkillCategory`（英語識別子）をUI表示用の日本語ラベルにマッピングする定数・関数を `packages/shared/src/types/skillCreator.ts` に追加する。
-
-## P50チェック結果（既実装状態確認）
-
-```
-grep -n "SKILL_CATEGORY_LABELS\|getSkillCategoryLabel" packages/shared/src/types/skillCreator.ts
-→ No matches found（未実装を確認）
-```
-
-**判定**: 重複実装なし。本タスクで新規実装する。
-
-## SkillCategory型定義（現状確認）
-
-```typescript
-// packages/shared/src/types/skillCreator.ts L948-L953
-export type SkillCategory =
-  | "automation"
-  | "external-integration"
-  | "data-analysis"
-  | "code-support"
-  | "other";
-```
-
-5値が確認済み。
-
-## 命名規則確認
-
-| 対象                                                                           | パターン         | 確認 |
-| ------------------------------------------------------------------------------ | ---------------- | ---- |
-| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE | ✅   |
-| 関数                                                                           | camelCase        | ✅   |
+`wizard/index.ts` の barrel export を更新し、廃止コンポーネント（DescribeStep）のエクスポートを削除し、
+新コンポーネント（SkillInfoStep/ConversationRoundStep）の型エクスポートを整備する。
 
 ## 機能要件
 
-| ID   | 要件                                                                            |
-| ---- | ------------------------------------------------------------------------------- |
-| FR-1 | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
-| FR-2 | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
-| FR-3 | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
-| FR-4 | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
-
-## マッピング定義
-
-| SkillCategory          | 日本語ラベル   | 文字数 |
-| ---------------------- | -------------- | ------ |
-| `automation`           | 自動化         | 3      |
-| `external-integration` | 外部連携       | 4      |
-| `data-analysis`        | データ分析     | 5      |
-| `code-support`         | コードサポート | 7      |
-| `other`                | その他         | 3      |
+| ID    | 要件                                                                                   | 優先度 |
+| ----- | -------------------------------------------------------------------------------------- | ------ |
+| FR-01 | `DescribeStep` のエクスポートを `wizard/index.ts` から削除する                         | 必須   |
+| FR-02 | `DescribeStepProps` の型エクスポートを `wizard/index.ts` から削除する                  | 必須   |
+| FR-03 | `GenerationMode` のインライン型定義を `wizard/index.ts` から削除する                   | 必須   |
+| FR-04 | `SkillInfoStepProps` の型エクスポートを `wizard/index.ts` に追加する                   | 必須   |
+| FR-05 | `SkillInfoStep.tsx` の `SkillInfoStepProps` interface に `export` キーワードを付与する | 必須   |
+| FR-06 | `GenerationMode` を `GenerateStep.tsx` から再エクスポートし型エラーを防ぐ              | 必須   |
+| FR-07 | `StepIndicator`/`GenerateStep`/`CompleteStep` のエクスポートを維持する                 | 必須   |
 
 ## 非機能要件
 
-- UIコンポーネントから参照可能なエクスポート
-- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel に広げない）
+| ID     | 要件                                                        |
+| ------ | ----------------------------------------------------------- |
+| NFR-01 | `pnpm --filter @repo/desktop typecheck` がエラー 0 件で通過 |
+| NFR-02 | 既存テストが Green を維持すること                           |
+| NFR-03 | barrel export の循環参照が発生しないこと                    |
 
-## タスク分類
+## 現状調査結果
 
-- 種別: **実装タスク / 非UIタスク / NON_VISUAL**
-- スケール: small
-- UI実装: なし（Phase 11は手動テスト中心）
+### 仕様書の想定と実際のコードの差分
+
+| 仕様書の想定                        | 実際の現状                                                | 対処         |
+| ----------------------------------- | --------------------------------------------------------- | ------------ |
+| `ConfigureStep` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
+| `WizardOptions` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
+| `ConfigureStepProps` を削除         | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
+| `SkillInfoStep` を追加              | すでに `index.ts` にエクスポートされている                | スキップ     |
+| `ConversationRoundStep` を追加      | すでに `index.ts` にエクスポートされている                | スキップ     |
+| `ConversationRoundStepProps` を追加 | すでに `index.ts` にエクスポートされている                | スキップ     |
+| `SkillInfoStepProps` を追加         | `SkillInfoStep.tsx` の interface が `export` されていない | 修正必要     |
+| `GenerationMode` を削除             | `SkillCreateWizard.tsx` が `wizard` から参照中            | 再転送で対応 |
+
+### 依存ファイルの状態
+
+| ファイル                           | 状態                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| `wizard/SkillInfoStep.tsx`         | 存在する。`SkillInfoStepProps` は `export` なしで定義されている           |
+| `wizard/ConversationRoundStep.tsx` | 存在する。`ConversationRoundStepProps` は `export interface` で公開済み   |
+| `wizard/DescribeStep.tsx`          | 存在する（廃止対象）。`GenerationMode` を `index.ts` から循環インポート中 |
+| `wizard/GenerateStep.tsx`          | `GenerationMode` 型を独自定義・エクスポートしている                       |
+| `wizard/ConfigureStep.tsx`         | 存在しない（先行タスクで削除済み）                                        |

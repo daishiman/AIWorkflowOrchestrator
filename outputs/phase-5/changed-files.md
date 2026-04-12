@@ -1,18 +1,10 @@
-# Phase 5: 変更ファイル一覧 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 5: 変更ファイル一覧 — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 変更ファイル一覧
 
-| ファイルパス                                                                        | 変更種別 | 内容                                                      |
-| ----------------------------------------------------------------------------------- | -------- | --------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                | 更新     | textarea削除・state削除・ハンドラ更新                     |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` | 更新     | `skill-lifecycle-execution-input` 非存在テスト追加（2件） |
-
-## 変更なしのファイル
-
-| ファイルパス                                     | 理由                                                        |
-| ------------------------------------------------ | ----------------------------------------------------------- |
-| `SkillLifecyclePanel.adapter-status.test.tsx`    | `skill-lifecycle-execution-input` 参照なし                  |
-| `SkillLifecyclePanel.approval.test.tsx`          | `skill-lifecycle-execution-input` 参照なし                  |
-| `SkillLifecyclePanel.auth-regression.test.tsx`   | `skill-lifecycle-request-input` 参照は describe.skip 内のみ |
-| `SkillLifecyclePanel.error-persistence.test.tsx` | `skill-lifecycle-execution-input` 参照なし                  |
-| `SkillLifecyclePanel.llm-generation.test.tsx`    | `skill-lifecycle-request-input` 参照は全て describe.skip 内 |
+| ファイル                                                                      | 変更種別 | 変更内容                                        |
+| ----------------------------------------------------------------------------- | -------- | ----------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/wizard/index.ts`                  | 変更     | エクスポート削除3件・追加2件                    |
+| `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`         | 変更     | `interface SkillInfoStepProps` に `export` 付与 |
+| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`          | 変更     | `@deprecated` JSDoc 追加                        |
+| `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts` | 新規     | エクスポート確認テスト追加                      |

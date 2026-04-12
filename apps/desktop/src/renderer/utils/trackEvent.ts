@@ -30,7 +30,17 @@ export type SkillWizardEvents = {
     generationMethod: "complete" | "skip";
   };
   skill_wizard_next_action: {
-    action: "execute" | "open_editor" | "create_another";
+    action: "edit" | "execute" | "close";
+  };
+  skill_wizard_open: {
+    source: "lifecycle_panel" | "direct";
+  };
+  skill_wizard_step_complete: {
+    step: number;
+    stepName: string;
+  };
+  skill_wizard_abandon: {
+    lastStep: number;
   };
 };
 

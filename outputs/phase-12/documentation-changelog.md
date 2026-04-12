@@ -1,50 +1,40 @@
-# Phase 12: ドキュメント更新履歴 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
+# Phase 12: ドキュメント更新履歴 — UT-SKILL-WIZARD-W2-seq-03b
 
-## メタ情報
+## 更新日
 
-| 項目     | 内容                                          |
-| -------- | --------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
+2026-04-12
 
----
+## current wave で更新したファイル
 
-## 変更対象
+| 区分     | パス                                                                          | 内容                                           |
+| -------- | ----------------------------------------------------------------------------- | ---------------------------------------------- |
+| code     | `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`          | `GenerationMode` の直接参照化                  |
+| code     | `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts` | type-level 契約テストを追加して `13/13` に拡張 |
+| workflow | `docs/30-workflows/W2-seq-03b-wizard-exports/index.md`                        | current status を反映                          |
+| workflow | `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md`         | representative screenshot audit に更新         |
+| workflow | `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md`       | 新規作成                                       |
+| workflow | `docs/30-workflows/W2-seq-03b-wizard-exports/phase-13-pr-creation.md`         | blocked 記録と local-check 出力へ更新          |
+| workflow | `docs/30-workflows/W2-seq-03b-wizard-exports/artifacts.json`                  | 新規作成                                       |
+| workflow | `docs/30-workflows/unassigned-task/UT-SKILL-WIZARD-W2-seq-03b.md`             | 新 path / current scope へ更新                 |
+| phase11  | `outputs/phase-11/*.md` / `*.json`                                            | current task 用に再同期                        |
+| phase12  | `outputs/phase-12/*.md`                                                       | canonical 6 成果物を current facts に再同期    |
+| phase13  | `outputs/phase-13/*.md`                                                       | blocked 記録を current task に再同期           |
+| ledger   | `outputs/artifacts.json`                                                      | current task 用に再同期                        |
 
-| 区分   | ファイル                                                                                       | 要約                                                            |
-| ------ | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| docs   | `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/index.md`                     | AC-2 の import 経路を具体化し、依存元リンクを実在ファイルへ修正 |
-| docs   | `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/artifacts.json`               | Phase 12 に `system-spec-update-summary.md` を追加              |
-| docs   | `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/phase-2-design.md`            | export 参照先を `packages/shared/package.json` に修正           |
-| docs   | `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/phase-9-quality-assurance.md` | subpath export での import 確認に修正                           |
-| docs   | `docs/30-workflows/ut-skill-wizard-w0-category-label-mapping-001/phase-12-documentation.md`    | current task に合わせて canonical 6 成果物の実行方針を維持      |
-| spec   | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md`    | Skill Wizard Shared Contracts に label mapping 契約を追記       |
-| code   | `packages/shared/src/types/skillCreator.ts`                                                    | `SKILL_CATEGORY_LABELS` と `getSkillCategoryLabel()` を追加     |
-| code   | `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`                              | `SkillCategory` union 固定の型回帰ガードを追加                  |
-| code   | `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`                          | shared helper からカテゴリラベルを生成                          |
-| code   | `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                           | deprecated step の `コード支援` drift を canonical label に統一 |
-| code   | `apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx`            | canonical label の option 表示を追加検証                        |
-| output | `outputs/phase-12/implementation-guide.md`                                                     | Part 1/2 と current contract を current task 版に再構成         |
-| output | `outputs/phase-12/system-spec-update-summary.md`                                               | shared contract と UI drift 解消を current facts に再記述       |
-| output | `outputs/phase-12/unassigned-task-detection.md`                                                | current task 観点の blocker を再評価                            |
-| output | `outputs/phase-12/skill-feedback-report.md`                                                    | 改善点を canonical label 統一と ledger sync 観点で再整理        |
-| output | `outputs/phase-12/phase12-task-spec-compliance-check.md`                                       | canonical 6 成果物と blocker を current task で再確認           |
+## 削除した stale artifacts
 
----
+| パス                                            | 理由           |
+| ----------------------------------------------- | -------------- |
+| `outputs/phase-12/doc-update-history.md`        | 別 task の残骸 |
+| `outputs/phase-12/documentation-summary.md`     | 別 task の残骸 |
+| `outputs/phase-12/system-spec-update.md`        | 別 task の残骸 |
+| `outputs/phase-12/untasked-detection-report.md` | 別 task の残骸 |
+| `outputs/phase-13/pr-readiness.md`              | 別 task の残骸 |
 
-## current facts の要点
+## 実測検証
 
-| 項目             | current facts                                                                                   |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| shared contract  | `SkillCategory` / `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を `skillCreator.ts` に集約 |
-| UI step 0        | `SkillInfoStep` は shared helper の label をそのまま表示                                        |
-| deprecated step  | `DescribeStep` も canonical label を参照し、`コード支援` drift を解消                           |
-| tests            | union 固定テスト + canonical option 表示テストで回帰を防止                                      |
-| system spec sync | `interfaces-agent-sdk-skill-reference.md` に shared contract を追加                             |
-
----
-
-## 結論
-
-今回の close-out では、カテゴリラベルの正本を shared type に集約し、画面側の表記揺れを解消した。  
-Phase 12 canonical 6 成果物は current task 版に更新済みだが、root ledger の同期は別途確認が必要である。
+| コマンド                                                                                                                    | 結果               |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1` | PASS (`13 passed`) |
+| `pnpm --filter @repo/desktop typecheck`                                                                                     | PASS               |
+| representative screenshot review                                                                                            | PASS               |

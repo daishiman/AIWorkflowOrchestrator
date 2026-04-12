@@ -1,40 +1,32 @@
-# Phase 12: スキルフィードバックレポート - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
-
-## メタ情報
-
-| 項目     | 内容                                          |
-| -------- | --------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-| 作成日   | 2026-04-11                                    |
-
----
+# Phase 12: スキルフィードバックレポート — UT-SKILL-WIZARD-W2-seq-03b
 
 ## 総評
 
-- 重大課題: 1 件
-- 改善候補: 2 件
+改善点あり。
 
----
+## 今回有効だったガード
 
-## 改善候補
+| 観点                            | 効果                                                             |
+| ------------------------------- | ---------------------------------------------------------------- |
+| barrel export の negative test  | 古い export が戻る回帰を止められる                               |
+| type-level test                 | `SkillInfoStepProps` と `GenerationMode` の型 drift を止められる |
+| representative screenshot audit | UI 非変更 task でも screenshot verification 要求へ対応できる     |
+| stale artifact 削除             | Phase 12/13 の false green を防げる                              |
 
-| 対象        | 改善提案内容                                                                                           | 優先度 | 実施推奨 Phase       |
-| ----------- | ------------------------------------------------------------------------------------------------------ | ------ | -------------------- |
-| root ledger | `artifacts.json` / `outputs/artifacts.json` の同期を自動化し、Phase 12 の close-out を 1 wave で閉じる | 高     | 次 wave              |
-| UI 実装     | `CATEGORY_VALUES` を 2 コンポーネントで持たず、順序定数を shared 化するとさらに drift を減らせる       | 低     | 次回リファクタリング |
+## 改善として残した知見
 
----
+| 項目                       | 内容                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| deprecated file の依存方向 | `DescribeStep.tsx` のような残置ファイルは barrel を再参照させず、実装元へ直接依存させる          |
+| export task の Phase 11    | UI 変更がなくても screenshot verification 要求がある場合は代表証跡を current task に再リンクする |
+| Phase 12 hygiene           | canonical 6 成果物以外の stale artifact は同一ターンで除去する                                   |
 
-## 良かった点
+## 改善点なしとしなかった理由
 
-- `SKILL_CATEGORY_LABELS` を `satisfies Record<SkillCategory, string>` にしたことで、ラベル漏れをコンパイルで止められる
-- `SkillInfoStep` と `DescribeStep` の両方が canonical label を読むようになり、表記揺れがなくなった
-- `DescribeStep` のテストに canonical label の option 表示を足せた
-- `SkillCategory` union 固定テストを追加できたので、型の劣化に強くなった
-
----
+- stale artifact 混入が実際に発生していた
+- representative screenshot reuse の current-task 同期が抜けていた
+- type export を runtime test だけで閉じると drift を見逃しやすい
 
 ## 結論
 
-今回の作業で、カテゴリラベルは shared の正本に収束した。  
-次にやるべきことは、台帳の同期を自動化して Phase 12 の完了判定を安定させること。
+`barrel export task でも Phase 11/12/13 の証跡同期まで含めて閉じる` という運用ガードが有効だと確認できた。
