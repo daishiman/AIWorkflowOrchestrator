@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2870,
+  "totalKeywords": 2893,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7394,7 +7394,8 @@
       "lessons-learned-conversation-db-robustness.md"
     ],
     "SKIP": [
-      "lessons-learned-conversation-db-robustness.md"
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-skill-wizard-redesign.md"
     ],
     "問題パターン": [
       "lessons-learned-conversation-db-robustness.md"
@@ -8870,9 +8871,6 @@
     "Redesign": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
-    "タスク概要": [
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
     "将来参照用": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -8883,6 +8881,12 @@
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "より": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "DESCRIBE": [
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "CLEANUP": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "依存関係": [
