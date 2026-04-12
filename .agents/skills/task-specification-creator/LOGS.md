@@ -12,6 +12,16 @@
 ### 背景
 docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sync を残しておくことで、format を purpose から誤推論する再発を防げる。
 
+## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
+
+### 変更内容
+- `phase-2-design.md` / `phase-4-test-creation.md` / `phase-5-implementation.md` / `phase-6-test-expansion.md` / `phase-12-documentation.md` を `purpose -> tool/timing` と `category -> format` の責務分離に是正
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts 化
+- `task-workflow.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を同波更新
+
+### 背景
+docs-only で閉じる FB-03 でも、workflow / skill / lesson の same-wave sync を残しておくことで、format を purpose から誤推論する再発を防げる。
+
 ## 2026-04-12 - UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -177,6 +187,7 @@ IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内
 
 
 
+
 - `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
 - `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
 - `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
@@ -184,6 +195,7 @@ IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内
 - `aiworkflow-requirements/indexes/topic-map.md` と `aiworkflow-requirements/LOGS.md` を同波で同期
 
 ### 背景
+
 
 TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
 Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
@@ -267,6 +279,7 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 
 
 
+
 - `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
 - `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
 - `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
@@ -286,6 +299,7 @@ manual evidence と current facts を同じ語彙で揃えることが、以後�
 - `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
 
 ### 背景
+
 
 
 W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
@@ -2331,6 +2345,32 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
 
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
+| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
+| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
+
+## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
+- `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
+- `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
+- `aiworkflow-requirements/LOGS.md` に 2026-04-11 ヘッドライン追加
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-CLM-001〜003 追加
+
+### 背景
+
+UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止が主な知見。SKILL.md 2ファイル同波更新。
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
+| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
+| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
 | 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |

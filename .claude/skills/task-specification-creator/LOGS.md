@@ -67,6 +67,7 @@ Phase 12 close-out と system spec 同期を単一 wave で完了させるため
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
+
 ## 2026-04-11 - UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -2318,6 +2319,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 変更内容
 
+
 - `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
 - `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
 - `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
@@ -2366,9 +2368,13 @@ UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`sat
 | 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
 | 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
 
-## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
+## 2026-04-12 - FB-04 三者同期チェックリスト標準化 impl-spec-to-skill-sync
 
 ### 変更内容
+
+- `task-specification-creator/references/patterns-phase12-sync.md` にパターン10（artifacts.json 二重管理チェック）とパターン11（canonical成果物命名規約）を追加
+- `task-specification-creator/references/phase-template-execution.md` の Phase 5 追加チェック項目に `describe.skip` 内削除対象 testid 残存確認を追加
+- `task-specification-creator/LOGS.md` に本 FB-04 完了記録を追加（重複エントリを除去）
 
 - `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
 - `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
@@ -2378,6 +2384,14 @@ UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`sat
 
 ### 背景
 
+UT-SKILL-WIZARD-FB-04 三者同期チェックリスト標準化の Phase 12 close-out sync。Phase 12 において ledger/lane/artifacts の三者同期をチェックリスト化し、artifacts.json 二重管理・canonical 成果物命名・describe.skip testid 残存確認を標準パターンとして明文化。
+
+| 項目     | 内容                                                                                                                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | documentation / workflow close-out / skill-sync                                                                                                                                                                            |
+| 変更対象 | `task-specification-creator/references/patterns-phase12-sync.md`、`task-specification-creator/references/phase-template-execution.md`、`task-specification-creator/LOGS.md`                                               |
+| 結果     | ledger: task-workflow-active.md 更新済み、lane: docs/30-workflows/ut-skill-wizard-*/artifacts.json 確認、artifacts: outputs/phase-12 canonical 6件確認。三者同期（ledger/lane/artifacts）チェックリストをパターンとして定型化 |
+| 検証     | patterns-phase12-sync.md / phase-template-execution.md 更新確認、LOGS.md 重複エントリ除去確認                                                                                                                             |
 UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止が主な知見。SKILL.md 2ファイル同波更新。
 | 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
