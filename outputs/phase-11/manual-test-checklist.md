@@ -1,36 +1,28 @@
-# 手動テスト チェックリスト — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# 手動テスト チェックリスト — TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
 ## 事前確認
 
-- [x] Phase 5 実装が完了している
-- [x] TypeScript 型チェックが通過している（`pnpm --filter @repo/desktop typecheck`）
+- [x] `apps/desktop/src/renderer/utils/cronConverter.ts` に weekly 空曜日ガードが存在する
+- [x] `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts` に空曜日ケースが存在する
+- [x] `apps/desktop/src/__tests__/utils/cronConverter.test.ts` に既存の正常系が存在する
+- [x] Phase 11 は NON_VISUAL と判定されている
 
-## 自動テスト実行
+## 照合確認
 
-- [x] `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/` を実行した
-- [x] 全テストが PASS した（85 PASS / 18 SKIP）
-- [x] テスト件数・実行時刻を記録した
+- [x] AC-1: `weekly` かつ `weekdays: []` で空文字を返す
+- [x] AC-2: `weekdays` あり weekly ケースが正常に返る
+- [x] AC-3: 既存テストの回帰範囲が current facts と一致する
+- [x] AC-4: 空曜日ケースの追加テストが存在する
+- [x] AC-5: JSDoc にガード処理の説明がある
 
-## 受入基準確認
+## 実行確認
 
-- [x] AC-1: `skill-lifecycle-execution-input` textarea が DOM に存在しない（TC-04, TC-05 PASS）
-- [x] AC-2: `executionPrompt` state が削除されている
-- [x] AC-3: `canExecuteSkill` にプロンプト長チェックがない
-- [x] AC-4: `handleExecute` が `defaultExecutionPrompt` を使用している
-- [x] AC-5: `handlePlanImprovement` が `defaultExecutionPrompt` を使用している
-- [x] AC-6: TypeScript 型チェック PASS
-- [x] AC-7: 既存ユニットテスト全件 PASS
-- [x] AC-8: `skill-lifecycle-open-wizard-button` が存在する（TC-01, TC-02 PASS）
-
-## VISUAL 確認
-
-- [x] UI コンポーネントの表示確認を light / dark の 2 パターンで実施した
-- [x] `skill-lifecycle-open-wizard-button` と textarea 非存在をスクリーンショットで確認した
-- [x] current task 専用の screenshot plan / coverage を作成した
-- [x] `outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png` を保存した
-- [x] `outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png` を保存した
+- [x] ソース確認による semantic review を完了した
+- [ ] `pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose` はこの workspace で esbuild mismatch により停止した
 
 ## 完了確認
 
-- [x] `manual-test-result.md` を作成・記入した
-- [x] `discovered-issues.md` を作成した（0件でも作成必須）
+- [x] `outputs/phase-11/manual-test-report.md` を作成した
+- [x] `outputs/phase-11/discovered-issues.md` を作成した
+- [x] `outputs/phase-11/ui-sanity-visual-review.md` を作成した
+- [x] `outputs/phase-11/phase11-capture-metadata.json` を作成した

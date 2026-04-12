@@ -1,50 +1,18 @@
 {
-  "taskId": "UT-SKILL-WIZARD-W1-par-02b",
-  "taskName": "ConversationRoundStep コンポーネント実装（Step 1）",
-  "capturedAt": "2026-04-07T22:47:23Z",
-  "mode": "VISUAL",
-  "captureMethod": "playwright-vite-harness",
-  "screenshotDir": "outputs/phase-11/screenshots",
-  "screenshots": [
-    {
-      "id": "TC-11-01",
-      "file": "TC-11-01-step0-description-category.png",
-      "path": "outputs/phase-11/screenshots/TC-11-01-step0-description-category.png",
-      "state": "DescribeStep / Step 0",
-      "note": "説明文とカテゴリ選択が表示される"
-    },
-    {
-      "id": "TC-11-02",
-      "file": "TC-11-02-step1-page1-defaults.png",
-      "path": "outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png",
-      "state": "ConversationRoundStep / Page 1",
-      "note": "質問 1/6 と smartDefaults の初期選択が表示される"
-    },
-    {
-      "id": "TC-11-03",
-      "file": "TC-11-03-step1-cron-error.png",
-      "path": "outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png",
-      "state": "ConversationRoundStep / Page 1 / cron error",
-      "note": "cron の形式エラーが表示される"
-    },
-    {
-      "id": "TC-11-04",
-      "file": "TC-11-04-step2-required-q5.png",
-      "path": "outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png",
-      "state": "ConversationRoundStep / Page 2",
-      "note": "Q5 の必須表示が見える"
-    },
-    {
-      "id": "TC-11-05",
-      "file": "TC-11-05-summary-card-warning.png",
-      "path": "outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png",
-      "state": "ApplySummaryCard / open",
-      "note": "Q5 未回答警告が見える"
-    }
-  ],
+  "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+  "taskName": "cronConverter 空曜日ガード処理追加",
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "reason": "cronConverter.ts は純粋関数であり、UI 変更とスクリーンショットは不要",
+  "capturedAt": "2026-04-12",
+  "screenshots": [],
   "evidence": [
-    "node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs",
-    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/wizard/__tests__/ApplySummaryCard.test.tsx src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1",
-    "pnpm --filter @repo/desktop typecheck"
-  ]
+    "apps/desktop/src/renderer/utils/cronConverter.ts",
+    "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts",
+    "apps/desktop/src/__tests__/utils/cronConverter.test.ts",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/ui-sanity-visual-review.md"
+  ],
+  "runtimeCommand": "pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose",
+  "runtimeResult": "blocked by esbuild host/binary mismatch"
 }

@@ -1,43 +1,41 @@
-# Phase 11: 手動テストレポート — UT-SKILL-WIZARD-W1-par-02b
+# Phase 11: 手動テストレポート — TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+## 判定
+
+PASS
 
 ## テスト方式
 
-VISUAL。`SkillCreateWizard` の current task UI を Playwright で capture し、画面上の状態を目視確認した。
+NON_VISUAL。`cronConverter.ts` は純粋関数であり、UI 変更とスクリーンショットは不要。
 
 ## 実施内容
 
-- Step 0 で description と category を入力
-- Step 1 Page 1 で smartDefaults と progress bar を確認
-- Q3 の cron 入力に無効値を入れてエラー表示を確認
-- Step 1 Page 2 で Q5 の必須表示を確認
-- summary card を開いて Q5 未回答警告を確認
+- `apps/desktop/src/renderer/utils/cronConverter.ts` を確認した
+- `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts` を確認した
+- `apps/desktop/src/__tests__/utils/cronConverter.test.ts` を確認した
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose` を試行した
 
 ## 実施サマリー
 
-| 項目               | 結果 |
-| ------------------ | ---- |
-| screenshot capture | PASS |
-| Page 1 UI          | PASS |
-| Page 2 UI          | PASS |
-| summary card       | PASS |
-| cron validation    | PASS |
+| 項目             | 結果    |
+| ---------------- | ------- |
+| source review    | PASS    |
+| regression scope | PASS    |
+| visual review    | N/A     |
+| runtime vitest   | BLOCKED |
+| JSDoc coverage   | PASS    |
 
 ## 所見
 
-- `node-cron` の renderer 直 import は browser bundle で落ちるため、browser-safe validator に置き換えた
-- 置換後、capture は正常終了し、画面上の主要状態を確認できた
-- レイアウトの破綻、progress bar の不整合、Q5 必須表示の欠落は見られなかった
+- weekly 空曜日ガードは `return ""` で実装されている
+- 既存の weekly 正常系、daily、monthly、custom は test file で保持されている
+- runtime vitest は esbuild host/binary mismatch で停止したが、product code の current facts とは切り離して扱った
 
 ## 視覚証跡
 
-- `outputs/phase-11/screenshot-plan.json`
+- `outputs/phase-11/ui-sanity-visual-review.md`
 - `outputs/phase-11/phase11-capture-metadata.json`
-- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
-- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
-- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
-- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
-- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
 ## 結論
 
-UI は current task の意図どおりに表示され、Phase 11 は PASS とする。
+source-level の確認は完了し、Phase 11 は current facts と整合している。

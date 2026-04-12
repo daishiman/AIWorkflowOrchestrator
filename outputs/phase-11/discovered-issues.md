@@ -1,20 +1,26 @@
-# Phase 11: 発見した問題 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 11: 発見した問題 — TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
 ## サマリー
 
-| 区分                | 件数 |
-| ------------------- | ---- |
-| current blocker     | 0    |
-| current minor       | 0    |
-| resolved carry-over | 0    |
+| 区分              | 件数 |
+| ----------------- | ---- |
+| product blocker   | 0    |
+| product minor     | 0    |
+| environment issue | 1    |
 
 ## 判定
 
-新規の blocker / minor はなし。carry-over も発生なし。
+product 側の blocker と minor はなし。`vitest` の直接実行はこの workspace の esbuild mismatch で停止した。
+
+## 発見事項
+
+| 対象                 | 内容                                                             | 影響度 | 対応方針                                          |
+| -------------------- | ---------------------------------------------------------------- | ------ | ------------------------------------------------- |
+| test execution env   | `pnpm vitest run` が esbuild host/binary mismatch で起動停止した | 中     | manual-test-report に環境ブロッカーとして記録した |
+| cronConverter source | weekly 空曜日ガードと JSDoc は current facts と一致している      | 低     | 追加対応なし                                      |
 
 ## 確認メモ
 
-- textarea 削除は単純な除去操作のため、新規の UI バグは発生していない
-- light / dark の両方で `skill-lifecycle-open-wizard-button` が安定して表示されることを確認した
-- `describe.skip` ブロック内の旧 testid 参照（`skill-lifecycle-request-input`）は既知の既存事項であり、本タスクで解消する義務はない
-- `SkillCreateWizard` への実配線と settings 導線の分離は current facts で完了済みで、追加の blocker / carry-over はない
+- `cronConverter.ts` の実装に product-side の欠落はない
+- `cronConverter.edge.test.ts` は空曜日ケースを含む
+- 追加の unassigned task は作成していない
