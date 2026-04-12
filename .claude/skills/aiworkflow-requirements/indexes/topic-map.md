@@ -3521,6 +3521,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4677,7 +4678,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync | L7 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L7 |
+| 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync | L27 |
 
 ### references/task-workflow-completed-recent-2026-04e.md
 
@@ -4808,9 +4810,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L171 |
-| 完了タスク（機能別アーカイブ） | L179 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L288 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L18 |
+| 完了タスク（2026-03後半） | L193 |
+| 完了タスク（機能別アーカイブ） | L201 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L310 |
 
 ### references/task-workflow-history.md
 
