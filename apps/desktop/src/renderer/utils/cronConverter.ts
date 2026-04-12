@@ -9,6 +9,13 @@ import type { VisualCronConfig } from "../types/visualCronConfig";
 /**
  * VisualCronConfig をクロン式文字列に変換する。
  * 外部ライブラリへの依存なし（純粋な文字列操作のみ）。
+ *
+ * @param config - スケジュール設定
+ * @returns cron 式文字列。`frequency="weekly"` かつ `weekdays=[]` の場合は空文字 `""` を返す。
+ *
+ * @remarks
+ * 空曜日は有効な cron 式に変換できないため、ガード処理では例外を投げず空文字を返す。
+ * 呼び出し元は既存のバリデーションで空文字を無効入力として扱う。
  */
 export function visualConfigToCron(config: VisualCronConfig): string {
   const { frequency, hour, minute, weekdays, dayOfMonth, rawCronExpression } =
@@ -25,6 +32,9 @@ export function visualConfigToCron(config: VisualCronConfig): string {
       return `${minute} ${hour} * * *`;
 
     case "weekly": {
+      if ((weekdays ?? []).length === 0) {
+        return "";
+      }
       const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
       return `${minute} ${hour} * * ${sorted.join(",")}`;
     }

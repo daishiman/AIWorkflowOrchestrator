@@ -1,0 +1,15 @@
+{
+  "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+  "phase": 11,
+  "taskType": "docs-only",
+  "taskClassification": "docs-only",
+  "visualType": "NON_VISUAL",
+  "screenshotRequired": false,
+  "reason": "pure function 修正のみで UI 変更がないため",
+  "checkedArtifacts": [
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/ui-sanity-visual-review.md"
+  ],
+  "capturedAt": "2026-04-12T16:00:00Z"
+}

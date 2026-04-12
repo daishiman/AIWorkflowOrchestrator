@@ -1,31 +1,18 @@
 {
-  "taskId": "UT-SKILL-WIZARD-W2-seq-03b",
-  "taskName": "wizard/index.ts エクスポート更新",
-  "capturedAt": "2026-04-11T15:18:00Z",
-  "mode": "VISUAL",
-  "captureMethod": "representative-screenshot-reuse+manual-review",
-  "screenshotDir": "outputs/phase-11/screenshots",
-  "screenshots": [
-    {
-      "id": "TC-11-01",
-      "file": "TC-11-01-step0-description-category.png",
-      "path": "outputs/phase-11/screenshots/TC-11-01-step0-description-category.png",
-      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
-      "state": "SkillInfoStep / Step 0 representative view",
-      "note": "current diff が UI 非変更であることを前提に再利用"
-    },
-    {
-      "id": "TC-11-02",
-      "file": "TC-11-02-step1-page1-defaults.png",
-      "path": "outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png",
-      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
-      "state": "ConversationRoundStep / Step 1 representative view",
-      "note": "進捗表示とカード配置の維持を確認"
-    }
-  ],
+  "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+  "taskName": "cronConverter 空曜日ガード処理追加",
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "reason": "cronConverter.ts は純粋関数であり、UI 変更とスクリーンショットは不要",
+  "capturedAt": "2026-04-12",
+  "screenshots": [],
   "evidence": [
-    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1",
-    "pnpm --filter @repo/desktop typecheck",
-    "manual image review via Codex view_image"
-  ]
+    "apps/desktop/src/renderer/utils/cronConverter.ts",
+    "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts",
+    "apps/desktop/src/__tests__/utils/cronConverter.test.ts",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/ui-sanity-visual-review.md"
+  ],
+  "runtimeCommand": "pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose",
+  "runtimeResult": "blocked by esbuild host/binary mismatch"
 }
