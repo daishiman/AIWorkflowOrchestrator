@@ -387,6 +387,8 @@ const activePlanResult = localPlanResult ?? storePlanResult;
 | generationSlice 新設 | 却下（後続検討） | 現時点では state 量が分割規模に達しない |
 | agentSlice 拡張 | **採用** | スキル作成ドメインの凝集性を維持 |
 | generationSlice 新設 | 却下（後続検討） | 現時点では state 量が分割規模に達しない |
+| agentSlice 拡張 | **採用** | スキル作成ドメインの凝集性を維持 |
+| generationSlice 新設 | 却下（後続検討） | 現時点では state 量が分割規模に達しない |
 
 ### 関連タスク
 

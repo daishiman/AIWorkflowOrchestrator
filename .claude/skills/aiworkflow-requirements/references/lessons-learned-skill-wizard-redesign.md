@@ -290,6 +290,30 @@ TC-11-03-generate-step-retry-button.png
 
 ---
 
+## UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11）
+
+### L-ICON-001: native title 属性の screenshot キャプチャには overlay 注入が必要
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `title` 属性で実装した tooltip が Playwright / Puppeteer の screenshot に映らない |
+| 原因       | ブラウザ native UI（OSレンダリング）はスクリーンショットAPI外にあるため capture 不可 |
+| 解決策     | capture script 内で `title` の値を読んで DOM に一時 overlay 要素を注入し、screenshot 後に除去 |
+| 再発防止   | Phase 11 evidence が必要な UI tooltip は、capture script 側で overlay プロキシを用意する |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+
+### L-ICON-002: 複合ボタン（icon + label）のテストは within(button) で構造を固定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | カテゴリボタン内に `<span aria-hidden>⚡</span><span>自動化</span>` が含まれると、`getByRole("button")` で icon テキストと label が混在しマッチが不安定になる |
+| 原因       | `screen.getByText()` はグローバル検索のため、button 内の span と button 外のテキストが衝突する |
+| 解決策     | `const btn = screen.getByRole("button", { name: /自動化/ }); within(btn).getByText("⚡")` のように `within(button)` スコープで検証する |
+| 再発防止   | icon + label の複合ボタンコンポーネントのテストは、必ず `within(element)` でスコープを絞る |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+
+---
+
 ## 依存関係
 
 | 方向 | タスクID                                                    | 内容                                              |

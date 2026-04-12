@@ -88,6 +88,20 @@ skill-feedback-report の artifacts.json parity 要件は既存 SKILL.md の Fee
 
 ---
 
+task-specification-creator の Phase 12 同期、skill-feedback 反映、current facts 更新の履歴を残す。
+
+## 2026-04-11 - UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 Phase 12 close-out sync
+
+### 変更内容
+- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` のカテゴリボタンに icon / `title` / `aria-label` / `aria-pressed` を追加
+- `apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx` を `within(button)` ベースで強化し、icon・tooltip・選択状態の current facts を固定
+- `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs` を追加し、Phase 11 の SS-01〜SS-04 を生成
+- `docs/30-workflows/skill-info-step-category-ui-icon/outputs/phase-11/screenshot-coverage.md` を追加して 4/4 evidence を固定
+- `docs/30-workflows/skill-info-step-category-ui-icon/outputs/phase-12/implementation-guide.md` に screenshot references を追記し、`task-workflow-completed.md` / `task-workflow.md` / `aiworkflow-requirements/LOGS.md` を同波更新
+
+### 背景
+native `title` tooltip はそのままでは screenshot に映らないため、capture script で一時 overlay を注入して証跡化した。UI の視認性と a11y を壊さず、Phase 11 / 12 の current facts を閉じるための同期。
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
