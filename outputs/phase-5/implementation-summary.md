@@ -1,36 +1,41 @@
-# Phase 5: 実装サマリー — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 5: 実装サマリー
 
-## 実装結果
+## タスクID: UT-SKILL-WIZARD-W2-seq-03a
 
-| エクスポート                              | 操作 | 状態    |
-| ----------------------------------------- | ---- | ------- |
-| `DescribeStep`                            | 削除 | ✅ 完了 |
-| `DescribeStepProps`                       | 削除 | ✅ 完了 |
-| `GenerationMode`（インライン定義）        | 削除 | ✅ 完了 |
-| `SkillInfoStepProps`                      | 追加 | ✅ 完了 |
-| `GenerationMode`（`GenerateStep` 再転送） | 追加 | ✅ 完了 |
-| `StepIndicator` / `StepIndicatorProps`    | 維持 | ✅ 確認 |
-| `SkillInfoStep`                           | 維持 | ✅ 確認 |
-| `ConversationRoundStep` / 関連型          | 維持 | ✅ 確認 |
-| `GenerateStep` / 関連型                   | 維持 | ✅ 確認 |
-| `CompleteStep` / 関連型                   | 維持 | ✅ 確認 |
+## 完了日: 2026-04-11
 
-## テスト結果
+## 実施内容
+
+### 削除した内容
+
+- `SkillCreatorRuntimeApi` 型定義と `getSkillCreatorApi` 関数（TASK-SC-07 専用）
+- `handleLlmGenerate`（planSkill API 呼び出しハンドラ）
+- `handleExecutePlan`（executePlan API 呼び出しハンドラ）
+- `handleCancelPlan`（LLM モード版キャンセルハンドラ）
+- `handleCancelTemplateGeneration`（テンプレートモード版キャンセルハンドラ）
+- Step 0 の generationMode ラジオボタン UI
+- Step 0 の LLM テキストエリア UI
+- Step 2 の generationMode 条件分岐 props
+
+### 追加した内容
+
+- `handleCancelGeneration`（生成中キャンセル → Step 0 復帰、formData 保持）
+- `inferSmartDefaults`, `STEPS` の export（テスト可能性向上）
+
+### STEPS 配列変更
 
 ```
-Test Files  1 passed (1)
-    Tests  13 passed (13)
-Start at  23:49:56
+変更前: ["説明入力", "設定", "生成", "完了"]
+変更後: ["スキル情報入力", "詳細設定", "生成", "完了"]
 ```
 
-## 型チェック結果
+### レンダリング変更
 
-```
-pnpm --filter @repo/desktop typecheck → エラー 0 件
-```
+- Step 0: `<SkillInfoStep>` のみ（ラジオボタン・LLMテキストエリア削除）
+- Step 2: `generationMode` 条件分岐なし、`onCancel={handleCancelGeneration}`
 
-## 変更ファイル
+## 変更ファイル一覧
 
-- `apps/desktop/src/renderer/components/skill/wizard/index.ts` — エクスポート削除・追加
-- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` — `interface SkillInfoStepProps` を `export` に変更
-- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx` — `@deprecated` JSDoc 追加
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`（主要変更）
+- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`（inferSmartDefaults / STEPS テスト追加）
+- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`（TASK-SC-07 テストを describe.skip）

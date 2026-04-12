@@ -1,10 +1,7 @@
-# Phase 5: 変更ファイル一覧 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 5: 変更ファイル一覧
 
-## 変更ファイル一覧
-
-| ファイル                                                                      | 変更種別 | 変更内容                                        |
-| ----------------------------------------------------------------------------- | -------- | ----------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/wizard/index.ts`                  | 変更     | エクスポート削除3件・追加2件                    |
-| `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`         | 変更     | `interface SkillInfoStepProps` に `export` 付与 |
-| `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`          | 変更     | `@deprecated` JSDoc 追加                        |
-| `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts` | 新規     | エクスポート確認テスト追加                      |
+| ファイル                                                                                         | 変更種別 | 内容                                                          |
+| ------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | 修正     | 旧 TASK-SC-07 ハンドラ削除、Step 0/2 レンダリング修正         |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                | 修正     | inferSmartDefaults / STEPS 単体テスト追加、インポート更新     |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | 修正     | TASK-SC-07 テストを describe.skip に変更（TODO コメント付き） |

@@ -1,109 +1,118 @@
-# Phase 12: 実装ガイド — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 12: 実装ガイド - UT-SKILL-WIZARD-W2-seq-03a
 
-## Part 1: 中学生向けの説明
+## メタ情報
 
-### この変更は何か
+| 項目     | 内容                                       |
+| -------- | ------------------------------------------ |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a                 |
+| 作成日   | 2026-04-11                                 |
+| 対象     | SkillCreateWizard オーケストレーション更新 |
+| 状態     | completed（Phase 12 完了 / PR 未作成）     |
 
-画面そのものを作り替えたのではなく、部品をまとめて外に見せる「案内板」を整理した変更です。
+---
 
-たとえば、学校の職員室の前にある案内板を思い浮かべると分かりやすいです。
-部屋そのものは変えていなくても、案内板に古い教室名が残っていると、見る人は間違った部屋へ行きます。
-今回やったことは、その案内板から古い名前を消して、今も使う名前だけを正しく並べ直したのに近いです。
+## Part 1: 中学生向け説明
 
-### なぜ必要だったか
+### SkillCreateWizard のオーケストレーション更新とは何か？
 
-- `wizard/index.ts` に古い案内が残ると、別のファイルが間違った部品名を使いやすい
-- `GenerationMode` を 2 か所で持つと、どちらが本物か分かりにくい
-- `SkillInfoStepProps` が外から見えないと、正しい型を安全に使えない
+スキルを作るための「ウィザード（案内役）」を大幅に改良した話です。
 
-### 何を変えたか
+以前は「テンプレートで作る方法」と「AIに考えてもらう方法」の2択がありました。でも2択があると使う人が迷ってしまいます。今回は「AIに考えてもらう方法」だけに統一しました。
 
-| 変更               | 内容                                                                                |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| 古い案内を外した   | `DescribeStep` / `DescribeStepProps` / inline `GenerationMode` を barrel から外した |
-| 新しい案内を足した | `SkillInfoStepProps` を公開した                                                     |
-| 1 か所にまとめた   | `GenerationMode` は `GenerateStep.tsx` を正本にした                                 |
-| 迷いを減らした     | deprecated `DescribeStep.tsx` も barrel ではなく実装元から型を読むようにした        |
+また、AIにスキルを作ってもらうとき、ユーザーが入力した「スキル名」「目的」「カテゴリ」から、AIへの質問の答えを自動で予測する「スマートデフォルト」機能を追加しました。たとえば「目的に `slack` / `Slack` / `SLACK` のどれが書かれていても、Q5の答え候補を `slack` として推論する」という感じです。これで、ユーザーが同じことを何度も入力する手間を省けます。
 
-### 見た目への影響
+完了画面では、生成したスキルのパスを見ながら品質フィードバックを送り、イメージと違ったら Step 0 に戻ってやり直せます。前回の入力は残るので、毎回最初から入力し直す必要はありません。
 
-見た目は変えていません。
-そのため、代表画面のスクリーンショットを確認し、「案内板だけ直して部屋の見た目は変わっていない」ことを確かめました。
+**例えば：**
 
-- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
-- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- 「毎日Slackに通知を送る」と入力すると、自動で「タイミング：定期実行」「ツール：Slack」が選ばれる
+- カテゴリを「code-support（コードサポート）」にすると、自動で「出力形式：コード」が選ばれる
 
-## Part 2: 技術者向けの詳細
+**専門用語の説明：**
 
-### 変更対象
+- **ウィザード**：複数の画面を順番に案内してくれる入力フォームのこと
+- **オーケストレーション**：複数のコンポーネント（部品）を指揮して動かす役割
+- **スマートデフォルト**：ユーザーの入力から自動で答えを予測する仕組み
+- **state（ステート）**：コンポーネントが持っている「今の状態」の情報
 
-- `apps/desktop/src/renderer/components/skill/wizard/index.ts`
-- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`
-- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts`
+---
 
-### current contract
+## Part 2: 技術者向け説明
 
-```ts
-export { SkillInfoStep } from "./SkillInfoStep";
-export type { SkillInfoStepProps } from "./SkillInfoStep";
+### 変更概要
 
-export type {
-  GenerateStepProps,
-  GenerationError,
-  GenerationStage,
-  GenerationErrorCode,
-  GenerationMode,
-} from "./GenerateStep";
+`SkillCreateWizard.tsx` から `description` / `options` / `generationMode` state と関連する全 `template` 分岐を除去し、LLM 専用化した。新たに `formData`/`answers`/`smartDefaults`/`generationMethod`/`skillPath`/`hasExternalIntegration`/`externalToolName` の state を追加し、`handleRetry` で Step 0 への復帰を接続する。`inferSmartDefaults` は `purpose` を小文字化して判定し、`slack`/`github`/`notion` を大小文字不問で推論する。生成開始時は `generationLockRef` と `clearGenerationState()` で再入とストア残留を抑える。
+
+### STEPS 配列変更
+
+```typescript
+// 変更前
+["説明入力", "設定", "生成", "完了"];
+
+// 変更後
+["スキル情報入力", "詳細設定", "生成", "完了"];
 ```
 
-```ts
-export interface SkillInfoStepProps {
-  formData: SkillInfoFormData;
-  onFormDataChange: (data: SkillInfoFormData) => void;
-  onNext: () => void;
+### inferSmartDefaults 関数（分離先: `wizard/utils/inferSmartDefaults.ts`）
+
+```typescript
+export function inferSmartDefaults(
+  data: SkillInfoFormData,
+): SmartDefaultResult {
+  // purpose テキストからツール・タイミングを推論（大小文字不問）
+  // category から出力フォーマットを推論
+  // inferenceLog に推論根拠を記録
 }
 ```
 
-### 使用例
+**推論ルール**:
 
-```ts
-import type { GenerationMode, SkillInfoStepProps } from "./wizard";
+| 条件                                     | 結果                  |
+| ---------------------------------------- | --------------------- |
+| purpose に "slack"（大小文字不問）       | tool = "slack"        |
+| purpose に "github"（大小文字不問）      | tool = "github"       |
+| purpose に "notion"（大小文字不問）      | tool = "notion"       |
+| purpose に "毎日/毎週/定期/スケジュール" | timing = "scheduled"  |
+| purpose に "リアルタイム/即座/すぐに"    | timing = "realtime"   |
+| category === "code-support"              | format = "code"       |
+| category === "data-analysis"             | format = "structured" |
+
+### API シグネチャ
+
+```typescript
+handleStep0Next(): void
+handleGenerate(method: "complete" | "skip"): Promise<void>
+handleQualityFeedback(satisfied: boolean): void
+handleRetry(): void
+handleCancelGeneration(): void
 ```
-
-`SkillCreateWizard.tsx` は `GenerationMode` を barrel 経由で参照し続ける。
-deprecated `DescribeStep.tsx` は barrel ループを避けるため、`./GenerateStep` から直接 `GenerationMode` を読む。
-
-### エラーハンドリングと失敗モード
-
-| 失敗モード                                           | 影響                                                                  | 防ぎ方                                            |
-| ---------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------- |
-| `GenerationMode` の再転送を消す                      | `SkillCreateWizard.tsx` と deprecated `DescribeStep.tsx` が型エラー化 | `GenerateStep.tsx` を正本として再転送を維持する   |
-| `SkillInfoStepProps` を非公開に戻す                  | barrel 経由の型 import が壊れる                                       | `wizard-exports.test.ts` で type-level に固定する |
-| deprecated `DescribeStep.tsx` が barrel を再参照する | 依存がねじれ、保守時に誤読しやすい                                    | `./GenerateStep` へ直接依存させる                 |
 
 ### エッジケース
 
-- `ConfigureStep` / `WizardOptions` / `ConfigureStepProps` は current repo では既に存在しない
-- `DescribeStep.tsx` 自体は互換性維持のため残っているが、barrel からは公開しない
-- UI 実装変更ではないため、Phase 11 は representative screenshot audit と static verification の組み合わせで閉じた
+- LLM 生成失敗時: `isGenerating=false` + エラー state で UI フィードバック
+- 二重呼び出し: `generationLockRef` + `isGenerating` で防止
+- 推論0件: `inferenceLog` が空配列で返る（エラーにならない）
+- `handleRetry`: `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` / `error` / `generationMethod` / `isGenerating` をリセット
 
-### 設定値・固定値
+### 変更ファイル一覧
 
-| 項目             | 値                    | 役割                                      |
-| ---------------- | --------------------- | ----------------------------------------- |
-| `GenerationMode` | `"llm" \| "template"` | 生成方式の型                              |
-| export test 件数 | `13`                  | runtime / negative / type contract の合計 |
+| ファイル                                                                                         | 変更内容                                                              |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | generationMode 削除、新 state/ハンドラ追加、Step 0/2 レンダリング修正 |
+| `apps/desktop/src/renderer/components/skill/wizard/utils/inferSmartDefaults.ts`                  | 新規作成（分離）                                                      |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                | inferSmartDefaults / STEPS 単体テスト追加                             |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | describe.skip（削除対象 TASK-SC-07 テスト）                           |
 
-### 検証結果
+### Phase 11 visual evidence
 
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1`
-  - `13 passed (13)`
-- `pnpm --filter @repo/desktop typecheck`
-  - エラー 0 件
+Phase 11 のスクリーンショットは、Step 0〜3 の見た目と回復導線が仕様どおりかを最終確認する根拠として参照した。
 
-### 依存タスク
-
-- W1-par-02a（SkillInfoStep）
-- W1-par-02b（ConversationRoundStep）
-- W1-par-02c（CompleteStep）
+| 画面                  | 参照先                                                                                                                                       | 確認観点                 |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| Step 0                | [TC-11-01-step0-description-category.png](../phase-11/screenshots/TC-11-01-step0-description-category.png)                                   | 初期入力とカテゴリ表示   |
+| Step 1                | [TC-11-02-step1-page1-defaults.png](../phase-11/screenshots/TC-11-02-step1-page1-defaults.png)                                               | smartDefaults の初期反映 |
+| Step 1 エラー         | [TC-11-03-step1-cron-error.png](../phase-11/screenshots/TC-11-03-step1-cron-error.png)                                                       | cron バリデーション表示  |
+| Step 2                | [TC-11-04-step2-required-q5.png](../phase-11/screenshots/TC-11-04-step2-required-q5.png)                                                     | Q5 必須表示              |
+| Step 3                | [TC-11-05-summary-card-warning.png](../phase-11/screenshots/TC-11-05-summary-card-warning.png)                                               | サマリー警告             |
+| Lifecycle panel light | [skill-lifecycle-panel-light.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png) | ウィザード導線の初期状態 |
+| Lifecycle panel dark  | [skill-lifecycle-panel-dark.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png)   | 同上のダーク表示         |
