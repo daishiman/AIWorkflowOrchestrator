@@ -115,7 +115,7 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | --- | --- | --- | --- |
 | view-like component | SkillCreateWizard | ウィザード全体状態管理（formData/answers/smartDefaults/generationMethod/error）+ W3-seq-04 計装 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` |
 | molecule | StepIndicator | ステップ進捗表示（active/completed/pending） | `.../wizard/StepIndicator.tsx` |
-| molecule | SkillInfoStep | Step 0: スキル名・目的・カテゴリ入力（`SkillInfoFormData`） | `.../wizard/SkillInfoStep.tsx` |
+| molecule | SkillInfoStep | Step 0: スキル名・目的・カテゴリ入力（`SkillInfoFormData`）<br>カテゴリボタンは icon + `title` + `aria-label` + `aria-pressed` を持つ | `.../wizard/SkillInfoStep.tsx` |
 | molecule | ConversationRoundStep | Step 1: 6問・2ページインタビューUI（Page1: Q1-Q3、Page2: Q4-Q6）<br>Q3: cron + timezone / Q5: category 依存の必須表示 | `.../wizard/ConversationRoundStep.tsx` |
 | molecule | InterviewProgressBar | 質問 N/6 + `role="progressbar"` 進捗バー（常時表示） | `.../wizard/InterviewProgressBar.tsx` |
 | molecule | ApplySummaryCard | 未回答問の smartDefaults 一覧 + Q5 空欄警告（external-integration 時のみ） | `.../wizard/ApplySummaryCard.tsx` |
@@ -126,6 +126,7 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 **wizard/index.ts の export（current facts）**:
 - `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` / `SkillInfoStep` を export
 - `ConfigureStep` / `WizardOptions` は削除済み（export なし）
+- `SkillInfoStep` のカテゴリ候補は `SkillCategory` を起点に icon / 説明文を持ち、hover 時の tooltip と a11y を current contract として維持する
 
 **shared contracts（`packages/shared/src/types/skillCreator.ts` の既存定義を consumer として利用）**:
 - `SkillCategory` / `SkillInfoFormData` / `ConversationAnswers` / `QuestionAnswer`
@@ -140,21 +141,33 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 
 > W1-par-02c で `CompleteStep` は旧来の「作成パス表示 + close」から、次の行動を促す起点画面へ更新された。`generatedSkill` は親コンテキストとして保持し、表示責務からは切り離している。
 
-### 使用率計装（W3-seq-04 / completed）
+### 使用率計装 + analytics adapter 接続（W3-seq-04 / UT-W3-ANALYTICS-ADAPTER-001）
 
-`trackEvent.ts`（renderer-local util）を追加し、SkillCreateWizard に 5 計装ポイントを実装した。
+`trackEvent.ts`（renderer-local util）で定義した 5 計装イベントを、`analyticsAdapter` 経由で `analytics:send` IPC へ接続した。
 
-**ファイル**: `apps/desktop/src/renderer/utils/trackEvent.ts`
+**ファイル**:
+
+- `apps/desktop/src/renderer/utils/trackEvent.ts`
+- `apps/desktop/src/renderer/utils/analyticsAdapter.ts`
+- `apps/desktop/src/main/ipc/analyticsHandler.ts`
 
 | イベント名 | payload | 計装責務 |
 | --- | --- | --- |
 | `skill_wizard_started` | `{}` | SkillCreateWizard（マウント時 useEffect） |
 | `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（handleGenerate 冒頭） |
-| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後・失敗時は発火しない） |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ） |
 | `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
-| `skill_wizard_next_action` | `{ action: "execute" \| "open_editor" \| "create_another" }` | SkillCreateWizard（handleExecuteNow / handleOpenInEditor / handleCreateAnother） |
+| `skill_wizard_next_action` | `{ action: "edit" \| "execute" \| "close" }` | CompleteStep（アクションカード onClick） |
 
-**設計方針**: dev 環境は `console.info` でログ出力、prod は no-op。将来的に内部 sink を analytics adapter に差し替え可能（呼び出し側は変えない）。SkillAnalytics / AnalyticsStore（execution-centric）とは直接接続しない。
+`skill_wizard_open` の `source` は呼び出し元で設定し、`App.tsx` の `/advanced/skill-create-wizard` は `direct`、`SkillManagementPanel.tsx` は create / lifecycle 起点に応じて `direct` / `lifecycle_panel` を渡す。`skill_wizard_next_action` は CompleteStep 側で 1 回だけ発火し、SkillCreateWizard 側での重複送信はしない。
+| `skill_wizard_next_action` | `{ action: "execute" \| "open_editor" \| "create_another" }` | SkillCreateWizard（next action handlers） |
+
+**current contract**:
+
+- dev 環境: `console.info("[trackEvent]", ...)` のみ（adapter 送信なし）
+- prod 環境: `trackEvent -> analyticsAdapter.send -> window.analyticsAPI.send -> IPC "analytics:send"`
+- opt-out: Renderer（store.get `analyticsOptOut`）と Main（`electron-store`）の二重判定
+- offline: adapter 側で in-memory queue（max 500 / TTL 7日）を保持し、online 復帰で flush
 
 ### 進捗ステータス
 
@@ -165,6 +178,7 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | テスト資産 | ✅ 完了 | `apps/desktop/src/renderer/components/skill/__tests__/` |
 | 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/` |
 | W3-seq-04 使用率計装（trackEvent 5ポイント） | ✅ 完了 | `apps/desktop/src/renderer/utils/trackEvent.ts` |
+| UT-W3-ANALYTICS-ADAPTER-001（analytics adapter / IPC 接続） | ✅ 完了 | `apps/desktop/src/renderer/utils/analyticsAdapter.ts` / `apps/desktop/src/main/ipc/analyticsHandler.ts` |
 
 ### 状態管理・IPC依存
 

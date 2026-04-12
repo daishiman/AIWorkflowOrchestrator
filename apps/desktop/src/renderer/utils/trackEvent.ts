@@ -4,8 +4,8 @@
  *
  * SkillCreateWizard の 5 計装ポイントに対する型安全なイベント送信関数。
  * - dev 環境: console.info でログ出力
- * - prod 環境: no-op
- * - 将来: 内部の sink を analytics adapter に差し替え可能（呼び出し側は変えない）
+ * - prod 環境: analytics adapter 経由で IPC 送信（UT-W3-ANALYTICS-ADAPTER-001）
+ * - 公開 API シグネチャ不変（呼び出し側の変更不要）
  *
  * 生成完了イベントの category は skillCreator の Step 0 カテゴリを使う。
  * SkillAnalytics / AnalyticsStore は execution-centric のため、
@@ -13,6 +13,7 @@
  */
 
 import type { SkillCategory as WizardSkillCategory } from "@repo/shared/types/skillCreator";
+import { getAnalyticsAdapter } from "./analyticsAdapter";
 
 export type SkillWizardEvents = {
   skill_wizard_started: Record<string, never>;
@@ -30,7 +31,17 @@ export type SkillWizardEvents = {
     generationMethod: "complete" | "skip";
   };
   skill_wizard_next_action: {
-    action: "execute" | "open_editor" | "create_another";
+    action: "edit" | "execute" | "close";
+  };
+  skill_wizard_open: {
+    source: "lifecycle_panel" | "direct";
+  };
+  skill_wizard_step_complete: {
+    step: number;
+    stepName: string;
+  };
+  skill_wizard_abandon: {
+    lastStep: number;
   };
 };
 
@@ -40,6 +51,9 @@ export function trackEvent<K extends keyof SkillWizardEvents>(
 ): void {
   if (process.env.NODE_ENV !== "production") {
     console.info("[trackEvent]", eventName, payload);
+    return;
   }
-  // 将来: execution-centric 基盤とは独立した sink に差し替える
+
+  // production だけ analytics adapter 経由で sink に送信（IPC → Main プロセス）
+  getAnalyticsAdapter().send(eventName, payload as Record<string, unknown>);
 }

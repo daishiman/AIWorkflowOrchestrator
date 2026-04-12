@@ -7,8 +7,8 @@
  * P40準拠: apps/desktop ディレクトリから実行
  *
  * W2-seq-03a 更新:
- * - Step 0: DescribeStep → SkillInfoStep（purpose 10文字以上 + category 必須）
- * - wizard-step-describe → wizard-step-info
+ * - Step 0: SkillInfoStep に統合（purpose 10文字以上 + category 必須）
+ * - wizard-step-info を使用
  * - getByRole("textbox") → { name: /目的/ } で特定
  *
  * Store action経由でのスキル作成フローを検証。

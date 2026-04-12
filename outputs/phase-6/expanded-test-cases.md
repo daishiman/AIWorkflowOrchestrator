@@ -1,27 +1,29 @@
-# Phase 6: 拡張テストケース — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
+# Phase 6: 拡張テストケース
 
-## 概要
+## 追加した inferSmartDefaults エッジケース
 
-Phase 4 の基本テスト（TC-04, TC-05）に加え、関連する境界条件と回帰シナリオを確認した。
+| テストケース               | 期待結果                     | ファイル                   |
+| -------------------------- | ---------------------------- | -------------------------- |
+| purpose='SLACK'（大文字）  | tool='slack'（大小文字不問） | SkillCreateWizard.test.tsx |
+| purpose='github'（小文字） | tool='github'                | SkillCreateWizard.test.tsx |
+| purpose='Notion'           | tool='notion'                | SkillCreateWizard.test.tsx |
+| purpose='定期'             | timing='scheduled'           | SkillCreateWizard.test.tsx |
+| purpose='リアルタイム'     | timing='realtime'            | SkillCreateWizard.test.tsx |
+| category='data-analysis'   | format='structured'          | SkillCreateWizard.test.tsx |
+| purpose=''                 | 全フィールド null            | SkillCreateWizard.test.tsx |
+| 推論0件                    | inferenceLog が空配列        | SkillCreateWizard.test.tsx |
 
-## 拡張テストケース一覧
+## STEPS 配列回帰テスト
 
-| TC番号   | シナリオ                                                   | 検証内容                                  | 結果 |
-| -------- | ---------------------------------------------------------- | ----------------------------------------- | ---- |
-| TC-EX-01 | `canExecuteSkill` がスキル名なしで false                   | `createdSkillName` なし → ボタン disabled | PASS |
-| TC-EX-02 | `canExecuteSkill` がスキル名ありで true                    | プロンプト長チェック除去を確認            | PASS |
-| TC-EX-03 | `handleExecute` が `defaultExecutionPrompt` を使用する     | `appendSessionEntry` に定数が渡る         | PASS |
-| TC-EX-04 | `handlePlanImprovement` が `defaultExecutionPrompt` を使用 | `runtimeFeedback` が定数値と一致          | PASS |
-| TC-EX-05 | `isExecuting` 中はボタン disabled                          | 実行中フラグによる排他制御                | PASS |
-| TC-EX-06 | `skillExecutionStatus === "review"` でボタン disabled      | レビュー状態の排他制御                    | PASS |
-| TC-EX-07 | `skillExecutionStatus === "reuse_ready"` でボタン disabled | 再利用準備状態の排他制御                  | PASS |
+| テストケース                                          | 期待結果 |
+| ----------------------------------------------------- | -------- |
+| STEPS === ["スキル情報入力","詳細設定","生成","完了"] | ✅       |
+| STEPS.length === 4                                    | ✅       |
 
-## 境界条件メモ
+## TASK-SC-07 テストの skip 処理
 
-- `executionPrompt.trim().length > 0` チェックが削除されたことで、以前は空欄で blocked だった実行フローが unblocked になった
-- `defaultExecutionPrompt` 定数（"このスキルの基本動作を確認し、改善余地があれば短くまとめてください。"）が唯一の実行プロンプトソースとなった
-- `improve_ready` / 通常実行の分岐はいずれも `defaultExecutionPrompt` を参照するため、両パスで一貫した動作
+`SkillCreateWizard.llm-generation.test.tsx` の describe ブロックを `describe.skip` に変更。
 
-## 判定
-
-拡張テスト全件 PASS。境界条件に問題なし。
+- 理由: W2-seq-03a でラジオボタン UI・planSkill/executePlan フローを削除
+- 新フロー（createSkill ベース）は `SkillCreateWizard.test.tsx` でカバー済み
+- TODO コメントを追加（W2-seq-03a 参照）

@@ -1,67 +1,43 @@
-# Phase 5: 公開 API 前後差分 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 5: 契約差分
 
-## 概要
+## SkillCreateWizard コンポーネント
 
-本タスクで `@repo/shared` の公開 API に新規追加された内容を記録する。
-既存の公開 API への破壊的変更はない。
+### 削除された state
 
-## 差分サマリー
+| state            | 型                    | 理由                    |
+| ---------------- | --------------------- | ----------------------- |
+| `generationMode` | `"template" \| "llm"` | LLM 専用化により不要    |
+| `description`    | `string`              | formData.purpose に統合 |
+| `options`        | `WizardOptions`       | 削除                    |
 
-| 種別     | 対象                  | 変更内容          |
-| -------- | --------------------- | ----------------- |
-| 追加     | `inferSmartDefaults`  | 新規 named export |
-| 変更なし | その他すべての export | 影響なし          |
+### 追加された state（W2-seq-03a）
 
-## 追加された公開 API
+| state                    | 型                           | 初期値              |
+| ------------------------ | ---------------------------- | ------------------- |
+| `formData`               | `SkillInfoFormData`          | `DEFAULT_FORM_DATA` |
+| `answers`                | `ConversationAnswers`        | `DEFAULT_ANSWERS`   |
+| `smartDefaults`          | `SmartDefaultResult \| null` | `null`              |
+| `generationMethod`       | `"complete" \| "skip"`       | `"complete"`        |
+| `skillPath`              | `string \| null`             | `null`              |
+| `hasExternalIntegration` | `boolean`                    | `false`             |
+| `externalToolName`       | `string \| null`             | `null`              |
 
-### inferSmartDefaults
+### GenerateStep への props 変更
 
-```typescript
-/**
- * ユーザー入力（SkillInfoFormData）からスマートデフォルト推論結果を生成する
- *
- * `purpose` は tool/timing の推論対象、`category` は format の独立推論対象。
- * 推論できなかったフィールドは null を返す（フォールバック）。
- * 推論件数が0件でも inferenceLog は空配列 [] として返す。
- *
- * @param input スキル情報入力フォームの値
- * @returns SmartDefaultResult 推論結果
- */
-export function inferSmartDefaults(
-  input: SkillInfoFormData,
-): SmartDefaultResult;
-```
+| prop                      | 変更前                        | 変更後                        |
+| ------------------------- | ----------------------------- | ----------------------------- |
+| `mode` / `generationMode` | 渡していた（TASK-SC-07版）    | 削除（W2-seq-03a で不要）     |
+| `onCancel`                | `generationMode` 条件分岐     | `handleCancelGeneration` 固定 |
+| `planResult`              | `localPlanResult`（条件付き） | 渡さない                      |
+| `onExecutePlan`           | 条件付き                      | 渡さない                      |
+| `onCancelPlan`            | 条件付き                      | 渡さない                      |
 
-### 依存型（既存定義・変更なし）
+### CompleteStep への props 変更（W2-seq-03a で新規接続）
 
-```typescript
-// packages/shared/src/types/skillCreator.ts より（変更なし）
-
-export interface SkillInfoFormData {
-  skillName?: string;
-  purpose: string;
-  category: SkillCategory | null;
-}
-
-export interface SmartDefaultResult {
-  who: string | null;
-  input: string | null;
-  timing: string | null;
-  output: string | null;
-  tool: string | null;
-  format: string | null;
-  inferenceLog?: string[];
-}
-```
-
-## インポート方法
-
-```typescript
-// 利用側コード例
-import { inferSmartDefaults } from "@repo/shared";
-import type { SkillInfoFormData, SmartDefaultResult } from "@repo/shared";
-```
-
-## 破壊的変更
-
-なし。既存の全 export は変更・削除されていない。
+| prop                     | 状態                              |
+| ------------------------ | --------------------------------- |
+| `skillPath`              | ✅ 接続済み                       |
+| `hasExternalIntegration` | ✅ 接続済み                       |
+| `externalToolName`       | ✅ 接続済み                       |
+| `onRetry`                | ✅ handleRetry 接続済み           |
+| `onQualityFeedback`      | ✅ handleQualityFeedback 接続済み |

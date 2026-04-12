@@ -189,6 +189,11 @@
       "types": "./dist/src/types/skillCreatorExternalApi.d.ts",
       "import": "./dist/src/types/skillCreatorExternalApi.js",
       "require": "./dist/src/types/skillCreatorExternalApi.cjs"
+    },
+    "./types/skillWizard": {
+      "types": "./dist/src/types/skill-wizard-label-map.d.ts",
+      "import": "./dist/src/types/skill-wizard-label-map.js",
+      "require": "./dist/src/types/skill-wizard-label-map.cjs"
     }
   },
   "typesVersions": {
@@ -300,6 +305,9 @@
       ],
       "types/skillCreatorExternalApi": [
         "./src/types/skillCreatorExternalApi.ts"
+      ],
+      "types/skillWizard": [
+        "./src/types/skill-wizard-label-map.ts"
       ]
     }
   },
