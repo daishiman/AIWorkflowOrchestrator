@@ -32,6 +32,29 @@
 
 ---
 
+## UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12）
+
+### L-W3-TRACK-003: opt-out final gate は renderer と main の二重防衛にする
+
+- **症状**: renderer 側だけで送信停止しても、Main 側の最終 gate が弱いと store 読み取り失敗時に telemetry が漏れる
+- **原因**: 送信前判定と最終判定が 1 層しかなかった
+- **解決策**: renderer で予備判定、Main で `electron-store` の `analyticsOptOut` を final gate にする。store が無い / 読めない場合は safe-side で skip する
+- **標準ルール**: analytics transport は dual gate を必須とし、片側だけの opt-out 判定で完了扱いにしない
+
+### L-W3-TRACK-004: trackEvent の API を変えず sink だけ差し替える
+
+- **症状**: sink 差し替えと同時に `trackEvent` の公開 API を変えると、呼び出し側の回帰が広がる
+- **原因**: 計装ポイントの責務と transport の責務が混ざっていた
+- **解決策**: `trackEvent<K>(eventName, payload): void` のシグネチャは維持し、transport のみ `analyticsAdapter` / `analytics:send` に差し替える
+- **標準ルール**: 呼び出し側のイベント契約は固定し、transport は adapter で吸収する
+
+### L-W3-TRACK-005: queue / flush / validation は serial に扱う
+
+- **症状**: offline queue と online flush と opt-out 更新が並列に走ると、古い state で二重送信や取りこぼしが起こりやすい
+- **原因**: send / flush / gate check の順序が非同期競合しうる
+- **解決策**: `analyticsAdapter` 内で send / flush の操作を直列化し、queue TTL と max size を固定したうえで safe-side skip を優先する
+- **標準ルール**: analytics adapter は state mutation を直列化し、検証失敗時は送信より停止を優先する
+
 ## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
 
 ### L-SC-E2E-001: IPC handlerMap モックパターン
@@ -859,6 +882,40 @@
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
 
 ### L-CRON-SEM-003: Phase 12 サマリーに外部同期一覧を必ず含める
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 12 compliance check が台帳 parity チェックで FAIL し、全体が BLOCKED になるまで artifacts.json の不一致が検出されなかった |
+| 原因       | Phase 12 標準フローに「repo root `artifacts.json` ↔ `outputs/artifacts.json` ↔ phase spec artifact 名」の3点同期チェックが含まれていなかった |
+| 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+---
+
+## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+
+### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
+| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
+| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
+| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
+| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
+| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
+| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
 
 | 項目       | 内容 |
 | ---------- | ---- |

@@ -1,11 +1,5 @@
 {
-<<<<<<< Updated upstream
-  "totalKeywords": 2920,
-||||||| Stash base
-  "totalKeywords": 2910,
-=======
-  "totalKeywords": 2914,
->>>>>>> Stashed changes
+  "totalKeywords": 2924,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7741,19 +7735,6 @@
     "ラベルマッピング集約": [
       "lessons-learned-current-2026-04.md"
     ],
-<<<<<<< Updated upstream
-    "DESCRIBE": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
-    "DELETION": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "レガシーコード整理": [
-      "lessons-learned-current-2026-04.md"
-    ],
-||||||| Stash base
-=======
     "CRON": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7766,7 +7747,16 @@
     "cron": [
       "lessons-learned-current-2026-04.md"
     ],
->>>>>>> Stashed changes
+    "DESCRIBE": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "DELETION": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "レガシーコード整理": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"

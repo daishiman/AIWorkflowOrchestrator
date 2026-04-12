@@ -4,6 +4,17 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync（SKILL.md Trigger 補完）
+
+### 変更内容
+- `SKILL.md` description Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` / `意味論的バリデーション` / `到達可能性チェック` / `cron-parser@5.5.0` / `TASK-UI-SCHEDULE-CRON-SEMANTIC-001` を追加
+- `task-specification-creator/SKILL.md` 「よくある漏れ」テーブルに FB-CRONVL-001/002 追記・v10.09.45 changelog 追加
+- `task-specification-creator/LOGS.md` に impl-spec-to-skill-sync エントリ追加
+- LOGS.md 2ファイル同波更新
+
+### 背景
+2026-04-12 の impl-spec-to-skill-sync では resource-map・lessons-learned・task-workflow-completed の更新を実施したが、SKILL.md Trigger キーワード追加と task-specification-creator FB-CRONVL 反映が未実施のまま残っていた。本エントリで漏れを解消。
+
 ## 2026-04-12 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
