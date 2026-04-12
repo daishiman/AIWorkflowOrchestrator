@@ -1,31 +1,27 @@
-# Phase 1: 影響範囲マップ — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 1: 影響範囲マップ
 
-## 削除エクスポートの影響範囲
+## 削除対象
 
-| 削除エクスポート                   | 参照元                                                                     | 影響                                                |
-| ---------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
-| `DescribeStep`                     | `wizard/index.ts` のみ（`SkillCreateWizard.tsx` はすでに不使用）           | 削除しても `SkillCreateWizard.tsx` への影響なし     |
-| `DescribeStepProps`                | 型参照箇所なし                                                             | 削除しても影響なし                                  |
-| `GenerationMode`（インライン定義） | `SkillCreateWizard.tsx`（`import type { GenerationMode } from "./wizard"`) | `GenerateStep.tsx` から再エクスポートで継続利用可能 |
+| 削除対象                                                       | ファイル              | 行番号（概算） |
+| -------------------------------------------------------------- | --------------------- | -------------- |
+| generationMode state                                           | SkillCreateWizard.tsx | 415-416        |
+| hasActivatedLlmMode state                                      | SkillCreateWizard.tsx | 418            |
+| llmDescription state                                           | SkillCreateWizard.tsx | 421            |
+| setGenerationMode / setHasActivatedLlmMode / setLlmDescription | SkillCreateWizard.tsx | 関連箇所       |
+| handleLlmGenerate()                                            | SkillCreateWizard.tsx | 588-666        |
+| handleExecutePlan()                                            | SkillCreateWizard.tsx | 669-800        |
+| handleCancelPlan()                                             | SkillCreateWizard.tsx | 803-813        |
+| handleCancelTemplateGeneration()                               | SkillCreateWizard.tsx | 816-820        |
+| handleStep0NextFromLlm()                                       | SkillCreateWizard.tsx | 469-478        |
+| Step 0 のテンプレート切替ラジオUI                              | SkillCreateWizard.tsx | 872-938        |
+| GenerateStep への generationMode 条件分岐 props                | SkillCreateWizard.tsx | 968-986        |
+| templateGenerationRequestIdRef                                 | SkillCreateWizard.tsx | 391            |
 
-## 追加エクスポートの影響範囲
+## 保持する内容
 
-| 追加エクスポート     | 利用先                        | 影響                                   |
-| -------------------- | ----------------------------- | -------------------------------------- |
-| `SkillInfoStepProps` | 型参照箇所（型安全な import） | 型安全なコンポーネント利用が可能になる |
-
-## 維持エクスポートの確認
-
-| 維持エクスポート                       | 影響                                              |
-| -------------------------------------- | ------------------------------------------------- |
-| `StepIndicator` / `StepIndicatorProps` | 変更なし                                          |
-| `GenerateStep` / `GenerateStepProps`   | 変更なし（`GenerationMode` 再エクスポートが追加） |
-| `CompleteStep` / `CompleteStepProps`   | 変更なし                                          |
-| `InterviewProgressBar` / 関連型        | 変更なし（仕様外だが維持）                        |
-| `ApplySummaryCard` / 関連型            | 変更なし（仕様外だが維持）                        |
-
-## 循環参照リスク
-
-`DescribeStep.tsx` が `import type { GenerationMode } from "./index"` で循環インポートしているが、
-`GenerationMode` を `GenerateStep.tsx` 経由で再エクスポートするため、
-`DescribeStep.tsx` の既存インポートは引き続き機能する。
+| 保持対象                                                                       | 理由                                |
+| ------------------------------------------------------------------------------ | ----------------------------------- |
+| generationLockRef                                                              | 二重呼び出し防止（LLM生成でも必要） |
+| llmGenerationRequestIdRef                                                      | 非同期リクエスト識別に使用          |
+| handleLlmGenerate → 将来的に不要だが、このタスクでは handleGenerate で代替済み |
+| wizard/index.ts の GenerationMode 型                                           | W2-seq-03b の担当                   |

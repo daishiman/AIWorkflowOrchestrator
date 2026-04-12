@@ -1,32 +1,34 @@
-# Phase 12: 未タスク検出 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 12: 未タスク検出レポート - UT-SKILL-WIZARD-W2-seq-03a
 
-## 判定結果
+## メタ情報
 
-- 新規未タスク: 0 件
-- 既存 backlog 参照: 1 件
+| 項目     | 内容                       |
+| -------- | -------------------------- |
+| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
+| 作成日   | 2026-04-11                 |
 
-## current task で未タスク化しなかった項目
+---
 
-| 項目                          | 理由                                                                         |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| `DescribeStep.tsx` の物理削除 | 既に `docs/30-workflows/issues/issue-2054.md` で follow-up が formalize 済み |
-| `CATEGORY_VALUES` の重複定義  | current task の本質は export contract であり、機能整合は成立している         |
+## 検出結果
 
-## 既存 backlog 参照
+未タスク件数: **1件**
 
-| パス                                                                         | 内容                                            |
-| ---------------------------------------------------------------------------- | ----------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` | `W2-seq-03b` 関連の cleanup backlog が既に存在  |
-| `docs/30-workflows/issues/issue-2054.md`                                     | deprecated file の物理削除を別 issue として管理 |
+| #   | タスクID                                  | タスク名                                                     | 優先度 | 規模   |
+| --- | ----------------------------------------- | ------------------------------------------------------------ | ------ | ------ |
+| 1   | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 | SkillCreateWizard LLM生成フロー describe.skip クリーンアップ | 低     | 小規模 |
 
-## 監査観点
+### 検出詳細
 
-| 観点                          | 判定 | 根拠                                                |
-| ----------------------------- | ---- | --------------------------------------------------- |
-| code TODO/FIXME/HACK/XXX      | PASS | 対象コードに該当なし                                |
-| current diff 起因の follow-up | PASS | export contract と Phase 11-13 証跡の同期で解消済み |
-| stale artifact 混入           | PASS | Phase 12/13 の別 task 残骸を削除済み                |
+**UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001**
 
-## 結論
+- **発見箇所**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` 行 144（`describe.skip`）
+- **発見根拠**: W2-seq-03a で `generationMode` ラジオボタン UI を削除したことにより、旧 TASK-SC-07 の `planSkill`/`executePlan` フローに対する 30 テストが `describe.skip` でスキップ状態になっている。TODO コメントが明示的に本タスクの必要性を記録している。
+- **仕様書パス**: `docs/30-workflows/unassigned-task/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001.md`
+- **影響**: CI には現時点で影響なし。将来 `describe.skip` が外れた場合に 30 テストが一斉失敗するリスクあり。
 
-current task 起因の新規未タスクはない。
+## スコープ外として識別した項目
+
+| 項目                                                   | 判断理由                  |
+| ------------------------------------------------------ | ------------------------- |
+| `wizard/index.ts` の `GenerationMode` エクスポート削除 | W2-seq-03b の担当スコープ |
+| `W3-seq-04` 計装タスクの実装                           | 別タスク（ready 状態）    |

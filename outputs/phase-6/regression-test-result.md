@@ -1,26 +1,25 @@
-# Phase 6: 回帰テスト結果 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 6: 回帰テスト結果
 
-## 実行日時
+## 実行日: 2026-04-11
 
-2026-04-11 23:52
+## 環境: happy-dom / Vitest 2.1.9
 
-## 実行結果
+## テスト結果サマリー
 
-```
-Test Files  1 passed (1)
-    Tests  13 passed (13)
-Start at  23:52:41
-Duration  4.51s
-```
+| テストファイル                                  | テスト数 | 結果                                 |
+| ----------------------------------------------- | -------- | ------------------------------------ |
+| SkillCreateWizard.test.tsx                      | 29       | ✅ 全合格                            |
+| SkillCreateWizard.tracking.test.tsx             | 17       | ✅ 全合格                            |
+| SkillCreateWizard.store-integration.test.tsx    | 18       | ⏭ 全スキップ（pre-existing）        |
+| SkillCreateWizard.llm-generation.test.tsx       | 26       | ⏭ 全スキップ（W2-seq-03a 削除対象） |
+| wizard/**tests**/GenerateStep.test.tsx          | 37       | ✅ 全合格                            |
+| wizard/**tests**/CompleteStep.test.tsx          | 38       | ✅ 全合格                            |
+| wizard/**tests**/SkillInfoStep.test.tsx         | 26       | ✅ 全合格                            |
+| wizard/**tests**/ConversationRoundStep.test.tsx | 40       | ✅ 全合格                            |
 
-## 回帰テスト判定
+## 重要な確認事項
 
-| 対象                         | 変更前状態 | 変更後状態  | 判定              |
-| ---------------------------- | ---------- | ----------- | ----------------- |
-| StepIndicator                | 存在       | 存在        | ✅ OK             |
-| GenerateStep                 | 存在       | 存在        | ✅ OK             |
-| CompleteStep                 | 存在       | 存在        | ✅ OK             |
-| InterviewProgressBar         | 存在       | 存在        | ✅ OK             |
-| ApplySummaryCard             | 存在       | 存在        | ✅ OK             |
-| DescribeStep                 | 存在       | 削除        | ✅ OK（意図通り） |
-| GenerationMode（インライン） | 存在       | 削除→再転送 | ✅ OK             |
+- `generationMode` 関連のコードは全て削除済み（コメント内のみ）
+- `inferSmartDefaults` の大小文字不問推論が正しく動作
+- `handleRetry` で formData が保持されることを確認
+- `skillPath` が CompleteStep に正しく渡されることを確認

@@ -1,51 +1,28 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 1: 要件定義書
 
-## タスク概要
-
-`wizard/index.ts` の barrel export を更新し、廃止コンポーネント（DescribeStep）のエクスポートを削除し、
-新コンポーネント（SkillInfoStep/ConversationRoundStep）の型エクスポートを整備する。
+## タスクID: UT-SKILL-WIZARD-W2-seq-03a
 
 ## 機能要件
 
-| ID    | 要件                                                                                   | 優先度 |
-| ----- | -------------------------------------------------------------------------------------- | ------ |
-| FR-01 | `DescribeStep` のエクスポートを `wizard/index.ts` から削除する                         | 必須   |
-| FR-02 | `DescribeStepProps` の型エクスポートを `wizard/index.ts` から削除する                  | 必須   |
-| FR-03 | `GenerationMode` のインライン型定義を `wizard/index.ts` から削除する                   | 必須   |
-| FR-04 | `SkillInfoStepProps` の型エクスポートを `wizard/index.ts` に追加する                   | 必須   |
-| FR-05 | `SkillInfoStep.tsx` の `SkillInfoStepProps` interface に `export` キーワードを付与する | 必須   |
-| FR-06 | `GenerationMode` を `GenerateStep.tsx` から再エクスポートし型エラーを防ぐ              | 必須   |
-| FR-07 | `StepIndicator`/`GenerateStep`/`CompleteStep` のエクスポートを維持する                 | 必須   |
+- description / options / generationMode state の完全削除
+- 全 template 条件分岐の除去
+- inferSmartDefaults(formData) 純粋関数の実装（purpose小文字化、slack/github/notion大小文字不問検出）
+- handleStep0Next() - formData→smartDefaults推論→Step 1遷移
+- handleGenerate(method: "complete" | "skip") - generationLockRef + isGenerating で二重呼び出し防止
+- handleQualityFeedback(satisfied: boolean) - trackEvent呼び出し
+- handleRetry() - formData保持、answers/smartDefaults/skillPath等リセット、Step 0復帰
+- STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"]
+- Step 3 で skillPath を表示
+- hasExternalIntegration / externalToolName を CompleteStep に接続
 
 ## 非機能要件
 
-| ID     | 要件                                                        |
-| ------ | ----------------------------------------------------------- |
-| NFR-01 | `pnpm --filter @repo/desktop typecheck` がエラー 0 件で通過 |
-| NFR-02 | 既存テストが Green を維持すること                           |
-| NFR-03 | barrel export の循環参照が発生しないこと                    |
+- TypeScript 型エラー 0件
+- ESLint エラー 0件
+- 全テスト Green（vitest）
 
-## 現状調査結果
+## 実装状況（2026-04-11）
 
-### 仕様書の想定と実際のコードの差分
-
-| 仕様書の想定                        | 実際の現状                                                | 対処         |
-| ----------------------------------- | --------------------------------------------------------- | ------------ |
-| `ConfigureStep` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `WizardOptions` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `ConfigureStepProps` を削除         | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `SkillInfoStep` を追加              | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `ConversationRoundStep` を追加      | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `ConversationRoundStepProps` を追加 | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `SkillInfoStepProps` を追加         | `SkillInfoStep.tsx` の interface が `export` されていない | 修正必要     |
-| `GenerationMode` を削除             | `SkillCreateWizard.tsx` が `wizard` から参照中            | 再転送で対応 |
-
-### 依存ファイルの状態
-
-| ファイル                           | 状態                                                                      |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| `wizard/SkillInfoStep.tsx`         | 存在する。`SkillInfoStepProps` は `export` なしで定義されている           |
-| `wizard/ConversationRoundStep.tsx` | 存在する。`ConversationRoundStepProps` は `export interface` で公開済み   |
-| `wizard/DescribeStep.tsx`          | 存在する（廃止対象）。`GenerationMode` を `index.ts` から循環インポート中 |
-| `wizard/GenerateStep.tsx`          | `GenerationMode` 型を独自定義・エクスポートしている                       |
-| `wizard/ConfigureStep.tsx`         | 存在しない（先行タスクで削除済み）                                        |
+- 新state・ハンドラは実装済み
+- 削除対象の generationMode / hasActivatedLlmMode / llmDescription state が残存
+- Step 0 のテンプレート切替UIが残存
