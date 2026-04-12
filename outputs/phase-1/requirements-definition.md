@@ -29,12 +29,43 @@ export type SkillCategory =
 
 ## 命名規則確認
 
+| 対象                                                                           | パターン                                                        | 確認 |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------- | ---- | --- | --- | --- | ---------- |
+| 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE                                                | ✅   |
+| 関数                                                                           | camelCase                                                       | ✅   |
+|                                                                                |                                                                 |      |     |     |     | Stash base |
+| 観点                                                                           | 結果                                                            |
+| ----------------------------------------------                                 | --------------------------------------------------------------- |
+| `selectedHealthStatus` の導出                                                  | `selectedProviderId` と `llmHealthStatus` から導出              |
+| `buildMainlineExecutionAccessState()` の受け口                                 | `healthPolicy?: HealthPolicy` を受け取れる                      |
+| `resolveHealthPolicy` の export                                                | `packages/shared/src/types/index.ts` から barrel export 済み    |
+| `apiKeyDegraded` の扱い                                                        | hook 内の独自算出は削除対象、shared 側の型/関数では継続利用あり |
+
+---
+
 | 対象                                                                           | パターン         | 確認 |
 | ------------------------------------------------------------------------------ | ---------------- | ---- |
 | 定数（例: `WORKFLOW_MANIFEST_SCHEMA_VERSION`、`SKILL_CREATOR_ENGINE_VERSION`） | UPPER_SNAKE_CASE | ✅   |
 | 関数                                                                           | camelCase        | ✅   |
 
 ## 機能要件
+
+| ID                           | 要件                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------- | -------------------------- | --- | --- | --- | ---------- |
+| FR-1                         | `SkillCategory` の全5値に対応する日本語ラベルを定数として定義する               |
+| FR-2                         | `SKILL_CATEGORY_LABELS` 定数をエクスポートする                                  |
+| FR-3                         | `getSkillCategoryLabel(category: SkillCategory): string` 関数をエクスポートする |
+| FR-4                         | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
+|                              |                                                                                 |                            |     |     |     | Stash base |
+| HealthPolicyInput フィールド | マッピング元                                                                    | 変換方法                   |
+| ---------------------------- | ------------------------------                                                  | -------------------------- |
+| `connectionStatus`           | `selectedHealthStatus?.status`                                                  | `?? "disconnected"` で補完 |
+| `isApiKeyValid`              | `credentials.apiKeyValid`                                                       | そのまま渡す               |
+| `apiKeyDegraded`             | 独自算出ロジックの代替                                                          | `false` を渡す             |
+| `isRateLimited`              | hook 内に該当変数なし                                                           | `false` を渡す             |
+| `lastHealthCheck`            | `selectedHealthStatus`                                                          | `?? null` で補完           |
+
+---
 
 | ID   | 要件                                                                            |
 | ---- | ------------------------------------------------------------------------------- |
@@ -44,6 +75,25 @@ export type SkillCategory =
 | FR-4 | `Record<SkillCategory, string>` 型により型網羅性を保証する                      |
 
 ## マッピング定義
+
+| SkillCategory          | 日本語ラベル                                                                 | 文字数                                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --- | --- | --- | ---------- |
+| `automation`           | 自動化                                                                       | 3                                                                                                             |
+| `external-integration` | 外部連携                                                                     | 4                                                                                                             |
+| `data-analysis`        | データ分析                                                                   | 5                                                                                                             |
+| `code-support`         | コードサポート                                                               | 7                                                                                                             |
+| `other`                | その他                                                                       | 3                                                                                                             |
+|                        |                                                                              |                                                                                                               |     |     |     | Stash base |
+| AC                     | 内容                                                                         | 確認方法                                                                                                      |
+| ----                   | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| AC-1                   | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | hook で `resolveHealthPolicy` の import と呼び出しを確認                                                      |
+| AC-2                   | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | hook の呼び出し引数を確認                                                                                     |
+| AC-3                   | `apiKeyDegraded` 独自算出ロジックが削除されている                            | hook 内の `const apiKeyDegraded = ...` が存在しないことを確認                                                 |
+| AC-4                   | `@repo/shared/types` 経由でインポートしている                                | import 文を確認                                                                                               |
+| AC-5                   | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
+| AC-6                   | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              |
+
+---
 
 | SkillCategory          | 日本語ラベル   | 文字数 |
 | ---------------------- | -------------- | ------ |

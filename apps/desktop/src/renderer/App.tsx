@@ -352,7 +352,10 @@ function App(): JSX.Element {
         );
       case "skillCreate":
         return (
-          <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
+          <SkillCreateWizard
+            onClose={() => setCurrentView("skillCenter")}
+            source="lifecycle_panel"
+          />
         );
       case "skillManagement":
         return (
@@ -401,7 +404,10 @@ function App(): JSX.Element {
         );
       case "skillCreate":
         return (
-          <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
+          <SkillCreateWizard
+            onClose={() => setCurrentView("skillCenter")}
+            source="lifecycle_panel"
+          />
         );
       case "skillAnalysis": {
         const previousView = Array.isArray(viewHistory)
@@ -693,7 +699,10 @@ function App(): JSX.Element {
           element={
             <AuthGuard>
               {renderStandaloneView(
-                <SkillCreateWizard onClose={() => window.history.back()} />,
+                <SkillCreateWizard
+                  onClose={() => window.history.back()}
+                  source="direct"
+                />,
               )}
             </AuthGuard>
           }
