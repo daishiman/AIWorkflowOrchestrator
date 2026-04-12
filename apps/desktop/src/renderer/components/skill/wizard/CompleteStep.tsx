@@ -7,7 +7,8 @@
  * W2-seq-03a: skillPath prop 追加・onClose 後方互換維持
  */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
+import { trackEvent } from "../../../utils/trackEvent";
 
 export interface GeneratedSkill {
   path?: string;
@@ -70,6 +71,7 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [webhookChecked, setWebhookChecked] = useState(false);
   const [testRunChecked, setTestRunChecked] = useState(false);
+  const handledActionsRef = useRef<Set<string>>(new Set());
 
   const handleSatisfied = useCallback(() => {
     if (feedbackSubmitted) return;
@@ -90,6 +92,7 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
       label: "今すぐ実行する",
       icon: "▶",
       ariaLabel: "今すぐ実行する",
+      action: "execute" as const,
       handler: onExecuteNow,
     },
     {
@@ -97,6 +100,7 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
       label: "エディタで開く",
       icon: "✏",
       ariaLabel: "エディタで開く",
+      action: "edit" as const,
       handler: onOpenInEditor,
     },
     {
@@ -104,9 +108,10 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
       label: "別のスキルを作る",
       icon: "＋",
       ariaLabel: "別のスキルを作る",
+      action: "close" as const,
       handler: onCreateAnother,
     },
-  ] as const;
+  ];
 
   return (
     <div data-testid="complete-step" className="flex flex-col gap-6 py-6">
@@ -178,7 +183,15 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
             aria-label={action.ariaLabel}
             disabled={!action.handler}
             aria-disabled={!action.handler ? "true" : undefined}
-            onClick={() => action.handler?.()}
+            onClick={() => {
+              if (!handledActionsRef.current.has(action.testId)) {
+                handledActionsRef.current.add(action.testId);
+                trackEvent("skill_wizard_next_action", {
+                  action: action.action,
+                });
+                action.handler?.();
+              }
+            }}
             className={styles.card}
           >
             <span aria-hidden="true" className="text-lg">

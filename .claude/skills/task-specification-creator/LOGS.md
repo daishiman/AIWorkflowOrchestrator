@@ -73,6 +73,35 @@ TASK-SC-07（SkillCreateWizard LLM Connection）の Phase 12 close-out として
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-W3-seq-04 impl-spec-to-skill-sync
+
+### 変更内容
+- `aiworkflow-requirements/LOGS.md` に W3-seq-04 impl-spec-to-skill-sync エントリを追加（2026-04-11）
+- `aiworkflow-requirements/references/lessons-learned-w3-usage-tracking-2026-04.md`: L-W3-TRACK-001（console.debug→console.info）・L-W3-TRACK-002（5計装ポイント責務分離）を更新
+- `aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md`: `skill_wizard_next_action` payload・`skill_wizard_open.source` 記述を更新
+- `aiworkflow-requirements/references/task-workflow-completed-recent-2026-04d.md`: W3-seq-04 完了記録（5計装ポイント詳細）を追加
+- `.agents/` mirror sync 完了（13ファイル同期）/ generate-index.js PASS（2862 keywords）/ diff -qr 差分なし
+
+### 背景
+W3-seq-04（使用率計装）の実装内容（trackEvent renderer-local 抽象・5計装ポイント確定）を仕様書に反映。
+skill-feedback-report の artifacts.json parity 要件は既存 SKILL.md の Feedback 2 / Feedback 10 で対応済み。
+
+---
+
+task-specification-creator の Phase 12 同期、skill-feedback 反映、current facts 更新の履歴を残す。
+
+## 2026-04-11 - UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 Phase 12 close-out sync
+
+### 変更内容
+- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` のカテゴリボタンに icon / `title` / `aria-label` / `aria-pressed` を追加
+- `apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx` を `within(button)` ベースで強化し、icon・tooltip・選択状態の current facts を固定
+- `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs` を追加し、Phase 11 の SS-01〜SS-04 を生成
+- `docs/30-workflows/skill-info-step-category-ui-icon/outputs/phase-11/screenshot-coverage.md` を追加して 4/4 evidence を固定
+- `docs/30-workflows/skill-info-step-category-ui-icon/outputs/phase-12/implementation-guide.md` に screenshot references を追記し、`task-workflow-completed.md` / `task-workflow.md` / `aiworkflow-requirements/LOGS.md` を同波更新
+
+### 背景
+native `title` tooltip はそのままでは screenshot に映らないため、capture script で一時 overlay を注入して証跡化した。UI の視認性と a11y を壊さず、Phase 11 / 12 の current facts を閉じるための同期。
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -2186,6 +2215,32 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
 
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
+| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
+| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
+| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
+| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
+
+## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
+- `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
+- `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
+- `aiworkflow-requirements/LOGS.md` に 2026-04-11 ヘッドライン追加
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-CLM-001〜003 追加
+
+### 背景
+
+UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止が主な知見。SKILL.md 2ファイル同波更新。
 | 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |

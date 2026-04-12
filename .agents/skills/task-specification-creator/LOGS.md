@@ -73,6 +73,21 @@ TASK-SC-07（SkillCreateWizard LLM Connection）の Phase 12 close-out として
 
 ---
 
+## 2026-04-11 - UT-SKILL-WIZARD-W3-seq-04 impl-spec-to-skill-sync
+
+### 変更内容
+- `aiworkflow-requirements/LOGS.md` に W3-seq-04 impl-spec-to-skill-sync エントリを追加（2026-04-11）
+- `aiworkflow-requirements/references/lessons-learned-w3-usage-tracking-2026-04.md`: L-W3-TRACK-001（console.debug→console.info）・L-W3-TRACK-002（5計装ポイント責務分離）を更新
+- `aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md`: `skill_wizard_next_action` payload・`skill_wizard_open.source` 記述を更新
+- `aiworkflow-requirements/references/task-workflow-completed-recent-2026-04d.md`: W3-seq-04 完了記録（5計装ポイント詳細）を追加
+- `.agents/` mirror sync 完了（13ファイル同期）/ generate-index.js PASS（2862 keywords）/ diff -qr 差分なし
+
+### 背景
+W3-seq-04（使用率計装）の実装内容（trackEvent renderer-local 抽象・5計装ポイント確定）を仕様書に反映。
+skill-feedback-report の artifacts.json parity 要件は既存 SKILL.md の Feedback 2 / Feedback 10 で対応済み。
+
+---
+
 ## 2026-04-08 - TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION skill-feedback 反映
 
 ### 変更内容
@@ -91,6 +106,36 @@ IPC surface 追加時の `ALLOWED_INVOKE_CHANNELS` 漏れと公開 surface / 内
 
 ### 変更内容
 
+
+- `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
+- `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
+- `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
+- `.claude/skills/aiworkflow-requirements/references/arch-state-management-skill-creator.md` / `arch-ui-components-core.md` を current facts に更新
+- `aiworkflow-requirements/indexes/topic-map.md` と `aiworkflow-requirements/LOGS.md` を同波で同期
+
+### 背景
+
+TASK-SC-07 は current branch の中心タスクであり、コード変更後に task spec / system spec / outputs の三層を同じ current facts に揃える必要があった。
+Phase 12 の canonical 6成果物と skill/spec ログを、最新の `SkillCreateWizard` 実装に合わせて閉じる。
+
+## 2026-04-09 - skill-wizard-multi-select-options Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-wizard-multi-select-options/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 完成
+- `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成（canonical 6成果物 PASS）
+- Phase 9〜12 全 outputs を作成し Phase 1-12 outputs 完成
+- LOGS.md 2ファイル同波更新
+
+### 背景
+
+`QuestionAnswer.selectedOption: string | null` → `selectedOptions: string[]` の型移行タスク。
+SmartDefaultResult は変更なし（UI 層の `createQuestionAnswer` で変換を吸収）。
+Phase 12 canonical 6成果物を出力し close-out 完了。
+
+## 2026-04-09 - TASK-SC-07 Phase 12 current facts sync
+
+### 変更内容
 - `outputs/phase-12/implementation-guide.md` を TASK-SC-07 current facts ベースで再作成
 - `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を current facts に更新
 - `docs/30-workflows/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/index.md` と `artifacts.json` を completed / phase13_blocked に更新
@@ -150,6 +195,20 @@ Phase 12 の成果物から漏れやすい topic-map / completed ledger / log �
 ### 変更内容
 
 
+
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
+- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
+- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
+
+### 背景
+
+W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
+manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
+## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
+
+### 変更内容
 - `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
 - `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
 - `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた

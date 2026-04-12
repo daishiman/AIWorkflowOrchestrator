@@ -168,7 +168,13 @@ vi.mock("../pages/AgentSDKPage", () => ({
 
 vi.mock("../components/skill", () => ({
   SkillAnalysisView: () => <div data-testid="skill-analysis-view-stub" />,
-  SkillCreateWizard: () => <div data-testid="skill-create-wizard-stub" />,
+  SkillCreateWizard: ({
+    source,
+  }: {
+    source?: "lifecycle_panel" | "direct";
+  }) => (
+    <div data-testid="skill-create-wizard-stub" data-source={source ?? ""} />
+  ),
 }));
 
 vi.mock("../hooks/useNavShortcuts", () => ({
@@ -277,6 +283,16 @@ describe("App mainline shell", () => {
     expect(
       await screen.findByTestId("skill-lifecycle-panel-stub"),
     ).toBeInTheDocument();
+  });
+
+  it("advanced/skill-create-wizard で SkillCreateWizard に source=direct が渡る", async () => {
+    window.history.pushState({}, "", "/advanced/skill-create-wizard");
+
+    render(<App />);
+
+    expect(
+      await screen.findByTestId("skill-create-wizard-stub"),
+    ).toHaveAttribute("data-source", "direct");
   });
 
   it("legacy shell で currentView=skillLifecycle のとき dock currentView が skillCenter に正規化される", async () => {

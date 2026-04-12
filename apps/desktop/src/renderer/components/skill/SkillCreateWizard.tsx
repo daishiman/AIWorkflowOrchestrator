@@ -370,12 +370,13 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi {
 
 export interface SkillCreateWizardProps {
   onClose: () => void;
+  source?: "lifecycle_panel" | "direct";
 }
 
 export const SkillCreateWizard = React.forwardRef<
   HTMLDivElement,
   SkillCreateWizardProps
->(({ onClose: _onClose }, ref) => {
+>(({ onClose: _onClose, source }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
@@ -389,6 +390,9 @@ export const SkillCreateWizard = React.forwardRef<
   const generationLockRef = useRef(false);
   const llmGenerationRequestIdRef = useRef(0);
   const templateGenerationRequestIdRef = useRef(0);
+  // W3-seq-04: abandon 制御 ref（P-5）
+  const wizardCompletedRef = useRef(false);
+  const currentStepRef = useRef(0);
 
   // ── 新 state（W2-seq-03a） ─────────────────────────────────────────────
   const [formData, setFormData] =
@@ -406,10 +410,16 @@ export const SkillCreateWizard = React.forwardRef<
   const [hasExternalIntegration, setHasExternalIntegration] = useState(false);
   const [externalToolName, setExternalToolName] = useState<string | null>(null);
 
-  // W3-seq-04 計装 1: ウィザード起動イベント（AC-01）
+  // W3-seq-04 計装 1: ウィザード起動・開封イベント（AC-01 / P-1）
   useEffect(() => {
     trackEvent("skill_wizard_started", {});
+    trackEvent("skill_wizard_open", { source: source ?? "direct" });
   }, []);
+
+  // W3-seq-04: currentStep を useRef で追跡（アンマウント時クロージャ問題回避）
+  useEffect(() => {
+    currentStepRef.current = currentStep;
+  }, [currentStep]);
 
   // TASK-SC-07: LLM 生成フロー state
   const [generationMode, setGenerationMode] =
@@ -434,10 +444,17 @@ export const SkillCreateWizard = React.forwardRef<
     llmGenerationRequestIdRef.current += 1;
     templateGenerationRequestIdRef.current += 1;
   };
-  // アンマウント時にリクエストを無効化（clearGenerationState はハンドラ側で対称クリア済み）
+  // アンマウント時にリクエストを無効化・abandon 発火（P-5）
   useEffect(() => {
     return () => {
       llmGenerationRequestIdRef.current += 1;
+      templateGenerationRequestIdRef.current += 1;
+      generationLockRef.current = false;
+      if (!wizardCompletedRef.current) {
+        trackEvent("skill_wizard_abandon", {
+          lastStep: currentStepRef.current,
+        });
+      }
     };
   }, []);
 
@@ -459,6 +476,7 @@ export const SkillCreateWizard = React.forwardRef<
     setExternalToolName(null);
     setLocalPlanResult(null);
     generationLockRef.current = false;
+    wizardCompletedRef.current = false;
     clearGenerationState();
   };
 
@@ -474,6 +492,7 @@ export const SkillCreateWizard = React.forwardRef<
     const integration = resolveExternalIntegration(answers.q5, defaults.tool);
     setHasExternalIntegration(integration.hasExternalIntegration);
     setExternalToolName(integration.externalToolName);
+    trackEvent("skill_wizard_step_complete", { step: 0, stepName: STEPS[0] });
     goNext();
   };
 
@@ -486,6 +505,7 @@ export const SkillCreateWizard = React.forwardRef<
     const integration = resolveExternalIntegration(answers.q5, defaults.tool);
     setHasExternalIntegration(integration.hasExternalIntegration);
     setExternalToolName(integration.externalToolName);
+    trackEvent("skill_wizard_step_complete", { step: 0, stepName: STEPS[0] });
     goNext();
   };
 
@@ -509,6 +529,7 @@ export const SkillCreateWizard = React.forwardRef<
       skippedAtQuestion:
         method === "skip" ? resolveSkippedAtQuestion(answers) : null,
     });
+    trackEvent("skill_wizard_step_complete", { step: 1, stepName: STEPS[1] });
 
     generationLockRef.current = true;
     invalidateGenerationRequests();
@@ -550,6 +571,8 @@ export const SkillCreateWizard = React.forwardRef<
         category: formData.category ?? "other",
         hasExternalIntegration: integration.hasExternalIntegration,
       });
+      wizardCompletedRef.current = true;
+      trackEvent("skill_wizard_step_complete", { step: 2, stepName: STEPS[2] });
 
       goToStep(3);
     } catch (err) {
@@ -782,6 +805,8 @@ export const SkillCreateWizard = React.forwardRef<
 
       setLocalPlanResult(null); // AC-10: 対称クリア
       clearGenerationState(); // W-10
+      wizardCompletedRef.current = true;
+      trackEvent("skill_wizard_step_complete", { step: 2, stepName: STEPS[2] });
       goToStep(3);
     } catch (err) {
       if (requestId !== llmGenerationRequestIdRef.current) {
@@ -821,19 +846,16 @@ export const SkillCreateWizard = React.forwardRef<
 
   /** 今すぐ実行する → ウィザードを閉じる（W3-seq-04 計装 5: AC-05） */
   const handleExecuteNow = () => {
-    trackEvent("skill_wizard_next_action", { action: "execute" });
     _onClose();
   };
 
   /** エディタで開く → ウィザードを閉じる（W3-seq-04 計装 5: AC-05） */
   const handleOpenInEditor = () => {
-    trackEvent("skill_wizard_next_action", { action: "open_editor" });
     _onClose();
   };
 
   /** 別のスキルを作る → Step 0 復帰（W3-seq-04 計装 5: AC-05） */
   const handleCreateAnother = () => {
-    trackEvent("skill_wizard_next_action", { action: "create_another" });
     resetGeneratedState(false);
     goToStep(0);
   };

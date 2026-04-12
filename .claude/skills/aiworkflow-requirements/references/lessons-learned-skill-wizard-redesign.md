@@ -290,6 +290,54 @@ TC-11-03-generate-step-retry-button.png
 
 ---
 
+## UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11）
+
+### L-SKIP-001: `describe.skip` 内 testid の CI 非検出問題
+
+| 項目             | 内容                                                                                                                                                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001                                                                                                                                                                           |
+| 課題             | UI リファクタリング（`skill-lifecycle-request-input` textarea → 遷移ボタン化）後、削除した testid への参照が `describe.skip` ブロック内に残存していた。CI はスキップブロックを実行しないため、旧参照が無音で残り続ける |
+| 再現条件         | testid を削除・改名する UI 変更時に、`describe.skip` で囲まれたテストブロックが存在する場合                                                                                                                            |
+| 解決策           | testid 削除後に `grep -rn "削除したtestid" apps/desktop/src/renderer/components/` でスキップブロック内を含む全参照を確認し、残存していれば同一 wave で削除する                                                         |
+| 標準ルール       | testid 削除・改名タスクでは Phase 5 完了チェックとして `grep -rn` による全参照確認を必須にする。`describe.skip` は CI から見えない「死角」であり、スキップブロック内の旧参照は next cleanup タスクに積み残されやすい   |
+| 影響ファイル     | `SkillLifecyclePanel.llm-generation.test.tsx`（11 箇所削除）、`SkillLifecyclePanel.auth-regression.test.tsx`（fillCreateRequest を no-op 化）                                                                          |
+| 削除フィクスチャ | `indexes-skill/SKILL.md`（用途廃止のフィクスチャスキル）                                                                                                                                                               |
+
+### L-SKIP-002: NON_VISUAL タスクの describe.skip 内 cleanup チェックリスト不在
+
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 5（実装）の完了チェックリストに「削除 testid の describe.skip 内残存確認」が明示されておらず、FB-02 として Phase 12 で初めて検出された |
+| 解決策     | Phase 5 仕様書テンプレートに「testid 削除タスクの場合、`grep -rn "<削除testid>" apps/` でスキップブロック内残存を確認する」を追加する        |
+| 関連スキル | task-specification-creator Phase 5 チェックリスト / patterns-lessons-and-pitfalls.md                                                         |
+
+---
+
+## UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11）
+
+### L-ICON-001: native title 属性の screenshot キャプチャには overlay 注入が必要
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `title` 属性で実装した tooltip が Playwright / Puppeteer の screenshot に映らない |
+| 原因       | ブラウザ native UI（OSレンダリング）はスクリーンショットAPI外にあるため capture 不可 |
+| 解決策     | capture script 内で `title` の値を読んで DOM に一時 overlay 要素を注入し、screenshot 後に除去 |
+| 再発防止   | Phase 11 evidence が必要な UI tooltip は、capture script 側で overlay プロキシを用意する |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+
+### L-ICON-002: 複合ボタン（icon + label）のテストは within(button) で構造を固定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | カテゴリボタン内に `<span aria-hidden>⚡</span><span>自動化</span>` が含まれると、`getByRole("button")` で icon テキストと label が混在しマッチが不安定になる |
+| 原因       | `screen.getByText()` はグローバル検索のため、button 内の span と button 外のテキストが衝突する |
+| 解決策     | `const btn = screen.getByRole("button", { name: /自動化/ }); within(btn).getByText("⚡")` のように `within(button)` スコープで検証する |
+| 再発防止   | icon + label の複合ボタンコンポーネントのテストは、必ず `within(element)` でスコープを絞る |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+
+---
+
 ## 依存関係
 
 | 方向 | タスクID                                                    | 内容                                              |
