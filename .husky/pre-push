@@ -1,5 +1,9 @@
 #!/bin/sh
+# shellcheck disable=SC2039
 # pre-push hook: プッシュ前にCI相当のチェックを実行
+# NOTE: huskyは `sh -e` でこのスクリプトを実行するため、
+# set +e でexit-on-errorを無効化してから処理を続ける
+set +e
 #
 # ⚠️  警告: --no-verify オプションは絶対禁止です！
 # このフックをスキップすると、CIで初めてエラーが検出され、
