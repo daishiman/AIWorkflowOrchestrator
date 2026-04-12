@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2924,
+  "totalKeywords": 2938,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1225,6 +1225,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1646,6 +1647,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "ui-ux-feature-components-theme-chat.md"
     ],
     "スキルファイル操作": [
@@ -2082,6 +2084,7 @@
       "spec-splitting-guidelines.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
@@ -4765,6 +4768,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -4853,6 +4857,7 @@
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -7711,7 +7716,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "SCHEDULE": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "VISUAL": [
       "lessons-learned-current-2026-04.md"
@@ -7736,7 +7742,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "CRON": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "SEMANTIC": [
       "lessons-learned-current-2026-04.md"
@@ -7745,6 +7752,70 @@
       "lessons-learned-current-2026-04.md"
     ],
     "cron": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "WEEKGRD": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "weekly": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "weekdays": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "ガードは例外でなく空文字返却で設計する": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "NON": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "純粋関数タスクの": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "source": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "level": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PASS": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "と環境ブロッカーを分離して記録する": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "タスクでは": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "ui": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-recent.md",
+      "lessons-learned-ui-adapter-status-retry.md",
+      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
+      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
+      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
+      "logs-archive-2026-01-topic-map-remember-choice.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "spec-splitting-guidelines.md",
+      "ui-ux-feature-components-advanced.md"
+    ],
+    "sanity": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "visual": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
+    ],
+    "review": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
+    ],
+    "宣言を明示する": [
       "lessons-learned-current-2026-04.md"
     ],
     "DESCRIBE": [
@@ -8139,10 +8210,6 @@
     "FEEDBACK": [
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
-    "review": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
     "DIALOG": [
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
@@ -8203,19 +8270,6 @@
     ],
     "management": [
       "lessons-learned-phase12-lifecycle-recent.md"
-    ],
-    "ui": [
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "lessons-learned-ui-adapter-status-retry.md",
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-01-topic-map-remember-choice.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "spec-splitting-guidelines.md",
-      "ui-ux-feature-components-advanced.md"
     ],
     "BUILD": [
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -9204,11 +9258,6 @@
     ],
     "ホーム画面リデザイン": [
       "lessons-learned-ui-skill-center-editor-dashboard.md"
-    ],
-    "visual": [
-      "lessons-learned-ui-ux-visual-baseline-drift.md",
-      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
-      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "baseline": [
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -12317,6 +12366,9 @@
     ],
     "to": [
       "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "WEEKDAYS": [
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"

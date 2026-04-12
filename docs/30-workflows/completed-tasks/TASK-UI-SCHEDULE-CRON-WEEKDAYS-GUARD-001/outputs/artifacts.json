@@ -2,6 +2,9 @@
   "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
   "taskName": "cronConverter 空曜日ガード処理追加",
   "featureName": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+  "taskType": "docs-only",
+  "taskClassification": "docs-only",
+  "phase11Judgment": "NON_VISUAL",
   "created": "2026-04-12T00:00:00Z",
   "lastUpdated": "2026-04-12T16:00:00Z",
   "status": "completed",
@@ -104,7 +107,10 @@
       "status": "completed",
       "specFile": "phase-10-final-review.md",
       "outputDir": "outputs/phase-10",
-      "artifacts": ["outputs/phase-10/final-review-result.md"]
+      "artifacts": [
+        "outputs/phase-10/ac-verification.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
     },
     {
       "phase": 11,
@@ -114,6 +120,7 @@
       "outputDir": "outputs/phase-11",
       "visualType": "NON_VISUAL",
       "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
         "outputs/phase-11/manual-test-checklist.md",
         "outputs/phase-11/discovered-issues.md",
         "outputs/phase-11/manual-test-report.md",
@@ -159,5 +166,8 @@
       "status": "completed",
       "description": "Phase 12完了済み。cronConverter.tsの実装が存在すること"
     }
-  ]
+  ],
+  "metadata": {
+    "taskType": "docs-only"
+  }
 }

@@ -2446,3 +2446,20 @@ UT-SKILL-WIZARD-FB-04 三者同期チェックリスト標準化の Phase 12 clo
 | 変更対象 | `task-specification-creator/references/patterns-phase12-sync.md`、`task-specification-creator/references/phase-template-execution.md`、`task-specification-creator/LOGS.md`                                               |
 | 結果     | ledger: task-workflow-active.md 更新済み、lane: docs/30-workflows/ut-skill-wizard-*/artifacts.json 確認、artifacts: outputs/phase-12 canonical 6件確認。三者同期（ledger/lane/artifacts）チェックリストをパターンとして定型化 |
 | 検証     | patterns-phase12-sync.md / phase-template-execution.md 更新確認、LOGS.md 重複エントリ除去確認                                                                                                                             |
+
+## 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/SKILL.md` に WEEKGRD-01〜03 Feedbackエントリ追加（「Phase 12 実行時によくある漏れ」テーブル）
+
+### 背景
+
+TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード追加）の Phase 12 close-out sync。NON_VISUALタスクにおける環境ブロッカー分離記録・純粋関数ガード戦略・NON_VISUAL宣言明記の3点を知見として記録。
+
+| 項目     | 内容                                                                                                                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
+| 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
+| 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |

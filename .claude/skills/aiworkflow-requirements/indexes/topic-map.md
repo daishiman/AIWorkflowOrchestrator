@@ -4685,6 +4685,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
