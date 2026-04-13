@@ -1400,8 +1400,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L224 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L253 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -4686,14 +4686,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L192 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
-
-### references/task-workflow-completed-recent-2026-04f.md
-
-| セクション | 行 |
-|------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4824,28 +4817,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 renderer error UI close-out sync | L19 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L33 |
-| 完了タスク（2026-03後半） | L208 |
-| 完了タスク（機能別アーカイブ） | L216 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L325 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L20 |
-| 完了タスク（2026-03後半） | L195 |
-| 完了タスク（機能別アーカイブ） | L203 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L20 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L40 |
-| 完了タスク（2026-03後半） | L215 |
-| 完了タスク（機能別アーカイブ） | L223 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L332 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L21 |
-| 完了タスク（2026-03後半） | L196 |
-| 完了タスク（機能別アーカイブ） | L204 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L313 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L20 |
-| 完了タスク（2026-03後半） | L195 |
-| 完了タスク（機能別アーカイブ） | L203 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
 
 ### references/task-workflow-history.md
 
@@ -4879,21 +4855,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L12 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L48 |
 | 仕様書インデックス | L13 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L49 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
-| 仕様書インデックス | L11 |
-| 利用順序 | L40 |
-| 関連ドキュメント | L45 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 
