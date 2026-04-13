@@ -6,15 +6,21 @@
  *
  * Tests that type definitions compile correctly.
  */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, expectTypeOf } from "vitest";
 
 import type {
+  SkillAnalyticsEventType,
+  SkillAnalyticsEvent,
   SkillUsageEvent,
   ToolUsageStat,
   SkillStatistics,
   AnalyticsPeriod,
   AnalyticsSummary,
 } from "../skill-analytics";
+import type {
+  SkillAnalyticsEvent as RootSkillAnalyticsEvent,
+  SkillAnalyticsEventType as RootSkillAnalyticsEventType,
+} from "@repo/shared";
 
 // =============================================================================
 // Task 1: 型定義テスト (T-01 ~ T-08)
@@ -243,5 +249,21 @@ describe("Skill Analytics Types", () => {
     expect(stat.toolName).toBe("Read");
     expect(stat.count).toBe(150);
     expect(stat.percentage).toBe(45.5);
+  });
+
+  // T-09: SkillAnalyticsEvent 系の新規 renderer-side contract と root export を検証
+  it("T-09: SkillAnalyticsEventType / SkillAnalyticsEvent が renderer-side と root export で一致する", () => {
+    expectTypeOf<SkillAnalyticsEventType>().toEqualTypeOf<
+      "start" | "complete" | "error"
+    >();
+    expectTypeOf<SkillAnalyticsEvent>().toMatchTypeOf<{
+      type: SkillAnalyticsEventType;
+      skillId: string;
+      timestamp: string;
+      duration?: number;
+      error?: string;
+    }>();
+    expectTypeOf<RootSkillAnalyticsEventType>().toEqualTypeOf<SkillAnalyticsEventType>();
+    expectTypeOf<RootSkillAnalyticsEvent>().toEqualTypeOf<SkillAnalyticsEvent>();
   });
 });

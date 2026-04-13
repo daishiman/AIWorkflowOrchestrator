@@ -174,6 +174,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 - キーワード検索で情報を素早く特定
 - 編集後は `node scripts/generate-index.js` を実行
+- 共有型を追加したら `definition` / `types/index` / `package index` / `consumer wiring` を同 wave で同期する
 - 500行超過時は classification-first で parent / child / history / archive / discovery を同一 wave で分割
 
 ### 避けるべきこと
