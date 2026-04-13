@@ -14,6 +14,17 @@ Phase 11 の manual test。
 
 ## docs-only task テンプレ
 
+### 正本ポリシー（evidence consolidation）
+
+- `manual-test-result.md` を docs-only Phase 11 の正本とし、以下を1ファイルに集約する:
+  - テスト件数サマリー（区分別 PASS/FAIL/SKIP 集計 + 実施情報）
+  - edge case 一覧表（EC-NNN ID・観点・入力値・期待動作・仕様判断根拠ID・結果）
+  - 仕様判断根拠（SD-NNN ID・判断内容・根拠・影響範囲）
+  - 実行記録（コマンド、確認対象、判定）
+- `manual-test-checklist.md` / `discovered-issues.md` は補助成果物として保持してよいが、判定の一次ソースは `manual-test-result.md` とする。
+
+### docs-only チェック観点
+
 - `SKILL.md` から family file へ辿れるか
 - `LOGS.md` から archive へ辿れるか
 - `.claude` と `.agents` の file set が一致するか
@@ -51,17 +62,18 @@ Phase 11 の manual test。
 
 ## 必須成果物
 
-| 成果物 | 用途 |
-| --- | --- |
-| `manual-test-result.md` | walkthrough 結果 |
-| `manual-test-report.md` | 実施概要と所見 |
-| `discovered-issues.md` | blocker と note |
-| `ui-sanity-visual-review.md` | 視覚レビュー |
-| `phase11-capture-metadata.json` | capture 実行時の evidence inventory |
+| 成果物 | タスク種別 | 用途 |
+| --- | --- | --- |
+| `manual-test-result.md` | docs-only / UI 共通（必須） | walkthrough 結果 + docs-only 集約証跡の正本 |
+| `manual-test-checklist.md` | docs-only: 推奨 / UI: 必須 | 実施可否の補助記録 |
+| `discovered-issues.md` | docs-only: 条件付 / UI: 必須 | blocker / note 記録 |
+| `manual-test-report.md` | 任意 | 実施概要と所見（要約版） |
+| `ui-sanity-visual-review.md` | UI task のみ | 視覚レビュー |
+| `phase11-capture-metadata.json` | UI task のみ | capture 実行時の evidence inventory |
 
 ### 環境チェック（Phase 11 着手前）
 
-Phase 11 の screenshot 撮影前に以下を確認する：
+UI task で screenshot 撮影を行う場合は、着手前に以下を確認する：
 
 1. Electron 起動確認: `pnpm --filter @repo/desktop preview` が正常起動するか
 2. 起動不可の場合（worktree 環境等） → **CAPTURE_BLOCKED** として記録する

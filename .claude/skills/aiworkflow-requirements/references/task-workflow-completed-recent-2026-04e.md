@@ -4,6 +4,34 @@
 
 ---
 
+### タスク: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（2026-04-13）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                    |
+| 完了日     | 2026-04-13                                                                                                |
+| タスク種別 | docs-only（`spec_created` / NON_VISUAL）                                                                  |
+| 関連Issue  | #2033（CLOSED）                                                                                           |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                              |
+
+#### 実施内容
+
+- Phase 11 `manual-test-result` テンプレートに「テスト件数と内訳」「edge case 一覧表」「仕様判断根拠」を導入し、証跡分散を1ファイルへ一本化
+- `task-specification-creator` の Phase 11 テンプレート群（guide / detail / test-report）へ同構造を反映
+- docs-only タスクとして `spec_created` を維持しつつ、Phase 12 Step 1 の system spec 同期（task-workflow / lessons-learned / LOGS / topic-map）を実施
+
+#### 検証証跡
+
+- `docs/30-workflows/UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001/phase-11-manual-test.md`: テンプレート試作（NON_VISUAL）
+- `docs/30-workflows/UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001/phase-12-documentation.md`: Step 1-A〜1-C 同期要件
+- `task-specification-creator` 側テンプレート更新差分: AC-1〜AC-5 反映
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §UT-SKILL-WIZARD-FB-05（L-FB05-001〜003）
+
+---
+
 ### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
 
 | 項目       | 値                                                                                         |

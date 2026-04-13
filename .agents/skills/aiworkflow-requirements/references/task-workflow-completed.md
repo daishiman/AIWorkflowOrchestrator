@@ -6,6 +6,8 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-13: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（edge case 一覧表）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-12: UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI 到達確認テスト追加](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-11: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（アイコン / tooltip / a11y / screenshot evidence）](./task-workflow-completed-recent-2026-04e.md)

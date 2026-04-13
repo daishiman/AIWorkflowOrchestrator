@@ -4,6 +4,30 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 補完同期（L-FB05-004追加・keywords補完・topic-map詳細化）
+
+### 変更内容
+- `references/lessons-learned-current-2026-04.md` に L-FB05-004（`.agents/.claude` ミラーディレクトリ同期コスト最小化パターン）を追加
+- `indexes/topic-map.md` の `lessons-learned-current-2026-04.md` セクションに L-FB05-001〜004 サブエントリ（行番号詳細）を追加
+- `indexes/keywords.json` に `EC-NNN`・`SD-NNN`・`edge case 一覧表`・`仕様判断根拠テーブル`・`テスト件数サマリー`・`manual-test-result テンプレート一本化`・`L-FB05-001〜004`・`ミラーディレクトリ同期コスト`・`docs-only ステータス管理`・`Phase 11 テンプレート v2` を追加
+- `.agents/skills/aiworkflow-requirements/` へミラー同期
+
+### 背景
+前回の impl-spec-to-skill-sync（同日）で L-FB05-001〜003 の追加・task-workflow・LOGS の同期は完了したが、「ミラーディレクトリ同期コスト」の教訓（L-FB05-004）・EC-NNN/SD-NNN 等の新キーワード・topic-map サブエントリ詳細化が未実施のままだった。本エントリで漏れを解消した。
+
+## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync（docs-only/spec_created close-out）
+
+### 変更内容
+- `SKILL.md` frontmatter current facts に `UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001` / `edge case 一覧表` / `manual-test-result テンプレート一本化` / `L-FB05-001〜003` を追記
+- `SKILL.md` quick-start のテンプレート参照を実在パスに合わせ、`react-context-template` を `assets/react-context-template.md` に是正
+- `references/task-workflow-completed-recent-2026-04e.md` に FB-05 docs-only/spec_created 完了記録を追加
+- `references/task-workflow.md` 冒頭 current facts に FB-05 close-out 同期の 1 文を追加
+- `references/lessons-learned-current-2026-04.md` に L-FB05-001〜003 を追加し、`references/lessons-learned-current.md` 変更履歴を更新
+- `indexes/topic-map.md` を再生成して lessons/task-workflow 索引を current facts に追従
+
+### 背景
+FB-05 は実装コードではなく Phase 11 証跡テンプレート運用の改善タスクだが、`spec_created` のまま閉じる場合でも system spec 同期（workflow / lesson / logs / topic-map）を同 wave で完了しないと current facts が再び分散する。今回の更新で同期漏れを解消した。
+
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
 
 ### 変更内容

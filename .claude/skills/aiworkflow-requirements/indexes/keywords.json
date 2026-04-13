@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2944,
+  "totalKeywords": 2945,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7516,6 +7516,9 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ],
     "フィールド独立推論性": [
       "lessons-learned-current-2026-04.md",
