@@ -181,3 +181,40 @@
 | 標準ルール   | E2E テストで trackEvent を検証する場合、UI 到達確認とイベントペイロード確認を必ず別アサーションに分離する。UI の変更でペイロード値が変わった場合でも、到達確認のテストは独立して残り、回帰検出の精度が上がる                                                                                                                          |
 | 関連タスク   | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001                                                                                                                                                                                                                                                                                                |
 | 対象ファイル | `apps/desktop/e2e/skill-wizard-tracking.spec.ts`, `apps/desktop/e2e/helpers/wizard-tracking-stub.ts`                                                                                                                                                                                                                                  |
+
+---
+
+## UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13）
+
+### L-W3-HTTP-001: `vi.stubGlobal("fetch", ...)` + `afterEach(vi.unstubAllGlobals)` によるグローバル fetch モックパターン
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Node.js 組み込みの `fetch` をテストでモックしようとすると、`import` が不要なためモジュール差し替えでは対応できない                                                                                                      |
+| 原因         | グローバル `fetch` はモジュールではなく `globalThis.fetch` として提供されており、`vi.mock` の対象にできない                                                                                                              |
+| 解決策       | `vi.stubGlobal("fetch", vi.fn().mockResolvedValue(...))` でグローバルを差し替え、`afterEach(() => vi.unstubAllGlobals())` でテスト間汚染を防ぐ。成功・エラー・`AbortError` の各パスを `mockResolvedValue` / `mockRejectedValue` で切り替える |
+| 標準ルール   | Node.js 組み込みグローバル（fetch / crypto / navigator）のモックは `vi.stubGlobal` を使う。`afterEach` でのクリーンアップを必須とし、`vi.fn()` の参照をテストブロック先頭で取得して呼び出し回数の確認に使う             |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                                                                         |
+
+### L-W3-HTTP-002: AbortController + `finally clearTimeout` による production-only HTTP POST のタイムアウト設計
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | 外部 analytics サービスが応答しない場合、IPC ハンドラーが無期限にブロックされ Renderer 側の応答が遅延する                                                                                                              |
+| 原因         | `fetch` 単体ではタイムアウトを持たない。`setTimeout` だけでは fetch の完了後もタイマーが残存してリソースリークする                                                                                                      |
+| 解決策       | `AbortController` + `signal` で fetch を中断し、`const timeoutId = setTimeout(() => controller.abort(), 5000)` を `try` 前に置き、`finally { clearTimeout(timeoutId) }` でタイマーを必ず解放する                       |
+| 標準ルール   | production-only な fire-and-forget HTTP 送信は必ず `AbortController` + `finally clearTimeout` の組み合わせで実装する。タイムアウト値は定数（`ANALYTICS_TIMEOUT_MS`）として切り出し、テストでの上書しを容易にする        |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`                                                                                                                                                                        |
+
+### L-W3-HTTP-003: ガード条件の早期識別（空文字 URL エッジケース）
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Phase 6 で「空文字の URL」（TC-E04）を追加したが、Phase 4 のテスト設計時点で識別できた可能性があった                                                                                                                    |
+| 原因         | `if (!url)` の条件を設計する際、`undefined` ケースに意識が集中し、`""` （空文字）を falsy として同一視することを明示しなかった                                                                                          |
+| 解決策       | ガード節を設計する際は「`undefined`」「`null`」「空文字」「空白のみ文字列」の 4 パターンを同時に列挙し、`if (!url)` が網羅するケースを Phase 4 のテスト表に明記する                                                     |
+| 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
