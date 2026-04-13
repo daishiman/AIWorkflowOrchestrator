@@ -4,6 +4,28 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `indexes/resource-map.md` に TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 エントリを追加（純粋関数ガード / Number.isInteger / 双方向ガード / 対称ブロック構文）
+- `references/lessons-learned-current-2026-04.md` に L-MTHGRD-001〜003 教訓を追加（NaN排除 / 双方向ガード / 対称パターン）
+- `references/task-workflow-completed-recent-2026-04e.md` に TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 完了記録を追加
+- LOGS.md 2ファイル同波更新
+
+### 背景
+Phase 12 の current facts sync では resource-map / lessons-learned / task-workflow-completed の追加が未実施のまま残っていた。impl-spec-to-skill-sync で漏れを解消。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 current facts sync
+
+### 変更内容
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` の completed / blocked 同期を確認
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/{documentation-changelog,skill-feedback-report,phase12-task-spec-compliance-check,unassigned-task-detection}.md` を current facts に更新
+- `task-specification-creator/SKILL.md` の Phase 12 三者同期ルール追加と同波で log を更新
+- LOGS.md 2ファイル同波更新
+
+### 背景
+monthly guard の実装だけでなく、Phase 12 current facts の二重化を残さないため。
+
 ## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync（lessons-learned / resource-map / topic-map / skill 補完）
 
 ### 変更内容

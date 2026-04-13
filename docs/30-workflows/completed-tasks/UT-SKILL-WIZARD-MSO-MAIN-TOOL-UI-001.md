@@ -10,7 +10,7 @@ category: UI改善
 target_feature: skill-wizard/q5-primary-tool-indicator
 priority: 低
 scale: 小規模
-status: 未実施
+status: completed
 created_date: 2026-04-09
 dependencies: []
 origin_task: skill-wizard-multi-select-options（OPT-MSO-002 として登録）
@@ -18,19 +18,19 @@ origin_task: skill-wizard-multi-select-options（OPT-MSO-002 として登録）
 
 ## メタ情報
 
-| 項目         | 内容                                                                                                |
-| ------------ | --------------------------------------------------------------------------------------------------- |
-| タスクID     | UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001                                                                |
-| タスク名     | スキルウィザード Q5 複数選択時の「主ツール」UI表示                                                  |
-| 分類         | UI改善                                                                                              |
-| 対象機能     | スキル作成ウィザード - Q5 外部ツール選択表示                                                        |
-| 優先度       | 低                                                                                                  |
-| 見積もり規模 | 小規模                                                                                              |
-| ステータス   | 未実施                                                                                              |
-| 発見元       | skill-wizard-multi-select-options Phase 12 未タスク検出（OPT-MSO-002 として登録）                   |
-| 発見日       | 2026-04-09                                                                                          |
-| タスク分類   | VISUAL（Q5 選択状態の UI 変更 / スクリーンショット証跡が必要）                                      |
-| 参照タスク   | `docs/30-workflows/skill-wizard-multi-select-options/outputs/phase-12/unassigned-task-detection.md` |
+| 項目         | 内容                                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001                                                                                |
+| タスク名     | スキルウィザード Q5 複数選択時の「主ツール」UI表示                                                                  |
+| 分類         | UI改善                                                                                                              |
+| 対象機能     | スキル作成ウィザード - Q5 外部ツール選択表示                                                                        |
+| 優先度       | 低                                                                                                                  |
+| 見積もり規模 | 小規模                                                                                                              |
+| ステータス   | 完了                                                                                                                |
+| 発見元       | skill-wizard-multi-select-options Phase 12 未タスク検出（OPT-MSO-002 として登録）                                   |
+| 発見日       | 2026-04-09                                                                                                          |
+| タスク分類   | VISUAL（Q5 選択状態の UI 変更 / スクリーンショット証跡が必要）                                                      |
+| 参照タスク   | `docs/30-workflows/completed-tasks/skill-wizard-multi-select-options/outputs/phase-12/unassigned-task-detection.md` |
 
 ---
 
@@ -59,6 +59,12 @@ UI 上では複数のチェックボックスが同等に表示されている�
 - 選択順序によって主ツールが変わるが、ユーザーは選択順序を意識していない
 - `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001`（並列統合対応）が実装されるまでの
   暫定的な「主ツール明示」として必要
+
+## 現在の状態
+
+- 実装は完了済み
+- `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-11/screenshots/` にスクリーンショット 5件を保存済み
+- `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-12/` に実装ガイドと仕様更新を反映済み
 
 ### 1.3 放置した場合の影響
 
