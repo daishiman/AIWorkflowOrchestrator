@@ -4,6 +4,33 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync（lessons-learned / resource-map / topic-map / skill 補完）
+
+### 変更内容
+
+- `references/lessons-learned-current-2026-04.md` に L-MODEMGMT-001〜004 を追記（二重state管理危険性 / TDD Red→Green / happy-dom userEvent禁止 / SkillInfoStep props単純化）
+- `indexes/resource-map.md` に TASK-SW-FIX-MODE-MGMT-001 current facts 導線を追加（v1.30.0）・changelog 更新
+- `indexes/topic-map.md` の `arch-state-management-skill-creator.md` エントリを `SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts）` へ更新・`arch-ui-components-core.md` エントリを `SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts）` へ更新
+- `task-specification-creator/SKILL.md` 「よくある漏れ」テーブルに **[FB-MODEMGMT-001]**（happy-dom で userEvent 使用禁止 / fireEvent 必須）・**[FB-MODEMGMT-002]**（ウィザード分岐フラグは単一 state 管理）を追記
+
+### 背景
+
+TASK-SW-FIX-MODE-MGMT-001 の Phase 12 close-out は完了済みだったが、lessons-learned への教訓記録・resource-map / topic-map エントリ追加・task-specification-creator skill へのフィードバック反映が未実施のまま残っていた。本エントリで漏れを完結させた。
+
+## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync（SkillCreateWizard current facts 是正）
+
+### 変更内容
+
+- `references/arch-state-management-skill-creator.md` を更新し、`SkillCreateWizard` の current facts を LLM 専用 4 step flow に再定義した
+- `references/arch-ui-components-core.md` の旧 `generationMode` / `planResult` / `executePlan` 前提 UI 契約を historical facts として整理し、Step 0〜3 の current topology を差し替えた
+- `references/ui-ux-feature-components-skill-analysis.md` の SkillCreateWizard セクションを更新し、`useCreateSkill()` / `buildSkillContext()` / analytics payload の current facts を同期した
+- `references/task-workflow.md` / `task-workflow-completed.md` / `task-workflow-backlog.md` を同波で更新し、残る軽微な衛生課題を backlog へ分離した
+- その後、backlog 化していた obsolete skip suite を削除し、`task-workflow-backlog.md` / `outputs/phase-12/unassigned-task-detection.md` を current facts に合わせて 0 件へ再同期した
+
+### 背景
+
+2026-04-08〜04-09 に同期された TASK-SC-07 / W2-seq-03a 系の仕様には、旧 `generationMode` と plan/execute ベースの説明が current facts として残っていた。現行コードは `SkillInfoStep` 起点の LLM 専用 flow と `createSkill()` ベースの生成経路へ収束しているため、正本仕様を短く明確な状態へ更新した。
+
 ## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（lessons-learned L-FEEDBACK-001/002/003 追記）
 
 ### 変更内容

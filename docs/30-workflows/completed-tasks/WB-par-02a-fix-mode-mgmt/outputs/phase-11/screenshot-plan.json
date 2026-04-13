@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-04-13T12:36:10.929Z",
+  "route": "/advanced/skill-create-wizard",
+  "captures": [
+    {
+      "tcId": "step0",
+      "state": "step0-no-radio-button",
+      "priority": "B",
+      "file": "screenshots/step0-no-radio-button.png"
+    },
+    {
+      "tcId": "step0",
+      "state": "step0-filled",
+      "priority": "B",
+      "file": "screenshots/step0-filled.png"
+    },
+    {
+      "tcId": "step-",
+      "state": "step-indicator-stepN",
+      "priority": "B",
+      "file": "screenshots/step-indicator-stepN.png"
+    },
+    {
+      "tcId": "step1",
+      "state": "step1-conversation",
+      "priority": "B",
+      "file": "screenshots/step1-conversation.png"
+    },
+    {
+      "tcId": "step2",
+      "state": "step2-generating",
+      "priority": "B",
+      "file": "screenshots/step2-generating.png"
+    },
+    {
+      "tcId": "step3",
+      "state": "step3-complete",
+      "priority": "B",
+      "file": "screenshots/step3-complete.png"
+    }
+  ]
+}

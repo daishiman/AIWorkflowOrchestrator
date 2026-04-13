@@ -489,12 +489,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル共有 型定義（TASK-9F） | L6 |
-| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L72 |
-| スキルデバッグ 型定義（TASK-9H） | L91 |
-| スキルドキュメント生成 型定義（TASK-9I） | L141 |
-| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L291 |
-| assertNoSilentFallback ガード（P62 対策） | L340 |
+| スキル利用分析 型定義（UT-W3-ANALYTICS-STORE-INTEGRATION-001） | L72 |
+| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L96 |
+| スキルデバッグ 型定義（TASK-9H） | L115 |
+| スキルドキュメント生成 型定義（TASK-9I） | L165 |
+| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L229 |
+| スキル分析 型定義（TASK-9J） | L315 |
+| assertNoSilentFallback ガード（P62 対策） | L364 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -3520,15 +3521,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
-| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L43 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L65 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4692,7 +4687,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+
+### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4855,9 +4855,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
+| 仕様書インデックス | L11 |
+| 利用順序 | L40 |
+| 関連ドキュメント | L45 |
 
 ### references/testing-accessibility.md
 
