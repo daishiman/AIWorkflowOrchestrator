@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2949,
+  "totalKeywords": 2952,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2289,6 +2289,7 @@
       "arch-ui-components-history.md",
       "arch-ui-components.md",
       "interfaces-chat-history-core.md",
+      "lessons-learned-current-2026-04.md",
       "llm-ipc-types.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "technology-desktop.md"
@@ -2358,6 +2359,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-skill-analysis.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -3679,7 +3681,8 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed.md"
     ],
     "direct": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
@@ -5587,7 +5590,8 @@
       "workflow-ai-runtime-authmode-unification.md"
     ],
     "エラー": [
-      "error-handling-details.md"
+      "error-handling-details.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "envelope": [
       "error-handling-details.md"
@@ -7066,12 +7070,14 @@
     ],
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "task-workflow-completed.md"
     ],
     "sandbox": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -7879,6 +7885,21 @@
     "cronConverter": [
       "lessons-learned-current-2026-04.md"
     ],
+    "RENDERER": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
+    ],
+    "CHECK": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
+    ],
+    "表示": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "確認": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -8464,7 +8485,8 @@
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "error": [
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed.md"
     ],
     "notification": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -9439,9 +9461,6 @@
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
-    ],
-    "確認": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "PROVIDER": [
       "lessons-learned-w3-usage-tracking-2026-04.md"

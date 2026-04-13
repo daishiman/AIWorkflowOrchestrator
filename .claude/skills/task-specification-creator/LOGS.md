@@ -36,6 +36,18 @@ VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts �
 ### 背景
 shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
 
+## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 completed ledger sync
+
+### 変更内容
+- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管し、打ち消し線 + 完了注記を付与
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04e.md` に完了記録を追加
+- `task-workflow.md` の intro current facts に completion を反映
+- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
+- `aiworkflow-requirements/LOGS.md` にも同波の同期ログを追記
+
+### 背景
+task-specification-creator 側でも task workflow の completed / backlog / issue 番号が分岐しないように、renderer error UI task の完了移管を同波で固定した。
+
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 

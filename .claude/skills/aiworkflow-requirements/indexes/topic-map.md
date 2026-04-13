@@ -4558,7 +4558,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L331 |
+| 続き | L332 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4689,7 +4689,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L248 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4820,10 +4820,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L21 |
-| 完了タスク（2026-03後半） | L196 |
-| 完了タスク（機能別アーカイブ） | L204 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L313 |
+| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 renderer error UI close-out sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L36 |
+| 完了タスク（2026-03後半） | L211 |
+| 完了タスク（機能別アーカイブ） | L219 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L328 |
 
 ### references/task-workflow-history.md
 
@@ -4857,9 +4858,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
+| 仕様書インデックス | L16 |
+| 利用順序 | L46 |
+| 関連ドキュメント | L52 |
 
 ### references/testing-accessibility.md
 

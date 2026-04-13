@@ -26,6 +26,28 @@ Phase 12 close-out 後の skill-feedback-report.md 記録知見を lessons-learn
 ### 背景
 今回の task は VISUAL タスクであり、`skillPath === null` のエラー UI と LLM 成功後の一覧更新を screenshot evidence で閉じる必要があった。`unassigned-task-detection` は 0 件に留め、重大な未タスクだけを formalize する方針へ整理した。
 
+## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 impl-spec-to-skill-sync（lessons-learned / resource-map / SKILL.md Trigger 補完）
+
+### 変更内容
+- `references/lessons-learned-current-2026-04.md` に L-RT01-RENDERER-FINAL-001 教訓セクションを追記（IPC単体テスト通過 ≠ UI表示到達 パターン記録）
+- `indexes/resource-map.md` に TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 エントリを追加（SkillLifecyclePanel DOM assertion / data-testid / workflowError 導線）
+- `SKILL.md` frontmatter description Trigger キーワードに `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` / `workflowError` / `skill-lifecycle-error` / `data-testid` / `L-RT01-RENDERER-FINAL-001` を追加
+
+### 背景
+Phase 12 close-out 後の ledger sync（backlog→completed）は 2026-04-13 に実施済みだったが、lessons-learned への教訓記録・resource-map エントリ・SKILL.md Trigger キーワード追加が未実施のまま残っていた。本エントリで漏れを解消。
+
+## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 completed ledger sync（backlog→completed / issue 2007 alignment）
+
+### 変更内容
+- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管し、打ち消し線 + 完了注記を付与
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04e.md` に renderer error UI task の完了記録を追加
+- `task-workflow.md` の intro current facts に `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` の completion を反映
+- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
+- `task-specification-creator/LOGS.md` にも同波の同期ログを追記
+
+### 背景
+Renderer 側エラーメッセージ UI の完成扱いを backlog / completed / task-workflow / issue 番号で同一化し、Phase 12 close-out 後の current facts が分岐しないようにした。今回の同期はドキュメントと台帳の整合性を閉じるためのもので、実装ファイルには触れていない。
+
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
 
 ### 変更内容
