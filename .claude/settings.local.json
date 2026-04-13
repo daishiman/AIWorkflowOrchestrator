@@ -122,7 +122,9 @@
       "Bash(cp \".claude/skills/aiworkflow-requirements/indexes/keywords.json\" \".agents/skills/aiworkflow-requirements/indexes/keywords.json\")",
       "Bash(cp \".claude/skills/aiworkflow-requirements/indexes/resource-map.md\" \".agents/skills/aiworkflow-requirements/indexes/resource-map.md\")",
       "Bash(cp \".claude/skills/aiworkflow-requirements/indexes/topic-map.md\" \".agents/skills/aiworkflow-requirements/indexes/topic-map.md\")",
-      "Bash(cp \".claude/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md\" \".agents/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md\")"
+      "Bash(cp \".claude/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md\" \".agents/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md\")",
+      "Bash(cp \".claude/skills/aiworkflow-requirements/SKILL.md\" \".agents/skills/aiworkflow-requirements/SKILL.md\")",
+      "Bash(cp \".claude/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md\" \".agents/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md\")"
     ],
     "deny": [],
     "ask": []
