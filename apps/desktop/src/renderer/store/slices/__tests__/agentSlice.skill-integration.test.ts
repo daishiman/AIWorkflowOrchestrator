@@ -14,6 +14,12 @@ import type {
   SkillPermissionRequest,
 } from "@repo/shared";
 
+const mockAnalyticsSend = vi.fn();
+
+vi.mock("../../../utils/analyticsAdapter", () => ({
+  getAnalyticsAdapter: () => ({ send: mockAnalyticsSend }),
+}));
+
 // ==========================================================================
 // モックデータ
 // ==========================================================================
@@ -167,6 +173,7 @@ describe("agentSlice - スキル統合テスト（Phase 6）", () => {
   beforeEach(() => {
     store = createTestStore();
     setupMockElectronAPI();
+    mockAnalyticsSend.mockClear();
   });
 
   afterEach(() => {
@@ -672,6 +679,98 @@ describe("agentSlice - スキル統合テスト（Phase 6）", () => {
 
       expect(store.skillExecutionStatus).toBe("error");
       expect(store.skillError).toContain("実行開始に失敗");
+    });
+  });
+
+  // ==========================================================================
+  // CAT-08: analytics 計装テスト
+  // ==========================================================================
+  describe("CAT-08: analytics 計装テスト", () => {
+    it("TS-6-1-81: executeSkill 開始時に skill_start が送信される", async () => {
+      store.selectedSkillName = "test-skill-1";
+      store.importedSkills = mockImportedSkills;
+      setupMockElectronAPI({
+        skillExecute: { executionId: "exec-analytics-start", success: true },
+      });
+
+      const executePromise = store.executeSkill("テストプロンプト");
+
+      expect(mockAnalyticsSend).toHaveBeenCalledWith(
+        "skill_start",
+        expect.objectContaining({
+          type: "start",
+          skillId: "test-skill-1",
+        }),
+      );
+
+      await executePromise;
+    });
+
+    it("TS-6-1-82: _handleComplete 呼び出し時に skill_complete が duration 付きで送信される", async () => {
+      store.selectedSkillName = "test-skill-1";
+      store.importedSkills = mockImportedSkills;
+      setupMockElectronAPI({
+        skillExecute: { executionId: "exec-analytics-complete", success: true },
+      });
+
+      const nowSpy = vi.spyOn(Date, "now");
+      nowSpy.mockReturnValueOnce(1_000);
+
+      const executePromise = store.executeSkill("テストプロンプト");
+      await executePromise;
+
+      nowSpy.mockReturnValueOnce(1_500);
+      store._handleComplete("exec-analytics-complete");
+
+      expect(mockAnalyticsSend).toHaveBeenCalledWith(
+        "skill_complete",
+        expect.objectContaining({
+          type: "complete",
+          skillId: "test-skill-1",
+          duration: 500,
+        }),
+      );
+    });
+
+    it("TS-6-1-83: _handleError 呼び出し時に skill_error が送信される", async () => {
+      store.selectedSkillName = "test-skill-1";
+      store.importedSkills = mockImportedSkills;
+      setupMockElectronAPI({
+        skillExecute: { executionId: "exec-analytics-error", success: true },
+      });
+
+      const executePromise = store.executeSkill("テストプロンプト");
+      await executePromise;
+
+      store._handleError("exec-analytics-error", "実行エラー");
+
+      expect(mockAnalyticsSend).toHaveBeenCalledWith(
+        "skill_error",
+        expect.objectContaining({
+          type: "error",
+          skillId: "test-skill-1",
+          error: "実行エラー",
+        }),
+      );
+    });
+
+    it("TS-6-1-84: executeSkill 失敗時に skill_error が送信される", async () => {
+      store.selectedSkillName = "test-skill-1";
+      store.importedSkills = mockImportedSkills;
+      setupMockElectronAPI({
+        skillExecuteError: new Error("実行失敗"),
+      });
+
+      await store.executeSkill("テストプロンプト");
+
+      expect(mockAnalyticsSend).toHaveBeenCalledWith(
+        "skill_error",
+        expect.objectContaining({
+          type: "error",
+          skillId: "test-skill-1",
+          error: "実行失敗",
+        }),
+      );
     });
   });
 

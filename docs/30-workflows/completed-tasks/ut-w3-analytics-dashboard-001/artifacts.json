@@ -1,0 +1,255 @@
+{
+  "taskId": "UT-W3-ANALYTICS-DASHBOARD-001",
+  "taskName": "analytics-dashboard-ui",
+  "featureName": "ut-w3-analytics-dashboard-001",
+  "createdAt": "2026-04-13T00:00:00Z",
+  "status": "phase12_completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not-started",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/p50-check-result.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:03:00.020Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準AC-1〜AC-5定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:03:59.349Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-decisions.md",
+          "description": "設計判断記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-interface.md",
+          "description": "コンポーネントインターフェース定義"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:04:41.768Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/minor-tracking.md",
+          "description": "MINOR指摘追跡テーブル（0件）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:21:16.803Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-matrix.md",
+          "description": "テストマトリクスT4-01〜T4-08"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-confirmation.md",
+          "description": "Red確認結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:23:35.635Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-result.md",
+          "description": "実装結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-confirmation.md",
+          "description": "Green確認結果（全テストPASS）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:24:45.148Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "テスト拡充結果T6-01〜T6-05（全PASS）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:25:11.346Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ報告（全指標100%・ゲートPASS）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:25:42.029Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "description": "リファクタリング結果（変更なし・既に最適状態）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:26:53.765Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-check-result.md",
+          "description": "品質チェック結果（typecheck/lint/test全PASS）"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:27:33.629Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（PASS）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/ac-verification.md",
+          "description": "AC-1〜AC-5検証記録"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:31:15.742Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題（0件）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UIサニティVisualレビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "キャプチャメタデータ"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-13T01:33:18.782Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（2パート構成）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "SystemSpec更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメントChangelog"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出（0件）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12準拠チェック（PASS）"
+        }
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: 設定画面に AnalyticsDashboardPanel が統合されていること",
+    "AC-2: オプトアウト状態の現在値（ON/OFF）がUIで確認できること",
+    "AC-3: 開発モード（NODE_ENV !== 'production'）で dev-only 診断ブロックが表示されること",
+    "AC-4: Playwright E2E テストがPASSすること",
+    "AC-5: pnpm typecheck && pnpm lint && pnpm test が PASS すること"
+  ],
+  "dependencies": [
+    {
+      "type": "prerequisite",
+      "taskId": "UT-W3-ANALYTICS-ADAPTER-001",
+      "status": "completed",
+      "description": "Analytics パイプライン基盤（trackEvent → analyticsAdapter → Main 送信）の実装"
+    },
+    {
+      "type": "related",
+      "taskId": "UT-W3-ANALYTICS-HTTP-PROVIDER-001",
+      "status": "unassigned",
+      "description": "HTTP外部送信実装（本タスクは依存するが、なくても内部キュー表示は可能）"
+    }
+  ],
+  "lastUpdated": "2026-04-13T02:32:40Z"
+}

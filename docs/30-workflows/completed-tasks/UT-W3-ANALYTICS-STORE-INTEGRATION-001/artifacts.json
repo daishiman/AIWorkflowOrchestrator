@@ -1,0 +1,209 @@
+{
+  "taskId": "UT-W3-ANALYTICS-STORE-INTEGRATION-001",
+  "taskName": "skill-analytics-store-integration",
+  "featureName": "UT-W3-ANALYTICS-STORE-INTEGRATION-001",
+  "createdAt": "2026-04-13T00:00:00Z",
+  "status": "completed",
+  "completedAt": "2026-04-13T00:00:00Z",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/p50-check-result.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        "outputs/phase-2/design-decisions.md",
+        "outputs/phase-2/store-interface.md",
+        "outputs/phase-2/dependency-graph.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "gateResult": "PASS",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/minor-tracking.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/store/slices/__tests__/analyticsSlice.test.ts"
+      ],
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/red-confirmation.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "summary": "analyticsSlice.ts は toAnalyticsPayload / sendSkillAnalyticsEvent 経由で analyticsAdapter へ送信し、agentSlice.ts にスキル実行 wiring を追加。shared export で SkillAnalyticsEventType / SkillAnalyticsEvent を公開。全30件テスト Green・typecheck PASS。",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/store/slices/analyticsSlice.ts",
+        "apps/desktop/src/renderer/store/slices/agentSlice.ts",
+        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts",
+        "packages/shared/src/types/skill-analytics.ts",
+        "packages/shared/src/types/index.ts",
+        "packages/shared/index.ts",
+        "packages/shared/src/types/__tests__/skill-analytics.test.ts"
+      ],
+      "artifacts": [
+        "outputs/phase-5/implementation-result.md",
+        "outputs/phase-5/green-confirmation.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/store/slices/__tests__/analyticsSlice.test.ts",
+        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts",
+        "packages/shared/src/types/__tests__/skill-analytics.test.ts"
+      ],
+      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["outputs/phase-9/qa-result.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "gateResult": "PASS",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/ac-verification.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00Z",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-ready-report.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: スキル実行の開始・完了・エラーが自動的に analyticsAdapter へ送信されること",
+    "AC-2: analyticsSlice が Zustand slice として実装されていること",
+    "AC-3: 既存の trackEvent 公開 API シグネチャが変更されないこと",
+    "AC-4: pnpm typecheck && pnpm lint && pnpm test が PASS すること"
+  ],
+  "dependencies": [
+    {
+      "type": "prerequisite",
+      "taskId": "UT-W3-ANALYTICS-ADAPTER-001",
+      "status": "completed",
+      "description": "Analytics パイプライン基盤（trackEvent → IPC → Main）の実装"
+    },
+    {
+      "type": "related",
+      "taskId": "UT-W3-ANALYTICS-HTTP-PROVIDER-001",
+      "status": "unassigned",
+      "description": "HTTP外部送信実装"
+    },
+    {
+      "type": "related",
+      "taskId": "UT-W3-ANALYTICS-DASHBOARD-001",
+      "status": "spec_created",
+      "description": "Analytics ダッシュボード UI（本タスク完了後の次ステップ）"
+    }
+  ]
+}

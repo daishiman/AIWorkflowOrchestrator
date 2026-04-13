@@ -1,17 +1,16 @@
 /**
-
  * @file SkillCreateWizard.tsx
- * @description スキル作成ウィザード統合コンポーネント
+ * @description スキル作成ウィザード統合コンポーネント（LLM専用フロー）
  * @task UT-SKILL-WIZARD-W2-seq-03a
  *
- * W2-seq-03a 変更:
- * - description / options / generationMode state を削除
+ * 現行フロー要約:
+ * - 旧 generationMode 分岐を廃止し、LLM専用フローへ統一
  * - formData / answers / smartDefaults / generationMethod / skillPath /
  *   hasExternalIntegration / externalToolName state を追加
  * - STEPS を ["スキル情報入力","詳細設定","生成","完了"] に変更
  * - Step 0: DescribeStep の役割を SkillInfoStep に統合
  * - Step 1: ConversationRoundStep（onGenerate(method) 接続）
- * - Step 2: GenerateStep（generationMode prop 削除）
+ * - Step 2: GenerateStep（生成進捗・再試行・キャンセル表示）
  * - Step 3: CompleteStep（skillPath / action cards / onRetry 接続）
  * - inferSmartDefaults / handleStep0Next / handleGenerate(method) /
  *   handleQualityFeedback / handleRetry を実装
@@ -26,22 +25,13 @@ import {
   GenerateStep,
   CompleteStep,
 } from "./wizard";
-import type {
-  GenerationError,
-  GenerationStage,
-  GenerationMode,
-} from "./wizard";
-import type { PlanResult } from "../../store/slices/agentSlice"; // AC-9, C-4 回避
+import type { GenerationError, GenerationStage } from "./wizard";
 import type {
   ConversationAnswers,
   SkillInfoFormData,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
 import { buildSkillContext } from "@repo/shared/types/skillCreator";
-import type {
-  SkillCreatorWorkflowUiSnapshot,
-  TerminalHandoffBundle,
-} from "@repo/shared/types";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
   useCreateSkill,
@@ -50,13 +40,6 @@ import {
   useGenerationError,
   useClearGenerationState,
   useWorkflowSnapshot,
-  useCurrentPlanResult,
-  useCurrentPlanId,
-  useSetIsSkillGenerating,
-  useSetGenerationProgress,
-  useSetGenerationError,
-  useSetCurrentPlanResult,
-  useSetCurrentPlanId,
   useResetStreamingProgress,
 } from "../../store";
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
@@ -67,10 +50,10 @@ import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 // 定数
 // ────────────────────────────────────────────────────────────────────────────
 
-/** W2-seq-03a: ステップ名称更新 */
+/** 現行ウィザードのステップ名称 */
 export const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"];
 
-/** LLM生成オプション */
+/** 現行の createSkill 呼び出しオプション */
 const SKILL_GENERATION_OPTIONS = {
   generateTasks: true,
   addAgents: false,
@@ -109,18 +92,6 @@ interface ExternalIntegrationState {
 // ────────────────────────────────────────────────────────────────────────────
 // ユーティリティ関数
 // ────────────────────────────────────────────────────────────────────────────
-
-/** TASK-SC-07: executePlan レスポンスが terminal_handoff か判定する型ガード */
-function isTerminalHandoffExecuteResponse(
-  data: unknown,
-): data is { type: "terminal_handoff"; bundle: TerminalHandoffBundle } {
-  return (
-    typeof data === "object" &&
-    data !== null &&
-    (data as { type?: unknown }).type === "terminal_handoff" &&
-    "bundle" in data
-  );
-}
 
 // ────────────────────────────────────────────────────────────────────────────
 // W3-seq-04: 計装ユーティリティ
@@ -181,33 +152,8 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
   };
 }
 
-function toHandoffGuidance(
-  bundle: TerminalHandoffBundle,
-): NonNullable<PlanResult["guidance"]> {
-  return {
-    terminalCommand: bundle.suggestedCommand,
-    contextSummary: `launcher=${bundle.launcher} cwd=${bundle.cwd}`,
-    reason: bundle.manualRetryRule,
-  };
-}
-
-function toTerminalHandoffPlanResult(
-  planId: string,
-  bundle: TerminalHandoffBundle,
-  skillSpec: string,
-  estimatedSteps?: number,
-): PlanResult {
-  return {
-    type: "terminal_handoff",
-    planId,
-    skillSpec,
-    estimatedSteps,
-    guidance: toHandoffGuidance(bundle),
-  };
-}
-
 // ────────────────────────────────────────────────────────────────────────────
-// inferSmartDefaults（W2-seq-03a）
+// inferSmartDefaults
 // ────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -333,39 +279,6 @@ export function resolveExternalIntegration(
 }
 
 // ────────────────────────────────────────────────────────────────────────────
-// LLM 生成 API アクセス（TASK-SC-07 / C-1 回避: skillSpec は必須）
-// ────────────────────────────────────────────────────────────────────────────
-
-type SkillCreatorRuntimeApi = {
-  planSkill?: (
-    prompt: string,
-    authMode?: string,
-    apiKey?: string,
-  ) => Promise<{ success: boolean; data?: PlanResult; error?: string }>;
-  executePlan?: (
-    planId: string,
-    skillSpec: string, // 必須（C-1 回避: optional にしない）
-    authMode?: string,
-    apiKey?: string,
-  ) => Promise<{ success: boolean; data?: unknown; error?: string }>;
-  getWorkflowState?: (
-    planId: string,
-  ) => Promise<{ success: boolean; data?: unknown; error?: string }>;
-};
-
-function getSkillCreatorApi(): SkillCreatorRuntimeApi {
-  const runtimeWindow = window as Window & {
-    skillCreatorAPI?: SkillCreatorRuntimeApi;
-    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
-  };
-  return (
-    runtimeWindow.skillCreatorAPI ??
-    runtimeWindow.electronAPI?.skillCreator ??
-    {}
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────────
 // コンポーネント
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -389,13 +302,12 @@ export const SkillCreateWizard = React.forwardRef<
   const generationProgress = useGenerationProgress();
   const generationError = useGenerationError();
   const generationLockRef = useRef(false);
-  const llmGenerationRequestIdRef = useRef(0);
-  const templateGenerationRequestIdRef = useRef(0);
+  const generationRequestIdRef = useRef(0);
   // W3-seq-04: abandon 制御 ref（P-5）
   const wizardCompletedRef = useRef(false);
   const currentStepRef = useRef(0);
 
-  // ── 新 state（W2-seq-03a） ─────────────────────────────────────────────
+  // ── 現行 state ──────────────────────────────────────────────────────────
   const [formData, setFormData] =
     useState<SkillInfoFormData>(DEFAULT_FORM_DATA);
   const [answers, setAnswers] = useState<ConversationAnswers>(DEFAULT_ANSWERS);
@@ -422,34 +334,13 @@ export const SkillCreateWizard = React.forwardRef<
     currentStepRef.current = currentStep;
   }, [currentStep]);
 
-  // TASK-SC-07: LLM 生成フロー state
-  const [generationMode, setGenerationMode] =
-    useState<GenerationMode>("template");
-  /** LLM ラジオが一度でも選択されたか（テンプレート復帰時の UI 分岐に使用） */
-  const [hasActivatedLlmMode, setHasActivatedLlmMode] = useState(false);
-  const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
-    null,
-  );
-  const [llmDescription, setLlmDescription] = useState("");
-
-  // TASK-SC-07: store setters（C-4: PlanResult は agentSlice から import 済み）
-  const setStoreIsGenerating = useSetIsSkillGenerating();
-  const setGenerationProgressMsg = useSetGenerationProgress();
-  const setGenerationErrorMsg = useSetGenerationError();
-  const setCurrentPlanResult = useSetCurrentPlanResult();
-  const setCurrentPlanId = useSetCurrentPlanId();
-  const currentPlanId = useCurrentPlanId();
-  const currentPlanResult = useCurrentPlanResult();
-
   const invalidateGenerationRequests = () => {
-    llmGenerationRequestIdRef.current += 1;
-    templateGenerationRequestIdRef.current += 1;
+    generationRequestIdRef.current += 1;
   };
   // アンマウント時にリクエストを無効化・abandon 発火（P-5）
   useEffect(() => {
     return () => {
-      llmGenerationRequestIdRef.current += 1;
-      templateGenerationRequestIdRef.current += 1;
+      generationRequestIdRef.current += 1;
       generationLockRef.current = false;
       if (!wizardCompletedRef.current) {
         trackEvent("skill_wizard_abandon", {
@@ -459,7 +350,7 @@ export const SkillCreateWizard = React.forwardRef<
     };
   }, []);
 
-  // ── ハンドラ（W2-seq-03a） ────────────────────────────────────────────
+  // ── ハンドラ ───────────────────────────────────────────────────────────
 
   const resetGeneratedState = (preserveFormData: boolean) => {
     invalidateGenerationRequests();
@@ -475,26 +366,9 @@ export const SkillCreateWizard = React.forwardRef<
     setSkillPath(null);
     setHasExternalIntegration(false);
     setExternalToolName(null);
-    setLocalPlanResult(null);
     generationLockRef.current = false;
     wizardCompletedRef.current = false;
     clearGenerationState();
-  };
-
-  /**
-   * LLM モードから切り替え後のテンプレートモード Step 0 → Step 1 遷移。
-   * llmDescription を purpose として formData に反映してから ConversationRoundStep へ。
-   */
-  const handleStep0NextFromLlm = () => {
-    const newFormData = { ...formData, purpose: llmDescription };
-    setFormData(newFormData);
-    const defaults = inferSmartDefaults(newFormData);
-    setSmartDefaults(defaults);
-    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
-    setHasExternalIntegration(integration.hasExternalIntegration);
-    setExternalToolName(integration.externalToolName);
-    trackEvent("skill_wizard_step_complete", { step: 0, stepName: STEPS[0] });
-    goNext();
   };
 
   /**
@@ -534,7 +408,7 @@ export const SkillCreateWizard = React.forwardRef<
 
     generationLockRef.current = true;
     invalidateGenerationRequests();
-    const requestId = templateGenerationRequestIdRef.current;
+    const requestId = generationRequestIdRef.current;
     const defaults = smartDefaults ?? inferSmartDefaults(formData);
     if (!smartDefaults) {
       setSmartDefaults(defaults);
@@ -544,7 +418,6 @@ export const SkillCreateWizard = React.forwardRef<
     clearGenerationState();
     resetStreamingProgress();
     setGenerationMethod(method);
-    setLocalPlanResult(null);
     setSkillPath(null);
     goToStep(2);
     setIsGenerating(true);
@@ -557,7 +430,7 @@ export const SkillCreateWizard = React.forwardRef<
         SKILL_GENERATION_OPTIONS,
         skillContext,
       );
-      if (requestId !== templateGenerationRequestIdRef.current) {
+      if (requestId !== generationRequestIdRef.current) {
         return;
       }
       if (!path) {
@@ -583,7 +456,7 @@ export const SkillCreateWizard = React.forwardRef<
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
     } finally {
-      if (requestId === templateGenerationRequestIdRef.current) {
+      if (requestId === generationRequestIdRef.current) {
         setIsGenerating(false);
         generationLockRef.current = false;
       }
@@ -608,240 +481,8 @@ export const SkillCreateWizard = React.forwardRef<
     goToStep(0);
   };
 
-  // ── TASK-SC-07: LLM 生成ハンドラ ─────────────────────────────────────
-
-  /** LLM モード: planSkill を呼び出し Step 2 へ遷移する（AC-2） */
-  const handleLlmGenerate = async () => {
-    if (generationLockRef.current || isGenerating || isSkillGenerating) {
-      return; // G-1: 二重呼出防止
-    }
-
-    const description = llmDescription.trim();
-    setError(null);
-    setGenerationErrorMsg(null);
-    setGenerationProgressMsg(null);
-    if (description.length === 0) {
-      setGenerationErrorMsg("スキルの説明を入力してください");
-      return;
-    }
-
-    const api = getSkillCreatorApi();
-    if (!api.planSkill) {
-      setGenerationErrorMsg("planSkill API が利用できません"); // F-2
-      return;
-    }
-
-    generationLockRef.current = true;
-    invalidateGenerationRequests();
-    const requestId = llmGenerationRequestIdRef.current;
-    setLocalPlanResult(null);
-    // clearGenerationState は executePlan/cancelPlan の対称クリアで呼ぶ（W-10/W-11 の二重呼出防止）
-    setGenerationErrorMsg(null);
-    setCurrentPlanResult(null);
-    setCurrentPlanId(null);
-    resetStreamingProgress();
-    setSkillPath(null);
-    setStoreIsGenerating(true);
-    setGenerationProgressMsg("計画を生成中..."); // W-2
-    goToStep(2);
-
-    try {
-      const result = await api.planSkill(description);
-      if (requestId !== llmGenerationRequestIdRef.current) {
-        return;
-      }
-      if (!result.success || !result.data) {
-        setGenerationErrorMsg(
-          result.error ?? "スキルプランの生成に失敗しました",
-        ); // E-1
-        setGenerationProgressMsg(null);
-        return;
-      }
-      // E-2b: data 内部の論理エラーチェック
-      const data = result.data as PlanResult & {
-        success?: boolean;
-        error?: { message?: string };
-      };
-      if (data.success === false) {
-        const errMsg =
-          data.error?.message ?? "スキルプランの生成に失敗しました";
-        setGenerationErrorMsg(errMsg);
-        setGenerationProgressMsg(null);
-        setCurrentPlanResult(null); // E-2b: 論理エラー時も plan state をクリア
-        setCurrentPlanId(null);
-        return;
-      }
-      setLocalPlanResult(result.data); // ローカル state（localPlanResult）
-      setCurrentPlanResult(result.data); // store（W-3）
-      setCurrentPlanId(result.data.planId ?? null);
-      setGenerationProgressMsg(null);
-    } catch (err) {
-      if (requestId !== llmGenerationRequestIdRef.current) {
-        return;
-      }
-      const message =
-        err instanceof Error ? err.message : "スキルプランの生成に失敗しました";
-      setGenerationErrorMsg(message); // E-2
-      setGenerationProgressMsg(null);
-    } finally {
-      if (requestId === llmGenerationRequestIdRef.current) {
-        setStoreIsGenerating(false); // E-4
-        generationLockRef.current = false;
-      }
-    }
-  };
-
-  /** LLM モード: executePlan を呼び出し生成を実行する（AC-4 / C-1） */
-  const handleExecutePlan = async () => {
-    if (generationLockRef.current || isGenerating || isSkillGenerating) {
-      return;
-    }
-
-    setError(null);
-    setGenerationErrorMsg(null);
-    setGenerationProgressMsg(null);
-
-    const plan = localPlanResult ?? null;
-    const planId = plan?.planId ?? currentPlanId;
-    if (!planId) return;
-
-    const skillSpec =
-      plan?.skillSpec?.trim() ?? currentPlanResult?.skillSpec?.trim() ?? "";
-    if (!skillSpec) {
-      setGenerationErrorMsg("実行するスキル仕様がありません");
-      return;
-    }
-
-    const api = getSkillCreatorApi();
-    if (!api.executePlan) {
-      setGenerationErrorMsg("executePlan API が利用できません");
-      return;
-    }
-
-    generationLockRef.current = true;
-    llmGenerationRequestIdRef.current += 1;
-    const requestId = llmGenerationRequestIdRef.current;
-    setStoreIsGenerating(true);
-    setGenerationProgressMsg("スキルを生成中...");
-
-    try {
-      const result = await api.executePlan(planId, skillSpec); // C-1: skillSpec 必須
-      if (requestId !== llmGenerationRequestIdRef.current) {
-        return;
-      }
-      if (!result.success) {
-        setGenerationErrorMsg(result.error ?? "スキル生成に失敗しました"); // E-3
-        setGenerationProgressMsg(null);
-        return;
-      }
-      if (isTerminalHandoffExecuteResponse(result.data)) {
-        const suggestedCommand = result.data.bundle?.suggestedCommand?.trim();
-        setGenerationErrorMsg(
-          suggestedCommand && suggestedCommand.length > 0
-            ? `ターミナル実行が必要です: ${suggestedCommand}`
-            : "ターミナル実行が必要です",
-        );
-        setGenerationProgressMsg(null);
-        return;
-      }
-
-      if (
-        result.data &&
-        typeof result.data === "object" &&
-        "success" in result.data &&
-        (result.data as { success?: boolean }).success === false
-      ) {
-        const maybeError = result.data as {
-          error?: { message?: string } | string;
-        };
-        const errorMessage =
-          typeof maybeError.error === "string"
-            ? maybeError.error
-            : maybeError.error?.message;
-        setGenerationErrorMsg(errorMessage ?? "スキル生成に失敗しました");
-        setGenerationProgressMsg(null);
-        return;
-      }
-
-      if (api.getWorkflowState) {
-        try {
-          const snapshotResult = await api.getWorkflowState(planId);
-          if (requestId !== llmGenerationRequestIdRef.current) {
-            return;
-          }
-          if (
-            snapshotResult.success &&
-            snapshotResult.data &&
-            typeof snapshotResult.data === "object"
-          ) {
-            const snapshot =
-              snapshotResult.data as SkillCreatorWorkflowUiSnapshot;
-            if (snapshot.handoffBundle) {
-              const terminalHandoffResult = toTerminalHandoffPlanResult(
-                planId,
-                snapshot.handoffBundle,
-                skillSpec,
-                plan?.estimatedSteps ?? currentPlanResult?.estimatedSteps,
-              );
-              setLocalPlanResult(terminalHandoffResult);
-              setCurrentPlanResult(terminalHandoffResult);
-              setGenerationProgressMsg(null);
-              return;
-            }
-            if (snapshot.verifyResult?.status === "fail") {
-              setGenerationErrorMsg(
-                snapshot.verifyResult.message ?? "スキル生成に失敗しました",
-              );
-              setGenerationProgressMsg(null);
-              return;
-            }
-            const persistedSkillPath =
-              snapshot.persistResult?.skillPath?.trim() ?? "";
-            if (persistedSkillPath.length > 0) {
-              setSkillPath(persistedSkillPath);
-            }
-          }
-        } catch {
-          // snapshot 取得失敗は成功扱いにフォールバックする
-        }
-      }
-
-      setLocalPlanResult(null); // AC-10: 対称クリア
-      clearGenerationState(); // W-10
-      wizardCompletedRef.current = true;
-      trackEvent("skill_wizard_step_complete", { step: 2, stepName: STEPS[2] });
-      goToStep(3);
-    } catch (err) {
-      if (requestId !== llmGenerationRequestIdRef.current) {
-        return;
-      }
-      const message =
-        err instanceof Error ? err.message : "スキル生成に失敗しました";
-      setGenerationErrorMsg(message); // E-5
-      setGenerationProgressMsg(null);
-    } finally {
-      if (requestId === llmGenerationRequestIdRef.current) {
-        setStoreIsGenerating(false);
-        generationLockRef.current = false;
-      }
-    }
-  };
-
-  /** LLM モード: キャンセル → Step 0 に戻る（AC-5 / AC-10） */
-  const handleCancelPlan = () => {
-    invalidateGenerationRequests();
-    setLocalPlanResult(null); // AC-10: 対称クリア
-    setError(null);
-    setSkillPath(null);
-    generationLockRef.current = false;
-    cancelGeneration();
-    resetStreamingProgress();
-    clearGenerationState(); // W-11
-    goToStep(0);
-  };
-
-  /** template モード: 生成をキャンセルして Step 0 に戻る */
-  const handleCancelTemplateGeneration = () => {
+  /** 生成をキャンセルして Step 0 に戻る */
+  const handleCancelGeneration = () => {
     cancelGeneration();
     resetGeneratedState(true);
     goToStep(0);
@@ -891,75 +532,14 @@ export const SkillCreateWizard = React.forwardRef<
       />
       <StepIndicator steps={STEPS} currentStep={currentStep} />
 
-      {/* Step 0: スキル情報入力（TASK-SC-07: generationMode 切替 UI 追加） */}
+      {/* Step 0: スキル情報入力（LLM専用フロー） */}
       {currentStep === 0 && (
         <div data-testid="wizard-step-info">
-          {/* 生成モード選択ラジオボタン（AC-1） */}
-          <div className="mb-4 flex gap-6">
-            <label className="flex cursor-pointer items-center gap-2">
-              <input
-                type="radio"
-                name="generationMode"
-                value="template"
-                checked={generationMode === "template"}
-                onChange={() => setGenerationMode("template")}
-              />
-              テンプレートから作成
-            </label>
-            <label className="flex cursor-pointer items-center gap-2">
-              <input
-                type="radio"
-                name="generationMode"
-                value="llm"
-                checked={generationMode === "llm"}
-                onChange={() => {
-                  setGenerationMode("llm");
-                  setHasActivatedLlmMode(true);
-                }}
-              />
-              LLM で生成
-            </label>
-          </div>
-
-          {generationMode === "template" && !hasActivatedLlmMode ? (
-            /* テンプレートモード（通常）: フル SkillInfoStep */
-            <SkillInfoStep
-              formData={formData}
-              onFormDataChange={setFormData}
-              onNext={handleStep0Next}
-            />
-          ) : (
-            /* LLM モード or LLM→テンプレート切替後: 共通の description 入力 UI
-             * aria-label="目的・背景" でアクセシブル名を統一（W-6c: getByLabelText） */
-            <div className="flex flex-col gap-4">
-              <label htmlFor="llm-description" className="text-sm font-medium">
-                スキルの説明
-              </label>
-              <textarea
-                id="llm-description"
-                aria-label="目的・背景"
-                className="w-full rounded border p-2 text-sm"
-                rows={4}
-                value={llmDescription}
-                onChange={(e) => setLlmDescription(e.target.value)}
-                placeholder="作りたいスキルの説明を入力してください"
-              />
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="rounded bg-blue-600 px-4 py-2 text-sm text-white"
-                  disabled={llmDescription.trim().length === 0}
-                  onClick={
-                    generationMode === "llm"
-                      ? () => void handleLlmGenerate()
-                      : handleStep0NextFromLlm
-                  }
-                >
-                  次へ
-                </button>
-              </div>
-            </div>
-          )}
+          <SkillInfoStep
+            formData={formData}
+            onFormDataChange={setFormData}
+            onNext={handleStep0Next}
+          />
         </div>
       )}
 
@@ -977,7 +557,7 @@ export const SkillCreateWizard = React.forwardRef<
         </div>
       )}
 
-      {/* Step 2: 生成中（GenerateStep）— TASK-SC-07: LLM props 追加 */}
+      {/* Step 2: 生成中（GenerateStep） */}
       {currentStep === 2 && (
         <div data-testid="wizard-step-generate">
           <GenerateStep
@@ -989,25 +569,8 @@ export const SkillCreateWizard = React.forwardRef<
             isGenerating={
               isGenerating || isSkillGenerating || streaming.isGenerating
             }
-            onCancel={
-              generationMode === "llm"
-                ? handleCancelPlan
-                : handleCancelTemplateGeneration
-            }
-            onRetry={
-              generationMode === "template"
-                ? () => void handleGenerate(generationMethod)
-                : undefined
-            }
-            planResult={generationMode === "llm" ? localPlanResult : undefined}
-            onExecutePlan={
-              generationMode === "llm"
-                ? () => void handleExecutePlan()
-                : undefined
-            }
-            onCancelPlan={
-              generationMode === "llm" ? handleCancelPlan : undefined
-            }
+            onCancel={handleCancelGeneration}
+            onRetry={() => void handleGenerate(generationMethod)}
             generationProgress={generationProgress}
           />
         </div>

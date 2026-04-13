@@ -289,6 +289,9 @@ export * from "./skill-share";
 // スキルスケジュール型定義 (TASK-9G)
 export * from "./skill-schedule";
 
+// スキル利用分析型定義 (TASK-9I)
+export * from "./skill-analytics";
+
 // スキルデバッグ型定義 (TASK-9H)
 export * from "./skill-debug";
 

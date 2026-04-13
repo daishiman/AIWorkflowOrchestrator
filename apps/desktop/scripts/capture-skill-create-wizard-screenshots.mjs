@@ -10,26 +10,31 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
-const workflowRoot = path.join(
+const defaultWorkflowRoot = path.join(
   repoRoot,
   "docs/30-workflows/W1-par-02c-complete-step",
 );
-const phase11Root = path.join(workflowRoot, "outputs/phase-11");
-const screenshotDir = path.join(phase11Root, "screenshots");
-const screenshotPlanPath = path.join(phase11Root, "screenshot-plan.json");
-const captureMetadataPath = path.join(
-  phase11Root,
-  "phase11-capture-metadata.json",
-);
-const port = process.env.W1_PAR_02C_PHASE11_PORT ?? "5183";
-
-const baseUrl = `http://127.0.0.1:${port}`;
-const baseRoute = `${baseUrl}/advanced/skill-create-wizard`;
+const wizardRoute = "/advanced/skill-create-wizard";
 const completeStepHarnessPath = "/phase11-w1-par-02c-complete-step.html";
+
+function resolveWorkflowRoot(workflowRootArg) {
+  if (!workflowRootArg) {
+    return defaultWorkflowRoot;
+  }
+  return path.isAbsolute(workflowRootArg)
+    ? workflowRootArg
+    : path.resolve(repoRoot, workflowRootArg);
+}
 
 function parseArgs(argv) {
   const options = {
-    screenshotDir,
+    workflowRoot:
+      process.env.SKILL_WIZARD_SCREENSHOT_WORKFLOW_ROOT ?? defaultWorkflowRoot,
+    screenshotDir: null,
+    port:
+      process.env.SKILL_WIZARD_SCREENSHOT_PORT ??
+      process.env.W1_PAR_02C_PHASE11_PORT ??
+      "5183",
   };
 
   for (let i = 2; i < argv.length; i += 1) {
@@ -37,16 +42,26 @@ function parseArgs(argv) {
     if (arg === "--output-dir" && argv[i + 1]) {
       options.screenshotDir = path.resolve(process.cwd(), argv[i + 1]);
       i += 1;
+      continue;
+    }
+    if (arg === "--workflow-root" && argv[i + 1]) {
+      options.workflowRoot = argv[i + 1];
+      i += 1;
+      continue;
+    }
+    if (arg === "--port" && argv[i + 1]) {
+      options.port = argv[i + 1];
+      i += 1;
     }
   }
 
   return options;
 }
 
-const scenarios = [
+const defaultScenarios = [
   {
     file: "TC-11-01-step0-description-category.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[data-testid="wizard-step-describe"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
@@ -59,7 +74,7 @@ const scenarios = [
   },
   {
     file: "TC-11-02-step1-page1-defaults.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
@@ -76,7 +91,7 @@ const scenarios = [
   },
   {
     file: "TC-11-03-step1-cron-error.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[role="alert"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
@@ -95,7 +110,7 @@ const scenarios = [
   },
   {
     file: "TC-11-04-step2-required-q5.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
@@ -113,7 +128,7 @@ const scenarios = [
   },
   {
     file: "TC-11-05-summary-card-warning.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[aria-label="適用サマリー"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
@@ -132,7 +147,7 @@ const scenarios = [
   },
   {
     file: "TC-07-step3-complete-light.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[data-testid="wizard-step-complete"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "light",
@@ -147,7 +162,7 @@ const scenarios = [
   },
   {
     file: "TC-08-step3-complete-mobile-dark.png",
-    url: baseRoute,
+    route: wizardRoute,
     selector: '[data-testid="wizard-step-complete"]',
     viewport: { width: 390, height: 844 },
     colorScheme: "dark",
@@ -162,11 +177,123 @@ const scenarios = [
   },
   {
     file: "TC-09-step3-complete-external-checklist-light.png",
-    url: `${baseUrl}${completeStepHarnessPath}`,
+    route: completeStepHarnessPath,
     selector: '[data-testid="phase11-complete-step-external-card"]',
     appReadySelector: '[data-testid="phase11-complete-step-harness"]',
     viewport: { width: 1440, height: 1200 },
     colorScheme: "light",
+  },
+];
+
+const modeMgmtScenarios = [
+  {
+    file: "step0-no-radio-button.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-info"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    note: "Step 0 の初期表示。ラジオボタンが存在しないことを確認する。",
+  },
+  {
+    file: "step0-filled.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-info"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.waitForTimeout(150);
+    },
+  },
+  {
+    file: "step-indicator-stepN.png",
+    route: wizardRoute,
+    selector: 'nav[aria-label="ウィザードの進捗"]',
+    captureSelector: 'nav[aria-label="ウィザードの進捗"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.waitForTimeout(150);
+    },
+  },
+  {
+    file: "step1-conversation.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-conversation-round"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.waitForTimeout(150);
+    },
+  },
+  {
+    file: "step2-generating.png",
+    route: `${wizardRoute}?mode=slow`,
+    selector: '[data-testid="wizard-step-generate"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.waitForTimeout(120);
+      await page.getByRole("button", { name: "今すぐ生成する" }).click();
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.getByRole("button", { name: "生成する", exact: true }).click();
+      await page.waitForSelector('[data-testid="wizard-step-generate"]');
+      await page.waitForTimeout(200);
+    },
+  },
+  {
+    file: "step3-complete.png",
+    route: `${wizardRoute}?mode=slow`,
+    selector: '[data-testid="wizard-step-complete"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.waitForTimeout(120);
+      await page.getByRole("button", { name: "今すぐ生成する" }).click();
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.getByRole("button", { name: "生成する", exact: true }).click();
+      await page.waitForSelector('[data-testid="wizard-step-complete"]');
+      await page.waitForTimeout(200);
+    },
   },
 ];
 
@@ -255,17 +382,18 @@ function createMockScript() {
   };
 }
 
-async function captureScenario(browser, scenario, outputDir) {
+async function captureScenario(browser, scenario, outputDir, baseUrl) {
   const context = await browser.newContext({
     viewport: scenario.viewport,
     colorScheme: scenario.colorScheme,
   });
+  const scenarioUrl = `${baseUrl}${scenario.route}`;
 
   try {
     await context.addInitScript(createMockScript());
     const page = await context.newPage();
 
-    await page.goto(scenario.url, {
+    await page.goto(scenarioUrl, {
       waitUntil: "domcontentloaded",
       timeout: 60_000,
     });
@@ -283,13 +411,20 @@ async function captureScenario(browser, scenario, outputDir) {
     await page.waitForSelector(scenario.selector, { timeout: 15_000 });
     await page.waitForTimeout(150);
 
-    await page.screenshot({
-      path: path.join(outputDir, scenario.file),
-      fullPage: true,
-    });
+    const targetPath = path.join(outputDir, scenario.file);
+    if (scenario.captureSelector) {
+      await page.locator(scenario.captureSelector).screenshot({
+        path: targetPath,
+      });
+    } else {
+      await page.screenshot({
+        path: targetPath,
+        fullPage: true,
+      });
+    }
   } catch (error) {
     throw new Error(
-      `Screenshot capture failed for ${scenario.file} (${scenario.url})`,
+      `Screenshot capture failed for ${scenario.file} (${scenarioUrl})`,
       { cause: error },
     );
   } finally {
@@ -299,7 +434,24 @@ async function captureScenario(browser, scenario, outputDir) {
 
 async function main() {
   const options = parseArgs(process.argv);
-  await fs.mkdir(options.screenshotDir, { recursive: true });
+  const workflowRoot = resolveWorkflowRoot(options.workflowRoot);
+  const phase11Root = path.join(workflowRoot, "outputs/phase-11");
+  const screenshotDir =
+    options.screenshotDir ?? path.join(phase11Root, "screenshots");
+  const screenshotPlanPath = path.join(phase11Root, "screenshot-plan.json");
+  const captureMetadataPath = path.join(
+    phase11Root,
+    "phase11-capture-metadata.json",
+  );
+  const baseUrl = `http://127.0.0.1:${options.port}`;
+  const scenarioList = workflowRoot.includes("WB-par-02a-fix-mode-mgmt")
+    ? modeMgmtScenarios
+    : defaultScenarios;
+  const needsHarness = scenarioList.some(
+    (scenario) => scenario.appReadySelector !== undefined,
+  );
+
+  await fs.mkdir(screenshotDir, { recursive: true });
 
   const server = spawn(
     "pnpm",
@@ -311,7 +463,7 @@ async function main() {
       "--host",
       "127.0.0.1",
       "--port",
-      port,
+      options.port,
       "--strictPort",
     ],
     {
@@ -324,14 +476,16 @@ async function main() {
   server.stderr.on("data", (data) => process.stderr.write(data));
 
   try {
-    await waitForServer(baseRoute);
-    await waitForServer(`${baseUrl}${completeStepHarnessPath}`);
+    await waitForServer(`${baseUrl}${wizardRoute}`);
+    if (needsHarness) {
+      await waitForServer(`${baseUrl}${completeStepHarnessPath}`);
+    }
 
     const browser = await chromium.launch({ headless: true });
     const capturedFiles = [];
-    for (const scenario of scenarios) {
-      await captureScenario(browser, scenario, options.screenshotDir);
-      const screenshotPath = path.join(options.screenshotDir, scenario.file);
+    for (const scenario of scenarioList) {
+      await captureScenario(browser, scenario, screenshotDir, baseUrl);
+      const screenshotPath = path.join(screenshotDir, scenario.file);
       const stat = await fs.stat(screenshotPath);
       capturedFiles.push({
         tcId: scenario.file.slice(0, 5),
@@ -340,7 +494,7 @@ async function main() {
         capturedAt: stat.mtime.toISOString(),
       });
       process.stdout.write(
-        `Captured ${path.join(options.screenshotDir, scenario.file)}\n`,
+        `Captured ${path.join(screenshotDir, scenario.file)}\n`,
       );
     }
     const generatedAt = new Date().toISOString();
@@ -349,7 +503,7 @@ async function main() {
       JSON.stringify(
         {
           generatedAt,
-          route: "/advanced/skill-create-wizard",
+          route: wizardRoute,
           captures: capturedFiles.map((entry) => ({
             tcId: entry.tcId,
             state: entry.state,
