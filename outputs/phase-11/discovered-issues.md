@@ -1,26 +1,13 @@
-# Phase 11: 発見した問題 — TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
-
-## サマリー
-
-| 区分              | 件数 |
-| ----------------- | ---- |
-| product blocker   | 0    |
-| product minor     | 0    |
-| environment issue | 1    |
-
-## 判定
-
-product 側の blocker と minor はなし。`vitest` の直接実行はこの workspace の esbuild mismatch で停止した。
+# 発見された問題 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
 ## 発見事項
 
-| 対象                 | 内容                                                             | 影響度 | 対応方針                                          |
-| -------------------- | ---------------------------------------------------------------- | ------ | ------------------------------------------------- |
-| test execution env   | `pnpm vitest run` が esbuild host/binary mismatch で起動停止した | 中     | manual-test-report に環境ブロッカーとして記録した |
-| cronConverter source | weekly 空曜日ガードと JSDoc は current facts と一致している      | 低     | 追加対応なし                                      |
+### cron-parser は安全側判定になる
 
-## 確認メモ
+**発見フェーズ**: Phase 5（実装）
+**内容**: `cron-parser@5.5.0` は day-of-month と day-of-week の複合指定をそのまま救済せず、安全側の拒否になる。
+**影響**: TC-08（`"0 0 31 2 1"`）と TC-16（`"0 0 31 2 1-5"`）の期待値を修正した。
+**対応**: Phase 5 以降の成果物では、`cron-parser` の実挙動に合わせた安全側判定を採用。
+**残タスク**: なし（この動作は仕様として確定）
 
-- `cronConverter.ts` の実装に product-side の欠落はない
-- `cronConverter.edge.test.ts` は空曜日ケースを含む
-- 追加の unassigned task は作成していない
+## 未解決問題

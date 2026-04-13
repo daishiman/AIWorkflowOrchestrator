@@ -154,6 +154,11 @@ vi.mock("@repo/shared/types/api-keys", () => ({
   },
 }));
 
+// Mock @repo/shared/infrastructure/ai/apiKeyValidator
+vi.mock("@repo/shared/infrastructure/ai/apiKeyValidator", () => ({
+  validateApiKey: mockValidateApiKey,
+}));
+
 // Import after mocks
 import { ipcMain } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";

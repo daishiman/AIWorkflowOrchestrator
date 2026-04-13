@@ -1,127 +1,99 @@
-# Phase 12: 実装ガイド - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+# implementation-guide.md
 
-## メタ情報
-
-| 項目    | 内容                                      |
-| ------- | ----------------------------------------- |
-| Task ID | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001  |
-| 作成日  | 2026-04-12                                |
-| 対象    | `cronConverter.ts` の weekly 空曜日ガード |
-| 状態    | completed                                 |
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
 
 ---
 
 ## Part 1: 中学生向け説明
 
-### 何を直したのか
+### cronConverter の weekdays=[] ガードとは？
 
-スケジュール画面では「毎週、月・水・金に動く」のような設定を cron という命令文に変える。  
-そのとき曜日が 1 つも選ばれていないのに、命令文だけを無理に作ると、空っぽの材料で料理名だけ書いたメモのように壊れたものになる。
+cron 式は、「いつ動かすか」を文字で表す決まりごとです。たとえば `"0 9 * * 1,2,3,4,5"` は「月〜金曜の朝 9 時に動かす」という意味です。
 
-### なぜ必要か
+今回の修正は、「毎週実行する設定なのに、曜日を 1 つも選んでいない」ケースを止めるものです。曜日が 0 個だと、アラームを鳴らす日が 1 日もないのと同じで、予定として成立しません。UI では先に防いでいても、`cronConverter.ts` 自体が自分で安全確認しないと、直接呼ばれたときに壊れた cron を返してしまいます。
 
-- 変な命令文を返すと、あとで使う側が困る
-- 画面側のチェックだけに頼ると、別の呼び出し方で抜けることがある
-- 変換する場所で止めると、壊れた値が広がらない
+修正後は、曜日が空ならその場でエラーを返し、壊れた式を作る前に問題を伝えます。
 
-### 何をするか
+**専門用語の説明：**
 
-- 曜日が空の weekly 設定を見つける
-- その場で空文字を返す
-- 無理に cron 文を作らない
-
-### たとえ話
-
-曜日は弁当のおかずみたいなもの。  
-おかずが 1 つも入っていないのに「月・水・金の弁当」とラベルだけ貼ると、中身と札が合わない。  
-この修正は、札を貼る前に中身を確認して、空なら空のまま返す動きに近い。
+| 用語                | 説明                                                            |
+| ------------------- | --------------------------------------------------------------- |
+| cron 式             | 定期実行スケジュールを表す文字列（`"0 9 * * 1"` = 毎週月曜9時） |
+| ガード処理          | 不正な入力を早期に検出してエラーを投げる処理                    |
+| 単一責任原則（SRP） | 1 つの関数・クラスは 1 つのことだけに責任を持つというルール     |
+| InvalidConfigError  | 設定値が無効な場合に投げるカスタムエラークラス                  |
 
 ---
 
-## Part 2: 開発者向け説明
+## Part 2: 技術者向け説明
 
-### current contract
+### 変更ファイル
 
-```ts
-export type FrequencyType =
-  | "every-minute"
-  | "every-hour"
-  | "daily"
-  | "weekly"
-  | "monthly"
-  | "custom";
+変更ファイル数: 2
 
-export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+| ファイル                                                          | 変更種別 | 変更内容                                            |
+| ----------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| `apps/desktop/src/renderer/utils/cronConverter.ts`                | 修正     | InvalidConfigError 定義追加・ガード追加・JSDoc 更新 |
+| `apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts` | 新規     | 16 テストケース追加                                 |
 
-export interface VisualCronConfig {
-  frequency: FrequencyType;
-  hour: number;
-  minute: number;
-  weekdays: Weekday[];
-  dayOfMonth: number;
-  rawCronExpression?: string;
+### 新規定義: InvalidConfigError
+
+```typescript
+export class InvalidConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidConfigError";
+  }
 }
-
-export function visualConfigToCron(config: VisualCronConfig): string;
 ```
 
-### 実装ポイント
+### ガード処理（weekly ケース内）
 
-| 項目   | 内容                                                                 |
-| ------ | -------------------------------------------------------------------- |
-| 対象   | `apps/desktop/src/renderer/utils/cronConverter.ts`                   |
-| ガード | `frequency === "weekly"` かつ `weekdays.length === 0` で `""` を返す |
-| 正常系 | `weekdays` は重複除去と昇順ソートの後に join する                    |
-| JSDoc  | 空曜日時の返り値と意図を `@returns` / `@remarks` に記載する          |
-
-### 使用例
-
-```ts
-visualConfigToCron({
-  frequency: "weekly",
-  hour: 9,
-  minute: 0,
-  weekdays: [1, 3, 5],
-  dayOfMonth: 1,
-});
-// "0 9 * * 1,3,5"
-
-visualConfigToCron({
-  frequency: "weekly",
-  hour: 9,
-  minute: 0,
-  weekdays: [],
-  dayOfMonth: 1,
-});
-// ""
+```typescript
+case "weekly": {
+  if (weekdays.length === 0) {
+    throw new InvalidConfigError(
+      "weekdays must not be empty when frequency is 'weekly'",
+    );
+  }
+  const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
+  return `${minute} ${hour} * * ${sorted.join(",")}`;
+}
 ```
 
-### エラーとエッジケース
+### JSDoc 追加
 
-- `weekdays` が空の weekly 設定は空文字になる
-- `weekdays` に重複や順不同があっても、weekly の cron は正規化される
-- `custom` で `rawCronExpression` が空なら空文字になる
-- `monthly` は `dayOfMonth` をそのまま使う
-- この関数は例外を投げず、入力に応じて文字列を返す
+```typescript
+/**
+ * VisualCronConfig をクロン式文字列に変換する。
+ * @param config - ビジュアル設定オブジェクト
+ * @returns cron 式文字列
+ * @throws {InvalidConfigError} frequency が "weekly" のとき weekdays が空配列の場合
+ */
+```
 
-### 設定可能なパラメータと定数
+### テスト結果（全 AC 充足）
 
-| 名前                | 種別            | 役割                    |
-| ------------------- | --------------- | ----------------------- |
-| `frequency`         | `FrequencyType` | 変換分岐を決める        |
-| `hour`              | number          | 時刻の時を決める        |
-| `minute`            | number          | 時刻の分を決める        |
-| `weekdays`          | `Weekday[]`     | weekly の曜日を決める   |
-| `dayOfMonth`        | number          | monthly の日付を決める  |
-| `rawCronExpression` | string          | custom の生 cron を渡す |
+実行コマンド: `npx vitest run apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts`
 
-### 検証メモ
+| 入力                        | 期待結果                  | 結果 |
+| --------------------------- | ------------------------- | ---- |
+| `weekdays: []`              | `InvalidConfigError`      | ✅   |
+| `weekdays: [0]`             | `"0 9 * * 0"`             | ✅   |
+| `weekdays: [1,2,3,4,5]`     | `"0 9 * * 1,2,3,4,5"`     | ✅   |
+| `weekdays: [0,1,2,3,4,5,6]` | `"0 9 * * 0,1,2,3,4,5,6"` | ✅   |
 
-- weekly 空曜日ガードは source review で確認済み
-- edge test に空曜日ケースが存在する
-- runtime vitest はこの workspace で esbuild mismatch により停止した
+### エッジケース
 
-### まとめ
+| ケース                    | 期待動作                     |
+| ------------------------- | ---------------------------- |
+| `weekdays: [0, 0]` 重複値 | Set 正規化 → `"0 9 * * 0"`   |
+| `weekdays: [6]` 単一値    | `"0 9 * * 6"` を維持         |
+| `weekdays: [5,3,1]` 逆順  | ソート → `"0 9 * * 1,3,5"`   |
+| `frequency !== "weekly"`  | ガード発動せず既存動作を維持 |
 
-weekly 空曜日の変換は、壊れた cron 文を返さないための最小ガードとして機能している。  
-JSDoc と test file の両方で意図が追えるため、呼び出し側の読み違いが起きにくい。
+---
+
+## 手動テスト結果
+
+NON_VISUAL タスク。自動テスト 16/16 passed で確認済み。

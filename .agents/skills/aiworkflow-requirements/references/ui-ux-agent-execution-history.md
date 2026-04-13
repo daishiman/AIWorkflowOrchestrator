@@ -31,6 +31,30 @@
 | TASK-7D                                                    | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS          |
 | task-imp-permission-tool-metadata-001                      | 2026-01-31 | `toolMetadata.ts`（リスクレベル・セキュリティ影響定義）, `PermissionDialog.tsx`（リスクバッジ統合）, テスト56件追加 |
 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | 2026-03-15 | `TerminalHandoffCard.tsx`, `AgentExecutionView.tsx`, `agentSlice.handoff` テスト、Phase 11 screenshot 9件           |
+| タスクID                                                   | 完了日     | 主要成果物                                                                                                          |
+| ---------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| TASK-7C                                                    | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト）          |
+| task-imp-permission-tool-icons-001                         | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト）            |
+| task-imp-permission-readable-ui-001                        | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト72件追加           |
+| TASK-7D                                                    | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS          |
+| task-imp-permission-tool-metadata-001                      | 2026-01-31 | `toolMetadata.ts`（リスクレベル・セキュリティ影響定義）, `PermissionDialog.tsx`（リスクバッジ統合）, テスト56件追加 |
+| UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | 2026-03-15 | `TerminalHandoffCard.tsx`, `AgentExecutionView.tsx`, `agentSlice.handoff` テスト、Phase 11 screenshot 9件           |
+| タスクID | 完了日 | 主要成果物 |
+| -------- | ------ | ---------- |
+| TASK-7C  | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト） |
+| task-imp-permission-tool-icons-001 | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト） |
+| task-imp-permission-readable-ui-001 | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト72件追加 |
+| TASK-7D | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS |
+| task-imp-permission-tool-metadata-001 | 2026-01-31 | `toolMetadata.ts`（リスクレベル・セキュリティ影響定義）, `PermissionDialog.tsx`（リスクバッジ統合）, テスト56件追加 |
+| UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | 2026-03-15 | `TerminalHandoffCard.tsx`, `AgentExecutionView.tsx`, `agentSlice.handoff` テスト、Phase 11 screenshot 9件 |
+| タスクID                                                   | 完了日     | 主要成果物                                                                                                          |
+| ---------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| TASK-7C                                                    | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト）          |
+| task-imp-permission-tool-icons-001                         | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト）            |
+| task-imp-permission-readable-ui-001                        | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト72件追加           |
+| TASK-7D                                                    | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS          |
+| task-imp-permission-tool-metadata-001                      | 2026-01-31 | `toolMetadata.ts`（リスクレベル・セキュリティ影響定義）, `PermissionDialog.tsx`（リスクバッジ統合）, テスト56件追加 |
+| UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | 2026-03-15 | `TerminalHandoffCard.tsx`, `AgentExecutionView.tsx`, `agentSlice.handoff` テスト、Phase 11 screenshot 9件           |
 
 ### タスク: PermissionDialog人間可読UI改善（2026-01-30完了）
 

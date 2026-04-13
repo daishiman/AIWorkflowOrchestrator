@@ -1,56 +1,35 @@
-# Phase 12 タスク仕様準拠チェック - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+# Phase 12: 仕様準拠チェック
 
-## メタ情報
+## 4条件判定
 
-| 項目    | 内容                                     |
-| ------- | ---------------------------------------- |
-| Phase   | 12                                       |
-| Task ID | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 |
-| Task名  | cronConverter 空曜日ガード処理追加       |
-| 対象    | `outputs/phase-12` canonical 6成果物     |
-| 作成日  | 2026-04-12                               |
+| 条件         | 判定 | 根拠                                        |
+| ------------ | ---- | ------------------------------------------- |
+| 矛盾なし     | ✅   | 全フェーズ成果物が一貫した内容で構成        |
+| 漏れなし     | ✅   | 6成果物すべて outputs/phase-12/ に存在      |
+| 整合性あり   | ✅   | AC-01〜06 を全フェーズで参照・充足確認済み  |
+| 依存関係整合 | ✅   | Phase 1→2→3→4→5→6→7→8→9→10→11→12 の順序遵守 |
 
-## Check 1: canonical 6成果物の存在
+## 6成果物の存在確認
 
-| 成果物                   | パス                                                     | 判定 |
-| ------------------------ | -------------------------------------------------------- | ---- |
-| 実装ガイド               | `outputs/phase-12/implementation-guide.md`               | PASS |
-| システム仕様更新サマリー | `outputs/phase-12/system-spec-update-summary.md`         | PASS |
-| 更新履歴                 | `outputs/phase-12/documentation-changelog.md`            | PASS |
-| 未タスク検出             | `outputs/phase-12/unassigned-task-detection.md`          | PASS |
-| スキルフィードバック     | `outputs/phase-12/skill-feedback-report.md`              | PASS |
-| 準拠チェック             | `outputs/phase-12/phase12-task-spec-compliance-check.md` | PASS |
+| 成果物                         | パス                                                     | 存在 |
+| ------------------------------ | -------------------------------------------------------- | ---- |
+| 実装ガイド                     | `outputs/phase-12/implementation-guide.md`               | ✅   |
+| システム仕様更新サマリー       | `outputs/phase-12/system-spec-update-summary.md`         | ✅   |
+| 更新履歴                       | `outputs/phase-12/documentation-changelog.md`            | ✅   |
+| 未タスク検出                   | `outputs/phase-12/unassigned-task-detection.md`          | ✅   |
+| スキルフィードバック           | `outputs/phase-12/skill-feedback-report.md`              | ✅   |
+| 仕様準拠チェック（本ファイル） | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   |
 
-## Check 2: 必須要件の反映
+## close-out 連携ファイル確認
 
-| 要件                     | 判定 | 根拠                                               |
-| ------------------------ | ---- | -------------------------------------------------- |
-| weekly 空曜日ガード      | PASS | `visualConfigToCron` が空文字を返す                |
-| weekly 正常系            | PASS | `weekdays` の重複除去と昇順ソートがある            |
-| JSDoc のガード説明       | PASS | `@returns` と `@remarks` に明記されている          |
-| 空曜日ケースの追加テスト | PASS | `cronConverter.edge.test.ts` に存在する            |
-| regression テスト保持    | PASS | `cronConverter.test.ts` が既存ケースを保持している |
+| 対象                       | パス                                                                             | 確認結果                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| workflow root index        | `docs/30-workflows/task-cron-converter-weekdays-guard/index.md`                  | 存在確認。`phase12_completed（Phase 13 blocked）` に更新済み                                    |
+| workflow root artifacts    | `docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json`            | 存在確認。`status: phase12_completed` / phases 1-12 `completed` / phase 13 `blocked` に更新済み |
+| phase 12 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md` | 存在確認。Task 12-1〜12-6 要件を参照して `completed` に更新済み                                 |
+| phase 13 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md`   | 存在確認。`blocked（PR未作成・ユーザー承認待ち）` に更新済み                                    |
+| unassigned-task 元ファイル | `docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md`        | 存在確認。`status: completed` と完了注記を追加済み                                              |
 
-## Check 3: ドキュメント整合
+## 最終判定
 
-| 観点           | 判定 | 補足                                                   |
-| -------------- | ---- | ------------------------------------------------------ |
-| Task ID の一致 | PASS | 6 成果物とも current task に統一されている             |
-| Phase 11 証跡  | PASS | NON_VISUAL と runtime blocker が分離されている         |
-| 仕様更新       | PASS | interface 追加なしの current facts が記録されている    |
-| ledger parity  | PASS | `outputs/artifacts.json` が root ledger と同期している |
-
-## Check 4: ブロッカー
-
-| 項目                | 判定 | 理由                                                            |
-| ------------------- | ---- | --------------------------------------------------------------- |
-| product blocker     | PASS | 追加の product-side blocker はない                              |
-| environment blocker | NOTE | esbuild mismatch は記録済みで、product backlog には入れていない |
-
-## 総合判定
-
-PASS
-
-## 補足
-
-canonical 6 成果物は current task 版に揃っている。Phase 11 の runtime blocker は環境要因として別記録に閉じている。
+**PASS** — Phase 12 の6成果物は整合。workflow root / unassigned-task 元ファイルも同期済みで、Phase 13 は `blocked`（PR 未作成・ユーザー承認待ち）。

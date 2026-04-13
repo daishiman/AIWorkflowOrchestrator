@@ -1,43 +1,31 @@
-# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 11: 手動テスト結果
 
-## 実施日時
+## テスト種別: NON_VISUAL
 
-2026-04-12
+本タスクは UI/UX 変更を含まないため、スクリーンショット不要。
+`cronConverter.ts` は純粋なユーティリティ関数であり、手動テストはコード実行レベルで実施。
 
-## テスト方式
+## 手動確認内容
 
-`SCREENSHOT + NON_VISUAL`
+### テスト実行による検証
 
-- current task の差分は export / type / deprecated 注記のみ
-- ユーザー要求に従い、既存の代表スクリーンショットを current workflow へ再リンクして目視監査した
-- contract 変更は `typecheck` と targeted vitest で固定した
+```bash
+npx vitest run apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts
+```
 
-## シナリオ 1: contract / typecheck 確認
+**結果**: 16/16 passed ✅
 
-| ステップ | 操作                                                                                                                        | 結果                |
-| -------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| 1        | `pnpm --filter @repo/desktop typecheck`                                                                                     | ✅ 正常終了         |
-| 2        | `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1` | ✅ `13 passed (13)` |
-| 3        | `SkillCreateWizard.tsx` / `GenerateStep.tsx` / `DescribeStep.tsx` の import 関係確認                                        | ✅ 整合             |
+### 動作確認チェックリスト
 
-## シナリオ 2: 代表スクリーンショット監査
-
-| 証跡                                                                   | 観点                                            | 結果        |
-| ---------------------------------------------------------------------- | ----------------------------------------------- | ----------- |
-| `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png` | Step 0 のレイアウト、カテゴリ UI、ボタン配置    | ✅ 破綻なし |
-| `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`       | Step 1 の進捗表示、カード配置、入力欄レイアウト | ✅ 破綻なし |
-
-## シナリオ 3: current diff 妥当性確認
-
-| 確認項目                                                                   | 結果 |
-| -------------------------------------------------------------------------- | ---- |
-| `wizard/index.ts` の差分が export / type のみであること                    | ✅   |
-| `SkillInfoStep.tsx` の差分が props export 化のみであること                 | ✅   |
-| `DescribeStep.tsx` の差分が deprecated 注記 + 型 import 整理のみであること | ✅   |
+| 確認項目                                | 結果 | 方法       |
+| --------------------------------------- | ---- | ---------- |
+| weekdays=[] → InvalidConfigError スロー | ✅   | 自動テスト |
+| weekdays=[0] → "0 9 \* \* 0"            | ✅   | 自動テスト |
+| weekdays=[1,2,3,4,5] → 正常変換         | ✅   | 自動テスト |
+| weekdays=[0,1,2,3,4,5,6] → 正常変換     | ✅   | 自動テスト |
+| エラーメッセージが正確                  | ✅   | 自動テスト |
+| frequency=daily でガード発動しない      | ✅   | 自動テスト |
 
 ## 判定
 
-**PASS**
-
-- visual regression を示す兆候は見つからなかった
-- representative screenshot audit と static contract check の両面で整合している
+NON_VISUAL タスクの手動テスト完了。全項目確認済み。

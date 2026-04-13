@@ -2790,13 +2790,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 環境変数の分類 | L15 |
-| セキュリティベストプラクティス | L67 |
-| 環境別設定 | L139 |
-| Electron アプリでの環境変数 | L191 |
-| トラブルシューティング | L248 |
-| チーム開発での運用 | L309 |
-| 必須環境変数一覧 | L347 |
-| 関連ドキュメント | L405 |
+| セキュリティベストプラクティス | L80 |
+| 環境別設定 | L152 |
+| Electron アプリでの環境変数 | L204 |
+| トラブルシューティング | L261 |
+| チーム開発での運用 | L322 |
+| 必須環境変数一覧 | L360 |
+| 関連ドキュメント | L418 |
 
 ### references/error-handling-core.md
 
@@ -3426,12 +3426,12 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L293 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L317 |
 | UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L341 |
-| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L365 |
-| 依存関係 | L389 |
-| 関連ファイル | L401 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L413 |
-| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L438 |
-| skill-wizard-multi-select-options QuestionAnswer複数選択対応 教訓（2026-04-09） | L472 |
+| UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 教訓（2026-04-11） | L365 |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 実装知見（2026-04-11） | L389 |
+| 依存関係 | L413 |
+| 関連ファイル | L425 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
+| TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
 
 ### references/lessons-learned-templates.md
 
@@ -3523,6 +3523,7 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 

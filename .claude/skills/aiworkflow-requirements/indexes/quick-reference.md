@@ -748,3 +748,20 @@ packages/
 | 教訓（shared 型追加 wave sync / payload helper / silent error） | `references/lessons-learned-current-2026-04.md` → L-ANALYTICS-001/002/003 |
 | Phase 12 成果物 | `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/outputs/phase-12/` |
 | 後続タスク | UT-W3-ANALYTICS-HTTP-PROVIDER-001（unassigned）/ UT-W3-ANALYTICS-DASHBOARD-001（spec_created） |
+
+---
+
+## Cron Validation（scheduleConfigValidator）
+
+3段階バリデーション:
+1. Stage 1 - 構文チェック: 空文字・5フィールド数確認
+2. Stage 2 - 値域チェック: 分(0-59), 時(0-23), 日(1-31), 月(1-12), 曜日(0-7)
+3. Stage 3 - 意味論的チェック: 月末日存在確認（2月31日等を検出）
+
+戻り値: `string | null`（nullは有効、stringはエラーメッセージ）
+
+注意:
+- 2月29日は有効（閏年非依存）
+- 複合フィールド（1,15 / 1-15）はStage 3対象外
+
+教訓: `references/lessons-learned-current-2026-04.md` → L-CRON-SV-001〜003
