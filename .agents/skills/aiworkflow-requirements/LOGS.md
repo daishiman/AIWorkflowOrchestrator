@@ -4,6 +4,28 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `indexes/resource-map.md` に TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 エントリを追加（純粋関数ガード / Number.isInteger / 双方向ガード / 対称ブロック構文）
+- `references/lessons-learned-current-2026-04.md` に L-MTHGRD-001〜003 教訓を追加（NaN排除 / 双方向ガード / 対称パターン）
+- `references/task-workflow-completed-recent-2026-04e.md` に TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 完了記録を追加
+- LOGS.md 2ファイル同波更新
+
+### 背景
+Phase 12 の current facts sync では resource-map / lessons-learned / task-workflow-completed の追加が未実施のまま残っていた。impl-spec-to-skill-sync で漏れを解消。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 current facts sync
+
+### 変更内容
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` の completed / blocked 同期を確認
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/{documentation-changelog,skill-feedback-report,phase12-task-spec-compliance-check,unassigned-task-detection}.md` を current facts に更新
+- `task-specification-creator/SKILL.md` の Phase 12 三者同期ルール追加と同波で log を更新
+- LOGS.md 2ファイル同波更新
+
+### 背景
+monthly guard の実装だけでなく、Phase 12 current facts の二重化を残さないため。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync（SKILL.md Trigger 補完）
 
 ### 変更内容
@@ -41,6 +63,7 @@ Phase 12 の閉じ作業では、成果物だけでなく LOGS と topic-map ま
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync（`phase-12-documentation.md` ステータス「未実施」→「完了」更新・Task 12-1〜12-6 全完了マーク / `lessons-learned-current-2026-04.md` に L-WEEKGRD-001〜003 追記（純粋関数ガード戦略・環境ブロッカー分離・NON_VISUAL宣言）/ `task-specification-creator/SKILL.md` WEEKGRD-01〜03 Feedback追記 / `task-workflow-completed-recent-2026-04e.md` 完了エントリ追加 / LOGS.md 同波更新） |
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 impl-spec-to-skill-sync（`lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-E2E-001（skill_wizard_step1_completed method:skip 分離パターン）追加 / `indexes/resource-map.md` に UT-W3-E2E タスク行追加 / `outputs/phase-12/` 6成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）作成 / generate-index.js 実行 / mirror sync）|
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 close-out sync（`apps/desktop/e2e/skill-wizard-tracking.spec.ts` に onboarding store mock + current UI step1 フロー反映 / `wizard-tracking-stub.ts` に trackEvent capture + skill API stub 統合 / `phase-11-manual-test.md` を NON_VISUAL 判定へ是正 / `outputs/phase-12/implementation-guide.md` に Phase 11 証跡導線追記 / `task-workflow-completed.md`・`task-workflow-completed-recent-2026-04d.md` 同波更新 / Playwright Chromium 7 passed） |
 | 2026-04-11 - impl-spec-to-skill-sync Phase12検証・スキル反映（`lessons-learned-skill-wizard-redesign.md` に TASK-SC-07/W3-seq-04/multi-select 教訓7件追加（L-SC07-LLM-001〜003: Request-IDガード/fail snapshot/scheduleバリデーション競合 / L-MULTISEL-001〜002: selectedOptions:string[]型移行/SmartDefault配列マージ）/ `lessons-learned-current.md` v3.13.0 エントリ追加・分割ファイル一覧に `lessons-learned-w3-usage-tracking-2026-04.md` と `lessons-learned-skill-wizard-redesign.md` を追記 / `skill-creator/SKILL-changelog.md` v10.42.0 追加） |

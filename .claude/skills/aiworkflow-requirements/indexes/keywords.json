@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2938,
+  "totalKeywords": 2940,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1628,6 +1628,7 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-plan-exec-hardening.md",
@@ -7826,6 +7827,13 @@
       "lessons-learned-current-2026-04.md"
     ],
     "レガシーコード整理": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "MONTHLY": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
+    ],
+    "月次ガード処理": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [

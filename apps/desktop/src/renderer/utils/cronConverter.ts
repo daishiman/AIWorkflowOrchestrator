@@ -11,10 +11,12 @@ import type { VisualCronConfig } from "../types/visualCronConfig";
  * 外部ライブラリへの依存なし（純粋な文字列操作のみ）。
  *
  * @param config - スケジュール設定
- * @returns cron 式文字列。`frequency="weekly"` かつ `weekdays=[]` の場合は空文字 `""` を返す。
+ * @returns cron 式文字列。
+ *   - `frequency="weekly"` かつ `weekdays=[]` の場合は空文字 `""` を返す。
+ *   - `frequency="monthly"` かつ `dayOfMonth` が非整数、または範囲外（< 1 または > 31）の場合は空文字 `""` を返す。
  *
  * @remarks
- * 空曜日は有効な cron 式に変換できないため、ガード処理では例外を投げず空文字を返す。
+ * 空曜日・不正な日付は有効な cron 式に変換できないため、ガード処理では例外を投げず空文字を返す。
  * 呼び出し元は既存のバリデーションで空文字を無効入力として扱う。
  */
 export function visualConfigToCron(config: VisualCronConfig): string {
@@ -39,8 +41,12 @@ export function visualConfigToCron(config: VisualCronConfig): string {
       return `${minute} ${hour} * * ${sorted.join(",")}`;
     }
 
-    case "monthly":
+    case "monthly": {
+      if (!Number.isInteger(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 31) {
+        return "";
+      }
       return `${minute} ${hour} ${dayOfMonth} * *`;
+    }
 
     case "custom":
       return rawCronExpression ?? "";

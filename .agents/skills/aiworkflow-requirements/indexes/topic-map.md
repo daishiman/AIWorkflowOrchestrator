@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-12
+> 自動生成: 2026-04-13
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -4685,6 +4685,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

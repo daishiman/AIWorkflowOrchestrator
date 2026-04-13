@@ -132,3 +132,25 @@
   - AC-2: weekdays重複除去・昇順ソートPASS
   - AC-5: JSDocに空weekdays挙動を明記 PASS
 - 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 完了日: 2026-04-13
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（対称パターン参考）
+- 関連Issue: #2108
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/renderer/utils/cronParser.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronParser.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronHumanizer.test.ts`
+  - `apps/desktop/src/__tests__/components/schedule/VisualCronPicker.test.tsx`
+- AC一覧:
+  - AC-1: dayOfMonth が整数かつ 1〜31 の範囲外なら空文字を返す（例外なし）PASS
+  - AC-2: 正常な dayOfMonth では既存の cron 式を返す PASS
+  - AC-3: cronParser.ts で不正 monthly は custom にフォールバック PASS
+- lessons-learned: `references/lessons-learned-current-2026-04.md` §MONTHLY-GUARD（L-MTHGRD-001〜003）

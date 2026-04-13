@@ -891,6 +891,23 @@
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
 
+## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
+- 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
+- 解決策: ガード処理で空文字""を返し、呼び出し元の既存バリデーションに委ねる
+- 再発防止: 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却」を採用する
+
+## L-WEEKGRD-002: NON_VISUAL純粋関数タスクのPhase 11は source-level PASSと環境ブロッカーを分離して記録する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: vitestがesbuild host/binary mismatch（0.21.5 vs 0.25.12）で停止した場合、製品FAILと環境FAILが混在しがち
+- 解決策: discovered-issues.md でproduct_blockerとenvironment_issueを別カテゴリで記録し、product blocker 0件を明記
+- 再発防止: 環境要因は製品バックログに入れない
+
+## L-WEEKGRD-003: Phase 11 NON_VISUALタスクではui-sanity-visual-review.mdにNON_VISUAL宣言を明示する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
+- 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
+
 ---
 
 ## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
@@ -953,3 +970,28 @@
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
 | 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 月次ガード処理 教訓（2026-04-13）
+
+### L-MTHGRD-001: `Number.isInteger` で NaN/小数/Infinity を一度に排除する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 / AC-3
+- 症状: `dayOfMonth < 1 || dayOfMonth > 31` の範囲比較だけでは NaN が素通りする（`NaN < 1` は `false`、`NaN > 31` も `false`）
+- 解決策: 範囲比較の前に `Number.isInteger(dayOfMonth)` を置く。これにより NaN・小数・Infinity を単一条件で排除できる
+- 再発防止: cron フィールドの境界バリデーションは `Number.isInteger` チェックを先頭に置くパターンを標準化する
+
+### L-MTHGRD-002: 生成側と解析側の双方向ガードをセットで実装する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `cronConverter.ts`（生成側）にガードを追加しても、`cronParser.ts`（解析側）が不正 monthly を custom にフォールバックしないと、UI 初期化時に不正な monthly 値が表示される
+- 解決策: 生成側のガード追加と同時に、`cronParser.ts` でも monthly の `dayOfMonth` が 1〜31 外なら `custom` にフォールバックさせた
+- 再発防止: converter/parser の双方向性を持つ関数を変更するときは、反対方向の関数も同時に回帰テストに含める
+
+### L-MTHGRD-003: switch-case ガードはブロック構文 + 早期リターンの対称パターンで統一する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `weekly` ガードと `monthly` ガードで構文スタイルが異なると、コードレビュー時に意図の差があるように見える
+- 解決策: `case "weekly": { if (...) return ""; }` の対称パターンで `monthly` ブロックも実装した
+- 再発防止: switch-case 内の各周期タイプには `{}` ブロック + 早期リターンパターンを一貫して適用する

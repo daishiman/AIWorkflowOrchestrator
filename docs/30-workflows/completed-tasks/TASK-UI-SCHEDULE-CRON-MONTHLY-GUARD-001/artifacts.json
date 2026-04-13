@@ -1,0 +1,136 @@
+{
+  "taskId": "TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001",
+  "taskName": "cronConverter monthly dayOfMonth ガード処理追加",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/spec-extraction-map.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/impact-analysis.md",
+        "outputs/phase-2/implementation-design.md",
+        "outputs/phase-2/jsdoc-design.md",
+        "outputs/phase-2/test-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/alternatives.md",
+        "outputs/phase-3/design-checklist.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-red-result.md",
+        "outputs/phase-4/test-spec.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/test-green-result.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-result.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/traceability-matrix.md",
+        "outputs/phase-7/uncovered-analysis.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/code-review.md",
+        "outputs/phase-8/refactoring-result.md",
+        "outputs/phase-8/retest-result.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/lint-result.md",
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/test-all-result.md",
+        "outputs/phase-9/typecheck-result.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/ac-final-check.md",
+        "outputs/phase-10/gate-decision.md",
+        "outputs/phase-10/shipping-readiness.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/artifacts.json",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": []
+    }
+  ]
+}
