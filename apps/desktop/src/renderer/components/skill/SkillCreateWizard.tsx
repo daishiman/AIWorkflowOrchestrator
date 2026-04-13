@@ -37,6 +37,7 @@ import type {
   SkillInfoFormData,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
+import { buildSkillContext } from "@repo/shared/types/skillCreator";
 import type {
   SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
@@ -550,9 +551,11 @@ export const SkillCreateWizard = React.forwardRef<
     setError(null);
 
     try {
+      const skillContext = buildSkillContext(formData, answers);
       const path = await createSkill(
         formData.purpose,
         SKILL_GENERATION_OPTIONS,
+        skillContext,
       );
       if (requestId !== templateGenerationRequestIdRef.current) {
         return;

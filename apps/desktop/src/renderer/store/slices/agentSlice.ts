@@ -26,6 +26,7 @@ import type {
   Suggestion,
 } from "@repo/shared/types/skill-improver";
 import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types";
+import type { SkillCreationContext } from "@repo/shared/types/skillCreator";
 import type { HandoffGuidance } from "../../features/workspace-chat-edit/types";
 import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 
@@ -361,6 +362,7 @@ export interface AgentActions {
       addAgents: boolean;
       addReferences: boolean;
     },
+    context?: SkillCreationContext,
   ) => Promise<string>;
   /** 分析結果をクリアする */
   clearAnalysis: () => void;
@@ -1102,6 +1104,7 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       addAgents: boolean;
       addReferences: boolean;
     },
+    context?: SkillCreationContext,
   ) => {
     // P42準拠: 3段バリデーション
     if (typeof description !== "string" || description.trim() === "") {
@@ -1116,6 +1119,7 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       const result = await window.electronAPI.skill.create({
         description: description.trim(),
         options,
+        context,
       });
       // 作成後にスキル一覧を再取得
       await get().fetchSkills();

@@ -1423,3 +1423,117 @@ export interface ApprovalRequestPayload {
   description: string;
   destination?: string;
 }
+
+// ============================================================
+// TASK-SW-FIX-DATAFLOW-001: Q1〜Q6 コンテキストブリッジ
+// ============================================================
+
+/**
+ * Step 1 で収集した Q1〜Q6 の回答をスキル生成へ橋渡しするコンテキスト。
+ * 全フィールド optional により後方互換性を維持する。
+ */
+export interface SkillCreationContext {
+  /** スキル名（Step 0 任意入力） */
+  skillName?: string;
+  /** カテゴリ */
+  category?: string;
+  /** 目的・概要（Step 0 必須入力） */
+  purpose?: string;
+  /** Q1: 利用者 */
+  q1Purpose?: string;
+  /** Q2: 入力データ */
+  q2Target?: string;
+  /** Q3: 実行タイミング */
+  q3Tools?: string;
+  /** Q4: 出力先 */
+  q4Timing?: string;
+  /** Q5: 外部ツール連携 */
+  q5Output?: string;
+  /** Q6: 出力フォーマット */
+  q6Constraints?: string;
+}
+
+/**
+ * QuestionAnswer の回答テキストを抽出する内部ヘルパー。
+ * freeText 優先、空の場合は selectedOptions を結合、両方空なら undefined。
+ */
+function extractAnswerText(answer: QuestionAnswer): string | undefined {
+  const trimmed = answer.freeText.trim();
+  if (trimmed !== "") return trimmed;
+  if (answer.selectedOptions.length > 0)
+    return answer.selectedOptions.join(", ");
+  return undefined;
+}
+
+/**
+ * Step 0 フォームデータと Step 1 の Q1〜Q6 回答を
+ * SkillCreationContext に変換する pure function。
+ *
+ * - 空文字・スペースのみの値は undefined に正規化する
+ * - 副作用なし
+ */
+export function buildSkillContext(
+  formData: SkillInfoFormData,
+  answers: ConversationAnswers,
+): SkillCreationContext {
+  const normStr = (v: string | undefined): string | undefined => {
+    const t = (v ?? "").trim();
+    return t === "" ? undefined : t;
+  };
+
+  return {
+    skillName: normStr(formData.skillName),
+    category: formData.category ?? undefined,
+    purpose: normStr(formData.purpose),
+    q1Purpose: extractAnswerText(answers.q1),
+    q2Target: extractAnswerText(answers.q2),
+    q3Tools: extractAnswerText(answers.q3),
+    q4Timing: extractAnswerText(answers.q4),
+    q5Output: extractAnswerText(answers.q5),
+    q6Constraints: extractAnswerText(answers.q6),
+  };
+}
+
+/**
+ * SkillCreationContext を LLM 向けプロンプト文字列に変換する pure function。
+ *
+ * - undefined フィールドは出力に含めない
+ * - 副作用なし
+ */
+export function buildSkillGenerationPrompt(
+  context: SkillCreationContext,
+): string {
+  const lines: string[] = [];
+
+  if (context.skillName) {
+    lines.push(`スキル名: ${context.skillName}`);
+  }
+
+  if (context.category) {
+    const categoryLabel =
+      context.category in SKILL_CATEGORY_LABELS
+        ? SKILL_CATEGORY_LABELS[
+            context.category as keyof typeof SKILL_CATEGORY_LABELS
+          ]
+        : context.category;
+    lines.push(`カテゴリ: ${context.category} (${categoryLabel})`);
+  }
+
+  if (context.purpose) lines.push(context.purpose);
+
+  const details: string[] = [];
+  if (context.q1Purpose) details.push(`利用者: ${context.q1Purpose}`);
+  if (context.q2Target) details.push(`入力データ: ${context.q2Target}`);
+  if (context.q3Tools) details.push(`実行タイミング: ${context.q3Tools}`);
+  if (context.q4Timing) details.push(`出力先: ${context.q4Timing}`);
+  if (context.q5Output) details.push(`外部ツール連携: ${context.q5Output}`);
+  if (context.q6Constraints)
+    details.push(`出力フォーマット: ${context.q6Constraints}`);
+
+  if (details.length > 0) {
+    lines.push("");
+    lines.push(...details);
+  }
+
+  return lines.join("\n");
+}
