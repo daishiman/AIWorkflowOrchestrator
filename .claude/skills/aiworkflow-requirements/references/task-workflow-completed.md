@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
 - [2026-04-13: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-12: UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI 到達確認テスト追加](./task-workflow-completed-recent-2026-04d.md)

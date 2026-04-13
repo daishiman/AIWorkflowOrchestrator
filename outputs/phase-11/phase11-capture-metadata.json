@@ -1,18 +1,27 @@
 {
-  "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
-  "taskName": "cronConverter 空曜日ガード処理追加",
-  "phase": 11,
-  "mode": "NON_VISUAL",
-  "reason": "cronConverter.ts は純粋関数であり、UI 変更とスクリーンショットは不要",
-  "capturedAt": "2026-04-12",
-  "screenshots": [],
-  "evidence": [
-    "apps/desktop/src/renderer/utils/cronConverter.ts",
-    "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts",
-    "apps/desktop/src/__tests__/utils/cronConverter.test.ts",
-    "outputs/phase-11/manual-test-report.md",
-    "outputs/phase-11/ui-sanity-visual-review.md"
-  ],
-  "runtimeCommand": "pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose",
-  "runtimeResult": "blocked by esbuild host/binary mismatch"
+  "generatedAt": "2026-04-13T12:21:46.493Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5184",
+  "screenshots": [
+    {
+      "file": "skill-list-updated-after-llm.png",
+      "selector": "[data-testid=\"skill-management-imported-section\"]",
+      "output": "outputs/phase-11/screenshots/skill-list-updated-after-llm.png"
+    },
+    {
+      "file": "complete-step-null-error.png",
+      "selector": "[data-testid=\"complete-step-error-header\"]",
+      "output": "outputs/phase-11/screenshots/complete-step-null-error.png"
+    },
+    {
+      "file": "complete-step-null-no-success.png",
+      "selector": "[data-testid=\"complete-step\"]",
+      "output": "outputs/phase-11/screenshots/complete-step-null-no-success.png"
+    },
+    {
+      "file": "complete-step-success.png",
+      "selector": "[data-testid=\"wizard-step-complete\"]",
+      "output": "outputs/phase-11/screenshots/complete-step-success.png"
+    }
+  ]
 }

@@ -26,12 +26,14 @@ import type {
 } from "@repo/shared/types/skillCreator";
 
 const mockCreateSkill = vi.fn();
+const mockFetchSkills = vi.fn();
 const mockClearGenerationState = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
 const mockInferSmartDefaults = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useFetchSkills: () => mockFetchSkills,
   useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => mockUseWorkflowSnapshot(),
   useIsSkillGenerating: () => false,
@@ -507,6 +509,27 @@ describe("SkillCreateWizard", () => {
       expect(result.inferenceLog).toContain(
         "purpose に 'slack' を検出 → tool = 'slack'",
       );
+    });
+  });
+
+  // ============================================================
+  // TASK-SW-FIX-FEEDBACK-001: fetchSkills 呼び出し検証
+  // ============================================================
+  describe("fetchSkills統合 (TASK-SW-FIX-FEEDBACK-001)", () => {
+    beforeEach(() => {
+      mockFetchSkills.mockResolvedValue(undefined);
+    });
+
+    it("TC-FEEDBACK-003: [回帰] templateモード成功時、コンポーネントレベルの fetchSkills は呼ばれない（createSkill が内部処理）", async () => {
+      renderWizard(mockOnClose);
+
+      await advanceToComplete();
+
+      // templateモードは createSkill の内部で fetchSkills が呼ばれる（storeのagentSlice）
+      // コンポーネントから明示的に fetchSkills を呼ぶのは LLM モードのみ
+      expect(mockFetchSkills).not.toHaveBeenCalled();
+      // createSkill が1回呼ばれていること（createSkill内でfetchSkillsが呼ばれる）
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
   });
 });

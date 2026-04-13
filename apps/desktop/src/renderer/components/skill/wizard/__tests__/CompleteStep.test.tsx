@@ -447,6 +447,118 @@ describe("CompleteStep", () => {
   });
 
   // ==========================================================
+  // TASK-SW-FIX-FEEDBACK-001: Phase 4 テスト (TC-FEEDBACK-004〜007)
+  // skillPath nullガード・成功ヘッダー条件表示
+  // ==========================================================
+  describe("skillPath nullガード (TASK-SW-FIX-FEEDBACK-001)", () => {
+    it("TC-FEEDBACK-004: skillPath=nullの場合エラーメッセージが表示される", () => {
+      renderCompleteStep({ skillPath: null });
+
+      expect(
+        screen.getByText(/スキルの生成に失敗しました/),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /もう一度試す/ }),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-005: skillPath=nullの場合成功ヘッダーが表示されない", () => {
+      renderCompleteStep({ skillPath: null });
+
+      expect(
+        screen.queryByText(/スキルの骨格を生成しました/),
+      ).not.toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-006: skillPathが正常値の場合成功ヘッダーが表示される", () => {
+      renderCompleteStep({ skillPath: "/path/to/skill.ts" });
+
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(/スキルの生成に失敗しました/),
+      ).not.toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-007: skillPathが正常値の場合エラーボタンが表示されない", () => {
+      renderCompleteStep({ skillPath: "/path/to/skill.ts" });
+
+      expect(
+        screen.queryByRole("button", { name: /もう一度試す/ }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // ==========================================================
+  // TASK-SW-FIX-FEEDBACK-001: Phase 6 拡充テスト (TC-FEEDBACK-008〜013)
+  // ==========================================================
+  describe("skillPath nullガード 拡充 (TC-FEEDBACK-008〜013)", () => {
+    it("TC-FEEDBACK-009: skillPathが空文字の場合は成功ヘッダーは表示される（空文字はundefinedと同等で正常ケース扱い）", () => {
+      // 空文字はfalsyだが、null と明示的に区別する。
+      // skillPath="" は実際にはfallthoughして成功UIを表示（パスが空なだけ）
+      renderCompleteStep({ skillPath: "" });
+
+      // 空文字は null ではないため nullガードをスキップし成功UIを表示
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-011: onRetryプロパティが未定義でも skillPath=null でクラッシュしない", () => {
+      expect(() =>
+        renderCompleteStep({ skillPath: null, onRetry: undefined }),
+      ).not.toThrow();
+
+      expect(
+        screen.getByText(/スキルの生成に失敗しました/),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-013: [回帰] skillPath正常値時の既存完了画面コンテンツが維持される", () => {
+      renderCompleteStep({ skillPath: "/path/to/skill.ts" });
+
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-feedback-satisfied"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-feedback-unsatisfied"),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-011b: skillPath=null のエラーUI の data-testid が complete-step であること", () => {
+      renderCompleteStep({ skillPath: null });
+
+      expect(screen.getByTestId("complete-step")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-error-header"),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-FEEDBACK-011c: skillPath=null で onRetry が指定された場合クリックで呼ばれる", () => {
+      const onRetry = vi.fn();
+      renderCompleteStep({ skillPath: null, onRetry });
+
+      fireEvent.click(screen.getByRole("button", { name: /もう一度試す/ }));
+
+      expect(onRetry).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-FEEDBACK-004b: skillPath=null の場合アクションカードが表示されない（エラーUI のみ）", () => {
+      renderCompleteStep({ skillPath: null });
+
+      expect(
+        screen.queryByTestId("complete-step-action-execute"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("complete-step-action-open-editor"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // ==========================================================
   // Phase 4+6: 計装テスト（trackEvent / W3-seq-04）
   // ==========================================================
   describe("計装（trackEvent）", () => {
