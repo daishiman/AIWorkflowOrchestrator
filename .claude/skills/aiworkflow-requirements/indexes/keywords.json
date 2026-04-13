@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2947,
+  "totalKeywords": 2949,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7849,6 +7849,16 @@
     "コンテキストブリッジ実装": [
       "lessons-learned-current-2026-04.md"
     ],
+    "FEEDBACK": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md"
+    ],
+    "SkillWizard": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "フィードバックループ修正": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "CONVERTER": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8251,9 +8261,6 @@
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "UIUX": [
-      "lessons-learned-phase12-lifecycle-early-b.md"
-    ],
-    "FEEDBACK": [
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "DIALOG": [

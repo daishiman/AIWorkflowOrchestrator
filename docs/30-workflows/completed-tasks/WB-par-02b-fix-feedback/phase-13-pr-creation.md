@@ -157,7 +157,7 @@ PR作成・CI確認完了後：
 ```bash
 # artifacts.json を phase13_completed へ更新
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \
-  docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02b-fix-feedback 13
+  docs/30-workflows/WB-par-02b-fix-feedback 13
 ```
 
 ## 参照資料

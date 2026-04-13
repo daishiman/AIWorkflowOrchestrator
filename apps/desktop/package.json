@@ -25,6 +25,7 @@
     "screenshot:app-debug-localstorage-clear": "node scripts/capture-task-fix-app-debug-localstorage-clear-phase11.mjs",
     "screenshot:skill-analysis": "node scripts/capture-skill-analysis-view-screenshots.mjs",
     "screenshot:skill-create-wizard": "node scripts/capture-skill-create-wizard-screenshots.mjs",
+    "screenshot:task-skill-fix-feedback": "node scripts/capture-task-skill-fix-feedback-phase11.mjs",
     "screenshot:skill-wizard-multi-select-options": "node scripts/capture-skill-wizard-multi-select-options-screenshots.mjs",
     "screenshot:task-ui-schedule-visual-picker": "node scripts/capture-task-ui-schedule-visual-picker-phase11.mjs",
     "screenshot:skill-import-idempotency-guard": "node scripts/capture-skill-import-idempotency-guard-screenshots.mjs",

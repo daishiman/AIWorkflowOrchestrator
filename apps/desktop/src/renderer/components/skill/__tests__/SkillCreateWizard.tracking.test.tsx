@@ -107,6 +107,7 @@ vi.mock("../wizard", async () => {
 const mockCreateSkill = vi.fn();
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useFetchSkills: () => vi.fn().mockResolvedValue(undefined),
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,

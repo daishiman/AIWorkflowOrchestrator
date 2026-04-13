@@ -113,6 +113,37 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
     },
   ];
 
+  // 問題14・20修正: skillPath === null は生成失敗ケース
+  if (skillPath === null) {
+    return (
+      <div data-testid="complete-step" className="flex flex-col gap-6 py-6">
+        <div
+          data-testid="complete-step-error-header"
+          role="alert"
+          className="flex flex-col items-center gap-1 text-center"
+        >
+          <span aria-hidden="true" className="text-2xl">
+            ✗
+          </span>
+          <h2 className={styles.header}>スキルの生成に失敗しました</h2>
+          <p className={styles.subText}>
+            スキルファイルの作成中にエラーが発生しました。
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            data-testid="complete-step-retry-button"
+            onClick={onRetry}
+            className={styles.feedbackButton}
+          >
+            もう一度試す
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div data-testid="complete-step" className="flex flex-col gap-6 py-6">
       {/* CompleteHeader */}
