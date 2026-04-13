@@ -970,3 +970,43 @@
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
 | 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+---
+
+## TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12）
+
+### L-CRON-SV-001: 段階的バリデーションパターン（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+cronExpression のバリデーションは3段階（syntax → range → semantics）に分離すると保守性が高い。
+各ステージを独立した関数として実装し、Stage 3（意味論）は内部ユーティリティ関数として隠蔽する。
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 知見       | 3段階（syntax→range→semantics）分離パターンはcron式検証の標準化に有効 |
+| 注意点     | 2月29日は有効（閏年非依存）/ 複合フィールドはStage 2委譲 / `validateCronSemantics`はexport不可 |
+| 適用場面   | 他のバリデーター実装時にこの3段階パターンを参考にすること |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-002: 2月29日許容の設計意図（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | cron式の「29 * 2 * *」（2月29日）が閏年にしか存在しないため、バリデーション時の有効/無効判断が曖昧になりやすい |
+| 解決策     | cron式は年を指定しないため、2月29日は「いずれ閏年で実行される可能性がある」として有効扱いとする設計判断を明文化 |
+| 標準ルール | `MAX_DAYS_PER_MONTH[2] = 29` と明示し、2月29日を検出しない（有効とする）設計意図をコード内コメントに記す |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-003: 内部ユーティリティ関数の隠蔽原則（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | Stage 3（意味論チェック）の実装関数 `validateCronSemantics` を export すると、外部から直接呼び出されて将来のリファクタリング自由度が下がる |
+| 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする |
+| 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
