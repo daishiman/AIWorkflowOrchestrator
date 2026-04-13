@@ -20,6 +20,38 @@ import { mkdirSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { EXIT_CODES } from "./utils.js";
 
+async function loadSkillNameConstants() {
+  const packageSpecifier = "@repo/shared/constants";
+  const distSpecifier = new URL(
+    "../../../../packages/shared/dist/src/constants/index.js",
+    import.meta.url,
+  ).href;
+
+  try {
+    return await import(packageSpecifier);
+  } catch (packageImportError) {
+    try {
+      return await import(distSpecifier);
+    } catch (distImportError) {
+      const packageMessage =
+        packageImportError instanceof Error
+          ? packageImportError.message
+          : String(packageImportError);
+      const distMessage =
+        distImportError instanceof Error
+          ? distImportError.message
+          : String(distImportError);
+      throw new Error(
+        `スキル名定数を読み込めませんでした。package import と dist fallback の両方に失敗しました。` +
+          ` package=${packageMessage} dist=${distMessage}`,
+      );
+    }
+  }
+}
+
+const { MAX_SKILL_NAME_LENGTH, SKILL_NAME_PATTERN } =
+  await loadSkillNameConstants();
+
 const DEFAULT_RESOURCES = ["agents", "scripts", "references", "assets"];
 const ALLOWED_RESOURCES = new Set(DEFAULT_RESOURCES);
 
@@ -66,7 +98,7 @@ Usage:
   node init_skill.js <skill-name> [options]
 
 Arguments:
-  <skill-name>    スキル名（ハイフンケース、最大64文字）
+  <skill-name>    スキル名（ハイフンケース、最大${MAX_SKILL_NAME_LENGTH}文字）
 
 Options:
   --path <path>   スキルを作成するベースパス（デフォルト: .claude/skills）
@@ -103,10 +135,13 @@ function validateSkillName(name) {
   if (!name) {
     return { valid: false, error: "スキル名が指定されていません" };
   }
-  if (name.length > 64) {
-    return { valid: false, error: "スキル名は64文字以内である必要があります" };
+  if (name.length > MAX_SKILL_NAME_LENGTH) {
+    return {
+      valid: false,
+      error: `スキル名は${MAX_SKILL_NAME_LENGTH}文字以内である必要があります`,
+    };
   }
-  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
+  if (!SKILL_NAME_PATTERN.test(name)) {
     return {
       valid: false,
       error:

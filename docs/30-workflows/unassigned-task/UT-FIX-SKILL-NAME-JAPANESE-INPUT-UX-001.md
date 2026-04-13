@@ -1037,6 +1037,64 @@ pnpm --filter @repo/desktop dev
   `onChange` だけでなく `onCompositionStart`/`onCompositionEnd` の組み合わせが必須。
   後から追加すると実装・テストの両面で手戻りが大きくなる。
 
+---
+
+### UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 での苦戦箇所（参照・学習事項）
+
+> 本タスクに先行して実施された UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001（スキル名バリデーション正規表現の shared 定数一元化）の実施中に発生した苦戦箇所を参照・学習事項として記録する。
+> 本タスク（日本語入力 UX 改善）でも `packages/shared` への関数移動・ESM/CJS 両対応が必要なため、同じ落とし穴に嵌らないよう事前に把握しておく。
+
+#### 苦戦1: ESM/CJS 両環境対応（`loadSkillNameConstants()` の2段階 try-catch）
+
+| 項目     | 内容                                                                                                                                                                                                           |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状     | `init_skill.js`（CommonJS）から `@repo/shared` を `require()` で参照しようとしたとき、ビルドの有無・パスの違いによって解決に失敗するケースがあった                                                             |
+| 原因     | ESM ファースト設計の `packages/shared` では `dist/index.js` が ESM 形式であり、`require()` では直接読めない。CJS 向けの `dist/index.cjs` が存在するかどうかをビルド前に確認できなかった                        |
+| 対応     | `loadSkillNameConstants()` ヘルパーを設け、まず `@repo/shared`（package exports 優先）で try し、失敗したら `dist/index.cjs` 等の絶対パスへ fallback する **2段階 try-catch** を採用した                       |
+| 再発防止 | `packages/shared` を CommonJS スクリプトから利用する際は Phase 1 段階で `dist/index.cjs` の存在を `pnpm --filter @repo/shared build` 後に確認する。新規 utility を shared に追加する本タスクでも同じ確認が必要 |
+
+```javascript
+// 参考: loadSkillNameConstants() の2段階 try-catch パターン（init_skill.js より）
+function loadSkillNameConstants() {
+  // 1st try: package exports (ESM/CJS デュアルビルド対応)
+  try {
+    const shared = require("@repo/shared");
+    if (shared.SKILL_NAME_PATTERN) return shared;
+  } catch (_) {
+    /* fallthrough */
+  }
+
+  // 2nd try: dist の CJS ビルド成果物へ直接 fallback
+  try {
+    const distPath = require("path").resolve(
+      __dirname,
+      "../../../../packages/shared/dist/index.cjs",
+    );
+    return require(distPath);
+  } catch (e) {
+    throw new Error(`@repo/shared の読み込みに失敗しました: ${e.message}`);
+  }
+}
+```
+
+#### 苦戦2: 再エクスポート層の見落とし（`packages/shared/src/claude-cli/constants.ts`）
+
+| 項目     | 内容                                                                                                                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状     | `packages/shared/src/constants/skillName.ts` を新規作成し `constants/index.ts` に追加したのに、一部の import が解決できないエラーが発生した                                                                       |
+| 原因     | `packages/shared` には `constants/index.ts` の他に `claude-cli/constants.ts` という**再エクスポート層**が存在しており、そちらへの追加が設計段階で見落とされていた                                                 |
+| 対応     | `packages/shared/src/claude-cli/constants.ts` にも `SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` の re-export を追加した                                                                                         |
+| 再発防止 | `packages/shared` に新規定数を追加するときは `constants/index.ts` だけでなく **再エクスポート層（`claude-cli/constants.ts` 等）も必ずチェック**する。Phase 2 の設計で変更ファイル一覧に再エクスポート層を明記する |
+
+#### 苦戦3: バリデーション境界値テストの後付け（最大文字数64の境界値）
+
+| 項目     | 内容                                                                                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状     | Phase 4（TDD Red）でテストマトリクスを作成した際、`MAX_SKILL_NAME_LENGTH = 64` の境界値テスト（64文字・65文字）が明示されていなかった                                                 |
+| 原因     | Red テスト作成時に「境界値」の観点が抜けており、Phase 6（テスト拡充）の段階で後から追加することになった                                                                               |
+| 対応     | Phase 6 で「64文字ちょうど → valid」「65文字 → invalid」のテストケースを追加し、`skillName.ts` の branch カバレッジ 100% を達成した                                                   |
+| 再発防止 | **Phase 4 のテストマトリクス作成時に最大長・最小長・空文字の境界値テストを必須観点として明記**する。本タスクの TC-06（50文字超の入力）も Phase 4 時点で境界値として明確に定義しておく |
+
 ### 補足事項
 
 - 本タスクは TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）Phase 12 close-out 時の

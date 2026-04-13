@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-12
+> 自動生成: 2026-04-13
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -3152,6 +3152,7 @@ node scripts/list-specs.js --topics
 | Phase-12 IPC 4層型同期（2026-04-06） | L78 |
 | TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06） | L112 |
 | UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001 IPC ハンドラ重複登録サイレントフェイル（2026-04-07） | L116 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001（2026-04-13） | L188 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -4685,6 +4686,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
