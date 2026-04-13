@@ -2,10 +2,37 @@
  * Skill Analytics Types - スキル利用分析型定義
  *
  * TASK-9J: スキル利用分析・統計機能
+ * UT-W3-ANALYTICS-STORE-INTEGRATION-001: renderer-side analyticsSlice 型定義
  *
  * スキルの利用状況を記録・分析するための型定義。
  * AnalyticsStore / SkillAnalytics / IPCハンドラで使用される。
  */
+
+// =============================================================================
+// renderer-side 型定義（UT-W3-ANALYTICS-STORE-INTEGRATION-001）
+// =============================================================================
+
+/** renderer-side スキル実行ライフサイクルイベント種別 */
+export type SkillAnalyticsEventType = "start" | "complete" | "error";
+
+/**
+ * renderer-side スキル実行ライフサイクルイベント
+ *
+ * analyticsSlice から analyticsAdapter へ送信されるイベントのドメイン型。
+ * transport 名（"skill_start" 等）とは分離されている。
+ */
+export interface SkillAnalyticsEvent {
+  /** イベント種別 */
+  type: SkillAnalyticsEventType;
+  /** スキルID */
+  skillId: string;
+  /** イベント発生日時（ISO 8601形式） */
+  timestamp: string;
+  /** 実行時間（ミリ秒）- complete イベントのみ */
+  duration?: number;
+  /** エラーメッセージ - error イベントのみ */
+  error?: string;
+}
 
 /**
  * スキル利用イベント
