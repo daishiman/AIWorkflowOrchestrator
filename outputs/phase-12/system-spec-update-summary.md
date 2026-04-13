@@ -1,59 +1,35 @@
-# システム仕様更新サマリー - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# Phase 12: システム仕様更新サマリー
 
-## タスク完了記録
+## Step 1-A: 完了タスク記録
 
-| 項目     | 内容                                                              |
-| -------- | ----------------------------------------------------------------- |
-| タスクID | TASK-UI-SCHEDULE-CRON-SEMANTIC-001                                |
-| 完了日   | 2026-04-12                                                        |
-| 対象実装 | `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`      |
-| 依存追加 | `apps/desktop/package.json` に `cron-parser@5.5.0`                |
-| 補足     | `semantic` は opt-in のまま、既存 UI 呼び出しは非 semantic を維持 |
-
-## Step 1-A: タスク完了記録
-
-| 更新対象                  | 実施内容                                                                                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 関連ドキュメントリンク    | `docs/30-workflows/task-ui-schedule-cron-semantic-001/` 配下の current facts を更新                                        |
-| 変更履歴                  | `scheduleConfigValidator.ts` に `ValidateCronOptions` と semantic ロジックを追加したことを記録                             |
-| LOGS.md（タスク用）       | `.claude/skills/task-specification-creator/LOGS.md` に Phase 12 完了ログを追記                                             |
-| LOGS.md（プロジェクト用） | `.claude/skills/aiworkflow-requirements/LOGS.md` に完了記録を追記                                                          |
-| topic-map.md              | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` に `ValidateCronOptions` / `semantic` / `cron-parser` を追加 |
+- タスクID: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
+- close-out 注記（workflow root）:
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/index.md`: `phase12_completed（Phase 13 blocked）`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md`: `completed`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md`: `blocked（PR未作成・ユーザー承認待ち）`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json`: `status: phase12_completed` / phases 1-12 `completed` / phase 13 `blocked`
+  - `docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md`: `status: completed` / 完了注記追加
+- close-out 判定記録: Phase 12 成果物上では `phase12_completed` 相当（PR 未作成）
+- LOGS.md / topic-map.md: 本タスクスコープ対象外のため N/A
 
 ## Step 1-B: 実装状況テーブル更新
 
-| 項目                                              | 変更前   | 変更後                                  |
-| ------------------------------------------------- | -------- | --------------------------------------- |
-| `validateCronExpression` の意味論的バリデーション | 未実装   | `options.semantic: true` のときのみ実行 |
-| 呼び出し側の既存挙動                              | 変化なし | 変化なし（後方互換を維持）              |
+| 項目            | 現状（確認値）                                                        | close-out 反映先 |
+| --------------- | --------------------------------------------------------------------- | ---------------- |
+| index.md        | `phase12_completed`                                                   | workflow root    |
+| artifacts.json  | `status: phase12_completed` / phase12 `completed` / phase13 `blocked` | workflow root    |
+| 実装ファイル    | `cronConverter.ts` / `cronConverter.test.ts` 変更済み                 | codebase         |
+| Phase 12 成果物 | 6成果物作成済み（本ディレクトリ）                                     | outputs/phase-12 |
 
-## Step 1-C: 関連タスクテーブル更新
+## Step 1-C: 関連タスク確認
 
-| 項目           | 内容                                                                                                                                        |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 完了日         | 2026-04-12                                                                                                                                  |
-| 実装ファイル   | `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`                                                                                |
-| テストファイル | `apps/desktop/src/__tests__/utils/scheduleConfigValidator.test.ts`, `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` |
+| タスク                            | 依存関係                 | 実態                                                                               |
+| --------------------------------- | ------------------------ | ---------------------------------------------------------------------------------- |
+| TASK-CRON-SEMANTIC-VALIDATION-001 | 本タスク完了後に着手推奨 | `docs/.../artifacts.json` の `dependencies` に `status: unassigned` として記録済み |
 
-## Step 2: 新規インターフェース追加
+## Step 2: 仕様更新の要否判定
 
-| 項目     | 内容                                                                                   |
-| -------- | -------------------------------------------------------------------------------------- |
-| 新規型   | `ValidateCronOptions`                                                                  |
-| 追加箇所 | `scheduleConfigValidator.ts`                                                           |
-| API 変更 | `validateCronExpression(value: string, options?: ValidateCronOptions): string \| null` |
-
-## 変更点サマリー
-
-| 項目                                | 変更前                            | 変更後                                                           |
-| ----------------------------------- | --------------------------------- | ---------------------------------------------------------------- |
-| `validateCronExpression` シグネチャ | `(value: string): string \| null` | `(value: string, options?: ValidateCronOptions): string \| null` |
-| semantic validation                 | 実施しない（コメントに明記）      | `options.semantic: true` で実施可能                              |
-| 新規エクスポート                    | なし                              | `ValidateCronOptions` インターフェース                           |
-| 依存ライブラリ                      | なし                              | `cron-parser@5.5.0`                                              |
-
-## 後方互換性
-
-- `options` パラメータはオプショナル
-- `validateSkillWizardScheduleConfig` を含む既存呼び出しは変更不要
-- `semantic` を有効化したい経路だけが明示的に `options` を渡す
+| 判定項目                                              | 判定 | 理由                                       |
+| ----------------------------------------------------- | ---- | ------------------------------------------ |
+| `InvalidConfigError` を shared/public contract に昇格 | 不要 | `cronConverter.ts` 内に閉じる設計を選択    |
+| `aiworkflow-requirements` 更新                        | N/A  | 共有化しないため更新対象外（更新実施なし） |

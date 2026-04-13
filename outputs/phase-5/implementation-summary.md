@@ -1,41 +1,49 @@
 # Phase 5: 実装サマリー
 
-## タスクID: UT-SKILL-WIZARD-W2-seq-03a
+## 実装内容
 
-## 完了日: 2026-04-11
+### 1. InvalidConfigError クラス定義（cronConverter.ts 先頭に追加）
 
-## 実施内容
-
-### 削除した内容
-
-- `SkillCreatorRuntimeApi` 型定義と `getSkillCreatorApi` 関数（TASK-SC-07 専用）
-- `handleLlmGenerate`（planSkill API 呼び出しハンドラ）
-- `handleExecutePlan`（executePlan API 呼び出しハンドラ）
-- `handleCancelPlan`（LLM モード版キャンセルハンドラ）
-- `handleCancelTemplateGeneration`（テンプレートモード版キャンセルハンドラ）
-- Step 0 の generationMode ラジオボタン UI
-- Step 0 の LLM テキストエリア UI
-- Step 2 の generationMode 条件分岐 props
-
-### 追加した内容
-
-- `handleCancelGeneration`（生成中キャンセル → Step 0 復帰、formData 保持）
-- `inferSmartDefaults`, `STEPS` の export（テスト可能性向上）
-
-### STEPS 配列変更
-
-```
-変更前: ["説明入力", "設定", "生成", "完了"]
-変更後: ["スキル情報入力", "詳細設定", "生成", "完了"]
+```typescript
+export class InvalidConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidConfigError";
+  }
+}
 ```
 
-### レンダリング変更
+### 2. visualConfigToCron() への weekdays=[] ガード追加
 
-- Step 0: `<SkillInfoStep>` のみ（ラジオボタン・LLMテキストエリア削除）
-- Step 2: `generationMode` 条件分岐なし、`onCancel={handleCancelGeneration}`
+```typescript
+case "weekly": {
+  if (weekdays.length === 0) {
+    throw new InvalidConfigError(
+      "weekdays must not be empty when frequency is 'weekly'",
+    );
+  }
+  const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
+  return `${minute} ${hour} * * ${sorted.join(",")}`;
+}
+```
 
-## 変更ファイル一覧
+### 3. JSDoc 更新
 
-- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`（主要変更）
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`（inferSmartDefaults / STEPS テスト追加）
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`（TASK-SC-07 テストを describe.skip）
+`@throws {InvalidConfigError}` を追加済み。
+
+## テスト結果
+
+- **Tests**: 12 passed / 12 total
+- Red → Green 移行: 完了
+- AC-01〜06: 全合格
+
+## 受け入れ基準充足確認
+
+| AC番号 | 結果 |
+| ------ | ---- |
+| AC-01  | ✅   |
+| AC-02  | ✅   |
+| AC-03  | ✅   |
+| AC-04  | ✅   |
+| AC-05  | ✅   |
+| AC-06  | ✅   |
