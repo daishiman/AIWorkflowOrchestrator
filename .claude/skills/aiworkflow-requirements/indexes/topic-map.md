@@ -2789,13 +2789,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 環境変数の分類 | L15 |
-| セキュリティベストプラクティス | L67 |
-| 環境別設定 | L139 |
-| Electron アプリでの環境変数 | L191 |
-| トラブルシューティング | L248 |
-| チーム開発での運用 | L309 |
-| 必須環境変数一覧 | L347 |
-| 関連ドキュメント | L405 |
+| セキュリティベストプラクティス | L80 |
+| 環境別設定 | L152 |
+| Electron アプリでの環境変数 | L204 |
+| トラブルシューティング | L261 |
+| チーム開発での運用 | L322 |
+| 必須環境変数一覧 | L360 |
+| 関連ドキュメント | L418 |
 
 ### references/error-handling-core.md
 
@@ -3062,6 +3062,51 @@ node scripts/list-specs.js --topics
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L572 |
 | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L606 |
 | UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L629 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L5 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L36 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L61 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L92 |
+| TASK-RT-06 教訓（2026-03-29） | L123 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L145 |
+| TASK-P0-04 教訓（2026-03-30） | L176 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L212 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L306 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L360 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L400 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L440 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L471 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L483 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L506 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L515 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L549 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L583 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L606 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L632 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L4 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L29 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L60 |
+| TASK-RT-06 教訓（2026-03-29） | L91 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L113 |
+| TASK-P0-04 教訓（2026-03-30） | L144 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L180 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L275 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L329 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L369 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L484 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L518 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L552 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L575 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L601 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L618 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L514 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L548 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L582 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L605 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L631 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3522,6 +3567,8 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L65 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4685,7 +4732,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4848,9 +4894,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L10 |
-| 利用順序 | L39 |
-| 関連ドキュメント | L44 |
+| 仕様書インデックス | L12 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L48 |
 
 ### references/testing-accessibility.md
 

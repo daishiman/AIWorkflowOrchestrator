@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2938,
+  "totalKeywords": 2946,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1628,6 +1628,7 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-plan-exec-hardening.md",
@@ -5838,6 +5839,7 @@
     ],
     "ガード": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md"
@@ -7828,6 +7830,21 @@
     "レガシーコード整理": [
       "lessons-learned-current-2026-04.md"
     ],
+    "CRON": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "CONVERTER": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "WEEKDAYS": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "cronConverter": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "weekdays": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9391,6 +9408,15 @@
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
+    ],
+    "確認": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "TRACKING": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "REACH": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "確認": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
