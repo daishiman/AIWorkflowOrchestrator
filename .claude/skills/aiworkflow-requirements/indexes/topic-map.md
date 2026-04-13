@@ -489,12 +489,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル共有 型定義（TASK-9F） | L6 |
-| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L72 |
-| スキルデバッグ 型定義（TASK-9H） | L91 |
-| スキルドキュメント生成 型定義（TASK-9I） | L141 |
-| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L291 |
-| assertNoSilentFallback ガード（P62 対策） | L340 |
+| スキル利用分析 型定義（UT-W3-ANALYTICS-STORE-INTEGRATION-001） | L72 |
+| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L96 |
+| スキルデバッグ 型定義（TASK-9H） | L115 |
+| スキルドキュメント生成 型定義（TASK-9I） | L165 |
+| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L229 |
+| スキル分析 型定義（TASK-9J） | L315 |
+| assertNoSilentFallback ガード（P62 対策） | L364 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1399,8 +1400,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L224 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L253 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -2545,8 +2546,8 @@ node scripts/list-specs.js --topics
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L523 |
+| SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts） | L277 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L353 |
 
 ### references/arch-state-management.md
 
@@ -2574,8 +2575,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
-| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L210 |
-| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L269 |
+| SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts） | L210 |
 
 ### references/arch-ui-components-details.md
 
@@ -3042,15 +3042,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L4 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L35 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L58 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L83 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L114 |
-| TASK-RT-06 教訓（2026-03-29） | L145 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L167 |
-| TASK-P0-04 教訓（2026-03-30） | L198 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L234 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L5 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L36 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L59 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L84 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L115 |
+| TASK-RT-06 教訓（2026-03-29） | L146 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L168 |
+| TASK-P0-04 教訓（2026-03-30） | L199 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L235 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L329 |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L383 |
 | TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L423 |
@@ -3058,10 +3058,10 @@ node scripts/list-specs.js --topics
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L494 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L506 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L529 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L538 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L572 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L606 |
-| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L629 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L537 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L571 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L605 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L628 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3520,9 +3520,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
-| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4686,8 +4688,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
+
+### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4813,10 +4820,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L18 |
-| 完了タスク（2026-03後半） | L193 |
-| 完了タスク（機能別アーカイブ） | L201 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L310 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
 
 ### references/task-workflow-history.md
 
@@ -4850,9 +4858,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L10 |
-| 利用順序 | L39 |
-| 関連ドキュメント | L44 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
 
 ### references/testing-accessibility.md
 

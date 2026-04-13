@@ -1,6 +1,62 @@
-# 完了タスク記録 — 2026-04-11
+# 完了タスク記録 — 2026-04-13
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正（2026-04-13）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-FEEDBACK-001                                                                   |
+| 完了日     | 2026-04-13                                                                                 |
+| タスク種別 | implementation（VISUAL / feedback fix）                                                    |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実装内容
+
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` に `useFetchSkills` を導入し、LLM モード成功時に `await fetchSkills()` を追加
+- `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx` で `skillPath === null` の場合はエラーUIを返すように変更
+- `CompleteStep` の成功ヘッダーは `skillPath !== null` の場合のみ表示するように是正
+- `outputs/phase-11/` に VISUAL 証跡 4枚と `phase11-capture-metadata.json` を保存
+- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / feedback / compliance を current facts に同期
+
+#### Phase 11/12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                       |
+| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+
+#### 検証証跡
+
+- `apps/desktop/scripts/capture-task-skill-fix-feedback-phase11.mjs`: PASS
+- `outputs/phase-11/screenshots/skill-list-updated-after-llm.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-error.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-no-success.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-success.png`: PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `outputs/artifacts.json` / `docs/30-workflows/WB-par-02b-fix-feedback/artifacts.json`: parity PASS
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                 | 解決策                                                                 |
+| --- | ---------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | 画面証跡は Electron ではなく build から取る必要があった | Vite + Playwright の capture script を追加して current_build を固定した |
+| 2   | `skillPath===null` と `skillPath===""` の扱いを混同しやすい | 今回は `null` ガードに限定し、未タスク化は行わない方針に整理した      |
+
+#### lessons-learned
+
+- `phase11-capture-metadata.json` と screenshot path は Phase 12 implementation guide へ必ず逆参照する
+- `fetchSkills` 呼び忘れは LLM 成功パスの regression として test case で固定する
 
 ---
 
@@ -204,3 +260,65 @@
   - AC-2: 正常な dayOfMonth では既存の cron 式を返す PASS
   - AC-3: cronParser.ts で不正 monthly は custom にフォールバック PASS
 - lessons-learned: `references/lessons-learned-current-2026-04.md` §MONTHLY-GUARD（L-MTHGRD-001〜003）
+
+---
+
+### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-13）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                   |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | ipc / test / docs / workflow-sync                                                                   |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-13                                                                                          |
+| 対象       | `apps/desktop/src/main/ipc/analyticsHandler.ts` の `sendToAnalyticsProvider` HTTP POST 実装        |
+| 成果物     | `docs/30-workflows/UT-W3-ANALYTICS-HTTP-PROVIDER-001/`                                              |
+| PR         | 未作成（Phase 13 blocked）                                                                          |
+
+#### 実施内容
+
+**analyticsHandler.ts**
+
+- `sendToAnalyticsProvider` 関数を追加（非公開・production-only HTTP POST）
+- `ANALYTICS_ENDPOINT_URL` 環境変数が未設定の場合は静かにスキップ
+- `NODE_ENV !== "production"` の場合はスキップ（開発中はコンソールログのみ）
+- `AbortController` + 5000ms タイムアウトで外部サービス障害時のブロックを防止
+- `try/catch` でエラーを握り潰し、IPC 応答を壊さない設計（FR-04, NFR-01）
+- `finally { clearTimeout(timeoutId) }` でタイマーを確実に解放
+
+**analyticsHandler.test.ts**
+
+- `vi.stubGlobal("fetch", ...)` / `vi.unstubAllGlobals()` パターンでグローバル fetch をモック
+- TC-01〜TC-08（基本動作）、TC-E01〜TC-E05（エッジケース）、TC-R01〜TC-R03（regression）を追加
+- AC カバレッジ 100%（AC-01〜AC-07 全て到達）
+- 合計 25 件のテストが GREEN
+
+**Phase 12 sync**
+
+- `api-ipc-system-core.md` の current contract に `sendToAnalyticsProvider` HTTP POST の振る舞いを反映
+- `environment-variables.md` に `ANALYTICS_ENDPOINT_URL` セクションを追加
+- `lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜003 を追加
+- `indexes/resource-map.md` に UT-W3-ANALYTICS-HTTP-PROVIDER-001 エントリを追加
+- `LOGS.md` に impl-spec-to-skill-sync エントリを追加
+
+#### 検証証跡
+
+- Phase 4 Red テスト（TC-01, TC-08）: 失敗確認済み
+- Phase 5 実装後: 全 25 件 GREEN
+- Phase 6 拡張テスト: TC-E01〜TC-E05, TC-R01〜TC-R03 GREEN
+- Phase 7 AC カバレッジ: AC-01〜AC-07 全て到達（100%）
+- Phase 11: NON_VISUAL 判定（docs-only / Electron Main プロセス内部動作）
+- Phase 12 Task Spec コンプライアンス: 27/27 全項目準拠
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                              | 解決策                                                                          |
+| --- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1   | グローバル `fetch` のモック方法                                        | `vi.stubGlobal("fetch", vi.fn())` + `afterEach(() => vi.unstubAllGlobals())` |
+| 2   | TC-E04 空文字 URL のエッジケースが Phase 4 で漏れた                  | Phase 6 で追加。次回は Phase 4 でガード条件の全 falsy パターンを列挙する        |
+| 3   | `AbortController` タイムアウト後の `fetch` Promise 状態の確認方法    | `mockRejectedValue(new DOMException("...", "AbortError"))` でモックして検証     |
+
+#### lessons-learned
+
+- `references/lessons-learned-w3-usage-tracking-2026-04.md`（L-W3-HTTP-001〜003）を参照
