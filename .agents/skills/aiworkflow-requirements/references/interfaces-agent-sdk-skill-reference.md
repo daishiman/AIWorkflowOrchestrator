@@ -165,6 +165,30 @@ shared 関数は「値を正規化する」ことに限定する。
 
 `createQuestionAnswer()` 側の `notion` 特別ケースは UI 自由入力欄の責務であり、
 shared 関数は「値を正規化する」ことに限定する。
+| 型名                        | 役割                            |
+| --------------------------- | ------------------------------- |
+| `SkillCategory`             | Step 0 のカテゴリ選択 union     |
+| `SkillInfoFormData`         | Step 0 のフォーム契約           |
+| `SkillWizardScheduleConfig` | Q3 の定期実行契約               |
+| `QuestionAnswer`            | 1 問分の回答契約                |
+| `ConversationAnswers`       | 6 問分の回答集約契約            |
+| `SmartDefaultResult`        | semantic key ベースの初期値契約 |
+| `SkeletonQualityFeedback`   | 骨格品質のフィードバック契約    |
+
+#### Skill Wizard Semantic Label Registry（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）
+
+`QuestionSemanticLabelMap` / `SEMANTIC_LABEL_MAP` / `resolveSemanticLabel()` の canonical source は
+`packages/shared/src/types/skill-wizard-label-map.ts`。`packages/shared/src/types/index.ts` の barrel で再公開し、
+`@repo/shared` 直下および `@repo/shared/types/skillWizard` の両方から参照できるようにする。
+
+| シンボル                   | 役割                                               | 主な参照経路                          |
+| -------------------------- | -------------------------------------------------- | ------------------------------------- |
+| `QuestionSemanticLabelMap` | 質問ID → rawValue → displayLabel の 2 段階マップ型 | `@repo/shared` / `@repo/shared/types` |
+| `SEMANTIC_LABEL_MAP`       | q1〜q6 の正準変換テーブル                          | `@repo/shared/types/skillWizard`      |
+| `resolveSemanticLabel()`   | rawValue を UI ラベルへ正規化する純粋関数          | `@repo/shared/types/skillWizard`      |
+
+`createQuestionAnswer()` 側の `notion` 特別ケースは UI 自由入力欄の責務であり、
+shared 関数は「値を正規化する」ことに限定する。
 
 #### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 

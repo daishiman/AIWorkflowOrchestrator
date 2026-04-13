@@ -2,13 +2,23 @@
 
 ## 役割
 
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴の先頭に `v10.09.46` を追加し、`TASK-SW-FIX-DATAFLOW-001` の current facts（`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を反映
+- `SKILL.md` 「Phase 12 実行時によくある漏れ」テーブルに **[FB-DATAFLOW-001]** を追加し、context bridge 同期漏れ（shared 型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を防止ルールとして明文化
+- 本 `LOGS.md` に同作業ログを追記（worker 2 担当範囲: `SKILL.md` / `LOGS.md`）
+
+### 背景
+`TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
-- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
-- `SKILL.md` 変更履歴に v10.09.45 を追記
-- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
-- LOGS.md 2ファイル同波更新
+- `SKILL.md` v10.09.45 changelog エントリ追加
+- 「よくある漏れ」テーブルに **[UT-W3-HTTP]** 1件（Phase 4 でガード条件の全 falsy パターン未列挙による Phase 6 追加漏れ）を追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
 
 ### 背景
 TASK-UI-SCHEDULE-CRON-SEMANTIC-001 の skill-feedback-report.md で記録された改善提案（FB-CRONVL-001/002）を task-specification-creator SKILL.md に反映。cron-parser の AND semantics 問題（Phase 2 で実測確認を省略したことで Phase 5 で設計修正が必要になった）と opt-in フラグの UI 統合経路未明示（NON_VISUAL タスクで将来の統合先が曖昧になる問題）を知見化。
@@ -22,6 +32,29 @@ TASK-UI-SCHEDULE-CRON-SEMANTIC-001 の skill-feedback-report.md で記録され�
 
 ### 背景
 Phase 12 の canonical 6 成果物に加えて、LOGS と topic-map を閉じることで current facts の漏れを防ぐ。
+
+UT-W3-ANALYTICS-HTTP-PROVIDER-001 の Phase 6 で TC-E04（空文字 URL）が追加されたことから、Phase 4 でのガード条件設計に改善余地があった。次回類似タスクで同じ漏れが起きないよう「よくある漏れ」テーブルに記録した。
+
+## 2026-04-12 TASK-CRON-SEMANTIC-VALIDATION-001 Phase 12完了
+
+### Phase 12成果物（全6件 PASS）
+- 12-1: `implementation-guide.md` — 中学生レベル〜技術者レベル説明
+- 12-2: `system-spec-update-summary.md` — 仕様書更新サマリ（新規インターフェースなし）
+- 12-3: `documentation-changelog.md` — ドキュメント更新履歴
+- 12-4: `unassigned-task-detection.md` — 未タスク検出（0件）
+- 12-5: `skill-feedback-report.md` — スキルフィードバック
+- 12-6: `phase12-task-spec-compliance-check.md` — コンプライアンスチェック
+
+### 特記事項
+- Phase 11（手動テスト）: non-visual taskのためスクリーンショットはN/A判定
+- Phase 12-2（システム仕様書更新）: 公開契約（validateCronExpression APIシグネチャ）変更なしのためN/A
+- テスト56件全PASS（scheduleConfigValidator.test.ts + edge.test.ts + ScheduleDialog + ConversationRoundStep）
+
+### 教訓 (Lessons Learned)
+- non-visual task（UIを持たない純TS実装）でのPhase 11処理: スクリーンショットはN/A、代わりにコンソール実行ログで代替可能
+- Phase 12-2の仕様書更新判定: APIシグネチャ変更なし + 内部実装追加のみの場合はN/A判定が適切
+
+---
 
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
 
@@ -2335,12 +2368,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
 | 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
 | 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
-| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
-| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
-| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
-| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
 
 ## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
 
@@ -2398,7 +2425,6 @@ UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`sat
 ## 2026-04-12 - FB-04 三者同期チェックリスト標準化 impl-spec-to-skill-sync
 
 ### 変更内容
-
 
 - `task-specification-creator/references/patterns-phase12-sync.md` にパターン10（artifacts.json 二重管理チェック）とパターン11（canonical成果物命名規約）を追加
 - `task-specification-creator/references/phase-template-execution.md` の Phase 5 追加チェック項目に `describe.skip` 内削除対象 testid 残存確認を追加
@@ -2463,3 +2489,20 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
+
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/LOGS.md` に本タスク完了記録を追加
+
+### 背景
+
+UT-W3-ANALYTICS-STORE-INTEGRATION-001（renderer-side analyticsSlice 実装）の Phase 12 close-out sync。action-only Zustand store パターン・vi.mock パス解決（__tests__/ からの相対パス）・ブランチカバレッジ検出と補完テストの 3 点を知見として記録。
+
+| 項目     | 内容                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / Phase 12 close-out / skill-sync                                                                                                                                                              |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent / SkillAnalyticsEventType 追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件 新規）     |
+| 結果     | analyticsSlice 実装完了。vi.mock パスは `../../../utils/analyticsAdapter`（__tests__/ から3階層上）。branch 81.81% → catch ブロックテスト追加 → 100%。全 30 件 PASS                                               |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed / line 100% / branch 100%                                                                                                                                             |

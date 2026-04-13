@@ -1,17 +1,28 @@
-# Phase 7: カバレッジ計画 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 7: カバレッジ計画
 
-## カバレッジ目標
+## 対象
 
-| 対象                   | 目標 | 計測対象                                                                                                                      |
-| ---------------------- | ---- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 変更契約の確認         | 100% | DescribeStep / DescribeStepProps / inline GenerationMode / SkillInfoStepProps / 再転送 GenerationMode                         |
-| 回帰ガードの確認       | 100% | ConfigureStep / WizardOptions が依然として非公開であること                                                                    |
-| 維持エクスポートの確認 | 100% | StepIndicator / SkillInfoStep / ConversationRoundStep / InterviewProgressBar / ApplySummaryCard / GenerateStep / CompleteStep |
+`apps/desktop/src/renderer/utils/cronConverter.ts`
 
-## 計測コマンド
+## カバレッジ分析
 
-```bash
-pnpm --filter @repo/desktop exec vitest run \
-  src/renderer/components/skill/__tests__/wizard-exports.test.ts
-pnpm --filter @repo/desktop typecheck
-```
+| コードパス                           | テストカバー | 対応テスト                   |
+| ------------------------------------ | ------------ | ---------------------------- |
+| `InvalidConfigError` コンストラクタ  | ✅           | InvalidConfigError describe  |
+| `case "every-minute"`                | ✅           | 回帰テスト                   |
+| `case "every-hour"`                  | ✅           | 回帰テスト                   |
+| `case "daily"`                       | ✅           | 回帰テスト                   |
+| `case "weekly"` - weekdays=[] ガード | ✅           | AC-01, AC-05                 |
+| `case "weekly"` - 正常変換           | ✅           | AC-02, AC-03, AC-04          |
+| `case "monthly"`                     | ✅           | 回帰テスト                   |
+| `case "custom"`                      | ❌           | 対象外（本タスクスコープ外） |
+| `default`                            | ❌           | 対象外（本タスクスコープ外） |
+
+## 未到達パス（本タスクスコープ外）
+
+- `case "custom"`: 既存機能、本タスクの変更対象外
+- `default`: 既存機能、本タスクの変更対象外
+
+## 判定
+
+本タスクの変更対象である `case "weekly"` の全パスがカバーされている。✅
