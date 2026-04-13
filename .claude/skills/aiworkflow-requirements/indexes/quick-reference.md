@@ -736,6 +736,21 @@ packages/
 
 ---
 
+### UT-W3-ANALYTICS-STORE-INTEGRATION-001（analyticsSlice + skill-analytics 型）参照導線 [2026-04-13完了]
+
+| 目的 | 参照先 |
+| --- | --- |
+| analyticsSlice 実装（action-only store） | `apps/desktop/src/renderer/store/slices/analyticsSlice.ts` |
+| SkillAnalyticsEventType / SkillAnalyticsEvent 型定義 | `packages/shared/src/types/skill-analytics.ts` |
+| agentSlice analytics wiring（lifecycle hooks） | `apps/desktop/src/renderer/store/slices/agentSlice.ts` |
+| 公開契約（barrel export 経路） | `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` |
+| 完了記録・苦戦箇所 | `references/task-workflow-completed-recent-2026-04f.md` |
+| 教訓（shared 型追加 wave sync / payload helper / silent error） | `references/lessons-learned-current-2026-04.md` → L-ANALYTICS-001/002/003 |
+| Phase 12 成果物 | `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/outputs/phase-12/` |
+| 後続タスク | UT-W3-ANALYTICS-HTTP-PROVIDER-001（unassigned）/ UT-W3-ANALYTICS-DASHBOARD-001（spec_created） |
+
+---
+
 ## Cron Validation（scheduleConfigValidator）
 
 3段階バリデーション:

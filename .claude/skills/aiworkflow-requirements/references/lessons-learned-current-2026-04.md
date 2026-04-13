@@ -965,6 +965,40 @@
 | 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
 | 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
 | 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+
+---
+
+## UT-W3-ANALYTICS-STORE-INTEGRATION-001 analyticsSlice + agentSlice wiring 教訓（2026-04-13）
+
+### L-ANALYTICS-001: 共有型追加は definition → types/index → package index → consumer wiring を 1 wave で閉じる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `packages/shared/src/types/skill-analytics.ts` を追加しても、`types/index.ts` と `packages/shared/index.ts` の barrel 再公開を忘れると consumer（agentSlice 等）でインポートできない |
+| 原因       | barrel export チェーンの各層が独立しており、どこか 1 段を抜かすと型が解決されない |
+| 解決策     | 型ファイル作成と同時に `types/index.ts` / `packages/shared/index.ts` / consumer wiring を同じ wave（同一コミット前）で完結させる |
+| 標準ルール | shared 型追加タスクの Phase 2 チェックリストに「barrel 再公開 3 点確認」を必須項目として含める |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
+
+### L-ANALYTICS-002: helper-based payload conversion は `as unknown as` 依存より追跡しやすい
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `analyticsSlice.ts` で直接 `as unknown as AnalyticsPayload` とキャストすると、型が変わった際に追跡箇所が散在する |
+| 原因       | 型変換ロジックが呼び出しサイトに埋め込まれている |
+| 解決策     | `toAnalyticsPayload(event: SkillAnalyticsEvent)` のような helper を 1 箇所に集約し、型変換の責務を分離する |
+| 標準ルール | analytics transport 用 payload 変換は必ず named helper に集約し、呼び出しサイトでの inline キャストを禁止する |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
+
+### L-ANALYTICS-003: analytics adapter の silent error 設計は意図的 — ただしログ戦略を先に決める
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `analyticsSlice.ts` の try-catch が空だと adapter 送信失敗を検出できず、テレメトリ喪失が無音で起きる |
+| 原因       | UI を壊さないため adapter エラーをサイレントにするが、デバッグ可視性を犠牲にしている |
+| 解決策     | silent catch は維持しつつ、開発環境（`process.env.NODE_ENV === "development"`）では `console.warn` を出す方針を仕様で明記する |
+| 標準ルール | analytics adapter の catch 節には「本番: silent / 開発: console.warn」ポリシーをコメントで記載し、意図的な設計であることを明示する |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
 | 症状       | `system-spec-update-summary.md` に LOGS.md × 2 / topic-map.md / resource-map.md の更新記録を含めていなかったため、外部同期が完了しているかの判断が Phase 12 証跡だけでは不明瞭になった |
 | 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |

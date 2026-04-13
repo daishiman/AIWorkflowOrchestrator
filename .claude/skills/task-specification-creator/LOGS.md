@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 
 ### 変更内容
