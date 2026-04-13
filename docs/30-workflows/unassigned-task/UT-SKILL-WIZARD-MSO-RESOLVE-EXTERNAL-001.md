@@ -13,6 +13,8 @@ scale: 中規模
 status: 未実施
 created_date: 2026-04-09
 dependencies: [UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001]
+dependencies_status:
+  UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: completed # 2026-04-13 完了（Issue #2071 CLOSED）
 origin_task: skill-wizard-multi-select-options（CONST_FUTURE-001 として登録）
 ```
 
@@ -120,12 +122,37 @@ const selected = (q5Answer.selectedOptions[0] ?? "").trim();
 - `SmartDefaultResult` は `string | null` 型のままであることを前提とし、
   変換は UI 層で完結させること（バックエンド変更なし）
 
+### 3.3 前提タスク（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001）実装完了による追加教訓
+
+**完了日**: 2026-04-13（Issue #2071 CLOSED）
+
+#### バッジ削除手順（本タスク実装時に必須）
+
+`ConversationRoundStep.tsx` に暫定バッジが実装されており、本タスク完了時に削除が必要：
+
+1. `MAIN_TOOL_BADGE_ENABLED` フラグと `shouldShowMainToolBadge` 関数を削除
+2. `aria-describedby` を含むバッジ JSX（`<span id={mainToolBadgeId} ...>主ツール</span>`）を削除
+3. `ConversationRoundStep.test.tsx` の主ツールバッジ関連テスト（TC-1〜TC-6）を削除
+4. `// TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001)` コメントを削除
+
+詳細は `docs/30-workflows/completed-tasks/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-12/implementation-guide.md` の「削除手順」セクション参照。
+
+#### aria アクセシビリティ設計の注意点
+
+バッジを削除した後、`aria-labelledby` 参照が残ると button の accessible name が壊れる可能性がある：
+
+- `aria-labelledby={optionLabelId}` は button 名の固定に使用 → バッジ削除後も維持すること
+- `aria-describedby={isMainTool ? mainToolBadgeId : undefined}` はバッジ削除と同時に削除
+- テストの `screen.getByRole("button", { name: "Slack" })` は削除後も通ることを確認する
+
 ---
 
 ## 4. 関連情報
 
-| 項目         | 内容                                                                   |
-| ------------ | ---------------------------------------------------------------------- |
-| 関連タスク   | UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001（Q5「主ツール」UI表示）           |
-| 参照ファイル | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`     |
-| M-01 TODO    | `SkillCreateWizard.tsx` 内の `resolveExternalIntegration` 呼び出し箇所 |
+| 項目                 | 内容                                                                                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 関連タスク           | UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001（Q5「主ツール」UI表示）**← 完了済み**                                                                    |
+| 前提タスク実装ガイド | `docs/30-workflows/completed-tasks/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-12/implementation-guide.md`（バッジ削除手順含む）       |
+| 参照ファイル         | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                                                            |
+| M-01 TODO            | `SkillCreateWizard.tsx` 内の `resolveExternalIntegration` 呼び出し箇所                                                                        |
+| バッジ実装ファイル   | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`（`shouldShowMainToolBadge` / `MAIN_TOOL_BADGE_ENABLED` を削除） |

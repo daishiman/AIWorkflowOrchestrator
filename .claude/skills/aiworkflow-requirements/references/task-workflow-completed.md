@@ -6,6 +6,9 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
+- 2026-04-13: `TASK-SW-FIX-MODE-MGMT-001` SkillCreateWizard mode/state current facts sync（本ファイルに詳細記録）
 - [2026-04-13: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（edge case 一覧表）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-12: UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI 到達確認テスト追加](./task-workflow-completed-recent-2026-04d.md)
@@ -16,6 +19,26 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync
+
+### 変更内容
+
+- `references/arch-state-management-skill-creator.md` を current facts ベースへ更新し、`generationMode` / `llmDescription` / `localPlanResult` / `hasActivatedLlmMode` を obsolete facts として明示した
+- `references/arch-ui-components-core.md` を LLM 専用 4 step topology に差し替え、旧 `planResult` / `executePlan` UI 契約を historical facts へ退避した
+- `references/ui-ux-feature-components-skill-analysis.md` の SkillCreateWizard セクションを更新し、`useCreateSkill()` + `buildSkillContext()` 経路、`generationMethod` の意味、analytics payload の current facts を固定した
+- `references/task-workflow.md` / `task-workflow-backlog.md` / `LOGS.md` を同波で更新し、軽微な残件は backlog へ切り出した
+- その後 `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` を削除し、backlog へ切り出していた obsolete skip suite を current facts に合わせて吸収した
+- 併せて `task-workflow-backlog.md` と `outputs/phase-12/unassigned-task-detection.md` を 0 件状態へ再同期した
+
+### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`: PASS（34 tests）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+
+#### 苦戦箇所
+
+- `skill_wizard_step1_completed` の `method: "skip"` は旧「Step 1 スキップモード」の意味ではなく、「未回答ありで生成実行した」計装値だったため、仕様書側の意味付けを current code に合わせて修正した
 
 ## 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync
 

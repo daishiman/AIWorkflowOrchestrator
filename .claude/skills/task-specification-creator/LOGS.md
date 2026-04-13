@@ -14,6 +14,70 @@
 
 FB-05 は docs-only / `spec_created` タスクとして Phase 11 テスト証跡テンプレートに新 3 セクションを導入した。skill-feedback-report.md に記録した LOW 2件（件数集約 / edge case 表カラム整理）は v2 テンプレートで既に解消済み。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.46 を追記（Number.isInteger ガードパターン / 双方向ガード / 対称ブロック構文）
+- LOGS.md 2ファイル同波更新
+
+### 背景
+TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 の skill-feedback-report.md で記録された改善提案を task-specification-creator SKILL.md に反映。純粋関数ガード設計における Number.isInteger の使用順序と、converter/parser 双方向ガードのセット実装パターンを知見化。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 phase 12 close-out sync
+
+### 変更内容
+- `SKILL.md` Phase 12 の「よくある漏れ」テーブルに `index.md` / `artifacts.json` / `outputs/artifacts.json` の同一wave同期ルールを追加し、v10.09.46 を追記
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` を completed / blocked に更新
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/*.md` を current facts に更新
+- `.agents/skills/task-specification-creator/SKILL.md` / `LOGS.md` を mirror 同期
+
+### 背景
+Phase 12 close-out で index status と台帳 mirror の二重化を防ぐため、skill に再発防止ルールを残した。
+
+## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-MODEMGMT-001]**（happy-dom 環境での `userEvent` 使用禁止 / `fireEvent` 必須）・**[FB-MODEMGMT-002]**（ウィザード分岐フラグの単一 state 管理）を追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+
+### 背景
+TASK-SW-FIX-MODE-MGMT-001 の skill-feedback-report に記録された4件の発見点（二重state管理・TDD Red→Green・esbuild環境ブロッカー・happy-dom fireEvent）を task-specification-creator SKILL.md に反映。特に happy-dom での userEvent 使用禁止は、このプロジェクト全体に適用される重要なパターンのため「よくある漏れ」へ固定。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（v10.09.47 SKILL.md 更新）
+
+### 変更内容
+- `SKILL.md` v10.09.47 changelog エントリ追加（FEEDBACK-001 skill-feedback 反映）
+- 「よくある漏れ」テーブルに **[FB-FEEDBACK-001]** を追記（LLM モード fetchSkills 明示呼び出し必須 / template モードとのモード差異）
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-FEEDBACK-001/002/003 追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+- `aiworkflow-requirements/indexes/topic-map.md` 再生成予定（`generate-index.js` 実行後）
+
+### 背景
+Phase 12 close-out 後の第2波 sync として、skill-feedback-report.md に記録された知見（fetchSkills モード差異 / skillPath null ガードとの結合設計 / Vite build キャプチャ安定性）を「よくある漏れ」テーブルと lessons-learned に反映した。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `LOGS.md` 先頭に TASK-SW-FIX-FEEDBACK-001 の VISUAL close-out を追加
+- Phase 11 の screenshot evidence 4枚と `phase11-capture-metadata.json` を current facts として記録
+- `outputs/phase-12/implementation-guide.md` の screenshot references / `unassigned-task-detection.md` 0件化 / `phase12-task-spec-compliance-check.md` PASS を反映
+
+### 背景
+VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts を同波で閉じる必要がある。`skillPath null guard` と `fetchSkills` 呼び忘れ防止を、再利用可能な phase 12 note として残した。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 

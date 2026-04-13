@@ -82,6 +82,14 @@ describe("cronToHumanReadable", () => {
     );
   });
 
+  it("monthly の不正な日付は日本語でカスタム扱い", () => {
+    expect(cronToHumanReadable("0 9 0 * *", "ja")).toBe("カスタムスケジュール");
+  });
+
+  it("monthly の不正な日付は英語でカスタム扱い", () => {
+    expect(cronToHumanReadable("0 9 32 * *", "en")).toBe("Custom schedule");
+  });
+
   it("無効な式の英語フォールバック", () => {
     expect(cronToHumanReadable("invalid", "en")).toBe("Custom schedule");
   });

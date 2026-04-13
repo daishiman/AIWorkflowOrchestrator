@@ -489,12 +489,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル共有 型定義（TASK-9F） | L6 |
-| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L72 |
-| スキルデバッグ 型定義（TASK-9H） | L91 |
-| スキルドキュメント生成 型定義（TASK-9I） | L141 |
-| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L291 |
-| assertNoSilentFallback ガード（P62 対策） | L340 |
+| スキル利用分析 型定義（UT-W3-ANALYTICS-STORE-INTEGRATION-001） | L72 |
+| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L96 |
+| スキルデバッグ 型定義（TASK-9H） | L115 |
+| スキルドキュメント生成 型定義（TASK-9I） | L165 |
+| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L229 |
+| スキル分析 型定義（TASK-9J） | L315 |
+| assertNoSilentFallback ガード（P62 対策） | L364 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1399,8 +1400,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L224 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L253 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -2545,8 +2546,8 @@ node scripts/list-specs.js --topics
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L149 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION / TASK-SC-07 current facts） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L523 |
+| SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts） | L277 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L353 |
 
 ### references/arch-state-management.md
 
@@ -2574,8 +2575,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
-| SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts） | L210 |
-| SkillCreateWizard LLM 連携フロー（TASK-SC-07） | L269 |
+| SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts） | L210 |
 
 ### references/arch-ui-components-details.md
 
@@ -4689,6 +4689,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
+
+### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+
+### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4818,6 +4831,11 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L195 |
 | 完了タスク（機能別アーカイブ） | L203 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
 
 ### references/task-workflow-history.md
 
@@ -4854,6 +4872,12 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L14 |
 | 利用順序 | L44 |
 | 関連ドキュメント | L50 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 
