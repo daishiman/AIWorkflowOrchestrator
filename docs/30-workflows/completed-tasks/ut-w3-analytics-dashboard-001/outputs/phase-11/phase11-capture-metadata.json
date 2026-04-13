@@ -1,0 +1,49 @@
+{
+  "taskId": "UT-W3-ANALYTICS-DASHBOARD-001",
+  "phase": 11,
+  "captureDate": "2026-04-13",
+  "captureStatus": "completed",
+  "captureNote": "Playwright E2E で analytics dashboard の 5 枚のスクリーンショットを保存し、settings-view 統合も確認済み。",
+  "plannedScreenshots": [
+    {
+      "filename": "analytics-panel-default.png",
+      "description": "設定画面のanalyticsダッシュボード（通常状態）",
+      "status": "captured",
+      "reason": "docs/30-workflows/ut-w3-analytics-dashboard-001/outputs/phase-11/screenshots/ に保存済み"
+    },
+    {
+      "filename": "analytics-panel-opted-out-on.png",
+      "description": "オプトアウトON状態",
+      "status": "captured",
+      "reason": "docs/30-workflows/ut-w3-analytics-dashboard-001/outputs/phase-11/screenshots/ に保存済み"
+    },
+    {
+      "filename": "analytics-panel-opted-out-off.png",
+      "description": "オプトアウトOFF状態",
+      "status": "captured",
+      "reason": "docs/30-workflows/ut-w3-analytics-dashboard-001/outputs/phase-11/screenshots/ に保存済み"
+    },
+    {
+      "filename": "analytics-diagnostic-block-dev.png",
+      "description": "開発モードでの診断ブロック表示",
+      "status": "captured",
+      "reason": "docs/30-workflows/ut-w3-analytics-dashboard-001/outputs/phase-11/screenshots/ に保存済み"
+    },
+    {
+      "filename": "analytics-diagnostic-block-prod-hidden.png",
+      "description": "本番モードでの診断ブロック非表示",
+      "status": "captured",
+      "reason": "docs/30-workflows/ut-w3-analytics-dashboard-001/outputs/phase-11/screenshots/ に保存済み"
+    }
+  ],
+  "alternativeVerification": {
+    "method": "unit-test",
+    "testCount": 46,
+    "result": "all-passed",
+    "files": [
+      "src/renderer/components/analytics/__tests__/AnalyticsDashboardPanel.test.tsx",
+      "src/renderer/views/SettingsView/SettingsView.test.tsx"
+    ]
+  },
+  "existingIssues": []
+}

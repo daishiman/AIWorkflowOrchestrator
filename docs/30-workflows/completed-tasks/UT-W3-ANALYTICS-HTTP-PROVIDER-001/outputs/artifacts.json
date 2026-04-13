@@ -1,0 +1,332 @@
+{
+  "feature": "UT-W3-ANALYTICS-HTTP-PROVIDER-001",
+  "created": "2026-04-13T00:00:00.000Z",
+  "lastUpdated": "2026-04-13T00:29:10.823Z",
+  "status": "pending",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:28:52.375Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/aiworkflow-requirements-extraction.md",
+          "description": "仕様抽出結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/branch-diff-coverage.md",
+          "description": "差分カバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/implementation-spec-traceability-matrix.md",
+          "description": "トレーサビリティ行列"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:28:52.642Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/http-send-design.md",
+          "description": "HTTP送信設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-strategy.md",
+          "description": "テスト戦略"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/dependency-consistency-matrix.md",
+          "description": "依存整合マトリクス"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:28:52.841Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/contradiction-checklist.md",
+          "description": "矛盾チェック表"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:09.505Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-test-result.md",
+          "description": "Red結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/http-mock-design.md",
+          "description": "HTTP送信モック設計"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:09.665Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files.md",
+          "description": "変更ファイル一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/contract-diff.md",
+          "description": "契約差分"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:09.822Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "description": "拡張テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-result.md",
+          "description": "回帰テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/edge-case-result.md",
+          "description": "異常系結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:09.973Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-plan.md",
+          "description": "カバレッジ計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/unreached-analysis.md",
+          "description": "未到達分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/traceability-coverage-report.md",
+          "description": "トレーサビリティ網羅率"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:10.155Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタ計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/post-refactor-test-plan.md",
+          "description": "再テスト計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/responsibility-boundary-map.md",
+          "description": "責務境界マップ"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:10.323Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/risk-register.md",
+          "description": "リスク台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/causal-loop-check.md",
+          "description": "因果ループ監査"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:10.481Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/corrective-plan.md",
+          "description": "是正計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/shipment-readiness-check.md",
+          "description": "出荷準備チェック"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:10.662Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:29:10.821Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "コンプライアンスチェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs-only",
+    "priority": "P1",
+    "issueNumber": 2097,
+    "dependsOn": "UT-W3-ANALYTICS-ADAPTER-001",
+    "estimatedPhases": 13,
+    "taskClassification": "non-ui-task"
+  }
+}

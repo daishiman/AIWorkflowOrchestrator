@@ -11,6 +11,7 @@ import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
 import { AuthKeySection } from "../../components/settings/AuthKeySection";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import { MainlineAccessMatrixSection } from "./MainlineAccessMatrixSection";
+import { AnalyticsDashboardPanel } from "../../components/analytics/AnalyticsDashboardPanel";
 import {
   MAINLINE_HELP_URL,
   MAINLINE_SETUP_GUIDE_URL,
@@ -361,6 +362,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 disabled={isLoading}
               />
             </div>
+          </SettingsCard>
+        </section>
+
+        {/* Analytics Dashboard */}
+        <section role="region" aria-labelledby="analytics-settings-heading">
+          <SettingsCard
+            title="Analytics ダッシュボード"
+            description="分析データの収集状態を確認します"
+            id="analytics-settings-heading"
+          >
+            <AnalyticsDashboardPanel />
           </SettingsCard>
         </section>
       </main>

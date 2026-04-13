@@ -36,6 +36,46 @@ const analyticsStore = new Store<AnalyticsStoreSchema>({
   name: "knowledge-studio",
 });
 
+const ANALYTICS_TIMEOUT_MS = 5000;
+
+interface SendToAnalyticsProviderInput {
+  eventName: string;
+  payload: Record<string, unknown>;
+  timestamp: number;
+}
+
+async function sendToAnalyticsProvider(
+  event: SendToAnalyticsProviderInput,
+): Promise<void> {
+  const url = process.env.ANALYTICS_ENDPOINT_URL;
+  if (!url) {
+    return;
+  }
+  if (process.env.NODE_ENV !== "production") {
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), ANALYTICS_TIMEOUT_MS);
+
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName: event.eventName,
+        payload: event.payload,
+        timestamp: event.timestamp,
+      }),
+      signal: controller.signal,
+    });
+  } catch {
+    // HTTP 送信失敗はエラーを握り潰し、IPC 応答を壊さない（FR-04, NFR-01）
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -94,7 +134,7 @@ export function registerAnalyticsHandlers(): void {
         return { success: true, skipped: true };
       }
 
-      // イベント記録（将来: HTTP送信 → 外部分析基盤）
+      // 開発環境ではイベントをコンソールに記録
       if (process.env.NODE_ENV !== "production") {
         console.info("[analyticsHandler] received:", {
           eventName,
@@ -103,8 +143,7 @@ export function registerAnalyticsHandlers(): void {
         });
       }
 
-      // TODO: 本番環境での HTTP 送信実装（外部分析基盤への接続）
-      // await sendToAnalyticsProvider({ eventName, payload, timestamp });
+      await sendToAnalyticsProvider({ eventName, payload, timestamp });
 
       return { success: true };
     },
