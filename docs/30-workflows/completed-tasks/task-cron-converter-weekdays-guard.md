@@ -5,7 +5,7 @@
 ```yaml
 issue_number: 2081
 task_id: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
-status: open
+status: completed
 priority: medium
 scale: small
 task_type: BUGFIX
@@ -19,10 +19,18 @@ task_type: BUGFIX
 | 対象機能     | cronConverter / `visualConfigToCron` / weekly モード                   |
 | 優先度       | 中（`priority:medium`）                                                |
 | 見積もり規模 | 小規模（`scale:small`）                                                |
-| ステータス   | 未実施（`status:open`）                                                |
+| ステータス   | 完了（Phase 12完了 / PR未作成・承認待ち, `status:completed`）          |
 | 発見元       | TASK-UI-SCHEDULE-VISUAL-PICKER-001 Phase 12（Task 12-4: 未タスク検出） |
 | 発見日       | 2026-04-09                                                             |
 | タスク分類   | BUGFIX タスク（API 契約堅牢化）                                        |
+
+---
+
+## 完了注記（2026-04-12）
+
+- TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001 は実装・テスト・Phase 12 成果物の作成まで完了。
+- PR は未作成のため、Phase 13 は `blocked`（ユーザー承認待ち）。
+- 本ファイルは unassigned-task の元記録として残し、実施済みタスクとしてステータスのみ同期。
 
 ---
 

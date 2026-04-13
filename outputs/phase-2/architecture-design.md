@@ -1,37 +1,29 @@
 # Phase 2: アーキテクチャ設計
 
-## State 設計
+## ガード処理フロー
 
-| state名                | 型                         | 初期値            | 役割                       |
-| ---------------------- | -------------------------- | ----------------- | -------------------------- |
-| formData               | SkillInfoFormData          | DEFAULT_FORM_DATA | Step 0 のフォーム入力値    |
-| answers                | ConversationAnswers        | DEFAULT_ANSWERS   | Step 1 の会話回答          |
-| smartDefaults          | SmartDefaultResult \| null | null              | 推論済みデフォルト値       |
-| generationMethod       | "complete" \| "skip"       | "complete"        | 生成方式フラグ             |
-| isGenerating           | boolean                    | false             | LLM生成中フラグ            |
-| error                  | Error \| null              | null              | 生成失敗時の UI エラー保持 |
-| skillPath              | string \| null             | null              | 生成完了後のスキルパス     |
-| hasExternalIntegration | boolean                    | false             | 完了画面の外部連携表示制御 |
-| externalToolName       | string \| null             | null              | 完了画面の外部ツール名     |
+```
+visualConfigToCron(config: VisualCronConfig): string
+│
+├─ case "every-minute" / "every-hour" / "daily" / "monthly" / "custom" → 変更なし
+│
+└─ case "weekly":
+    ├─ [追加] if (config.weekdays.length === 0)
+    │   └─ throw new InvalidConfigError(
+    │        "weekdays must not be empty when frequency is 'weekly'"
+    │      )
+    │
+    └─ 既存: sorted.join(",") で cron 式を生成（変更なし）
+```
 
-generationLockRef は state ではなく ref で、二重呼び出し防止に使う。
+## InvalidConfigError 配置方針
 
-## 削除対象 State
+- 既存の共通エラークラスなし → `cronConverter.ts` 内に定義
+- export して テストからも参照可能にする
 
-- generationMode: "template" | "llm"
-- hasActivatedLlmMode: boolean
-- llmDescription: string
+## 変更ファイル
 
-## STEPS 配列
-
-["スキル情報入力", "詳細設定", "生成", "完了"]
-インデックス: 0=SkillInfoStep, 1=ConversationRoundStep, 2=GenerateStep, 3=CompleteStep
-
-## レンダリング設計
-
-| currentStep | コンポーネント        | 主要props                                                                  |
-| ----------- | --------------------- | -------------------------------------------------------------------------- |
-| 0           | SkillInfoStep         | formData, onFormDataChange, onNext={handleStep0Next}                       |
-| 1           | ConversationRoundStep | formData, smartDefaults, answers, onAnswersChange, onBack, onGenerate      |
-| 2           | GenerateStep          | stage, percent, message, isGenerating, onCancel（generationMode なし）     |
-| 3           | CompleteStep          | skillPath, hasExternalIntegration, externalToolName, action cards, onRetry |
+| ファイル                                                          | 変更内容                               |
+| ----------------------------------------------------------------- | -------------------------------------- |
+| `apps/desktop/src/renderer/utils/cronConverter.ts`                | InvalidConfigError 定義・ガード・JSDoc |
+| `apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts` | テストケース新規作成                   |

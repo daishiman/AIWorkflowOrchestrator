@@ -1,41 +1,22 @@
-# Phase 4: テスト仕様書 — UT-SKILL-WIZARD-W2-seq-03b
-
-## テストファイル
-
-`apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts`
+# Phase 4: テスト仕様書
 
 ## テストケース一覧
 
-| TC    | describe             | it                                                                 | 期待結果              |
-| ----- | -------------------- | ------------------------------------------------------------------ | --------------------- |
-| TC-01 | 削除エクスポート確認 | DescribeStep がエクスポートされていないこと                        | `undefined`           |
-| TC-02 | 削除エクスポート確認 | ConfigureStep がエクスポートされていないこと                       | `undefined`           |
-| TC-03 | 削除エクスポート確認 | WizardOptions がエクスポートされていないこと                       | `undefined`           |
-| TC-04 | 追加エクスポート確認 | SkillInfoStep がエクスポートされていること                         | `function` 型         |
-| TC-05 | 追加エクスポート確認 | ConversationRoundStep がエクスポートされていること                 | `function` 型         |
-| TC-06 | 維持エクスポート確認 | StepIndicator が引き続きエクスポートされていること                 | defined               |
-| TC-07 | 維持エクスポート確認 | GenerateStep が引き続きエクスポートされていること                  | defined               |
-| TC-08 | 維持エクスポート確認 | CompleteStep が引き続きエクスポートされていること                  | defined               |
-| TC-09 | 維持エクスポート確認 | InterviewProgressBar が引き続きエクスポートされていること          | defined               |
-| TC-10 | 維持エクスポート確認 | ApplySummaryCard が引き続きエクスポートされていること              | defined               |
-| TC-11 | 型契約確認           | GenerationMode が barrel から期待どおりの union 型で参照できること | `"llm" \| "template"` |
-| TC-12 | 型契約確認           | SkillInfoStepProps.formData が SkillInfoFormData と一致すること    | type-equal            |
-| TC-13 | 型契約確認           | SkillInfoStepProps.onNext が `() => void` と一致すること           | type-equal            |
+| テスト名                                                     | AC番号     | 期待動作                            |
+| ------------------------------------------------------------ | ---------- | ----------------------------------- |
+| InvalidConfigError - name が 'InvalidConfigError' であること | AC-05 関連 | `err.name === "InvalidConfigError"` |
+| InvalidConfigError - Error のインスタンスであること          | AC-05 関連 | `err instanceof Error === true`     |
+| InvalidConfigError - message が正しく設定されること          | AC-05 関連 | `err.message === "some message"`    |
+| weekdays=[] ガード - InvalidConfigError をスローすること     | AC-01      | `throw InvalidConfigError`          |
+| weekdays=[] ガード - 適切なメッセージが含まれること          | AC-05      | メッセージ一致確認                  |
+| 正常系 - weekdays=[0]                                        | AC-02      | `"0 9 * * 0"`                       |
+| 正常系 - weekdays=[1,2,3,4,5]                                | AC-03      | `"0 9 * * 1,2,3,4,5"`               |
+| 正常系 - weekdays=[0,1,2,3,4,5,6]                            | AC-04      | `"0 9 * * 0,1,2,3,4,5,6"`           |
+| 回帰 - daily でエラーにならないこと                          | 回帰       | スローしない                        |
+| 回帰 - every-minute                                          | 回帰       | `"* * * * *"`                       |
+| 回帰 - every-hour                                            | 回帰       | `"30 * * * *"`                      |
+| 回帰 - monthly                                               | 回帰       | `"0 9 15 * *"`                      |
 
-## Red 状態確認（実装前）
+## テストファイルパス
 
-| TC    | 状態（実装前） | 理由                                           |
-| ----- | -------------- | ---------------------------------------------- |
-| TC-01 | ❌ FAIL        | `DescribeStep` がまだ `index.ts` にある        |
-| TC-02 | ✅ PASS        | `ConfigureStep` はすでに存在しない             |
-| TC-03 | ✅ PASS        | `WizardOptions` はすでに存在しない             |
-| TC-04 | ✅ PASS        | `SkillInfoStep` はすでにエクスポート済み       |
-| TC-05 | ✅ PASS        | `ConversationRoundStep` は既にエクスポート済み |
-| TC-06 | ✅ PASS        | `StepIndicator` は維持されている               |
-| TC-07 | ✅ PASS        | `GenerateStep` は維持されている                |
-| TC-08 | ✅ PASS        | `CompleteStep` は維持されている                |
-| TC-09 | ✅ PASS        | `InterviewProgressBar` は維持されている        |
-| TC-10 | ✅ PASS        | `ApplySummaryCard` は維持されている            |
-| TC-11 | ❌ FAIL        | inline 定義のため再転送 contract が未成立      |
-| TC-12 | ❌ FAIL        | `SkillInfoStepProps` が public type ではない   |
-| TC-13 | ❌ FAIL        | `SkillInfoStepProps` の barrel contract 未成立 |
+`apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts`

@@ -1,70 +1,35 @@
-# Phase 12: システム仕様更新サマリー - UT-SKILL-WIZARD-W2-seq-03a
+# Phase 12: システム仕様更新サマリー
 
-## メタ情報
+## Step 1-A: 完了タスク記録
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
-| 判定     | completed                  |
+- タスクID: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
+- close-out 注記（workflow root）:
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/index.md`: `phase12_completed（Phase 13 blocked）`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md`: `completed`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md`: `blocked（PR未作成・ユーザー承認待ち）`
+  - `docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json`: `status: phase12_completed` / phases 1-12 `completed` / phase 13 `blocked`
+  - `docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md`: `status: completed` / 完了注記追加
+- close-out 判定記録: Phase 12 成果物上では `phase12_completed` 相当（PR 未作成）
+- LOGS.md / topic-map.md: 本タスクスコープ対象外のため N/A
 
----
+## Step 1-B: 実装状況テーブル更新
 
-## Step 1-A: 完了記録・関連リンク更新
+| 項目            | 現状（確認値）                                                        | close-out 反映先 |
+| --------------- | --------------------------------------------------------------------- | ---------------- |
+| index.md        | `phase12_completed`                                                   | workflow root    |
+| artifacts.json  | `status: phase12_completed` / phase12 `completed` / phase13 `blocked` | workflow root    |
+| 実装ファイル    | `cronConverter.ts` / `cronConverter.test.ts` 変更済み                 | codebase         |
+| Phase 12 成果物 | 6成果物作成済み（本ディレクトリ）                                     | outputs/phase-12 |
 
-| 更新対象                                                               | 結果     | 備考                                             |
-| ---------------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| `docs/30-workflows/W2-seq-03a-skill-create-wizard/index.md` ステータス | 確認済み | "Phase 12 完了（PR 未作成）" を確認              |
-| `docs/30-workflows/skill-wizard-redesign-lane/index.md`                | 更新済み | W2-seq-03a の path drift を current facts に是正 |
-| `LOGS.md`                                                              | 更新済み | W2-seq-03a の current facts sync を追記          |
-| `topic-map.md`                                                         | 確認済み | references 側の変更がないため再生成不要          |
+## Step 1-C: 関連タスク確認
 
----
+| タスク                            | 依存関係                 | 実態                                                                               |
+| --------------------------------- | ------------------------ | ---------------------------------------------------------------------------------- |
+| TASK-CRON-SEMANTIC-VALIDATION-001 | 本タスク完了後に着手推奨 | `docs/.../artifacts.json` の `dependencies` に `status: unassigned` として記録済み |
 
-## Step 1-B: 実装状況更新
+## Step 2: 仕様更新の要否判定
 
-| タスク                     | 変更前       | 変更後    |
-| -------------------------- | ------------ | --------- |
-| UT-SKILL-WIZARD-W2-seq-03a | spec_created | completed |
-
----
-
-## Step 1-C: 関連タスク整合
-
-| タスク     | 依存関係              | ステータス更新            |
-| ---------- | --------------------- | ------------------------- |
-| W3-seq-04  | W2-seq-03a 完了後着手 | ready（実着手は別タスク） |
-| W2-seq-03b | W2-seq-03a と並列     | 変更なし                  |
-
----
-
-## Step 2: 新規 I/F 追加の仕様更新
-
-### GenerateStep props 契約変更
-
-| prop                       | 変更前     | 変更後                        |
-| -------------------------- | ---------- | ----------------------------- |
-| `mode`（`generationMode`） | 渡していた | 削除                          |
-| `onCancel`                 | 条件分岐   | `handleCancelGeneration` 固定 |
-| `planResult`               | 条件付き   | 渡さない                      |
-| `onExecutePlan`            | 条件付き   | 渡さない                      |
-| `onCancelPlan`             | 条件付き   | 渡さない                      |
-
-### CompleteStep props 新規接続
-
-| prop                      | 状態        |
-| ------------------------- | ----------- |
-| `skillPath`               | ✅ 接続済み |
-| `hasExternalIntegration`  | ✅ 接続済み |
-| `externalToolName`        | ✅ 接続済み |
-| `onRetry` (`handleRetry`) | ✅ 接続済み |
-| `onQualityFeedback`       | ✅ 接続済み |
-
-### inferSmartDefaults 分離（Phase 8）
-
-内部ユーティリティとして `wizard/utils/inferSmartDefaults.ts` に分離。
-外部 API 契約変更なし（re-export により後方互換を維持）。
-
-### 補足: visual evidence
-
-Phase 11 のスクリーンショット参照は `implementation-guide.md` に追記済み。
+| 判定項目                                              | 判定 | 理由                                       |
+| ----------------------------------------------------- | ---- | ------------------------------------------ |
+| `InvalidConfigError` を shared/public contract に昇格 | 不要 | `cronConverter.ts` 内に閉じる設計を選択    |
+| `aiworkflow-requirements` 更新                        | N/A  | 共有化しないため更新対象外（更新実施なし） |

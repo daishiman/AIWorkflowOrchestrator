@@ -1,23 +1,42 @@
-# Phase 4 テストケース一覧 - UT-VERIFY-DOC-CONSOLIDATION-001
+# テストケースコード記録 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## テストケース一覧（TC-001〜TC-008）
+## TDD Red確認結果
 
-| TC ID  | 対応 AC | テスト内容                                               | 確認方法                                                 | 期待結果                                                                               |
-| ------ | ------- | -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| TC-001 | AC-001  | `task-workflow.md` インデックステーブルの列構成確認      | ファイル冒頭〜インデックスを目視                         | 「区分」列が存在し全エントリに値が設定されている                                       |
-| TC-002 | AC-002  | `task-workflow-completed.md` 冒頭5行確認                 | ファイル冒頭を目視                                       | `> 区分: 履歴記録（history record）` が含まれている                                    |
-| TC-003 | AC-003  | `task-workflow-active.md` 冒頭5行確認                    | ファイル冒頭を目視                                       | `> 区分: 正本（current contract）` が含まれている                                      |
-| TC-004 | AC-004  | `interfaces-skill-verify-contract.md` 概要セクション確認 | ファイル冒頭を目視                                       | `> 区分: 契約仕様（current contract / Check ID 体系）` が含まれている                  |
-| TC-005 | AC-005  | 責務分離比較表の内容確認                                 | 追記先ファイルの該当セクションを目視                     | `verifySkill()`/`verifyAndImproveLoop()`/`verify()` の実装ファイル・責務・返却値が正確 |
-| TC-006 | AC-006  | `task-workflow.md` 内のリンク有効性確認                  | リンク先ファイルのパス確認                               | 全リンクが有効なファイルを指している                                                   |
-| TC-007 | NFR-003 | Prettier フォーマット確認                                | `pnpm prettier --check` 実行                             | 差分なし                                                                               |
-| TC-008 | NFR-004 | Check ID 体系への影響確認                                | `interfaces-skill-verify-contract.md` の Check ID 数確認 | 19件のまま変化なし                                                                     |
+実行コマンド:
 
----
+```bash
+pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/scheduleConfigValidator.edge.test.ts
+```
 
-## 完了確認
+### 結果サマリー
 
-- [x] TC-001〜TC-008 が全て定義されている
-- [x] 各 TC に期待結果が明記されている
-- [x] Prettier 確認コマンドが記載されている
-- [x] `outputs/phase-4/` に成果物が生成されている
+```
+Tests  1 failed | 16 passed (17)
+```
+
+### RED ケース（期待通りの失敗）
+
+| TC ID | 状態   | 説明                                                                     |
+| ----- | ------ | ------------------------------------------------------------------------ |
+| TC-01 | RED ✅ | `"0 0 31 2 *"` + semantic=true → null が返る（実装前なので期待通り失敗） |
+
+### GREEN ケース（後方互換が確認）
+
+| TC ID | 状態     | 説明                                                                |
+| ----- | -------- | ------------------------------------------------------------------- |
+| TC-02 | GREEN ✅ | semantic=true で `"0 0 29 2 *"` → null（options引数無視で後方互換） |
+| TC-03 | GREEN ✅ | semantic=true で `"0 0 30 * *"` → null                              |
+| TC-04 | GREEN ✅ | semantic=true で `"0 0 * * *"` → null                               |
+| TC-05 | GREEN ✅ | semantic=false で `"0 0 31 2 *"` → null（後方互換）                 |
+| TC-06 | GREEN ✅ | options未指定で `"0 0 31 2 *"` → null（後方互換）                   |
+| TC-07 | GREEN ✅ | semantic=true で `"0 0 31 1,3,5,7,8,10,12 *"` → null                |
+| TC-08 | GREEN ✅ | semantic=true で `"0 0 31 2 1"` → null                              |
+
+既存テスト SCV-01〜SCV-12: 全件 PASS（回帰なし）
+
+## Phase 5 への引き継ぎ
+
+- TC-01 は現在 RED。Phase 5 で `cron-parser` を使い semantic validation を実装することで GREEN にする
+- TC-02〜TC-08 は GREEN を維持すること（`options.semantic !== true` の後方互換 + 到達可能ケース）
+
+> 補足: Phase 5 で `cron-parser@5.5.0` の実挙動を確認し、TC-08 の期待値は `not.toBeNull()` に修正した。ここでは Phase 4 実施時点の記録を残している。
