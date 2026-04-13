@@ -1,9 +1,9 @@
 {
-  "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
-  "taskName": "cronConverter 空曜日ガード処理追加",
-  "featureName": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+  "taskId": "TASK-SW-FIX-FEEDBACK-001",
+  "taskName": "スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正",
+  "featureName": "TASK-SW-FIX-FEEDBACK-001",
   "created": "2026-04-12T00:00:00Z",
-  "lastUpdated": "2026-04-12T16:00:00Z",
+  "lastUpdated": "2026-04-13T00:00:00Z",
   "status": "completed",
   "phases": [
     {
@@ -13,9 +13,9 @@
       "specFile": "phase-1-requirements.md",
       "outputDir": "outputs/phase-1",
       "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
         "outputs/phase-1/acceptance-criteria.md",
-        "outputs/phase-1/p50-check-result.md",
-        "outputs/phase-1/scope-definition.md"
+        "outputs/phase-1/problem-analysis.md"
       ]
     },
     {
@@ -25,17 +25,18 @@
       "specFile": "phase-2-design.md",
       "outputDir": "outputs/phase-2",
       "artifacts": [
-        "outputs/phase-2/design-decision.md",
-        "outputs/phase-2/code-diff-preview.md"
+        "outputs/phase-2/design-spec.md",
+        "outputs/phase-2/change-target-files.md",
+        "outputs/phase-2/null-guard-design.md"
       ]
     },
     {
       "phase": 3,
-      "name": "設計レビューゲート",
+      "name": "設計レビュー",
       "status": "completed",
       "specFile": "phase-3-design-review.md",
       "outputDir": "outputs/phase-3",
-      "artifacts": ["outputs/phase-3/design-review-result.md"]
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
     },
     {
       "phase": 4,
@@ -43,12 +44,9 @@
       "status": "completed",
       "specFile": "phase-4-test-creation.md",
       "outputDir": "outputs/phase-4",
-      "codeArtifacts": [
-        "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts"
-      ],
       "artifacts": [
-        "outputs/phase-4/test-matrix.md",
-        "outputs/phase-4/red-confirmation.md"
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/test-command-suite.md"
       ]
     },
     {
@@ -57,11 +55,7 @@
       "status": "completed",
       "specFile": "phase-5-implementation.md",
       "outputDir": "outputs/phase-5",
-      "codeArtifacts": ["apps/desktop/src/renderer/utils/cronConverter.ts"],
-      "artifacts": [
-        "outputs/phase-5/implementation-result.md",
-        "outputs/phase-5/green-confirmation.md"
-      ]
+      "artifacts": ["outputs/phase-5/implementation-record.md"]
     },
     {
       "phase": 6,
@@ -69,10 +63,7 @@
       "status": "completed",
       "specFile": "phase-6-test-expansion.md",
       "outputDir": "outputs/phase-6",
-      "codeArtifacts": [
-        "apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts"
-      ],
-      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+      "artifacts": ["outputs/phase-6/expanded-test-cases.md"]
     },
     {
       "phase": 7,
@@ -88,7 +79,7 @@
       "status": "completed",
       "specFile": "phase-8-refactoring.md",
       "outputDir": "outputs/phase-8",
-      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+      "artifacts": ["outputs/phase-8/refactoring-record.md"]
     },
     {
       "phase": 9,
@@ -96,15 +87,15 @@
       "status": "completed",
       "specFile": "phase-9-quality-assurance.md",
       "outputDir": "outputs/phase-9",
-      "artifacts": ["outputs/phase-9/qa-result.md"]
+      "artifacts": ["outputs/phase-9/quality-report.md"]
     },
     {
       "phase": 10,
-      "name": "最終レビューゲート",
+      "name": "最終レビュー",
       "status": "completed",
       "specFile": "phase-10-final-review.md",
       "outputDir": "outputs/phase-10",
-      "artifacts": ["outputs/phase-10/final-review-result.md"]
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
     },
     {
       "phase": 11,
@@ -112,13 +103,16 @@
       "status": "completed",
       "specFile": "phase-11-manual-test.md",
       "outputDir": "outputs/phase-11",
-      "visualType": "NON_VISUAL",
+      "visualType": "VISUAL",
       "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
         "outputs/phase-11/manual-test-checklist.md",
         "outputs/phase-11/discovered-issues.md",
-        "outputs/phase-11/manual-test-report.md",
-        "outputs/phase-11/ui-sanity-visual-review.md",
-        "outputs/phase-11/phase11-capture-metadata.json"
+        "outputs/phase-11/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/skill-list-updated-after-llm.png",
+        "outputs/phase-11/screenshots/complete-step-null-error.png",
+        "outputs/phase-11/screenshots/complete-step-null-no-success.png",
+        "outputs/phase-11/screenshots/complete-step-success.png"
       ]
     },
     {
@@ -146,18 +140,18 @@
     }
   ],
   "acceptanceCriteria": [
-    "AC-1: { frequency: \"weekly\", weekdays: [] } で空文字 \"\" が返り、不正なcron式が生成されない",
-    "AC-2: 正常ケース（weekdaysに値あり）は引き続きPASS",
-    "AC-3: 既存テスト全件PASS",
-    "AC-4: 空曜日ケースの追加テストケースが存在する",
-    "AC-5: cronConverter.ts のJSDocにガード処理仕様が記載されている"
+    "AC-1: LLMモード成功時に fetchSkills() が呼ばれ、スキル一覧が自動更新される",
+    "AC-2: templateモードは既存動作を維持する",
+    "AC-3: skillPath=null でエラー表示が出る",
+    "AC-4: skillPath=null で成功ヘッダーが非表示になる",
+    "AC-5: skillPath正常値で成功表示が出る"
   ],
   "dependencies": [
     {
       "type": "prerequisite",
-      "taskId": "TASK-UI-SCHEDULE-VISUAL-PICKER-001",
+      "taskId": "TASK-SW-FIX-DATAFLOW-001",
       "status": "completed",
-      "description": "Phase 12完了済み。cronConverter.tsの実装が存在すること"
+      "description": "Wave A 完了済み。context bridge が先に入っていること"
     }
   ]
 }

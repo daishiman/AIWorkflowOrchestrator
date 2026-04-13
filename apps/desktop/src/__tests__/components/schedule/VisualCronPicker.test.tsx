@@ -199,6 +199,14 @@ describe("VisualCronPicker", () => {
     expect(screen.queryByText("毎日")).not.toBeInTheDocument();
   });
 
+  it("VP-18B: 不正な monthly cron でも直接入力モードで開始する", () => {
+    render(<VisualCronPicker value="0 9 0 * *" onChange={mockOnChange} />);
+    expect(
+      screen.getByRole("textbox", { name: "カスタムcron式" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("毎月")).not.toBeInTheDocument();
+  });
+
   it("VP-18: 直接入力モードから戻ると visual state に反映される", () => {
     render(<VisualCronPicker onChange={mockOnChange} />);
     fireEvent.click(screen.getByText("高度な設定"));

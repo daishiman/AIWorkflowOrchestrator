@@ -26,12 +26,14 @@ import type {
 } from "@repo/shared/types/skillCreator";
 
 const mockCreateSkill = vi.fn();
+const mockFetchSkills = vi.fn();
 const mockClearGenerationState = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
 const mockInferSmartDefaults = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useFetchSkills: () => mockFetchSkills,
   useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => mockUseWorkflowSnapshot(),
   useIsSkillGenerating: () => false,
@@ -382,6 +384,63 @@ describe("SkillCreateWizard", () => {
   });
 
   // ============================================================
+  // TASK-SW-FIX-MODE-MGMT-001: LLM専用フロー検証（TC-01〜TC-05）
+  // ============================================================
+  describe("TASK-SW-FIX-MODE-MGMT-001: LLM専用フロー検証", () => {
+    it("TC-01: Step 0にラジオボタン（テンプレートから作成/LLMで生成）が表示されないこと", () => {
+      renderWizard(mockOnClose);
+      expect(screen.queryByText("テンプレートから作成")).toBeNull();
+      expect(screen.queryByText("LLMで生成")).toBeNull();
+      expect(screen.queryByText("LLM で生成")).toBeNull();
+    });
+
+    it("TC-02: data-testid='generation-mode-selector'が存在しないこと", () => {
+      renderWizard(mockOnClose);
+      expect(screen.queryByTestId("generation-mode-selector")).toBeNull();
+    });
+
+    it("TC-03: Step 0の次へボタンクリックでStep 1（ConversationRoundStep）に遷移すること", async () => {
+      renderWizard(mockOnClose);
+      fillStep0();
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(
+        screen.getByTestId("wizard-step-conversation-round"),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId("wizard-step-generate")).toBeNull();
+    });
+
+    it("TC-04: Step 0次へ後にStep 2（GenerateStep）が直接表示されないこと", async () => {
+      renderWizard(mockOnClose);
+      fillStep0();
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(screen.queryByTestId("wizard-step-generate")).toBeNull();
+      expect(
+        screen.getByTestId("wizard-step-conversation-round"),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-05: Step 0→Step 1遷移後にgeneration-mode-selectorが存在しないこと", async () => {
+      renderWizard(mockOnClose);
+      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
+      fillStep0();
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(
+        screen.getByTestId("wizard-step-conversation-round"),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId("generation-mode-selector")).toBeNull();
+    });
+  });
+
+  // ============================================================
   // STEPS 配列テスト（Phase 4: W2-seq-03a STEPS名変更確認）
   // ============================================================
   describe("STEPS 配列", () => {
@@ -507,6 +566,27 @@ describe("SkillCreateWizard", () => {
       expect(result.inferenceLog).toContain(
         "purpose に 'slack' を検出 → tool = 'slack'",
       );
+    });
+  });
+
+  // ============================================================
+  // TASK-SW-FIX-FEEDBACK-001: fetchSkills 呼び出し検証
+  // ============================================================
+  describe("fetchSkills統合 (TASK-SW-FIX-FEEDBACK-001)", () => {
+    beforeEach(() => {
+      mockFetchSkills.mockResolvedValue(undefined);
+    });
+
+    it("TC-FEEDBACK-003: [回帰] templateモード成功時、コンポーネントレベルの fetchSkills は呼ばれない（createSkill が内部処理）", async () => {
+      renderWizard(mockOnClose);
+
+      await advanceToComplete();
+
+      // templateモードは createSkill の内部で fetchSkills が呼ばれる（storeのagentSlice）
+      // コンポーネントから明示的に fetchSkills を呼ぶのは LLM モードのみ
+      expect(mockFetchSkills).not.toHaveBeenCalled();
+      // createSkill が1回呼ばれていること（createSkill内でfetchSkillsが呼ばれる）
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
   });
 });
