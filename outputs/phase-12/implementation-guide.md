@@ -1,91 +1,99 @@
-# 実装ガイド - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# implementation-guide.md
 
-## Part 1: 中学生レベルの説明
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
 
-### たとえ話
+---
 
-カレンダーにない日付は、どれだけ待っても来ません。たとえば「2月31日」は存在しないので、「毎年2月31日に実行してください」と言っても、実行日は永遠に来ません。
+## Part 1: 中学生向け説明
 
-### 何が変わったか
+### cronConverter の weekdays=[] ガードとは？
 
-`validateCronExpression` に `semantic` という追加スイッチを入れました。
+cron 式は、「いつ動かすか」を文字で表す決まりごとです。たとえば `"0 9 * * 1,2,3,4,5"` は「月〜金曜の朝 9 時に動かす」という意味です。
 
-- `semantic` を付けないときは、今まで通り「書き方が正しいか」だけを見ます
-- `semantic: true` を付けたときだけ、「その日付が本当に存在するか」まで見ます
+今回の修正は、「毎週実行する設定なのに、曜日を 1 つも選んでいない」ケースを止めるものです。曜日が 0 個だと、アラームを鳴らす日が 1 日もないのと同じで、予定として成立しません。UI では先に防いでいても、`cronConverter.ts` 自体が自分で安全確認しないと、直接呼ばれたときに壊れた cron を返してしまいます。
+
+修正後は、曜日が空ならその場でエラーを返し、壊れた式を作る前に問題を伝えます。
+
+**専門用語の説明：**
+
+| 用語                | 説明                                                            |
+| ------------------- | --------------------------------------------------------------- |
+| cron 式             | 定期実行スケジュールを表す文字列（`"0 9 * * 1"` = 毎週月曜9時） |
+| ガード処理          | 不正な入力を早期に検出してエラーを投げる処理                    |
+| 単一責任原則（SRP） | 1 つの関数・クラスは 1 つのことだけに責任を持つというルール     |
+| InvalidConfigError  | 設定値が無効な場合に投げるカスタムエラークラス                  |
+
+---
+
+## Part 2: 技術者向け説明
 
 ### 変更ファイル
 
-| ファイル                                                                | 変更種別 | 変更内容                                                                                                               |
-| ----------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`            | 修正     | `ValidateCronOptions` インターフェース追加、`validateCronExpression` シグネチャ拡張、semantic ロジック追加、JSDoc 更新 |
-| `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` | 修正     | TC-01〜TC-16（semantic validation テスト）追加                                                                         |
-| `apps/desktop/package.json`                                             | 修正     | `cron-parser@5.5.0` を `dependencies` に追加                                                                           |
+変更ファイル数: 2
 
-## Part 2: 技術者向けの説明
+| ファイル                                                          | 変更種別 | 変更内容                                            |
+| ----------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| `apps/desktop/src/renderer/utils/cronConverter.ts`                | 修正     | InvalidConfigError 定義追加・ガード追加・JSDoc 更新 |
+| `apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts` | 新規     | 16 テストケース追加                                 |
 
-### API 変更
-
-```typescript
-export interface ValidateCronOptions {
-  /** true の場合、cron-parser を使用して意味論的バリデーション（next-execution-time 計算）を実行する */
-  semantic?: boolean;
-}
-```
+### 新規定義: InvalidConfigError
 
 ```typescript
-/**
- * cron 式を検証する。
- * @param value - 検証する cron 式（5フィールド形式）
- * @param options - オプション（省略時は従来の構文・値域チェックのみ）
- * @param options.semantic - true の場合、next-execution-time 計算による意味論的バリデーションを追加する
- * @returns エラーメッセージ文字列（エラーなしの場合は null）
- */
-export function validateCronExpression(
-  value: string,
-  options?: ValidateCronOptions,
-): string | null;
-```
-
-### 実装の要点
-
-```typescript
-import { CronExpressionParser } from "cron-parser";
-
-if (options?.semantic === true) {
-  try {
-    const interval = CronExpressionParser.parse(trimmed);
-    interval.next();
-  } catch {
-    return "指定した日付の組み合わせは存在しません（例: 2月31日）";
+export class InvalidConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidConfigError";
   }
 }
 ```
 
-- `semantic` は opt-in です。既存呼び出しはそのまま動きます
-- `validateSkillWizardScheduleConfig` は変更していません。呼び出し元が必要な場合だけ `semantic` を渡します
-- `cron-parser@5.5.0` は day-of-week を使った救済を保証しません。安全側に倒して、到達不能と判断したものはエラーにしています
-
-### 使い方
+### ガード処理（weekly ケース内）
 
 ```typescript
-// 従来どおり: 構文・値域チェックのみ
-validateCronExpression("0 0 31 2 *"); // null
-
-// 意味論チェックを有効化
-validateCronExpression("0 0 31 2 *", { semantic: true });
-// → "指定した日付の組み合わせは存在しません（例: 2月31日）"
-
-// 到達可能な式は通す
-validateCronExpression("0 0 * * *", { semantic: true }); // null
+case "weekly": {
+  if (weekdays.length === 0) {
+    throw new InvalidConfigError(
+      "weekdays must not be empty when frequency is 'weekly'",
+    );
+  }
+  const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
+  return `${minute} ${hour} * * ${sorted.join(",")}`;
+}
 ```
 
-### テスト結果
+### JSDoc 追加
 
-- 全 42 テスト PASS（TC-01〜TC-16 + SCV-01〜SCV-12 + エッジケース）
-- TypeScript 型チェック PASS
-- ESLint PASS（0 errors）
-- カバレッジ: Line 100% / Branch 86.84%（目標 90%/85% 達成）
+```typescript
+/**
+ * VisualCronConfig をクロン式文字列に変換する。
+ * @param config - ビジュアル設定オブジェクト
+ * @returns cron 式文字列
+ * @throws {InvalidConfigError} frequency が "weekly" のとき weekdays が空配列の場合
+ */
+```
 
-## 関連 Issue
+### テスト結果（全 AC 充足）
 
-[#2074](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2074)
+実行コマンド: `npx vitest run apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts`
+
+| 入力                        | 期待結果                  | 結果 |
+| --------------------------- | ------------------------- | ---- |
+| `weekdays: []`              | `InvalidConfigError`      | ✅   |
+| `weekdays: [0]`             | `"0 9 * * 0"`             | ✅   |
+| `weekdays: [1,2,3,4,5]`     | `"0 9 * * 1,2,3,4,5"`     | ✅   |
+| `weekdays: [0,1,2,3,4,5,6]` | `"0 9 * * 0,1,2,3,4,5,6"` | ✅   |
+
+### エッジケース
+
+| ケース                    | 期待動作                     |
+| ------------------------- | ---------------------------- |
+| `weekdays: [0, 0]` 重複値 | Set 正規化 → `"0 9 * * 0"`   |
+| `weekdays: [6]` 単一値    | `"0 9 * * 6"` を維持         |
+| `weekdays: [5,3,1]` 逆順  | ソート → `"0 9 * * 1,3,5"`   |
+| `frequency !== "weekly"`  | ガード発動せず既存動作を維持 |
+
+---
+
+## 手動テスト結果
+
+NON_VISUAL タスク。自動テスト 16/16 passed で確認済み。

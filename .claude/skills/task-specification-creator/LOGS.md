@@ -22,6 +22,16 @@ TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 の skill-feedback-report.md で記録�
 ### 背景
 Phase 12 close-out で index status と台帳 mirror の二重化を防ぐため、skill に再発防止ルールを残した。
 
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴の先頭に `v10.09.46` を追加し、`TASK-SW-FIX-DATAFLOW-001` の current facts（`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を反映
+- `SKILL.md` 「Phase 12 実行時によくある漏れ」テーブルに **[FB-DATAFLOW-001]** を追加し、context bridge 同期漏れ（shared 型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を防止ルールとして明文化
+- 本 `LOGS.md` に同作業ログを追記（worker 2 担当範囲: `SKILL.md` / `LOGS.md`）
+
+### 背景
+`TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -42,6 +52,27 @@ TASK-UI-SCHEDULE-CRON-SEMANTIC-001 の skill-feedback-report.md で記録され�
 
 ### 背景
 Phase 12 の canonical 6 成果物に加えて、LOGS と topic-map を閉じることで current facts の漏れを防ぐ。
+
+## 2026-04-12 TASK-CRON-SEMANTIC-VALIDATION-001 Phase 12完了
+
+### Phase 12成果物（全6件 PASS）
+- 12-1: `implementation-guide.md` — 中学生レベル〜技術者レベル説明
+- 12-2: `system-spec-update-summary.md` — 仕様書更新サマリ（新規インターフェースなし）
+- 12-3: `documentation-changelog.md` — ドキュメント更新履歴
+- 12-4: `unassigned-task-detection.md` — 未タスク検出（0件）
+- 12-5: `skill-feedback-report.md` — スキルフィードバック
+- 12-6: `phase12-task-spec-compliance-check.md` — コンプライアンスチェック
+
+### 特記事項
+- Phase 11（手動テスト）: non-visual taskのためスクリーンショットはN/A判定
+- Phase 12-2（システム仕様書更新）: 公開契約（validateCronExpression APIシグネチャ）変更なしのためN/A
+- テスト56件全PASS（scheduleConfigValidator.test.ts + edge.test.ts + ScheduleDialog + ConversationRoundStep）
+
+### 教訓 (Lessons Learned)
+- non-visual task（UIを持たない純TS実装）でのPhase 11処理: スクリーンショットはN/A、代わりにコンソール実行ログで代替可能
+- Phase 12-2の仕様書更新判定: APIシグネチャ変更なし + 内部実装追加のみの場合はN/A判定が適切
+
+---
 
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
 

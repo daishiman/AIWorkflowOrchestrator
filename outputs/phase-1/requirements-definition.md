@@ -1,46 +1,46 @@
-# 要件定義書 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# Phase 1: 要件定義書
 
-## P50チェック結果
+## タスクID: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
 
-| 確認項目                                         | 結果                                                                     |
-| ------------------------------------------------ | ------------------------------------------------------------------------ |
-| `validateCronExpression` シグネチャ              | `(value: string): string \| null` — オプション引数未追加 ✅              |
-| JSDocに「semantic validationは行わない」コメント | 7行目・56行目に存在 ✅                                                   |
-| 既存テストにセマンティック不正ケースなし         | SCV-01〜SCV-12に `"0 0 31 2 *"` 系なし ✅                                |
-| `cron-parser` 未インストール                     | `apps/desktop/package.json` に `cron-parser` なし（`node-cron` のみ） ✅ |
-| 関連ユーティリティの役割確認                     | `cronParser.ts`, `cronConverter.ts`, `cronHumanizer.ts` 存在確認 ✅      |
+## 機能要件 (FR)
 
-## 機能概要
+### FR-01: weekdays=[] ガード処理
 
-`validateCronExpression` 関数に意味論的バリデーション（next-execution-time計算による到達可能性チェック）を追加する。
+| 項目             | 内容                                                      |
+| ---------------- | --------------------------------------------------------- |
+| 対象関数         | `visualConfigToCron()` in `cronConverter.ts`              |
+| トリガー条件     | `frequency === "weekly"` かつ `weekdays` が空配列（`[]`） |
+| 期待動作         | `InvalidConfigError` をスローする                         |
+| エラーメッセージ | `"weekdays must not be empty when frequency is 'weekly'"` |
 
-## 背景
+### FR-02: 正常系維持
 
-現在の `validateCronExpression` は5フィールド構文チェックと各フィールドの値域のみを検証しており、`"0 0 31 2 *"`（2月31日）のような存在し得ない日付が通過してしまう。このようなスケジュールが設定された場合、条件が永久に満たされないため実行されない。
+| 入力                        | 期待出力                  |
+| --------------------------- | ------------------------- |
+| `weekdays: [0]`             | `"0 9 * * 0"`             |
+| `weekdays: [1,2,3,4,5]`     | `"0 9 * * 1,2,3,4,5"`     |
+| `weekdays: [0,1,2,3,4,5,6]` | `"0 9 * * 0,1,2,3,4,5,6"` |
 
-## 受け入れ基準
+### FR-03: JSDoc 更新
 
-| AC番号 | 基準                                                                                   | 検証方法               |
-| ------ | -------------------------------------------------------------------------------------- | ---------------------- |
-| AC-1   | `validateCronExpression("0 0 31 2 *", { semantic: true })` がエラー文字列を返す        | テスト PASS            |
-| AC-2   | `validateCronExpression("0 0 * * *", { semantic: true })` 等の正常ケースは null を返す | テスト PASS            |
-| AC-3   | 既存テスト SCV-01〜SCV-12 が全件 PASS                                                  | `pnpm test` PASS       |
-| AC-4   | 意味論的不正ケースのテストが追加されカバレッジが向上                                   | テスト PASS + coverage |
-| AC-5   | `scheduleConfigValidator.ts` のJSDocが更新されsemantic オプションの説明が含まれる      | コードレビュー         |
+`visualConfigToCron()` に `@throws {InvalidConfigError}` を追加する。
 
-## スコープ
+## 非機能要件 (NFR)
 
-### 含む
+- NFR-01: `cronConverter.ts` 自身がガード責任を持つ（SRP）
+- NFR-02: 純粋関数として実装し単体テスト容易性を維持する
 
-- `scheduleConfigValidator.ts` への意味論的検証ロジック追加
-- `ValidateCronOptions` インターフェース定義（`options?: { semantic?: boolean }`）
-- `cron-parser` ライブラリの導入
-- 既存テストへの意味論的不正ケースの追加
+## 受け入れ基準 (AC)
 
-### 含まない
+- AC-01: `weekdays: []` を渡した場合に `InvalidConfigError` がスローされること
+- AC-02: `weekdays: [0]` を渡した場合に `"0 9 * * 0"` が返ること
+- AC-03: `weekdays: [1,2,3,4,5]` を渡した場合に `"0 9 * * 1,2,3,4,5"` が返ること
+- AC-04: `weekdays: [0,1,2,3,4,5,6]` を渡した場合に `"0 9 * * 0,1,2,3,4,5,6"` が返ること
+- AC-05: `InvalidConfigError` に適切なエラーメッセージが含まれること
+- AC-06: JSDoc に `@throws InvalidConfigError` の記述が追加されること
 
-- バックエンド（`ScheduleStore` / `SkillScheduler`）の変更
-- IPC チャンネルの変更
-- UI の変更
-- `cronParser.ts`、`cronConverter.ts`、`cronHumanizer.ts` の変更
-- `validateTimezone` 関数の変更
+## P50チェック調査結果
+
+- `cronConverter.ts` の `"weekly"` ケースは `sorted.join(",")` を使用しており、空配列の場合に `"0 9 * * "` が生成される（5フィールド構文違反）
+- `InvalidConfigError` は既存コードに存在しない → 新規定義が必要
+- UI バリデーション（VisualCronPicker）は実装済みだが `cronConverter.ts` 側にガードなし

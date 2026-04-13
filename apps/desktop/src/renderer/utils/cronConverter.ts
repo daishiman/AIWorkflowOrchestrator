@@ -7,6 +7,16 @@
 import type { VisualCronConfig } from "../types/visualCronConfig";
 
 /**
+ * VisualCronConfig の値が不正な場合にスローされるエラー。
+ */
+export class InvalidConfigError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidConfigError";
+  }
+}
+
+/**
  * VisualCronConfig をクロン式文字列に変換する。
  * 外部ライブラリへの依存なし（純粋な文字列操作のみ）。
  *
@@ -34,8 +44,10 @@ export function visualConfigToCron(config: VisualCronConfig): string {
       return `${minute} ${hour} * * *`;
 
     case "weekly": {
-      if ((weekdays ?? []).length === 0) {
-        return "";
+      if (weekdays.length === 0) {
+        throw new InvalidConfigError(
+          "weekdays must not be empty when frequency is 'weekly'",
+        );
       }
       const sorted = [...new Set(weekdays)].sort((a, b) => a - b);
       return `${minute} ${hour} * * ${sorted.join(",")}`;

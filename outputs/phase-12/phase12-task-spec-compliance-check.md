@@ -1,40 +1,35 @@
-# Phase 12 タスク仕様準拠チェック - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# Phase 12: 仕様準拠チェック
 
-## 全フェーズ完了確認
+## 4条件判定
 
-| Phase | 名称                 | ステータス                  | 成果物存在確認                                                                                                                                                                    |
-| ----- | -------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義             | completed ✅                | requirements-definition.md, acceptance-criteria.md, library-evaluation-plan.md                                                                                                    |
-| 2     | 設計                 | completed ✅                | api-design.md, library-comparison.md, design-consistency-check.md                                                                                                                 |
-| 3     | 設計レビューゲート   | completed ✅                | design-review-result.md（PASS）                                                                                                                                                   |
-| 4     | テスト作成           | completed ✅                | test-plan.md, test-cases.md                                                                                                                                                       |
-| 5     | 実装                 | completed ✅                | implementation-plan.md, change-log.md                                                                                                                                             |
-| 6     | テスト拡充           | completed ✅                | expanded-test-cases.md, regression-test-results.md                                                                                                                                |
-| 7     | テストカバレッジ確認 | completed ✅                | coverage-report.md（Line 100%, Branch 86.84%）                                                                                                                                    |
-| 8     | リファクタリング     | completed ✅                | refactoring-log.md                                                                                                                                                                |
-| 9     | 品質保証             | completed ✅                | quality-report.md（全 AC PASS）                                                                                                                                                   |
-| 10    | 最終レビューゲート   | completed ✅                | final-review-result.md（PASS）                                                                                                                                                    |
-| 11    | 手動テスト検証       | completed ✅                | manual-test-result.md, manual-test-checklist.md, discovered-issues.md（NON_VISUAL）                                                                                               |
-| 12    | ドキュメント更新     | completed ✅                | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md, phase12-task-spec-compliance-check.md |
-| 13    | PR作成               | pending（ユーザー承認待ち） | —                                                                                                                                                                                 |
+| 条件         | 判定 | 根拠                                        |
+| ------------ | ---- | ------------------------------------------- |
+| 矛盾なし     | ✅   | 全フェーズ成果物が一貫した内容で構成        |
+| 漏れなし     | ✅   | 6成果物すべて outputs/phase-12/ に存在      |
+| 整合性あり   | ✅   | AC-01〜06 を全フェーズで参照・充足確認済み  |
+| 依存関係整合 | ✅   | Phase 1→2→3→4→5→6→7→8→9→10→11→12 の順序遵守 |
 
-## 実装反映確認
+## 6成果物の存在確認
 
-| ディレクトリ                        | 変更ファイル                           | 確認 |
-| ----------------------------------- | -------------------------------------- | ---- |
-| `apps/desktop/src/renderer/utils/`  | `scheduleConfigValidator.ts`           | ✅   |
-| `apps/desktop/src/__tests__/utils/` | `scheduleConfigValidator.edge.test.ts` | ✅   |
-| `apps/desktop/`                     | `package.json`（cron-parser追加）      | ✅   |
+| 成果物                         | パス                                                     | 存在 |
+| ------------------------------ | -------------------------------------------------------- | ---- |
+| 実装ガイド                     | `outputs/phase-12/implementation-guide.md`               | ✅   |
+| システム仕様更新サマリー       | `outputs/phase-12/system-spec-update-summary.md`         | ✅   |
+| 更新履歴                       | `outputs/phase-12/documentation-changelog.md`            | ✅   |
+| 未タスク検出                   | `outputs/phase-12/unassigned-task-detection.md`          | ✅   |
+| スキルフィードバック           | `outputs/phase-12/skill-feedback-report.md`              | ✅   |
+| 仕様準拠チェック（本ファイル） | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   |
 
-## 補足同期確認
+## close-out 連携ファイル確認
 
-| 項目                                                          | 確認     |
-| ------------------------------------------------------------- | -------- |
-| `.claude/skills/task-specification-creator/LOGS.md`           | 更新済み |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`              | 更新済み |
-| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` | 更新済み |
+| 対象                       | パス                                                                             | 確認結果                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| workflow root index        | `docs/30-workflows/task-cron-converter-weekdays-guard/index.md`                  | 存在確認。`phase12_completed（Phase 13 blocked）` に更新済み                                    |
+| workflow root artifacts    | `docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json`            | 存在確認。`status: phase12_completed` / phases 1-12 `completed` / phase 13 `blocked` に更新済み |
+| phase 12 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md` | 存在確認。Task 12-1〜12-6 要件を参照して `completed` に更新済み                                 |
+| phase 13 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md`   | 存在確認。`blocked（PR未作成・ユーザー承認待ち）` に更新済み                                    |
+| unassigned-task 元ファイル | `docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md`        | 存在確認。`status: completed` と完了注記を追加済み                                              |
 
-## 仕様書準拠判定: **PASS**
+## 最終判定
 
-全 Phase 1〜12 の成果物が存在し、実装と外部同期も完了しています。
-Phase 13（PR作成）はユーザー承認待ちです。
+**PASS** — Phase 12 の6成果物は整合。workflow root / unassigned-task 元ファイルも同期済みで、Phase 13 は `blocked`（PR 未作成・ユーザー承認待ち）。

@@ -995,3 +995,77 @@
 - 症状: `weekly` ガードと `monthly` ガードで構文スタイルが異なると、コードレビュー時に意図の差があるように見える
 - 解決策: `case "weekly": { if (...) return ""; }` の対称パターンで `monthly` ブロックも実装した
 - 再発防止: switch-case 内の各周期タイプには `{}` ブロック + 早期リターンパターンを一貫して適用する
+
+---
+
+## TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12）
+
+### L-CRON-SV-001: 段階的バリデーションパターン（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+cronExpression のバリデーションは3段階（syntax → range → semantics）に分離すると保守性が高い。
+各ステージを独立した関数として実装し、Stage 3（意味論）は内部ユーティリティ関数として隠蔽する。
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 知見       | 3段階（syntax→range→semantics）分離パターンはcron式検証の標準化に有効 |
+| 注意点     | 2月29日は有効（閏年非依存）/ 複合フィールドはStage 2委譲 / `validateCronSemantics`はexport不可 |
+| 適用場面   | 他のバリデーター実装時にこの3段階パターンを参考にすること |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-002: 2月29日許容の設計意図（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | cron式の「29 * 2 * *」（2月29日）が閏年にしか存在しないため、バリデーション時の有効/無効判断が曖昧になりやすい |
+| 解決策     | cron式は年を指定しないため、2月29日は「いずれ閏年で実行される可能性がある」として有効扱いとする設計判断を明文化 |
+| 標準ルール | `MAX_DAYS_PER_MONTH[2] = 29` と明示し、2月29日を検出しない（有効とする）設計意図をコード内コメントに記す |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-003: 内部ユーティリティ関数の隠蔽原則（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | Stage 3（意味論チェック）の実装関数 `validateCronSemantics` を export すると、外部から直接呼び出されて将来のリファクタリング自由度が下がる |
+| 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする |
+| 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |

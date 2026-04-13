@@ -1,0 +1,194 @@
+{
+  "taskId": "TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001",
+  "taskName": "cronConverter weekdays=[] ガード処理追加",
+  "featureName": "task-cron-converter-weekdays-guard",
+  "issueNumber": 2081,
+  "createdAt": "2026-04-12T00:00:00Z",
+  "status": "phase12_completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/error-class-design.md",
+        "outputs/phase-2/test-strategy.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/contradiction-checklist.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/red-test-result.md"
+      ],
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-files.md"
+      ],
+      "codeArtifacts": ["apps/desktop/src/renderer/utils/cronConverter.ts"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-result.md",
+        "outputs/phase-6/edge-case-result.md"
+      ],
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": [
+        "outputs/phase-7/coverage-plan.md",
+        "outputs/phase-7/uncovered-analysis.md",
+        "outputs/phase-7/traceability-coverage-report.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/post-refactor-test-plan.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/causal-loop-check.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/release-readiness-checklist.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/evidence-index.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR 作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": [
+        "outputs/phase-13/pr-preparation.md",
+        "outputs/phase-13/handoff-summary.md",
+        "outputs/phase-13/approval-checklist.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-01: weekdays: [] を渡した場合に InvalidConfigError がスローされること",
+    "AC-02: weekdays: [0] を渡した場合に '0 9 * * 0' が返ること",
+    "AC-03: weekdays: [1,2,3,4,5] を渡した場合に '0 9 * * 1,2,3,4,5' が返ること",
+    "AC-04: weekdays: [0,1,2,3,4,5,6] を渡した場合に '0 9 * * 0,1,2,3,4,5,6' が返ること",
+    "AC-05: InvalidConfigError に適切なエラーメッセージが含まれること",
+    "AC-06: JSDoc に @throws InvalidConfigError の記述が追加されること"
+  ],
+  "dependencies": [
+    {
+      "type": "related",
+      "taskId": "TASK-UI-SCHEDULE-VISUAL-PICKER-001",
+      "status": "completed",
+      "description": "VisualCronPicker の実装。UI バリデーションは実装済みだが、cronConverter.ts 側のガードが未実装"
+    },
+    {
+      "type": "related",
+      "taskId": "TASK-CRON-SEMANTIC-VALIDATION-001",
+      "status": "unassigned",
+      "description": "より包括的な cron セマンティクス検証タスク（MEDIUM-01）。本タスクより後に着手推奨"
+    }
+  ]
+}
