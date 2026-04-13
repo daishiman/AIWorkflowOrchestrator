@@ -141,6 +141,16 @@ rg -n "計画|予定|TODO|will be|を予定|仕様策定のみ|保留として�
 # 出力が 0 件であること
 ```
 
+## non-visual task（非UIタスク）でのPhase 12処理
+
+### Phase 11（手動テスト）
+- スクリーンショット: N/A（UIを持たない純TS実装の場合）
+- 代替エビデンス: `pnpm test`の実行ログ / テスト件数・合格率
+
+### Phase 12-2（システム仕様書更新）
+- 公開APIシグネチャ変更なし + 内部実装追加のみ = N/A判定
+- 判定根拠を`system-spec-update-summary.md`に明記すること
+
 ## 完了前チェック
 
 - `implementation-guide.md`
