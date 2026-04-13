@@ -218,3 +218,26 @@
 | 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
 | 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
+| 項目         | 内容                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状         | Phase 12 実施時、タスクルートの `artifacts.json` と `outputs/phase-12/artifacts.json` の 2 つを同期更新する必要があったが、片方だけ更新すると root evidence 検証で漏れが出た   |
+| 原因         | Phase 12 テンプレートに「両ファイルを同一 step で更新する」旨の明示がなく、一方のみ更新して進めてしまいやすい                                                                  |
+| 解決策       | Phase 12 の実施時は `artifacts.json`（タスクルート）と `outputs/phase-12/artifacts.json` の両方を同一 wave で更新し、`documentation-changelog.md` で両者の更新を個別に記録する |
+| 標準ルール   | Phase 12 テンプレートに「artifacts.json parity 確認チェック（タスクルート + outputs/phase-12/ の両方が更新済みか）」を組み込み、完了条件の必須チェック項目として明示する       |
+| 関連タスク   | UT-SKILL-WIZARD-W3-USAGE-TRACKING-001                                                                                                                                          |
+| 対象ファイル | `docs/30-workflows/*/artifacts.json`, `docs/30-workflows/*/outputs/phase-12/artifacts.json`                                                                                    |
+
+---
+
+## UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12）
+
+### L-W3-E2E-001: skill_wizard_step1_completed の期待値分離パターン
+
+| 項目         | 内容                                                                                                                                                                                                                                                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | E2E テストで `skill_wizard_step1_completed` のイベント発火を確認しようとしたが、現在の UI では Step 1 は「スキップ」フローで完了するため、期待する `method` 値が `"skip"` でないとテストが落ちる                                                                                                                                      |
+| 原因         | W3-seq-04 のユニットテスト設計時は `method` の具体値を厳密に固定していなかったが、E2E では実際の UI フローに従い `method: "skip"` が渡される。ユニット（mock）と E2E（実 UI）で発火条件が異なる                                                                                                                                       |
+| 解決策       | 「CompleteStep に到達できたか（UI 到達確認）」と「イベントの `method` 値が正しいか（ペイロード確認）」を別アサーションに分離する。到達確認は `expect(page.getByTestId('complete-step')).toBeVisible()`、ペイロード確認は `events.find(e => e.eventName === 'skill_wizard_step1_completed')?.payload.method === 'skip'` で分離して実施 |
+| 標準ルール   | E2E テストで trackEvent を検証する場合、UI 到達確認とイベントペイロード確認を必ず別アサーションに分離する。UI の変更でペイロード値が変わった場合でも、到達確認のテストは独立して残り、回帰検出の精度が上がる                                                                                                                          |
+| 関連タスク   | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001                                                                                                                                                                                                                                                                                                |
+| 対象ファイル | `apps/desktop/e2e/skill-wizard-tracking.spec.ts`, `apps/desktop/e2e/helpers/wizard-tracking-stub.ts`                                                                                                                                                                                                                                  |

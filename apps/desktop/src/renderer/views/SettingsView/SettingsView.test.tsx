@@ -61,6 +61,15 @@ vi.mock("../../components/settings/AuthKeySection", () => ({
   ),
 }));
 
+// Mock AnalyticsDashboardPanel to avoid getAnalyticsAdapter IPC dependencies
+vi.mock("../../components/analytics/AnalyticsDashboardPanel", () => ({
+  AnalyticsDashboardPanel: () => (
+    <div data-testid="analytics-dashboard-panel">
+      AnalyticsDashboardPanel Mock
+    </div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -471,6 +480,21 @@ describe("SettingsView", () => {
       mockAuthModeValues.mode = "subscription";
       render(<SettingsView />);
       expect(screen.queryByTestId("auth-key-section")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Analytics ダッシュボード", () => {
+    it("T4-07: analytics-dashboard-panel が settings-view 内に表示される", () => {
+      render(<SettingsView />);
+      const settingsView = screen.getByTestId("settings-view");
+      expect(
+        within(settingsView).getByTestId("analytics-dashboard-panel"),
+      ).toBeInTheDocument();
+    });
+
+    it("Analytics ダッシュボードセクションのタイトルを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByText("Analytics ダッシュボード")).toBeInTheDocument();
     });
   });
 

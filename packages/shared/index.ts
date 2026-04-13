@@ -158,6 +158,8 @@ export type {
 
 // Skill Analytics types (TASK-9I)
 export type {
+  SkillAnalyticsEventType,
+  SkillAnalyticsEvent,
   SkillUsageEvent,
   ToolUsageStat,
   SkillStatistics,
