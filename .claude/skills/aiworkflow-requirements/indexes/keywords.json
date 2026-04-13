@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2944,
+  "totalKeywords": 2942,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1629,7 +1629,6 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-plan-exec-hardening.md",
@@ -5843,7 +5842,6 @@
     ],
     "ガード": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md"
@@ -7841,16 +7839,6 @@
       "lessons-learned-current-2026-04.md"
     ],
     "コンテキストブリッジ実装": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "CONVERTER": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "WEEKDAYS": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04e.md"
-    ],
-    "cronConverter": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -12394,6 +12382,9 @@
     ],
     "to": [
       "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "WEEKDAYS": [
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"

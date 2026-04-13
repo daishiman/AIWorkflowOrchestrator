@@ -54,6 +54,16 @@ Phase 12 の canonical 6 成果物に加えて、LOGS と topic-map を閉じる
 
 ---
 
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` v10.09.45 changelog エントリ追加
+- 「よくある漏れ」テーブルに **[UT-W3-HTTP]** 1件（Phase 4 でガード条件の全 falsy パターン未列挙による Phase 6 追加漏れ）を追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+
+### 背景
+UT-W3-ANALYTICS-HTTP-PROVIDER-001 の Phase 6 で TC-E04（空文字 URL）が追加されたことから、Phase 4 でのガード条件設計に改善余地があった。次回類似タスクで同じ漏れが起きないよう「よくある漏れ」テーブルに記録した。
+
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
 
 ### 変更内容
