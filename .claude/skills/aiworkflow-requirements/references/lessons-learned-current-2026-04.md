@@ -1184,6 +1184,48 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
+## TASK-SW-FIX-MODE-MGMT-001: SkillCreateWizard LLM専用化・状態管理修正 教訓（2026-04-13）
+
+### L-MODEMGMT-001: 二重状態管理フラグの危険性（generationMode + hasActivatedLlmMode）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `generationMode: "template" \| "llm"` と `hasActivatedLlmMode: boolean` の2フラグが同期必要な状態だったため、「LLMモードを選択したのに Step 1 がスキップされる」バグの根本原因になっていた |
+| 原因       | 複数のフラグが独立したstateとして存在し、片方だけ更新するコードパスが許容されていた |
+| 解決策     | `generationMode` を削除してLLM専用に一本化し、`hasActivatedLlmMode` も同時に廃止。フロー分岐フラグは単一 state で管理し、派生値が必要な場合は `useMemo` で同期的に派生させる |
+| 設計原則   | ウィザード全体に影響する分岐フラグはオーケストレーターコンポーネント（SkillCreateWizard）に1本だけ置く。追加的なフラグ（`has*`）は state 増加ではなく `useMemo` 派生で表現する |
+| 関連タスク | TASK-SW-FIX-MODE-MGMT-001 |
+
+### L-MODEMGMT-002: TDD Red→Green サイクルによるバグ箇所の特定
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | ウィザードの step 遷移ロジックはブラックボックスになりがちで、どの条件で Step 1 がスキップされるかを静的解析だけで特定するのが難しかった |
+| 解決策     | Phase 4 でテストを先に書き、「Step 0→Step 2 への直接遷移」というバグを Red テストとして再現した後、Phase 5 で Green にする実装経路を特定した |
+| 将来への知見 | 複雑な step 遷移ロジックを持つウィザードコンポーネントの修正は、まず「壊れた振る舞い」をテストで再現（Red）してから実装修正（Green）する TDD 戦略が最も効率的 |
+| 関連タスク | TASK-SW-FIX-MODE-MGMT-001 |
+
+### L-MODEMGMT-003: happy-dom 環境では `userEvent` が動作しない（`fireEvent` を使う）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Vitest + happy-dom 環境で `@testing-library/user-event` の `await userEvent.click()` を使うとテストが非同期タイムアウトになる |
+| 原因       | `userEvent` は `jsdom` を前提としており、`happy-dom` 環境ではイベントディスパッチが正常に動作しない |
+| 解決策     | ボタンクリック等のインタラクションはすべて `fireEvent.click(element)` を使う。`userEvent` はこのプロジェクトの Vitest テストでは使用禁止 |
+| 適用条件   | `apps/desktop` 配下の全 Vitest テスト（`testEnvironment: "happy-dom"` が設定済み） |
+| 関連タスク | TASK-SW-FIX-MODE-MGMT-001 |
+
+### L-MODEMGMT-004: SkillInfoStep props の単純化パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillInfoStep` は `generationMode` / `onGenerationModeChange` を props として受け取っていたが、LLM専用化でこれらが不要になった |
+| 解決策     | 不要な props を削除し、`SkillInfoStep` の props インターフェースを最小化した（`formData` / `onFormDataChange` / `onNext` の3点のみ） |
+| 設計原則   | 子コンポーネントには「今何をすべきか」の props のみ渡す。モード判定ロジック・分岐フラグはオーケストレーターコンポーネントに封じ込め、子コンポーネントに持たせない |
+| 関連タスク | TASK-SW-FIX-MODE-MGMT-001 |
+
+---
+
 ## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
 
 ### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン

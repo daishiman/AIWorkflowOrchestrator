@@ -1,0 +1,147 @@
+{
+  "taskId": "TASK-SW-FIX-MODE-MGMT-001",
+  "taskName": "generationModeラジオボタン廃止・LLM専用化・Step 1スキップ修正",
+  "feature": "TASK-SW-FIX-MODE-MGMT-001",
+  "workflowPath": "docs/30-workflows/WB-par-02a-fix-mode-mgmt",
+  "branch": null,
+  "created": "2026-04-12T00:00:00+09:00",
+  "lastUpdated": "2026-04-13T00:00:00+09:00",
+  "status": "phase12_completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/flow-comparison.md",
+        "outputs/phase-2/test-strategy.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-3/contradiction-checklist.md",
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/test-specification.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-5/changed-files.md",
+        "outputs/phase-5/contract-diff.md",
+        "outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-6/edge-case-result.md",
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-result.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-7/coverage-plan.md",
+        "outputs/phase-7/traceability-coverage-report.md",
+        "outputs/phase-7/uncovered-analysis-plan.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-8/post-refactor-test-plan.md",
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/responsibility-boundary-map.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-9/causal-loop-check.md",
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-register.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-10/corrective-action-plan.md",
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/release-readiness-checklist.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "visualType": "VISUAL",
+      "artifacts": [
+        "outputs/phase-11/evidence-index.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.md"
+      ]
+    },
+    "12": {
+      "status": "phase12_completed",
+      "completedAt": "2026-04-13T00:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "completedAt": null,
+      "artifacts": [
+        "outputs/phase-13/approval-checklist.md",
+        "outputs/phase-13/handoff-summary.md",
+        "outputs/phase-13/pr-preparation.md"
+      ]
+    }
+  },
+  "metadata": {
+    "taskType": "implementation",
+    "wave": "B",
+    "executionState": "phase12_completed",
+    "estimatedPhases": 13,
+    "actualPhases": 13,
+    "problemNumbers": [1, 9, 10],
+    "targetFiles": [
+      "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx"
+    ],
+    "dependsOn": ["TASK-SW-FIX-DATAFLOW-001"],
+    "visualPhase": 11
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2946,
+  "totalKeywords": 2948,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1950,6 +1950,7 @@
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-skill-editor.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -2288,6 +2289,7 @@
       "arch-ui-components-history.md",
       "arch-ui-components.md",
       "interfaces-chat-history-core.md",
+      "lessons-learned-current-2026-04.md",
       "llm-ipc-types.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "technology-desktop.md"
@@ -2455,6 +2457,7 @@
     ],
     "ANALYTICS": [
       "api-ipc-system-core.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
@@ -2999,6 +3002,7 @@
     ],
     "INTEGRATION": [
       "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
@@ -3368,6 +3372,7 @@
     ],
     "STORE": [
       "arch-state-management-core.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
@@ -5581,7 +5586,8 @@
       "workflow-ai-runtime-authmode-unification.md"
     ],
     "エラー": [
-      "error-handling-details.md"
+      "error-handling-details.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "envelope": [
       "error-handling-details.md"
@@ -5822,6 +5828,9 @@
     ],
     "RuntimeSkillCreatorFacade": [
       "interfaces-agent-sdk-skill-editor.md"
+    ],
+    "スキル利用分析": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
     "契約参照": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
@@ -7057,6 +7066,7 @@
     ],
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
@@ -7843,16 +7853,6 @@
     "コンテキストブリッジ実装": [
       "lessons-learned-current-2026-04.md"
     ],
-    "FEEDBACK": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-phase12-lifecycle-early-b.md"
-    ],
-    "SkillWizard": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "フィードバックループ修正": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "CONVERTER": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7862,6 +7862,19 @@
     ],
     "cronConverter": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "RENDERER": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "CHECK": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "表示": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "確認": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -8240,6 +8253,9 @@
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "UIUX": [
+      "lessons-learned-phase12-lifecycle-early-b.md"
+    ],
+    "FEEDBACK": [
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "DIALOG": [
@@ -9424,9 +9440,6 @@
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
     ],
-    "確認": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
     "PROVIDER": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
@@ -9810,7 +9823,8 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed-recent-2026-04e.md"
+      "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04f.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
