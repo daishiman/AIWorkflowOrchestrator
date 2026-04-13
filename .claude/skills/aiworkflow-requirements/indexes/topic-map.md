@@ -4695,6 +4695,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+
+### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4861,6 +4867,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L15 |
 | 利用順序 | L45 |
 | 関連ドキュメント | L51 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 
