@@ -4687,6 +4687,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
 
 ### references/task-workflow-completed-recent-2026-04f.md

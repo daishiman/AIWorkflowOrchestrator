@@ -1022,6 +1022,31 @@
 
 ---
 
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 月次ガード処理 教訓（2026-04-13）
+
+### L-MTHGRD-001: `Number.isInteger` で NaN/小数/Infinity を一度に排除する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 / AC-3
+- 症状: `dayOfMonth < 1 || dayOfMonth > 31` の範囲比較だけでは NaN が素通りする（`NaN < 1` は `false`、`NaN > 31` も `false`）
+- 解決策: 範囲比較の前に `Number.isInteger(dayOfMonth)` を置く。これにより NaN・小数・Infinity を単一条件で排除できる
+- 再発防止: cron フィールドの境界バリデーションは `Number.isInteger` チェックを先頭に置くパターンを標準化する
+
+### L-MTHGRD-002: 生成側と解析側の双方向ガードをセットで実装する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `cronConverter.ts`（生成側）にガードを追加しても、`cronParser.ts`（解析側）が不正 monthly を custom にフォールバックしないと、UI 初期化時に不正な monthly 値が表示される
+- 解決策: 生成側のガード追加と同時に、`cronParser.ts` でも monthly の `dayOfMonth` が 1〜31 外なら `custom` にフォールバックさせた
+- 再発防止: converter/parser の双方向性を持つ関数を変更するときは、反対方向の関数も同時に回帰テストに含める
+
+### L-MTHGRD-003: switch-case ガードはブロック構文 + 早期リターンの対称パターンで統一する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `weekly` ガードと `monthly` ガードで構文スタイルが異なると、コードレビュー時に意図の差があるように見える
+- 解決策: `case "weekly": { if (...) return ""; }` の対称パターンで `monthly` ブロックも実装した
+- 再発防止: switch-case 内の各周期タイプには `{}` ブロック + 早期リターンパターンを一貫して適用する
+
+---
+
 ## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
 
 ### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン

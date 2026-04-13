@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2949,
+  "totalKeywords": 2951,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -835,7 +835,6 @@
     ],
     "Generation": [
       "api-internal-embedding.md",
-      "arch-state-management-skill-creator.md",
       "architecture-embedding-pipeline.md",
       "llm-embedding.md"
     ],
@@ -1456,7 +1455,9 @@
       "arch-electron-services-details-part2.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
+      "arch-state-management-skill-creator.md",
       "arch-state-management.md",
+      "arch-ui-components-core.md",
       "architecture-auth-security-core.md",
       "error-handling-core.md",
       "error-handling-details.md",
@@ -1517,6 +1518,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "task-workflow-completed.md",
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
       "ui-ux-settings-core.md"
@@ -2024,7 +2026,6 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-selectors.md",
-      "arch-state-management-skill-creator.md",
       "arch-ui-components-advanced.md",
       "arch-ui-components-core.md",
       "arch-ui-components-details.md",
@@ -2744,8 +2745,6 @@
     "SC": [
       "api-ipc-system-skill-creator-part2.md",
       "arch-electron-services-details-part2.md",
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "interfaces-agent-sdk-skill-editor.md",
       "lessons-learned-current-2026-03-late.md",
@@ -3692,10 +3691,9 @@
     ],
     "LLM": [
       "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-skill-creator.md",
       "arch-state-management.md",
-      "arch-ui-components-core.md",
       "interfaces-llm.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -3916,20 +3914,43 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
-    "State": [
+    "SkillCreateWizard": [
       "arch-state-management-skill-creator.md",
-      "csrf-state-parameter.md",
+      "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-wizard-llm-connection.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "security-implementation.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
+      "ui-ux-feature-components-skill-analysis.md"
     ],
-    "配置ルール": [
+    "生成状態配置ルール": [
       "arch-state-management-skill-creator.md"
     ],
-    "CONNECTION": [
+    "SW": [
       "arch-state-management-skill-creator.md",
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
+    ],
+    "MODE": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "error-handling-details.md",
+      "lessons-learned-current-2026-04.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "task-workflow-completed.md",
+      "testing-component-patterns-details.md"
+    ],
+    "MGMT": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
     ],
     "current": [
       "arch-state-management-skill-creator.md",
@@ -3943,6 +3964,7 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
@@ -3953,9 +3975,20 @@
     ],
     "facts": [
       "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md"
+      "arch-ui-components-core.md",
+      "task-workflow-completed.md"
     ],
     "Snapshot": [
+      "arch-state-management-skill-creator.md"
+    ],
+    "State": [
+      "arch-state-management-skill-creator.md",
+      "csrf-state-parameter.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "security-implementation.md"
+    ],
+    "配置ルール": [
       "arch-state-management-skill-creator.md"
     ],
     "lifecycleHistorySlice": [
@@ -4025,25 +4058,14 @@
       "arch-ui-components-details.md",
       "ui-ux-panels.md"
     ],
-    "SkillCreateWizard": [
+    "コンポーネント構成": [
       "arch-ui-components-core.md",
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-skill-create-lifecycle-import-contract.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "task-workflow-completed-skill-create-ui-integration.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-feature-components-skill-analysis.md"
-    ],
-    "template": [
-      "arch-ui-components-core.md"
-    ],
-    "併用パターン": [
-      "arch-ui-components-core.md"
-    ],
-    "連携フロー": [
-      "arch-ui-components-core.md"
+      "interfaces-chat-history-details.md",
+      "ui-history-components.md",
+      "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-system-prompt.md"
     ],
     "SkillSelector": [
       "arch-ui-components-details.md",
@@ -4084,7 +4106,8 @@
     "state": [
       "architecture-auth-security-core.md",
       "lessons-learned-skill-create-multi-select-kind.md",
-      "lessons-learned-skill-wizard-llm-connection.md"
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "task-workflow-completed.md"
     ],
     "ownership": [
       "architecture-auth-security-core.md"
@@ -5592,12 +5615,6 @@
     "envelope": [
       "error-handling-details.md"
     ],
-    "MODE": [
-      "error-handling-details.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "testing-component-patterns-details.md"
-    ],
     "認証フォールバックパターン": [
       "error-handling-details.md"
     ],
@@ -6034,14 +6051,6 @@
     ],
     "conversationAPI": [
       "interfaces-chat-history-core.md"
-    ],
-    "コンポーネント構成": [
-      "interfaces-chat-history-details.md",
-      "ui-history-components.md",
-      "ui-history-search-view.md",
-      "ui-result-panel-pattern.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-system-prompt.md"
     ],
     "Atomic": [
       "interfaces-chat-history-details.md"
@@ -7850,7 +7859,11 @@
     "agentSlice": [
       "lessons-learned-current-2026-04.md"
     ],
-    "SW": [
+    "MONTHLY": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
+    ],
+    "月次ガード処理": [
       "lessons-learned-current-2026-04.md"
     ],
     "DATAFLOW": [
@@ -7877,6 +7890,9 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "cronConverter": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "専用化・状態管理修正": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -8157,6 +8173,10 @@
       "ui-ux-agent-execution-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "CONNECTION": [
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "CREATE": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -9323,7 +9343,8 @@
     "mode": [
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "task-workflow-completed.md"
     ],
     "screenshot": [
       "lessons-learned-ui-ux-visual-baseline-drift.md",

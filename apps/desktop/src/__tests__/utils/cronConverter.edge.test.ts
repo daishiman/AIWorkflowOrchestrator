@@ -161,3 +161,79 @@ describe("visualConfigToCron - テスト拡充", () => {
     expect(result).toBe("0 8 1 * *");
   });
 });
+
+// TC-11〜TC-15: monthly dayOfMonth ガード処理テスト (Phase 4)
+describe("visualConfigToCron - monthly dayOfMonth ガード", () => {
+  const baseConfig = {
+    frequency: "monthly" as const,
+    minute: 0,
+    hour: 9,
+    dayOfMonth: 1,
+    weekdays: [] as [],
+  };
+
+  // TC-11: dayOfMonth=0 のとき空文字を返す (AC-1)
+  it("TC-11: dayOfMonth=0 のとき空文字を返す (AC-1)", () => {
+    const config = { ...baseConfig, dayOfMonth: 0 };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+
+  // TC-12: dayOfMonth=32 のとき空文字を返す (AC-2)
+  it("TC-12: dayOfMonth=32 のとき空文字を返す (AC-2)", () => {
+    const config = { ...baseConfig, dayOfMonth: 32 };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+
+  // TC-13: dayOfMonth=-1 のとき空文字を返す (AC-3)
+  it("TC-13: dayOfMonth=-1 のとき空文字を返す (AC-3)", () => {
+    const config = { ...baseConfig, dayOfMonth: -1 };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+
+  // TC-14: dayOfMonth=1 のとき正常なcron式を返す (AC-4)
+  it("TC-14: dayOfMonth=1 のとき正常なcron式を返す (AC-4)", () => {
+    const config = { ...baseConfig, dayOfMonth: 1 };
+    expect(visualConfigToCron(config)).toBe("0 9 1 * *");
+  });
+
+  // TC-15: dayOfMonth=31 のとき正常なcron式を返す (AC-5)
+  it("TC-15: dayOfMonth=31 のとき正常なcron式を返す (AC-5)", () => {
+    const config = { ...baseConfig, dayOfMonth: 31 };
+    expect(visualConfigToCron(config)).toBe("0 9 31 * *");
+  });
+});
+
+// TC-16〜TC-19: monthly dayOfMonth エッジケース拡充テスト (Phase 6)
+describe("visualConfigToCron - monthly dayOfMonth エッジケース拡充", () => {
+  const baseConfig = {
+    frequency: "monthly" as const,
+    minute: 0,
+    hour: 9,
+    dayOfMonth: 1,
+    weekdays: [] as [],
+  };
+
+  // TC-16: dayOfMonth=NaN のとき空文字を返す（非整数値チェック）
+  it("TC-16: dayOfMonth=NaN のとき空文字を返す", () => {
+    const config = { ...baseConfig, dayOfMonth: NaN };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+
+  // TC-17: dayOfMonth=15.5 のとき空文字を返す（小数値の拒否確認）
+  it("TC-17: dayOfMonth=15.5 のとき空文字を返す", () => {
+    const config = { ...baseConfig, dayOfMonth: 15.5 };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+
+  // TC-18: dayOfMonth=15（中間値）のとき正常なcron式を返す
+  it("TC-18: dayOfMonth=15 のとき正常なcron式を返す（中間値確認）", () => {
+    const config = { ...baseConfig, dayOfMonth: 15 };
+    expect(visualConfigToCron(config)).toBe("0 9 15 * *");
+  });
+
+  // TC-19: dayOfMonth=0.5 のとき空文字を返す（小数値の拒否確認）
+  it("TC-19: dayOfMonth=0.5 のとき空文字を返す", () => {
+    const config = { ...baseConfig, dayOfMonth: 0.5 };
+    expect(visualConfigToCron(config)).toBe("");
+  });
+});
