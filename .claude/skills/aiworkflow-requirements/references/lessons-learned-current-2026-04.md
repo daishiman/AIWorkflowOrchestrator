@@ -980,11 +980,140 @@
 | 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
 | 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
 | 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+
+---
+
+## UT-W3-ANALYTICS-STORE-INTEGRATION-001 analyticsSlice + agentSlice wiring 教訓（2026-04-13）
+
+### L-ANALYTICS-001: 共有型追加は definition → types/index → package index → consumer wiring を 1 wave で閉じる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `packages/shared/src/types/skill-analytics.ts` を追加しても、`types/index.ts` と `packages/shared/index.ts` の barrel 再公開を忘れると consumer（agentSlice 等）でインポートできない |
+| 原因       | barrel export チェーンの各層が独立しており、どこか 1 段を抜かすと型が解決されない |
+| 解決策     | 型ファイル作成と同時に `types/index.ts` / `packages/shared/index.ts` / consumer wiring を同じ wave（同一コミット前）で完結させる |
+| 標準ルール | shared 型追加タスクの Phase 2 チェックリストに「barrel 再公開 3 点確認」を必須項目として含める |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
+
+### L-ANALYTICS-002: helper-based payload conversion は `as unknown as` 依存より追跡しやすい
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `analyticsSlice.ts` で直接 `as unknown as AnalyticsPayload` とキャストすると、型が変わった際に追跡箇所が散在する |
+| 原因       | 型変換ロジックが呼び出しサイトに埋め込まれている |
+| 解決策     | `toAnalyticsPayload(event: SkillAnalyticsEvent)` のような helper を 1 箇所に集約し、型変換の責務を分離する |
+| 標準ルール | analytics transport 用 payload 変換は必ず named helper に集約し、呼び出しサイトでの inline キャストを禁止する |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
+
+### L-ANALYTICS-003: analytics adapter の silent error 設計は意図的 — ただしログ戦略を先に決める
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `analyticsSlice.ts` の try-catch が空だと adapter 送信失敗を検出できず、テレメトリ喪失が無音で起きる |
+| 原因       | UI を壊さないため adapter エラーをサイレントにするが、デバッグ可視性を犠牲にしている |
+| 解決策     | silent catch は維持しつつ、開発環境（`process.env.NODE_ENV === "development"`）では `console.warn` を出す方針を仕様で明記する |
+| 標準ルール | analytics adapter の catch 節には「本番: silent / 開発: console.warn」ポリシーをコメントで記載し、意図的な設計であることを明示する |
+| 関連タスク | UT-W3-ANALYTICS-STORE-INTEGRATION-001 |
 | 症状       | `system-spec-update-summary.md` に LOGS.md × 2 / topic-map.md / resource-map.md の更新記録を含めていなかったため、外部同期が完了しているかの判断が Phase 12 証跡だけでは不明瞭になった |
 | 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
 | 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                           | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                          |
+
+---
+
+## TASK-SW-FIX-FEEDBACK-001: SkillWizard フィードバックループ修正 教訓（2026-04-13）
+
+### L-FEEDBACK-001: LLM モードと template モードで fetchSkills 責務が異なる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | LLM モード（`handleExecutePlan`）の成功後にスキル一覧が更新されず、新規作成スキルが一覧に表示されない |
+| 原因       | template モードは `createSkill`（agentSlice）内部で `fetchSkills` を呼ぶが、LLM モードは独立した実行パスのため `fetchSkills` 明示呼び出しが必要 |
+| 解決策     | `handleExecutePlan` の成功パス末尾に `await fetchSkills()` を追加。失敗時は遷移阻害を防ぐため独立した try/catch でswallow する |
+| 再発防止   | LLM モード専用の regression test case（TC-FEEDBACK-001）を設けて `fetchSkills` が1回呼ばれることを固定する |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
+
+### L-FEEDBACK-002: skillPath null ガードと成功ヘッダーはセットで設計する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `skillPath === null` のままでも `CompleteStep` が成功ヘッダーを表示し、ユーザーが作成失敗を認識できなかった |
+| 原因       | `skillPath !== null` の条件チェックが成功ヘッダーと early return（エラーUI）で分離されておらず、null 時の表示制御が不完全だった |
+| 解決策     | early return でエラーUI を返し（`skillPath === null` 時）、成功ヘッダーは `skillPath !== null` の場合のみ表示する2層ガードを設ける |
+| 設計原則   | 成功表示と失敗ガードは同一コンポーネント内で同時に設計する。片方だけ修正すると UI 矛盾が生じる |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
+
+### L-FEEDBACK-003: Electron では runtime より Vite build キャプチャが安定
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Electron 実行環境での画面キャプチャが不安定で Phase 11 証跡取得が困難だった |
+| 解決策     | Vite build 後に Playwright で `current_build` を固定した capture script（`capture-task-skill-fix-feedback-phase11.mjs`）を追加することで安定した証跡取得が可能になった |
+| 適用条件   | VISUAL タスクの Phase 11 証跡取得時（Electron renderer コンポーネントのスクリーンショット） |
+| 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針） |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
+
+---
+
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
+
+### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
+
+**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
+**バージョン**: 3.14.0相当
+
+**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
+**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
+**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
+**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
+**実装パターン**:
+
+```typescript
+if (weekdays.length === 0) {
+  throw new InvalidConfigError(
+    "weekdays must not be empty when frequency is 'weekly'",
+  );
+}
+```
+
+**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
 
 ---
 

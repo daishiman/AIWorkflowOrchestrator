@@ -30,6 +30,7 @@ const mockSetCurrentSkillName = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useFetchSkills: () => vi.fn().mockResolvedValue(undefined),
   useExecuteSkill: () => mockExecuteSkill,
   useSelectSkillByName: () => mockSelectSkillByName,
   useSetCurrentView: () => mockSetCurrentView,

@@ -4,6 +4,28 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（lessons-learned L-FEEDBACK-001/002/003 追記）
+
+### 変更内容
+- `references/lessons-learned-current-2026-04.md` に `## TASK-SW-FIX-FEEDBACK-001` セクションを追加し、L-FEEDBACK-001（fetchSkills モード差異）/ L-FEEDBACK-002（skillPath null + 成功ヘッダー結合設計）/ L-FEEDBACK-003（Vite build キャプチャ安定性）を記録
+- `task-specification-creator/SKILL.md` v10.09.47 changelog 追加・[FB-FEEDBACK-001] よくある漏れ追記を同波で実施
+- `task-specification-creator/LOGS.md` 同波更新
+
+### 背景
+Phase 12 close-out 後の skill-feedback-report.md 記録知見を lessons-learned に反映。DATAFLOW-001 の知見（L-DATAFLOW-001〜003）と並べて、skill wizard bugfix wave の学習サイクルを完結させた。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（VISUAL close-out + screenshot evidence）
+
+### 変更内容
+- `SKILL.md` current facts に `TASK-SW-FIX-FEEDBACK-001` / `fetchSkills() LLM 成功パス` / `skillPath null guard` / `current_build_vite_playwright` / Phase 11 screenshot evidence 4枚を追加
+- `references/task-workflow.md` に TASK-SW-FIX-FEEDBACK-001 close-out 同期の current facts を追記
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04e.md` に TASK-SW-FIX-FEEDBACK-001 完了記録を追加
+- `references/task-workflow-completed-recent-2026-04e.md` に Phase 11 screenshot evidence / Phase 12 docs sync / parity PASS を明記
+- `indexes/topic-map.md` は後続の `generate-index.js` で再生成予定
+
+### 背景
+今回の task は VISUAL タスクであり、`skillPath === null` のエラー UI と LLM 成功後の一覧更新を screenshot evidence で閉じる必要があった。`unassigned-task-detection` は 0 件に留め、重大な未タスクだけを formalize する方針へ整理した。
+
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
 
 ### 変更内容
@@ -53,6 +75,7 @@ Phase 12 の閉じ作業では、成果物だけでなく LOGS と topic-map ま
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 Phase 12 close-out sync（`apps/desktop/src/renderer/store/slices/agentSlice.ts` に analytics wiring 追加 / `analyticsSlice.ts` を helper 化 / `packages/shared/src/types/index.ts` + `packages/shared/index.ts` で `SkillAnalyticsEventType`・`SkillAnalyticsEvent` を再公開 / `outputs/phase-12` current facts 更新 / `task-workflow-completed`・`LOGS`・`SKILL` 同波更新） |
 | 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync（`phase-12-documentation.md` ステータス「未実施」→「完了」更新・Task 12-1〜12-6 全完了マーク / `lessons-learned-current-2026-04.md` に L-WEEKGRD-001〜003 追記（純粋関数ガード戦略・環境ブロッカー分離・NON_VISUAL宣言）/ `task-specification-creator/SKILL.md` WEEKGRD-01〜03 Feedback追記 / `task-workflow-completed-recent-2026-04e.md` 完了エントリ追加 / LOGS.md 同波更新） |
 | 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync（`lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜003 追加（vi.stubGlobal fetch モック / AbortController + finally clearTimeout / 空文字 URL エッジケース早期識別）/ `indexes/resource-map.md` に UT-W3-ANALYTICS-HTTP-PROVIDER-001 エントリ追加 / `task-workflow-completed-recent-2026-04e.md` に完了記録追加 / `api-ipc-system-core.md` current contract + `environment-variables.md` の `ANALYTICS_ENDPOINT_URL` 追加は Phase 12 で実施済み） |
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 impl-spec-to-skill-sync（`lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-E2E-001（skill_wizard_step1_completed method:skip 分離パターン）追加 / `indexes/resource-map.md` に UT-W3-E2E タスク行追加 / `outputs/phase-12/` 6成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）作成 / generate-index.js 実行 / mirror sync）|

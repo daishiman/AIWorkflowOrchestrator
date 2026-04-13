@@ -2,6 +2,40 @@
 
 ## 役割
 
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（v10.09.47 SKILL.md 更新）
+
+### 変更内容
+- `SKILL.md` v10.09.47 changelog エントリ追加（FEEDBACK-001 skill-feedback 反映）
+- 「よくある漏れ」テーブルに **[FB-FEEDBACK-001]** を追記（LLM モード fetchSkills 明示呼び出し必須 / template モードとのモード差異）
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-FEEDBACK-001/002/003 追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+- `aiworkflow-requirements/indexes/topic-map.md` 再生成予定（`generate-index.js` 実行後）
+
+### 背景
+Phase 12 close-out 後の第2波 sync として、skill-feedback-report.md に記録された知見（fetchSkills モード差異 / skillPath null ガードとの結合設計 / Vite build キャプチャ安定性）を「よくある漏れ」テーブルと lessons-learned に反映した。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `LOGS.md` 先頭に TASK-SW-FIX-FEEDBACK-001 の VISUAL close-out を追加
+- Phase 11 の screenshot evidence 4枚と `phase11-capture-metadata.json` を current facts として記録
+- `outputs/phase-12/implementation-guide.md` の screenshot references / `unassigned-task-detection.md` 0件化 / `phase12-task-spec-compliance-check.md` PASS を反映
+
+### 背景
+VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts を同波で閉じる必要がある。`skillPath null guard` と `fetchSkills` 呼び忘れ防止を、再利用可能な phase 12 note として残した。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 

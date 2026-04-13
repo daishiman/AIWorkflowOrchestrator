@@ -45,6 +45,7 @@ import type {
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
   useCreateSkill,
+  useFetchSkills,
   useIsSkillGenerating,
   useGenerationProgress,
   useGenerationError,
@@ -380,6 +381,7 @@ export const SkillCreateWizard = React.forwardRef<
 >(({ onClose: _onClose, source }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
+  const fetchSkills = useFetchSkills();
   const streaming = useStreamingProgress();
   const { cancelGeneration } = useCancelGeneration();
   const workflowSnapshot = useWorkflowSnapshot();
@@ -810,6 +812,11 @@ export const SkillCreateWizard = React.forwardRef<
       clearGenerationState(); // W-10
       wizardCompletedRef.current = true;
       trackEvent("skill_wizard_step_complete", { step: 2, stepName: STEPS[2] });
+      try {
+        await fetchSkills(); // 問題6/8修正: LLMモード完了後にスキル一覧をリフレッシュ
+      } catch {
+        // fetchSkills失敗はログのみ。スキル生成自体は成功済みのため遷移は継続
+      }
       goToStep(3);
     } catch (err) {
       if (requestId !== llmGenerationRequestIdRef.current) {
