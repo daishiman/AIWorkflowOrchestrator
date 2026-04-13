@@ -180,13 +180,13 @@ describe("VisualCronPicker - UIバリデーション", () => {
       expect(onValidationChange).toHaveBeenCalledWith(false);
     });
 
-    it("EXP-CB-02: monthly 有効状態から毎日へ切り替えると合計2回呼ばれ、最後は true で呼ばれる", () => {
-      // 開始: monthly + dayOfMonth=15（有効）→ onValidationChange(true)
+    it("EXP-CB-02: monthly 無効状態から毎日へ切り替えると合計2回呼ばれ、最後は true で呼ばれる", () => {
+      // 開始: monthly + dayOfMonth=0（無効）→ onValidationChange(false)
       // 切替: 毎日 → monthlyError=false, isFormValid=true → onValidationChange(true)
       const onValidationChange = vi.fn();
       render(
         <VisualCronPicker
-          value="0 9 15 * *"
+          value="0 9 0 * *"
           onChange={() => {}}
           onValidationChange={onValidationChange}
         />,

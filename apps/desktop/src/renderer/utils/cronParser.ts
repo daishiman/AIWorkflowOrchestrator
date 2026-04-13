@@ -61,7 +61,7 @@ function parseWeekdayField(field: string): Weekday[] | null {
 /**
  * cron 式文字列を VisualCronConfig に逆変換する。
  * パースできない場合は null を返し、呼び出し元は直接編集モードにフォールバックする。
- * monthly の dayOfMonth が 1-31 の範囲外なら custom にフォールバックする。
+ * monthly の dayOfMonth は範囲チェックを行わず、UI 側でバリデーションエラーを表示する。
  * 外部ライブラリへの依存なし。
  */
 export function cronToVisualConfig(
@@ -143,15 +143,13 @@ export function cronToVisualConfig(
     };
   }
 
-  // monthly: X Y D * * （日付指定）
+  // monthly: X Y D * * （日付指定、範囲外は UI 側でバリデーション）
   const dom = Number(domField);
   if (
     isSimpleNumber(minField) &&
     isSimpleNumber(hourField) &&
     isSimpleNumber(domField) &&
     Number.isInteger(dom) &&
-    dom >= 1 &&
-    dom <= 31 &&
     monthField === "*" &&
     dowField === "*"
   ) {
