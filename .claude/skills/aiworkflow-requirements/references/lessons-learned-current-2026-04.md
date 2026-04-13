@@ -859,29 +859,29 @@
 
 ---
 
-## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+## TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション（2026-04-12）
 
-### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
-| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
-| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
-| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-
-### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+### L-CRON-SEM-001: cron-parser@5.5.0 の DOM strict 判定（DOW 救済なし）
 
 | 項目       | 内容 |
 | ---------- | ---- |
-| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
-| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
-| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
-| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+| 症状       | `"0 0 31 2 *"` に対して `cron-parser` が例外を投げるか `interval.next()` が無限ループするかを事前確認していなかった。Phase 2 の仕様ではまだ挙動が未確定だった |
+| 原因       | `cron-parser@5.5.0` は DOM（day-of-month）と DOW（day-of-week）を独立して評価し、DOW が wildcard でも DOM の不達は救済しない。この strict 判定を Phase 2 の P50 チェックに含めていなかった |
+| 解決策     | `options.semantic: true` 時は「到達不能なスケジュールは全て拒否する安全側判定」として使う方針に確定。DOM strict を前提として `safe-side` として採用した |
+| 再発防止   | Phase 2 library P50 チェックに「DOM × DOW 組み合わせの実測確認（`"0 0 31 2 *"` 等）」を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
 
-### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+### L-CRON-SEM-002: `semantic: true` は opt-in safe-side として設計する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `semantic: true` で DOW wildcard（例: `* * 29 2 *` は4年に1度有効）まで拒否されるかという懸念が生じた |
+| 原因       | `semantic` フラグの意味論が「厳密な到達可能性チェック」か「緩やかなヒント」かが設計当初に明文化されていなかった |
+| 解決策     | `semantic: true` = 「次回実行時刻が計算できない場合は全て拒否する安全側判定」と明文化。呼び出し側が意図的に `options` を渡す opt-in 設計を維持し、既存 UI 呼び出しは non-semantic のまま |
+| 再発防止   | `ValidateCronOptions` の JSDoc に safe-side 判定である旨を明示する。新しい呼び出し経路を追加する場合は別タスクで semantic 有効化の意図を明示する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+### L-CRON-SEM-003: Phase 12 サマリーに外部同期一覧を必ず含める
 
 | 項目       | 内容 |
 | ---------- | ---- |
@@ -890,6 +890,23 @@
 | 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
+- 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
+- 解決策: ガード処理で空文字""を返し、呼び出し元の既存バリデーションに委ねる
+- 再発防止: 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却」を採用する
+
+## L-WEEKGRD-002: NON_VISUAL純粋関数タスクのPhase 11は source-level PASSと環境ブロッカーを分離して記録する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: vitestがesbuild host/binary mismatch（0.21.5 vs 0.25.12）で停止した場合、製品FAILと環境FAILが混在しがち
+- 解決策: discovered-issues.md でproduct_blockerとenvironment_issueを別カテゴリで記録し、product blocker 0件を明記
+- 再発防止: 環境要因は製品バックログに入れない
+
+## L-WEEKGRD-003: Phase 11 NON_VISUALタスクではui-sanity-visual-review.mdにNON_VISUAL宣言を明示する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
+- 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
 
 ---
 
@@ -948,3 +965,82 @@
 | 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
 | 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
 | 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+| 症状       | `system-spec-update-summary.md` に LOGS.md × 2 / topic-map.md / resource-map.md の更新記録を含めていなかったため、外部同期が完了しているかの判断が Phase 12 証跡だけでは不明瞭になった |
+| 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
+| 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
+| 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+---
+
+## TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12）
+
+### L-CRON-SV-001: 段階的バリデーションパターン（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+cronExpression のバリデーションは3段階（syntax → range → semantics）に分離すると保守性が高い。
+各ステージを独立した関数として実装し、Stage 3（意味論）は内部ユーティリティ関数として隠蔽する。
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 知見       | 3段階（syntax→range→semantics）分離パターンはcron式検証の標準化に有効 |
+| 注意点     | 2月29日は有効（閏年非依存）/ 複合フィールドはStage 2委譲 / `validateCronSemantics`はexport不可 |
+| 適用場面   | 他のバリデーター実装時にこの3段階パターンを参考にすること |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-002: 2月29日許容の設計意図（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | cron式の「29 * 2 * *」（2月29日）が閏年にしか存在しないため、バリデーション時の有効/無効判断が曖昧になりやすい |
+| 解決策     | cron式は年を指定しないため、2月29日は「いずれ閏年で実行される可能性がある」として有効扱いとする設計判断を明文化 |
+| 標準ルール | `MAX_DAYS_PER_MONTH[2] = 29` と明示し、2月29日を検出しない（有効とする）設計意図をコード内コメントに記す |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+### L-CRON-SV-003: 内部ユーティリティ関数の隠蔽原則（2026-04-12）
+
+**タスク**: TASK-CRON-SEMANTIC-VALIDATION-001
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | Stage 3（意味論チェック）の実装関数 `validateCronSemantics` を export すると、外部から直接呼び出されて将来のリファクタリング自由度が下がる |
+| 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする |
+| 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する |
+| 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |

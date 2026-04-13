@@ -1,28 +1,46 @@
 # Phase 1: 要件定義書
 
-## タスクID: UT-SKILL-WIZARD-W2-seq-03a
+## タスクID: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
 
-## 機能要件
+## 機能要件 (FR)
 
-- description / options / generationMode state の完全削除
-- 全 template 条件分岐の除去
-- inferSmartDefaults(formData) 純粋関数の実装（purpose小文字化、slack/github/notion大小文字不問検出）
-- handleStep0Next() - formData→smartDefaults推論→Step 1遷移
-- handleGenerate(method: "complete" | "skip") - generationLockRef + isGenerating で二重呼び出し防止
-- handleQualityFeedback(satisfied: boolean) - trackEvent呼び出し
-- handleRetry() - formData保持、answers/smartDefaults/skillPath等リセット、Step 0復帰
-- STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"]
-- Step 3 で skillPath を表示
-- hasExternalIntegration / externalToolName を CompleteStep に接続
+### FR-01: weekdays=[] ガード処理
 
-## 非機能要件
+| 項目             | 内容                                                      |
+| ---------------- | --------------------------------------------------------- |
+| 対象関数         | `visualConfigToCron()` in `cronConverter.ts`              |
+| トリガー条件     | `frequency === "weekly"` かつ `weekdays` が空配列（`[]`） |
+| 期待動作         | `InvalidConfigError` をスローする                         |
+| エラーメッセージ | `"weekdays must not be empty when frequency is 'weekly'"` |
 
-- TypeScript 型エラー 0件
-- ESLint エラー 0件
-- 全テスト Green（vitest）
+### FR-02: 正常系維持
 
-## 実装状況（2026-04-11）
+| 入力                        | 期待出力                  |
+| --------------------------- | ------------------------- |
+| `weekdays: [0]`             | `"0 9 * * 0"`             |
+| `weekdays: [1,2,3,4,5]`     | `"0 9 * * 1,2,3,4,5"`     |
+| `weekdays: [0,1,2,3,4,5,6]` | `"0 9 * * 0,1,2,3,4,5,6"` |
 
-- 新state・ハンドラは実装済み
-- 削除対象の generationMode / hasActivatedLlmMode / llmDescription state が残存
-- Step 0 のテンプレート切替UIが残存
+### FR-03: JSDoc 更新
+
+`visualConfigToCron()` に `@throws {InvalidConfigError}` を追加する。
+
+## 非機能要件 (NFR)
+
+- NFR-01: `cronConverter.ts` 自身がガード責任を持つ（SRP）
+- NFR-02: 純粋関数として実装し単体テスト容易性を維持する
+
+## 受け入れ基準 (AC)
+
+- AC-01: `weekdays: []` を渡した場合に `InvalidConfigError` がスローされること
+- AC-02: `weekdays: [0]` を渡した場合に `"0 9 * * 0"` が返ること
+- AC-03: `weekdays: [1,2,3,4,5]` を渡した場合に `"0 9 * * 1,2,3,4,5"` が返ること
+- AC-04: `weekdays: [0,1,2,3,4,5,6]` を渡した場合に `"0 9 * * 0,1,2,3,4,5,6"` が返ること
+- AC-05: `InvalidConfigError` に適切なエラーメッセージが含まれること
+- AC-06: JSDoc に `@throws InvalidConfigError` の記述が追加されること
+
+## P50チェック調査結果
+
+- `cronConverter.ts` の `"weekly"` ケースは `sorted.join(",")` を使用しており、空配列の場合に `"0 9 * * "` が生成される（5フィールド構文違反）
+- `InvalidConfigError` は既存コードに存在しない → 新規定義が必要
+- UI バリデーション（VisualCronPicker）は実装済みだが `cronConverter.ts` 側にガードなし

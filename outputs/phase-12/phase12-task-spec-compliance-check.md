@@ -1,47 +1,35 @@
-# Phase 12: 仕様準拠チェック - UT-SKILL-WIZARD-W2-seq-03a
+# Phase 12: 仕様準拠チェック
 
-## メタ情報
+## 4条件判定
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
+| 条件         | 判定 | 根拠                                        |
+| ------------ | ---- | ------------------------------------------- |
+| 矛盾なし     | ✅   | 全フェーズ成果物が一貫した内容で構成        |
+| 漏れなし     | ✅   | 6成果物すべて outputs/phase-12/ に存在      |
+| 整合性あり   | ✅   | AC-01〜06 を全フェーズで参照・充足確認済み  |
+| 依存関係整合 | ✅   | Phase 1→2→3→4→5→6→7→8→9→10→11→12 の順序遵守 |
 
----
+## 6成果物の存在確認
 
-## 成果物存在確認
+| 成果物                         | パス                                                     | 存在 |
+| ------------------------------ | -------------------------------------------------------- | ---- |
+| 実装ガイド                     | `outputs/phase-12/implementation-guide.md`               | ✅   |
+| システム仕様更新サマリー       | `outputs/phase-12/system-spec-update-summary.md`         | ✅   |
+| 更新履歴                       | `outputs/phase-12/documentation-changelog.md`            | ✅   |
+| 未タスク検出                   | `outputs/phase-12/unassigned-task-detection.md`          | ✅   |
+| スキルフィードバック           | `outputs/phase-12/skill-feedback-report.md`              | ✅   |
+| 仕様準拠チェック（本ファイル） | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   |
 
-| 成果物ファイル                                           | 存在 | 備考                     |
-| -------------------------------------------------------- | ---- | ------------------------ |
-| `outputs/phase-12/implementation-guide.md`               | ✅   | Part 1/Part 2 構成       |
-| `outputs/phase-12/system-spec-update-summary.md`         | ✅   | Step 1-A/B/C/Step 2 記録 |
-| `outputs/phase-12/documentation-changelog.md`            | ✅   | 変更履歴記録             |
-| `outputs/phase-12/unassigned-task-detection.md`          | ✅   | 0件確認                  |
-| `outputs/phase-12/skill-feedback-report.md`              | ✅   | 3件のフィードバック記録  |
-| `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   | 本ファイル               |
+## close-out 連携ファイル確認
 
----
-
-## 仕様準拠チェック
-
-| チェック項目                                                                                       | 判定    | 備考                                                |
-| -------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------- |
-| implementation-guide.md に Part 1 中学生向け説明が含まれる                                         | ✅ PASS |                                                     |
-| implementation-guide.md に Part 2 技術者向け説明が含まれる                                         | ✅ PASS | TypeScript 型・API シグネチャ・エッジケース記載あり |
-| implementation-guide.md に Phase 11 スクリーンショット参照が含まれる                               | ✅ PASS | `outputs/phase-11/screenshots/` を参照              |
-| system-spec-update-summary.md に Step 1-A/B/C が記録されている                                     | ✅ PASS |                                                     |
-| `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W2-seq-03a path が current facts に一致 | ✅ PASS | path drift を是正済み                               |
-| `.claude/skills/aiworkflow-requirements/LOGS.md` に current facts sync が記録されている            | ✅ PASS | 2026-04-12 の追記あり                               |
-| unassigned-task-detection.md が存在する（0件でも）                                                 | ✅ PASS | 0件                                                 |
-| skill-feedback-report.md が存在する（0件でも）                                                     | ✅ PASS | 3件                                                 |
-| 全テストが Green であること                                                                        | ✅ PASS | 236テスト合格                                       |
-| generationMode 削除が実装されていること                                                            | ✅ PASS | コメント内のみ残存                                  |
-| STEPS 配列が正しい値であること                                                                     | ✅ PASS | ["スキル情報入力","詳細設定","生成","完了"]         |
-| inferSmartDefaults が正しく推論すること                                                            | ✅ PASS | 13ケース確認                                        |
-| CompleteStep に skillPath / onRetry が接続されていること                                           | ✅ PASS |                                                     |
-
----
+| 対象                       | パス                                                                             | 確認結果                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| workflow root index        | `docs/30-workflows/task-cron-converter-weekdays-guard/index.md`                  | 存在確認。`phase12_completed（Phase 13 blocked）` に更新済み                                    |
+| workflow root artifacts    | `docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json`            | 存在確認。`status: phase12_completed` / phases 1-12 `completed` / phase 13 `blocked` に更新済み |
+| phase 12 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md` | 存在確認。Task 12-1〜12-6 要件を参照して `completed` に更新済み                                 |
+| phase 13 仕様書            | `docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md`   | 存在確認。`blocked（PR未作成・ユーザー承認待ち）` に更新済み                                    |
+| unassigned-task 元ファイル | `docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md`        | 存在確認。`status: completed` と完了注記を追加済み                                              |
 
 ## 最終判定
 
-**PASS** — W2-seq-03a の Phase 12 canonical 6 成果物が揃い、Phase 11 visual evidence / lane index / LOGS の整合も確認済み。
+**PASS** — Phase 12 の6成果物は整合。workflow root / unassigned-task 元ファイルも同期済みで、Phase 13 は `blocked`（PR 未作成・ユーザー承認待ち）。

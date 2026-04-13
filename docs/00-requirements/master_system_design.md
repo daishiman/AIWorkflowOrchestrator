@@ -68,18 +68,18 @@
 
 ### スケジュール設定 UI 実装状況
 
-| コンポーネント/ユーティリティ | 実装状況 | 備考                                    |
-| ----------------------------- | -------- | --------------------------------------- |
-| VisualCronPicker              | 実装済み | TASK-UI-SCHEDULE-VISUAL-PICKER-001      |
-| FrequencySelector             | 実装済み | VisualCronPicker のサブコンポーネント   |
-| WeekdaySelector               | 実装済み | VisualCronPicker のサブコンポーネント   |
-| TimePickerSection             | 実装済み | VisualCronPicker のサブコンポーネント   |
-| DayOfMonthSelector            | 実装済み | VisualCronPicker のサブコンポーネント   |
-| CronPreview                   | 実装済み | cronHumanizer と連携                    |
-| cronConverter.ts              | 実装済み | visualConfigToCron / cronToVisualConfig |
-| cronParser.ts                 | 実装済み | 週次 range / Sunday 正規化に対応        |
-| cronHumanizer.ts              | 実装済み | 人間可読テキスト生成（range 圧縮対応）  |
-| scheduleConfigValidator.ts    | 実装済み | cronExpression / timezone の保存前検証  |
+| コンポーネント/ユーティリティ | 実装状況 | 備考                                                                                                                                                                                 |
+| ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| VisualCronPicker              | 実装済み | TASK-UI-SCHEDULE-VISUAL-PICKER-001                                                                                                                                                   |
+| FrequencySelector             | 実装済み | VisualCronPicker のサブコンポーネント                                                                                                                                                |
+| WeekdaySelector               | 実装済み | VisualCronPicker のサブコンポーネント                                                                                                                                                |
+| TimePickerSection             | 実装済み | VisualCronPicker のサブコンポーネント                                                                                                                                                |
+| DayOfMonthSelector            | 実装済み | VisualCronPicker のサブコンポーネント                                                                                                                                                |
+| CronPreview                   | 実装済み | cronHumanizer と連携                                                                                                                                                                 |
+| cronConverter.ts              | 実装済み | visualConfigToCron / cronToVisualConfig                                                                                                                                              |
+| cronParser.ts                 | 実装済み | 週次 range / Sunday 正規化に対応                                                                                                                                                     |
+| cronHumanizer.ts              | 実装済み | 人間可読テキスト生成（range 圧縮対応）                                                                                                                                               |
+| scheduleConfigValidator.ts    | 実装済み | 3段階バリデーション（構文チェック→値域チェック→意味論的チェック）により、2月31日などの実行不可能なcron式を保存前に検出。`validateCronExpression(expression: string): string \| null` |
 
 ### セキュリティ
 
