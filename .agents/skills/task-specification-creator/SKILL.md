@@ -140,7 +140,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 ## Phase 12 重要仕様
 
-### 必須タスク（6タスク - 全て完了必須）
+### 必須タスク（5タスク - 全て完了必須）
 
 | Task | 名称                             | 必須 | 詳細参照                                    |
 | ---- | -------------------------------- | ---- | ------------------------------------------- |
@@ -149,26 +149,6 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 3    | ドキュメント更新履歴作成         | ✅   | scripts/generate-documentation-changelog.js |
 | 4    | 未タスク検出レポート作成         | ✅   | **0件でも出力必須**                         |
 | 5    | スキルフィードバックレポート作成 | ✅   | **改善点なしでも出力必須**                  |
-| 6    | タスク仕様コンプライアンスチェック | ✅ | **Task 1〜5完了後に作成**                   |
-
-#### non-visual task（非UIタスク）での判定基準
-
-| Phase | 判定 | 理由 |
-| ----- | ---- | ---- |
-| Phase 11 スクリーンショット | N/A | UIを持たない純TS実装はスクリーンショット不要。`pnpm test`実行ログ・テスト件数・合格率を代替エビデンスとして残す |
-| Phase 12-2 システム仕様書更新（Step 2） | N/A | 公開APIシグネチャ変更なし + 内部実装追加のみの場合。判定根拠を`system-spec-update-summary.md`に明記すること |
-
-#### 未タスク0件判定の基準
-
-以下のソースを確認し、**0件であっても** `unassigned-task-detection.md` を出力する。
-
-| ソース | 確認内容 |
-| ------ | -------- |
-| 元タスク仕様書 | スコープ外として明示された項目 |
-| Phase 3/10レビュー | MINOR判定の指摘事項 |
-| Phase 11手動テスト | スコープ外の発見事項 |
-| コードコメント | TODO/FIXME/HACK/XXX |
-| `describe.skip` ブロック | 削除済みtestidの旧参照残存 |
 
 ---
 
@@ -269,7 +249,10 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version                | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **v10.09.44**          | **2026-04-12**             | **TASK-CRON-SEMANTIC-VALIDATION-001 Phase 12完了・non-visual task判定基準追加**: 「必須タスク」テーブルを5タスク→6タスクに修正（Task 12-6コンプライアンスチェック追加）。non-visual task判定基準テーブル（Phase 11スクリーンショットN/A・Phase 12-2 Step 2 N/A条件）を追加。未タスク0件判定ソース一覧テーブルを追加。LOGS.md 2ファイル同波更新。 |
+| **v10.09.46** | **2026-04-13** | **TASK-SW-FIX-DATAFLOW-001 current facts 反映**: `SkillCreationContext` 導入後の dataflow（`buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を Phase 12 close-out 観点で知見化。`Phase 12 実行時によくある漏れ` テーブルへ context bridge 同期漏れ（shared型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を追記し、仕様と実装の乖離を防止。 |
+| **v10.09.45** | **2026-04-13** | **TASK-UI-SCHEDULE-CRON-SEMANTIC-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 ライブラリ採用時の複合フィールド AND/OR semantics 実測確認漏れ）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 で明示する）を追記。`aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` 等を追加。LOGS.md 2ファイル同波更新。 |
+| **v10.09.44** | **2026-04-12** | **UT-W3-ANALYTICS-ADAPTER-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[UT-W3]** 3件（`implementation-guide.md` の current contract 旧方針記述 / `artifacts.json` parity 未確認 / `generate-index.js` 省略によるインデックス stale）を追記。 |
+| **v10.09.43** | **2026-04-12** | **UT-W3-ANALYTICS-ADAPTER-001 Phase 12 close-out sync**: `outputs/phase-12/` canonical 6成果物の欠落を解消し、`implementation-guide.md` を Part 1/Part 2 構成で current facts に再構成。`artifacts.json` と `outputs/artifacts.json` を `phase12_completed` + `phase13 blocked` で同期し、`index.md` phase status との同値性を回復。`aiworkflow-requirements` 側の analytics / trackEvent / IPC 契約 / task-workflow completed 記録を同 wave で更新し、Phase 12 root evidence を `phase12-task-spec-compliance-check.md` に集約。 |
 | **v10.09.43**          | **2026-04-11**             | **UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[FB-TASK-01/02]**（testid 削除後の `describe.skip` 内残存参照 CI 非検出問題）を追記。`patterns-lessons-and-pitfalls.md` に describe.skip 内 testid 残存 pitfall を追加。`aiworkflow-requirements/references/lessons-learned-skill-wizard-redesign.md` に L-SKIP-001/002 を追加。LOGS.md 2ファイル同波更新。                                                                                                                    |
 | **v10.09.42**          | **2026-04-11**             | **UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 skill-feedback 反映**: Phase 12 と Phase 13 の境界テーブルに Task 12-6（`phase12-task-spec-compliance-check.md` を root evidence として残す）を追加し Task 12-5 の責務を分離。`SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止を lessons-learned に記録。台帳3点同期（workflow spec / artifacts.json / outputs/artifacts.json）を Phase 12 標準チェックリストに追加。LOGS.md 2ファイル + SKILL.md 2ファイル同波更新。 |
 | **v10.09.41**          | **2026-04-11**             | **UT-SKILL-WIZARD-FB-04-WORKFLOW-LEDGER-SYNC skill-feedback 反映**: 「よくある漏れ」テーブルに **[FB-04]**（Phase 12 close-out 時の ledger / lane index / artifacts 三者同期漏れ）を追記し、Step 1-A での5ファイル同一wave同期チェックを明文化。mirror (`.agents`) 側にも同差分を反映。                                                                                                                                                                                                                                           |
@@ -300,6 +283,9 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | 漏れパターン                                                                                                                                                                                    | 防止方法                                                                                                                                                                                                                                                                   |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[UT-W3]** `implementation-guide.md` が current contract（trackEvent → analyticsAdapter → analytics:send）ではなく旧方針（renderer-local no-op）のまま記述される | Phase 12 Task 12-1 で `implementation-guide.md` を作成する前に `trackEvent.ts` の prod sink 分岐と `analyticsAdapter.ts` の存在を確認し、current contract を先に記録してから説明文を書く |
+| **[UT-W3]** `artifacts.json` / `outputs/artifacts.json` parity 未確認のまま Phase 12 を閉じる | Phase 12 完了前に `artifacts.json` と `outputs/artifacts.json` の両ファイルを diff し、`phase12_completed` + `phase13_blocked` が同値であることを確認する |
+| **[UT-W3]** Phase 12 Task 12-2/12-3/12-6 で `generate-index.js` 実行を省略してインデックスが stale になる | Task 12-2（システム仕様書更新）・Task 12-3（changelog 更新）・Task 12-6（compliance check）の完了後は `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を必ず実行し、インデックス stale を防ぐ |
 | Step 1-C（関連タスクテーブル）を未実行                                                                                                                                                          | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                                                                                                                                                                                                       |
 | topic-map.md 未更新                                                                                                                                                                             | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                                                                                                                                                                                                           |
 | documentation-changelog.md が不完全                                                                                                                                                             | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）                                                                                                                                                                                                   |
@@ -325,6 +311,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback 6]** ViewType を追加した際に navigation 契約・store 型・既存テストの3点更新が漏れる                                                                                                 | `store/types.ts`（ViewType union）/ `skillLifecycleJourney.ts`（正規化関数・定数）/ renderView テスト を same-wave で更新し、`ui-ux-navigation.md` の ViewType テーブルも同時同期する。Phase 1 設計メモに「追加 ViewType: XYZ」を明示しておくと漏れが防げる                |
 | **[FB-UI-02-1]** Phase 9 QA で「ファイル削除」を PASS 基準にすると stub 化タスクが FAIL 扱いになる                                                                                              | Phase 9 の削除確認は「git delete されている OR `export {}` stub 化かつ live import ゼロのいずれか」を PASS とする。たとえば、廃止ファイルを stub 化した場合は `grep -rn "import.*廃止ファイル名" src/` でゼロ件を証跡に残す                                                |
 | **[Feedback TASK-UI-04]** 実装完了後に `artifacts.json` status が `spec_created` / `in_progress` のまま放置される                                                                               | 実装 Phase（Phase 5 or 最終実装 Phase）完了時に `complete-phase.js` を必ず実行し、status を `completed` に更新する。実装完了と仕様書ステータス更新は同一 wave で行う（後回しは乖離蓄積の主因）。有効値: `spec_created` / `in_progress` / `completed` / `phase12_completed` |
+| **[FB-DATAFLOW-001]** `SkillCreationContext` 追加時に shared 型・renderer store・preload/main IPC の context bridge 同期が同一waveで更新されず、`implementation-guide.md` と実コードの dataflow が乖離する | Phase 12 Task 12-1/12-2 の開始前に `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)` の3点を契約チェックとして固定し、`packages/shared`・`apps/desktop/src/renderer`・`apps/desktop/src/main` を同一 wave で突合する。ズレがあれば close-out 前に仕様と成果物（phase spec / artifacts）を同時修正する |
 | **[FB-SDK-07-2]** Phase 1 で新規 IPC surface を定義する際に Preload API 経由が明記されない                                                                                                      | Phase 1（要件定義）では新規 IPC surface を定義する場合、「Preload API 経由必須」を明記する。直接 `ipcRenderer.on` は禁止パターンとして記録する                                                                                                                             |
 | **[FB-SDK-07-4]** Phase 1 で既存 API の命名パターンを確認せずに新規 API を命名し、Phase 3 で MINOR 指摘を受ける                                                                                 | Phase 1（要件定義）では既存の `safeOn` / `safeInvoke` 等の命名パターンを確認し、新規 API の命名規則一貫性を担保する。命名ドリフトは Phase 3 レビューゲートの MINOR 指摘の主要因となる                                                                                      |
 | **[Feedback W1-02b-1]** UI task の `screenshot-plan.json` が `mode: "NON_VISUAL"` のまま Phase 11 を迎えやすい                                                                                  | UI コンポーネント変更タスクでは `screenshot-plan.json` 生成時に `mode: "VISUAL"` をデフォルトにする。`phase11-capture-metadata.json` の `taskId` が現行タスク ID と一致するか Phase 11 着手前に確認する（`jq '.taskId' outputs/phase-11/phase11-capture-metadata.json`）   |
@@ -336,7 +323,14 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback SC-13-2]** 公開 IPC メソッド名（`verify(skillName, ...)`）と内部エンジンメソッド名（`verifySkill(skillDir)`）が酷似し Phase 2 設計時に責務が不明確になる                            | 公開 surface と内部エンジンで名前が近い場合、Phase 2 成果物に「内部型 → 公開 DTO 変換表」と「解決レイヤ名称（例: `resolveVerifySkillDir`）」を必須セクションとして設ける                                                                                                   |
 | **[Feedback VSCPKR-01]** JSDoc コメント内に `*/` を含む説明（例: `ステップ値 */n`）があると esbuild がコメント終端と誤認識しパースエラーになる                                                  | cron 式や数式を JSDoc コメント内で説明する場合は `*/` を避け、`* /n` のようにスペースを挿入するか、コードブロック（\`\`\`）形式で書く。`@example` タグ内の inline cron 式も同様                                                                                            |
 | **[Feedback VSCPKR-02]** happy-dom 環境で `vi.stubGlobal("window", ...)` でウィンドウ全体を置き換えると React 内部の `instanceof HTMLElement` が常に false になり、コンポーネントテストが壊れる | `window.api` などの Electron Preload API をモックする場合は `Object.defineProperty(window, "api", { value: mockApi, writable: true })` を使う。`vi.stubGlobal("window", ...)` は使用禁止                                                                                   |
+| **[FB-CRONVL-001]** Phase 2 でサードパーティライブラリを採用する際に、複合フィールド（day-of-month × day-of-week）の組み合わせ動作（AND/OR semantics）を実測確認しないと、Phase 5 で設計変更が必要になり TDD の期待値を修正し直す手戻りが発生する | Phase 2 設計書の「ライブラリ選定」セクションに「複合フィールドの semantics 実測確認」を必須チェック項目として記載する。例: `CronExpressionParser.parse("0 0 31 2 1")` の next-execution 計算結果で AND/OR 判定を確認する。期待 semantics と一致しない場合は safe-side 判定（到達不能を常にエラー）への方針変更を Phase 2 で決定する |
+| **[FB-CRONVL-002]** renderer utility に opt-in フラグ（例: `semantic?: boolean`）を追加する場合、Phase 1 スコープで「UI 呼び出し経路は別タスク化する」を明示しないと、UI 統合の担当タスクが曖昧なまま積み残される | Phase 1（要件定義）で opt-in フラグを設計する際は、「このフラグを UI から有効化するタイミングと担当タスク ID は別タスクで明示する」を scope out として明記する。NON_VISUAL タスクでは特に「将来の UI 統合経路 = 未タスク化候補」を Phase 1 成果物に書き残す |
 | **[FB-TASK-01/02]** testid 削除・改名後に `describe.skip` ブロック内の旧参照が残存し CI に検出されない（スキップ済みテストは実行されないため型エラーも発生しない）                              | testid 削除タスクでは Phase 5 完了チェックとして `grep -rn "<削除testid>" apps/` を実行し、`describe.skip` 内を含む全残存参照をゼロにする。同一 wave で削除しないと cleanup タスクが積み残される                                                                           |
+| **[WEEKGRD-01]** NON_VISUALタスクのPhase 11では、source-level PASSと環境ブロッカーを混在させて記録してしまい、後からブロッカーの性質が判断できなくなる                                          | source-level PASSと環境ブロッカー（esbuild mismatch等）を別カテゴリで記録する。製品コードの問題と環境起因の問題は分離しないと、次回タスクで同じ混乱が起きる                                                                                                                |
+| **[WEEKGRD-02]** 純粋関数ガードの実装方針として「例外スロー」を選択してしまい、呼び出し元への影響が広がる                                                                                        | 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却（空文字等）」とする。入力バリデーションは呼び出し元（UIレイヤ等）に委ね、関数自体は防御的な値返却に徹する                                                                                                          |
+| **[WEEKGRD-03]** NON_VISUALタスクの `ui-sanity-visual-review.md` に非該当理由が明記されず、reviewerがNON_VISUAL判断の根拠を読み取れない                                                           | NON_VISUALタスクでは `ui-sanity-visual-review.md` の冒頭に「NON_VISUAL宣言」（タスク種別・非視覚的理由・代替証跡）を明記する。空欄や略記はレビューアの混乱を招く                                                                                                          |
+| **[FB-MODEMGMT-001]** Vitest + happy-dom 環境で `@testing-library/user-event` の `await userEvent.click()` を使うとテストが非同期タイムアウトになる（`jsdom` 前提のため happy-dom では動作しない） | このプロジェクトのVitestテストは `testEnvironment: "happy-dom"` が設定済みのため、ボタンクリック等のインタラクションは `fireEvent.click(element)` を使う。`userEvent` は使用禁止。Phase 4 仕様書に「testing-library interaction は `fireEvent` のみ」を明記する |
+| **[FB-MODEMGMT-002]** ウィザードコンポーネントで「モード切替フラグ」を複数の state で表現すると、sync ズレによるルーティングバグが生まれやすい | ウィザード全体に影響する分岐フラグは単一 state で管理し、派生値は `useMemo` で同期的に派生させる。`generationMode` + `hasActivatedLlmMode` のような2フラグ構成は Phase 2 レビューで指摘対象にする |
 
 
 ### Phase 12 苦戦防止Tips

@@ -2,6 +2,15 @@
 
 ## 役割
 
+## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-MODEMGMT-001]**（happy-dom 環境での `userEvent` 使用禁止 / `fireEvent` 必須）・**[FB-MODEMGMT-002]**（ウィザード分岐フラグの単一 state 管理）を追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+
+### 背景
+TASK-SW-FIX-MODE-MGMT-001 の skill-feedback-report に記録された4件の発見点（二重state管理・TDD Red→Green・esbuild環境ブロッカー・happy-dom fireEvent）を task-specification-creator SKILL.md に反映。特に happy-dom での userEvent 使用禁止は、このプロジェクト全体に適用される重要なパターンのため「よくある漏れ」へ固定。
+
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
 
