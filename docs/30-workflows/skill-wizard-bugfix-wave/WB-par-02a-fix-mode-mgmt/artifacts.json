@@ -1,0 +1,40 @@
+{
+  "taskId": "TASK-SW-FIX-MODE-MGMT-001",
+  "taskName": "generationModeラジオボタン廃止・LLM専用化・Step 1スキップ修正",
+  "feature": "TASK-SW-FIX-MODE-MGMT-001",
+  "workflowPath": "docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02a-fix-mode-mgmt",
+  "branch": null,
+  "created": "2026-04-12T00:00:00+09:00",
+  "lastUpdated": "2026-04-12T00:00:00+09:00",
+  "status": "pending",
+  "currentPhase": 1,
+  "phases": {
+    "1": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "2": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "3": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "4": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "5": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "6": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "7": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "8": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "9": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "10": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "11": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "12": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "13": { "status": "pending", "completedAt": null, "artifacts": [] }
+  },
+  "metadata": {
+    "taskType": "implementation",
+    "wave": "B",
+    "executionState": "not_started",
+    "estimatedPhases": 13,
+    "actualPhases": null,
+    "problemNumbers": [1, 9, 10],
+    "targetFiles": [
+      "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx"
+    ],
+    "dependsOn": ["TASK-SW-FIX-DATAFLOW-001"],
+    "visualPhase": 11
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "taskId": "TASK-UI-SCHEDULE-CRON-SEMANTIC-001",
+  "taskName": "意味論的 cron バリデーション追加",
+  "taskType": "implementation",
+  "metadata": {
+    "taskType": "implementation",
+    "visualMode": "NON_VISUAL",
+    "issueNumber": 2074,
+    "issueUrl": "daishiman/AIWorkflowOrchestrator#2074",
+    "sourceSpec": "docs/30-workflows/unassigned-task/task-ui-schedule-cron-semantic-validation.md"
+  },
+  "createdAt": "2026-04-12",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/library-evaluation-plan.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/api-design.md",
+        "outputs/phase-2/library-comparison.md",
+        "outputs/phase-2/design-consistency-check.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-plan.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/change-log.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-results.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-log.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "visualMode": "NON_VISUAL",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "requiresUserApproval": true,
+      "outputs": []
+    }
+  ],
+  "targetFiles": [
+    "apps/desktop/src/renderer/utils/scheduleConfigValidator.ts",
+    "apps/desktop/package.json",
+    "apps/desktop/src/__tests__/utils/scheduleConfigValidator.test.ts",
+    "apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts"
+  ],
+  "acceptanceCriteria": [
+    "AC-1: \"0 0 31 2 *\" に対して validateCronExpression がエラーを返す",
+    "AC-2: \"0 0 * * *\" 等の正常なケースは引き続き PASS する",
+    "AC-3: 既存テスト全件 PASS",
+    "AC-4: 追加テストケースでカバレッジが向上している",
+    "AC-5: scheduleConfigValidator.ts の JSDoc が更新される（semanticフラグの説明追加）"
+  ]
+}

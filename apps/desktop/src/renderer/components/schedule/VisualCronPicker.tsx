@@ -15,7 +15,10 @@ import type {
   VisualCronConfig,
   Weekday,
 } from "../../types/visualCronConfig";
-import { visualConfigToCron } from "../../utils/cronConverter";
+import {
+  visualConfigToCron,
+  InvalidConfigError,
+} from "../../utils/cronConverter";
 import { cronToVisualConfig } from "../../utils/cronParser";
 import { FrequencySelector } from "./FrequencySelector";
 import { WeekdaySelector } from "./WeekdaySelector";
@@ -79,7 +82,13 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
     // config が変わるたびに cron 式を計算して onChange を呼ぶ
     useEffect(() => {
       if (disabled || isAdvancedMode) return;
-      const cron = visualConfigToCron(config);
+      let cron: string;
+      try {
+        cron = visualConfigToCron(config);
+      } catch (e) {
+        if (e instanceof InvalidConfigError) return; // 不正設定中は emit しない
+        throw e;
+      }
       if (cron === lastEmittedValueRef.current) return;
       lastEmittedValueRef.current = cron;
       onChange(cron);
@@ -170,9 +179,20 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
       [disabled, onChange],
     );
 
-    const currentCron = isAdvancedMode
-      ? directInput
-      : visualConfigToCron(config);
+    let currentCron: string;
+    if (isAdvancedMode) {
+      currentCron = directInput;
+    } else {
+      try {
+        currentCron = visualConfigToCron(config);
+      } catch (e) {
+        if (e instanceof InvalidConfigError) {
+          currentCron = ""; // 不正設定中はプレビューを空にする
+        } else {
+          throw e;
+        }
+      }
+    }
     const showDirectInput = isAdvancedMode;
 
     const weeklyError =

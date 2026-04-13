@@ -4,6 +4,55 @@
 
 ---
 
+### タスク: TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション追加（2026-04-12）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-UI-SCHEDULE-CRON-SEMANTIC-001                                                         |
+| 完了日     | 2026-04-12                                                                                 |
+| タスク種別 | implementation（NON_VISUAL / renderer utility）                                            |
+| 関連Issue  | #2074                                                                                      |
+| Phase 13   | pending（ユーザー承認待ち）                                                                |
+
+#### 実装内容
+
+- `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts` に `ValidateCronOptions` インターフェースを追加
+- `validateCronExpression(value: string, options?: ValidateCronOptions): string | null` にオプション引数を追加
+- `cron-parser@5.5.0` を `apps/desktop/package.json` に追加
+- `options.semantic: true` 時のみ `CronExpressionParser.parse().next()` で意味論的バリデーションを実行（opt-in / backward compatible）
+- `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` を新規追加（エッジケース 7件）
+
+#### Phase 12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート（0件）               | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run`: PASS（全 AC PASS）
+- Line coverage: 100% / Branch coverage: 86.84%
+- Phase 10 最終レビューゲート: PASS
+- Phase 11 手動テスト: NON_VISUAL（renderer utility のため）
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                   | 解決策                                                                                                   |
+| --- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1   | `cron-parser@5.5.0` の DOM strict 判定（DOW 救済なし）   | `semantic: true` を「安全側判定」として位置づけ。`"0 0 31 2 *"` は拒否される前提で仕様を確定した         |
+| 2   | Phase 2 時点でライブラリの実挙動を確認していなかった       | Phase 2 の P50 チェックに「DOM × DOW 実測確認」を追加するよう lessons-learned に記録した                 |
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-SEMANTIC-001（L-CRON-SEM-001〜003）
+
+---
+
 ### タスク: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（2026-04-11）
 
 | 項目       | 値                                                                                                  |
@@ -66,3 +115,20 @@
 #### lessons-learned
 
 - `references/lessons-learned-skill-wizard-redesign.md` を参照
+
+---
+
+## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 完了日: 2026-04-12
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+- AC一覧:
+  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
+  - AC-2: weekdays重複除去・昇順ソートPASS
+  - AC-5: JSDocに空weekdays挙動を明記 PASS
+- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。

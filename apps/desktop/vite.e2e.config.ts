@@ -20,6 +20,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@renderer": resolve(__dirname, "src/renderer"),
+      // E2E テスト時のみ trackEvent をスタブに差し替え（AC-8 型整合を維持）
+      [resolve(__dirname, "src/renderer/utils/trackEvent.ts")]: resolve(
+        __dirname,
+        "e2e/helpers/trackEvent.e2e-stub.ts",
+      ),
     },
   },
   server: {

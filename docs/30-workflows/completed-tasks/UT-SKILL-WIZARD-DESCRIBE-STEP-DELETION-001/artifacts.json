@@ -1,0 +1,288 @@
+{
+  "taskId": "UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001",
+  "taskName": "DescribeStep.tsx / DescribeStep.test.tsx 物理削除",
+  "createdAt": "2026-04-11",
+  "phases": [
+    {
+      "phaseNumber": 1,
+      "phaseName": "要件定義",
+      "status": "未実施",
+      "artifacts": []
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:26.360Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/import-search-result.md",
+          "description": "参照確認結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:33.733Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/reference-search-plan.md",
+          "description": "参照検索計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validation-matrix.md",
+          "description": "Validation Matrix"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:33.780Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:33.832Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-creation-result.md",
+          "description": "作成完了記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/precondition-check.md",
+          "description": "前提条件確認"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:33.884Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/reference-check-result.md",
+          "description": "参照確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/deletion-execution-log.md",
+          "description": "削除実行記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/typecheck-result.md",
+          "description": "typecheck結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/test-execution-result.md",
+          "description": "テスト実行結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.101Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "テスト拡充確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-result.md",
+          "description": "回帰テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/additional-test-decision.md",
+          "description": "追加テスト判断"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジ"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.150Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-check-report.md",
+          "description": "カバレッジ確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/describe-step-exclusion.md",
+          "description": "除外確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-comparison-summary.md",
+          "description": "比較サマリー"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.198Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-check-result.md",
+          "description": "リファクタリング確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/wizard-index-final-state.md",
+          "description": "wizard/index.ts最終状態"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/cleanup-decision.md",
+          "description": "クリーンアップ判断"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.287Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-result.md",
+          "description": "typecheck結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/zero-reference-check.md",
+          "description": "参照ゼロ確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/ac-fulfillment-check.md",
+          "description": "AC充足確認"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.370Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/release-readiness-checklist.md",
+          "description": "出荷準備チェック"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.425Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-11T14:33:46.530Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "準拠チェック"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 13,
+      "phaseName": "PR作成",
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-13-pr-creation.md",
+          "description": "PR作成手順"
+        }
+      ]
+    }
+  ],
+  "lastUpdated": "2026-04-11T14:57:22Z"
+}

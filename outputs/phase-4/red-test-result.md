@@ -1,27 +1,33 @@
-# Phase 4: Red テスト実行記録 — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 4: Red テスト結果
 
-## 概要
+## 実行コマンド
 
-TDD 方式に従い、テスト作成後・実装前の Red 状態を確認した。
-
-## 実行結果
-
-```
-FAIL  src/renderer/components/skill/__tests__/wizard-exports.test.ts
-  > wizard/index.ts 削除エクスポート確認
-    > DescribeStep がエクスポートされていないこと
-
-AssertionError: expected { $$typeof: Symbol(react.forward_ref), render: [Function] } to be undefined
-
-Test Files  1 failed (1)
-    Tests  1 failed | 6 passed (7)
-Start at  23:47:56
-Duration  3.09s
+```bash
+npx vitest run apps/desktop/src/renderer/utils/__tests__/cronConverter.test.ts
 ```
 
-## 判定
+## 結果サマリー
 
-- TC-01 (DescribeStep 非存在確認): ❌ FAIL（期待通り）
-- TC-02〜TC-07: ✅ PASS
+- **Test Files**: 1 failed (1)
+- **Tests**: 5 failed | 7 passed (12)
 
-Red 状態確認完了。Phase 5 実装で TC-01 を Green にする。
+## 失敗テスト（Red）
+
+| テスト名                                            | エラー内容                                              |
+| --------------------------------------------------- | ------------------------------------------------------- |
+| InvalidConfigError - message が正しく設定されること | `TypeError: InvalidConfigError is not a constructor`    |
+| InvalidConfigError - name が 'InvalidConfigError'   | `TypeError: InvalidConfigError is not a constructor`    |
+| InvalidConfigError - Error のインスタンスであること | `TypeError: InvalidConfigError is not a constructor`    |
+| AC-01: weekdays=[] → InvalidConfigError スロー      | `AssertionError: expected [Function] to throw an error` |
+| AC-05: 適切なエラーメッセージ                       | `AssertionError: expected [Function] to throw an error` |
+
+## 通過テスト（Green - 既存動作確認）
+
+- AC-02: weekdays=[0] → "0 9 \* \* 0"
+- AC-03: weekdays=[1,2,3,4,5] → "0 9 \* \* 1,2,3,4,5"
+- AC-04: weekdays=[0,1,2,3,4,5,6] → "0 9 \* \* 0,1,2,3,4,5,6"
+- 回帰: daily, every-minute, every-hour, monthly
+
+## Red 状態確認
+
+✅ TDD Red フェーズ完了。Phase 5（実装）へ進行可能。

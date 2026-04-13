@@ -1,8 +1,28 @@
-# 完了タスク記録 — 2026-04-08
+# 完了タスク記録 — 2026-04-08〜2026-04-12
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
 ---
+
+## 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync
+
+### 変更内容
+
+- `apps/desktop/e2e/skill-wizard-tracking.spec.ts` に onboarding store mock 注入と current UI に合わせた step1 完了フローを反映
+- `apps/desktop/e2e/helpers/wizard-tracking-stub.ts` に trackEvent capture / onboarding store / skill API stub を統合
+- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/phase-11-manual-test.md` を NON_VISUAL 判定へ是正し、代替証跡方針を current facts に同期
+- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` に Phase 11 証跡導線を追記
+- `.claude/skills/aiworkflow-requirements/LOGS.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` を同波で更新
+
+### 検証証跡
+
+- `pnpm --filter @repo/desktop exec playwright test e2e/skill-wizard-tracking.spec.ts --project=chromium`: PASS（7 passed）
+- `phase-11/manual-test-result.md`: NON_VISUAL 判定 / 代替証跡
+- `phase-11/manual-test-checklist.md`: PASS
+
+#### 苦戦箇所
+
+- `skill_wizard_step1_completed` は current UI では `method: "skip"` になるため、CompleteStep 到達確認とイベント期待値を分離した
 
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 fallback spec clarification close-out sync
 
@@ -217,63 +237,6 @@
 
 - `apps/desktop/src/renderer/utils/trackEvent.ts` に薄い抽象を実装
 - 既存の `SkillAnalytics` / `AnalyticsStore` とは独立した renderer-local util
-- 現フェーズでは console.debug ロギングのみ（将来的な IPC 接続を想定した interface 設計）
-
-**SkillCreateWizard.tsx（3計装ポイント）**
-
-- `skill_wizard_started`: ウィザード表示時（`useEffect` mount）
-- `skill_wizard_step1_completed`: Step 0 → Step 1 遷移時（`handleStep0Next` 内）
-- `skill_wizard_next_action`: 完了後のアクション選択時（`handleNextAction` 内）
-
-**ConversationRoundStep.tsx（2計装ポイント）**
-
-- `skill_wizard_generation_completed`: 生成完了コールバック受信時
-- `skill_skeleton_quality_feedback`: スケルトン品質フィードバック送信時
-
-#### 検証証跡
-
-- `pnpm --filter @repo/desktop typecheck`: PASS
-- `pnpm --filter @repo/desktop exec eslint src/renderer/utils/trackEvent.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: PASS
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/ src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx`: PASS
-
-#### 苦戦箇所
-
-| # | 苦戦箇所 | 解決策 |
-| --- | --- | --- |
-| 1 | trackEvent を既存 SkillAnalytics/AnalyticsStore に接続しようとすると責務が混在 | renderer-local の薄い抽象として独立実装（L-W3-TRACK-001） |
-| 2 | 5計装ポイントの配置コンポーネントが不明確（SkillCreateWizard vs CompleteStep） | 「誰がその状態を知っているか」で配置決定（L-W3-TRACK-002） |
-| 3 | skill-wizard-redesign-lane 削除後の quick-reference 参照パスが旧パスのまま残存 | docs/30-workflows/ 直下への canonical 移行と同波更新（L-WIZARD-LANE-CLEANUP-001） |
-
-#### 依存関係
-
-- 先行: W2-seq-03a（SkillCreateWizard オーケストレーション更新）/ W1-par-02b（ConversationRoundStep 実装）
-- 後続: なし（レーン完了）
-
-#### lessons-learned
-
-- `references/lessons-learned-current-2026-04.md` の L-W3-TRACK-001 / L-W3-TRACK-002 / L-WIZARD-LANE-CLEANUP-001 を参照
-
----
-
-### タスク: UT-SKILL-WIZARD-W3-seq-04 使用率計装（2026-04-08）
-
-| 項目       | 値                                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W3-seq-04                                                                                                 |
-| ステータス | **完了**                                                                                                                  |
-| タイプ     | UI instrumentation / usage tracking / wizard analytics                                                                    |
-| 優先度     | 中                                                                                                                        |
-| 完了日     | 2026-04-08                                                                                                                |
-| 対象       | `apps/desktop/src/renderer/utils/trackEvent.ts` / `SkillCreateWizard.tsx` / `wizard/ConversationRoundStep.tsx`            |
-| 成果物     | `trackEvent.ts`（renderer-local 抽象）/ ウィザード5計装ポイント                                                           |
-| PR         | 未作成                                                                                                                    |
-
-#### 実施内容
-
-**trackEvent.ts（renderer-local 抽象）**
-
-- `apps/desktop/src/renderer/utils/trackEvent.ts` に薄い抽象を実装
-- 既存の `SkillAnalytics` / `AnalyticsStore` とは独立した renderer-local util
 - 現フェーズでは console.info ロギングのみ（将来的な IPC 接続を想定した interface 設計）
 
 **SkillCreateWizard.tsx / CompleteStep.tsx（5計装ポイント）**
@@ -314,57 +277,55 @@
 
 ---
 
-### タスク: UT-SKILL-WIZARD-W3-seq-04 使用率計装（2026-04-08）
+### タスク: UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter 差し替え（2026-04-12）
 
-| 項目       | 値                                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W3-seq-04                                                                                                 |
-| ステータス | **完了**                                                                                                                  |
-| タイプ     | UI instrumentation / usage tracking / wizard analytics                                                                    |
-| 優先度     | 中                                                                                                                        |
-| 完了日     | 2026-04-08                                                                                                                |
-| 対象       | `apps/desktop/src/renderer/utils/trackEvent.ts` / `SkillCreateWizard.tsx` / `wizard/ConversationRoundStep.tsx`            |
-| 成果物     | `trackEvent.ts`（renderer-local 抽象）/ ウィザード5計装ポイント                                                           |
-| PR         | 未作成                                                                                                                    |
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-W3-ANALYTICS-ADAPTER-001 |
+| ステータス | **完了（Phase 12 完了 / Phase 13 blocked）** |
+| タイプ | renderer analytics adapter / ipc contract / phase12 sync |
+| 優先度 | 中 |
+| 完了日 | 2026-04-12 |
+| 対象 | `trackEvent.ts` / `analyticsAdapter.ts` / `analyticsHandler.ts` / `preload/channels.ts` / `preload/index.ts` / `main/ipc/index.ts` |
+| 成果物 | `docs/30-workflows/UT-W3-ANALYTICS-ADAPTER-001/` |
+| PR | 未作成（ユーザー承認待ち） |
 
 #### 実施内容
 
-**trackEvent.ts（renderer-local 抽象）**
+**trackEvent（公開 API 互換維持）**
 
-- `apps/desktop/src/renderer/utils/trackEvent.ts` に薄い抽象を実装
-- 既存の `SkillAnalytics` / `AnalyticsStore` とは独立した renderer-local util
-- 現フェーズでは console.debug ロギングのみ（将来的な IPC 接続を想定した interface 設計）
+- `trackEvent<K>(eventName, payload): void` シグネチャは維持
+- dev: `console.info("[trackEvent]", ...)` のみ
+- prod: `getAnalyticsAdapter().send(eventName, payload)` を呼び出し
 
-**SkillCreateWizard.tsx（3計装ポイント）**
+**analyticsAdapter（Renderer）**
 
-- `skill_wizard_started`: ウィザード表示時（`useEffect` mount）
-- `skill_wizard_step1_completed`: Step 0 → Step 1 遷移時（`handleStep0Next` 内）
-- `skill_wizard_next_action`: 完了後のアクション選択時（`handleNextAction` 内）
+- `window.electronAPI.store.get({ key: "analyticsOptOut" })` を参照し送信可否を判定
+- offline queue（上限 500、TTL 7日）を実装
+- `online` イベントで `flush()` を実行
 
-**ConversationRoundStep.tsx（2計装ポイント）**
+**analyticsHandler（Main IPC）**
 
-- `skill_wizard_generation_completed`: 生成完了コールバック受信時
-- `skill_skeleton_quality_feedback`: スケルトン品質フィードバック送信時
+- `ipcMain.handle("analytics:send", ...)` で payload を検証
+- `electron-store`（`knowledge-studio`）の `analyticsOptOut` を最終判定
+- opt-out 時は `{ success: true, skipped: true }` を返す
+
+#### IPC 契約
+
+| チャネル | Request | Response |
+| --- | --- | --- |
+| `analytics:send` | `{ eventName, payload, timestamp, optedOut? }` | `{ success, skipped?, error? }` |
 
 #### 検証証跡
 
-- `pnpm --filter @repo/desktop typecheck`: PASS
-- `pnpm --filter @repo/desktop exec eslint src/renderer/utils/trackEvent.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: PASS
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/ src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx`: PASS
+- `outputs/phase-11/manual-test-result.md`（NON_VISUAL）
+- `outputs/phase-12/implementation-guide.md`
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`
 
 #### 苦戦箇所
 
 | # | 苦戦箇所 | 解決策 |
 | --- | --- | --- |
-| 1 | trackEvent を既存 SkillAnalytics/AnalyticsStore に接続しようとすると責務が混在 | renderer-local の薄い抽象として独立実装（L-W3-TRACK-001） |
-| 2 | 5計装ポイントの配置コンポーネントが不明確（SkillCreateWizard vs CompleteStep） | 「誰がその状態を知っているか」で配置決定（L-W3-TRACK-002） |
-| 3 | skill-wizard-redesign-lane 削除後の quick-reference 参照パスが旧パスのまま残存 | docs/30-workflows/ 直下への canonical 移行と同波更新（L-WIZARD-LANE-CLEANUP-001） |
-
-#### 依存関係
-
-- 先行: W2-seq-03a（SkillCreateWizard オーケストレーション更新）/ W1-par-02b（ConversationRoundStep 実装）
-- 後続: なし（レーン完了）
-
-#### lessons-learned
-
-- `references/lessons-learned-current-2026-04.md` の L-W3-TRACK-001 / L-W3-TRACK-002 / L-WIZARD-LANE-CLEANUP-001 を参照
+| 1 | `trackEvent` を dev でも adapter 送信してしまうと「開発ログのみ」要件を満たせない | dev で early return を入れ、prod のみ adapter 送信に固定 |
+| 2 | opt-out 判定を Renderer のみに置くと境界防衛が弱い | Main でも `analyticsOptOut` を判定して二重防衛に統一 |
+| 3 | Phase 12 close-out で `outputs/artifacts.json` が抜けやすい | root / outputs の 2 つの artifacts を同 wave で同期 |
