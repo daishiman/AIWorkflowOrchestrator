@@ -1,36 +1,33 @@
-# ドキュメント更新履歴 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# Phase 12: ドキュメント更新履歴
 
-## 更新日: 2026-04-12
+## 変更サマリー
 
-## Step 別結果
+| 日付       | 対象                                                                           | 変更内容                                                                        |
+| ---------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| 2026-04-12 | cronConverter.ts                                                               | InvalidConfigError 定義・ガード・JSDoc 追加                                     |
+| 2026-04-12 | cronConverter.test.ts                                                          | 16 テストケース新規作成                                                         |
+| 2026-04-12 | docs/30-workflows/task-cron-converter-weekdays-guard/index.md                  | `spec_created` → `phase12_completed` / Phase 13 blocked                         |
+| 2026-04-12 | docs/30-workflows/task-cron-converter-weekdays-guard/phase-12-documentation.md | `not-started` → `completed` / Step 1-A〜1-C 同期記録                            |
+| 2026-04-12 | docs/30-workflows/task-cron-converter-weekdays-guard/phase-13-pr-creation.md   | `not-started` → `blocked` / PR 未作成・ユーザー承認待ち                         |
+| 2026-04-12 | docs/30-workflows/task-cron-converter-weekdays-guard/artifacts.json            | `spec_created` → `phase12_completed` / phases 1-12 completed / phase 13 blocked |
+| 2026-04-12 | docs/30-workflows/unassigned-task/task-cron-converter-weekdays-guard.md        | `status: open` → `status: completed` / 完了注記追加                             |
+| 2026-04-12 | outputs/phase-1/                                                               | 要件定義・AC・スコープ定義                                                      |
+| 2026-04-12 | outputs/phase-2/                                                               | アーキテクチャ設計・エラークラス設計・テスト戦略                                |
+| 2026-04-12 | outputs/phase-3/                                                               | ゲート判定 PASS                                                                 |
+| 2026-04-12 | outputs/phase-4/                                                               | テスト仕様書・Red テスト結果                                                    |
+| 2026-04-12 | outputs/phase-5/                                                               | 実装サマリー・変更ファイル一覧                                                  |
+| 2026-04-12 | outputs/phase-6/                                                               | 拡張テストケース・回帰・エッジケース結果                                        |
+| 2026-04-12 | outputs/phase-7/                                                               | カバレッジ計画・未到達分析                                                      |
+| 2026-04-12 | outputs/phase-8/                                                               | リファクタリング計画（変更なし）                                                |
+| 2026-04-12 | outputs/phase-9/                                                               | 品質保証・AC 充足確認                                                           |
+| 2026-04-12 | outputs/phase-10/                                                              | 最終レビュー PASS                                                               |
+| 2026-04-12 | outputs/phase-11/                                                              | 手動テスト結果（NON_VISUAL）                                                    |
+| 2026-04-12 | outputs/phase-12/                                                              | ドキュメント更新（本ファイル含む）                                              |
+| 2026-04-12 | docs/.../index.md                                                              | `phase12_completed（Phase 13 blocked）` に更新                                  |
+| 2026-04-12 | docs/.../phase-12-documentation.md                                             | `completed` に更新し、Step 1-A/1-B/1-C/Step 2 の実行根拠を保持                  |
+| 2026-04-12 | docs/.../artifacts.json                                                        | `phase12_completed` / phases 1-12 `completed` / phase 13 `blocked` に更新       |
+| 2026-04-12 | docs/.../unassigned-task/task-cron-converter-weekdays-guard.md                 | `status: completed` / 完了注記追加                                              |
 
-| Step     | 更新対象                 | 更新内容                                                                 | 結果 |
-| -------- | ------------------------ | ------------------------------------------------------------------------ | ---- |
-| Step 1-A | タスク完了記録           | 関連ドキュメントリンク、変更履歴、`LOGS.md` 2件、`topic-map.md` を更新   | 完了 |
-| Step 1-B | 実装状況テーブル         | `validateCronExpression` の semantic 対応状況を完了へ更新                | 完了 |
-| Step 1-C | 関連タスクテーブル       | 完了日・実装ファイル・テストファイルを更新                               | 完了 |
-| Step 2   | 新規インターフェース追加 | `ValidateCronOptions` と `validateCronExpression` のシグネチャ変更を反映 | 完了 |
+## close-out 追跡メモ
 
-## 変更対象サマリー
-
-| 成果物                             | 変更種別 | 変更内容                                                                                       |
-| ---------------------------------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `scheduleConfigValidator.ts` JSDoc | 更新     | `@param options.semantic` の説明を追加                                                         |
-| `outputs/phase-1/`                 | 更新     | 要件定義・受け入れ基準・ライブラリ評価計画を current facts に合わせて調整                      |
-| `outputs/phase-2/`                 | 更新     | API設計・ライブラリ比較・設計一貫性を current facts に合わせて調整                             |
-| `outputs/phase-3/`                 | 更新     | 設計レビュー結果（PASS）を current facts に整合                                                |
-| `outputs/phase-4/`                 | 更新     | テスト計画・テストケースの前提を current facts に整合                                          |
-| `outputs/phase-5/`                 | 更新     | 実装計画・変更ログを current facts に整合                                                      |
-| `outputs/phase-6/`                 | 更新     | 拡充テストケース・回帰テスト結果を current facts に整合                                        |
-| `outputs/phase-7/`                 | 更新     | カバレッジレポートを current facts に整合                                                      |
-| `outputs/phase-8/`                 | 更新     | リファクタリングログを current facts に整合                                                    |
-| `outputs/phase-9/`                 | 更新     | 品質保証レポートを current facts に整合                                                        |
-| `outputs/phase-10/`                | 更新     | 最終レビュー結果を current facts に整合                                                        |
-| `outputs/phase-11/`                | 更新     | 手動テスト結果・チェックリスト・発見問題を current facts に整合                                |
-| `outputs/phase-12/`                | 更新     | 実装ガイド・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・root evidence を作成 |
-
-## 補足
-
-- `LOGS.md` 2件と `topic-map.md` の更新を同波で実施済み
-- 既存 UI 呼び出しは非 semantic のまま維持し、後方互換性を壊していない
-- `cron-parser@5.5.0` の実挙動に合わせて、到達不能と判定される式は安全側でエラーとして扱う
+- 本ファイルでは、`outputs/phase-12/` だけでなく workflow root (`index.md` / `phase-12-documentation.md` / `artifacts.json`) と unassigned-task 元ファイルの同期状態を追跡対象として明示した。

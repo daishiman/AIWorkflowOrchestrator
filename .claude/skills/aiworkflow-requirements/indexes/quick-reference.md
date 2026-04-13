@@ -759,3 +759,25 @@ try {
 - **条件**: `frequency: "weekly"` かつ `weekdays: []` の場合に `InvalidConfigError` をスロー
 - **weekdays 配列フォーマット**: `[0-6]`（0=Sunday、6=Saturday）
 - **タスク参照**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001
+| 観点 | 参照先 |
+| --- | --- |
+| canUseTool path-scoped 判定 | `references/arch-state-management-core.md` → governance セクション |
+| extractTargetPath / allowedSkillRoot | `references/api-ipc-system-core.md` |
+| SafetyGovernance Production Integration | `references/arch-state-management-core.md` |
+
+---
+
+## Cron Validation（scheduleConfigValidator）
+
+3段階バリデーション:
+1. Stage 1 - 構文チェック: 空文字・5フィールド数確認
+2. Stage 2 - 値域チェック: 分(0-59), 時(0-23), 日(1-31), 月(1-12), 曜日(0-7)
+3. Stage 3 - 意味論的チェック: 月末日存在確認（2月31日等を検出）
+
+戻り値: `string | null`（nullは有効、stringはエラーメッセージ）
+
+注意:
+- 2月29日は有効（閏年非依存）
+- 複合フィールド（1,15 / 1-15）はStage 3対象外
+
+教訓: `references/lessons-learned-current-2026-04.md` → L-CRON-SV-001〜003

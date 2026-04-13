@@ -140,7 +140,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 ## Phase 12 重要仕様
 
-### 必須タスク（5タスク - 全て完了必須）
+### 必須タスク（6タスク - 全て完了必須）
 
 | Task | 名称                             | 必須 | 詳細参照                                    |
 | ---- | -------------------------------- | ---- | ------------------------------------------- |
@@ -149,6 +149,26 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 3    | ドキュメント更新履歴作成         | ✅   | scripts/generate-documentation-changelog.js |
 | 4    | 未タスク検出レポート作成         | ✅   | **0件でも出力必須**                         |
 | 5    | スキルフィードバックレポート作成 | ✅   | **改善点なしでも出力必須**                  |
+| 6    | タスク仕様コンプライアンスチェック | ✅ | **Task 1〜5完了後に作成**                   |
+
+#### non-visual task（非UIタスク）での判定基準
+
+| Phase | 判定 | 理由 |
+| ----- | ---- | ---- |
+| Phase 11 スクリーンショット | N/A | UIを持たない純TS実装はスクリーンショット不要。`pnpm test`実行ログ・テスト件数・合格率を代替エビデンスとして残す |
+| Phase 12-2 システム仕様書更新（Step 2） | N/A | 公開APIシグネチャ変更なし + 内部実装追加のみの場合。判定根拠を`system-spec-update-summary.md`に明記すること |
+
+#### 未タスク0件判定の基準
+
+以下のソースを確認し、**0件であっても** `unassigned-task-detection.md` を出力する。
+
+| ソース | 確認内容 |
+| ------ | -------- |
+| 元タスク仕様書 | スコープ外として明示された項目 |
+| Phase 3/10レビュー | MINOR判定の指摘事項 |
+| Phase 11手動テスト | スコープ外の発見事項 |
+| コードコメント | TODO/FIXME/HACK/XXX |
+| `describe.skip` ブロック | 削除済みtestidの旧参照残存 |
 
 ---
 
@@ -250,7 +270,9 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | Version                | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **v10.09.45** | **2026-04-13** | **UT-W3-ANALYTICS-HTTP-PROVIDER-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[UT-W3-HTTP]** 1件（Phase 4 でガード条件の全 falsy パターン未列挙による Phase 6 追加漏れ）を追記。 |
+| **v10.09.45** | **2026-04-13** | **TASK-UI-SCHEDULE-CRON-SEMANTIC-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 ライブラリ採用時の複合フィールド AND/OR semantics 実測確認漏れ）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 で明示する）を追記。`aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` 等を追加。LOGS.md 2ファイル同波更新。 |
 | **v10.09.44** | **2026-04-12** | **UT-W3-ANALYTICS-ADAPTER-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[UT-W3]** 3件（`implementation-guide.md` の current contract 旧方針記述 / `artifacts.json` parity 未確認 / `generate-index.js` 省略によるインデックス stale）を追記。 |
+| **v10.09.44**          | **2026-04-12**             | **TASK-CRON-SEMANTIC-VALIDATION-001 Phase 12完了・non-visual task判定基準追加**: 「必須タスク」テーブルを5タスク→6タスクに修正（Task 12-6コンプライアンスチェック追加）。non-visual task判定基準テーブル（Phase 11スクリーンショットN/A・Phase 12-2 Step 2 N/A条件）を追加。未タスク0件判定ソース一覧テーブルを追加。LOGS.md 2ファイル同波更新。 |
 | **v10.09.43** | **2026-04-12** | **UT-W3-ANALYTICS-ADAPTER-001 Phase 12 close-out sync**: `outputs/phase-12/` canonical 6成果物の欠落を解消し、`implementation-guide.md` を Part 1/Part 2 構成で current facts に再構成。`artifacts.json` と `outputs/artifacts.json` を `phase12_completed` + `phase13 blocked` で同期し、`index.md` phase status との同値性を回復。`aiworkflow-requirements` 側の analytics / trackEvent / IPC 契約 / task-workflow completed 記録を同 wave で更新し、Phase 12 root evidence を `phase12-task-spec-compliance-check.md` に集約。 |
 | **v10.09.43**          | **2026-04-11**             | **UT-SKILL-WIZARD-W1-DESCRIBE-SKIP-CLEANUP-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[FB-TASK-01/02]**（testid 削除後の `describe.skip` 内残存参照 CI 非検出問題）を追記。`patterns-lessons-and-pitfalls.md` に describe.skip 内 testid 残存 pitfall を追加。`aiworkflow-requirements/references/lessons-learned-skill-wizard-redesign.md` に L-SKIP-001/002 を追加。LOGS.md 2ファイル同波更新。                                                                                                                    |
 | **v10.09.42**          | **2026-04-11**             | **UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 skill-feedback 反映**: Phase 12 と Phase 13 の境界テーブルに Task 12-6（`phase12-task-spec-compliance-check.md` を root evidence として残す）を追加し Task 12-5 の責務を分離。`SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止を lessons-learned に記録。台帳3点同期（workflow spec / artifacts.json / outputs/artifacts.json）を Phase 12 標準チェックリストに追加。LOGS.md 2ファイル + SKILL.md 2ファイル同波更新。 |

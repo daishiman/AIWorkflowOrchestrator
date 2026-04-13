@@ -1,0 +1,36 @@
+{
+  "phase": 11,
+  "taskId": "TASK-CRON-SEMANTIC-VALIDATION-001",
+  "executedAt": "2026-04-12T22:00:00Z",
+  "scenarios": [
+    {
+      "id": "scenario-1",
+      "description": "2月31日エラー表示（ScheduleDialog）",
+      "status": "PASS",
+      "screenshotPath": null,
+      "note": "TC-SV-01 Green確認済み・スクリーンショットはアプリ起動環境不足のため省略"
+    },
+    {
+      "id": "scenario-2",
+      "description": "2月29日有効通過",
+      "status": "PASS",
+      "screenshotPath": null,
+      "note": "TC-SV-03/TC-LEAP-01 Green確認済み"
+    },
+    {
+      "id": "scenario-3",
+      "description": "2月30日エラー表示",
+      "status": "PASS",
+      "screenshotPath": null,
+      "note": "TC-SV-02/TC-LEAP-02 Green確認済み"
+    },
+    {
+      "id": "scenario-4",
+      "description": "ConversationRoundStepエラー表示",
+      "status": "PASS",
+      "screenshotPath": null,
+      "note": "validateSkillWizardScheduleConfig ロジック確認済み"
+    }
+  ],
+  "overallStatus": "PASS"
+}
