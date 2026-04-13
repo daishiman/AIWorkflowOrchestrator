@@ -40,6 +40,8 @@ import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuild
 import type { SkillChainDefinition } from "@repo/shared";
 import type { SkillExecutionResponse } from "@repo/shared/types/skill";
 import type { IRuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
+import type { SkillCreationContext } from "@repo/shared/types/skillCreator";
+import { buildSkillGenerationPrompt } from "@repo/shared/types/skillCreator";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -799,6 +801,7 @@ export function registerSkillHandlers(
       event: IpcMainInvokeEvent,
       description: unknown,
       options: unknown,
+      context: unknown,
     ) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_CREATE, {
         getAllowedWindows: () => [mainWindow],
@@ -827,8 +830,21 @@ export function registerSkillHandlers(
           addAgents: boolean;
           addReferences: boolean;
         };
+
+        // TASK-SW-FIX-DATAFLOW-001: Q1〜Q6 context を LLM プロンプトに変換
+        const typedContext =
+          context !== null &&
+          context !== undefined &&
+          typeof context === "object"
+            ? (context as SkillCreationContext)
+            : undefined;
+        const enrichedPrompt = typedContext
+          ? buildSkillGenerationPrompt(typedContext)
+          : "";
+        const finalDescription = enrichedPrompt.trim() || description.trim();
+
         const result = await skillService.createSkillFromWizard(
-          description.trim(),
+          finalDescription,
           typedOptions,
         );
         return result;

@@ -4,6 +4,18 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
+
+### 変更内容
+- `SKILL.md` frontmatter description の重複段落を統合し、current facts キーワード（`TASK-SW-FIX-DATAFLOW-001` / `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `context bridge` / `NON_VISUAL 再分類` / `artifacts.json parity` / `L-DATAFLOW-001〜003`）を最新版に一本化
+- `indexes/resource-map.md` に TASK-SW-FIX-DATAFLOW-001 の current facts 導線（SkillCreateWizard context bridge + parity）を追加
+- `indexes/topic-map.md` に SkillCreateWizard context bridge/current facts の索引行を追加
+- `references/task-workflow.md` 冒頭に TASK-SW-FIX-DATAFLOW-001 close-out 同期の 1 文を追記
+- `references/lessons-learned-current-2026-04.md` に L-DATAFLOW-001〜003 を追記（NON_VISUAL 代替証跡パターン / artifacts.json 2点 parity / IPC context bridge 後方互換設計）
+
+### 背景
+Phase 12 close-out 後の仕様同期で、Skill Wizard dataflow 修正の current facts（NON_VISUAL 判定と artifacts parity）が aiworkflow-requirements 側インデックスへ未反映だったため、同波で補完した。また lessons-learned への教訓記録が「追記予定」のまま未実施だったため本エントリで完結させた。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync（SKILL.md Trigger 補完）
 
 ### 変更内容
