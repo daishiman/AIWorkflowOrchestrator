@@ -32,6 +32,29 @@
 
 ---
 
+## UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12）
+
+### L-W3-TRACK-003: opt-out final gate は renderer と main の二重防衛にする
+
+- **症状**: renderer 側だけで送信停止しても、Main 側の最終 gate が弱いと store 読み取り失敗時に telemetry が漏れる
+- **原因**: 送信前判定と最終判定が 1 層しかなかった
+- **解決策**: renderer で予備判定、Main で `electron-store` の `analyticsOptOut` を final gate にする。store が無い / 読めない場合は safe-side で skip する
+- **標準ルール**: analytics transport は dual gate を必須とし、片側だけの opt-out 判定で完了扱いにしない
+
+### L-W3-TRACK-004: trackEvent の API を変えず sink だけ差し替える
+
+- **症状**: sink 差し替えと同時に `trackEvent` の公開 API を変えると、呼び出し側の回帰が広がる
+- **原因**: 計装ポイントの責務と transport の責務が混ざっていた
+- **解決策**: `trackEvent<K>(eventName, payload): void` のシグネチャは維持し、transport のみ `analyticsAdapter` / `analytics:send` に差し替える
+- **標準ルール**: 呼び出し側のイベント契約は固定し、transport は adapter で吸収する
+
+### L-W3-TRACK-005: queue / flush / validation は serial に扱う
+
+- **症状**: offline queue と online flush と opt-out 更新が並列に走ると、古い state で二重送信や取りこぼしが起こりやすい
+- **原因**: send / flush / gate check の順序が非同期競合しうる
+- **解決策**: `analyticsAdapter` 内で send / flush の操作を直列化し、queue TTL と max size を固定したうえで safe-side skip を優先する
+- **標準ルール**: analytics adapter は state mutation を直列化し、検証失敗時は送信より停止を優先する
+
 ## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
 
 ### L-SC-E2E-001: IPC handlerMap モックパターン
@@ -836,29 +859,29 @@
 
 ---
 
-## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
+## TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション（2026-04-12）
 
-### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `SkillCategory` の union 型に新値を追加した際、各コンポーネントの日本語ラベル文字列が漏れなく更新されているかを実行時まで確認できなかった |
-| 原因       | 各コンポーネントが独自に `CATEGORY_VALUES` 定数を保持し、shared contract に依存していなかった |
-| 解決策     | `SKILL_CATEGORY_LABELS satisfies Record<SkillCategory, string>` を shared 型として定義し、新規 `SkillCategory` 追加時にラベル漏れをコンパイルエラーで検出する |
-| 再発防止   | enum/union に表示ラベルが必要な場合は `satisfies Record<union, string>` を標準パターンとして採用する。`as const` だけでは型検査が働かない点に注意 |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
-
-### L-CLM-002: deprecated コンポーネントも canonical contract に依存させる
+### L-CRON-SEM-001: cron-parser@5.5.0 の DOM strict 判定（DOW 救済なし）
 
 | 項目       | 内容 |
 | ---------- | ---- |
-| 症状       | `DescribeStep`（deprecated）が旧ラベル文字列（例: `コード支援`）をハードコードしており、canonical の `SKILL_CATEGORY_LABELS` から乖離していた |
-| 原因       | deprecated 扱いのため「どうせ削除するから修正不要」と判断し、shared contract 切り替えを後回しにした |
-| 解決策     | deprecated コンポーネントであっても canonical contract のラベル定数を参照させ、drift を防ぐ。`DescribeStep.test.tsx` に canonical option 表示テストを追加 |
-| 再発防止   | deprecated マークが付いていても、型/定数依存の修正は同波で実施する。「削除前提」は drift 放置の理由にならない |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+| 症状       | `"0 0 31 2 *"` に対して `cron-parser` が例外を投げるか `interval.next()` が無限ループするかを事前確認していなかった。Phase 2 の仕様ではまだ挙動が未確定だった |
+| 原因       | `cron-parser@5.5.0` は DOM（day-of-month）と DOW（day-of-week）を独立して評価し、DOW が wildcard でも DOM の不達は救済しない。この strict 判定を Phase 2 の P50 チェックに含めていなかった |
+| 解決策     | `options.semantic: true` 時は「到達不能なスケジュールは全て拒否する安全側判定」として使う方針に確定。DOM strict を前提として `safe-side` として採用した |
+| 再発防止   | Phase 2 library P50 チェックに「DOM × DOW 組み合わせの実測確認（`"0 0 31 2 *"` 等）」を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
 
-### L-CLM-003: Phase 12 台帳3点同期チェックリスト化
+### L-CRON-SEM-002: `semantic: true` は opt-in safe-side として設計する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `semantic: true` で DOW wildcard（例: `* * 29 2 *` は4年に1度有効）まで拒否されるかという懸念が生じた |
+| 原因       | `semantic` フラグの意味論が「厳密な到達可能性チェック」か「緩やかなヒント」かが設計当初に明文化されていなかった |
+| 解決策     | `semantic: true` = 「次回実行時刻が計算できない場合は全て拒否する安全側判定」と明文化。呼び出し側が意図的に `options` を渡す opt-in 設計を維持し、既存 UI 呼び出しは non-semantic のまま |
+| 再発防止   | `ValidateCronOptions` の JSDoc に safe-side 判定である旨を明示する。新しい呼び出し経路を追加する場合は別タスクで semantic 有効化の意図を明示する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+### L-CRON-SEM-003: Phase 12 サマリーに外部同期一覧を必ず含める
 
 | 項目       | 内容 |
 | ---------- | ---- |
@@ -867,6 +890,23 @@
 | 解決策     | Phase 12 着手時の **初手チェック** として台帳3点（workflow spec / `artifacts.json` / `outputs/artifacts.json`）の parity 確認を必須化した（SKILL.md v10.09.41 に反映） |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
+
+## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
+- 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
+- 解決策: ガード処理で空文字""を返し、呼び出し元の既存バリデーションに委ねる
+- 再発防止: 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却」を採用する
+
+## L-WEEKGRD-002: NON_VISUAL純粋関数タスクのPhase 11は source-level PASSと環境ブロッカーを分離して記録する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: vitestがesbuild host/binary mismatch（0.21.5 vs 0.25.12）で停止した場合、製品FAILと環境FAILが混在しがち
+- 解決策: discovered-issues.md でproduct_blockerとenvironment_issueを別カテゴリで記録し、product blocker 0件を明記
+- 再発防止: 環境要因は製品バックログに入れない
+
+## L-WEEKGRD-003: Phase 11 NON_VISUALタスクではui-sanity-visual-review.mdにNON_VISUAL宣言を明示する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
+- 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
 
 ---
 
@@ -925,3 +965,8 @@
 | 設計理由   | value export は runtime test で検出可能。type-only export は JavaScript に出力されないため runtime test では検出不可。compile-time guard（`@ts-expect-error`）により TypeScript 型レベルで再導入を封じる |
 | 適用条件   | barrel export から削除した型が型定義のみ（`type` キーワード付き export）である場合 |
 | 関連タスク | UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 |
+| 症状       | `system-spec-update-summary.md` に LOGS.md × 2 / topic-map.md / resource-map.md の更新記録を含めていなかったため、外部同期が完了しているかの判断が Phase 12 証跡だけでは不明瞭になった |
+| 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
+| 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
+| 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |

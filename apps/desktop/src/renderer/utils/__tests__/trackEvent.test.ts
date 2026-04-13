@@ -1,17 +1,62 @@
 /**
  * @file trackEvent.test.ts
- * @description trackEvent スタブ ユニットテスト（W3-seq-04 Phase 4）
+ * @description trackEvent ユニットテスト（UT-W3-ANALYTICS-ADAPTER-001）
  *
  * TC-07: trackEvent が例外を投げないこと
- * TC-08: 開発環境で console.info が呼ばれること
- * TC-09: production では console.info が抑制されること
+ * TC-08: 開発環境で console.info が呼ばれ、analytics send されないこと
+ * TC-09: production で analytics send され、console.info が抑制されること
  */
 
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { resetAnalyticsAdapter } from "../analyticsAdapter";
 import { trackEvent } from "../trackEvent";
 
-describe("trackEvent スタブ", () => {
+function setupAnalyticsAPIMock() {
+  const sendMock = vi.fn().mockResolvedValue({ success: true });
+  Object.defineProperty(window, "analyticsAPI", {
+    value: { send: sendMock },
+    writable: true,
+    configurable: true,
+  });
+  return { sendMock };
+}
+
+function setupStoreMock(optedOut = false) {
+  const getMock = vi
+    .fn()
+    .mockResolvedValue({ success: true, data: optedOut, error: undefined });
+  Object.defineProperty(window, "electronAPI", {
+    value: { store: { get: getMock } },
+    writable: true,
+    configurable: true,
+  });
+  return { getMock };
+}
+
+function cleanupMocks() {
+  Object.defineProperty(window, "analyticsAPI", {
+    value: undefined,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window, "electronAPI", {
+    value: undefined,
+    writable: true,
+    configurable: true,
+  });
+}
+
+describe("trackEvent", () => {
+  beforeEach(() => {
+    resetAnalyticsAdapter();
+    vi.clearAllMocks();
+    setupAnalyticsAPIMock();
+    setupStoreMock(false);
+  });
+
   afterEach(() => {
+    cleanupMocks();
+    resetAnalyticsAdapter();
     vi.restoreAllMocks();
     vi.unstubAllEnvs();
   });
@@ -22,33 +67,61 @@ describe("trackEvent スタブ", () => {
     }).not.toThrow();
   });
 
-  it("TC-08: 開発環境では console.info が呼ばれること", () => {
+  it("TC-08: 開発環境では console.info が呼ばれ、analytics send されないこと", async () => {
     const consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+    const { sendMock } = setupAnalyticsAPIMock();
+
     trackEvent("skill_wizard_started", {});
+
     expect(consoleSpy).toHaveBeenCalledWith(
       "[trackEvent]",
       "skill_wizard_started",
       {},
     );
+    await vi.waitFor(() => {
+      expect(sendMock).not.toHaveBeenCalled();
+    });
   });
 
-  it("TC-08b: skill_wizard_step1_completed のペイロードが console.info に渡ること", () => {
+  it("TC-08b: skill_wizard_step1_completed のペイロードが console.info に渡ること", async () => {
     const consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+    const { sendMock } = setupAnalyticsAPIMock();
+
     trackEvent("skill_wizard_step1_completed", {
       method: "skip",
       skippedAtQuestion: 3,
     });
+
     expect(consoleSpy).toHaveBeenCalledWith(
       "[trackEvent]",
       "skill_wizard_step1_completed",
       { method: "skip", skippedAtQuestion: 3 },
     );
+    await vi.waitFor(() => {
+      expect(sendMock).not.toHaveBeenCalled();
+    });
   });
 
-  it("TC-09: production では console.info が呼ばれないこと", () => {
+  it("TC-09: production では console.info が呼ばれず analytics send されること", async () => {
     vi.stubEnv("NODE_ENV", "production");
+    const { sendMock } = setupAnalyticsAPIMock();
+    const { getMock } = setupStoreMock(false);
     const consoleSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+
     trackEvent("skill_wizard_started", {});
+
+    await vi.waitFor(() => {
+      expect(getMock).toHaveBeenCalledWith({
+        key: "analyticsOptOut",
+        defaultValue: false,
+      });
+      expect(sendMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventName: "skill_wizard_started",
+          payload: {},
+        }),
+      );
+    });
     expect(consoleSpy).not.toHaveBeenCalled();
   });
 

@@ -1,30 +1,29 @@
-# Phase 12: スキルフィードバックレポート - UT-SKILL-WIZARD-W2-seq-03a
+# スキルフィードバックレポート - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## メタ情報
+## 1. Phase ワークフローの有効性
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
+- Phase 1 から Phase 12 までの分割は有効でした
+- 特に Phase 2 の設計、Phase 4 の TDD、Phase 5 の実装、Phase 11 の NON_VISUAL 確認が分離されていたため、原因追跡がしやすかったです
+- 一方で、Phase 2 時点のライブラリ仕様確認が甘く、後続で semantics の前提修正が発生しました
 
----
+## 2. TDD サイクルの効果
 
-## フィードバック件数: 3件
+- 有効でした
+- TC-01 で不正ケースを先に固定したことで、`"0 0 31 2 *"` を安全側に拒否する実装へ収束できました
+- TC-02〜TC-07 で後方互換と正常系を同時に守れたのも良かったです
 
-### FB-01: inferSmartDefaults の分離が有効
+## 3. NON_VISUAL 判定の妥当性
 
-- **観点**: テスト可能性・再利用性
-- **内容**: `inferSmartDefaults` を `wizard/utils/inferSmartDefaults.ts` に分離することで、コンポーネントに依存せず単体テストが書きやすくなった。
-- **対応**: Phase 8 で実施済み
+- 妥当でした
+- 今回の変更は renderer utility のバリデーション層のみで、スクリーンショットは品質判断に寄与しません
+- `validateCronExpression` の直接検証で十分でした
 
-### FB-02: TASK-SC-07 テストのスキップ記録が有用
+- 採用自体は妥当でした
+- ただし `cron-parser@5.5.0` の day-of-week / day-of-month の扱いは事前想定より厳しく、想定どおりに day-of-week で救済できるわけではありませんでした
+- 結果として、`semantic: true` は「到達可能性の安全側判定」として使うのが適切でした
 
-- **観点**: テスト保守性
-- **内容**: `describe.skip` + TODO コメントにより、削除対象テストの理由が明確になった。後から経緯を追いやすい。
-- **対応**: Phase 5 で実施済み
+## 5. 改善提案
 
-### FB-03: Phase 11 のスクリーンショット参照と path drift 是正を明示すると追跡しやすい
-
-- **観点**: 証跡密度・参照整合性
-- **内容**: `implementation-guide.md` に Phase 11 のスクリーンショット参照を追加し、`skill-wizard-redesign-lane/index.md` の W2-seq-03a path を current facts に揃えることで、PR 本文や後続レビューから証跡を追いやすくなった。
-- **対応**: Phase 12 final-doc sync で実施済み
+- Phase 2 の P50 チェックに「ライブラリの day-of-week / day-of-month 実測確認」を追加する
+- Phase 12 のサマリーに、`LOGS.md` と `topic-map.md` を含む外部同期一覧を必ず載せる
+- もし今後 `validateCronExpression` の semantic を UI から有効化するなら、呼び出し経路を別タスクで明示する

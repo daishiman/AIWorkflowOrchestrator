@@ -1,70 +1,59 @@
-# Phase 12: システム仕様更新サマリー - UT-SKILL-WIZARD-W2-seq-03a
+# システム仕様更新サマリー - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## メタ情報
+## タスク完了記録
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a |
-| 作成日   | 2026-04-11                 |
-| 判定     | completed                  |
+| 項目     | 内容                                                              |
+| -------- | ----------------------------------------------------------------- |
+| タスクID | TASK-UI-SCHEDULE-CRON-SEMANTIC-001                                |
+| 完了日   | 2026-04-12                                                        |
+| 対象実装 | `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`      |
+| 依存追加 | `apps/desktop/package.json` に `cron-parser@5.5.0`                |
+| 補足     | `semantic` は opt-in のまま、既存 UI 呼び出しは非 semantic を維持 |
 
----
+## Step 1-A: タスク完了記録
 
-## Step 1-A: 完了記録・関連リンク更新
+| 更新対象                  | 実施内容                                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 関連ドキュメントリンク    | `docs/30-workflows/task-ui-schedule-cron-semantic-001/` 配下の current facts を更新                                        |
+| 変更履歴                  | `scheduleConfigValidator.ts` に `ValidateCronOptions` と semantic ロジックを追加したことを記録                             |
+| LOGS.md（タスク用）       | `.claude/skills/task-specification-creator/LOGS.md` に Phase 12 完了ログを追記                                             |
+| LOGS.md（プロジェクト用） | `.claude/skills/aiworkflow-requirements/LOGS.md` に完了記録を追記                                                          |
+| topic-map.md              | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` に `ValidateCronOptions` / `semantic` / `cron-parser` を追加 |
 
-| 更新対象                                                               | 結果     | 備考                                             |
-| ---------------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| `docs/30-workflows/W2-seq-03a-skill-create-wizard/index.md` ステータス | 確認済み | "Phase 12 完了（PR 未作成）" を確認              |
-| `docs/30-workflows/skill-wizard-redesign-lane/index.md`                | 更新済み | W2-seq-03a の path drift を current facts に是正 |
-| `LOGS.md`                                                              | 更新済み | W2-seq-03a の current facts sync を追記          |
-| `topic-map.md`                                                         | 確認済み | references 側の変更がないため再生成不要          |
+## Step 1-B: 実装状況テーブル更新
 
----
+| 項目                                              | 変更前   | 変更後                                  |
+| ------------------------------------------------- | -------- | --------------------------------------- |
+| `validateCronExpression` の意味論的バリデーション | 未実装   | `options.semantic: true` のときのみ実行 |
+| 呼び出し側の既存挙動                              | 変化なし | 変化なし（後方互換を維持）              |
 
-## Step 1-B: 実装状況更新
+## Step 1-C: 関連タスクテーブル更新
 
-| タスク                     | 変更前       | 変更後    |
-| -------------------------- | ------------ | --------- |
-| UT-SKILL-WIZARD-W2-seq-03a | spec_created | completed |
+| 項目           | 内容                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 完了日         | 2026-04-12                                                                                                                                  |
+| 実装ファイル   | `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`                                                                                |
+| テストファイル | `apps/desktop/src/__tests__/utils/scheduleConfigValidator.test.ts`, `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` |
 
----
+## Step 2: 新規インターフェース追加
 
-## Step 1-C: 関連タスク整合
+| 項目     | 内容                                                                                   |
+| -------- | -------------------------------------------------------------------------------------- |
+| 新規型   | `ValidateCronOptions`                                                                  |
+| 追加箇所 | `scheduleConfigValidator.ts`                                                           |
+| API 変更 | `validateCronExpression(value: string, options?: ValidateCronOptions): string \| null` |
 
-| タスク     | 依存関係              | ステータス更新            |
-| ---------- | --------------------- | ------------------------- |
-| W3-seq-04  | W2-seq-03a 完了後着手 | ready（実着手は別タスク） |
-| W2-seq-03b | W2-seq-03a と並列     | 変更なし                  |
+## 変更点サマリー
 
----
+| 項目                                | 変更前                            | 変更後                                                           |
+| ----------------------------------- | --------------------------------- | ---------------------------------------------------------------- |
+| `validateCronExpression` シグネチャ | `(value: string): string \| null` | `(value: string, options?: ValidateCronOptions): string \| null` |
+| semantic validation                 | 実施しない（コメントに明記）      | `options.semantic: true` で実施可能                              |
+| 新規エクスポート                    | なし                              | `ValidateCronOptions` インターフェース                           |
+| 依存ライブラリ                      | なし                              | `cron-parser@5.5.0`                                              |
 
-## Step 2: 新規 I/F 追加の仕様更新
+## 後方互換性
 
-### GenerateStep props 契約変更
-
-| prop                       | 変更前     | 変更後                        |
-| -------------------------- | ---------- | ----------------------------- |
-| `mode`（`generationMode`） | 渡していた | 削除                          |
-| `onCancel`                 | 条件分岐   | `handleCancelGeneration` 固定 |
-| `planResult`               | 条件付き   | 渡さない                      |
-| `onExecutePlan`            | 条件付き   | 渡さない                      |
-| `onCancelPlan`             | 条件付き   | 渡さない                      |
-
-### CompleteStep props 新規接続
-
-| prop                      | 状態        |
-| ------------------------- | ----------- |
-| `skillPath`               | ✅ 接続済み |
-| `hasExternalIntegration`  | ✅ 接続済み |
-| `externalToolName`        | ✅ 接続済み |
-| `onRetry` (`handleRetry`) | ✅ 接続済み |
-| `onQualityFeedback`       | ✅ 接続済み |
-
-### inferSmartDefaults 分離（Phase 8）
-
-内部ユーティリティとして `wizard/utils/inferSmartDefaults.ts` に分離。
-外部 API 契約変更なし（re-export により後方互換を維持）。
-
-### 補足: visual evidence
-
-Phase 11 のスクリーンショット参照は `implementation-guide.md` に追記済み。
+- `options` パラメータはオプショナル
+- `validateSkillWizardScheduleConfig` を含む既存呼び出しは変更不要
+- `semantic` を有効化したい経路だけが明示的に `options` を渡す

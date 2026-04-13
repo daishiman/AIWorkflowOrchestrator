@@ -1,118 +1,91 @@
-# Phase 12: 実装ガイド - UT-SKILL-WIZARD-W2-seq-03a
+# 実装ガイド - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## メタ情報
+## Part 1: 中学生レベルの説明
 
-| 項目     | 内容                                       |
-| -------- | ------------------------------------------ |
-| タスクID | UT-SKILL-WIZARD-W2-seq-03a                 |
-| 作成日   | 2026-04-11                                 |
-| 対象     | SkillCreateWizard オーケストレーション更新 |
-| 状態     | completed（Phase 12 完了 / PR 未作成）     |
+### たとえ話
 
----
+カレンダーにない日付は、どれだけ待っても来ません。たとえば「2月31日」は存在しないので、「毎年2月31日に実行してください」と言っても、実行日は永遠に来ません。
 
-## Part 1: 中学生向け説明
+### 何が変わったか
 
-### SkillCreateWizard のオーケストレーション更新とは何か？
+`validateCronExpression` に `semantic` という追加スイッチを入れました。
 
-スキルを作るための「ウィザード（案内役）」を大幅に改良した話です。
+- `semantic` を付けないときは、今まで通り「書き方が正しいか」だけを見ます
+- `semantic: true` を付けたときだけ、「その日付が本当に存在するか」まで見ます
 
-以前は「テンプレートで作る方法」と「AIに考えてもらう方法」の2択がありました。でも2択があると使う人が迷ってしまいます。今回は「AIに考えてもらう方法」だけに統一しました。
+### 変更ファイル
 
-また、AIにスキルを作ってもらうとき、ユーザーが入力した「スキル名」「目的」「カテゴリ」から、AIへの質問の答えを自動で予測する「スマートデフォルト」機能を追加しました。たとえば「目的に `slack` / `Slack` / `SLACK` のどれが書かれていても、Q5の答え候補を `slack` として推論する」という感じです。これで、ユーザーが同じことを何度も入力する手間を省けます。
+| ファイル                                                                | 変更種別 | 変更内容                                                                                                               |
+| ----------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`            | 修正     | `ValidateCronOptions` インターフェース追加、`validateCronExpression` シグネチャ拡張、semantic ロジック追加、JSDoc 更新 |
+| `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` | 修正     | TC-01〜TC-16（semantic validation テスト）追加                                                                         |
+| `apps/desktop/package.json`                                             | 修正     | `cron-parser@5.5.0` を `dependencies` に追加                                                                           |
 
-完了画面では、生成したスキルのパスを見ながら品質フィードバックを送り、イメージと違ったら Step 0 に戻ってやり直せます。前回の入力は残るので、毎回最初から入力し直す必要はありません。
+## Part 2: 技術者向けの説明
 
-**例えば：**
-
-- 「毎日Slackに通知を送る」と入力すると、自動で「タイミング：定期実行」「ツール：Slack」が選ばれる
-- カテゴリを「code-support（コードサポート）」にすると、自動で「出力形式：コード」が選ばれる
-
-**専門用語の説明：**
-
-- **ウィザード**：複数の画面を順番に案内してくれる入力フォームのこと
-- **オーケストレーション**：複数のコンポーネント（部品）を指揮して動かす役割
-- **スマートデフォルト**：ユーザーの入力から自動で答えを予測する仕組み
-- **state（ステート）**：コンポーネントが持っている「今の状態」の情報
-
----
-
-## Part 2: 技術者向け説明
-
-### 変更概要
-
-`SkillCreateWizard.tsx` から `description` / `options` / `generationMode` state と関連する全 `template` 分岐を除去し、LLM 専用化した。新たに `formData`/`answers`/`smartDefaults`/`generationMethod`/`skillPath`/`hasExternalIntegration`/`externalToolName` の state を追加し、`handleRetry` で Step 0 への復帰を接続する。`inferSmartDefaults` は `purpose` を小文字化して判定し、`slack`/`github`/`notion` を大小文字不問で推論する。生成開始時は `generationLockRef` と `clearGenerationState()` で再入とストア残留を抑える。
-
-### STEPS 配列変更
+### API 変更
 
 ```typescript
-// 変更前
-["説明入力", "設定", "生成", "完了"];
-
-// 変更後
-["スキル情報入力", "詳細設定", "生成", "完了"];
-```
-
-### inferSmartDefaults 関数（分離先: `wizard/utils/inferSmartDefaults.ts`）
-
-```typescript
-export function inferSmartDefaults(
-  data: SkillInfoFormData,
-): SmartDefaultResult {
-  // purpose テキストからツール・タイミングを推論（大小文字不問）
-  // category から出力フォーマットを推論
-  // inferenceLog に推論根拠を記録
+export interface ValidateCronOptions {
+  /** true の場合、cron-parser を使用して意味論的バリデーション（next-execution-time 計算）を実行する */
+  semantic?: boolean;
 }
 ```
 
-**推論ルール**:
-
-| 条件                                     | 結果                  |
-| ---------------------------------------- | --------------------- |
-| purpose に "slack"（大小文字不問）       | tool = "slack"        |
-| purpose に "github"（大小文字不問）      | tool = "github"       |
-| purpose に "notion"（大小文字不問）      | tool = "notion"       |
-| purpose に "毎日/毎週/定期/スケジュール" | timing = "scheduled"  |
-| purpose に "リアルタイム/即座/すぐに"    | timing = "realtime"   |
-| category === "code-support"              | format = "code"       |
-| category === "data-analysis"             | format = "structured" |
-
-### API シグネチャ
-
 ```typescript
-handleStep0Next(): void
-handleGenerate(method: "complete" | "skip"): Promise<void>
-handleQualityFeedback(satisfied: boolean): void
-handleRetry(): void
-handleCancelGeneration(): void
+/**
+ * cron 式を検証する。
+ * @param value - 検証する cron 式（5フィールド形式）
+ * @param options - オプション（省略時は従来の構文・値域チェックのみ）
+ * @param options.semantic - true の場合、next-execution-time 計算による意味論的バリデーションを追加する
+ * @returns エラーメッセージ文字列（エラーなしの場合は null）
+ */
+export function validateCronExpression(
+  value: string,
+  options?: ValidateCronOptions,
+): string | null;
 ```
 
-### エッジケース
+### 実装の要点
 
-- LLM 生成失敗時: `isGenerating=false` + エラー state で UI フィードバック
-- 二重呼び出し: `generationLockRef` + `isGenerating` で防止
-- 推論0件: `inferenceLog` が空配列で返る（エラーにならない）
-- `handleRetry`: `formData` を保持し、`answers` / `smartDefaults` / `skillPath` / `hasExternalIntegration` / `externalToolName` / `error` / `generationMethod` / `isGenerating` をリセット
+```typescript
+import { CronExpressionParser } from "cron-parser";
 
-### 変更ファイル一覧
+if (options?.semantic === true) {
+  try {
+    const interval = CronExpressionParser.parse(trimmed);
+    interval.next();
+  } catch {
+    return "指定した日付の組み合わせは存在しません（例: 2月31日）";
+  }
+}
+```
 
-| ファイル                                                                                         | 変更内容                                                              |
-| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | generationMode 削除、新 state/ハンドラ追加、Step 0/2 レンダリング修正 |
-| `apps/desktop/src/renderer/components/skill/wizard/utils/inferSmartDefaults.ts`                  | 新規作成（分離）                                                      |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                | inferSmartDefaults / STEPS 単体テスト追加                             |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | describe.skip（削除対象 TASK-SC-07 テスト）                           |
+- `semantic` は opt-in です。既存呼び出しはそのまま動きます
+- `validateSkillWizardScheduleConfig` は変更していません。呼び出し元が必要な場合だけ `semantic` を渡します
+- `cron-parser@5.5.0` は day-of-week を使った救済を保証しません。安全側に倒して、到達不能と判断したものはエラーにしています
 
-### Phase 11 visual evidence
+### 使い方
 
-Phase 11 のスクリーンショットは、Step 0〜3 の見た目と回復導線が仕様どおりかを最終確認する根拠として参照した。
+```typescript
+// 従来どおり: 構文・値域チェックのみ
+validateCronExpression("0 0 31 2 *"); // null
 
-| 画面                  | 参照先                                                                                                                                       | 確認観点                 |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Step 0                | [TC-11-01-step0-description-category.png](../phase-11/screenshots/TC-11-01-step0-description-category.png)                                   | 初期入力とカテゴリ表示   |
-| Step 1                | [TC-11-02-step1-page1-defaults.png](../phase-11/screenshots/TC-11-02-step1-page1-defaults.png)                                               | smartDefaults の初期反映 |
-| Step 1 エラー         | [TC-11-03-step1-cron-error.png](../phase-11/screenshots/TC-11-03-step1-cron-error.png)                                                       | cron バリデーション表示  |
-| Step 2                | [TC-11-04-step2-required-q5.png](../phase-11/screenshots/TC-11-04-step2-required-q5.png)                                                     | Q5 必須表示              |
-| Step 3                | [TC-11-05-summary-card-warning.png](../phase-11/screenshots/TC-11-05-summary-card-warning.png)                                               | サマリー警告             |
-| Lifecycle panel light | [skill-lifecycle-panel-light.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png) | ウィザード導線の初期状態 |
-| Lifecycle panel dark  | [skill-lifecycle-panel-dark.png](../phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png)   | 同上のダーク表示         |
+// 意味論チェックを有効化
+validateCronExpression("0 0 31 2 *", { semantic: true });
+// → "指定した日付の組み合わせは存在しません（例: 2月31日）"
+
+// 到達可能な式は通す
+validateCronExpression("0 0 * * *", { semantic: true }); // null
+```
+
+### テスト結果
+
+- 全 42 テスト PASS（TC-01〜TC-16 + SCV-01〜SCV-12 + エッジケース）
+- TypeScript 型チェック PASS
+- ESLint PASS（0 errors）
+- カバレッジ: Line 100% / Branch 86.84%（目標 90%/85% 達成）
+
+## 関連 Issue
+
+[#2074](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2074)

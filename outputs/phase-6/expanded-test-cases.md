@@ -1,29 +1,21 @@
-# Phase 6: 拡張テストケース
+# 拡充テストケース記録 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 追加した inferSmartDefaults エッジケース
+## TC-09〜TC-16 一覧
 
-| テストケース               | 期待結果                     | ファイル                   |
-| -------------------------- | ---------------------------- | -------------------------- |
-| purpose='SLACK'（大文字）  | tool='slack'（大小文字不問） | SkillCreateWizard.test.tsx |
-| purpose='github'（小文字） | tool='github'                | SkillCreateWizard.test.tsx |
-| purpose='Notion'           | tool='notion'                | SkillCreateWizard.test.tsx |
-| purpose='定期'             | timing='scheduled'           | SkillCreateWizard.test.tsx |
-| purpose='リアルタイム'     | timing='realtime'            | SkillCreateWizard.test.tsx |
-| category='data-analysis'   | format='structured'          | SkillCreateWizard.test.tsx |
-| purpose=''                 | 全フィールド null            | SkillCreateWizard.test.tsx |
-| 推論0件                    | inferenceLog が空配列        | SkillCreateWizard.test.tsx |
+| TC ID | cron 式          | semantic | 期待結果          | 観点                                                     |
+| ----- | ---------------- | -------- | ----------------- | -------------------------------------------------------- |
+| TC-09 | `"0 0 30 2 *"`   | `true`   | エラー（非 null） | 2月30日も存在しない                                      |
+| TC-10 | `"0 0 31 4 *"`   | `true`   | エラー（非 null） | 4月31日は存在しない（4月���30日まで）                    |
+| TC-11 | `"0 0 31 6 *"`   | `true`   | エラー（非 null） | 6月31日は存在しない                                      |
+| TC-12 | `"0 0 31 9 *"`   | `true`   | エラー（非 null） | 9月31日は存在しない                                      |
+| TC-13 | `"0 0 31 11 *"`  | `true`   | エラー（非 null） | 11月31日は存在しない                                     |
+| TC-14 | `"0 0 31 4 *"`   | `false`  | PASS（null）      | semantic=false は後方互換                                |
+| TC-15 | `""`             | `true`   | エラー（非 null） | 空文字は semantic チェック前に構文エラーで reject        |
+| TC-16 | `"0 0 31 2 1-5"` | `true`   | エラー（非 null） | cron-parser の実挙動に合わせ、安全側に到達不能として扱う |
 
-## STEPS 配列回帰テスト
+## TC-16 安全側判定の仕様確定
 
-| テストケース                                          | 期待結果 |
-| ----------------------------------------------------- | -------- |
-| STEPS === ["スキル情報入力","詳細設定","生成","完了"] | ✅       |
-| STEPS.length === 4                                    | ✅       |
+`cron-parser@5.5.0` は day-of-month と day-of-week の複合指定を安全側に判定する。
+`"0 0 31 2 1-5"` は `CronExpressionParser.parse()` 段階で例外 "Invalid explicit day of month definition" を投げる。
 
-## TASK-SC-07 テストの skip 処理
-
-`SkillCreateWizard.llm-generation.test.tsx` の describe ブロックを `describe.skip` に変更。
-
-- 理由: W2-seq-03a でラジオボタン UI・planSkill/executePlan フローを削除
-- 新フロー（createSkill ベース）は `SkillCreateWizard.test.tsx` でカバー済み
-- TODO コメントを追加（W2-seq-03a 参照）
+判断: TC-16 の期待値を `not.toBeNull()` とし、安全側判定を採用。ユーザーには「2月31日」という存在しない日付の組み合わせとして適切なエラーが表示される。
