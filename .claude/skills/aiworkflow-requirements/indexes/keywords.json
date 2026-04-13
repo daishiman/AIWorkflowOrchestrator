@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2946,
+  "totalKeywords": 2944,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -555,7 +555,8 @@
       "api-core.md"
     ],
     "HTTP": [
-      "api-core.md"
+      "api-core.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "ステータスコード": [
       "api-core.md"
@@ -2540,6 +2541,7 @@
     ],
     "Provider": [
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "llm-ipc-types.md",
       "testing-fixtures.md"
     ],
@@ -3996,6 +3998,7 @@
     ],
     "SkillCreateWizard": [
       "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -4286,6 +4289,7 @@
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
@@ -7782,14 +7786,21 @@
     "レガシーコード整理": [
       "lessons-learned-current-2026-04.md"
     ],
-    "CRON": [
+    "SW": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "DATAFLOW": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "コンテキストブリッジ実装": [
       "lessons-learned-current-2026-04.md"
     ],
     "CONVERTER": [
       "lessons-learned-current-2026-04.md"
     ],
     "WEEKDAYS": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "cronConverter": [
       "lessons-learned-current-2026-04.md"
@@ -9379,13 +9390,7 @@
     "trackEvent": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
-    "TRACKING": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "REACH": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "確認": [
+    "PROVIDER": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "quality": [
