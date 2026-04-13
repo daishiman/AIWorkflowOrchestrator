@@ -1950,7 +1950,6 @@
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-skill-editor.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -2289,6 +2288,7 @@
       "arch-ui-components-history.md",
       "arch-ui-components.md",
       "interfaces-chat-history-core.md",
+      "lessons-learned-current-2026-04.md",
       "llm-ipc-types.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "technology-desktop.md"
@@ -2358,6 +2358,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-skill-analysis.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -2456,7 +2457,6 @@
     ],
     "ANALYTICS": [
       "api-ipc-system-core.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
@@ -3001,9 +3001,7 @@
     ],
     "INTEGRATION": [
       "arch-electron-services-details-part2.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "ui-ux-settings-core.md"
@@ -3372,8 +3370,6 @@
     ],
     "STORE": [
       "arch-state-management-core.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
@@ -3679,7 +3675,8 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed.md"
     ],
     "direct": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
@@ -5587,7 +5584,8 @@
       "workflow-ai-runtime-authmode-unification.md"
     ],
     "エラー": [
-      "error-handling-details.md"
+      "error-handling-details.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "envelope": [
       "error-handling-details.md"
@@ -5828,9 +5826,6 @@
     ],
     "RuntimeSkillCreatorFacade": [
       "interfaces-agent-sdk-skill-editor.md"
-    ],
-    "スキル利用分析": [
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
     "契約参照": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
@@ -7066,12 +7061,14 @@
     ],
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "task-workflow-completed.md"
     ],
     "sandbox": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -7284,8 +7281,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "wiring": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "workflow": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -7844,12 +7840,6 @@
     "レガシーコード整理": [
       "lessons-learned-current-2026-04.md"
     ],
-    "analyticsSlice": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "agentSlice": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "SW": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7868,6 +7858,21 @@
     ],
     "cronConverter": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "RENDERER": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
+    ],
+    "CHECK": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md"
+    ],
+    "表示": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "確認": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -8457,7 +8462,8 @@
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "error": [
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed.md"
     ],
     "notification": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -9433,9 +9439,6 @@
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
     ],
-    "確認": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
     "PROVIDER": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
@@ -9819,8 +9822,7 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md"
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
