@@ -301,7 +301,8 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 | **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
 | **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
 | **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
-| **ナレッジ管理**             | references/knowledge-management-guide.md     |
+| **ナレッジ管理（構築）**     | references/knowledge-management-guide.md     |
+| **ナレッジ管理（検索・運用）** | references/knowledge-search-and-lifecycle.md |
 | スクリプト生成               | references/script-types-catalog.md           |
 | ワークフローパターン         | references/workflow-patterns.md              |
 | オーケストレーション         | references/orchestration-guide.md            |
@@ -315,7 +316,7 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 | カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`, `references/knowledge-management-guide.md`                                         |
+| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`, `references/knowledge-management-guide.md`, `references/knowledge-search-and-lifecycle.md` |
 | ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
 | 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
 | 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |
