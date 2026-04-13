@@ -1,51 +1,46 @@
-# Phase 1: 要件定義書 — UT-SKILL-WIZARD-W2-seq-03b
+# 要件定義書 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## タスク概要
+## P50チェック結果
 
-`wizard/index.ts` の barrel export を更新し、廃止コンポーネント（DescribeStep）のエクスポートを削除し、
-新コンポーネント（SkillInfoStep/ConversationRoundStep）の型エクスポートを整備する。
+| 確認項目                                         | 結果                                                                     |
+| ------------------------------------------------ | ------------------------------------------------------------------------ |
+| `validateCronExpression` シグネチャ              | `(value: string): string \| null` — オプション引数未追加 ✅              |
+| JSDocに「semantic validationは行わない」コメント | 7行目・56行目に存在 ✅                                                   |
+| 既存テストにセマンティック不正ケースなし         | SCV-01〜SCV-12に `"0 0 31 2 *"` 系なし ✅                                |
+| `cron-parser` 未インストール                     | `apps/desktop/package.json` に `cron-parser` なし（`node-cron` のみ） ✅ |
+| 関連ユーティリティの役割確認                     | `cronParser.ts`, `cronConverter.ts`, `cronHumanizer.ts` 存在確認 ✅      |
 
-## 機能要件
+## 機能概要
 
-| ID    | 要件                                                                                   | 優先度 |
-| ----- | -------------------------------------------------------------------------------------- | ------ |
-| FR-01 | `DescribeStep` のエクスポートを `wizard/index.ts` から削除する                         | 必須   |
-| FR-02 | `DescribeStepProps` の型エクスポートを `wizard/index.ts` から削除する                  | 必須   |
-| FR-03 | `GenerationMode` のインライン型定義を `wizard/index.ts` から削除する                   | 必須   |
-| FR-04 | `SkillInfoStepProps` の型エクスポートを `wizard/index.ts` に追加する                   | 必須   |
-| FR-05 | `SkillInfoStep.tsx` の `SkillInfoStepProps` interface に `export` キーワードを付与する | 必須   |
-| FR-06 | `GenerationMode` を `GenerateStep.tsx` から再エクスポートし型エラーを防ぐ              | 必須   |
-| FR-07 | `StepIndicator`/`GenerateStep`/`CompleteStep` のエクスポートを維持する                 | 必須   |
+`validateCronExpression` 関数に意味論的バリデーション（next-execution-time計算による到達可能性チェック）を追加する。
 
-## 非機能要件
+## 背景
 
-| ID     | 要件                                                        |
-| ------ | ----------------------------------------------------------- |
-| NFR-01 | `pnpm --filter @repo/desktop typecheck` がエラー 0 件で通過 |
-| NFR-02 | 既存テストが Green を維持すること                           |
-| NFR-03 | barrel export の循環参照が発生しないこと                    |
+現在の `validateCronExpression` は5フィールド構文チェックと各フィールドの値域のみを検証しており、`"0 0 31 2 *"`（2月31日）のような存在し得ない日付が通過してしまう。このようなスケジュールが設定された場合、条件が永久に満たされないため実行されない。
 
-## 現状調査結果
+## 受け入れ基準
 
-### 仕様書の想定と実際のコードの差分
+| AC番号 | 基準                                                                                   | 検証方法               |
+| ------ | -------------------------------------------------------------------------------------- | ---------------------- |
+| AC-1   | `validateCronExpression("0 0 31 2 *", { semantic: true })` がエラー文字列を返す        | テスト PASS            |
+| AC-2   | `validateCronExpression("0 0 * * *", { semantic: true })` 等の正常ケースは null を返す | テスト PASS            |
+| AC-3   | 既存テスト SCV-01〜SCV-12 が全件 PASS                                                  | `pnpm test` PASS       |
+| AC-4   | 意味論的不正ケースのテストが追加されカバレッジが向上                                   | テスト PASS + coverage |
+| AC-5   | `scheduleConfigValidator.ts` のJSDocが更新されsemantic オプションの説明が含まれる      | コードレビュー         |
 
-| 仕様書の想定                        | 実際の現状                                                | 対処         |
-| ----------------------------------- | --------------------------------------------------------- | ------------ |
-| `ConfigureStep` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `WizardOptions` を削除              | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `ConfigureStepProps` を削除         | すでに `index.ts` に存在しない（先行タスクで削除済み）    | スキップ     |
-| `SkillInfoStep` を追加              | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `ConversationRoundStep` を追加      | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `ConversationRoundStepProps` を追加 | すでに `index.ts` にエクスポートされている                | スキップ     |
-| `SkillInfoStepProps` を追加         | `SkillInfoStep.tsx` の interface が `export` されていない | 修正必要     |
-| `GenerationMode` を削除             | `SkillCreateWizard.tsx` が `wizard` から参照中            | 再転送で対応 |
+## スコープ
 
-### 依存ファイルの状態
+### 含む
 
-| ファイル                           | 状態                                                                      |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| `wizard/SkillInfoStep.tsx`         | 存在する。`SkillInfoStepProps` は `export` なしで定義されている           |
-| `wizard/ConversationRoundStep.tsx` | 存在する。`ConversationRoundStepProps` は `export interface` で公開済み   |
-| `wizard/DescribeStep.tsx`          | 存在する（廃止対象）。`GenerationMode` を `index.ts` から循環インポート中 |
-| `wizard/GenerateStep.tsx`          | `GenerationMode` 型を独自定義・エクスポートしている                       |
-| `wizard/ConfigureStep.tsx`         | 存在しない（先行タスクで削除済み）                                        |
+- `scheduleConfigValidator.ts` への意味論的検証ロジック追加
+- `ValidateCronOptions` インターフェース定義（`options?: { semantic?: boolean }`）
+- `cron-parser` ライブラリの導入
+- 既存テストへの意味論的不正ケースの追加
+
+### 含まない
+
+- バックエンド（`ScheduleStore` / `SkillScheduler`）の変更
+- IPC チャンネルの変更
+- UI の変更
+- `cronParser.ts`、`cronConverter.ts`、`cronHumanizer.ts` の変更
+- `validateTimezone` 関数の変更

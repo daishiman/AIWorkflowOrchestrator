@@ -114,7 +114,10 @@
       "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/resource-map.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/resource-map.md)",
       "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.claude/skills/aiworkflow-requirements/indexes/topic-map.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260411-092617-wt-4/.agents/skills/aiworkflow-requirements/indexes/topic-map.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/indexes/keywords.json .agents/skills/aiworkflow-requirements/indexes/keywords.json)",
-      "Bash(cp .claude/skills/aiworkflow-requirements/indexes/topic-map.md .agents/skills/aiworkflow-requirements/indexes/topic-map.md)"
+      "Bash(cp .claude/skills/aiworkflow-requirements/indexes/topic-map.md .agents/skills/aiworkflow-requirements/indexes/topic-map.md)",
+      "Bash(echo '')",
+      "Bash(echo '# codex: --dangerously-bypass-approvals-and-sandbox をデフォルトで有効化')",
+      "Bash(echo 'codex\\(\\) { /opt/homebrew/bin/codex --dangerously-bypass-approvals-and-sandbox \"$@\"; }')"
     ],
     "deny": [],
     "ask": []

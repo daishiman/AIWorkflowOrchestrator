@@ -1,109 +1,91 @@
-# Phase 12: 実装ガイド — UT-SKILL-WIZARD-W2-seq-03b
+# 実装ガイド - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## Part 1: 中学生向けの説明
+## Part 1: 中学生レベルの説明
 
-### この変更は何か
+### たとえ話
 
-画面そのものを作り替えたのではなく、部品をまとめて外に見せる「案内板」を整理した変更です。
+カレンダーにない日付は、どれだけ待っても来ません。たとえば「2月31日」は存在しないので、「毎年2月31日に実行してください」と言っても、実行日は永遠に来ません。
 
-たとえば、学校の職員室の前にある案内板を思い浮かべると分かりやすいです。
-部屋そのものは変えていなくても、案内板に古い教室名が残っていると、見る人は間違った部屋へ行きます。
-今回やったことは、その案内板から古い名前を消して、今も使う名前だけを正しく並べ直したのに近いです。
+### 何が変わったか
 
-### なぜ必要だったか
+`validateCronExpression` に `semantic` という追加スイッチを入れました。
 
-- `wizard/index.ts` に古い案内が残ると、別のファイルが間違った部品名を使いやすい
-- `GenerationMode` を 2 か所で持つと、どちらが本物か分かりにくい
-- `SkillInfoStepProps` が外から見えないと、正しい型を安全に使えない
+- `semantic` を付けないときは、今まで通り「書き方が正しいか」だけを見ます
+- `semantic: true` を付けたときだけ、「その日付が本当に存在するか」まで見ます
 
-### 何を変えたか
+### 変更ファイル
 
-| 変更               | 内容                                                                                |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| 古い案内を外した   | `DescribeStep` / `DescribeStepProps` / inline `GenerationMode` を barrel から外した |
-| 新しい案内を足した | `SkillInfoStepProps` を公開した                                                     |
-| 1 か所にまとめた   | `GenerationMode` は `GenerateStep.tsx` を正本にした                                 |
-| 迷いを減らした     | deprecated `DescribeStep.tsx` も barrel ではなく実装元から型を読むようにした        |
+| ファイル                                                                | 変更種別 | 変更内容                                                                                                               |
+| ----------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/utils/scheduleConfigValidator.ts`            | 修正     | `ValidateCronOptions` インターフェース追加、`validateCronExpression` シグネチャ拡張、semantic ロジック追加、JSDoc 更新 |
+| `apps/desktop/src/__tests__/utils/scheduleConfigValidator.edge.test.ts` | 修正     | TC-01〜TC-16（semantic validation テスト）追加                                                                         |
+| `apps/desktop/package.json`                                             | 修正     | `cron-parser@5.5.0` を `dependencies` に追加                                                                           |
 
-### 見た目への影響
+## Part 2: 技術者向けの説明
 
-見た目は変えていません。
-そのため、代表画面のスクリーンショットを確認し、「案内板だけ直して部屋の見た目は変わっていない」ことを確かめました。
+### API 変更
 
-- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
-- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
-
-## Part 2: 技術者向けの詳細
-
-### 変更対象
-
-- `apps/desktop/src/renderer/components/skill/wizard/index.ts`
-- `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`
-- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/wizard-exports.test.ts`
-
-### current contract
-
-```ts
-export { SkillInfoStep } from "./SkillInfoStep";
-export type { SkillInfoStepProps } from "./SkillInfoStep";
-
-export type {
-  GenerateStepProps,
-  GenerationError,
-  GenerationStage,
-  GenerationErrorCode,
-  GenerationMode,
-} from "./GenerateStep";
-```
-
-```ts
-export interface SkillInfoStepProps {
-  formData: SkillInfoFormData;
-  onFormDataChange: (data: SkillInfoFormData) => void;
-  onNext: () => void;
+```typescript
+export interface ValidateCronOptions {
+  /** true の場合、cron-parser を使用して意味論的バリデーション（next-execution-time 計算）を実行する */
+  semantic?: boolean;
 }
 ```
 
-### 使用例
-
-```ts
-import type { GenerationMode, SkillInfoStepProps } from "./wizard";
+```typescript
+/**
+ * cron 式を検証する。
+ * @param value - 検証する cron 式（5フィールド形式）
+ * @param options - オプション（省略時は従来の構文・値域チェックのみ）
+ * @param options.semantic - true の場合、next-execution-time 計算による意味論的バリデーションを追加する
+ * @returns エラーメッセージ文字列（エラーなしの場合は null）
+ */
+export function validateCronExpression(
+  value: string,
+  options?: ValidateCronOptions,
+): string | null;
 ```
 
-`SkillCreateWizard.tsx` は `GenerationMode` を barrel 経由で参照し続ける。
-deprecated `DescribeStep.tsx` は barrel ループを避けるため、`./GenerateStep` から直接 `GenerationMode` を読む。
+### 実装の要点
 
-### エラーハンドリングと失敗モード
+```typescript
+import { CronExpressionParser } from "cron-parser";
 
-| 失敗モード                                           | 影響                                                                  | 防ぎ方                                            |
-| ---------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------- |
-| `GenerationMode` の再転送を消す                      | `SkillCreateWizard.tsx` と deprecated `DescribeStep.tsx` が型エラー化 | `GenerateStep.tsx` を正本として再転送を維持する   |
-| `SkillInfoStepProps` を非公開に戻す                  | barrel 経由の型 import が壊れる                                       | `wizard-exports.test.ts` で type-level に固定する |
-| deprecated `DescribeStep.tsx` が barrel を再参照する | 依存がねじれ、保守時に誤読しやすい                                    | `./GenerateStep` へ直接依存させる                 |
+if (options?.semantic === true) {
+  try {
+    const interval = CronExpressionParser.parse(trimmed);
+    interval.next();
+  } catch {
+    return "指定した日付の組み合わせは存在しません（例: 2月31日）";
+  }
+}
+```
 
-### エッジケース
+- `semantic` は opt-in です。既存呼び出しはそのまま動きます
+- `validateSkillWizardScheduleConfig` は変更していません。呼び出し元が必要な場合だけ `semantic` を渡します
+- `cron-parser@5.5.0` は day-of-week を使った救済を保証しません。安全側に倒して、到達不能と判断したものはエラーにしています
 
-- `ConfigureStep` / `WizardOptions` / `ConfigureStepProps` は current repo では既に存在しない
-- `DescribeStep.tsx` 自体は互換性維持のため残っているが、barrel からは公開しない
-- UI 実装変更ではないため、Phase 11 は representative screenshot audit と static verification の組み合わせで閉じた
+### 使い方
 
-### 設定値・固定値
+```typescript
+// 従来どおり: 構文・値域チェックのみ
+validateCronExpression("0 0 31 2 *"); // null
 
-| 項目             | 値                    | 役割                                      |
-| ---------------- | --------------------- | ----------------------------------------- |
-| `GenerationMode` | `"llm" \| "template"` | 生成方式の型                              |
-| export test 件数 | `13`                  | runtime / negative / type contract の合計 |
+// 意味論チェックを有効化
+validateCronExpression("0 0 31 2 *", { semantic: true });
+// → "指定した日付の組み合わせは存在しません（例: 2月31日）"
 
-### 検証結果
+// 到達可能な式は通す
+validateCronExpression("0 0 * * *", { semantic: true }); // null
+```
 
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1`
-  - `13 passed (13)`
-- `pnpm --filter @repo/desktop typecheck`
-  - エラー 0 件
+### テスト結果
 
-### 依存タスク
+- 全 42 テスト PASS（TC-01〜TC-16 + SCV-01〜SCV-12 + エッジケース）
+- TypeScript 型チェック PASS
+- ESLint PASS（0 errors）
+- カバレッジ: Line 100% / Branch 86.84%（目標 90%/85% 達成）
 
-- W1-par-02a（SkillInfoStep）
-- W1-par-02b（ConversationRoundStep）
-- W1-par-02c（CompleteStep）
+## 関連 Issue
+
+[#2074](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2074)

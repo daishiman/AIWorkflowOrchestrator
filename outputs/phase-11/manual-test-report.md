@@ -1,36 +1,41 @@
-# Phase 11: 手動テストレポート — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 11: 手動テストレポート — TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+## 判定
+
+PASS
 
 ## テスト方式
 
-representative screenshot reuse + static contract verification
-
-- current task は UI 実装変更ではなく export contract 更新
-- screenshot verification 要求があるため、既存の Step 0 / Step 1 代表画面を current workflow の証跡へ再リンクした
-- contract 変更は targeted vitest と `typecheck` で再確認した
+NON_VISUAL。`cronConverter.ts` は純粋関数であり、UI 変更とスクリーンショットは不要。
 
 ## 実施内容
 
-- `wizard/index.ts` の公開 API 差分確認
-- `SkillInfoStepProps` の barrel export 化確認
-- `GenerationMode` の `GenerateStep.tsx` 由来 re-export 確認
-- Step 0 / Step 1 の代表スクリーンショット 2 枚の目視確認
-- deprecated `DescribeStep.tsx` の型 import を barrel 依存から実装元へ寄せた後の再検証
+- `apps/desktop/src/renderer/utils/cronConverter.ts` を確認した
+- `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts` を確認した
+- `apps/desktop/src/__tests__/utils/cronConverter.test.ts` を確認した
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/utils/cronConverter.edge.test.ts src/__tests__/utils/cronConverter.test.ts --reporter=verbose` を試行した
 
 ## 実施サマリー
 
-| 項目                            | 結果 |
-| ------------------------------- | ---- |
-| typecheck                       | PASS |
-| targeted export test            | PASS |
-| representative screenshot audit | PASS |
-| current-task evidence sync      | PASS |
+| 項目             | 結果    |
+| ---------------- | ------- |
+| source review    | PASS    |
+| regression scope | PASS    |
+| visual review    | N/A     |
+| runtime vitest   | BLOCKED |
+| JSDoc coverage   | PASS    |
 
 ## 所見
 
-- UI 崩れを示す兆候は見つからなかった
-- 既存 screenshot は W1-par-02b 由来だが、current diff が UI 非変更であるため representative evidence として妥当
-- current task の `screenshot-plan.json` / `phase11-capture-metadata.json` / `evidence-index.md` へ再同期した
+- weekly 空曜日ガードは `return ""` で実装されている
+- 既存の weekly 正常系、daily、monthly、custom は test file で保持されている
+- runtime vitest は esbuild host/binary mismatch で停止したが、product code の current facts とは切り離して扱った
+
+## 視覚証跡
+
+- `outputs/phase-11/ui-sanity-visual-review.md`
+- `outputs/phase-11/phase11-capture-metadata.json`
 
 ## 結論
 
-Phase 11 は PASS。
+source-level の確認は完了し、Phase 11 は current facts と整合している。

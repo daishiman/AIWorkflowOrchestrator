@@ -1,15 +1,15 @@
-# Phase 1: 受け入れ基準 — UT-SKILL-WIZARD-W2-seq-03b
+# 受け入れ基準 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 受け入れ基準一覧
+| AC番号 | 基準                                                                                           | 検証方法                                   | 優先度 |
+| ------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------ | ------ |
+| AC-1   | `validateCronExpression("0 0 31 2 *", { semantic: true })` がエラー文字列（非 null）を返す     | テスト TC-01 PASS                          | 最高   |
+| AC-2   | `validateCronExpression("0 0 * * *", { semantic: true })` 等の正常ケースは引き続き null を返す | テスト TC-04 PASS                          | 高     |
+| AC-3   | 既存テスト SCV-01〜SCV-12 が全件 PASS する                                                     | `pnpm test` 全件 PASS                      | 最高   |
+| AC-4   | 意味論的不正ケースのテストが追加されカバレッジが向上している                                   | テスト PASS + coverage Line≥90% Branch≥85% | 高     |
+| AC-5   | `scheduleConfigValidator.ts` のJSDocが更新され semantic オプションの説明が含まれる             | コードレビュー                             | 中     |
 
-| ID    | 受け入れ基準                                                                                 | 検証方法                                  |
-| ----- | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| AC-01 | `wizard/index.ts` から `DescribeStep` のエクスポートが削除されていること                     | grep で非存在確認 + TypeScript コンパイル |
-| AC-02 | `wizard/index.ts` から `DescribeStepProps` の型エクスポートが削除されていること              | grep で非存在確認 + TypeScript コンパイル |
-| AC-03 | `wizard/index.ts` から `GenerationMode` のインライン定義が削除されていること                 | grep で非存在確認                         |
-| AC-04 | `wizard/index.ts` から `SkillInfoStepProps` の型エクスポートが存在すること                   | TypeScript コンパイル + import テスト     |
-| AC-05 | `SkillInfoStep.tsx` の `SkillInfoStepProps` が `export` 付きで定義されていること             | grep で確認                               |
-| AC-06 | `GenerationMode` が `wizard/index.ts` から引き続きインポート可能であること（再エクスポート） | TypeScript コンパイルで確認               |
-| AC-07 | `StepIndicator`/`GenerateStep`/`CompleteStep` が引き続きエクスポートされていること           | TypeScript コンパイル + テスト            |
-| AC-08 | `pnpm --filter @repo/desktop typecheck` がエラー 0 件で通過すること                          | CI 実行                                   |
-| AC-09 | `DescribeStep.tsx` に `@deprecated` JSDoc が付与されていること                               | コードレビュー                            |
+## Phase 4〜11 引き継ぎ事項
+
+- `"0 0 31 2 *"` シナリオを Phase 4（テスト作成）のTDDケースとして予約
+- ライブラリ評価計画（`cron-parser` 推奨）を Phase 2 設計のインプットとして提供
+- NON_VISUAL 評価方針を Phase 11 に引き継ぐ（スクリーンショット不要・ロジックテストのみ）

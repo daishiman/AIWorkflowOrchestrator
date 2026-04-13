@@ -6,7 +6,7 @@
 ## 仕様書インデックス
 | ファイル | 役割 | 主な見出し |
 | --- | --- | --- |
-| [api-ipc-system-core.md](api-ipc-system-core.md) | core specification | AI/チャット IPC チャネル / Slide IPC API（スライド同期） / Workspace File Watch IPC API（TASK-UI-04A） / Electron IPC API設計 |
+| [api-ipc-system-core.md](api-ipc-system-core.md) | core specification | AI/チャット IPC チャネル / Analytics IPC API（W3-seq-04 / UT-W3-ANALYTICS-ADAPTER-001） / Slide IPC API（スライド同期） / Workspace File Watch IPC API（TASK-UI-04A） / Electron IPC API設計 |
 | [api-ipc-system-details.md](api-ipc-system-details.md) | detail specification | エンティティ抽出サービス (NER) |
 | [api-ipc-system-history.md](api-ipc-system-history.md) | history bundle | 関連ドキュメント / 完了タスク / 変更履歴 |
 

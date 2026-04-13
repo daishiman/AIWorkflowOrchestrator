@@ -1,32 +1,17 @@
-# Phase 12: 未タスク検出 — UT-SKILL-WIZARD-W2-seq-03b
+# 未タスク検出 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 判定結果
+## 検出結果: 未タスクなし
 
-- 新規未タスク: 0 件
-- 既存 backlog 参照: 1 件
-
-## current task で未タスク化しなかった項目
-
-| 項目                          | 理由                                                                         |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| `DescribeStep.tsx` の物理削除 | 既に `docs/30-workflows/issues/issue-2054.md` で follow-up が formalize 済み |
-| `CATEGORY_VALUES` の重複定義  | current task の本質は export contract であり、機能整合は成立している         |
-
-## 既存 backlog 参照
-
-| パス                                                                         | 内容                                            |
-| ---------------------------------------------------------------------------- | ----------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` | `W2-seq-03b` 関連の cleanup backlog が既に存在  |
-| `docs/30-workflows/issues/issue-2054.md`                                     | deprecated file の物理削除を別 issue として管理 |
-
-## 監査観点
-
-| 観点                          | 判定 | 根拠                                                |
-| ----------------------------- | ---- | --------------------------------------------------- |
-| code TODO/FIXME/HACK/XXX      | PASS | 対象コードに該当なし                                |
-| current diff 起因の follow-up | PASS | export contract と Phase 11-13 証跡の同期で解消済み |
-| stale artifact 混入           | PASS | Phase 12/13 の別 task 残骸を削除済み                |
+| 検出ソース                     | 確認内容                                               | 結果     | 補足                              |
+| ------------------------------ | ------------------------------------------------------ | -------- | --------------------------------- |
+| 元タスク仕様書のスコープ外事項 | バックエンド変更（`ScheduleStore` / `SkillScheduler`） | 対象外   | 本タスクでは変更不要              |
+| 元タスク仕様書のスコープ外事項 | IPC チャンネルの変更                                   | 対象外   | 本タスクでは変更不要              |
+| Phase 10 MINOR 指摘事項        | `cron-parser` の挙動差分                               | 解決済み | Phase 5 で safe-side の判定に確定 |
+| コードコメントの TODO/FIXME    | `scheduleConfigValidator.ts` と関連テスト              | 該当なし | 未タスク化不要                    |
+| 将来の拡張候補                 | DOM/DOW の説明強化                                     | 保留     | 現時点では優先度低                |
 
 ## 結論
 
-current task 起因の新規未タスクはない。
+- 新規タスク化が必要な項目はありません
+- `validateSkillWizardScheduleConfig` は呼び出し元判断で semantic を有効化する設計のままで問題ありません
+- `options.semantic` の自動有効化は、現在の NON_VISUAL 範囲では不要です

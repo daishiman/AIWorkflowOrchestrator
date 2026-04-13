@@ -1,32 +1,29 @@
-# Phase 12: スキルフィードバックレポート — UT-SKILL-WIZARD-W2-seq-03b
+# スキルフィードバックレポート - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 総評
+## 1. Phase ワークフローの有効性
 
-改善点あり。
+- Phase 1 から Phase 12 までの分割は有効でした
+- 特に Phase 2 の設計、Phase 4 の TDD、Phase 5 の実装、Phase 11 の NON_VISUAL 確認が分離されていたため、原因追跡がしやすかったです
+- 一方で、Phase 2 時点のライブラリ仕様確認が甘く、後続で semantics の前提修正が発生しました
 
-## 今回有効だったガード
+## 2. TDD サイクルの効果
 
-| 観点                            | 効果                                                             |
-| ------------------------------- | ---------------------------------------------------------------- |
-| barrel export の negative test  | 古い export が戻る回帰を止められる                               |
-| type-level test                 | `SkillInfoStepProps` と `GenerationMode` の型 drift を止められる |
-| representative screenshot audit | UI 非変更 task でも screenshot verification 要求へ対応できる     |
-| stale artifact 削除             | Phase 12/13 の false green を防げる                              |
+- 有効でした
+- TC-01 で不正ケースを先に固定したことで、`"0 0 31 2 *"` を安全側に拒否する実装へ収束できました
+- TC-02〜TC-07 で後方互換と正常系を同時に守れたのも良かったです
 
-## 改善として残した知見
+## 3. NON_VISUAL 判定の妥当性
 
-| 項目                       | 内容                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------ |
-| deprecated file の依存方向 | `DescribeStep.tsx` のような残置ファイルは barrel を再参照させず、実装元へ直接依存させる          |
-| export task の Phase 11    | UI 変更がなくても screenshot verification 要求がある場合は代表証跡を current task に再リンクする |
-| Phase 12 hygiene           | canonical 6 成果物以外の stale artifact は同一ターンで除去する                                   |
+- 妥当でした
+- 今回の変更は renderer utility のバリデーション層のみで、スクリーンショットは品質判断に寄与しません
+- `validateCronExpression` の直接検証で十分でした
 
-## 改善点なしとしなかった理由
+- 採用自体は妥当でした
+- ただし `cron-parser@5.5.0` の day-of-week / day-of-month の扱いは事前想定より厳しく、想定どおりに day-of-week で救済できるわけではありませんでした
+- 結果として、`semantic: true` は「到達可能性の安全側判定」として使うのが適切でした
 
-- stale artifact 混入が実際に発生していた
-- representative screenshot reuse の current-task 同期が抜けていた
-- type export を runtime test だけで閉じると drift を見逃しやすい
+## 5. 改善提案
 
-## 結論
-
-`barrel export task でも Phase 11/12/13 の証跡同期まで含めて閉じる` という運用ガードが有効だと確認できた。
+- Phase 2 の P50 チェックに「ライブラリの day-of-week / day-of-month 実測確認」を追加する
+- Phase 12 のサマリーに、`LOGS.md` と `topic-map.md` を含む外部同期一覧を必ず載せる
+- もし今後 `validateCronExpression` の semantic を UI から有効化するなら、呼び出し経路を別タスクで明示する

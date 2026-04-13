@@ -1,46 +1,40 @@
-# Phase 12: タスク仕様準拠チェック — UT-SKILL-WIZARD-W2-seq-03b
+# Phase 12 タスク仕様準拠チェック - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
 
-## 実測値
+## 全フェーズ完了確認
 
-| 項目                                                                                                                        | 結果             |
-| --------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts --maxWorkers 1` | `13 passed (13)` |
-| `pnpm --filter @repo/desktop typecheck`                                                                                     | PASS             |
-| representative screenshot review                                                                                            | PASS             |
+| Phase | 名称                 | ステータス                  | 成果物存在確認                                                                                                                                                                    |
+| ----- | -------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | 要件定義             | completed ✅                | requirements-definition.md, acceptance-criteria.md, library-evaluation-plan.md                                                                                                    |
+| 2     | 設計                 | completed ✅                | api-design.md, library-comparison.md, design-consistency-check.md                                                                                                                 |
+| 3     | 設計レビューゲート   | completed ✅                | design-review-result.md（PASS）                                                                                                                                                   |
+| 4     | テスト作成           | completed ✅                | test-plan.md, test-cases.md                                                                                                                                                       |
+| 5     | 実装                 | completed ✅                | implementation-plan.md, change-log.md                                                                                                                                             |
+| 6     | テスト拡充           | completed ✅                | expanded-test-cases.md, regression-test-results.md                                                                                                                                |
+| 7     | テストカバレッジ確認 | completed ✅                | coverage-report.md（Line 100%, Branch 86.84%）                                                                                                                                    |
+| 8     | リファクタリング     | completed ✅                | refactoring-log.md                                                                                                                                                                |
+| 9     | 品質保証             | completed ✅                | quality-report.md（全 AC PASS）                                                                                                                                                   |
+| 10    | 最終レビューゲート   | completed ✅                | final-review-result.md（PASS）                                                                                                                                                    |
+| 11    | 手動テスト検証       | completed ✅                | manual-test-result.md, manual-test-checklist.md, discovered-issues.md（NON_VISUAL）                                                                                               |
+| 12    | ドキュメント更新     | completed ✅                | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md, phase12-task-spec-compliance-check.md |
+| 13    | PR作成               | pending（ユーザー承認待ち） | —                                                                                                                                                                                 |
 
-## canonical 6 成果物
+## 実装反映確認
 
-| 成果物                                  | 状態 |
-| --------------------------------------- | ---- |
-| `implementation-guide.md`               | ✅   |
-| `system-spec-update-summary.md`         | ✅   |
-| `documentation-changelog.md`            | ✅   |
-| `unassigned-task-detection.md`          | ✅   |
-| `skill-feedback-report.md`              | ✅   |
-| `phase12-task-spec-compliance-check.md` | ✅   |
+| ディレクトリ                        | 変更ファイル                           | 確認 |
+| ----------------------------------- | -------------------------------------- | ---- |
+| `apps/desktop/src/renderer/utils/`  | `scheduleConfigValidator.ts`           | ✅   |
+| `apps/desktop/src/__tests__/utils/` | `scheduleConfigValidator.edge.test.ts` | ✅   |
+| `apps/desktop/`                     | `package.json`（cron-parser追加）      | ✅   |
 
-## Phase 11 / 12 / 13 の同期
+## 補足同期確認
 
-| 観点                                 | 判定 | 根拠                                                                                                      |
-| ------------------------------------ | ---- | --------------------------------------------------------------------------------------------------------- |
-| Phase 11 evidence                    | ✅   | `manual-test-result.md` / `manual-test-report.md` / `evidence-index.md` / `phase11-capture-metadata.json` |
-| `phase-12-documentation.md` 実体同期 | ✅   | task root に新規作成済み                                                                                  |
-| `artifacts.json` parity              | ✅   | `docs/.../artifacts.json` と `outputs/artifacts.json` を current task へ再同期                            |
-| stale artifact 除去                  | ✅   | 別 task の Phase 12/13 残骸を削除                                                                         |
-| Phase 13 blocked 維持                | ✅   | user approval 未取得のため blocked 記録のみ                                                               |
+| 項目                                                          | 確認     |
+| ------------------------------------------------------------- | -------- |
+| `.claude/skills/task-specification-creator/LOGS.md`           | 更新済み |
+| `.claude/skills/aiworkflow-requirements/LOGS.md`              | 更新済み |
+| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` | 更新済み |
 
-## 仕様要件との突合
+## 仕様書準拠判定: **PASS**
 
-| 要件                                                     | 判定 | 根拠                                   |
-| -------------------------------------------------------- | ---- | -------------------------------------- |
-| `DescribeStep` / `DescribeStepProps` が barrel 非公開    | ✅   | `wizard/index.ts`                      |
-| inline `GenerationMode` 削除 + `GenerateStep` 由来再転送 | ✅   | `wizard/index.ts` / `GenerateStep.tsx` |
-| `SkillInfoStepProps` が barrel から import 可能          | ✅   | `SkillInfoStep.tsx` / type-level test  |
-| deprecated `DescribeStep.tsx` の依存整理                 | ✅   | `DescribeStep.tsx`                     |
-| コミット / PR 未実行                                     | ✅   | local docs 更新のみ                    |
-
-## 総合判定
-
-**PASS**
-
-Phase 12 は current facts に同期済み。Phase 13 は blocked のまま維持する。
+全 Phase 1〜12 の成果物が存在し、実装と外部同期も完了しています。
+Phase 13（PR作成）はユーザー承認待ちです。
