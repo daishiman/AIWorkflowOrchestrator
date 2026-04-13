@@ -1,6 +1,62 @@
-# 完了タスク記録 — 2026-04-11
+# 完了タスク記録 — 2026-04-13
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正（2026-04-13）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-FEEDBACK-001                                                                   |
+| 完了日     | 2026-04-13                                                                                 |
+| タスク種別 | implementation（VISUAL / feedback fix）                                                    |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実装内容
+
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` に `useFetchSkills` を導入し、LLM モード成功時に `await fetchSkills()` を追加
+- `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx` で `skillPath === null` の場合はエラーUIを返すように変更
+- `CompleteStep` の成功ヘッダーは `skillPath !== null` の場合のみ表示するように是正
+- `outputs/phase-11/` に VISUAL 証跡 4枚と `phase11-capture-metadata.json` を保存
+- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / feedback / compliance を current facts に同期
+
+#### Phase 11/12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                       |
+| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+
+#### 検証証跡
+
+- `apps/desktop/scripts/capture-task-skill-fix-feedback-phase11.mjs`: PASS
+- `outputs/phase-11/screenshots/skill-list-updated-after-llm.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-error.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-no-success.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-success.png`: PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `outputs/artifacts.json` / `docs/30-workflows/WB-par-02b-fix-feedback/artifacts.json`: parity PASS
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                 | 解決策                                                                 |
+| --- | ---------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | 画面証跡は Electron ではなく build から取る必要があった | Vite + Playwright の capture script を追加して current_build を固定した |
+| 2   | `skillPath===null` と `skillPath===""` の扱いを混同しやすい | 今回は `null` ガードに限定し、未タスク化は行わない方針に整理した      |
+
+#### lessons-learned
+
+- `phase11-capture-metadata.json` と screenshot path は Phase 12 implementation guide へ必ず逆参照する
+- `fetchSkills` 呼び忘れは LLM 成功パスの regression として test case で固定する
 
 ---
 

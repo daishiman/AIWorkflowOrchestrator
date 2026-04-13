@@ -40,7 +40,7 @@ WA-seq-01-fix-dataflow/        ← Wave A（直列・最優先・他の全タス
 WB-par-02a-fix-mode-mgmt/      ← Wave B（Wave A完了後・Phase 1-4/6-13 は並列、Phase 5 は共有ファイル調整が必要）
   └─ generationMode管理整理（問題1+9+10）
 
-WB-par-02b-fix-feedback/       ← Wave B（Wave A完了後・Phase 1-4/6-13 は並列、Phase 5 は共有ファイル調整が必要）
+../WB-par-02b-fix-feedback/    ← Wave B（Wave A完了後・Phase 1-4/6-13 は並列、Phase 5 は共有ファイル調整が必要）
   └─ fetchSkills+エラー表示修正（問題6+8+14+20）
 
 WC-par-03a-fix-state-detail/   ← Wave C（Wave B完了後・Phase 1-4/6-13 は並列、Phase 5 は共有ファイル調整が必要）

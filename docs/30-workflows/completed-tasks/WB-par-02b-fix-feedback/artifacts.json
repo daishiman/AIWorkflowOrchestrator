@@ -2,13 +2,14 @@
   "taskId": "TASK-SW-FIX-FEEDBACK-001",
   "taskName": "スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正",
   "taskType": "implementation",
-  "status": "pending",
+  "status": "phase12_completed",
   "createdAt": "2026-04-12",
+  "completedAt": "2026-04-13",
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-1/requirements-definition.md",
         "outputs/phase-1/acceptance-criteria.md",
@@ -18,7 +19,7 @@
     {
       "phase": 2,
       "name": "設計",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-2/design-spec.md",
         "outputs/phase-2/change-target-files.md",
@@ -28,13 +29,13 @@
     {
       "phase": 3,
       "name": "設計レビュー",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-3/design-review-report.md"]
     },
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-4/test-cases.md",
         "outputs/phase-4/test-command-suite.md"
@@ -43,55 +44,59 @@
     {
       "phase": 5,
       "name": "実装",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-5/implementation-record.md"]
     },
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-6/expanded-test-cases.md"]
     },
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-7/coverage-report.md"]
     },
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-8/refactoring-record.md"]
     },
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-9/quality-report.md"]
     },
     {
       "phase": 10,
       "name": "最終レビュー",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-10/final-review-report.md"]
     },
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "pending",
+      "status": "completed",
       "visualType": "VISUAL",
       "artifacts": [
         "outputs/phase-11/manual-test-result.md",
         "outputs/phase-11/manual-test-checklist.md",
-        "outputs/phase-11/screenshots/",
-        "outputs/phase-11/discovered-issues.md"
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/skill-list-updated-after-llm.png",
+        "outputs/phase-11/screenshots/complete-step-null-error.png",
+        "outputs/phase-11/screenshots/complete-step-null-no-success.png",
+        "outputs/phase-11/screenshots/complete-step-success.png"
       ]
     },
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/system-spec-update-summary.md",
@@ -104,7 +109,7 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "pending",
+      "status": "blocked",
       "artifacts": ["outputs/phase-13/pr-checklist.md"]
     }
   ]

@@ -3524,9 +3524,7 @@ node scripts/list-specs.js --topics
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
-| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4690,7 +4688,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4816,10 +4814,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L19 |
-| 完了タスク（2026-03後半） | L194 |
-| 完了タスク（機能別アーカイブ） | L202 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L311 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L20 |
+| 完了タスク（2026-03後半） | L195 |
+| 完了タスク（機能別アーカイブ） | L203 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
 
 ### references/task-workflow-history.md
 
@@ -4853,9 +4851,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L12 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L48 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L50 |
 
 ### references/testing-accessibility.md
 

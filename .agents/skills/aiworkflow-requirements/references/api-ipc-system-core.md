@@ -93,14 +93,14 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | Renderer Adapter | `apps/desktop/src/renderer/utils/analyticsAdapter.ts` | offline queue（max 500 / TTL 7日）、store 由来 `analyticsOptOut` 判定、online 復帰 flush |
 | Preload Channel | `apps/desktop/src/preload/channels.ts` | `IPC_CHANNELS.ANALYTICS_SEND = "analytics:send"` と `ALLOWED_INVOKE_CHANNELS` 登録 |
 | Preload API | `apps/desktop/src/preload/index.ts` | `analyticsAPI.send(request)` を `contextBridge` 公開 |
-| Main IPC | `apps/desktop/src/main/ipc/analyticsHandler.ts` | payload 検証 + `analyticsOptOut` 最終判定 + 開発時ログ記録 |
+| Main IPC | `apps/desktop/src/main/ipc/analyticsHandler.ts` | payload 検証 + `analyticsOptOut` 最終判定 + 開発時ログ記録 + `sendToAnalyticsProvider` による production-only HTTP POST（`ANALYTICS_ENDPOINT_URL` / `AbortController` 5000ms / 失敗は握り潰し） |
 | Main Registry | `apps/desktop/src/main/ipc/index.ts` | `registerAnalyticsHandlers()` で起動時登録 |
 
 ### セキュリティ・運用ルール
 
 - opt-out は Renderer と Main の二重判定で強制する
 - store 読み取り失敗時は safe-side で送信抑止する
-- 本チャネルは fire-and-forget で扱うが、handler 側はエラーを throw せず `success: false` を返す
+- 本チャネルは fire-and-forget で扱うが、handler 側は validation failure のみ `success: false` を返し、HTTP 送信失敗は握り潰して `success: true` を維持する
 
 ---
 
