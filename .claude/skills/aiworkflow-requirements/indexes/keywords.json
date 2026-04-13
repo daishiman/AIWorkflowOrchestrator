@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2938,
+  "totalKeywords": 2939,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7542,7 +7542,8 @@
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
-      "task-workflow-completed-skill-create-ui-integration.md"
+      "task-workflow-completed-skill-create-ui-integration.md",
+      "ui-ux-feature-components-core.md"
     ],
     "channel": [
       "lessons-learned-current-2026-04.md",
@@ -7717,7 +7718,8 @@
     ],
     "SCHEDULE": [
       "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04e.md"
+      "task-workflow-completed-recent-2026-04e.md",
+      "ui-ux-feature-components-core.md"
     ],
     "VISUAL": [
       "lessons-learned-current-2026-04.md"
@@ -7743,7 +7745,8 @@
     ],
     "CRON": [
       "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04e.md"
+      "task-workflow-completed-recent-2026-04e.md",
+      "ui-ux-feature-components-core.md"
     ],
     "SEMANTIC": [
       "lessons-learned-current-2026-04.md"
@@ -7753,6 +7756,15 @@
     ],
     "cron": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "VisualCronPicker": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md"
+    ],
+    "validation": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "WEEKGRD": [
       "lessons-learned-current-2026-04.md"
@@ -13561,9 +13573,6 @@
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "compatibility": [
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
-    ],
-    "validation": [
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "chain": [

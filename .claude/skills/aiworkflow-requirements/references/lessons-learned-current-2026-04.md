@@ -891,6 +891,42 @@
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts | keys' artifacts.json` と `outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 |
 
+---
+
+## TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+### L-CRON-UI-001: visual validation の証跡は初期値注入で固定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | monthly invalid の screenshot を live input の操作だけで再現しようとすると、visual mode の状態がぶれやすく、証跡が安定しなかった |
+| 原因       | screenshot harness の state 固定がなく、direct input / custom cron と visual validation の境界が曖昧だった |
+| 解決策     | `value=` 初期値注入で visual mode を固定し、monthly invalid / valid を同じハーネスで再現する |
+| 再発防止   | 画面証跡は入力経路と初期 state を capture metadata へ固定する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-CRON-UI-002: 設計文言・実装文言・証跡文言を一致させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `1〜31` の月間エラー文言が design / implementation / evidence で微妙に揺れると、レビュー時に「どれが正か」が分かりにくくなる |
+| 原因       | UI ガイド、コンポーネント契約、手動テスト記録を別々に更新していた |
+| 解決策     | 月間エラー文言を 1 つの正本として扱い、UI ガイド・コンポーネント契約・Phase 11/12 証跡を完全一致させる |
+| 再発防止   | validation copy は paraphrase せず、同一文言を正本から転記する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-CRON-UI-003: 見た目差分だけの改善は別タスクに分離する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | weekly / monthly の alert で `text-xs` / `text-sm` のような細かな差分が、機能完了の主題と混ざりやすい |
+| 原因       | 行動差分とスタイル差分を同じ完了記録に閉じ込めたため、レビューの論点が広がった |
+| 解決策     | style-only の統一は `TASK-CRON-ERROR-STYLE-UNIFICATION-001`、direct input 側は `TASK-CRON-CUSTOM-VALIDATION-001` として別タスク化する |
+| 再発防止   | micro-style の調整は main task から切り出し、優先度と影響を分けて管理する |
+| 関連タスク | TASK-CRON-ERROR-STYLE-UNIFICATION-001 / TASK-CRON-CUSTOM-VALIDATION-001 |
+
+---
+
 ## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
 - タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
 - 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
@@ -969,4 +1005,53 @@
 | 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
 | 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
+
+---
+
+## TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UIバリデーション 教訓（2026-04-13）
+
+### L-VALCROP-001: UI層とバリデーション責務分離
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `cronConverter` 純粋関数と UI層のバリデーション責務が混在すると、UI固有のエラーフィードバックを純粋関数側に持ち込んでしまい、関数の副作用が増える |
+| 解決策     | `cronConverter` は純粋関数ガード（例: weekdays=[]時にInvalidConfigErrorをスロー）に専念し、UI層でのエラーメッセージ表示・`onValidationChange` コールバック通知は `VisualCronPicker` コンポーネントが担当する |
+| 標準ルール | 純粋関数は入力→出力の変換のみ。ユーザーへの UX フィードバックは UI コンポーネント側で完結させる |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-002: weekly/monthly モード別バリデーション
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `weekly` モードと `monthly` モードでバリデーションルールが異なるため、汎用バリデーションでは誤検知・見落としが起きる |
+| 解決策     | `weekly` モードは weekdays=[] を無効とし、`monthly` モードは dayOfMonth が 1〜31 範囲外を無効とするモード別チェックを実装した |
+| 標準ルール | スケジュールモードごとに独立したバリデーションロジックを定義し、それぞれ独立したテストケースで検証する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-003: onValidationChange コールバック設計（省略可能プロップ・useEffect 安定化）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `onValidationChange` が必須プロップだと呼び出し側の変更コストが大きく、`useEffect` 依存配列に含めると親がインライン関数を渡した際に無限ループが発生する |
+| 解決策     | `onValidationChange?: (isValid: boolean) => void` として省略可能にし、`useEffect` の依存配列から除外するか `useCallback` で安定参照を保証することで無限レンダリングを防ぐ |
+| 標準ルール | コールバック系プロップは省略可能にし、Effect 安定性を設計時に考慮する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-004: monthly dayOfMonth のUI責務
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `dayOfMonth` の範囲バリデーション（1〜31）をどちらが担うか曖昧だと、純粋関数側に UI 依存ロジックが混入する |
+| 解決策     | 現状は UI 側（`VisualCronPicker`）のみで 1〜31 範囲チェックを行い、純粋関数ガードとしての `cronConverter` 側ガードは別タスクに切り出した |
+| 標準ルール | UI 即時フィードバック用バリデーションは UI コンポーネント、純粋関数の防御的ガードは別タスクで段階的に追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 / TASK-CRON-ERROR-STYLE-UNIFICATION-001 |
+
+### L-VALCROP-005: Phase 11 smoke test 必須（UI表示確認→スクリーンショット順序）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | Phase 11 でスクリーンショットを先に撮ろうとすると、コンポーネントが初期値なしでレンダリングされエラー表示が再現できないケースがある |
+| 解決策     | `value=` 初期値注入で各シナリオ（weekly empty weekdays / valid weekdays / monthly invalid date / valid date）を固定してから、smoke test でUI表示を確認し、その後スクリーンショットを撮る順序を徹底する |
+| 標準ルール | Phase 11 は「UI表示確認 → スクリーンショット」の順序を必須とし、初期値注入によるシナリオ再現を前提とする |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |

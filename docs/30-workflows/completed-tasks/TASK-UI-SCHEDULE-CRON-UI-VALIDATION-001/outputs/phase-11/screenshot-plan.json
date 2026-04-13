@@ -1,0 +1,60 @@
+{
+  "feature": "TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001",
+  "phase": 11,
+  "generatedAt": "2026-04-13T09:53:47.269Z",
+  "captureScript": "manual one-off playwright capture",
+  "screenshots": [
+    {
+      "id": "scene-01",
+      "file": "screenshots/scene-01-weekly-empty-weekdays-error.png",
+      "description": "weekly + 空曜日のエラー状態",
+      "state": "weekly-empty-error",
+      "route": "http://127.0.0.1:5191/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=scene-01-weekly-empty-weekdays-error&value=0%209%20*%20*%201%2C3%2C5",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "required": true
+    },
+    {
+      "id": "scene-02",
+      "file": "screenshots/scene-02-weekly-valid-weekdays-ok.png",
+      "description": "weekly + 曜日選択済みの正常状態",
+      "state": "weekly-valid",
+      "route": "http://127.0.0.1:5191/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=scene-02-weekly-valid-weekdays-ok&value=0%209%20*%20*%201%2C3%2C5",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "required": true
+    },
+    {
+      "id": "scene-03",
+      "file": "screenshots/scene-03-monthly-invalid-date-error.png",
+      "description": "monthly + 無効日付のエラー状態",
+      "state": "monthly-invalid-error",
+      "route": "http://127.0.0.1:5191/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=scene-03-monthly-invalid-date-error&value=0%209%200%20*%20*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "required": true
+    },
+    {
+      "id": "scene-04",
+      "file": "screenshots/scene-04-monthly-valid-date-ok.png",
+      "description": "monthly + 有効日付の正常状態",
+      "state": "monthly-valid",
+      "route": "http://127.0.0.1:5191/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=scene-04-monthly-valid-date-ok&value=0%209%2015%20*%20*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "required": true
+    }
+  ]
+}

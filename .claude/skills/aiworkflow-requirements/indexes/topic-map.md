@@ -1353,8 +1353,9 @@ node scripts/list-specs.js --topics
 | 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L68 |
 | LLM Adapter Error Banner（TASK-RT-01） | L124 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L163 |
-| 続き | L272 |
+| VisualCronPicker UI validation（TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001） | L163 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L193 |
+| 続き | L302 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1462,9 +1463,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | フォーム設計 | L8 |
-| 認証UI設計 | L69 |
-| APIキー設定UI設計 | L287 |
-| 変更履歴 | L372 |
+| 認証UI設計 | L84 |
+| APIキー設定UI設計 | L302 |
+| 変更履歴 | L387 |
 
 ### references/ui-ux-history-panel.md
 
@@ -4685,7 +4686,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L167 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

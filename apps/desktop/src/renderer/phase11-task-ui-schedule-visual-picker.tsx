@@ -138,7 +138,7 @@ function PickerHarness(): JSX.Element {
   const searchParams = new URLSearchParams(window.location.search);
   const scenario = searchParams.get("scenario") ?? "picker";
   const preset = resolvePickerPreset(searchParams.get("preset"));
-  const initialValue = resolvePickerValue(preset);
+  const initialValue = searchParams.get("value") ?? resolvePickerValue(preset);
   const [cronExpression, setCronExpression] = useState(initialValue);
 
   useEffect(() => {
