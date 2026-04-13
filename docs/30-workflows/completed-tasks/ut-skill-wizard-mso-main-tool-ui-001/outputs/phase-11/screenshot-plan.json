@@ -1,0 +1,49 @@
+{
+  "plan": [
+    {
+      "step": 1,
+      "action": "スキルウィザードを開く",
+      "page": "Page 1 (Q1-Q3)"
+    },
+    {
+      "step": 2,
+      "action": "「次のページ」クリックでPage 2へ遷移",
+      "page": "Page 2 (Q4-Q6)"
+    },
+    {
+      "step": 3,
+      "action": "Q5「Slack」を1回クリック",
+      "capture": "q5-single-select.png",
+      "expected": "バッジなし"
+    },
+    {
+      "step": 4,
+      "action": "Q5「GitHub」を追加クリック",
+      "capture": "q5-multi-select-badge.png",
+      "expected": "Slackに主ツールバッジ表示"
+    },
+    {
+      "step": 5,
+      "action": "「前のページ」クリックでPage 1へ戻る",
+      "page": "Page 1 (Q1-Q3)"
+    },
+    {
+      "step": 6,
+      "action": "Q3「手動実行」「定期実行」を選択",
+      "capture": "q3-no-badge.png",
+      "expected": "バッジなし"
+    },
+    {
+      "step": 7,
+      "action": "Page 2に戻りQ4「チャット返信」「ファイル保存」選択",
+      "capture": "q4-no-badge.png",
+      "expected": "バッジなし"
+    },
+    {
+      "step": 8,
+      "action": "Q6「Markdown」「JSON」選択",
+      "capture": "q6-no-badge.png",
+      "expected": "バッジなし"
+    }
+  ]
+}
