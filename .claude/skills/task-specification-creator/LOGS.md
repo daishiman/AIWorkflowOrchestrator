@@ -12,6 +12,29 @@
 TASK-SW-FIX-MODE-MGMT-001 の skill-feedback-report に記録された4件の発見点（二重state管理・TDD Red→Green・esbuild環境ブロッカー・happy-dom fireEvent）を task-specification-creator SKILL.md に反映。特に happy-dom での userEvent 使用禁止は、このプロジェクト全体に適用される重要なパターンのため「よくある漏れ」へ固定。
 
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（v10.09.47 SKILL.md 更新）
+
+### 変更内容
+- `SKILL.md` v10.09.47 changelog エントリ追加（FEEDBACK-001 skill-feedback 反映）
+- 「よくある漏れ」テーブルに **[FB-FEEDBACK-001]** を追記（LLM モード fetchSkills 明示呼び出し必須 / template モードとのモード差異）
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-FEEDBACK-001/002/003 追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+- `aiworkflow-requirements/indexes/topic-map.md` 再生成予定（`generate-index.js` 実行後）
+
+### 背景
+Phase 12 close-out 後の第2波 sync として、skill-feedback-report.md に記録された知見（fetchSkills モード差異 / skillPath null ガードとの結合設計 / Vite build キャプチャ安定性）を「よくある漏れ」テーブルと lessons-learned に反映した。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `LOGS.md` 先頭に TASK-SW-FIX-FEEDBACK-001 の VISUAL close-out を追加
+- Phase 11 の screenshot evidence 4枚と `phase11-capture-metadata.json` を current facts として記録
+- `outputs/phase-12/implementation-guide.md` の screenshot references / `unassigned-task-detection.md` 0件化 / `phase12-task-spec-compliance-check.md` PASS を反映
+
+### 背景
+VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts を同波で閉じる必要がある。`skillPath null guard` と `fetchSkills` 呼び忘れ防止を、再利用可能な phase 12 note として残した。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
 
 ### 変更内容

@@ -326,13 +326,13 @@ pnpm vitest run --reporter=verbose \
 
 ### 関連ドキュメント
 
-| 資料名                               | パス                                                                                           | 用途                           |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------ |
-| フィードバック修正詳細仕様書 Phase 1 | `docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02b-fix-feedback/phase-1-requirements.md`   | 要件定義・AC一覧               |
-| フィードバック修正詳細仕様書 Phase 2 | `docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02b-fix-feedback/phase-2-design.md`         | 設計・コード例                 |
-| フィードバック修正詳細仕様書 Phase 4 | `docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02b-fix-feedback/phase-4-test-creation.md`  | テストケース定義               |
-| フィードバック修正詳細仕様書 Phase 5 | `docs/30-workflows/skill-wizard-bugfix-wave/WB-par-02b-fix-feedback/phase-5-implementation.md` | 実装手順                       |
-| バグ修正ウェーブ概要                 | `docs/30-workflows/skill-wizard-bugfix-wave/index.md`                                          | 問題全体像（問題6・8・14・20） |
+| 資料名                               | パス                                                                  | 用途                           |
+| ------------------------------------ | --------------------------------------------------------------------- | ------------------------------ |
+| フィードバック修正詳細仕様書 Phase 1 | `docs/30-workflows/WB-par-02b-fix-feedback/phase-1-requirements.md`   | 要件定義・AC一覧               |
+| フィードバック修正詳細仕様書 Phase 2 | `docs/30-workflows/WB-par-02b-fix-feedback/phase-2-design.md`         | 設計・コード例                 |
+| フィードバック修正詳細仕様書 Phase 4 | `docs/30-workflows/WB-par-02b-fix-feedback/phase-4-test-creation.md`  | テストケース定義               |
+| フィードバック修正詳細仕様書 Phase 5 | `docs/30-workflows/WB-par-02b-fix-feedback/phase-5-implementation.md` | 実装手順                       |
+| バグ修正ウェーブ概要                 | `docs/30-workflows/skill-wizard-bugfix-wave/index.md`                 | 問題全体像（問題6・8・14・20） |
 
 ### 関連ファイル
 

@@ -22,6 +22,39 @@ TASK-SW-FIX-MODE-MGMT-001 の skill-feedback-report に記録された4件の発
 ### 背景
 `TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
 
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（v10.09.47 SKILL.md 更新）
+
+### 変更内容
+- `SKILL.md` v10.09.47 changelog エントリ追加（FEEDBACK-001 skill-feedback 反映）
+- 「よくある漏れ」テーブルに **[FB-FEEDBACK-001]** を追記（LLM モード fetchSkills 明示呼び出し必須 / template モードとのモード差異）
+- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-FEEDBACK-001/002/003 追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+- `aiworkflow-requirements/indexes/topic-map.md` 再生成予定（`generate-index.js` 実行後）
+
+### 背景
+Phase 12 close-out 後の第2波 sync として、skill-feedback-report.md に記録された知見（fetchSkills モード差異 / skillPath null ガードとの結合設計 / Vite build キャプチャ安定性）を「よくある漏れ」テーブルと lessons-learned に反映した。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `LOGS.md` 先頭に TASK-SW-FIX-FEEDBACK-001 の VISUAL close-out を追加
+- Phase 11 の screenshot evidence 4枚と `phase11-capture-metadata.json` を current facts として記録
+- `outputs/phase-12/implementation-guide.md` の screenshot references / `unassigned-task-detection.md` 0件化 / `phase12-task-spec-compliance-check.md` PASS を反映
+
+### 背景
+VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts を同波で閉じる必要がある。`skillPath null guard` と `fetchSkills` 呼び忘れ防止を、再利用可能な phase 12 note として残した。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴の先頭に `v10.09.46` を追加し、`TASK-SW-FIX-DATAFLOW-001` の current facts（`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を反映
+- `SKILL.md` 「Phase 12 実行時によくある漏れ」テーブルに **[FB-DATAFLOW-001]** を追加し、context bridge 同期漏れ（shared 型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を防止ルールとして明文化
+- 本 `LOGS.md` に同作業ログを追記（worker 2 担当範囲: `SKILL.md` / `LOGS.md`）
+
+### 背景
+`TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容

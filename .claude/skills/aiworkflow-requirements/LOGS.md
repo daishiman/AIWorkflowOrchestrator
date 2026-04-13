@@ -31,6 +31,28 @@ TASK-SW-FIX-MODE-MGMT-001 の Phase 12 close-out は完了済みだったが、l
 
 2026-04-08〜04-09 に同期された TASK-SC-07 / W2-seq-03a 系の仕様には、旧 `generationMode` と plan/execute ベースの説明が current facts として残っていた。現行コードは `SkillInfoStep` 起点の LLM 専用 flow と `createSkill()` ベースの生成経路へ収束しているため、正本仕様を短く明確な状態へ更新した。
 
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（lessons-learned L-FEEDBACK-001/002/003 追記）
+
+### 変更内容
+- `references/lessons-learned-current-2026-04.md` に `## TASK-SW-FIX-FEEDBACK-001` セクションを追加し、L-FEEDBACK-001（fetchSkills モード差異）/ L-FEEDBACK-002（skillPath null + 成功ヘッダー結合設計）/ L-FEEDBACK-003（Vite build キャプチャ安定性）を記録
+- `task-specification-creator/SKILL.md` v10.09.47 changelog 追加・[FB-FEEDBACK-001] よくある漏れ追記を同波で実施
+- `task-specification-creator/LOGS.md` 同波更新
+
+### 背景
+Phase 12 close-out 後の skill-feedback-report.md 記録知見を lessons-learned に反映。DATAFLOW-001 の知見（L-DATAFLOW-001〜003）と並べて、skill wizard bugfix wave の学習サイクルを完結させた。
+
+## 2026-04-13 - TASK-SW-FIX-FEEDBACK-001 impl-spec-to-skill-sync（VISUAL close-out + screenshot evidence）
+
+### 変更内容
+- `SKILL.md` current facts に `TASK-SW-FIX-FEEDBACK-001` / `fetchSkills() LLM 成功パス` / `skillPath null guard` / `current_build_vite_playwright` / Phase 11 screenshot evidence 4枚を追加
+- `references/task-workflow.md` に TASK-SW-FIX-FEEDBACK-001 close-out 同期の current facts を追記
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04e.md` に TASK-SW-FIX-FEEDBACK-001 完了記録を追加
+- `references/task-workflow-completed-recent-2026-04e.md` に Phase 11 screenshot evidence / Phase 12 docs sync / parity PASS を明記
+- `indexes/topic-map.md` は後続の `generate-index.js` で再生成予定
+
+### 背景
+今回の task は VISUAL タスクであり、`skillPath === null` のエラー UI と LLM 成功後の一覧更新を screenshot evidence で閉じる必要があった。`unassigned-task-detection` は 0 件に留め、重大な未タスクだけを formalize する方針へ整理した。
+
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
 
 ### 変更内容

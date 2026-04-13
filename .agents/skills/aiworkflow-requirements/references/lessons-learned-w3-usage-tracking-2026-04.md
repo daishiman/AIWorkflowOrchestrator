@@ -158,6 +158,103 @@
 | 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
 | 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
+
+---
+
+## UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13）
+
+### L-W3-HTTP-001: `vi.stubGlobal("fetch", ...)` + `afterEach(vi.unstubAllGlobals)` によるグローバル fetch モックパターン
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Node.js 組み込みの `fetch` をテストでモックしようとすると、`import` が不要なためモジュール差し替えでは対応できない                                                                                                      |
+| 原因         | グローバル `fetch` はモジュールではなく `globalThis.fetch` として提供されており、`vi.mock` の対象にできない                                                                                                              |
+| 解決策       | `vi.stubGlobal("fetch", vi.fn().mockResolvedValue(...))` でグローバルを差し替え、`afterEach(() => vi.unstubAllGlobals())` でテスト間汚染を防ぐ。成功・エラー・`AbortError` の各パスを `mockResolvedValue` / `mockRejectedValue` で切り替える |
+| 標準ルール   | Node.js 組み込みグローバル（fetch / crypto / navigator）のモックは `vi.stubGlobal` を使う。`afterEach` でのクリーンアップを必須とし、`vi.fn()` の参照をテストブロック先頭で取得して呼び出し回数の確認に使う             |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                                                                         |
+
+### L-W3-HTTP-002: AbortController + `finally clearTimeout` による production-only HTTP POST のタイムアウト設計
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | 外部 analytics サービスが応答しない場合、IPC ハンドラーが無期限にブロックされ Renderer 側の応答が遅延する                                                                                                              |
+| 原因         | `fetch` 単体ではタイムアウトを持たない。`setTimeout` だけでは fetch の完了後もタイマーが残存してリソースリークする                                                                                                      |
+| 解決策       | `AbortController` + `signal` で fetch を中断し、`const timeoutId = setTimeout(() => controller.abort(), 5000)` を `try` 前に置き、`finally { clearTimeout(timeoutId) }` でタイマーを必ず解放する                       |
+| 標準ルール   | production-only な fire-and-forget HTTP 送信は必ず `AbortController` + `finally clearTimeout` の組み合わせで実装する。タイムアウト値は定数（`ANALYTICS_TIMEOUT_MS`）として切り出し、テストでの上書しを容易にする        |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`                                                                                                                                                                        |
+
+### L-W3-HTTP-003: ガード条件の早期識別（空文字 URL エッジケース）
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Phase 6 で「空文字の URL」（TC-E04）を追加したが、Phase 4 のテスト設計時点で識別できた可能性があった                                                                                                                    |
+| 原因         | `if (!url)` の条件を設計する際、`undefined` ケースに意識が集中し、`""` （空文字）を falsy として同一視することを明示しなかった                                                                                          |
+| 解決策       | ガード節を設計する際は「`undefined`」「`null`」「空文字」「空白のみ文字列」の 4 パターンを同時に列挙し、`if (!url)` が網羅するケースを Phase 4 のテスト表に明記する                                                     |
+| 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
+| 項目         | 内容                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状         | Phase 12 実施時、タスクルートの `artifacts.json` と `outputs/phase-12/artifacts.json` の 2 つを同期更新する必要があったが、片方だけ更新すると root evidence 検証で漏れが出た   |
+| 原因         | Phase 12 テンプレートに「両ファイルを同一 step で更新する」旨の明示がなく、一方のみ更新して進めてしまいやすい                                                                  |
+| 解決策       | Phase 12 の実施時は `artifacts.json`（タスクルート）と `outputs/phase-12/artifacts.json` の両方を同一 wave で更新し、`documentation-changelog.md` で両者の更新を個別に記録する |
+| 標準ルール   | Phase 12 テンプレートに「artifacts.json parity 確認チェック（タスクルート + outputs/phase-12/ の両方が更新済みか）」を組み込み、完了条件の必須チェック項目として明示する       |
+| 関連タスク   | UT-SKILL-WIZARD-W3-USAGE-TRACKING-001                                                                                                                                          |
+| 対象ファイル | `docs/30-workflows/*/artifacts.json`, `docs/30-workflows/*/outputs/phase-12/artifacts.json`                                                                                    |
+
+---
+
+## UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12）
+
+### L-W3-E2E-001: skill_wizard_step1_completed の期待値分離パターン
+
+| 項目         | 内容                                                                                                                                                                                                                                                                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | E2E テストで `skill_wizard_step1_completed` のイベント発火を確認しようとしたが、現在の UI では Step 1 は「スキップ」フローで完了するため、期待する `method` 値が `"skip"` でないとテストが落ちる                                                                                                                                      |
+| 原因         | W3-seq-04 のユニットテスト設計時は `method` の具体値を厳密に固定していなかったが、E2E では実際の UI フローに従い `method: "skip"` が渡される。ユニット（mock）と E2E（実 UI）で発火条件が異なる                                                                                                                                       |
+| 解決策       | 「CompleteStep に到達できたか（UI 到達確認）」と「イベントの `method` 値が正しいか（ペイロード確認）」を別アサーションに分離する。到達確認は `expect(page.getByTestId('complete-step')).toBeVisible()`、ペイロード確認は `events.find(e => e.eventName === 'skill_wizard_step1_completed')?.payload.method === 'skip'` で分離して実施 |
+| 標準ルール   | E2E テストで trackEvent を検証する場合、UI 到達確認とイベントペイロード確認を必ず別アサーションに分離する。UI の変更でペイロード値が変わった場合でも、到達確認のテストは独立して残り、回帰検出の精度が上がる                                                                                                                          |
+| 関連タスク   | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001                                                                                                                                                                                                                                                                                                |
+| 対象ファイル | `apps/desktop/e2e/skill-wizard-tracking.spec.ts`, `apps/desktop/e2e/helpers/wizard-tracking-stub.ts`                                                                                                                                                                                                                                  |
+
+---
+
+## UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13）
+
+### L-W3-HTTP-001: `vi.stubGlobal("fetch", ...)` + `afterEach(vi.unstubAllGlobals)` によるグローバル fetch モックパターン
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Node.js 組み込みの `fetch` をテストでモックしようとすると、`import` が不要なためモジュール差し替えでは対応できない                                                                                                      |
+| 原因         | グローバル `fetch` はモジュールではなく `globalThis.fetch` として提供されており、`vi.mock` の対象にできない                                                                                                              |
+| 解決策       | `vi.stubGlobal("fetch", vi.fn().mockResolvedValue(...))` でグローバルを差し替え、`afterEach(() => vi.unstubAllGlobals())` でテスト間汚染を防ぐ。成功・エラー・`AbortError` の各パスを `mockResolvedValue` / `mockRejectedValue` で切り替える |
+| 標準ルール   | Node.js 組み込みグローバル（fetch / crypto / navigator）のモックは `vi.stubGlobal` を使う。`afterEach` でのクリーンアップを必須とし、`vi.fn()` の参照をテストブロック先頭で取得して呼び出し回数の確認に使う             |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                                                                         |
+
+### L-W3-HTTP-002: AbortController + `finally clearTimeout` による production-only HTTP POST のタイムアウト設計
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | 外部 analytics サービスが応答しない場合、IPC ハンドラーが無期限にブロックされ Renderer 側の応答が遅延する                                                                                                              |
+| 原因         | `fetch` 単体ではタイムアウトを持たない。`setTimeout` だけでは fetch の完了後もタイマーが残存してリソースリークする                                                                                                      |
+| 解決策       | `AbortController` + `signal` で fetch を中断し、`const timeoutId = setTimeout(() => controller.abort(), 5000)` を `try` 前に置き、`finally { clearTimeout(timeoutId) }` でタイマーを必ず解放する                       |
+| 標準ルール   | production-only な fire-and-forget HTTP 送信は必ず `AbortController` + `finally clearTimeout` の組み合わせで実装する。タイムアウト値は定数（`ANALYTICS_TIMEOUT_MS`）として切り出し、テストでの上書しを容易にする        |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`                                                                                                                                                                        |
+
+### L-W3-HTTP-003: ガード条件の早期識別（空文字 URL エッジケース）
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | Phase 6 で「空文字の URL」（TC-E04）を追加したが、Phase 4 のテスト設計時点で識別できた可能性があった                                                                                                                    |
+| 原因         | `if (!url)` の条件を設計する際、`undefined` ケースに意識が集中し、`""` （空文字）を falsy として同一視することを明示しなかった                                                                                          |
+| 解決策       | ガード節を設計する際は「`undefined`」「`null`」「空文字」「空白のみ文字列」の 4 パターンを同時に列挙し、`if (!url)` が網羅するケースを Phase 4 のテスト表に明記する                                                     |
+| 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
 | 項目         | 内容                                                                                                                                                                           |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 症状         | Phase 12 実施時、タスクルートの `artifacts.json` と `outputs/phase-12/artifacts.json` の 2 つを同期更新する必要があったが、片方だけ更新すると root evidence 検証で漏れが出た   |

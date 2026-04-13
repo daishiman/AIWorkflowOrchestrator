@@ -4688,7 +4688,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4828,6 +4828,10 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L215 |
 | 完了タスク（機能別アーカイブ） | L223 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L332 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L21 |
+| 完了タスク（2026-03後半） | L196 |
+| 完了タスク（機能別アーカイブ） | L204 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L313 |
 
 ### references/task-workflow-history.md
 
@@ -4864,6 +4868,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L13 |
 | 利用順序 | L43 |
 | 関連ドキュメント | L49 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L50 |
 | 仕様書インデックス | L14 |
 | 利用順序 | L44 |
 | 関連ドキュメント | L50 |
