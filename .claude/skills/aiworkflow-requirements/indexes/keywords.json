@@ -1226,6 +1226,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1648,6 +1649,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "ui-ux-feature-components-theme-chat.md"
     ],
     "スキルファイル操作": [
@@ -1940,6 +1942,7 @@
     "UT": [
       "api-ipc-agent-safety.md",
       "api-ipc-sdk-type-contracts.md",
+      "api-ipc-system-core.md",
       "api-ipc-system-skill-creator.md",
       "arch-electron-services-details-part2.md",
       "arch-state-management-skill-creator.md",
@@ -2059,6 +2062,7 @@
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -2081,11 +2085,14 @@
       "security-electron-ipc-examples.md",
       "spec-splitting-guidelines.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed.md",
       "technology-frontend.md",
       "testing-component-patterns-advanced.md",
       "testing-component-patterns-details.md",
@@ -2442,6 +2449,22 @@
     ],
     "チャット": [
       "api-ipc-system-core.md"
+    ],
+    "Analytics": [
+      "api-ipc-system-core.md"
+    ],
+    "ANALYTICS": [
+      "api-ipc-system-core.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "ADAPTER": [
+      "api-ipc-system-core.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
       "api-ipc-system-core.md",
@@ -4750,6 +4773,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -4838,6 +4862,7 @@
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -6146,6 +6171,7 @@
     ],
     "バリデーション": [
       "interfaces-rag-chunk-embedding.md",
+      "lessons-learned-current-2026-04.md",
       "rag-knowledge-graph.md",
       "rag-search-types.md"
     ],
@@ -7483,6 +7509,7 @@
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md",
       "ui-ux-navigation-chat-patterns.md"
     ],
     "FB": [
@@ -7493,6 +7520,25 @@
     "フィールド独立推論性": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "trackEvent": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
+    ],
+    "analytics": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md"
+    ],
+    "adapter": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ui-adapter-status-retry.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "差し替え": [
+      "lessons-learned-current-2026-04.md"
     ],
     "VALIDATION": [
       "lessons-learned-current-2026-04.md",
@@ -7676,7 +7722,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "SCHEDULE": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "VISUAL": [
       "lessons-learned-current-2026-04.md"
@@ -7701,7 +7748,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "CRON": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "SEMANTIC": [
       "lessons-learned-current-2026-04.md"
@@ -8001,11 +8049,6 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "ADAPTER": [
-      "lessons-learned-ipc-preload-runtime-2026-03-early.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-skill-plan-exec-hardening.md"
-    ],
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
@@ -8170,12 +8213,14 @@
     "close": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-wizard-redesign.md",
-      "task-workflow-completed-recent-2026-04d.md"
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
     ],
     "out": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md",
       "task-workflow-phases.md"
     ],
     "ESBUILD": [
@@ -8189,10 +8234,6 @@
     ],
     "FEEDBACK": [
       "lessons-learned-phase12-lifecycle-early-b.md"
-    ],
-    "review": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "DIALOG": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -8254,19 +8295,6 @@
     ],
     "management": [
       "lessons-learned-phase12-lifecycle-recent.md"
-    ],
-    "ui": [
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "lessons-learned-ui-adapter-status-retry.md",
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-01-topic-map-remember-choice.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "spec-splitting-guidelines.md",
-      "ui-ux-feature-components-advanced.md"
     ],
     "BUILD": [
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -9020,9 +9048,6 @@
     "より": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
-    "DESCRIBE": [
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
     "CLEANUP": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -9175,9 +9200,6 @@
     "アダプター状態表示・リトライ導線": [
       "lessons-learned-ui-adapter-status-retry.md"
     ],
-    "adapter": [
-      "lessons-learned-ui-adapter-status-retry.md"
-    ],
     "status": [
       "lessons-learned-ui-adapter-status-retry.md"
     ],
@@ -9261,11 +9283,6 @@
     ],
     "ホーム画面リデザイン": [
       "lessons-learned-ui-skill-center-editor-dashboard.md"
-    ],
-    "visual": [
-      "lessons-learned-ui-ux-visual-baseline-drift.md",
-      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
-      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "baseline": [
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -9387,7 +9404,23 @@
     "使用率計装": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
-    "trackEvent": [
+    "接続": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "TRACKING": [
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
+    ],
+    "REACH": [
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
+    ],
+    "確認": [
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "PROVIDER": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "PROVIDER": [
@@ -9530,9 +9563,6 @@
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "空フィールドガード": [
-      "lessons-learned-workflow-quality-phase12-audit-validator.md"
-    ],
-    "analytics": [
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
     "schedule": [
@@ -11010,6 +11040,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
@@ -12352,6 +12383,10 @@
     ],
     "テンプレート改善": [
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
+    ],
+    "reach": [
+      "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
     ],
     "clarification": [
