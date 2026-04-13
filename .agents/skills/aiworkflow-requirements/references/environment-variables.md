@@ -23,6 +23,19 @@
 | `LOG_LEVEL` | ログレベル          | `debug`, `info`, `warn`, `error` | 全環境 |
 | `APP_URL`   | アプリケーションURL | `https://yourapp.com`            | Web    |
 
+### アナリティクス送信
+
+| 変数名                   | 用途                               | 例                               | 環境   |
+| ------------------------ | ---------------------------------- | -------------------------------- | ------ |
+| `ANALYTICS_ENDPOINT_URL` | 外部分析基盤への送信先 URL         | `https://analytics.example.com`  | 全環境 |
+
+#### `ANALYTICS_ENDPOINT_URL` の扱い
+
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` の `sendToAnalyticsProvider` が参照する
+- `NODE_ENV === "production"` のときだけ HTTP POST 送信に使用する
+- 未設定または空文字の場合は静かに送信をスキップする
+- ログやエラーメッセージに URL 本体を出力しない
+
 ### データベース接続
 
 | 変数名               | 用途              | 形式                        |

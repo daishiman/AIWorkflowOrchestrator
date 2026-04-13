@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-12
+> 自動生成: 2026-04-13
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1353,8 +1353,9 @@ node scripts/list-specs.js --topics
 | 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L68 |
 | LLM Adapter Error Banner（TASK-RT-01） | L124 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L163 |
-| 続き | L272 |
+| VisualCronPicker UI validation（TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001） | L163 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L193 |
+| 続き | L302 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1462,9 +1463,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | フォーム設計 | L8 |
-| 認証UI設計 | L69 |
-| APIキー設定UI設計 | L287 |
-| 変更履歴 | L372 |
+| 認証UI設計 | L84 |
+| APIキー設定UI設計 | L302 |
+| 変更履歴 | L387 |
 
 ### references/ui-ux-history-panel.md
 
@@ -2789,13 +2790,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 環境変数の分類 | L15 |
-| セキュリティベストプラクティス | L67 |
-| 環境別設定 | L139 |
-| Electron アプリでの環境変数 | L191 |
-| トラブルシューティング | L248 |
-| チーム開発での運用 | L309 |
-| 必須環境変数一覧 | L347 |
-| 関連ドキュメント | L405 |
+| セキュリティベストプラクティス | L80 |
+| 環境別設定 | L152 |
+| Electron アプリでの環境変数 | L204 |
+| トラブルシューティング | L261 |
+| チーム開発での運用 | L322 |
+| 必須環境変数一覧 | L360 |
+| 関連ドキュメント | L418 |
 
 ### references/error-handling-core.md
 
@@ -3522,6 +3523,7 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4685,6 +4687,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L167 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

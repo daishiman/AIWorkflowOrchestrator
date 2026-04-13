@@ -61,6 +61,7 @@ import type {
 } from "@repo/shared/types/skill-improver";
 import type { OperationResult } from "@repo/shared/types/skill";
 import type { BackupInfo, SkillFileTreeNode } from "./types";
+import type { SkillCreationContext } from "@repo/shared/types/skillCreator";
 import type {
   DebugSessionState,
   Breakpoint,
@@ -316,7 +317,7 @@ export interface SkillAPI {
 
   /**
    * スキルをウィザード経由で作成する
-   * @param params - 作成パラメータ（説明とオプション）
+   * @param params - 作成パラメータ（説明・オプション・コンテキスト）
    * @returns 作成結果（パスを含む）
    */
   create: (params: {
@@ -326,6 +327,7 @@ export interface SkillAPI {
       addAgents: boolean;
       addReferences: boolean;
     };
+    context?: SkillCreationContext;
   }) => Promise<{ path: string }>;
 
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
@@ -776,8 +778,14 @@ export const skillAPI: SkillAPI = {
       addAgents: boolean;
       addReferences: boolean;
     };
+    context?: SkillCreationContext;
   }): Promise<{ path: string }> =>
-    safeInvoke(IPC_CHANNELS.SKILL_CREATE, params.description, params.options),
+    safeInvoke(
+      IPC_CHANNELS.SKILL_CREATE,
+      params.description,
+      params.options,
+      params.context,
+    ),
 
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
 

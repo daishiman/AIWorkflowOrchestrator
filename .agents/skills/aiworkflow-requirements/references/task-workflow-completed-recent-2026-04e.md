@@ -4,6 +4,56 @@
 
 ---
 
+### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-DATAFLOW-001                                                                   |
+| 完了日     | 2026-04-13                                                                                 |
+| タスク種別 | implementation（NON_VISUAL / dataflow fix）                                               |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実装内容
+
+- `packages/shared/src/types/skillCreator.ts` に `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` を追加
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` で `buildSkillContext(formData, answers)` を生成し、`createSkill(formData.purpose, SKILL_GENERATION_OPTIONS, skillContext)` を呼ぶように修正
+- `apps/desktop/src/renderer/store/slices/agentSlice.ts` と `apps/desktop/src/preload/skill-api.ts` で `context` 引数を後方互換を保ったまま伝播
+- `apps/desktop/src/main/ipc/skillHandlers.ts` で `buildSkillGenerationPrompt(context)` を通じて skillName / category / Q1〜Q6 を prompt に反映
+
+#### Phase 11/12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                      |
+| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                          |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                       |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                 |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                    |
+| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                  |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                      |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+
+#### 検証証跡
+
+- `packages/shared/src/types/__tests__/buildSkillContext.test.ts`: PASS
+- `packages/shared/src/types/__tests__/buildSkillContext.edge.test.ts`: PASS
+- `apps/desktop/src/main/ipc/__tests__/skillHandlers.create.context.test.ts`: PASS
+- `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.createSkill.context.test.ts`: PASS
+- `phase-11-manual-test.md`: NON_VISUAL / 代替証跡
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                              | 解決策                                                                                       |
+| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 1   | Phase 11 を VISUAL のまま残すと screenshot 前提が残る | `NON_VISUAL` 再分類で manual-test-result / checklist / discovered-issues の代替証跡へ切替 |
+| 2   | `artifacts.json` と `outputs/artifacts.json` の不一致 | root / outputs を同一内容で再生成し、Phase 12 の parity 条件を満たした                    |
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
+
 ### タスク: TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション追加（2026-04-12）
 
 | 項目       | 値                                                                                         |
@@ -50,6 +100,52 @@
 #### lessons-learned
 
 - `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-SEMANTIC-001（L-CRON-SEM-001〜003）
+
+---
+
+### タスク: TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001                                                                                   |
+| 完了日     | 2026-04-13                                                                                                                |
+| タスク種別 | ui / docs / workflow-sync                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx` / `apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.tsx` |
+| PR         | 未作成（Phase 13 blocked）                                                                                                |
+
+#### 実装内容
+
+- `VisualCronPicker` に `weeklyError` / `monthlyError` / `onValidationChange` を追加し、visual mode の妥当性を親へ通知
+- monthly error の文言を `1〜31` に統一
+- Phase 11 screenshot を `value=` 初期値注入で固定し、monthly invalid / valid を current build で再現
+- direct input / custom cron validation は別タスクとして分離
+- alert の微差分は follow-up task に切り出した
+
+#### Phase 12 成果物
+
+| 成果物                     | パス                                                              |
+| -------------------------- | ----------------------------------------------------------------- |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                   | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック      | `outputs/phase-12/phase12-task-spec-compliance-check.md`          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/integration/scheduleIntegration.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `outputs/phase-11/screenshots/scene-01-weekly-empty-weekdays-error.png`
+- `outputs/phase-11/screenshots/scene-02-weekly-valid-weekdays-ok.png`
+- `outputs/phase-11/screenshots/scene-03-monthly-invalid-date-error.png`
+- `outputs/phase-11/screenshots/scene-04-monthly-valid-date-ok.png`
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001
 
 ---
 
@@ -115,3 +211,20 @@
 #### lessons-learned
 
 - `references/lessons-learned-skill-wizard-redesign.md` を参照
+
+---
+
+## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 完了日: 2026-04-12
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+- AC一覧:
+  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
+  - AC-2: weekdays重複除去・昇順ソートPASS
+  - AC-5: JSDocに空weekdays挙動を明記 PASS
+- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。

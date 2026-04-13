@@ -4,6 +4,31 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
+
+### 変更内容
+- `SKILL.md` description / Trigger に `VisualCronPicker` / `TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001` / `onValidationChange` / `weeklyError` / `monthlyError` / `dayOfMonth` / `role="alert"` を追加
+- `references/ui-ux-forms.md` に VisualCronPicker schedule validation の alert / callback 契約を追記
+- `references/ui-ux-feature-components-core.md` に VisualCronPicker UI validation の component contract を追記
+- `references/task-workflow-completed-recent-2026-04e.md` / `references/lessons-learned-current-2026-04.md` / `indexes/resource-map.md` を current facts へ同期
+- `outputs/phase-11` / `outputs/phase-12` の current facts を UI validation 完了版へ同期
+- `task-specification-creator` 側は current facts 変更なしのため no-op
+
+### 背景
+VisualCronPicker の UI validation が完了し、Phase 11 のスクリーンショット証跡と Phase 12 の current contract を正本へ反映する必要があった。
+
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
+
+### 変更内容
+- `SKILL.md` frontmatter description の重複段落を統合し、current facts キーワード（`TASK-SW-FIX-DATAFLOW-001` / `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `context bridge` / `NON_VISUAL 再分類` / `artifacts.json parity` / `L-DATAFLOW-001〜003`）を最新版に一本化
+- `indexes/resource-map.md` に TASK-SW-FIX-DATAFLOW-001 の current facts 導線（SkillCreateWizard context bridge + parity）を追加
+- `indexes/topic-map.md` に SkillCreateWizard context bridge/current facts の索引行を追加
+- `references/task-workflow.md` 冒頭に TASK-SW-FIX-DATAFLOW-001 close-out 同期の 1 文を追記
+- `references/lessons-learned-current-2026-04.md` に L-DATAFLOW-001〜003 を追記（NON_VISUAL 代替証跡パターン / artifacts.json 2点 parity / IPC context bridge 後方互換設計）
+
+### 背景
+Phase 12 close-out 後の仕様同期で、Skill Wizard dataflow 修正の current facts（NON_VISUAL 判定と artifacts parity）が aiworkflow-requirements 側インデックスへ未反映だったため、同波で補完した。また lessons-learned への教訓記録が「追記予定」のまま未実施だったため本エントリで完結させた。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync（SKILL.md Trigger 補完）
 
 ### 変更内容
@@ -41,8 +66,10 @@ Phase 12 の閉じ作業では、成果物だけでなく LOGS と topic-map ま
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync（`phase-12-documentation.md` ステータス「未実施」→「完了」更新・Task 12-1〜12-6 全完了マーク / `lessons-learned-current-2026-04.md` に L-WEEKGRD-001〜003 追記（純粋関数ガード戦略・環境ブロッカー分離・NON_VISUAL宣言）/ `task-specification-creator/SKILL.md` WEEKGRD-01〜03 Feedback追記 / `task-workflow-completed-recent-2026-04e.md` 完了エントリ追加 / LOGS.md 同波更新） |
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 impl-spec-to-skill-sync（`lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-E2E-001（skill_wizard_step1_completed method:skip 分離パターン）追加 / `indexes/resource-map.md` に UT-W3-E2E タスク行追加 / `outputs/phase-12/` 6成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）作成 / generate-index.js 実行 / mirror sync）|
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 close-out sync（`apps/desktop/e2e/skill-wizard-tracking.spec.ts` に onboarding store mock + current UI step1 フロー反映 / `wizard-tracking-stub.ts` に trackEvent capture + skill API stub 統合 / `phase-11-manual-test.md` を NON_VISUAL 判定へ是正 / `outputs/phase-12/implementation-guide.md` に Phase 11 証跡導線追記 / `task-workflow-completed.md`・`task-workflow-completed-recent-2026-04d.md` 同波更新 / Playwright Chromium 7 passed） |
+| 2026-04-12 - TASK-CRON-SEMANTIC-VALIDATION-001 Phase 12完了（`validateCronExpression()` に Stage 3（意味論的チェック）追加 / 3段階バリデーション（syntax→range→semantics）パターン確立 / `MAX_DAYS_PER_MONTH`テーブルで月別最大日数管理 / 2月29日有効扱い（閏年非依存）/ 複合フィールドは意味論チェック対象外 / `CRON_VALIDATION_ERRORS`定数でエラーメッセージ中央管理 / テスト56件全PASS / `lessons-learned-current-2026-04.md` に L-CRON-SV-001〜003 追加 / `indexes/quick-reference.md` に Cron Validation セクション追加）|
 | 2026-04-11 - impl-spec-to-skill-sync Phase12検証・スキル反映（`lessons-learned-skill-wizard-redesign.md` に TASK-SC-07/W3-seq-04/multi-select 教訓7件追加（L-SC07-LLM-001〜003: Request-IDガード/fail snapshot/scheduleバリデーション競合 / L-MULTISEL-001〜002: selectedOptions:string[]型移行/SmartDefault配列マージ）/ `lessons-learned-current.md` v3.13.0 エントリ追加・分割ファイル一覧に `lessons-learned-w3-usage-tracking-2026-04.md` と `lessons-learned-skill-wizard-redesign.md` を追記 / `skill-creator/SKILL-changelog.md` v10.42.0 追加） |
 | 2026-04-11 - UT-SKILL-WIZARD-FB-03 field independence close-out sync（`docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/phase-12-documentation.md` の field independence 明示 / `task-workflow.md`・`task-workflow-completed.md`・`task-workflow-completed-recent-2026-04d.md`・`lessons-learned`・`LOGS`・`SKILL` 同波更新 / `outputs/phase-12` 6成果物 PASS） |
 | 2026-04-12 - UT-SKILL-WIZARD-W2-seq-03a phase12 final-doc sync（`outputs/phase-12/implementation-guide.md` に Phase 11 screenshot refs 追加 / `outputs/phase-12/system-spec-update-summary.md` の N/A 是正 / `docs/30-workflows/skill-wizard-redesign-lane/index.md` の W2 path drift 修正 / `outputs/phase-12/documentation-changelog.md`・`outputs/phase-12/skill-feedback-report.md`・`outputs/phase-12/phase12-task-spec-compliance-check.md` current facts sync / `LOGS.md` 同波更新） |
