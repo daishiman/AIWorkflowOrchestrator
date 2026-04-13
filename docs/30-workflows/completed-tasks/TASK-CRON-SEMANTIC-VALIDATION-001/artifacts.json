@@ -1,0 +1,329 @@
+{
+  "taskId": "TASK-CRON-SEMANTIC-VALIDATION-001",
+  "featureName": "TASK-CRON-SEMANTIC-VALIDATION-001",
+  "createdDate": "2026-04-12",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-04-12T13:04:56.847Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果（既実装コード調査）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/traceability-matrix.md",
+          "description": "トレーサビリティ行列"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:04:56.847Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/traceability-matrix.md",
+          "description": "トレーサビリティ行列"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:04:56.898Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validation-flow-design.md",
+          "description": "バリデーションフロー設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/library-selection-design.md",
+          "description": "実装方式設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/type-definition-design.md",
+          "description": "型定義設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ui-integration-design.md",
+          "description": "UI統合設計"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:04:56.954Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/contradiction-checklist.md",
+          "description": "矛盾チェック表"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:06.960Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-case-table.md",
+          "description": "テストケーステーブル"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-test-result.md",
+          "description": "Red確認結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:07.009Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files.md",
+          "description": "変更ファイル一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/library-install-record.md",
+          "description": "実装判断記録"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:07.066Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "description": "拡張テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-result.md",
+          "description": "回帰テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/ui-error-display-test.md",
+          "description": "UIエラー表示テスト結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:07.121Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-lines.md",
+          "description": "未カバー箇所"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:07.180Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-summary.md",
+          "description": "リファクタリングサマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/before-after-diff.md",
+          "description": "差分記録"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:18.561Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-report.md",
+          "description": "品質ゲートレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/performance-benchmark.md",
+          "description": "パフォーマンス計測結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/bundle-size-report.md",
+          "description": "バンドルサイズ確認結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:18.614Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-report.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:18.660Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト総合レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見された問題"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UIビジュアルレビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "スクリーンショットメタデータ"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-12T13:05:18.712Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様書更新サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "コンプライアンスチェック"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "non_visual",
+    "priority": "medium",
+    "estimatedPhases": 13,
+    "targetFile": "apps/desktop/src/renderer/utils/scheduleConfigValidator.ts",
+    "relatedComponents": [
+      "apps/desktop/src/renderer/views/ScheduleManager/components/ScheduleDialog.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx"
+    ],
+    "githubIssue": "#2082"
+  },
+  "lastUpdated": "2026-04-12T13:40:31Z"
+}

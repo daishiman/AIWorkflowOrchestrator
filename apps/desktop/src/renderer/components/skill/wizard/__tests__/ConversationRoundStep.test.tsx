@@ -2,7 +2,7 @@
  * @file ConversationRoundStep.test.tsx
  * @description ConversationRoundStep コンポーネント ユニットテスト
  * @phase Phase 4: テスト作成（TDD: Red -> Green）
- * @task UT-SKILL-WIZARD-W1-par-02b
+ * @task UT-SKILL-WIZARD-W1-par-02b / TASK-CRON-SEMANTIC-VALIDATION-001
  *
  * P39準拠: fireEventのみ使用（happy-dom環境でuserEvent禁止）
  * P9準拠: beforeEachで状態リセット
@@ -292,6 +292,39 @@ describe("ConversationRoundStep", () => {
       expect(screen.getByRole("alert")).toHaveTextContent(
         "cron式の形式が正しくありません",
       );
+    });
+
+    it("存在しない日付のcron式ではエラーが表示され、サマリーに進まない", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q3: {
+              selectedOptions: ["定期実行"],
+              freeText: "",
+              scheduleConfig: {
+                cronExpression: "0 9 31 2 *",
+                timezone: "Asia/Tokyo",
+              },
+            },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: /今すぐ生成する/ }));
+
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "指定した日付は存在しません",
+      );
+      expect(mockOnGenerate).not.toHaveBeenCalled();
+      expect(
+        screen.queryByRole("region", { name: /サマリー|適用/ }),
+      ).not.toBeInTheDocument();
     });
 
     it("timezone が不正な場合にエラーが表示され、サマリーに進まない", () => {
