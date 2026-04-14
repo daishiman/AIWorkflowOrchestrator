@@ -143,3 +143,53 @@
 - TC-06 型の動的廃止検証（DOM query で旧要素が 0件）を廃止系タスクのデフォルトテストとして組み込む
 - Wave 分割実施では、TDD Red フェーズを Wave A・B の計画段階で同時設計する
 - 詳細: `lessons-learned-skill-wizard-mode-mgmt.md`
+
+---
+
+### タスク: UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 IPC 4層整合CI検証スクリプト（2026-04-14）
+
+| 項目       | 値                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001                                                                   |
+| ステータス | **spec_created**（docs-only workflow のため completed にしない）                                      |
+| タイプ     | Quality Gate / CI Automation / Static Analysis                                                        |
+| 優先度     | 高                                                                                                   |
+| 完了日     | 2026-04-14                                                                                           |
+| 対象       | `scripts/verify-ipc-4layer.cjs`（1,017行）/ `scripts/__tests__/verify-ipc-4layer/`（4ファイル）      |
+| CI統合     | `.github/workflows/ci.yml`（`verify-ipc-4layer` ジョブ）                                             |
+| 成果物     | `docs/30-workflows/UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001/`                                              |
+| PR         | 未作成（Phase 13 blocked）                                                                           |
+
+#### 実施内容
+
+- IPC 4層（shared channels → preload whitelist → main handler → renderer sink）のチャネル定義を自動検証するCIスクリプトを実装した
+- Node.js標準ライブラリのみ使用（外部依存ゼロ）で1,017行のスクリプトを構築した
+- ステートマシン方式でコメント処理を実装し、文字列リテラル内のコメントパターンを保護した
+- `buildConstValueMap()` でspread/定数参照解決を実装した（約80行）
+- mainハンドラの6パターン（`ipcMain.handle()`, DI, ラッパー, ファクトリ, 配列スタイル等）に対応した
+- テスト4ファイル113テスト全GREENを達成した
+
+#### 検証証跡
+
+| コマンド                                                        | 結果                                                  |
+| --------------------------------------------------------------- | ----------------------------------------------------- |
+| `node scripts/verify-ipc-4layer.cjs`                            | PASS（既存ギャップ20件は設計制限として文書化）         |
+| `pnpm vitest run scripts/__tests__/verify-ipc-4layer`           | PASS（113 tests: parsers 79, validators 19, reporter 8, e2e 7） |
+| カバレッジ                                                      | Line 89.88%, Branch 90.97%, Function 94.11%           |
+
+#### 苦戦箇所
+
+| 苦戦箇所                              | 解決策                                                               |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| コメント処理で文字列内パターンを誤検出 | ステートマシン方式で状態追跡                                         |
+| spread/定数参照の展開                  | `buildConstValueMap()` で2段階解決（ローカル優先・外部フォールバック） |
+| mainハンドラの多様な登録パターン       | 6パターン個別マッチング                                              |
+| ローカルconst vs 外部importの優先度    | ファイル内const優先の2段階解決を実装                                  |
+| Rule-1/Rule-2ギャップの解釈           | コードベース既存ギャップとして文書化（スクリプト不具合ではない）       |
+
+#### lessons-learned
+
+- ソースコード静的解析のコメント除去は正規表現ではなくステートマシン方式を使う
+- 定数参照解決は「ローカル優先・外部フォールバック」の2段階で行う
+- 検証スクリプトの検出結果は「バグ」と断定する前にコードベース側の実態を確認する
+- 詳細: `lessons-learned-ipc-4layer-verification-2026-04.md`

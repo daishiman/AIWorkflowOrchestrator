@@ -291,6 +291,25 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 ---
 
+## ファイル構成のベストプラクティス（実装経験ベース）
+
+### CIスクリプト設計パターン（UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 経験）
+
+| パターン | 説明 |
+| --- | --- |
+| **外部依存ゼロ** | CI検証スクリプトは `fs` / `path` のみ使用。`pnpm install` 不要で高速起動 |
+| **ステートマシン方式コメント除去** | 文字列リテラル内のコメントパターンを誤検出しないよう、文字単位の状態遷移で除去 |
+| **参照マーカー方式** | 定数参照・spread構文の未解決値にプレフィックス（`__REF__:`）を付け、後段で解決チェーンを走らせる |
+| **テスト4分割** | `parsers.test.ts`（パーサ）/ `validators.test.ts`（検証ロジック）/ `reporter.test.ts`（出力）/ `e2e.test.ts`（統合）に分離 |
+
+### scripts/ 配下のスクリプト分類
+
+| 種別 | 配置 | テスト |
+| --- | --- | --- |
+| CI検証（外部依存ゼロ） | `scripts/verify-*.cjs` | `scripts/__tests__/verify-*/` |
+| スキル内スクリプト | `.claude/skills/<name>/scripts/` | EVALS.json で品質追跡 |
+| ワークフロー検証 | `.claude/skills/<name>/scripts/validate-*.js` | agents/ 内で参照 |
+
 ## scripts/init_skill.js の動作仕様
 
 スキルディレクトリを初期化するスクリプト。18-skills.md §6.4 準拠。
@@ -337,6 +356,8 @@ node scripts/init_skill.js my-new-skill --resources agents,references
 | **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
 | **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
 | **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
+| **ナレッジ管理（構築）**     | references/knowledge-management-guide.md     |
+| **ナレッジ管理（検索・運用）** | references/knowledge-search-and-lifecycle.md |
 | スクリプト生成               | references/script-types-catalog.md           |
 | ワークフローパターン         | references/workflow-patterns.md              |
 | オーケストレーション         | references/orchestration-guide.md            |
@@ -350,7 +371,7 @@ node scripts/init_skill.js my-new-skill --resources agents,references
 
 | カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`                                                                                    |
+| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`, `references/knowledge-management-guide.md`, `references/knowledge-search-and-lifecycle.md` |
 | ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
 | 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
 | 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |
@@ -429,6 +450,8 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | SubAgentは3ファイル以下/エージェント | 多数ファイルを1エージェントに集中 |
 | エージェントプロンプトはprompt-creatorで生成 | skill-creator内で独自フォーマットのプロンプトを書く |
 | 1プロンプト5000文字以内・単一責務 | 複数責務を1ファイルに詰め込む |
+| CIスクリプトは外部依存ゼロ（Node.js標準のみ） | npm install が必要なCI検証スクリプト |
+| 静的解析ではステートマシン方式でコメント除去 | 正規表現のみでコメント除去（文字列リテラル内誤検出） |
 
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの

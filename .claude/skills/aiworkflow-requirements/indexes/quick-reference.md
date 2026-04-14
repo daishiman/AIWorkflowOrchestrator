@@ -607,6 +607,26 @@
 | R-03   | ハードコード文字列 | warning | IPC_CHANNELS 定数でなく文字列リテラル（P27対応） |
 | R-04   | 未登録チャンネル   | error   | Preload にあるが Main にない                     |
 
+### IPC 4層整合CI検証（UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001）
+
+| 項目         | 値                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| スクリプト   | `scripts/verify-ipc-4layer.cjs`（1,017行、Node.js標準ライブラリのみ）                                                |
+| テスト       | `scripts/__tests__/verify-ipc-4layer/`（parsers.test.ts, validators.test.ts, reporter.test.ts, e2e.test.ts）          |
+| CI統合       | `.github/workflows/ci.yml`（`verify-ipc-4layer` ジョブ）                                                             |
+| 検証対象     | IPC 4層: shared channels → preload whitelist → main handler → renderer sink                                           |
+| テスト数     | 113件全GREEN（parsers 79, validators 19, reporter 8, e2e 7）                                                          |
+| カバレッジ   | Line 89.88%, Branch 90.97%, Function 94.11%                                                                           |
+| 仕様         | `docs/30-workflows/UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001/`                                                              |
+| 教訓         | `lessons-learned-ipc-4layer-verification-2026-04.md`                                                                  |
+
+#### CLI コマンド早見表
+
+| コマンド                                                    | 用途                            |
+| ----------------------------------------------------------- | ------------------------------- |
+| `node scripts/verify-ipc-4layer.cjs`                        | IPC 4層整合検証（CI用）         |
+| `pnpm vitest run scripts/__tests__/verify-ipc-4layer`       | テスト実行（113件）             |
+
 ---
 
 ## ディレクトリ構成早見表

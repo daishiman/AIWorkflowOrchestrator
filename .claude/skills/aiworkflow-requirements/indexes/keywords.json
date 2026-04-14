@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2982,
+  "totalKeywords": 3001,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -298,6 +298,7 @@
       "ipc-type-resolution-guide.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -684,6 +685,7 @@
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -1770,6 +1772,7 @@
       "patterns-details.md",
       "quality-requirements-details.md",
       "security-electron-ipc-details.md",
+      "task-workflow-completed.md",
       "technology-devops-details.md",
       "testing-component-patterns-details.md",
       "ui-ux-agent-execution-details.md",
@@ -3843,7 +3846,8 @@
     ],
     "STATE": [
       "arch-state-management-reference.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "task-workflow-completed.md"
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
@@ -5303,6 +5307,7 @@
     "CI": [
       "deployment-core.md",
       "deployment-gha.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -5412,6 +5417,7 @@
     ],
     "main": [
       "deployment-gha.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
     "マージ時": [
@@ -6680,6 +6686,7 @@
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -6748,6 +6755,7 @@
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -7305,6 +7313,7 @@
     ],
     "import": [
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
@@ -7573,6 +7582,9 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ],
     "フィールド独立推論性": [
       "lessons-learned-current-2026-04.md",
@@ -8019,6 +8031,7 @@
     ],
     "vs": [
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
       "testing-component-patterns-core.md"
     ],
@@ -8121,6 +8134,61 @@
     "Worktree": [
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "層整合": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "検証": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "コメント処理はステートマシン方式で文字列リテラル内パターンを保護する": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "spread": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "定数参照の解決には": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "buildConstValueMap": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "パターンが有効": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ハンドラは": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "パターン対応が必要": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ローカル定数マップでファイル内": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "const": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "外部": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "の優先度管理": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "Rule": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "のギャップは": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "スクリプト不具合": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ではなく": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "コードベースの既存ギャップ": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
     ],
     "Channel": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
@@ -12591,9 +12659,6 @@
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
-    "検証": [
-      "task-workflow-completed-skill-create-ui-integration.md"
-    ],
     "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
@@ -12759,6 +12824,9 @@
       "ui-ux-advanced.md"
     ],
     "最近の完了タスク": [
+      "task-workflow-completed.md"
+    ],
+    "DETAIL": [
       "task-workflow-completed.md"
     ],
     "機能別アーカイブ": [

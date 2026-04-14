@@ -283,6 +283,24 @@ jobs:
           path: apps/desktop/playwright-report/
           retention-days: 7
 
+  verify-ipc-4layer:
+    name: IPC 4-Layer Alignment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Verify IPC 4-layer alignment
+        run: node scripts/verify-ipc-4layer.cjs
+
   check-module-sync:
     name: Module Sync Check
     runs-on: ubuntu-latest
@@ -379,6 +397,7 @@ jobs:
         e2e-desktop,
         build-shared,
         check-module-sync,
+        verify-ipc-4layer,
       ]
     steps:
       - name: Checkout

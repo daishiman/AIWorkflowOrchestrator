@@ -3044,16 +3044,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L5 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L45 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L76 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L99 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L124 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L155 |
-| TASK-RT-06 教訓（2026-03-29） | L186 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L208 |
-| TASK-P0-04 教訓（2026-03-30） | L239 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L275 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L4 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L44 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L75 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L98 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L123 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L154 |
+| TASK-RT-06 教訓（2026-03-29） | L185 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L207 |
+| TASK-P0-04 教訓（2026-03-30） | L238 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L274 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L369 |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L423 |
 | TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L463 |
@@ -3061,9 +3061,9 @@ node scripts/list-specs.js --topics
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L534 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L546 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L569 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L577 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L611 |
-| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L645 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L578 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L612 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L646 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3081,9 +3081,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L150 |
-| クイックリファレンス: カテゴリ別検索ガイド | L170 |
-| 分割ファイル一覧 | L174 |
+| 分割ファイル一覧 | L151 |
+| クイックリファレンス: カテゴリ別検索ガイド | L171 |
+| 分割ファイル一覧 | L175 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3105,6 +3105,17 @@ node scripts/list-specs.js --topics
 |------------|----|
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L7 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L41 |
+
+### references/lessons-learned-ipc-4layer-verification-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| L-IPC4L-001: コメント処理はステートマシン方式で文字列リテラル内パターンを保護する | L8 |
+| L-IPC4L-002: spread/定数参照の解決には `buildConstValueMap()` パターンが有効 | L17 |
+| L-IPC4L-003: mainハンドラは6パターン対応が必要 | L27 |
+| L-IPC4L-004: ローカル定数マップでファイル内const vs 外部importの優先度管理 | L36 |
+| L-IPC4L-005: Rule-1/Rule-2のギャップは「スクリプト不具合」ではなく「コードベースの既存ギャップ」 | L45 |
+| 変更履歴 | L56 |
 
 ### references/lessons-learned-ipc-channel-whitelist-sync.md
 
@@ -4579,10 +4590,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L331 |
-| 続き | L332 |
-| 続き | L334 |
-| 続き | L331 |
+| 続き | L335 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4713,18 +4721,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L294 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L311 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L333 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4855,37 +4854,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
-| 完了タスク（2026-03後半） | L217 |
-| 完了タスク（機能別アーカイブ） | L225 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
-| 完了タスク（2026-03後半） | L217 |
-| 完了タスク（機能別アーカイブ） | L225 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L20 |
-| 完了タスク（2026-03後半） | L195 |
-| 完了タスク（機能別アーカイブ） | L203 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
-| 完了タスク（2026-03後半） | L217 |
-| 完了タスク（機能別アーカイブ） | L225 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
-| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 renderer error UI close-out sync | L24 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L102 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L122 |
-| 完了タスク（2026-03後半） | L297 |
-| 完了タスク（機能別アーカイブ） | L305 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L414 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L23 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L43 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L55 |
-| 完了タスク（2026-03後半） | L230 |
-| 完了タスク（機能別アーカイブ） | L238 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L347 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L26 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L46 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L58 |
+| 完了タスク（2026-03後半） | L233 |
+| 完了タスク（機能別アーカイブ） | L241 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L350 |
 
 ### references/task-workflow-history.md
 
@@ -4919,27 +4893,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
-| 仕様書インデックス | L15 |
-| 利用順序 | L45 |
-| 関連ドキュメント | L51 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
 | 仕様書インデックス | L16 |
-| 利用順序 | L73 |
-| 関連ドキュメント | L78 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L48 |
+| 利用順序 | L100 |
+| 関連ドキュメント | L105 |
 
 ### references/testing-accessibility.md
 
