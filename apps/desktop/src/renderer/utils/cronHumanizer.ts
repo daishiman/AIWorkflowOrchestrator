@@ -90,6 +90,9 @@ export function cronToHumanReadable(
     }
 
     case "monthly":
+      if (dayOfMonth < 1 || dayOfMonth > 31) {
+        return locale === "ja" ? "カスタムスケジュール" : "Custom schedule";
+      }
       return locale === "ja"
         ? `毎月${dayOfMonth}日 ${formatTime(hour, minute)}`
         : `Every month on day ${dayOfMonth} at ${formatTime(hour, minute)}`;

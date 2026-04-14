@@ -925,6 +925,59 @@
 
 ---
 
+## TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+### L-CRON-UI-001: visual validation の証跡は初期値注入で固定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | monthly invalid の screenshot を live input の操作だけで再現しようとすると、visual mode の状態がぶれやすく、証跡が安定しなかった |
+| 原因       | screenshot harness の state 固定がなく、direct input / custom cron と visual validation の境界が曖昧だった |
+| 解決策     | `value=` 初期値注入で visual mode を固定し、monthly invalid / valid を同じハーネスで再現する |
+| 再発防止   | 画面証跡は入力経路と初期 state を capture metadata へ固定する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-CRON-UI-002: 設計文言・実装文言・証跡文言を一致させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `1〜31` の月間エラー文言が design / implementation / evidence で微妙に揺れると、レビュー時に「どれが正か」が分かりにくくなる |
+| 原因       | UI ガイド、コンポーネント契約、手動テスト記録を別々に更新していた |
+| 解決策     | 月間エラー文言を 1 つの正本として扱い、UI ガイド・コンポーネント契約・Phase 11/12 証跡を完全一致させる |
+| 再発防止   | validation copy は paraphrase せず、同一文言を正本から転記する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-CRON-UI-003: 見た目差分だけの改善は別タスクに分離する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | weekly / monthly の alert で `text-xs` / `text-sm` のような細かな差分が、機能完了の主題と混ざりやすい |
+| 原因       | 行動差分とスタイル差分を同じ完了記録に閉じ込めたため、レビューの論点が広がった |
+| 解決策     | style-only の統一は `TASK-CRON-ERROR-STYLE-UNIFICATION-001`、direct input 側は `TASK-CRON-CUSTOM-VALIDATION-001` として別タスク化する |
+| 再発防止   | micro-style の調整は main task から切り出し、優先度と影響を分けて管理する |
+| 関連タスク | TASK-CRON-ERROR-STYLE-UNIFICATION-001 / TASK-CRON-CUSTOM-VALIDATION-001 |
+
+---
+
+## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
+- 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
+- 解決策: ガード処理で空文字""を返し、呼び出し元の既存バリデーションに委ねる
+- 再発防止: 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却」を採用する
+
+## L-WEEKGRD-002: NON_VISUAL純粋関数タスクのPhase 11は source-level PASSと環境ブロッカーを分離して記録する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: vitestがesbuild host/binary mismatch（0.21.5 vs 0.25.12）で停止した場合、製品FAILと環境FAILが混在しがち
+- 解決策: discovered-issues.md でproduct_blockerとenvironment_issueを別カテゴリで記録し、product blocker 0件を明記
+- 再発防止: 環境要因は製品バックログに入れない
+
+## L-WEEKGRD-003: Phase 11 NON_VISUALタスクではui-sanity-visual-review.mdにNON_VISUAL宣言を明示する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
+- 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
+
+---
+
 ## UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001: SkillCategory ラベルマッピング集約
 
 ### L-CLM-001: `satisfies` パターンでコンパイル時ラベルドリフト防止
@@ -984,7 +1037,81 @@
 | 原因       | Phase 12 の `system-spec-update-summary.md` テンプレートに「外部同期先一覧」の項目がなかった |
 | 解決策     | Phase 12 closing 時に `system-spec-update-summary.md` の Step 1-A に「LOGS.md × 2 + topic-map.md + resource-map.md」の更新記録を必ず含めるよう明文化した |
 | 再発防止   | Phase 12 spec（`docs/30-workflows/*/phase-12-documentation.md`）の Task 12-2 Step 1-A に「外部同期先一覧」列を追加する |
+
+---
+
+## TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UIバリデーション 教訓（2026-04-13）
+
+### L-VALCROP-001: UI層とバリデーション責務分離
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `cronConverter` 純粋関数と UI層のバリデーション責務が混在すると、UI固有のエラーフィードバックを純粋関数側に持ち込んでしまい、関数の副作用が増える |
+| 解決策     | `cronConverter` は純粋関数ガード（例: weekdays=[]時にInvalidConfigErrorをスロー）に専念し、UI層でのエラーメッセージ表示・`onValidationChange` コールバック通知は `VisualCronPicker` コンポーネントが担当する |
+| 標準ルール | 純粋関数は入力→出力の変換のみ。ユーザーへの UX フィードバックは UI コンポーネント側で完結させる |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-002: weekly/monthly モード別バリデーション
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `weekly` モードと `monthly` モードでバリデーションルールが異なるため、汎用バリデーションでは誤検知・見落としが起きる |
+| 解決策     | `weekly` モードは weekdays=[] を無効とし、`monthly` モードは dayOfMonth が 1〜31 範囲外を無効とするモード別チェックを実装した |
+| 標準ルール | スケジュールモードごとに独立したバリデーションロジックを定義し、それぞれ独立したテストケースで検証する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-003: onValidationChange コールバック設計（省略可能プロップ・useEffect 安定化）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `onValidationChange` が必須プロップだと呼び出し側の変更コストが大きく、`useEffect` 依存配列に含めると親がインライン関数を渡した際に無限ループが発生する |
+| 解決策     | `onValidationChange?: (isValid: boolean) => void` として省略可能にし、`useEffect` の依存配列から除外するか `useCallback` で安定参照を保証することで無限レンダリングを防ぐ |
+| 標準ルール | コールバック系プロップは省略可能にし、Effect 安定性を設計時に考慮する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
+
+### L-VALCROP-004: monthly dayOfMonth のUI責務
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `dayOfMonth` の範囲バリデーション（1〜31）をどちらが担うか曖昧だと、純粋関数側に UI 依存ロジックが混入する |
+| 解決策     | 現状は UI 側（`VisualCronPicker`）のみで 1〜31 範囲チェックを行い、純粋関数ガードとしての `cronConverter` 側ガードは別タスクに切り出した |
+| 標準ルール | UI 即時フィードバック用バリデーションは UI コンポーネント、純粋関数の防御的ガードは別タスクで段階的に追加する |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 / TASK-CRON-ERROR-STYLE-UNIFICATION-001 |
+
+### L-VALCROP-005: Phase 11 smoke test 必須（UI表示確認→スクリーンショット順序）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | Phase 11 でスクリーンショットを先に撮ろうとすると、コンポーネントが初期値なしでレンダリングされエラー表示が再現できないケースがある |
+| 解決策     | `value=` 初期値注入で各シナリオ（weekly empty weekdays / valid weekdays / monthly invalid date / valid date）を固定してから、smoke test でUI表示を確認し、その後スクリーンショットを撮る順序を徹底する |
+| 標準ルール | Phase 11 は「UI表示確認 → スクリーンショット」の順序を必須とし、初期値注入によるシナリオ再現を前提とする |
+| 関連タスク | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 |
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 月次ガード処理 教訓（2026-04-13）
+
+### L-MTHGRD-001: `Number.isInteger` で NaN/小数/Infinity を一度に排除する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 / AC-3
+- 症状: `dayOfMonth < 1 || dayOfMonth > 31` の範囲比較だけでは NaN が素通りする（`NaN < 1` は `false`、`NaN > 31` も `false`）
+- 解決策: 範囲比較の前に `Number.isInteger(dayOfMonth)` を置く。これにより NaN・小数・Infinity を単一条件で排除できる
+- 再発防止: cron フィールドの境界バリデーションは `Number.isInteger` チェックを先頭に置くパターンを標準化する
+
+### L-MTHGRD-002: 生成側と解析側の双方向ガードをセットで実装する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `cronConverter.ts`（生成側）にガードを追加しても、`cronParser.ts`（解析側）が不正 monthly を custom にフォールバックしないと、UI 初期化時に不正な monthly 値が表示される
+- 解決策: 生成側のガード追加と同時に、`cronParser.ts` でも monthly の `dayOfMonth` が 1〜31 外なら `custom` にフォールバックさせた
+- 再発防止: converter/parser の双方向性を持つ関数を変更するときは、反対方向の関数も同時に回帰テストに含める
+
+### L-MTHGRD-003: switch-case ガードはブロック構文 + 早期リターンの対称パターンで統一する
+
+- タスク: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 症状: `weekly` ガードと `monthly` ガードで構文スタイルが異なると、コードレビュー時に意図の差があるように見える
+- 解決策: `case "weekly": { if (...) return ""; }` の対称パターンで `monthly` ブロックも実装した
+- 再発防止: switch-case 内の各周期タイプには `{}` ブロック + 早期リターンパターンを一貫して適用する
 
 ---
 
@@ -1181,6 +1308,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする |
 | 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する |
 | 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001 |
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
 
 ---
 

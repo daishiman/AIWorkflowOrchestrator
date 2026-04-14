@@ -33,6 +33,14 @@ interface VisualCronPickerProps {
   disabled?: boolean;
   showAdvancedToggle?: boolean;
   className?: string;
+  /**
+   * バリデーション状態が変化したときに呼び出されるコールバック（省略可能）。
+   * @param isValid - フォーム全体のバリデーション結果（true: 有効, false: 無効）
+   * @remarks
+   * weekly モードで曜日が未選択の場合は false が渡される。
+   * monthly モードで dayOfMonth が 1〜31 の範囲外の場合は false が渡される。
+   */
+  onValidationChange?: (isValid: boolean) => void;
 }
 
 const DEFAULT_CONFIG: VisualCronConfig = {
@@ -66,6 +74,7 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
     disabled = false,
     showAdvancedToggle = true,
     className,
+    onValidationChange,
   }) => {
     const [config, setConfig] = useState<VisualCronConfig>(() =>
       initConfig(value),
@@ -200,6 +209,17 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
       config.frequency === "weekly" &&
       config.weekdays.length === 0;
 
+    const monthlyError =
+      !isAdvancedMode &&
+      config.frequency === "monthly" &&
+      (config.dayOfMonth < 1 || config.dayOfMonth > 31);
+
+    const isFormValid = !weeklyError && !monthlyError;
+
+    useEffect(() => {
+      onValidationChange?.(isFormValid);
+    }, [isFormValid, onValidationChange]);
+
     const showTimePicker =
       !isAdvancedMode &&
       config.frequency !== "every-minute" &&
@@ -252,11 +272,18 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
 
         {/* 日付グリッド（monthly のみ） */}
         {showDayOfMonth && (
-          <DayOfMonthSelector
-            value={config.dayOfMonth}
-            onChange={(day) => updateConfig({ dayOfMonth: day })}
-            disabled={disabled}
-          />
+          <div>
+            <DayOfMonthSelector
+              value={config.dayOfMonth}
+              onChange={(day) => updateConfig({ dayOfMonth: day })}
+              disabled={disabled}
+            />
+            {monthlyError && (
+              <p role="alert" className="text-red-500 text-sm mt-1">
+                日付は1〜31の範囲で入力してください
+              </p>
+            )}
+          </div>
         )}
 
         {/* 直接入力モード */}

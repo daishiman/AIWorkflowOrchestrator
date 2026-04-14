@@ -2,6 +2,26 @@
 
 ## 役割
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.46 を追記（Number.isInteger ガードパターン / 双方向ガード / 対称ブロック構文）
+- LOGS.md 2ファイル同波更新
+
+### 背景
+TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 の skill-feedback-report.md で記録された改善提案を task-specification-creator SKILL.md に反映。純粋関数ガード設計における Number.isInteger の使用順序と、converter/parser 双方向ガードのセット実装パターンを知見化。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 phase 12 close-out sync
+
+### 変更内容
+- `SKILL.md` Phase 12 の「よくある漏れ」テーブルに `index.md` / `artifacts.json` / `outputs/artifacts.json` の同一wave同期ルールを追加し、v10.09.46 を追記
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` を completed / blocked に更新
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/*.md` を current facts に更新
+- `.agents/skills/task-specification-creator/SKILL.md` / `LOGS.md` を mirror 同期
+
+### 背景
+Phase 12 close-out で index status と台帳 mirror の二重化を防ぐため、skill に再発防止ルールを残した。
+
 ## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
 ### 変更内容

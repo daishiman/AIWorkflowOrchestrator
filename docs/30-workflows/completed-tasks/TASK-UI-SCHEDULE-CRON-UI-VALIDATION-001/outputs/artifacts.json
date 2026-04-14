@@ -1,0 +1,196 @@
+{
+  "taskId": "TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001",
+  "taskName": "VisualCronPicker UIバリデーション整理",
+  "featureName": "TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001",
+  "taskType": "VISUAL",
+  "taskClassification": "improvement",
+  "phase11Judgment": "VISUAL",
+  "created": "2026-04-13T00:00:00Z",
+  "lastUpdated": "2026-04-13T09:58:16Z",
+  "status": "completed",
+  "workflowPath": "docs/30-workflows/TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/p50-check-result.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        "outputs/phase-2/design-decision.md",
+        "outputs/phase-2/code-diff-preview.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx"
+      ],
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/red-confirmation.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx"
+      ],
+      "artifacts": [
+        "outputs/phase-5/implementation-result.md",
+        "outputs/phase-5/green-confirmation.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "codeArtifacts": [
+        "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx"
+      ],
+      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["outputs/phase-9/qa-result.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        "outputs/phase-10/ac-verification.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "visualType": "VISUAL",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/visual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/ui-sanity-visual-review.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/scene-01-weekly-empty-weekdays-error.png",
+        "outputs/phase-11/screenshots/scene-02-weekly-valid-weekdays-ok.png",
+        "outputs/phase-11/screenshots/scene-03-monthly-invalid-date-error.png",
+        "outputs/phase-11/screenshots/scene-04-monthly-valid-date-ok.png"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/lessons-learned.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: weekly + 空曜日でエラーメッセージ（role=\"alert\"）が表示される",
+    "AC-2: weekly + 空曜日で onValidationChange(false) が呼ばれる",
+    "AC-3: weekly + 曜日選択時に onValidationChange(true) が呼ばれる",
+    "AC-4: monthly + dayOfMonth < 1 でエラーメッセージが表示される",
+    "AC-5: monthly + dayOfMonth > 31 でエラーメッセージが表示される",
+    "AC-6: monthly + 無効日付で onValidationChange(false) が呼ばれる",
+    "AC-7: monthly + 有効な日付（1〜31）で onValidationChange(true) が呼ばれる",
+    "AC-8: onValidationChange が undefined の場合にもエラーなく動作する",
+    "AC-9: pnpm --filter @repo/desktop test が全件 PASS",
+    "AC-10: TypeScript型チェックが PASS"
+  ],
+  "dependencies": [
+    {
+      "type": "prerequisite",
+      "taskId": "TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001",
+      "status": "completed",
+      "description": "cronConverter.tsのweekly空曜日ガード処理が実装済みであること"
+    },
+    {
+      "type": "recommended",
+      "taskId": "TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001",
+      "status": "recommended",
+      "description": "cronConverter.tsのmonthlyガード追加（別タスク）"
+    }
+  ],
+  "metadata": {
+    "taskType": "VISUAL",
+    "relatedIssue": "#2109"
+  }
+}
