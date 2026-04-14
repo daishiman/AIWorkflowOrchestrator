@@ -20,6 +20,7 @@ import {
   inferSmartDefaults,
   STEPS,
 } from "../SkillCreateWizard";
+import type { SkillCreateWizardProps } from "../SkillCreateWizard";
 import type {
   ConversationAnswers,
   SmartDefaultResult,
@@ -81,8 +82,11 @@ const defaultSmartDefaults: SmartDefaultResult = {
   inferenceLog: ["mock"],
 };
 
-function renderWizard(onClose = vi.fn()) {
-  render(<SkillCreateWizard onClose={onClose} />);
+function renderWizard(
+  onClose = vi.fn(),
+  props: Partial<SkillCreateWizardProps> = {},
+) {
+  render(<SkillCreateWizard onClose={onClose} {...props} />);
   return onClose;
 }
 
@@ -587,6 +591,159 @@ describe("SkillCreateWizard", () => {
       expect(mockFetchSkills).not.toHaveBeenCalled();
       // createSkill が1回呼ばれていること（createSkill内でfetchSkillsが呼ばれる）
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ============================================================
+  // TASK-SW-FIX-STATE-DETAIL-001: 問題18・19（TC-06〜TC-10）
+  // ============================================================
+
+  describe("TASK-SW-FIX-STATE-DETAIL-001: 問題18 resolveExternalIntegration再計算", () => {
+    it("TC-06: Step1でq5を変更後に生成完了するとCompleteStepに反映される", async () => {
+      // smart defaults で tool=null（外部連携なし）になる purpose
+      mockInferSmartDefaults.mockReturnValue({
+        ...defaultSmartDefaults,
+        tool: null,
+      });
+
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 0 → Step 1（Slackキーワードなし）
+      fillStep0("汎用的なタスクを実行する", "外部連携");
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // Step 1: Page 2 で q5 に「Slack」を手動選択
+      fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+
+      // 生成実行
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results[0]?.value;
+      });
+
+      // CompleteStep に Slack 外部連携が反映されている
+      expect(
+        screen.getByTestId("complete-step-external-checklist"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Slack Webhook URL を設定する"),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-07: q5以外のq1を変更しても外部連携状態に副作用がない（回帰）", async () => {
+      // smart defaults で tool=null
+      mockInferSmartDefaults.mockReturnValue({
+        ...defaultSmartDefaults,
+        tool: null,
+      });
+
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      fillStep0("汎用タスクの実行を自動化するための目的説明", "外部連携");
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // Step 1: q1 のみ変更（q5 は変更しない）
+      fireEvent.click(screen.getByRole("button", { name: "自分のみ" }));
+
+      // 生成実行
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results[0]?.value;
+      });
+
+      // CompleteStep が表示されること（外部連携なしで正常完了）
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+    });
+  });
+
+  describe("TASK-SW-FIX-STATE-DETAIL-001: 問題19 generationLockRef競合修正", () => {
+    it("TC-08/09: 生成完了後に別のスキルを作ると再度生成が可能（lockRef解放確認）", async () => {
+      mockCreateSkill
+        .mockResolvedValueOnce("/path/skill-1")
+        .mockResolvedValueOnce("/path/skill-2");
+
+      renderWizard(mockOnClose);
+
+      // 1回目の生成完了
+      await advanceToComplete();
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+
+      // 「別のスキルを作る」でStep 0に戻る（generationLockRef が解放されるパス）
+      fireEvent.click(
+        screen.getByTestId("complete-step-action-create-another"),
+      );
+      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
+
+      // 2回目の生成
+      await advanceToComplete();
+
+      // 2回目も成功（generationLockRef が残留していないこと）
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+      expect(mockCreateSkill).toHaveBeenCalledTimes(2);
+    });
+
+    it("TC-10: 生成完了後にgenerationLockRefが解放され重複生成が防がれる（回帰）", async () => {
+      renderWizard(mockOnClose);
+
+      await advanceToComplete();
+
+      // 生成が1回のみ呼ばれていること（ロック機構が正常動作）
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+    });
+
+    it("TC-13: 生成エラー後にリトライすると再生成が可能（generationLockRef境界）", async () => {
+      mockCreateSkill
+        .mockRejectedValueOnce(new Error("生成失敗テスト"))
+        .mockResolvedValueOnce("/path/skill-retry");
+
+      renderWizard(mockOnClose);
+
+      // Step 0 → Step 1
+      await advanceToStep1("Slack通知を送るための目的説明");
+      fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+
+      // 1回目の生成（失敗）
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+      await act(async () => {
+        await (
+          mockCreateSkill.mock.results[0]?.value as Promise<unknown>
+        )?.catch?.(() => {});
+      });
+
+      // エラーカードとリトライボタンが表示されること
+      expect(screen.getByText("生成エラー")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "リトライ" }),
+      ).toBeInTheDocument();
+
+      // リトライ（2回目の生成、成功）
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "リトライ" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results[1]?.value;
+      });
+
+      // 2回目の生成成功後にCompleteStepが表示されること（lockRef が解放されていた証明）
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+      expect(mockCreateSkill).toHaveBeenCalledTimes(2);
     });
   });
 });

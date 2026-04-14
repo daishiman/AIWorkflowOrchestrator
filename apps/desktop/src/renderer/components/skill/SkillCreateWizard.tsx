@@ -285,12 +285,13 @@ export function resolveExternalIntegration(
 export interface SkillCreateWizardProps {
   onClose: () => void;
   source?: "lifecycle_panel" | "direct";
+  isTemplateMode?: boolean;
 }
 
 export const SkillCreateWizard = React.forwardRef<
   HTMLDivElement,
   SkillCreateWizardProps
->(({ onClose: _onClose, source }, ref) => {
+>(({ onClose: _onClose, source, isTemplateMode = false }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
@@ -333,6 +334,15 @@ export const SkillCreateWizard = React.forwardRef<
   useEffect(() => {
     currentStepRef.current = currentStep;
   }, [currentStep]);
+
+  // 問題18修正: q5 変更後に hasExternalIntegration / externalToolName を再計算する
+  useEffect(() => {
+    const defaults = smartDefaults ?? inferSmartDefaults(formData);
+    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+    setHasExternalIntegration(integration.hasExternalIntegration);
+    setExternalToolName(integration.externalToolName);
+    // 依存を q5 に絞ることで、他の回答変更で外部連携状態を再計算しない。
+  }, [answers.q5]);
 
   const invalidateGenerationRequests = () => {
     generationRequestIdRef.current += 1;
@@ -456,9 +466,10 @@ export const SkillCreateWizard = React.forwardRef<
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
     } finally {
+      // 問題19修正: 正常完了・エラー・キャンセルの全経路でロックを必ず解放する
+      generationLockRef.current = false;
       if (requestId === generationRequestIdRef.current) {
         setIsGenerating(false);
-        generationLockRef.current = false;
       }
     }
   };
@@ -566,6 +577,7 @@ export const SkillCreateWizard = React.forwardRef<
             message={resolvedMessage}
             previewContent={resolvedPreview}
             error={resolvedError}
+            isTemplateMode={isTemplateMode}
             isGenerating={
               isGenerating || isSkillGenerating || streaming.isGenerating
             }

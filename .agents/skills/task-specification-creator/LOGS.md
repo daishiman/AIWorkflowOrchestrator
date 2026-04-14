@@ -2,6 +2,29 @@
 
 ## 役割
 
+## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴の先頭に `v10.09.47` を追加し、EC-NNN / SD-NNN 採番ルール・edge case 一覧表・仕様判断根拠テーブル導入を反映
+- `.agents/skills/task-specification-creator/SKILL.md` に同エントリを mirror sync
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を outputs/phase-12/ に生成
+
+### 背景
+
+FB-05 は docs-only / `spec_created` タスクとして Phase 11 テスト証跡テンプレートに新 3 セクションを導入した。skill-feedback-report.md に記録した LOW 2件（件数集約 / edge case 表カラム整理）は v2 テンプレートで既に解消済み。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴の先頭に `v10.09.46` を追加し、`TASK-SW-FIX-DATAFLOW-001` の current facts（`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を反映
+- `SKILL.md` 「Phase 12 実行時によくある漏れ」テーブルに **[FB-DATAFLOW-001]** を追加し、context bridge 同期漏れ（shared 型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を防止ルールとして明文化
+- 本 `LOGS.md` に同作業ログを追記（worker 2 担当範囲: `SKILL.md` / `LOGS.md`）
+
+### 背景
+`TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
+
 ## 2026-04-14 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -21,6 +44,28 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 | 変更対象 | `task-specification-creator/references/patterns-lessons-and-pitfalls.md`（TC-06 パターン・廃止 6 ステップ・Wave TDD 設計追加） |
 | 結果     | 廃止系タスクの標準パターン 3 件を再利用可能な形で定型化（500 行以内確認済み）                                                  |
 | 検証     | patterns-lessons-and-pitfalls.md 更新確認                                                                                      |
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.49 を追記
+- `SKILL.md` に TASK-SW-FIX-STATE-DETAIL-001 の current facts を追記し、template error stale guard / `ConversationRoundStep` answers 再同期 / `generationLockRef` 解放 / Phase 11 evidence 指し直しを固定
+- `SKILL.md` 「Phase 12 実行時によくある漏れ」に **[FB-STATE-DETAIL-001]**〜**[FB-STATE-DETAIL-004]** を追加
+
+### 背景
+`TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
+
+このログは task-specification-creator の current facts 同期履歴を残す。
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.49 を追記
+- `SKILL.md` の `Phase 12 実行時によくある漏れ` に [FB-STATEDETAIL-001] を追加
+- `aiworkflow-requirements` 側の `task-workflow` / `task-workflow-completed` / `task-workflow-backlog` / `topic-map` / `LOGS` を current facts に同期
+
+### 背景
+Phase 10〜13 の current facts を閉じる際に、Phase 13 の skipped / blocked 記録と state detail の実装ガイドがずれると、Phase 12 の documentation が stale になりやすい。`isTemplateMode` wire-up と `generationLockRef` finally 解除を同波で固定した。
 
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
@@ -102,6 +147,30 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -118,6 +187,14 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 
 ### 変更内容
 
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
 - `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
@@ -162,6 +239,16 @@ Phase 12 の canonical 6 成果物に加えて、LOGS と topic-map を閉じる
 - Phase 12-2の仕様書更新判定: APIシグネチャ変更なし + 内部実装追加のみの場合はN/A判定が適切
 
 ---
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` v10.09.45 changelog エントリ追加
+- 「よくある漏れ」テーブルに **[UT-W3-HTTP]** 1件（Phase 4 でガード条件の全 falsy パターン未列挙による Phase 6 追加漏れ）を追記
+- `aiworkflow-requirements/LOGS.md` 同波更新
+
+### 背景
+UT-W3-ANALYTICS-HTTP-PROVIDER-001 の Phase 6 で TC-E04（空文字 URL）が追加されたことから、Phase 4 でのガード条件設計に改善余地があった。次回類似タスクで同じ漏れが起きないよう「よくある漏れ」テーブルに記録した。
 
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
 
@@ -2611,3 +2698,63 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加） |
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。   |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                   |
+| 項目     | 内容                                                                                                                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
+| 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
+| 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
+
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/LOGS.md` に本タスク完了記録を追加
+
+### 背景
+
+UT-W3-ANALYTICS-STORE-INTEGRATION-001（renderer-side analyticsSlice 実装）の Phase 12 close-out sync。action-only Zustand store パターン・vi.mock パス解決（__tests__/ からの相対パス）・ブランチカバレッジ検出と補完テストの 3 点を知見として記録。
+
+| 項目     | 内容                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / Phase 12 close-out / skill-sync                                                                                                                                                              |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent / SkillAnalyticsEventType 追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件 新規）     |
+| 結果     | analyticsSlice 実装完了。vi.mock パスは `../../../utils/analyticsAdapter`（__tests__/ から3階層上）。branch 81.81% → catch ブロックテスト追加 → 100%。全 30 件 PASS                                               |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed / line 100% / branch 100%                                                                                                                                             |
+
+## 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/SKILL.md` に WEEKGRD-01〜03 Feedbackエントリ追加（「Phase 12 実行時によくある漏れ」テーブル）
+
+### 背景
+
+TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード追加）の Phase 12 close-out sync。NON_VISUALタスクにおける環境ブロッカー分離記録・純粋関数ガード戦略・NON_VISUAL宣言明記の3点を知見として記録。
+
+| 項目     | 内容                                                                                                                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
+| 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
+| 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
+
+## 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `aiworkflow-requirements/LOGS.md` に TASK-SW-FIX-STATE-DETAIL-001 Phase 12 close-out エントリを追加
+- `task-specification-creator/LOGS.md` に本エントリを追加
+- `task-specification-creator/SKILL.md` に STATE-DETAIL Feedback エントリ（STATE-DETAIL-01/02/03）を追加
+
+### 背景
+
+TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の Phase 12 close-out sync。template error cancel 導線・answers reset・generationLockRef finally release の 3 修正を実装した知見を記録。UI state machine の 3 経路（正常完了・エラー・キャンセル）保証パターンを feedback として定型化。
+
+| 項目     | 内容                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | bug-fix / state-management / Phase 12 close-out / skill-sync                                                                                                                                                        |
+| 変更対象 | `SkillCreateWizard.tsx`（resetGeneratedState / generationLockRef finally）、`GenerateStep.tsx`（template cancel 導線）、`ConversationRoundStep.tsx`（answers prop 再同期）                                          |
+| 結果     | template error → キャンセル → Step 0 戻り導線を実装。answers reset と generationLockRef.current = false を finally で保証。Phase 11 screenshot 3 枚・Phase 12 docs 6 件で close-out |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
