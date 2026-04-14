@@ -4,7 +4,7 @@ import { inferSmartDefaults, type SkillInfoFormData } from "@repo/shared";
 const base: SkillInfoFormData = {
   skillName: "テストスキル",
   purpose: "",
-  category: null,
+  category: [],
 };
 
 describe("inferSmartDefaults", () => {
@@ -51,12 +51,20 @@ describe("inferSmartDefaults", () => {
       expect(result.tool).toBe("slack");
     });
 
-    it("purpose に 'slack'（小文字）が含まれる場合、tool = null を返すこと（大文字小文字を区別する）", () => {
+    it("purpose に 'slack'（小文字）が含まれる場合、tool = 'slack' を返すこと", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "slack通知を送る",
       });
-      expect(result.tool).toBeNull();
+      expect(result.tool).toBe("slack");
+    });
+
+    it("purpose に 'GITHUB'（大文字）が含まれる場合、tool = 'github' を返すこと", () => {
+      const result = inferSmartDefaults({
+        ...base,
+        purpose: "GITHUBのPRをレビューする",
+      });
+      expect(result.tool).toBe("github");
     });
 
     it("purpose に 'SlackBot' が含まれる場合、tool = 'slack' を返すこと（部分一致）", () => {
@@ -156,7 +164,7 @@ describe("inferSmartDefaults", () => {
     it("category = 'code-support' の場合、format = 'code' を推論すること", () => {
       const result = inferSmartDefaults({
         ...base,
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.format).toBe("code");
     });
@@ -164,20 +172,20 @@ describe("inferSmartDefaults", () => {
     it("category = 'data-analysis' の場合、format = 'structured' を推論すること", () => {
       const result = inferSmartDefaults({
         ...base,
-        category: "data-analysis",
+        category: ["data-analysis"],
       });
       expect(result.format).toBe("structured");
     });
 
     it("category が null の場合、format = null を返すこと（AC-4 フォールバック）", () => {
-      const result = inferSmartDefaults({ ...base, category: null });
+      const result = inferSmartDefaults({ ...base, category: [] });
       expect(result.format).toBeNull();
     });
 
     it("category が undefined の場合、format = null を返すこと", () => {
       const result = inferSmartDefaults({
         ...base,
-        category: undefined as unknown as null,
+        category: [],
       });
       expect(result.format).toBeNull();
     });
@@ -185,7 +193,7 @@ describe("inferSmartDefaults", () => {
     it("category が 'automation' の場合、format = null を返すこと", () => {
       const result = inferSmartDefaults({
         ...base,
-        category: "automation",
+        category: ["automation"],
       });
       expect(result.format).toBeNull();
     });
@@ -193,7 +201,7 @@ describe("inferSmartDefaults", () => {
     it("category が '' 空文字の場合、format = null を返すこと", () => {
       const result = inferSmartDefaults({
         ...base,
-        category: "" as unknown as null,
+        category: [],
       });
       expect(result.format).toBeNull();
     });
@@ -219,7 +227,7 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "毎日Slackに通知を送る",
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.inferenceLog).toHaveLength(3);
     });
@@ -228,7 +236,7 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "毎日Slackに通知を送る",
-        category: "data-analysis",
+        category: ["data-analysis"],
       });
       const log = result.inferenceLog ?? [];
       expect(log.some((entry) => entry.includes("slack"))).toBe(true);
@@ -243,13 +251,13 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "",
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.tool).toBeNull();
       expect(result.timing).toBeNull();
       expect(result.format).toBe("code");
       expect(result.inferenceLog).toEqual([
-        "category = 'code-support' → format = 'code'",
+        "category includes 'code-support' → format = 'code'",
       ]);
     });
 
@@ -267,13 +275,13 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "   ",
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.tool).toBeNull();
       expect(result.timing).toBeNull();
       expect(result.format).toBe("code");
       expect(result.inferenceLog).toEqual([
-        "category = 'code-support' → format = 'code'",
+        "category includes 'code-support' → format = 'code'",
       ]);
     });
   });
@@ -284,7 +292,7 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "毎日Slackに通知を送る",
-        category: "automation",
+        category: ["automation"],
       });
       expect(result.tool).toBe("slack");
       expect(result.timing).toBe("scheduled");
@@ -295,7 +303,7 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "コードをリアルタイムでレビューする",
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.tool).toBeNull();
       expect(result.timing).toBe("realtime");
@@ -306,7 +314,7 @@ describe("inferSmartDefaults", () => {
       const result = inferSmartDefaults({
         ...base,
         purpose: "Notionにデータを毎週記録する",
-        category: "data-analysis",
+        category: ["data-analysis"],
       });
       expect(result.tool).toBe("notion");
       expect(result.timing).toBe("scheduled");

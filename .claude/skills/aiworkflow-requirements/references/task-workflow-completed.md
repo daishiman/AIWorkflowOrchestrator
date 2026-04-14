@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
 - 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` 状態残留・リカバリーパス・競合状態修正（Phase 10〜12 completed / Phase 13 skipped）
 - [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
@@ -15,10 +16,12 @@
 - [2026-04-13: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（edge case 一覧表）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 Renderer 側エラーメッセージ UI 表示 E2E 確認 / TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-12: UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI 到達確認テスト追加](./task-workflow-completed-recent-2026-04d.md)
-- [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04d.md)
+- [2026-04-11: UT-SKILL-WIZARD-FB-03 フォールバック仕様のフィールド独立推論性明示化](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-11: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（アイコン / tooltip / a11y / screenshot evidence）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-08: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（LLM専用化・SmartDefault・GenerateStep再入防止・CompleteStep skillPath表示）](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-08〜04-12: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新 / UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter 差し替え など](./task-workflow-completed-recent-2026-04d.md)
+- [2026-04-07: UT-SKILL-WIZARD-W0-seq-01 / UT-RT-02-EXHAUSTIVE-CHECK-001 / UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 / TASK-UI-03-REMAINING / TASK-UI-04](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-06: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 packages/shared/src/ipc/channels.ts を desktop 実装へ同期](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
@@ -43,6 +46,7 @@
 
 - `skill_wizard_step1_completed` の `method: "skip"` は旧「Step 1 スキップモード」の意味ではなく、「未回答ありで生成実行した」計装値だったため、仕様書側の意味付けを current code に合わせて修正した
 
+## 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync
 ## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync
 
 ### 変更内容
@@ -59,176 +63,29 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### 変更内容
 
-- `apps/desktop/e2e/skill-wizard-tracking.spec.ts` に onboarding store mock 注入と current UI に合わせた step1 完了フローを反映
-- `apps/desktop/e2e/helpers/wizard-tracking-stub.ts` に trackEvent capture / onboarding store / skill API stub を統合
-- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/phase-11-manual-test.md` を NON_VISUAL 判定へ是正し、代替証跡方針を current facts に同期
-- `docs/30-workflows/UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001/outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` に Phase 11 証跡導線を追記
-- `.claude/skills/aiworkflow-requirements/LOGS.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04d.md` を同波で更新
+- `docs/30-workflows/WC-par-03b-fix-ui/index.md` を completed へ更新し、Wave C の UI 整合性修正を完了扱いに揃えた
+- `docs/30-workflows/WC-par-03b-fix-ui/artifacts.json` / `outputs/artifacts.json` を completed / parity PASS で同期した
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-11/` に 9 枚のスクリーンショット証跡と DevTools audit PASS を current facts として反映した
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/` の canonical 6 成果物を current facts に同期した
+- `task-workflow.md` / `task-workflow-completed-recent-2026-04f.md` / `LOGS.md` 2ファイルを同波で更新した
 
 ### 検証証跡
 
-- `pnpm --filter @repo/desktop exec playwright test e2e/skill-wizard-tracking.spec.ts --project=chromium`: PASS（7 passed）
-- `phase-11/manual-test-result.md`: NON_VISUAL 判定 / 代替証跡
-- `phase-11/manual-test-checklist.md`: PASS
-
-#### 苦戦箇所
-
-- `skill_wizard_step1_completed` は current UI では `method: "skip"` になるため、CompleteStep 到達確認とイベント期待値を分離した
-
-### タスク: UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001 SmartDefault AC-4 フォールバック仕様のフィールド独立推論性明示化（2026-04-11）
-
-| 項目       | 値                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-FB-03-FALLBACK-SPEC-CLARIFICATION-001                                           |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 complete / Phase 13 blocked）**                  |
-| タイプ     | docs / workflow-sync / skill-sync                                                               |
-| 優先度     | 高                                                                                               |
-| 完了日     | 2026-04-11                                                                                       |
-| 対象       | `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/`                      |
-| 成果物     | `docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/outputs/phase-12/`   |
-| 元未タスク | なし（docs-only close-out / 実装変更不要）                                                      |
-
-#### 実施内容
-
-- `phase-2-design.md` / `phase-4-test-creation.md` / `phase-5-implementation.md` / `phase-6-test-expansion.md` / `phase-12-documentation.md` を category-only format に是正
-- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成
-- `task-workflow.md` / `task-workflow-completed-recent-2026-04d.md` / `lessons-learned` / `LOGS` / `SKILL` を同波で更新
-- `artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同値化
-
-#### 検証証跡
-
-- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001`: PASS
-- `node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js --scan docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001 --output .tmp/unassigned-candidates.json`: PASS（0件）
-- `diff -qr docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/artifacts.json docs/30-workflows/ut-skill-wizard-fb-03-fallback-spec-clarification-001/outputs/artifacts.json`: PASS
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 再発条件 | 解決策 |
-| --- | --- | --- |
-| `format` を `purpose` から誤推論する説明の残存 | Phase 12 の文言が `category-only` を明示しないまま残る | `purpose` は tool / timing、`category` は format と責務分離して明記する |
-
----
-
-
-### タスク: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（2026-04-11）
-
-| 項目       | 値                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001                                                                |
-| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
-| タイプ     | ui / docs / workflow-sync                                                                           |
-| 優先度     | 高                                                                                                  |
-| 完了日     | 2026-04-11                                                                                          |
-| 対象       | `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx` のカテゴリ選択 UI 改善       |
-| 成果物     | `docs/30-workflows/skill-info-step-category-ui-icon/`                                               |
-| 元未タスク | なし（仕様起点の横断改善。新規 unassigned task は不要）                                               |
-
-#### 実施内容
-
-- `SkillInfoStep.tsx` のカテゴリボタンに icon / `title` / `aria-label` / `aria-pressed` を追加し、視認性と a11y を両立した
-- `SkillInfoStep.test.tsx` を `within(button)` ベースの検証へ強化し、icon / tooltip / 選択状態の current facts を固定した
-- Phase 11 用の capture script `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs` を追加し、SS-01〜SS-04 の visual evidence を生成した
-- `outputs/phase-11/` に `screenshot-plan.json` / `phase11-capture-metadata.json` / `screenshot-coverage.md` / 4 枚の PNG を保存し、スクリーンショット参照を Phase 12 に反映した
-- `docs/30-workflows/skill-info-step-category-ui-icon/index.md` / `artifacts.json` / `outputs/artifacts.json` を `completed` / `phase13_blocked` で同期した
-- `task-workflow-completed.md` / `task-workflow.md` / `.claude/skills/aiworkflow-requirements/LOGS.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
-
-#### 検証証跡
-
-- `apps/desktop/scripts/capture-skill-info-step-category-ui-icon-screenshots.mjs`: PASS（SS-01〜SS-04 を取得）
-- `outputs/phase-11/screenshots/ss-01-initial.png` / `ss-02-automation.png` / `ss-03-tooltip.png` / `ss-04-all-icons.png`: 生成済み
-- `outputs/phase-12/implementation-guide.md`: screenshot references 反映済み
-- `outputs/phase-12/skill-feedback-report.md`: overlay capture の注意点を反映済み
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx --maxWorkers 1`: 環境依存の `esbuild` バージョン不一致で再検証保留
-
-UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 の Phase 11/12 反映により、UI 実装・証跡・仕様書・完了台帳の current facts を同波で閉じた。
-
-### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
-
-| 項目       | 値                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W0-seq-01                                                                           |
-| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
-| タイプ     | docs / shared-types / workflow-sync                                                                 |
-| 優先度     | 高                                                                                                  |
-| 完了日     | 2026-04-07                                                                                          |
-| 対象       | `packages/shared/src/types/skillCreator.ts` の共有型契約追加と Phase 12 ドキュメント同期           |
-| 成果物     | `docs/30-workflows/W0-seq-01-types-skill-info-form/`                                                |
-| 元未タスク | なし（lane spec 先行タスク）                                                                        |
-
-#### 実施内容
-
-- `SkillCategory` / `SkillInfoFormData` / `SkillWizardScheduleConfig` / `QuestionAnswer` / `ConversationAnswers` / `SmartDefaultResult` / `SkeletonQualityFeedback` を `packages/shared/src/types/skillCreator.ts` に追加した
-- `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成し、型契約 7 件を TDD で固定した
-- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に是正し、Phase 12 の 6 成果物を作成した
-- `docs/30-workflows/W0-seq-01-types-skill-info-form/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期した
-- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` と `docs/30-workflows/skill-wizard-redesign-lane/index.md` に完了記録を追加した
-- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` に shared contract を反映し、`task-specification-creator` / `aiworkflow-requirements` の LOGS も同波更新した
-
-#### 検証証跡
-
 - `pnpm --filter @repo/shared typecheck`: PASS
-- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts`: PASS
-- `pnpm exec eslint packages/shared/src/types/skillCreator.ts packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`: PASS
+- `pnpm --filter @repo/desktop exec tsc --noEmit --pretty false`: PASS
+- `outputs/phase-11/devtools-audit.md`: PASS（Console error count 0）
+- `outputs/phase-11/screenshot-manifest.json`: PASS（9 PNGs）
+- `artifacts.json` / `outputs/artifacts.json`: PASS（同内容）
 
-### タスク: UT-RT-02-EXHAUSTIVE-CHECK-001 RuntimeSkillCreatorExecuteResponse union exhaustive check 導入（2026-04-07）
+### 苦戦箇所
 
-| 項目       | 値                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-RT-02-EXHAUSTIVE-CHECK-001                                                                       |
-| ステータス | **完了**                                                                                            |
-| タイプ     | refactoring / exhaustive-check / typescript                                                         |
-| 優先度     | 中                                                                                                  |
-| 完了日     | 2026-04-07                                                                                          |
-| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` の switch + assertNever 化                               |
-| 成果物     | `docs/30-workflows/ut-rt-02-exhaustive-check/`                                                      |
-| 元未タスク | `docs/30-workflows/unassigned-task/task-runtime-execute-response-exhaustive-check.md`                 |
+- `category[0]` を代表カテゴリにすると選択順に依存するため、`resolvePrimarySkillCategory()` へ是正した
+- root / outputs の artifact parity を片側更新で崩さないよう、同 wave で status と phase artifacts を同時更新した
 
-#### 実施内容
+### lessons-learned
 
-- `classifyExecuteResult()` module-local 正規化 helper + `assertNever()` を `RuntimeSkillCreatorFacade.ts` に追加した
-- `executeAsync()` の `isStructuredError` if-else パターンを switch + assertNever に変換した
-- `success === false`（厳格等価）で振る舞いを旧コードと完全に一致させた（T-03 回帰防止）
-- TC-08（unknown variant smoke test）と it.todo TC-09 をテストファイルに追加した
-- 11 tests PASS / 1 todo / pnpm typecheck エラー 0 件
-
-#### 検証証跡
-
-- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts` → 11 PASS / 1 todo
-- `pnpm --filter @repo/desktop typecheck` → エラー 0 件
-
----
-
-### タスク: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 スマートデフォルト推論サービス実装（2026-04-07）
-
-| 項目       | 値                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001                                                     |
-| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
-| タイプ     | docs / shared-services / workflow-sync                                                              |
-| 優先度     | 高                                                                                                  |
-| 完了日     | 2026-04-07                                                                                          |
-| 対象       | `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` の推論実装と Phase 12 同期 |
-| 成果物     | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/`                                      |
-| 元未タスク | なし（lane spec 先行タスク）                                                                        |
-
-#### 実施内容
-
-- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を実装し、Slack / GitHub / Notion / scheduled / realtime / code / structured の規則ベース推論を追加した
-- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` を更新し、`@repo/shared` から `inferSmartDefaults` を import できるようにした
-- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` を更新し、`SkillInfoFormData` / `SmartDefaultResult` を root export で利用できるようにした
-- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加し、shared 内テストの解決性を固定した
-- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` を 33 tests PASS に拡張し、空白のみ purpose の edge case を固定した
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` へ同期した
-- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に W0-seq-02 の完了記録を追加した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` と `system-spec-update-summary.md` を current facts に同期した
-
-#### 検証証跡
-
-- `pnpm exec vitest run src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`（`packages/shared` 直下）: 33 tests PASS
-- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/W0-seq-02-smart-default-reasoning-service`: PASS
-
-### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
+- UI current facts はコード・証跡・ledger を同 wave で閉じる
+- 多選択化したカテゴリの代表値は、配列先頭の暗黙仕様ではなく優先順位関数で決める
 
 ## 完了タスク（2026-03後半）
 
@@ -276,15 +133,6 @@ UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 の Phase 11/12 反映により、UI 実装
 - [Notification / History / Auth Key State](./task-workflow-completed-notification-history-auth-key-state.md)
 - [Abort / Contract / Auth / Session / Chat](./task-workflow-completed-abort-contract-auth-session-chat.md)
 
-| 項目       | 値                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------- |
-| タスクID   | UT-VERIFY-DOC-CONSOLIDATION-001                                                    |
-| ステータス | **完了（Phase 13: worktree completed）**                                           |
-| タイプ     | documentation / doc-consolidation                                                  |
-| 優先度     | 中                                                                                 |
-| 完了日     | 2026-04-06                                                                         |
-| 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
 ### Quality / Infra
 
 - [Quality Gates / Module Resolution / Logging](./task-workflow-completed-quality-gates-module-resolution-logging.md)
@@ -2299,7 +2147,7 @@ UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 の Phase 11/12 反映により、UI 実装
 | 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
 | --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/ut-health-policy-runtime-injection/` |
+| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/completed-tasks/UT-HEALTH-POLICY-RUNTIME-INJECTION-001/` |
 | UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
 
 ---

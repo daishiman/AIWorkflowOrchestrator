@@ -20,24 +20,24 @@ describe("SkillInfoFormData", () => {
   it("最小構成で構築できる", () => {
     const data: SkillInfoFormData = {
       purpose: "Slack通知を整理する",
-      category: null,
+      category: [],
     };
     expectTypeOf(data).toMatchTypeOf<SkillInfoFormData>();
   });
 
-  it("カテゴリを含む構成で構築できる", () => {
+  it("カテゴリを複数含む構成で構築できる", () => {
     const data: SkillInfoFormData = {
       skillName: "slack-notifier",
       purpose: "Slack通知を整理する",
-      category: "automation",
+      category: ["automation", "external-integration"],
     };
     expectTypeOf(data).toMatchTypeOf<SkillInfoFormData>();
   });
 
-  it("category が SkillCategory | null 型である", () => {
-    expectTypeOf<
-      SkillInfoFormData["category"]
-    >().toEqualTypeOf<SkillCategory | null>();
+  it("category が SkillCategory[] 型である", () => {
+    expectTypeOf<SkillInfoFormData["category"]>().toEqualTypeOf<
+      SkillCategory[]
+    >();
   });
 
   it("skillName は string | undefined 型である", () => {

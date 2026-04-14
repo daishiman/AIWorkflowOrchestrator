@@ -1,22 +1,23 @@
-# Phase 12: ドキュメント変更ログ
+# Phase 12 成果物: 変更履歴（ドキュメント変更ログ）
 
-## タスクID: TASK-SW-FIX-FEEDBACK-001
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
-## 変更記録
+## 変更履歴
 
-| 日付       | 変更内容                                                              |
-| ---------- | --------------------------------------------------------------------- |
-| 2026-04-13 | Phase 1-12 成果物作成・実装完了、Phase 11 screenshot evidence 4枚追加 |
-| 2026-04-13 | `task-workflow-completed` / recent bundle / LOGS / manifests 同期完了 |
+| 日付       | 変更内容                                            | 変更ファイル                                                                                                                       | 実施タスク |
+| ---------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 2026-04-14 | `generationMode` / `hasActivatedLlmMode` state 廃止 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                                                 | Wave A     |
+| 2026-04-14 | Step 0 ラジオボタン UI 削除・props 整理             | `apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx`                                                              | Wave A     |
+| 2026-04-14 | `GenerationMode` の barrel export 廃止              | `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`, `apps/desktop/src/renderer/components/skill/wizard/index.ts` | Wave A     |
+| 2026-04-14 | TC-06 追加・旧フラグ残骸ゼロ確認                    | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                                                  | Wave B     |
+| 2026-04-14 | store integration test 復帰と context 引数確認      | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx`                                | Wave B     |
+| 2026-04-14 | Phase 11 screenshot 5 枚再取得                      | `outputs/phase-11/screenshots/*.png`                                                                                               | Wave B     |
+| 2026-04-14 | Phase 12 docs / compliance / handover 作成          | `outputs/phase-12/*.md`                                                                                                            | Wave B     |
 
-## 変更ファイル一覧
+## 仕様更新の有無
 
-| ファイル                                       | 変更種別 | 内容                                                    |
-| ---------------------------------------------- | -------- | ------------------------------------------------------- |
-| SkillCreateWizard.tsx                          | 修正     | useFetchSkills 追加・handleExecutePlan fetchSkills 実装 |
-| CompleteStep.tsx                               | 修正     | skillPath null ガード・エラーUI 追加                    |
-| CompleteStep.test.tsx                          | 修正     | TC-FEEDBACK-004〜013 追加                               |
-| SkillCreateWizard.test.tsx                     | 修正     | mockFetchSkills・TC-FEEDBACK-003 追加                   |
-| SkillCreateWizard.llm-generation.test.tsx      | 修正     | mockFetchSkillsLlm・TC-FEEDBACK-001/002 追加            |
-| outputs/phase-11/screenshots/\*.png            | 追加     | VISUAL 証跡 4枚                                         |
-| outputs/phase-11/phase11-capture-metadata.json | 追加     | capture メタデータ                                      |
+仕様更新あり:
+
+- ウィザードが LLM 専用モードに一本化
+- template モードが廃止
+- Step フローが Step 0→1→2→3 に確立
