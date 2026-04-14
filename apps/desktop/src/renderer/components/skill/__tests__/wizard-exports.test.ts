@@ -13,7 +13,7 @@
 
 import { describe, it, expect, expectTypeOf } from "vitest";
 import * as wizardIndex from "../wizard/index";
-import type { GenerationMode, SkillInfoStepProps } from "../wizard";
+import type { SkillInfoStepProps } from "../wizard";
 import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
 
 describe("wizard/index.ts 削除エクスポート確認", () => {
@@ -87,8 +87,10 @@ describe("wizard/index.ts バレルエクスポート整合確認", () => {
     }
   });
 
-  it("GenerationMode が barrel から期待どおりの union 型で参照できること", () => {
-    expectTypeOf<GenerationMode>().toEqualTypeOf<"llm" | "template">();
+  it("GenerationMode が barrel から公開されていないこと", () => {
+    expect(
+      (wizardIndex as Record<string, unknown>)["GenerationMode"],
+    ).toBeUndefined();
   });
 
   it("SkillInfoStepProps が barrel から期待どおりの型で参照できること", () => {

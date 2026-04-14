@@ -146,6 +146,20 @@ Renderer 側エラーメッセージ UI の完成扱いを backlog / completed /
 ### 背景
 FB-05 は実装コードではなく Phase 11 証跡テンプレート運用の改善タスクだが、`spec_created` のまま閉じる場合でも system spec 同期（workflow / lesson / logs / topic-map）を同 wave で完了しないと current facts が再び分散する。今回の更新で同期漏れを解消した。
 
+## 2026-04-14 — TASK-SW-FIX-UI-001 impl-spec-to-skill-sync
+
+- `WC-par-03b-fix-ui/artifacts.json`: 全フェーズ `pending` → `completed` 化（Phase 13 のみ除く）
+- `outputs/phase-12/` 配下に 6 成果物を新規作成（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+- `references/lessons-learned-current-2026-04.md`: L-UI-001〜004 追加
+- `indexes/topic-map.md`: UI 整合性修正教訓セクション追加
+
+| 項目     | 内容                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | docs-only / Phase 12 close-out / skill-sync                                                                                        |
+| 変更対象 | `SkillInfoFormData.category` 型変更 / `handleCategoryClick` トグル実装 / `currentQuestion` 動的計算 / ボタン CSS 変数統一（問題 2・3・11・15・16） |
+| 結果     | Phase-12 全 6 成果物 PASS / compliance-check PASS / artifacts.json 完了化                                                          |
+| 検証     | phase12-task-spec-compliance-check.md: PASS                                                                                        |
+
 ## 2026-04-14 — TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
 - `references/task-workflow-completed-recent-2026-04f.md`: TASK-SW-FIX-MODE-MGMT-001 completed タスク記録追加
