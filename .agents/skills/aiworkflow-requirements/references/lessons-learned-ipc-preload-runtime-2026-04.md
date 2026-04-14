@@ -182,3 +182,48 @@
 - **補足**: 解決レイヤ（`resolveVerifySkillDir(skillName)` 等）を Phase 2 で先に命名しておくと設計の揺れを防げる
 - **発見元**: TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION
 - **発見日**: 2026-04-08
+
+---
+
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001（2026-04-13）
+
+### 実装した知見
+
+### L-SKILLNAME-001: shared定数化パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` が `SkillScanner.ts` と `init_skill.js` に重複定義されていた |
+| 解決策     | `packages/shared/src/constants/skillName.ts` を single source of truth として作成し、`packages/shared/src/constants/index.ts` から re-export。consumers は全員そこから import する |
+| 標準ルール | 同一定数を複数 consumers が持つ場合は `packages/shared/src/constants/<topic>.ts` → `index.ts` re-export → consumers import のパターンに統一する |
+| 発見元     | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 |
+
+### L-SKILLNAME-002: 再エクスポート層による互換性確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `SkillScanner.ts` が `packages/shared/src/claude-cli/constants.ts` から import していたため、import パスを変えると downstream に影響が出る |
+| 解決策     | `packages/shared/src/claude-cli/constants.ts` を仲介層として維持し、`skillName.ts` の定数を re-export する。downstream の import パスは変えずに実装を shared 定数へ切り替えられる |
+| 標準ルール | Phase 2 設計時点で再エクスポート層（`claude-cli/constants.ts` 等）まで明示すると、後続の漏れが減る |
+| 発見元     | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 |
+
+### L-SKILLNAME-003: standalone CLIスクリプトへの runtime fallback
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `init_skill.js` のような standalone CLI スクリプトでは、pnpm ワークスペースの package resolution が効かない場合がある。`@repo/shared/constants` を直接 require すると MODULE_NOT_FOUND になることがある |
+| 解決策     | `@repo/shared/constants` → `packages/shared/dist/constants/index.js` の 2 段階フォールバックを実装する。dist ビルド後のファイルへの相対パスで解決できる |
+| 標準ルール | standalone CLI スクリプトが shared パッケージを参照する場合は、package import と dist 相対パスの 2 段階フォールバックを必須とする |
+| 発見元     | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 |
+
+### 苦戦箇所
+
+| #   | 苦戦箇所                                                                 | 解決策                                                                                         |
+| --- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| 1   | init_skill.js での pnpm ワークスペース package resolution 失敗           | dist ビルド後のファイルへの相対パスフォールバックで解決                                        |
+| 2   | 同一定数が複数 consumers に分散しており「正本」の所在が不明確            | single source of truth ファイル（skillName.ts）を先に作り、全員がそこから import する設計に統一 |
+
+### 改善提案
+
+- Phase 2 設計時点で再エクスポート層（`claude-cli/constants.ts`）まで明示すると後続の漏れが減る
+- テスト追加時はパストラバーサル対策（バックスラッシュ）・境界値（64/65文字）を初期から含める

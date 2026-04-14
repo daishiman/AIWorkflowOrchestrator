@@ -286,7 +286,43 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 | 外部CLIエージェント委譲  | agents/delegate-to-external-cli.md                   |
 | マルチスキル同時設計     | agents/design-multi-skill.md                         |
 | フィードバック記録       | scripts/log_usage.js                                 |
+| スキル初期化             | scripts/init_skill.js                                |
 | Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
+
+---
+
+## scripts/init_skill.js の動作仕様
+
+スキルディレクトリを初期化するスクリプト。18-skills.md §6.4 準拠。
+
+### スキル名バリデーション（共有定数参照）
+
+`init_skill.js` は起動時に `loadSkillNameConstants()` を非同期実行し、`@repo/shared/constants` から以下の定数を動的ロードする：
+
+| 定数                 | 値                              | 用途                     |
+| -------------------- | ------------------------------- | ------------------------ |
+| `SKILL_NAME_PATTERN` | `^[a-z0-9]+(-[a-z0-9]+)*$`     | スキル名フォーマット検証 |
+| `MAX_SKILL_NAME_LENGTH` | `64`                         | スキル名最大文字数       |
+
+### runtime fallback 機構
+
+```
+1. @repo/shared/constants package import を試行
+      ↓ 失敗した場合
+2. packages/shared/dist/src/constants/index.js（相対パス）を試行
+      ↓ 両方失敗した場合
+3. 詳細エラーメッセージを出力して終了（各エラー原因を両方表示）
+```
+
+- ビルド前環境（`@repo/shared` 未ビルド）でも `dist/` が存在すれば動作する
+- 両方失敗した場合はエラーを throw し、hardcoded 値へのサイレントフォールバックは行わない
+
+### 使用例
+
+```bash
+node scripts/init_skill.js my-new-skill --path .claude/skills
+node scripts/init_skill.js my-new-skill --resources agents,references
+```
 
 ---
 
@@ -301,6 +337,8 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 | **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
 | **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
 | **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
+| **ナレッジ管理（構築）**     | references/knowledge-management-guide.md     |
+| **ナレッジ管理（検索・運用）** | references/knowledge-search-and-lifecycle.md |
 | スクリプト生成               | references/script-types-catalog.md           |
 | ワークフローパターン         | references/workflow-patterns.md              |
 | オーケストレーション         | references/orchestration-guide.md            |
@@ -314,7 +352,7 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 | カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`                                                                                    |
+| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`, `references/knowledge-management-guide.md`, `references/knowledge-search-and-lifecycle.md` |
 | ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
 | 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
 | 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |

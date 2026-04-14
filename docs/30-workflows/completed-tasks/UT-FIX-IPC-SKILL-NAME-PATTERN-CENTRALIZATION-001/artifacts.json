@@ -1,0 +1,23 @@
+{
+  "taskId": "UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001",
+  "taskName": "スキル名バリデーション正規表現の shared 定数一元化",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "createdAt": "2026-04-06T00:00:00.000Z",
+  "phases": {
+    "1": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "2": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "3": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "4": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "5": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "6": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "7": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "8": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "9": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "10": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "11": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "12": { "status": "pending", "completedAt": null, "artifacts": [] },
+    "13": { "status": "pending", "completedAt": null, "artifacts": [] }
+  }
+}

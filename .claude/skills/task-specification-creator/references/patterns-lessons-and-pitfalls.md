@@ -309,3 +309,50 @@
 - **影響**: Phase 11 の手動テスト冒頭でブランクスクリーンになり、screenshot 全件がブロックされる
 - **発見日**: 2026-04-08
 - **関連タスク**: UT-SKILL-WIZARD-W1-par-02b
+
+---
+
+## state 廃止系タスク関連パターン（2026-04-14）
+
+### パターン: TC-06 型の動的廃止検証テスト（廃止系タスク標準）
+
+- **適用条件**: UI 要素・state・props を廃止するタスク（例: ラジオボタン削除、フラグ廃止）
+- **問題**: grep による静的解析でコード上の残存ゼロを確認しても、条件付きレンダリングや動的生成の残骸は見落とすリスクがある
+- **対策**: DOM query で廃止要素が実行時に 0 件であることを動的に検証するテストケースを追加する
+  ```typescript
+  // TC-06 型: 旧フラグが完全削除されたことを DOM レベルで検証
+  it("廃止要素が DOM に存在しないこと", () => {
+    render(<TargetComponent />);
+    const oldElements = document.querySelectorAll('input[name="廃止フラグ名"]');
+    expect(oldElements).toHaveLength(0);
+  });
+  ```
+- **多層防御の構成**: 静的解析（grep ゼロ確認）+ 動的テスト（TC-06 DOM query）+ TypeScript typecheck
+- **汎用性**: `input[name="旧フラグ"]`、`data-testid="旧コンポーネント"`、`class="旧CSS名"` 等、任意の廃止要素に適用可能
+- **発見日**: 2026-04-14
+- **関連タスク**: TASK-SW-FIX-MODE-MGMT-001
+
+### パターン: state 廃止 6ステップ手順
+
+- **適用条件**: React コンポーネントの state・props・UI を廃止するタスク
+- **手順**:
+  1. `state` 削除（例: `useState<"template" | "llm">` を除去）
+  2. `UI` 削除（例: JSX のラジオボタンブロックを除去）
+  3. `props` 型削除（例: `onGenerationModeChange?: ...` を型定義から除去）
+  4. 呼び出し側修正（props を渡しているすべての親コンポーネントを追跡・修正）
+  5. grep で残存確認（`grep -rn "廃止した名前" apps/`）
+  6. TC-06 DOM query で動的確認（実行時に旧要素が 0件）
+- **注意**: ステップを飛ばすと TypeScript エラーまたはテスト失敗が後から出る。4ステップ目の「呼び出し側追跡」が最も漏れやすい
+- **発見日**: 2026-04-14
+- **関連タスク**: TASK-SW-FIX-MODE-MGMT-001
+
+### パターン: Wave 分割実施での TDD Red フェーズ設計
+
+- **適用条件**: 実装（Wave A）とテスト（Wave B）を分割するタスク
+- **問題**: Wave A 完了後に Wave B で Phase 4（TDD Red）を実施しようとすると、実装済みのため Red 状態を作れず TDD サイクルが機能しない
+- **対策**: Wave A・B の計画段階で Phase 4（TDD Red フェーズ）を Wave A 開始前に配置する
+  - Wave A 開始前: Phase 2（テスト設計）+ Phase 4（TDD Red 確認）
+  - Wave A 実施: 実装（Red → Green）
+  - Wave B 実施: テスト追加・ドキュメント整備（既に Green の状態を維持）
+- **発見日**: 2026-04-14
+- **関連タスク**: TASK-SW-FIX-MODE-MGMT-001

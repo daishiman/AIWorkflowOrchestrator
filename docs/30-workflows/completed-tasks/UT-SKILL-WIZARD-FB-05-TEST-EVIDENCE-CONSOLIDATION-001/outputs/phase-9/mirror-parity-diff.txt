@@ -1,0 +1,13 @@
+# mirror parity diff log
+# 実行日: 2026-04-13
+# コマンド: diff -r .claude/skills/task-specification-creator/references/ .agents/skills/task-specification-creator/references/
+# 対象: Phase 11 テンプレート変更ファイル 4 件
+
+checked: phase-11-test-report-template.md
+checked: phase-template-phase11.md
+checked: phase-template-phase11-detail.md
+checked: phase-11-guide.md
+
+diff result: 0 lines (no differences)
+
+# 判定: PASS — .claude/ と .agents/ の差分ゼロを確認

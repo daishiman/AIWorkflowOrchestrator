@@ -69,6 +69,30 @@
 
 ---
 
+## スキル利用分析 型定義（UT-W3-ANALYTICS-STORE-INTEGRATION-001）
+
+> 完了タスク: UT-W3-ANALYTICS-STORE-INTEGRATION-001（2026-04-13）
+> 定義ファイル: `packages/shared/src/types/skill-analytics.ts`
+
+### 型一覧
+
+| 型名 | 定義元 | 用途 |
+| --- | --- | --- |
+| `SkillAnalyticsEventType` | `packages/shared/src/types/skill-analytics.ts` | `"start"` / `"complete"` / `"error"` の union |
+| `SkillAnalyticsEvent` | 同上 | renderer-side スキル実行ライフサイクルイベント |
+
+### 公開 export
+
+- `packages/shared/src/types/index.ts` で `skill-analytics.ts` を re-export
+- `packages/shared/index.ts` で `SkillAnalyticsEventType` / `SkillAnalyticsEvent` を公開
+- `apps/desktop/src/renderer/store/slices/agentSlice.ts` から `analyticsSlice.ts` へ lifecycle wiring を接続
+
+### 実装メモ
+
+- `analyticsSlice.ts` は `toAnalyticsPayload()` と `sendSkillAnalyticsEvent()` を使って送信する
+- `agentSlice.ts` は start / complete / error の境界を握る consumer
+- `trackEvent` は変更しないため、既存の wizard analytics 契約は壊さない
+
 ## スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created）
 
 TASK-9F の share 型に加えて、TASK-SKILL-LIFECYCLE-08 で publish/distribution 契約を設計済み。
