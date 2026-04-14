@@ -1,86 +1,112 @@
-# Phase 12: システム仕様更新サマリー
+# Phase 12: システム仕様更新サマリ
 
-## タスク情報
-
-| 項目     | 内容                         |
-| -------- | ---------------------------- |
-| タスクID | TASK-SW-FIX-STATE-DETAIL-001 |
-| Phase    | 12                           |
-| 作成日   | 2026-04-14                   |
+## 対象: TASK-SW-FIX-STATE-DETAIL-001
 
 ---
 
 ## Step 1-A: 完了タスク記録
 
-### current facts の固定
+### artifacts.json 更新判定
 
-| 項目             | 更新先                                                                                                   | 判定                          |
-| ---------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| workflow index   | `docs/30-workflows/WC-par-03a-fix-state-detail/index.md`                                                 | completed へ更新              |
-| task ledger      | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                     | current facts を追加          |
-| completed ledger | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                           | 完了記録を追加                |
-| recent bundle    | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed-recent-2026-04g.md`           | 新規作成                      |
-| backlog          | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                             | no-op（0件維持）              |
-| skill logs       | `.claude/skills/aiworkflow-requirements/LOGS.md` / `.claude/skills/task-specification-creator/LOGS.md`   | 同波更新                      |
-| skill specs      | `.claude/skills/aiworkflow-requirements/SKILL.md` / `.claude/skills/task-specification-creator/SKILL.md` | current facts を追記          |
-| topic map        | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                                            | state detail セクションを追記 |
-| resource map     | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                                         | bugfix ルックアップを追記     |
+| フィールド         | 変更前    | 変更後      | 判定   |
+| ------------------ | --------- | ----------- | ------ |
+| `status`           | `pending` | `completed` | update |
+| `phases.1.status`  | `pending` | `completed` | update |
+| `phases.2.status`  | `pending` | `completed` | update |
+| `phases.3.status`  | `pending` | `completed` | update |
+| `phases.4.status`  | `pending` | `completed` | update |
+| `phases.5.status`  | `pending` | `completed` | update |
+| `phases.6.status`  | `pending` | `completed` | update |
+| `phases.7.status`  | `pending` | `completed` | update |
+| `phases.8.status`  | `pending` | `completed` | update |
+| `phases.9.status`  | `pending` | `completed` | update |
+| `phases.10.status` | `pending` | `completed` | update |
+| `phases.11.status` | `pending` | `completed` | update |
+| `phases.12.status` | `pending` | `completed` | update |
 
-### Phase 11 evidence bundle
+### 関連スキルファイル更新判定
 
-| ファイル                                         | 判定          |
-| ------------------------------------------------ | ------------- |
-| `outputs/phase-11/manual-test-result.md`         | current facts |
-| `outputs/phase-11/manual-test-report.md`         | current facts |
-| `outputs/phase-11/discovered-issues.md`          | 0件           |
-| `outputs/phase-11/ui-sanity-visual-review.md`    | PASS          |
-| `outputs/phase-11/screenshot-plan.json`          | 3件           |
-| `outputs/phase-11/screenshot-coverage.md`        | 100%          |
-| `outputs/phase-11/phase11-capture-metadata.json` | taskId 一致   |
-| `outputs/phase-11/screenshots/*.png`             | 3件取得済み   |
+| ファイル                                                                       | 判定   | 理由                                                              |
+| ------------------------------------------------------------------------------ | ------ | ----------------------------------------------------------------- |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`           | update | TASK-SW-FIX-STATE-DETAIL-001 の completed 追加                    |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` | update | state-detail current facts sync 追加                              |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`   | update | 追加 backlog なしを明記                                           |
+| `.claude/skills/aiworkflow-requirements/SKILL.md`                              | update | current facts に wire-up / q5 / finally / Phase 13 skipped を反映 |
+| `.claude/skills/task-specification-creator/SKILL.md`                           | update | `[FB-STATEDETAIL-001]` 追加                                       |
+| `.claude/skills/task-specification-creator/LOGS.md`                            | update | Wave C 完了ログ追加                                               |
+| `.claude/skills/aiworkflow-requirements/LOGS.md`                               | update | TASK-SW-FIX-STATE-DETAIL-001 完了ログ追加                         |
+| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                  | update | state-detail セクション追加                                       |
 
-## Step 1-B: 実装状況テーブル更新
+---
 
-| 問題番号 | 内容                          | 状態      |
-| -------- | ----------------------------- | --------- |
-| 12       | `internalAnswers` 残留        | completed |
-| 13       | template error の回復導線不足 | completed |
-| 18       | q5 再計算漏れ                 | completed |
-| 19       | `generationLockRef` 競合      | completed |
+## Step 1-B: 実装状況テーブル
 
-## Step 1-C: 関連タスクテーブル更新
+| タスク                       | ステータス | 修正内容                      |
+| ---------------------------- | ---------- | ----------------------------- |
+| TASK-SW-FIX-STATE-DETAIL-001 | completed  | 問題12・13・18・19 の修正完了 |
 
-| 関連タスク                 | 関係           | current facts                   |
-| -------------------------- | -------------- | ------------------------------- |
-| `TASK-SW-FIX-UI-001`       | 並列           | Wave C の UI 側修正と別責務     |
-| `TASK-SW-FIX-FEEDBACK-001` | 依存先完了済み | Wave B の完了後に本タスクを実施 |
+### 修正完了一覧
 
-## Step 2: システム仕様更新
+| 問題番号 | 修正内容                                               | 対応ファイル                |
+| -------- | ------------------------------------------------------ | --------------------------- |
+| 問題12   | `internalAnswers` リトライ時リセット（useEffect 追加） | `ConversationRoundStep.tsx` |
+| 問題13   | templateMode エラー時キャンセルボタン追加              | `GenerateStep.tsx`          |
+| 問題18   | q5 変更後 `resolveExternalIntegration` 再計算          | `SkillCreateWizard.tsx`     |
+| 問題19   | `generationLockRef` finally で無条件解放               | `SkillCreateWizard.tsx`     |
+
+---
+
+## Step 1-C: 関連タスクテーブル
+
+| タスク                       | 関係                    | 状態      |
+| ---------------------------- | ----------------------- | --------- |
+| TASK-SW-FIX-FEEDBACK-001     | Wave C の起点依存タスク | completed |
+| TASK-SW-FIX-STATE-DETAIL-001 | Wave C（本タスク）      | completed |
+| TASK-SW-FIX-UI-001           | Wave C 並列タスク       | 別途管理  |
+
+Wave C の依存関係: `TASK-SW-FIX-FEEDBACK-001` → `TASK-SW-FIX-STATE-DETAIL-001` / `TASK-SW-FIX-UI-001`
+
+---
+
+## Step 2: コンポーネント state contract 更新
 
 ### ConversationRoundStep
 
-- `answers` prop 変化を `useEffect` で検知し、`internalAnswers` を再初期化する。
-- `isInternalChangeRef` で親子の echo を防ぐ。
+| state / prop           | contract（修正後）                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------- |
+| `internalAnswers`      | `answers` prop が非空→空値へ変化した場合にのみ `createEmptyAnswers()` でリセットされる   |
+| `answers` (prop)       | 親から渡される `ConversationAnswers`。初回マウントでは smart defaults を保持する         |
+| `useEffect([answers])` | `previousAnswersRef` を用いて初回マウントを除外し、q1〜q6 が全て空になった遷移時のみ発火 |
 
 ### GenerateStep
 
-- `GenerationMode = "llm" | "template"` を current contract として追加した。
-- `mode === "template"` の error 状態では `最初からやり直す` ボタンを表示する。
+| state / prop     | contract（修正後）                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------------- |
+| `isTemplateMode` | `boolean`（デフォルト false）。true かつ `error` が存在する場合にキャンセルボタンを表示する              |
+| キャンセルボタン | `isTemplateMode && error && onCancel` の3条件が揃った場合のみ JSX 出力。既存の `showCancelButton` と独立 |
 
 ### SkillCreateWizard
 
-- `generationMethod` を `GenerateStep` に伝播し、template / llm の見た目を分ける。
-- q5 が変更されたときだけ `resolveExternalIntegration` を再計算する。
-- `generationLockRef` は `finally` で必ず解除する。
-- `requestId` による stale guard を残して、キャンセル後の遅延 reject を無視する。
+| state / ref                 | contract（修正後）                                                               |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `hasExternalIntegration`    | q5 変更後に `resolveExternalIntegration` で再計算される                          |
+| `externalToolName`          | 同上                                                                             |
+| `generationLockRef.current` | `handleGenerate` の finally ブロックで必ず `false` に設定される（3経路全て保証） |
+| `useEffect([answers.q5])`   | q1〜q4・q6 の変化では発火しない（spread パターンによる q5 参照安定性に依存）     |
 
-### artifacts parity
+---
 
-| 対象                     | 判定                       |
-| ------------------------ | -------------------------- |
-| `artifacts.json`         | completed / blocked に同期 |
-| `outputs/artifacts.json` | root と同値                |
+## 追加確認結果（wire-up 反映済み）
 
-## 結論
+| 項目                                                            | 状態 | 詳細                                                                                         |
+| --------------------------------------------------------------- | ---- | -------------------------------------------------------------------------------------------- |
+| `SkillCreateWizard` → `GenerateStep` への `isTemplateMode` 渡し | PASS | `SkillCreateWizardShell` が route query を判定し、`isTemplateMode` を実渡し。VISUAL 確認済み |
 
-Phase 12 の current facts は、コード・画面証跡・台帳の 3 面で整合した。
+---
+
+## artifacts.json / outputs/artifacts.json 同期結果
+
+| ファイル                                                               | 同期状態                          |
+| ---------------------------------------------------------------------- | --------------------------------- |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/artifacts.json`         | PASS（status completed 反映済み） |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/artifacts.json` | PASS（root と同期済み）           |

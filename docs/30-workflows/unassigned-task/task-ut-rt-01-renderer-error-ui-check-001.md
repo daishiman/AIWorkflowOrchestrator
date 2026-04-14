@@ -16,15 +16,13 @@ issue_number: 2007
 | 対象機能     | SkillLifecyclePanel.tsx / IPC エラーメッセージ伝搬     |
 | 優先度       | 中                                                     |
 | 見積もり規模 | 小規模                                                 |
-| ステータス   | 完了（completed ledger へ移管）                        |
+| ステータス   | 未実施                                                 |
 | 発見元       | Phase 11 既知の制限 / Phase 1 スコープ「含まないもの」 |
 | 発見日       | 2026-04-06                                             |
 | 親タスク     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 |
-| issue番号    | 2007                                                   |
+| issue番号    | 1947                                                   |
 
 ---
-
-> 完了済み: 2026-04-13。GitHub Issue #2007 に統一し、completed ledger へ移管済み。
 
 ## 1. なぜこのタスクが必要か（Why）
 
@@ -230,21 +228,21 @@ Phase 3: 結果記録・ドキュメント更新
 
 1. テスト結果をこのファイルの「検証方法」セクションに追記する
 2. 必要に応じて `SkillLifecyclePanel.tsx` に修正を加えた場合は差分を記録する
-3. GitHub Issue #2007 をクローズする:
+3. GitHub Issue #1947 をクローズする:
    ```bash
-   gh issue close 2007 --comment "TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 完了: エラーメッセージの UI 表示を確認しました。"
+   gh issue close 1947 --comment "TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 完了: エラーメッセージの UI 表示を確認しました。"
    ```
 4. このタスク指示書のステータスを「完了」に更新する
 
 #### 成果物
 
 - 更新済みタスク指示書
-- クローズされた GitHub Issue #2007
+- クローズされた GitHub Issue #1947
 
 #### 完了条件
 
 - 本指示書のステータスが「完了」になっている
-- GitHub Issue #2007 がクローズされている
+- GitHub Issue #1947 がクローズされている
 
 ---
 
@@ -266,7 +264,7 @@ Phase 3: 結果記録・ドキュメント更新
 ### ドキュメント要件
 
 - [ ] このタスク指示書のステータスが「完了」になっている
-- [ ] GitHub Issue #2007 がクローズされている
+- [ ] GitHub Issue #1947 がクローズされている
 
 ---
 
@@ -317,7 +315,7 @@ Phase 3: 結果記録・ドキュメント更新
 
 ### 参考資料
 
-- GitHub Issue #2007: `[UT-RT-03] Renderer側エラーメッセージUI表示E2E確認`
+- GitHub Issue #1947: `[UT-RT-03] Renderer側エラーメッセージUI表示E2E確認`
 
 ---
 

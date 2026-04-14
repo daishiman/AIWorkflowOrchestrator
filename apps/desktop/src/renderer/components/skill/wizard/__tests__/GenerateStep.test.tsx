@@ -442,64 +442,66 @@ describe("GenerateStep", () => {
       expect(screen.queryByText("プレビュー")).not.toBeInTheDocument();
     });
   });
+});
 
-  // ------------------------------------------
-  // TASK-SW-FIX-STATE-DETAIL-001: 問題13 templateモード キャンセルボタン
-  // ------------------------------------------
-  describe("問題13修正: templateモードのエラー時にキャンセルボタンが表示される", () => {
-    it("TC-03: templateモードでエラーが発生した場合、キャンセルボタンが表示される", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
+// ==========================================================
+// TASK-SW-FIX-STATE-DETAIL-001: 問題13 templateモードキャンセルボタン（TC-03〜TC-05）
+// ==========================================================
 
-      expect(
-        screen.getByRole("button", { name: "最初からやり直す" }),
-      ).toBeInTheDocument();
+describe("TASK-SW-FIX-STATE-DETAIL-001: 問題13 templateモードキャンセルボタン", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("TC-03: isTemplateMode=true かつエラー時にキャンセルボタンが表示される", () => {
+    const onCancel = vi.fn();
+    renderStep({
+      stage: "error",
+      error: { code: "LLM_ERROR", message: "生成エラー" },
+      isTemplateMode: true,
+      onCancel,
     });
+    expect(
+      screen.getByRole("button", { name: "キャンセル" }),
+    ).toBeInTheDocument();
+  });
 
-    it("TC-04: templateモードエラー後にキャンセルボタンを押すと onCancel が呼ばれる", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
-
-      fireEvent.click(screen.getByRole("button", { name: "最初からやり直す" }));
-      expect(mockOnCancel).toHaveBeenCalledTimes(1);
+  it("TC-04: isTemplateMode=true エラー後にキャンセルボタン押下でonCancelが呼ばれる", () => {
+    const onCancel = vi.fn();
+    renderStep({
+      stage: "error",
+      error: { code: "LLM_ERROR", message: "生成エラー" },
+      isTemplateMode: true,
+      onCancel,
     });
+    fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+    expect(onCancel).toHaveBeenCalledOnce();
+  });
 
-    it("TC-05: 非templateモード（mode 省略）のエラー状態では templateキャンセルボタンが表示されない（回帰）", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
-
-      expect(
-        screen.queryByRole("button", { name: "最初からやり直す" }),
-      ).not.toBeInTheDocument();
+  it("TC-05: isTemplateMode未指定（通常モード）のエラー状態ではキャンセルボタンが表示されない（回帰）", () => {
+    renderStep({
+      stage: "error",
+      error: { code: "LLM_ERROR", message: "生成エラー" },
+      onCancel: vi.fn(),
     });
+    // 通常モードのエラー時は既存のキャンセルボタン条件（isActive=false）により非表示
+    expect(
+      screen.queryByRole("button", { name: "キャンセル" }),
+    ).not.toBeInTheDocument();
+  });
 
-    // Phase 6 境界ケース
-    it("TC-B2: templateモード + 生成中ステージ（非エラー）ではキャンセルボタンが表示されない", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "generating-skill",
-        onCancel: mockOnCancel,
-      });
-
-      // 生成中（非エラー）状態では最初からやり直すボタンは不要
-      expect(
-        screen.queryByRole("button", { name: "最初からやり直す" }),
-      ).not.toBeInTheDocument();
+  it("TC-12: isTemplateMode=true かつエラーなし（idle）ではtemplateモード専用キャンセルボタンが表示されない（境界）", () => {
+    const onCancel = vi.fn();
+    renderStep({
+      stage: "idle",
+      percent: 0,
+      isTemplateMode: true,
+      onCancel,
+      // error なし
     });
+    // error=undefined のため問題13修正ボタン（isTemplateMode && error && onCancel）は非表示
+    expect(
+      screen.queryByRole("button", { name: "キャンセル" }),
+    ).not.toBeInTheDocument();
   });
 });

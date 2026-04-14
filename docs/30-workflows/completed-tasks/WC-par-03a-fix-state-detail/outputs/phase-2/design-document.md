@@ -1,188 +1,180 @@
 # 設計書 — TASK-SW-FIX-STATE-DETAIL-001
 
-## メタ情報
+## 1. 問題12設計 — internalAnswers リセット
 
-| 項目       | 内容                         |
-| ---------- | ---------------------------- |
-| Phase      | 2                            |
-| タスクID   | TASK-SW-FIX-STATE-DETAIL-001 |
-| 作成日     | 2026-04-14                   |
-| ステータス | 完了                         |
+### 対象ファイル
 
----
-
-## Task 1: 問題12設計 — internalAnswers リセット
+`apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`
 
 ### 修正方針
 
-`ConversationRoundStep` に `isInternalChangeRef` を追加し、親からの `answers` prop 変化と内部操作による echo を区別する。
+`answers` prop が変化したとき（リトライ時に空値が渡されたとき）に `internalAnswers` をリセットする
+新しい `useEffect` を追加する。
 
-### 詳細設計
+### 設計詳細
 
-```tsx
-// 追加: 内部変化フラグ (内部操作による echo を識別)
-const isInternalChangeRef = useRef(false);
-
-// 修正: 既存 useEffect に isInternalChangeRef フラグ設定を追加
+```typescript
+// 追加するuseEffect（既存のuseEffectの後に配置）
 useEffect(() => {
-  isInternalChangeRef.current = true;
-  onAnswersChange(internalAnswers);
-}, [internalAnswers, onAnswersChange]);
-
-// 追加: answers prop 変化時の internalAnswers リセット（問題12修正）
-useEffect(() => {
-  if (isInternalChangeRef.current) {
-    // 内部操作による親 → 子の echo: リセット不要
-    isInternalChangeRef.current = false;
-    return;
+  // answers が空値（リトライによるリセット）に変化した場合に internalAnswers をリセット
+  const allEmpty = QUESTION_KEYS.every(
+    (k) =>
+      (answers[k].selectedOptions ?? []).length === 0 &&
+      !(answers[k].freeText ?? "").trim() &&
+      answers[k].scheduleConfig === undefined,
+  );
+  if (allEmpty) {
+    setInternalAnswers(createEmptyAnswers());
   }
-  // 親からの direct 変更（リトライ等）: リセット実行
-  setInternalAnswers(
-    applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
-  );
-}, [answers, smartDefaults]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers]);
 ```
 
-### 無限ループ防止の仕組み
+### 設計判断
 
-| イベント                                                                               | isInternalChangeRef     | 動作                    |
-| -------------------------------------------------------------------------------------- | ----------------------- | ----------------------- |
-| ユーザー操作 → internalAnswers変化 → onAnswersChange → 親setAnswers → answers prop変化 | Effect A が true に設定 | Effect B は skip        |
-| 親が直接 setAnswers（リトライ等）                                                      | false のまま            | Effect B はリセット実行 |
+- **全問空値チェック**: `allEmpty` 判定により、通常フロー（onAnswersChange → setAnswers による親更新）では
+  非空の answers が返るためリセットは発火しない。リトライ時のみ `DEFAULT_ANSWERS`（全空）が渡されるため発火する。
+- **依存配列の最小化**: `answers` のみを依存配列に追加。`smartDefaults` は含めない（q5 変更検知は問題18で別途対応）。
+- **無限ループ対策**: `allEmpty` チェックにより、`createEmptyAnswers()` 呼び出し後に
+  `onAnswersChange(empty)` → `setAnswers(empty)` → 再発火してもループしない
+  （再発火時も `allEmpty=true` だが、`setInternalAnswers(createEmptyAnswers())` は
+  同一構造のため React が bail-out するか、コンポーネントが unmount 済みである）。
 
-### リスク評価
+### 既存ロジックとの競合確認
 
-- 無限ループ: `isInternalChangeRef` フラグにより防止 ✓
-- 初回マウント時: `answers` が変化しないため Effect B は発火するが既存 useState 初期化と同値 → 無害
-- smartDefaults 変化: Step 1 がマウントされている間は変化しないため実質的に問題なし
+- 既存 `useEffect([internalAnswers, onAnswersChange])`: 変更なし
+- `useState` 初期化関数: 変更なし（マウント時の初期化は維持）
 
 ---
 
-## Task 2: 問題13設計 — templateモード キャンセルボタン
+## 2. 問題13設計 — templateモードキャンセルボタン
+
+### 対象ファイル
+
+`apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`
 
 ### 修正方針
 
-`GenerateStep` に `mode?: GenerationMode` prop を追加し、`mode === "template"` かつ `error` 状態の場合にキャンセルボタンを表示する。
+`GenerateStepProps` に `isTemplateMode?: boolean` を追加し、
+`isTemplateMode && error` の条件でキャンセルボタンを表示する。
 
-### 詳細設計
+### 設計詳細
 
-```tsx
+**Props 追加:**
+
+```typescript
 export interface GenerateStepProps {
-  // ... 既存 props ...
-  mode?: GenerationMode; // 新規追加（省略時は "llm" 相当）
-}
-
-// showCancelButton の下に追加
-const showTemplateCancelButton =
-  props.mode === "template" && Boolean(error) && !isActive && Boolean(onCancel);
-
-// JSX: Error Display の後、Cancel Button の前に追加
-{
-  showTemplateCancelButton && (
-    <button
-      type="button"
-      onClick={onCancel}
-      aria-label="最初からやり直す"
-      className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
-    >
-      最初からやり直す
-    </button>
-  );
+  // ... 既存props ...
+  isTemplateMode?: boolean; // 追加
 }
 ```
 
-### 分岐条件
+**エラー表示ブロックの後にキャンセルボタン追加:**
 
-| 条件                                           | キャンセルボタン表示               |
-| ---------------------------------------------- | ---------------------------------- |
-| `mode === "template"` && `error` && `onCancel` | ✓ 表示                             |
-| `mode !== "template"` && `error`               | ✗ 非表示（回帰）                   |
-| `isActive` && `onCancel`                       | 通常キャンセルボタンが表示（既存） |
+```typescript
+{/* Template mode cancel button (問題13修正) */}
+{isTemplateMode && error && onCancel && (
+  <button
+    type="button"
+    onClick={onCancel}
+    className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
+  >
+    キャンセル
+  </button>
+)}
+```
+
+### 設計判断
+
+- **配置位置**: エラーカード表示（`renderErrorCard`）の直後
+- **条件**: `isTemplateMode && error && onCancel` — templateモード・エラー・コールバック存在の3条件
+- **通常モードへの非影響**: `isTemplateMode` はデフォルト `false`（undefined）なので既存ケースに変化なし
+- **ボタン名**: 既存 Cancel ボタンと同じ「キャンセル」テキストを使用
+
+### 呼び出し元（SkillCreateWizard）での利用
+
+`SkillCreateWizard` が `GenerateStep` に `isTemplateMode` を渡す。
+現行の `onCancel={handleCancelGeneration}` が Step 0 に戻るため、
+新しいプロップの追加のみで動作する。
 
 ---
 
-## Task 3: 問題18設計 — resolveExternalIntegration 再計算
+## 3. 問題18設計 — resolveExternalIntegration 再計算
+
+### 対象ファイル
+
+`apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 
 ### 修正方針
 
-`SkillCreateWizard` に useEffect を追加し、`answers.q5` の内容が変化したときのみ `resolveExternalIntegration` を再呼び出しする。
+`answers.q5` の変化を検知する `useEffect` を追加し、`resolveExternalIntegration` を再計算する。
 
-### 詳細設計
+### 設計詳細
 
-q5 の内容変化を JSON.stringify で検知し、他の質問の変化では再計算しない。
-
-```tsx
-// 追加: q5変化検知用 ref（不要な再計算を防止）
-const q5SeriRef = useRef("");
-
-// 追加: q5変化時に resolveExternalIntegration を再計算（問題18修正）
+```typescript
+// 追加するuseEffect（問題18修正: q5変更時の再計算）
 useEffect(() => {
-  const q5Ser = JSON.stringify(answers.q5);
-  if (q5Ser === q5SeriRef.current) return; // q5が変化していない場合はスキップ
-  q5SeriRef.current = q5Ser;
-  const defaults = smartDefaults ?? DEFAULT_SMART_DEFAULTS;
+  const defaults = smartDefaults ?? inferSmartDefaults(formData);
   const integration = resolveExternalIntegration(answers.q5, defaults.tool);
   setHasExternalIntegration(integration.hasExternalIntegration);
   setExternalToolName(integration.externalToolName);
-}, [answers, smartDefaults]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers.q5]);
 ```
 
-### q5 変化のみ反応する理由
+### 設計判断
 
-- `answers` オブジェクトはユーザーが q1〜q6 を変更するたびに新しい参照が生成される
-- `answers.q5` も同様に新参照が生成されるが、`q5Ser` 比較により内容変化時のみ再計算
-- q1〜q4, q6 の変更では `JSON.stringify(answers.q5)` が同じ文字列を返すため early return
+- **依存配列**: `answers.q5` のみ。`handleOptionSelect` 等でq5以外の質問が変わる場合、
+  spread パターン (`{ ...prev, [key]: ... }`) により q5 の参照は変わらないため、
+  q5以外の変更では発火しない（TC-07 対応）。
+- **useEffect vs イベントハンドラー**: useEffect を選択。
+  `onAnswersChange` は全問の更新をまとめて受け取るため、q5変化の検知はuseEffectが適切。
+- **初期計算との整合**: `handleStep0Next` での計算と同じロジックを再利用。
 
 ---
 
-## Task 4: 問題19設計 — generationLockRef finally節修正
+## 4. 問題19設計 — generationLockRef キャンセル競合修正
+
+### 対象ファイル
+
+`apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 
 ### 修正方針
 
-`handleGenerate` の `finally` 節で `generationLockRef.current = false` を条件外に移動し、全3経路（正常完了・エラー・キャンセル）でロックが解放されることを保証する。
+finally 節で `generationLockRef.current = false` を **無条件に** 実行するよう変更する。
+`setIsGenerating(false)` のみ `requestId` チェックで保護する。
 
-### 現在のコード（問題）
+### 設計詳細
 
-```tsx
+**変更前:**
+
+```typescript
 } finally {
   if (requestId === generationRequestIdRef.current) {
     setIsGenerating(false);
-    generationLockRef.current = false;  // キャンセル時はスキップされる
+    generationLockRef.current = false;
   }
 }
 ```
 
-### 修正後
+**変更後:**
 
-```tsx
+```typescript
 } finally {
-  // 全3経路でロック解放を保証（問題19修正）
-  generationLockRef.current = false;
+  generationLockRef.current = false; // 常にロックを解放（問題19修正）
   if (requestId === generationRequestIdRef.current) {
     setIsGenerating(false);
   }
 }
 ```
 
-### 経路別動作
+### 設計判断
 
-| 経路                         | generationLockRef.current | setIsGenerating                            |
-| ---------------------------- | ------------------------- | ------------------------------------------ |
-| 正常完了 (requestId一致)     | false ✓                   | false ✓                                    |
-| エラー (requestId一致)       | false ✓                   | false ✓                                    |
-| キャンセル (requestId不一致) | false ✓ (防御的修正)      | スキップ（resetGeneratedState で実施済み） |
-
-### 注意事項
-
-- `resetGeneratedState` も同期的にロックを解放するため、通常のキャンセルフローでは二重解放となるが無害
-- 別の生成 B が開始している場合（A キャンセル後に B 開始 → A の finally）: UI フローの制約上、B が開始するのは resetGeneratedState 後に Step 0 → Step 1 遷移が必要なため、A の createSkill が reject される前に B が開始する確率は極めて低い
-
----
-
-## 変更ファイル一覧
-
-| ファイル                                                                      | 変更内容                                                                 |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | isInternalChangeRef 追加、useEffect 2本に分割                            |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | mode prop 追加、templateモードキャンセルボタン追加                       |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | q5SeriRef 追加、resolveExternalIntegration useEffect 追加、finally節修正 |
+- **3経路での保証**:
+  - 正常完了: `requestId === current` → `setIsGenerating(false)` + lock解放 ✓
+  - エラー: 同上 ✓
+  - キャンセル: `requestId !== current` → lock解放のみ（`setIsGenerating(false)` は `resetGeneratedState` が担当） ✓
+- **resetGeneratedState との関係**: `resetGeneratedState` も `generationLockRef.current = false` を実行するが冗長ではなく、
+  非同期処理完了後に確実にリセットするための二重保証として機能する。
+- **setIsGenerating の保護**: 新規生成開始後に古いリクエストの finally が `setIsGenerating(false)` を
+  上書きしないよう `requestId` チェックを維持する。

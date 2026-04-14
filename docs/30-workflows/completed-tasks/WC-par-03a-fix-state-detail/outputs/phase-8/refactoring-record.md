@@ -1,103 +1,52 @@
 # Phase 8: リファクタリング記録
 
-## タスク: TASK-SW-FIX-STATE-DETAIL-001
+## 概要
+
+4 件の修正後の命名・useEffect 依存配列・ロジック重複を確認した。
+最小変更の原則に従い、実質的なリファクタは不要と判断した。
+
+---
 
 ## Task 1: 命名整理
 
-### 確認結果
+| 確認項目                              | 状態 | 判断                                                                                           |
+| ------------------------------------- | ---- | ---------------------------------------------------------------------------------------------- |
+| `internalAnswers` / `answers` の混在  | なし | コンポーネント内部は `internalAnswers`、props は `answers` で統一済み                          |
+| `createEmptyAnswers()` の命名         | 適切 | 空の初期値生成を明示しており一貫                                                               |
+| `generationLockRef` 関連変数名        | 一貫 | `generationLockRef` / `generationRequestIdRef` / `invalidateGenerationRequests` で統一         |
+| `resolveExternalIntegration` 呼び出し | 適切 | handleGenerate と useEffect の 2 箇所だが、役割が異なる（生成時 vs q5 変更時）ため重複ではない |
 
-| 変数/関数名                | ファイル                  | 判定 | 備考                                                                         |
-| -------------------------- | ------------------------- | ---- | ---------------------------------------------------------------------------- |
-| `internalAnswers`          | ConversationRoundStep.tsx | OK   | 内部状態を明示する命名で一貫                                                 |
-| `isInternalChangeRef`      | ConversationRoundStep.tsx | OK   | `Ref` suffix でrefであることが明示されている                                 |
-| `q5SeriRef`                | SkillCreateWizard.tsx     | OK   | `Seri` はserializeの略。短すぎる可能性があるが既存コードの命名スタイルと一致 |
-| `generationLockRef`        | SkillCreateWizard.tsx     | OK   | 既存変数名を変更なし。lockedの意味が明確                                     |
-| `showTemplateCancelButton` | GenerateStep.tsx          | OK   | 表示条件を直接記述する命名で可読性高                                         |
+**結論**: 命名変更不要。
 
-**変更なし** — 命名は一貫しており変更不要
-
-### ハンドラー名確認
-
-| 箇所                               | 命名                   | 判定 |
-| ---------------------------------- | ---------------------- | ---- |
-| `onCancel` prop (GenerateStep)     | camelCase, "on" prefix | OK   |
-| `onCancelPlan` prop (GenerateStep) | camelCase, "on" prefix | OK   |
-
-**変更なし**
+---
 
 ## Task 2: useEffect 依存配列の整理
 
-### ConversationRoundStep.tsx
+| useEffect              | 依存配列       | eslint-disable          | 判断                                                                                                                                   |
+| ---------------------- | -------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題12: `[answers]`    | `[answers]`    | あり（exhaustive-deps） | `allEmpty` チェック内で `answers[k]` を参照するが、`answers` 全体を依存に取ることで意図が明確。disable は意図的で問題なし              |
+| 問題18: `[answers.q5]` | `[answers.q5]` | あり（exhaustive-deps） | `resolveExternalIntegration` 内で `smartDefaults` / `formData` を参照するが、q5 変更時のみ再計算するという意図を優先。disable は意図的 |
 
-```tsx
-// Effect 1: 内部状態 → 親通知
-useEffect(() => {
-  isInternalChangeRef.current = true;
-  onAnswersChange(internalAnswers);
-}, [internalAnswers, onAnswersChange]);
+**結論**: 依存配列は最小限。exhaustive-deps disable は理由コメント付きで承認。
 
-// Effect 2: 親 prop → 内部リセット
-useEffect(() => {
-  if (isInternalChangeRef.current) {
-    isInternalChangeRef.current = false;
-    return;
-  }
-  setInternalAnswers(
-    applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
-  );
-}, [answers, smartDefaults]);
-```
+---
 
-**判定: 最小限** — 各 effect の deps は実際に使用する値のみ含まれている
+## Task 3: ロジック重複の確認
 
-- Effect 1: `internalAnswers`（変化の源）、`onAnswersChange`（コールバック、安定性確保のため）
-- Effect 2: `answers`（外部変化検出）、`smartDefaults`（デフォルト適用に必要）
+| 確認項目                                  | 状態                                  | 判断                                                                                                  |
+| ----------------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `resolveExternalIntegration` 呼び出し箇所 | 2 箇所（handleGenerate と useEffect） | 役割が異なるため重複ではない。handleGenerate は生成直前の確定値取得、useEffect は q5 変更時の即時更新 |
+| `generationLockRef.current = false`       | finally ブロック 1 箇所に集約         | Phase 5 修正後、全経路で一元管理されている。重複なし                                                  |
+| `setIsGenerating(false)`                  | finally ブロック 1 箇所               | 同上                                                                                                  |
 
-exhaustive-deps ルール: 準拠。`isInternalChangeRef` は ref のため deps 不要（React の仕様）
+**結論**: ロジック重複なし。
 
-### SkillCreateWizard.tsx
+---
 
-```tsx
-// q5 変化検出 effect
-useEffect(() => {
-  const q5Ser = JSON.stringify(answers.q5);
-  if (q5Ser === q5SeriRef.current) return;
-  q5SeriRef.current = q5Ser;
-  const defaults = smartDefaults ?? DEFAULT_SMART_DEFAULTS;
-  const integration = resolveExternalIntegration(answers.q5, defaults.tool);
-  setHasExternalIntegration(integration.hasExternalIntegration);
-  setExternalToolName(integration.externalToolName);
-}, [answers, smartDefaults]);
-```
+## 最小複雑性の判断
 
-**判定: 最小限** — `answers` を dep にすることで q5 変化を含む全 answers 変化を監視。内部で `q5SeriRef` による content diff を取ることで不要な再計算を防止
+追加コード量（useEffect 2 件 + JSX 1 ブロック + prop 1 件）は最小限。
+既存ロジックへの副作用なし。
 
-exhaustive-deps ルール: `q5SeriRef` は ref のため deps 不要。他は全て使用変数。準拠
-
-## Task 3: ロジック重複の除去
-
-### resolveExternalIntegration 呼び出し箇所
-
-検索結果: SkillCreateWizard.tsx 内で2箇所の呼び出しが存在するかを確認した。
-
-| 箇所                          | 目的                   | 判定     |
-| ----------------------------- | ---------------------- | -------- |
-| 初期化時（問題18修正 effect） | q5変化時の再計算       | 新規追加 |
-| 生成完了時 or 遷移時          | 完了画面表示時の値設定 | 既存     |
-
-重複ではなく責務が異なる呼び出しのため、共通化は不要と判断。
-
-### generationLockRef リセット処理
-
-`generationLockRef.current = false` は `handleGenerate` の `finally` ブロック内の1箇所のみ。重複なし。
-
-## 最小複雑性の判断理由
-
-| 修正項目                   | 複雑性 | 判断理由                                                                    |
-| -------------------------- | ------ | --------------------------------------------------------------------------- |
-| 問題12: useEffect 分割     | 低     | 既存の1 effect を2 effect に分割するだけ。`isInternalChangeRef` は3行の追加 |
-| 問題13: mode prop 追加     | 低     | オプショナル prop 1つと JSX 条件分岐1つのみ                                 |
-| 問題18: q5SeriRef + effect | 低     | ref 1つ + effect 1つ（約10行）。`JSON.stringify` は標準API                  |
-| 問題19: finally 順序変更   | 最低   | 2行の移動のみ                                                               |
-
-**結論**: 4件の修正はすべて最小変更量で実装されており、リファクタリングによる複雑性削減の余地はない。
+抽象化の余地（`allEmpty` の関数抽出など）は存在するが、ワンライナーレベルの処理であり現時点では過剰。
+今後の concern が増えた段階でのリファクタを推奨。

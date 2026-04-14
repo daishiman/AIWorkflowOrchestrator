@@ -279,29 +279,3 @@ export const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了
 | TASK-SC-07 | 旧 LLM / template 併用フロー同期 | **履歴**（2026-04-09） |
 
 ---
-
-## SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts）
-
-### 概要
-
-`GenerateStep` と `ConversationRoundStep` は、template error の recovery と Step 1 再同期を current contract に含む。
-`mode="template"` のエラー時だけ `最初からやり直す` ボタンを出し、通常 error では `retry` と `cancel` のみを維持する。
-`ConversationRoundStep` は `answers` prop 変更時に local state を再初期化し、Wizard の親 state と表示 state の差分を残さない。
-
-### current topology（recovery 重点）
-
-| Step | current facts |
-| --- | --- |
-| Step 1 | `ConversationRoundStep` は `answers` prop を監視し、再訪問や parent update 時に `internalAnswers` を再初期化する |
-| Step 2 | `GenerateStep` は `mode="template"` / `error` / `onCancel` / `onRetry` を受け取り、template error のみ `最初からやり直す` を表示する |
-
-### current rules
-
-| 項目 | current facts |
-| --- | --- |
-| template cancel | template 失敗時の cancel は Step 0 へ戻し、古い error を持ち越さない |
-| retry surface | 通常 error は `retry`、template error は `retry` + `最初からやり直す` を区別する |
-| lock release | `SkillCreateWizard` 側の `generationLockRef` 解放が最終責務で、UI 側は同一生成の再入を前提にしない |
-| answers reset | `ConversationRoundStep` の local state は prop 同期を優先し、独立編集のまま固定しない |
-
----

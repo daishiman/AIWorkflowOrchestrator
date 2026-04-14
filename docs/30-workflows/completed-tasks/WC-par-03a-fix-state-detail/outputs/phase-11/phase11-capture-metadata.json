@@ -1,35 +1,57 @@
 {
-  "taskId": "TASK-SW-FIX-STATE-DETAIL-001",
-  "generatedAt": "2026-04-14T02:38:23.243Z",
+  "generatedAt": "2026-04-14T05:58:38.219Z",
   "captureMethod": "current_build_vite_playwright",
-  "workflowRoot": "docs/30-workflows/WC-par-03a-fix-state-detail",
-  "harnessPath": "/advanced/skill-create-wizard",
-  "route": "/advanced/skill-create-wizard?skipAuth=true&mode=error",
-  "viewport": {
-    "width": 1440,
-    "height": 960
-  },
-  "cases": [
+  "baseUrl": "http://127.0.0.1:5183",
+  "harnessPath": "/phase11-w1-par-02c-complete-step.html",
+  "viewportSet": [
     {
-      "tcId": "TC-03",
-      "state": "template-error-cancel",
-      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png",
-      "selector": "[data-testid=\"wizard-step-generate\"]",
-      "capturedAt": "2026-04-14T02:38:19.887Z"
+      "width": 1440,
+      "height": 900
     },
     {
-      "tcId": "TC-04",
-      "state": "template-error-step0",
-      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png",
-      "selector": "[data-testid=\"wizard-step-info\"]",
-      "capturedAt": "2026-04-14T02:38:21.483Z"
+      "width": 390,
+      "height": 844
     },
     {
-      "tcId": "TC-05",
-      "state": "normal-error-no-cancel",
-      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png",
-      "selector": "[data-testid=\"wizard-step-generate\"]",
-      "capturedAt": "2026-04-14T02:38:23.231Z"
+      "width": 1440,
+      "height": 1200
+    }
+  ],
+  "screenshots": [
+    {
+      "tcId": "MTC-01",
+      "file": "MTC-01-template-error-cancel.png",
+      "output": "outputs/phase-11/screenshots/MTC-01-template-error-cancel.png",
+      "capturedAt": "2026-04-14T05:58:29.729Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "MTC-02",
+      "file": "MTC-02-template-cancel-step0.png",
+      "output": "outputs/phase-11/screenshots/MTC-02-template-cancel-step0.png",
+      "capturedAt": "2026-04-14T05:58:31.847Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "MTC-03",
+      "file": "MTC-03-normal-error-no-cancel.png",
+      "output": "outputs/phase-11/screenshots/MTC-03-normal-error-no-cancel.png",
+      "capturedAt": "2026-04-14T05:58:33.642Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "MTC-04",
+      "file": "MTC-04-retry-reset-step1.png",
+      "output": "outputs/phase-11/screenshots/MTC-04-retry-reset-step1.png",
+      "capturedAt": "2026-04-14T05:58:36.422Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "MTC-05",
+      "file": "MTC-05-q5-external-checklist.png",
+      "output": "outputs/phase-11/screenshots/MTC-05-q5-external-checklist.png",
+      "capturedAt": "2026-04-14T05:58:38.207Z",
+      "captureMethod": "current_build_vite_playwright"
     }
   ]
 }

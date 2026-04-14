@@ -1451,6 +1451,36 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 項目       | 内容                                                                                                                                                                                      |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続                      |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない                                                              |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル）                                                                                                          |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                  |
+
+---
+
+## TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13）
+
+### L-RT01-RENDERER-FINAL-001: Renderer error 表示 E2E は DOM assertion で完結させる
+
+| 項目       | 内容                                                                                                                                                                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `executeAsync` → `onWorkflowStateSnapshot(snapshot, errorMessage)` → `setWorkflowError()` → renderer component の表示経路が長いため、IPC mock 単体テストだけでは renderer 側の DOM 表示まで確認できず漏れが発生した                                   |
+| 原因       | IPC 層の unit test で `errorMessage` が正しく伝搬することは確認済みだったが、`SkillLifecyclePanel` が実際に `data-testid="skill-lifecycle-error"` 要素を描画するかは別の検証スコープだった                                                            |
+| 解決策     | `SkillLifecyclePanel.test.tsx` に `mockStoreState.workflowError = "..."` → `renderPanel()` → `screen.getByTestId("skill-lifecycle-error")` → `toHaveAttribute("role", "alert")` → `toHaveTextContent(...)` の positive DOM assertion テストを追加した |
+| 標準ルール | Runtime error propagation タスク完了時は、renderer component 側の表示チェック（DOM visibility + aria accessibility）を E2E 対象に含める。IPC 単体テスト通過 ≠ UI 表示到達                                                                             |
+| 関連タスク | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001                                                                                                                                                                                                             |
+
+---
+
+## TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14）
+
+> 詳細: [lessons-learned-skill-wizard-mode-mgmt.md](lessons-learned-skill-wizard-mode-mgmt.md)
+
+- **L-MODE-001**: state 廃止は 6ステップ（state → UI → props → 呼び出し側 → grep → DOM確認）で完結させる
+- **L-MODE-002**: TC-06 型の動的廃止検証（DOM query で旧要素が 0件）を廃止系タスクの標準テストに組み込む
+- **L-MODE-003**: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する（Wave A 完了後では Red 状態を作れない）
+- **L-MODE-004**: Electron 実機なし時は「36 UT + grep ゼロ + TC-06 DOM query + typecheck」の 4 点 NON_VISUAL 証跡で代替する
+- **L-MODE-005**: SkillCreateWizard 確定フロー Step 0→1→2→3（LLM 専用・分岐なし）を基準とし、逸脱を禁止する
 | 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
 | 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
 | 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
