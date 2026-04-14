@@ -334,22 +334,6 @@ describe("SkillCreateWizard", () => {
       expect(screen.getByText("生成失敗")).toBeInTheDocument();
     });
 
-    it("skip 相当の生成ではエラー時に最初からやり直すボタンが表示される", async () => {
-      mockCreateSkill.mockRejectedValueOnce(new Error("template 生成失敗"));
-      renderWizard(mockOnClose);
-
-      await advanceToStep1("Slack通知を送るための目的説明");
-      fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-
-      expect(
-        await screen.findByRole("button", { name: "最初からやり直す" }),
-      ).toBeInTheDocument();
-    });
-
     it("createSkill が空文字を返した場合はフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue("");
       renderWizard(mockOnClose);
@@ -362,41 +346,6 @@ describe("SkillCreateWizard", () => {
 
       expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
-    });
-
-    it("キャンセル後に遅延 reject してもエラーが再表示されない", async () => {
-      let rejectLate: ((error: Error) => void) | null = null;
-      mockCreateSkill.mockImplementationOnce(
-        () =>
-          new Promise<string>((_resolve, reject) => {
-            rejectLate = reject;
-          }),
-      );
-
-      renderWizard(mockOnClose);
-
-      await advanceToStep1("Slack通知を送るための目的説明");
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-
-      expect(screen.getByTestId("wizard-step-generate")).toBeInTheDocument();
-
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
-      });
-
-      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
-
-      await act(async () => {
-        rejectLate?.(new Error("aborted"));
-        await Promise.resolve();
-      });
-
-      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
-      expect(screen.queryByRole("alert")).toBeNull();
-      expect(screen.queryByText("aborted")).toBeNull();
     });
 
     it("Q5 の複数選択は完了画面の外部連携チェックに反映される", async () => {
@@ -638,126 +587,6 @@ describe("SkillCreateWizard", () => {
       expect(mockFetchSkills).not.toHaveBeenCalled();
       // createSkill が1回呼ばれていること（createSkill内でfetchSkillsが呼ばれる）
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  // ============================================================
-  // TASK-SW-FIX-STATE-DETAIL-001: 問題18・19修正
-  // ============================================================
-
-  describe("問題18修正: resolveExternalIntegration 再計算", () => {
-    it("TC-06: q5 に Slack が選択されると hasExternalIntegration=true, externalToolName=Slack になる", () => {
-      const q5: ConversationAnswers["q5"] = {
-        selectedOptions: ["Slack"],
-        freeText: "",
-      };
-      const result = resolveExternalIntegration(q5, null);
-      expect(result.hasExternalIntegration).toBe(true);
-      expect(result.externalToolName).toBe("Slack");
-    });
-
-    it("TC-07: q5 に「なし」が選択されると hasExternalIntegration=false になる（q5以外変更の回帰）", () => {
-      const q5: ConversationAnswers["q5"] = {
-        selectedOptions: ["なし"],
-        freeText: "",
-      };
-      const result = resolveExternalIntegration(q5, null);
-      expect(result.hasExternalIntegration).toBe(false);
-      expect(result.externalToolName).toBeNull();
-    });
-
-    it("TC-06b: q5 に「その他」+freeText が入力されると externalToolName に freeText が使われる", () => {
-      const q5: ConversationAnswers["q5"] = {
-        selectedOptions: ["その他"],
-        freeText: "Notion",
-      };
-      const result = resolveExternalIntegration(q5, null);
-      expect(result.hasExternalIntegration).toBe(true);
-      expect(result.externalToolName).toBe("Notion");
-    });
-  });
-
-  describe("問題19修正: generationLockRef キャンセル競合", () => {
-    it("TC-08/09: キャンセル後に再度生成操作が実行可能になる（ロック残留なし）", async () => {
-      // 最初の createSkill は長時間かかる（キャンセルのテストのため）
-      mockCreateSkill.mockImplementationOnce(
-        () =>
-          new Promise<string>((_, reject) =>
-            setTimeout(() => reject(new Error("aborted")), 200),
-          ),
-      );
-      // 2回目は正常に解決
-      mockCreateSkill.mockResolvedValue("/mock/skills/retry-skill");
-
-      renderWizard(mockOnClose);
-      await advanceToStep1("Slack通知を送るための目的説明");
-
-      // 生成開始（Step 2へ）
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-
-      // Step 2（生成中）が表示されている
-      expect(screen.getByTestId("wizard-step-generate")).toBeInTheDocument();
-
-      // キャンセルボタンクリック
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
-      });
-
-      // Step 0 に戻っている（ロックが解放されているため遷移可能）
-      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
-
-      // 再度 Step 1 に進んで生成（2回目の createSkill 呼び出し）
-      await act(async () => {
-        fillStep0("GitHub連携スキル");
-        fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-        await Promise.resolve();
-      });
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-      await act(async () => {
-        await mockCreateSkill.mock.results[1]?.value;
-      });
-
-      // 2回目の createSkill が呼ばれた（ロック残留なし）
-      expect(mockCreateSkill).toHaveBeenCalledTimes(2);
-    });
-
-    it("TC-10: 生成処理が正常完了した後、ロックが解放される（回帰）", async () => {
-      renderWizard(mockOnClose);
-
-      await advanceToComplete();
-
-      // Step 3（完了）が表示されていること（正常完了 = ロックが解放された結果）
-      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
-      // createSkill が1回呼ばれた
-      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
-    });
-
-    // Phase 6 境界ケース
-    it("TC-B4: エラー発生時にエラーカードが表示される（finally ブロック経由でロック解放確認）", async () => {
-      mockCreateSkill.mockRejectedValueOnce(new Error("network error"));
-
-      renderWizard(mockOnClose);
-      await advanceToStep1("エラー後のリカバリーテスト");
-
-      // 生成開始
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-      await act(async () => {
-        await mockCreateSkill.mock.results[0]?.value?.catch?.(() => undefined);
-      });
-
-      // エラーカードが表示されている（finally でロック解放 → エラー状態に遷移）
-      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
-      // エラー表示が現れているか確認（ロックが解放されてエラー状態に遷移した証拠）
-      expect(screen.queryByRole("alert")).not.toBeNull();
     });
   });
 });

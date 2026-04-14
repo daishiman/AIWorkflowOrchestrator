@@ -10,7 +10,7 @@
 | 対象機能       | スキルウィザード（Wave C）                                                                                                     |
 | 優先度         | 中                                                                                                                             |
 | 見積もり規模   | 中規模                                                                                                                         |
-| ステータス     | completed                                                                                                                      |
+| ステータス     | pending                                                                                                                        |
 | ウェーブ       | Wave C（Wave B完了後。Phase 1-4/6-13 は並列、Phase 5 は `SkillCreateWizard.tsx` / `ConversationRoundStep.tsx` 共有のため順次） |
 | 作成日         | 2026-04-12                                                                                                                     |
 | 親ワークフロー | skill-wizard-bugfix-wave                                                                                                       |
@@ -114,19 +114,19 @@ graph TD
 
 | Phase | 名称             | パターン | 依存     | ゲート | ステータス |
 | ----- | ---------------- | -------- | -------- | ------ | ---------- |
-| 1     | 要件定義         | seq      | -        | -      | completed  |
-| 2     | 設計             | seq      | Phase 1  | -      | completed  |
-| 3     | 設計レビュー     | seq      | Phase 2  | GATE   | completed  |
-| 4     | テスト作成       | seq      | Phase 3  | -      | completed  |
-| 5     | 実装             | seq      | Phase 4  | -      | completed  |
-| 6     | テスト拡充       | seq      | Phase 5  | -      | completed  |
-| 7     | カバレッジ確認   | seq      | Phase 6  | -      | completed  |
-| 8     | リファクタリング | seq      | Phase 7  | -      | completed  |
-| 9     | 品質保証         | seq      | Phase 8  | -      | completed  |
-| 10    | 最終レビュー     | seq      | Phase 9  | GATE   | completed  |
-| 11    | 手動テスト       | seq      | Phase 10 | VISUAL | completed  |
-| 12    | ドキュメント更新 | par      | Phase 11 | -      | completed  |
-| 13    | PR作成           | seq      | Phase 12 | -      | blocked    |
+| 1     | 要件定義         | seq      | -        | -      | pending    |
+| 2     | 設計             | seq      | Phase 1  | -      | pending    |
+| 3     | 設計レビュー     | seq      | Phase 2  | GATE   | pending    |
+| 4     | テスト作成       | seq      | Phase 3  | -      | pending    |
+| 5     | 実装             | seq      | Phase 4  | -      | pending    |
+| 6     | テスト拡充       | seq      | Phase 5  | -      | pending    |
+| 7     | カバレッジ確認   | seq      | Phase 6  | -      | pending    |
+| 8     | リファクタリング | seq      | Phase 7  | -      | pending    |
+| 9     | 品質保証         | seq      | Phase 8  | -      | pending    |
+| 10    | 最終レビュー     | seq      | Phase 9  | GATE   | pending    |
+| 11    | 手動テスト       | seq      | Phase 10 | VISUAL | pending    |
+| 12    | ドキュメント更新 | par      | Phase 11 | -      | pending    |
+| 13    | PR作成           | seq      | Phase 12 | -      | pending    |
 
 ---
 
@@ -157,7 +157,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 ## 出力ファイル構成
 
 ```
-docs/30-workflows/WC-par-03a-fix-state-detail/
+docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03a-fix-state-detail/
 ├── index.md
 ├── artifacts.json
 ├── phase-1-requirements.md
@@ -175,13 +175,5 @@ docs/30-workflows/WC-par-03a-fix-state-detail/
 ├── phase-13-pr-creation.md
 └── outputs/
     ├── phase-1/ ~ phase-13/
-    ├── phase-11/
-    │   ├── manual-test-result.md
-    │   ├── manual-test-report.md
-    │   ├── discovered-issues.md
-    │   ├── ui-sanity-visual-review.md
-    │   ├── screenshot-plan.json
-    │   ├── screenshot-coverage.md
-    │   └── phase11-capture-metadata.json
-    │   └── screenshots/
+    └── phase-11/screenshots/
 ```

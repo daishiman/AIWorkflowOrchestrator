@@ -60,27 +60,6 @@
 
 ---
 
-### タスク: TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 Renderer 側エラーメッセージ UI 表示 E2E 確認（2026-04-13）
-
-| 項目       | 値                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001                                                |
-| 完了日     | 2026-04-13                                                                               |
-| タスク種別 | verification / docs-sync                                                                 |
-| 関連Issue  | #2007                                                                                    |
-| Phase 13   | blocked（PR 作成は別途）                                                                 |
-| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md`        |
-
-#### 同期内容
-
-- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管
-- `task-workflow-completed.md` に完了記録を追加
-- `task-workflow.md` の intro current facts を更新
-- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
-- `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` に同期ログを追加
-
----
-
 ### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
 
 | 項目       | 値                                                                                         |

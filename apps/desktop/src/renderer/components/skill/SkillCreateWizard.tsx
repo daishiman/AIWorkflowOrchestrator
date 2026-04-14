@@ -306,8 +306,6 @@ export const SkillCreateWizard = React.forwardRef<
   // W3-seq-04: abandon 制御 ref（P-5）
   const wizardCompletedRef = useRef(false);
   const currentStepRef = useRef(0);
-  // 問題18: q5 直前値のシリアライズ（不要な resolveExternalIntegration 再計算防止）
-  const q5SeriRef = useRef("");
 
   // ── 現行 state ──────────────────────────────────────────────────────────
   const [formData, setFormData] =
@@ -335,18 +333,6 @@ export const SkillCreateWizard = React.forwardRef<
   useEffect(() => {
     currentStepRef.current = currentStep;
   }, [currentStep]);
-
-  // 問題18修正: q5 の回答が変化したときのみ resolveExternalIntegration を再計算する
-  // answers 全体を依存配列に含めるが、JSON.stringify 比較で q5 変化時のみ実行する
-  useEffect(() => {
-    const q5Ser = JSON.stringify(answers.q5);
-    if (q5Ser === q5SeriRef.current) return;
-    q5SeriRef.current = q5Ser;
-    const defaults = smartDefaults ?? DEFAULT_SMART_DEFAULTS;
-    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
-    setHasExternalIntegration(integration.hasExternalIntegration);
-    setExternalToolName(integration.externalToolName);
-  }, [answers, smartDefaults]);
 
   const invalidateGenerationRequests = () => {
     generationRequestIdRef.current += 1;
@@ -466,18 +452,13 @@ export const SkillCreateWizard = React.forwardRef<
 
       goToStep(3);
     } catch (err) {
-      if (requestId !== generationRequestIdRef.current) {
-        return;
-      }
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
     } finally {
-      // 問題19修正: 全3経路（正常完了・エラー・キャンセル）でロックを解放する
-      // requestId チェックに関わらず常にロックを解放し、次回の生成操作を可能にする
-      generationLockRef.current = false;
       if (requestId === generationRequestIdRef.current) {
         setIsGenerating(false);
+        generationLockRef.current = false;
       }
     }
   };
@@ -585,7 +566,6 @@ export const SkillCreateWizard = React.forwardRef<
             message={resolvedMessage}
             previewContent={resolvedPreview}
             error={resolvedError}
-            mode={generationMethod === "skip" ? "template" : "llm"}
             isGenerating={
               isGenerating || isSkillGenerating || streaming.isGenerating
             }

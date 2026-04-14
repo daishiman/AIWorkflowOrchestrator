@@ -1229,40 +1229,6 @@
 
 ---
 
-## TASK-SW-FIX-FEEDBACK-001: SkillWizard フィードバックループ修正 教訓（2026-04-13）
-
-### L-FEEDBACK-001: LLM モードと template モードで fetchSkills 責務が異なる
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | LLM モード（`handleExecutePlan`）の成功後にスキル一覧が更新されず、新規作成スキルが一覧に表示されない |
-| 原因       | template モードは `createSkill`（agentSlice）内部で `fetchSkills` を呼ぶが、LLM モードは独立した実行パスのため `fetchSkills` 明示呼び出しが必要 |
-| 解決策     | `handleExecutePlan` の成功パス末尾に `await fetchSkills()` を追加。失敗時は遷移阻害を防ぐため独立した try/catch でswallow する |
-| 再発防止   | LLM モード専用の regression test case（TC-FEEDBACK-001）を設けて `fetchSkills` が1回呼ばれることを固定する |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
-### L-FEEDBACK-002: skillPath null ガードと成功ヘッダーはセットで設計する
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `skillPath === null` のままでも `CompleteStep` が成功ヘッダーを表示し、ユーザーが作成失敗を認識できなかった |
-| 原因       | `skillPath !== null` の条件チェックが成功ヘッダーと early return（エラーUI）で分離されておらず、null 時の表示制御が不完全だった |
-| 解決策     | early return でエラーUI を返し（`skillPath === null` 時）、成功ヘッダーは `skillPath !== null` の場合のみ表示する2層ガードを設ける |
-| 設計原則   | 成功表示と失敗ガードは同一コンポーネント内で同時に設計する。片方だけ修正すると UI 矛盾が生じる |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
-### L-FEEDBACK-003: Electron では runtime より Vite build キャプチャが安定
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | Electron 実行環境での画面キャプチャが不安定で Phase 11 証跡取得が困難だった |
-| 解決策     | Vite build 後に Playwright で `current_build` を固定した capture script（`capture-task-skill-fix-feedback-phase11.mjs`）を追加することで安定した証跡取得が可能になった |
-| 適用条件   | VISUAL タスクの Phase 11 証跡取得時（Electron renderer コンポーネントのスクリーンショット） |
-| 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針） |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
----
-
 ## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
 
 ### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
@@ -1321,15 +1287,6 @@ if (weekdays.length === 0) {
 | 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                  |
 | 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                                              | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
 | 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                                             |
-
----
-
-| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
-| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
-| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
-| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
-| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                           | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                          |
 
 ---
 
@@ -1497,10 +1454,3 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 - **L-MODE-003**: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する（Wave A 完了後では Red 状態を作れない）
 - **L-MODE-004**: Electron 実機なし時は「36 UT + grep ゼロ + TC-06 DOM query + typecheck」の 4 点 NON_VISUAL 証跡で代替する
 - **L-MODE-005**: SkillCreateWizard 確定フロー Step 0→1→2→3（LLM 専用・分岐なし）を基準とし、逸脱を禁止する
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `executeAsync` → `onWorkflowStateSnapshot(snapshot, errorMessage)` → `setWorkflowError()` → renderer component の表示経路が長いため、IPC mock 単体テストだけでは renderer 側の DOM 表示まで確認できず漏れが発生した |
-| 原因       | IPC 層の unit test で `errorMessage` が正しく伝搬することは確認済みだったが、`SkillLifecyclePanel` が実際に `data-testid="skill-lifecycle-error"` 要素を描画するかは別の検証スコープだった |
-| 解決策     | `SkillLifecyclePanel.test.tsx` に `mockStoreState.workflowError = "..."` → `renderPanel()` → `screen.getByTestId("skill-lifecycle-error")` → `toHaveAttribute("role", "alert")` → `toHaveTextContent(...)` の positive DOM assertion テストを追加した |
-| 標準ルール | Runtime error propagation タスク完了時は、renderer component 側の表示チェック（DOM visibility + aria accessibility）を E2E 対象に含める。IPC 単体テスト通過 ≠ UI 表示到達 |
-| 関連タスク | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 |

@@ -9,7 +9,7 @@
  * Q5 は category="external-integration" のとき必須マーク表示（ブロックしない）。
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type {
   ConversationAnswers,
   QuestionAnswer,
@@ -256,25 +256,9 @@ export const ConversationRoundStep = ({
   const isQ5Required = formData.category === "external-integration";
   const currentQuestion = currentPage === 1 ? 1 : 4;
 
-  // 内部操作による親→子エコーを識別するフラグ（問題12: 無限ループ防止）
-  const isInternalChangeRef = useRef(false);
-
   useEffect(() => {
-    isInternalChangeRef.current = true;
     onAnswersChange(internalAnswers);
   }, [internalAnswers, onAnswersChange]);
-
-  // answers prop 変化時に internalAnswers をリセット（問題12修正）
-  // 親から直接変更（リトライ等）の場合のみリセット。内部操作による echo は isInternalChangeRef で除外。
-  useEffect(() => {
-    if (isInternalChangeRef.current) {
-      isInternalChangeRef.current = false;
-      return;
-    }
-    setInternalAnswers(
-      applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
-    );
-  }, [answers, smartDefaults]);
 
   // ─── ハンドラ ───────────────────────────────────────────────────────────────
 

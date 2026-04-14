@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2984,
+  "totalKeywords": 2982,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1755,8 +1755,6 @@
       "arch-electron-services-details-part2.md",
       "arch-electron-services-details.md",
       "arch-state-management-details.md",
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-details.md",
       "architecture-implementation-patterns-details.md",
@@ -2376,7 +2374,6 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
-      "task-workflow-completed.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-skill-analysis.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -3698,8 +3695,7 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "task-workflow-completed.md"
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
@@ -3847,8 +3843,6 @@
     ],
     "STATE": [
       "arch-state-management-reference.md",
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
     "CENTRALIZATION": [
@@ -4010,23 +4004,6 @@
       "arch-ui-components-core.md",
       "task-workflow-completed.md"
     ],
-    "state": [
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md",
-      "architecture-auth-security-core.md",
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed.md"
-    ],
-    "recovery": [
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md"
-    ],
-    "DETAIL": [
-      "arch-state-management-skill-creator.md",
-      "arch-ui-components-core.md"
-    ],
     "Snapshot": [
       "arch-state-management-skill-creator.md"
     ],
@@ -4151,6 +4128,13 @@
     ],
     "ログインフローの": [
       "architecture-auth-security-core.md"
+    ],
+    "state": [
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed.md"
     ],
     "ownership": [
       "architecture-auth-security-core.md"
@@ -7130,8 +7114,7 @@
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "task-workflow-completed.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "sandbox": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -7964,12 +7947,10 @@
       "lessons-learned-current-2026-04.md"
     ],
     "RENDERER": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed.md"
+      "lessons-learned-current-2026-04.md"
     ],
     "CHECK": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed.md"
+      "lessons-learned-current-2026-04.md"
     ],
     "表示": [
       "lessons-learned-current-2026-04.md"
@@ -8587,8 +8568,7 @@
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "error": [
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "task-workflow-completed.md"
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "notification": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -10020,8 +10000,7 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md",
-      "task-workflow-completed-recent-2026-04g.md"
+      "task-workflow-completed-recent-2026-04f.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
