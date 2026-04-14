@@ -1,112 +1,128 @@
 # Phase 10: 最終レビュー結果
 
-## タスク: TASK-SW-FIX-STATE-DETAIL-001
-
-## Gate 判定: PASS
-
-手動テスト（VISUAL 確認）へ進む。
-
----
-
 ## Task 1: AC 最終照合
 
-### AC-1: internalAnswers リセット（3面確認）
+### AC-1 — internalAnswers リセット（test / code / doc）
 
-| 面   | 内容                                                         | 判定 |
-| ---- | ------------------------------------------------------------ | ---- |
-| code | ConversationRoundStep.tsx: `isInternalChangeRef` + 2 effects | ✓    |
-| test | TC-01, TC-02, TC-B1, TC-B3 (88/88 PASS)                      | ✓    |
-| doc  | Phase 5 実装記録、Phase 7 coverage-report                    | ✓    |
+| 面   | 確認内容                                                                          | 状態 |
+| ---- | --------------------------------------------------------------------------------- | ---- |
+| code | `useEffect([answers])` + `allEmpty` チェック実装済み（ConversationRoundStep.tsx） | ✓    |
+| test | TC-01（空→リセット）/ TC-11（非空→非リセット）が PASS                             | ✓    |
+| doc  | phase-2 設計書・phase-5 実装記録・phase-7 カバレッジで文書化済み                  | ✓    |
 
-**AC-1: 閉じている**
-
-### AC-2: キャンセルボタン表示・遷移（3面確認）
-
-| 面   | 内容                                                                        | 判定 |
-| ---- | --------------------------------------------------------------------------- | ---- |
-| code | GenerateStep.tsx: `mode?: GenerationMode` prop + `showTemplateCancelButton` | ✓    |
-| test | TC-03, TC-04, TC-05, TC-B2 (41/41 PASS)                                     | ✓    |
-| doc  | Phase 5 実装記録、Phase 7 coverage-report                                   | ✓    |
-
-**AC-2: 閉じている**
-
-### AC-3: resolveExternalIntegration 再計算（3面確認）
-
-| 面   | 内容                                                | 判定 |
-| ---- | --------------------------------------------------- | ---- |
-| code | SkillCreateWizard.tsx: `q5SeriRef` + q5 監視 effect | ✓    |
-| test | TC-06, TC-07, TC-06b (41/41 PASS)                   | ✓    |
-| doc  | Phase 5 実装記録、Phase 7 coverage-report           | ✓    |
-
-**AC-3: 閉じている**
-
-### AC-4: generationLockRef リセット（3面確認）
-
-| 面   | 内容                                                                                  | 判定 |
-| ---- | ------------------------------------------------------------------------------------- | ---- |
-| code | SkillCreateWizard.tsx: `finally` ブロックで無条件 `generationLockRef.current = false` | ✓    |
-| test | TC-08/09, TC-10, TC-B4 (成功・キャンセル・エラー 3経路)                               | ✓    |
-| doc  | Phase 5 実装記録、Phase 7 coverage-report                                             | ✓    |
-
-**AC-4: 閉じている**
-
-### AC-5: 回帰なし（3面確認）
-
-| 面   | 内容                                                  | 判定 |
-| ---- | ----------------------------------------------------- | ---- |
-| code | 3ファイルの既存ロジックを変更した箇所なし（追加のみ） | ✓    |
-| test | 既存 84 + 新規 86 + 既存 25 = 合計 170/170 PASS       | ✓    |
-| doc  | Phase 6 拡充記録に回帰テスト一覧                      | ✓    |
-
-**AC-5: 閉じている**
+**判定**: 三面閉じ ✓
 
 ---
 
-## Task 2: 30 思考法レビュー
+### AC-2 — templateモードキャンセルボタン（test / code / doc）
+
+| 面   | 確認内容                                                                                 | 状態 |
+| ---- | ---------------------------------------------------------------------------------------- | ---- |
+| code | `isTemplateMode && error && onCancel` 条件で JSX 出力（GenerateStep.tsx）                | ✓    |
+| test | TC-03（表示）/ TC-04（クリック）/ TC-05（非表示回帰）/ TC-12（error=undefined 境界）PASS | ✓    |
+| doc  | phase-2 設計書・phase-5 実装記録に条件式と配置位置を記録                                 | ✓    |
+
+**観察**: 当時は `SkillCreateWizard` から `GenerateStep` への `isTemplateMode` 渡しを未確認として扱っていたが、現在は `SkillCreateWizardShell` による wire-up が実装済みで、Phase 11 VISUAL 確認でも PASS 済み。
+Phase 9 品質報告書の観測点 2 は後続の実装で解消された。
+
+**判定**: 三面閉じ ✓（templateMode 呼び出し側の wire-up も後続で解消済み）
+
+---
+
+### AC-3 — resolveExternalIntegration 再計算（test / code / doc）
+
+| 面   | 確認内容                                                                                                       | 状態 |
+| ---- | -------------------------------------------------------------------------------------------------------------- | ---- |
+| code | `useEffect([answers.q5])` で `setHasExternalIntegration` / `setExternalToolName` 更新（SkillCreateWizard.tsx） | ✓    |
+| test | TC-06（q5 変化→反映）/ TC-07（q1 変化→非発火回帰）PASS                                                         | ✓    |
+| doc  | phase-2 設計書（依存配列の最小化の根拠）・phase-8 リファクタリング記録に記録                                   | ✓    |
+
+**判定**: 三面閉じ ✓
+
+---
+
+### AC-4 — generationLockRef 全経路解放（test / code / doc）
+
+| 面   | 確認内容                                                                                         | 状態 |
+| ---- | ------------------------------------------------------------------------------------------------ | ---- |
+| code | `finally` ブロックで無条件解放、`setIsGenerating` のみ requestId ガード（SkillCreateWizard.tsx） | ✓    |
+| test | TC-08/09（成功→再生成）/ TC-10（重複生成防止回帰）/ TC-13（エラー→ロック解放→リトライ成功）PASS  | ✓    |
+| doc  | phase-2 設計書（3経路の保証）・phase-9 品質報告書（finally 到達確認表）に記録                    | ✓    |
+
+**判定**: 三面閉じ ✓
+
+---
+
+### AC-5 — 回帰なし（test / code / doc）
+
+| 面   | 確認内容                                                                              | 状態 |
+| ---- | ------------------------------------------------------------------------------------- | ---- |
+| code | 3ファイルへの最小変更（useEffect 2件 + prop 1件 + JSX 1ブロック）、既存ロジック無改変 | ✓    |
+| test | 全テストスイート exit code 0（TC-02, TC-05, TC-07, TC-10 を含む既存回帰テスト含む）   | ✓    |
+| doc  | phase-8 リファクタリング記録「ロジック重複なし」・phase-9「ブロッカー: なし」を確認   | ✓    |
+
+**判定**: 三面閉じ ✓
+
+---
+
+## Task 2: 30思考法レビュー
 
 ### 論理分析系
 
-- **4件の修正の相互矛盾**: なし。各修正は独立したコンポーネントを対象とし、`ConversationRoundStep`（問題12）・`GenerateStep`（問題13）・`SkillCreateWizard`（問題18・19）で責務が分離されている
-- **useEffect 依存配列の一貫性**: Effect 1（`[internalAnswers, onAnswersChange]`）と Effect 2（`[answers, smartDefaults]`）の分離により、echo ループと外部リセットの両立が論理的に成立
+| 確認観点                                                 | 結果                                                                                                                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4件の修正が相互矛盾していないか                          | ✓ 問題12（ConversationRoundStep）、問題13（GenerateStep）、問題18・19（SkillCreateWizard）は独立したバグ修正。共通依存は `answers` 型のみであり論理競合なし |
+| useEffect のループリスクが排除されているか               | ✓ 問題12: `allEmpty` チェックで非空時はリセット不発。問題18: `answers.q5` 参照安定性により q1〜q4 変化では非発火。いずれも無限ループ条件を排除済み          |
+| 4条件（矛盾なし / 漏れなし / 整合性あり / 依存関係整合） | ✓ AC-1〜AC-5 全て三面閉じ。依存関係は `answers` prop → `internalAnswers` / `hasExternalIntegration` / `isGenerating` の一方向であり矛盾なし                 |
 
 ### 構造分解系
 
-- **変更箇所の責務分離**: 各修正はファイル単位で責務が明確。`ConversationRoundStep` は state 同期、`GenerateStep` は UI 条件分岐、`SkillCreateWizard` は state 計算とロック管理
-- **追加コードの局所性**: `isInternalChangeRef` は該当コンポーネント内に閉じており、他への影響なし
+| 確認観点                                | 結果                                                                                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 3ファイルの変更責務が分離されているか   | ✓ ConversationRoundStep（内部 state リセット）/ GenerateStep（UI 表示条件）/ SkillCreateWizard（派生 state 再計算・ロック管理） |
+| cross-cutting change が混入していないか | ✓ 各ファイルの変更は独立。SkillCreateWizard の変更（問題18・19）も useEffect と finally ブロックで責務分離済み                  |
 
 ### 発想・拡張系
 
-- **過剰実装の有無**: なし。各修正は最小変更量（問題19は2行の移動のみ）
-- **将来への影響**: `q5SeriRef` の `JSON.stringify` 比較は `ConversationAnswers.q5` が現在の `string[]` 構造を維持する限り安全
+| 確認観点                           | 結果                                                                                                          |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 最小変更量を超えた過剰実装がないか | ✓ `allEmpty` の関数抽出・`eslint-disable` の解消などのリファクタ候補は phase-8 で保留判定済み。現時点では過剰 |
+| 将来の拡張に悪影響を与えない設計か | ✓ `isTemplateMode` prop の追加はオプショナルであり、既存の呼び出し元を破壊しない                              |
 
 ### システム系
 
-- **ウィザード全体の state 遷移**: Step 0 → Step 1 → Step 2（生成）→ Step 3（完了）のフローに変更なし。回帰テスト (TC-10) でフロー全体を確認済み
-- **キャンセル経路の対称性**: `generationLockRef` の `finally` 移動により、成功・エラー・キャンセルの3経路が対称的にロック解放される
+| 確認観点                                    | 結果                                                                                                               |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| ウィザード全体の state 遷移に悪影響がないか | ✓ `goToStep(0)` でコンポーネントが unmount される際に問題12の useEffect は即時 cleanup されるため二重発火なし      |
+| `generationRequestIdRef` との競合がないか   | ✓ 問題19修正後、`generationLockRef.current = false` は無条件実行、`setIsGenerating(false)` は requestId ガード維持 |
 
 ---
 
-## Task 3: Gate 判定
+## Task 3: gate 判定
 
-### 4条件再判定
+### 4条件チェック
 
-| 条件         | 判定 |
-| ------------ | ---- |
-| 矛盾なし     | ✓    |
-| 漏れなし     | ✓    |
-| 整合性あり   | ✓    |
-| 依存関係整合 | ✓    |
+| 条件         | 判定 | 根拠                                                              |
+| ------------ | ---- | ----------------------------------------------------------------- |
+| 矛盾なし     | ✓    | 4件の修正は相互独立、useEffect ループリスク排除済み               |
+| 漏れなし     | ✓    | AC-1〜AC-5 全て三面（code / test / doc）で閉じている              |
+| 整合性あり   | ✓    | 設計書 → 実装記録 → テスト仕様書 → カバレッジレポートの一貫性あり |
+| 依存関係整合 | ✓    | `answers` prop の一方向データフローが維持されている               |
 
-### Gate 判定
+### Phase 11 手動テスト エントリ条件
 
-**PASS** — Phase 11（手動テスト・VISUAL 確認）へ進む
+**PASS** — Phase 11 手動テスト（VISUAL 確認）へ進む
 
-### VISUAL 確認の entry 条件
+VISUAL 確認対象（Phase 9 品質報告書より引き継ぎ）:
 
-- `GenerateStep.tsx` に `mode="template"` + `stage="error"` 時のキャンセルボタンが追加されているため VISUAL 確認が必要
-- 対象 TC: TC-03, TC-04, TC-05
-- 証跡: screenshots/TC-SW-FIX-STATE-DETAIL-11-0{3,4,5}-\*.png
+1. templateMode + エラー状態でキャンセルボタンが正しい位置・スタイルで表示される
+2. キャンセルボタン押下後に Step 0 へ遷移する
+3. 非 templateMode ではキャンセルボタンが表示されない
+4. Step 1 でリトライ後に internalAnswers が空値にリセットされる
 
-### 改善余地（MINOR）
+### 改善余地（Phase 12 ドキュメント更新へ引き継ぎ）
 
-- `isInternalChangeRef` パターンの説明コメントは十分だが、将来このコンポーネントを修正する開発者向けに「なぜ 2 effects に分割したか」を JSDoc に記載すると maintainability が向上する（現状は行内コメントで対応済み）
+| 項目                                                            | 優先度 | 対処方針                                                         |
+| --------------------------------------------------------------- | ------ | ---------------------------------------------------------------- |
+| `SkillCreateWizard` → `GenerateStep` への `isTemplateMode` 渡し | なし   | Phase 11/12 で解消済み。current facts と visual evidence に反映  |
+| `allEmpty` の名前付き関数抽出（可読性向上）                     | 低     | 現時点では過剰。将来のリファクタ候補として skill-feedback に記録 |

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 // i18n initialization (TASK-3-2-B: SkillStreamDisplay i18n対応)
 import "./i18n/config";
@@ -53,6 +53,26 @@ import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
 import { openExecutionConsole } from "./actions/executionConsole";
 import { shouldResetUnauthenticatedView } from "./utils/shouldResetUnauthenticatedView";
+
+function SkillCreateWizardShell({
+  onClose,
+  source,
+}: {
+  onClose: () => void;
+  source?: "lifecycle_panel" | "direct";
+}) {
+  const location = useLocation();
+  const isTemplateMode =
+    new URLSearchParams(location.search).get("templateMode") === "1";
+
+  return (
+    <SkillCreateWizard
+      onClose={onClose}
+      source={source}
+      isTemplateMode={isTemplateMode}
+    />
+  );
+}
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
 // Chat History機能はIPC経由でMain Processと連携する形で後続タスクで実装予定
@@ -363,7 +383,7 @@ function App(): JSX.Element {
         );
       case "skillCreate":
         return (
-          <SkillCreateWizard
+          <SkillCreateWizardShell
             onClose={() => setCurrentView("skillCenter")}
             source="lifecycle_panel"
           />
@@ -415,7 +435,7 @@ function App(): JSX.Element {
         );
       case "skillCreate":
         return (
-          <SkillCreateWizard
+          <SkillCreateWizardShell
             onClose={() => setCurrentView("skillCenter")}
             source="lifecycle_panel"
           />
@@ -710,7 +730,7 @@ function App(): JSX.Element {
           element={
             <AuthGuard>
               {renderStandaloneView(
-                <SkillCreateWizard
+                <SkillCreateWizardShell
                   onClose={() => window.history.back()}
                   source="direct"
                 />,

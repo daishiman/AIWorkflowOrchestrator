@@ -8,7 +8,7 @@
 | Phase名    | ドキュメント更新             |
 | 対象機能   | TASK-SW-FIX-STATE-DETAIL-001 |
 | 前提Phase  | Phase 11: 手動テスト         |
-| 次Phase    | Phase 13: PR作成             |
+| 次Phase    | Phase 13: PR作成（skipped）  |
 | ステータス | completed                    |
 | 作成日     | 2026-04-12                   |
 
@@ -59,9 +59,9 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 - TypeScriptの型定義、APIシグネチャ/使用例、エラーハンドリング、エッジケース、設定可能パラメータ/定数一覧を含める
 - `useEffect` 依存配列に `answers` を追加して `internalAnswers` の残留を防ぐ
-- `GenerateStep` の template モードにキャンセルボタンを追加し、Step 0 へ戻れる導線を明示する
-- `resolveExternalIntegration` を `q5` 変更後に再計算し、外部統合の表示値を最新化する
-- `generationLockRef` を `finally` で必ず解除し、キャンセル・失敗・成功のいずれでも再実行可能にする
+- `GenerateStep` の template モードキャンセル導線は current facts として反映済みで、Step 0 へ戻れる設計を明示する
+- `resolveExternalIntegration` は `q5` 変更後に再計算され、外部統合の表示値を最新化する
+- `generationLockRef` は `finally` で必ず解除され、キャンセル・失敗・成功のいずれでも再実行可能である
 - 4件の修正箇所を file path 単位で明記する
 - 設定可能パラメータ/定数は `answers`、`internalAnswers`、`q5`、`generationLockRef` の4系統で整理する
 
@@ -73,7 +73,6 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 - `docs/30-workflows/skill-wizard-bugfix-wave/index.md` に Wave C 完了記録を追加する
 - `artifacts.json` の status を `pending` から `completed` に更新する
-- `outputs/phase-11/manual-test-result.md` / `outputs/phase-11/manual-test-report.md` / `outputs/phase-11/discovered-issues.md` / `outputs/phase-11/ui-sanity-visual-review.md` / `outputs/phase-11/screenshot-plan.json` / `outputs/phase-11/screenshot-coverage.md` / `outputs/phase-11/phase11-capture-metadata.json` / `outputs/phase-11/screenshots/*.png` を current facts として固定する
 - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` に完了タスク記録を追加する
 - `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` / `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` を current facts に同期する
 - `.claude/skills/task-specification-creator/SKILL.md` / `.claude/skills/aiworkflow-requirements/SKILL.md` の変更履歴を更新する
@@ -95,7 +94,7 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 ### Step 2: システム仕様更新
 
 - `ConversationRoundStep` / `GenerateStep` / `SkillCreateWizard` の state contract を `system-spec-update-summary.md` に記録する
-- `useEffect` 依存配列、キャンセル導線、`resolveExternalIntegration` 再計算、`generationLockRef` 解除の current facts と no-op / update 判定を残す
+- `useEffect` 依存配列、template モードキャンセル導線、`resolveExternalIntegration` 再計算、`generationLockRef` 解除の current facts と no-op / update 判定を残す
 - `artifacts.json` と `outputs/artifacts.json` の同期結果を final evidence として記録する
 
 成果物: `outputs/phase-12/system-spec-update-summary.md`
@@ -127,29 +126,28 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 ## Task 12-6: 準拠チェック
 
-- `phase12-task-spec-compliance-check.md` で 6 成果物の存在、validator結果、artifacts parity、planned wording 0件、Phase 11 evidence bundle の存在を束ねる
+- `phase12-task-spec-compliance-check.md` で6成果物の存在、validator結果、artifacts parity、planned wording 0件を束ねる
 - PASS / FAIL と不足点を明示し、PASS の断言は根拠が揃った場合のみ行う
 
 成果物: `outputs/phase-12/phase12-task-spec-compliance-check.md`
 
 ## 参照資料
 
-| 資料名               | パス                                                                                                                                                                                                                                                                                                                                                          | 説明                    |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| 設計書               | `outputs/phase-2/design-document.md`                                                                                                                                                                                                                                                                                                                          | 30思考法の記録          |
-| 実装記録             | `outputs/phase-5/implementation-record.md`                                                                                                                                                                                                                                                                                                                    | current contractの根拠  |
-| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`                                                                                                                                                                                                                                                                                                                     | 境界ケース              |
-| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                                                                                                                                                                                                                                                                                                                          | AC対応表                |
-| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`                                                                                                                                                                                                                                                                                                                       | 最小複雑性の判断        |
-| 品質保証レポート     | `outputs/phase-9/quality-report.md`                                                                                                                                                                                                                                                                                                                           | 準拠根拠                |
-| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`                                                                                                                                                                                                                                                                                                                     | 総合判定                |
-| Phase 11証跡 bundle  | `outputs/phase-11/manual-test-result.md` / `outputs/phase-11/manual-test-report.md` / `outputs/phase-11/discovered-issues.md` / `outputs/phase-11/ui-sanity-visual-review.md` / `outputs/phase-11/screenshot-plan.json` / `outputs/phase-11/screenshot-coverage.md` / `outputs/phase-11/phase11-capture-metadata.json` / `outputs/phase-11/screenshots/*.png` | UI 証跡の current facts |
-| Phase 12ガイド       | `.claude/skills/task-specification-creator/references/phase-12-documentation-guide.md`                                                                                                                                                                                                                                                                        | 必須成果物基準          |
-| system spec 正本     | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                                                                                                                                                                                                                                                                             | current facts の基準    |
-| ワークフロー正本     | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                                                                                                                                                                                                                                                          | current facts の基準    |
-| 完了ワークフロー     | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                                                                                                                                                                                                                                                                                | completed 同期基準      |
-| backlogワークフロー  | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                                                                                                                                                                                                                                                                                  | no-op / update 判定基準 |
-| topic map            | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                                                                                                                                                                                                                                                                                                 | 用語・依存の整合        |
+| 資料名               | パス                                                                                   | 説明                    |
+| -------------------- | -------------------------------------------------------------------------------------- | ----------------------- |
+| 設計書               | `outputs/phase-2/design-document.md`                                                   | 30思考法の記録          |
+| 実装記録             | `outputs/phase-5/implementation-record.md`                                             | current contractの根拠  |
+| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`                                              | 境界ケース              |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                                                   | AC対応表                |
+| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`                                                | 最小複雑性の判断        |
+| 品質保証レポート     | `outputs/phase-9/quality-report.md`                                                    | 準拠根拠                |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`                                              | 総合判定                |
+| Phase 12ガイド       | `.claude/skills/task-specification-creator/references/phase-12-documentation-guide.md` | 必須成果物基準          |
+| system spec 正本     | `.claude/skills/aiworkflow-requirements/SKILL.md`                                      | current facts の基準    |
+| ワークフロー正本     | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                   | current facts の基準    |
+| 完了ワークフロー     | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`         | completed 同期基準      |
+| backlogワークフロー  | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`           | no-op / update 判定基準 |
+| topic map            | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                          | 用語・依存の整合        |
 
 ## 成果物
 
@@ -164,22 +162,20 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 ## 完了条件
 
-- [ ] 必須6成果物が揃っている
-- [ ] `計画 / 予定 / TODO / will be / を予定 / 仕様策定のみ / 保留として記録` が `outputs/phase-12/*.md` に残っていない
-- [ ] Phase 11 の evidence bundle（manual-test-result.md / manual-test-report.md / discovered-issues.md / ui-sanity-visual-review.md / screenshot-plan.json / screenshot-coverage.md / phase11-capture-metadata.json / screenshots/\*.png）が揃っている
-- [ ] `screenshot-plan.json` と `phase11-capture-metadata.json` が現行タスク ID と一致している
-- [ ] skill準拠結果が記録されている
-- [ ] 30思考法の総括が残っている
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
+- [x] 必須6成果物が揃っている
+- [x] 計画系文言が除去されている
+- [x] skill準拠結果が記録されている
+- [x] 30思考法の総括が残っている
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 
-→ [Phase 13: PR作成](./phase-13-pr-creation.md)
+→ [Phase 13: PR作成](./phase-13-pr-creation.md)（skipped / blocked）

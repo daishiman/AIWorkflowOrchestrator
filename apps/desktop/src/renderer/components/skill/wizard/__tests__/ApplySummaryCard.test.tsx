@@ -34,8 +34,8 @@ const defaultSmartDefaults: SmartDefaultResult = {
 
 const defaultFormData: SkillInfoFormData = {
   purpose: "テスト",
-  category: null,
-} as SkillInfoFormData;
+  category: [],
+};
 
 describe("ApplySummaryCard", () => {
   let mockOnDismiss: ReturnType<typeof vi.fn>;
@@ -144,8 +144,8 @@ describe("ApplySummaryCard", () => {
   it("category=external-integration かつ Q5 未回答のとき警告が表示される", () => {
     const formData = {
       ...defaultFormData,
-      category: "external-integration",
-    } as SkillInfoFormData;
+      category: ["external-integration"],
+    };
     render(
       <ApplySummaryCard
         answers={defaultAnswers}
@@ -163,8 +163,8 @@ describe("ApplySummaryCard", () => {
   it("category=external-integration かつ Q5 回答済みのとき警告が表示されない", () => {
     const formData = {
       ...defaultFormData,
-      category: "external-integration",
-    } as SkillInfoFormData;
+      category: ["external-integration"],
+    };
     const answeredQ5: ConversationAnswers = {
       ...defaultAnswers,
       q5: { selectedOptions: ["Slack"], freeText: "" },
@@ -216,8 +216,8 @@ describe("ApplySummaryCard", () => {
   it("TC-U-22: q5.selectedOptions に値があるとき isQ5Unanswered が false になる", () => {
     const formData = {
       ...defaultFormData,
-      category: "external-integration",
-    } as SkillInfoFormData;
+      category: ["external-integration"],
+    };
     const answeredQ5: ConversationAnswers = {
       ...defaultAnswers,
       q5: { selectedOptions: ["Slack"], freeText: "" },

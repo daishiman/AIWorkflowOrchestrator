@@ -56,10 +56,11 @@ export interface SkillInfoStepProps {
 /**
  * スキルウィザード Step 0 — スキルの基本情報を入力するフォームコンポーネント。
  *
- * - スキル名（任意）、目的・背景（必須・10文字以上）、カテゴリタグ（必須・5種の単一選択）を入力する。
- * - カテゴリは未選択状態として `null` を取り得るが、一度選択した値は再クリックで `null` には戻さない。
- * - カテゴリに `external-integration` を選択した場合、Step 1 の Q5 が必須になる。
- * - 「次へ」ボタンは目的が 10 文字以上入力され、かつカテゴリが選択されたときに活性化する。
+ * - スキル名（任意）、目的・背景（必須・10文字以上）、カテゴリタグ（必須・5種の複数選択可）を入力する。
+ * - カテゴリは複数選択可能で、選択済みカテゴリを再クリックすると解除される。
+ * - 全カテゴリを解除した場合も `[]` を維持する。
+ * - カテゴリに `external-integration` を含む場合、Step 1 の Q5 が必須になる。
+ * - 「次へ」ボタンは目的が 10 文字以上入力され、かつカテゴリが1件以上選択されたときに活性化する。
  *
  * @example
  * <SkillInfoStep
@@ -75,15 +76,18 @@ export function SkillInfoStep({
 }: SkillInfoStepProps) {
   const [purposeTouched, setPurposeTouched] = useState(false);
 
-  // Step 0 の完了条件: purpose(10文字以上) + category(選択済み)
+  // Step 0 の完了条件: purpose(10文字以上) + category(1件以上選択)
   const isNextEnabled =
-    formData.purpose.trim().length >= 10 && formData.category !== null;
+    formData.purpose.trim().length >= 10 && formData.category.length > 0;
   const showPurposeError =
     purposeTouched && formData.purpose.trim().length < 10;
 
+  // 既選択の場合は除去（トグル解除）、未選択の場合は追加
   const handleCategoryClick = (value: SkillCategory) => {
-    if (formData.category === value) return;
-    onFormDataChange({ ...formData, category: value });
+    const next = formData.category.includes(value)
+      ? formData.category.filter((c) => c !== value)
+      : [...formData.category, value];
+    onFormDataChange({ ...formData, category: next });
   };
 
   return (
@@ -154,7 +158,7 @@ export function SkillInfoStep({
           className="flex flex-wrap gap-2"
         >
           {CATEGORY_OPTIONS.map(({ value, label, icon, description }) => {
-            const isSelected = formData.category === value;
+            const isSelected = formData.category.includes(value);
             return (
               <button
                 key={value}
@@ -183,7 +187,7 @@ export function SkillInfoStep({
           type="button"
           onClick={onNext}
           disabled={!isNextEnabled}
-          className="rounded bg-blue-600 px-6 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40 hover:bg-blue-700"
+          className="rounded-lg bg-[var(--status-primary)] px-6 py-2 text-sm font-medium text-[var(--text-inverse)] disabled:cursor-not-allowed disabled:opacity-40"
         >
           次へ
         </button>

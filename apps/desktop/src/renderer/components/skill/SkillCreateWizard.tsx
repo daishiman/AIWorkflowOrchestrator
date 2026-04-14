@@ -31,7 +31,10 @@ import type {
   SkillInfoFormData,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
-import { buildSkillContext } from "@repo/shared/types/skillCreator";
+import {
+  buildSkillContext,
+  resolvePrimarySkillCategory,
+} from "@repo/shared/types/skillCreator";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
   useCreateSkill,
@@ -45,6 +48,8 @@ import {
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
+import { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
+export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
 
 // ────────────────────────────────────────────────────────────────────────────
 // 定数
@@ -63,7 +68,7 @@ const SKILL_GENERATION_OPTIONS = {
 const DEFAULT_FORM_DATA: SkillInfoFormData = {
   skillName: "",
   purpose: "",
-  category: null,
+  category: [],
 };
 
 const DEFAULT_ANSWERS: ConversationAnswers = {
@@ -152,72 +157,6 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
   };
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// inferSmartDefaults
-// ────────────────────────────────────────────────────────────────────────────
-
-/**
- * Step 0 の入力から Q1〜Q6 の初期値を推論する純粋関数。
- * - purpose に "Slack" → tool = "slack"
- * - purpose に "GitHub" → tool = "github"
- * - purpose に "Notion" → tool = "notion"
- * - purpose に "毎日/毎週/定期/スケジュール" → timing = "scheduled"
- * - purpose に "リアルタイム/即座/すぐに" → timing = "realtime"
- * - category === "code-support" → format = "code"
- * - category === "data-analysis" → format = "structured"
- */
-export function inferSmartDefaults(
-  data: SkillInfoFormData,
-): SmartDefaultResult {
-  const purpose = data.purpose ?? "";
-  const purposeLower = purpose.toLowerCase();
-  const inferenceLog: string[] = [];
-  const result: SmartDefaultResult = {
-    who: null,
-    input: null,
-    timing: null,
-    output: null,
-    tool: null,
-    format: null,
-  };
-
-  // ツール推論（大文字小文字を区別しない）
-  if (purposeLower.includes("slack")) {
-    result.tool = "slack";
-    inferenceLog.push("purpose に 'slack' を検出 → tool = 'slack'");
-  } else if (purposeLower.includes("github")) {
-    result.tool = "github";
-    inferenceLog.push("purpose に 'github' を検出 → tool = 'github'");
-  } else if (purposeLower.includes("notion")) {
-    result.tool = "notion";
-    inferenceLog.push("purpose に 'notion' を検出 → tool = 'notion'");
-  }
-
-  // タイミング推論
-  if (/毎日|毎週|定期|スケジュール/.test(purpose)) {
-    result.timing = "scheduled";
-    inferenceLog.push(
-      "purpose に定期実行キーワードを検出 → timing = 'scheduled'",
-    );
-  } else if (/リアルタイム|即座|すぐに/.test(purpose)) {
-    result.timing = "realtime";
-    inferenceLog.push(
-      "purpose にリアルタイムキーワードを検出 → timing = 'realtime'",
-    );
-  }
-
-  // フォーマット推論
-  if (data.category === "code-support") {
-    result.format = "code";
-    inferenceLog.push("category = 'code-support' → format = 'code'");
-  } else if (data.category === "data-analysis") {
-    result.format = "structured";
-    inferenceLog.push("category = 'data-analysis' → format = 'structured'");
-  }
-
-  return { ...result, inferenceLog };
-}
-
 function resolveKnownTool(input: string | null | undefined): string | null {
   const normalized = (input ?? "").trim().toLowerCase();
   if (!normalized) return null;
@@ -285,12 +224,13 @@ export function resolveExternalIntegration(
 export interface SkillCreateWizardProps {
   onClose: () => void;
   source?: "lifecycle_panel" | "direct";
+  isTemplateMode?: boolean;
 }
 
 export const SkillCreateWizard = React.forwardRef<
   HTMLDivElement,
   SkillCreateWizardProps
->(({ onClose: _onClose, source }, ref) => {
+>(({ onClose: _onClose, source, isTemplateMode = false }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
@@ -306,8 +246,6 @@ export const SkillCreateWizard = React.forwardRef<
   // W3-seq-04: abandon 制御 ref（P-5）
   const wizardCompletedRef = useRef(false);
   const currentStepRef = useRef(0);
-  // 問題18: q5 直前値のシリアライズ（不要な resolveExternalIntegration 再計算防止）
-  const q5SeriRef = useRef("");
 
   // ── 現行 state ──────────────────────────────────────────────────────────
   const [formData, setFormData] =
@@ -336,17 +274,14 @@ export const SkillCreateWizard = React.forwardRef<
     currentStepRef.current = currentStep;
   }, [currentStep]);
 
-  // 問題18修正: q5 の回答が変化したときのみ resolveExternalIntegration を再計算する
-  // answers 全体を依存配列に含めるが、JSON.stringify 比較で q5 変化時のみ実行する
+  // 問題18修正: q5 変更後に hasExternalIntegration / externalToolName を再計算する
   useEffect(() => {
-    const q5Ser = JSON.stringify(answers.q5);
-    if (q5Ser === q5SeriRef.current) return;
-    q5SeriRef.current = q5Ser;
-    const defaults = smartDefaults ?? DEFAULT_SMART_DEFAULTS;
+    const defaults = smartDefaults ?? inferSmartDefaults(formData);
     const integration = resolveExternalIntegration(answers.q5, defaults.tool);
     setHasExternalIntegration(integration.hasExternalIntegration);
     setExternalToolName(integration.externalToolName);
-  }, [answers, smartDefaults]);
+    // 依存を q5 に絞ることで、他の回答変更で外部連携状態を再計算しない。
+  }, [answers.q5]);
 
   const invalidateGenerationRequests = () => {
     generationRequestIdRef.current += 1;
@@ -458,7 +393,7 @@ export const SkillCreateWizard = React.forwardRef<
       // W3-seq-04 計装 3: 生成完了イベント（AC-03）—失敗時は発火しない
       trackEvent("skill_wizard_generation_completed", {
         method,
-        category: formData.category ?? "other",
+        category: resolvePrimarySkillCategory(formData.category) ?? "other",
         hasExternalIntegration: integration.hasExternalIntegration,
       });
       wizardCompletedRef.current = true;
@@ -466,15 +401,11 @@ export const SkillCreateWizard = React.forwardRef<
 
       goToStep(3);
     } catch (err) {
-      if (requestId !== generationRequestIdRef.current) {
-        return;
-      }
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
     } finally {
-      // 問題19修正: 全3経路（正常完了・エラー・キャンセル）でロックを解放する
-      // requestId チェックに関わらず常にロックを解放し、次回の生成操作を可能にする
+      // 問題19修正: 正常完了・エラー・キャンセルの全経路でロックを必ず解放する
       generationLockRef.current = false;
       if (requestId === generationRequestIdRef.current) {
         setIsGenerating(false);
@@ -585,7 +516,7 @@ export const SkillCreateWizard = React.forwardRef<
             message={resolvedMessage}
             previewContent={resolvedPreview}
             error={resolvedError}
-            mode={generationMethod === "skip" ? "template" : "llm"}
+            isTemplateMode={isTemplateMode}
             isGenerating={
               isGenerating || isSkillGenerating || streaming.isGenerating
             }

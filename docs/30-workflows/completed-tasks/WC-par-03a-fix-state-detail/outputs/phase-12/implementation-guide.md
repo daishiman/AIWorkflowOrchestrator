@@ -1,153 +1,149 @@
-# Phase 12: 実装ガイド
+# 実装ガイド — TASK-SW-FIX-STATE-DETAIL-001
 
-## タスク情報
+## Part 1: 初学者向け解説（中学生レベル）
 
-| 項目     | 内容                         |
-| -------- | ---------------------------- |
-| タスクID | TASK-SW-FIX-STATE-DETAIL-001 |
-| Phase    | 12                           |
-| 作成日   | 2026-04-14                   |
+### 例え話でわかる今回の修正
 
----
+スキルウィザードは「宿題を先生に正しく渡す提出箱」のようなものです。
 
-## Part 1: 中学生向け説明
+たとえば、前回書いたメモが箱の中に残ったままだと、次の宿題に前回の答えが混ざってしまいます。今回の修正では、4つの問題を解決しました：
+
+1. **問題12: 前回の回答が残る問題**
+   前回の宿題の答えが箱に残っていたのを、「やり直しボタン」を押したときに箱をきれいにするようにしました。
+
+2. **問題13: 失敗したときに逃げ道がない問題**
+   テンプレートモード（決まった型を使うモード）で失敗したとき、出口がなくて困っていました。「キャンセル」ボタンという非常口を追加しました。
+
+3. **問題18: 情報が更新されない問題**
+   質問5（外部ツール連携）の答えを変えても、関連する情報が自動更新されていませんでした。質問5が変わったら自動で再計算するようにしました。
+
+4. **問題19: 扉が閉まったままになる問題**
+   生成処理を途中でキャンセルしたとき、「扉のカギ（generationLockRef）」が閉まったままになり、次の生成ができなくなっていました。必ずカギを開けるようにしました。
 
 ### なぜ必要か
 
-スキル作成ウィザードは、1回の作業の途中で前のメモが残ったままだと、次の作業に前回の答えが混ざってしまいます。
-たとえば、宿題の答案を消さずに次の問題を書き始めると、どこからが新しい答えか分からなくなります。
-今回の修正は、その「前回の答えが残る」「途中でやめる道がない」「古い連携情報が残る」「キャンセル後に戻れない」という4つの混乱をなくすためのものです。
-
-### 何をするか
-
-- Step 1 の答えを、リトライ時にきれいに戻す
-- エラーになったときに、template モードなら「最初からやり直す」ボタンを出す
-- Q5 の答えが変わったら、外部ツールの情報を最新にし直す
-- キャンセルしたあとも、次の生成をまた始められるようにする
-
-### 今回作ったもの
-
-- `ConversationRoundStep.tsx` の answers 再同期
-- `GenerateStep.tsx` の template error 回復導線
-- `SkillCreateWizard.tsx` の `generationLockRef` 解放
-- Phase 11 の 3 枚のスクリーンショット証跡
+内部状態が残ったままだと、前回の生成結果が次の試行に混ざります。カギが閉まったままだと次の生成も止まったままになります。UI の表示と実際の状態をそろえることが、使いやすさと安全性の両方に必要です。
 
 ---
 
-## Part 2: 技術者向け説明
+## Part 2: 開発者向け解説
 
-### 変更対象ファイル
+### 修正概要
 
-| ファイル                                                                      | 変更内容                                                              |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | `answers` prop 変更時に `internalAnswers` を再初期化する              |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | `mode === "template"` の error 画面で `最初からやり直す` ボタンを出す |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | q5 再計算、`generationLockRef` 解放、GenerateStep への `mode` 伝播    |
+| 問題番号 | ファイル                    | 修正内容                                          |
+| -------- | --------------------------- | ------------------------------------------------- |
+| 問題12   | `ConversationRoundStep.tsx` | `useEffect([answers])` + `allEmpty` チェック追加  |
+| 問題13   | `GenerateStep.tsx`          | `isTemplateMode` prop 追加 + キャンセルボタン JSX |
+| 問題18   | `SkillCreateWizard.tsx`     | `useEffect([answers.q5])` + 再計算ロジック追加    |
+| 問題19   | `SkillCreateWizard.tsx`     | `finally` ブロックでの無条件ロック解放            |
 
-### TypeScript 型と契約
+### 型定義 / API シグネチャ
 
-```ts
-export type GenerationMode = "llm" | "template";
+#### 問題13: GenerateStepProps 変更
+
+```typescript
+// apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx
 
 export interface GenerateStepProps {
-  stage: GenerationStage;
+  stage: "idle" | "running" | "error" | "done";
   percent: number;
-  message: string;
-  error?: GenerationError | null;
   onCancel?: () => void;
   onRetry?: () => void;
-  mode?: GenerationMode;
+  error?: { code: string; message: string };
+  isTemplateMode?: boolean; // 追加: templateモード時にキャンセルボタンを表示
 }
 ```
 
-`SkillCreateWizard` では `generationMethod` に応じて `mode` を決める。
+#### 問題12: useEffect 追加（ConversationRoundStep）
 
-```ts
-mode={generationMethod === "skip" ? "template" : "llm"}
-```
+```typescript
+// apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx
 
-`ConversationRoundStep` は `answers` と `smartDefaults` を見て `internalAnswers` を再構成する。
-
-```ts
 useEffect(() => {
-  if (isInternalChangeRef.current) {
-    isInternalChangeRef.current = false;
-    return;
-  }
-  setInternalAnswers(
-    applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
+  // answers prop が空値（リトライによるリセット）に変化した場合に internalAnswers をリセット
+  const allEmpty = QUESTION_KEYS.every(
+    (k) =>
+      (answers[k].selectedOptions ?? []).length === 0 &&
+      !(answers[k].freeText ?? "").trim() &&
+      answers[k].scheduleConfig === undefined,
   );
-}, [answers, smartDefaults]);
+  if (allEmpty) {
+    setInternalAnswers(createEmptyAnswers());
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers]);
 ```
 
-### APIシグネチャ
+#### 問題18: useEffect 追加（SkillCreateWizard）
 
-```ts
-resolveExternalIntegration(
-  q5Answer: ConversationAnswers["q5"],
-  smartDefaultTool: string | null | undefined,
-): ExternalIntegrationState
+```typescript
+// apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
+
+useEffect(() => {
+  // q5 変更後に hasExternalIntegration / externalToolName を再計算する
+  const defaults = smartDefaults ?? inferSmartDefaults(formData);
+  const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+  setHasExternalIntegration(integration.hasExternalIntegration);
+  setExternalToolName(integration.externalToolName);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers.q5]);
 ```
 
-### 使用例
+#### 問題19: finally ブロック修正（SkillCreateWizard）
 
-```tsx
-<GenerateStep
-  mode={generationMethod === "skip" ? "template" : "llm"}
-  stage={stage}
-  percent={percent}
-  message={message}
-  previewContent={previewContent}
-  error={error}
-  isGenerating={isGenerating}
-  onCancel={onCancel}
-  onRetry={onRetry}
-  generationProgress={generationProgress}
-/>
+```typescript
+// apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
+
+// 変更前
+} finally {
+  if (requestId === generationRequestIdRef.current) {
+    setIsGenerating(false);
+    generationLockRef.current = false;
+  }
+}
+
+// 変更後
+} finally {
+  // 問題19修正: 正常完了・エラー・キャンセルの全経路でロックを必ず解放する
+  generationLockRef.current = false;
+  if (requestId === generationRequestIdRef.current) {
+    setIsGenerating(false);
+  }
+}
 ```
-
-### 設定項目と定数一覧
-
-| 項目                | 役割                   | 今回の扱い                                       |
-| ------------------- | ---------------------- | ------------------------------------------------ |
-| `answers`           | Step 1 の親 state      | `answers` 変更時に child state を再構成          |
-| `internalAnswers`   | Step 1 の local state  | リトライ時に空値へ戻す                           |
-| `q5`                | 外部ツール連携の主キー | 変更時のみ `resolveExternalIntegration` を再計算 |
-| `generationLockRef` | 二重生成防止フラグ     | `finally` で必ず `false` に戻す                  |
 
 ### エラーハンドリング
 
-- `skill.create` が失敗しても、`requestId` が古ければ state を汚さない。
-- `finally` でロックを解除し、キャンセル・失敗・成功のいずれでも再実行可能にする。
-- template モードの error 画面では、`onCancel` を `Step 0` の復帰に接続する。
+| シナリオ                         | 挙動                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `createSkill` が reject          | `catch` → `finally` でロック解放 → `setIsGenerating(false)` → エラー表示 |
+| キャンセル（requestId mismatch） | `return` → `finally` でロック解放 → `setIsGenerating` は更新しない       |
+| `smartDefaults` が null          | `inferSmartDefaults(formData)` でフォールバック（問題18 useEffect 内）   |
 
 ### エッジケース
 
-| ケース                       | 挙動                                                  |
-| ---------------------------- | ----------------------------------------------------- |
-| `answers` が親から更新される | `internalAnswers` を再初期化する                      |
-| `q5` 以外が変わる            | `resolveExternalIntegration` を再計算しない           |
-| template error               | `最初からやり直す` ボタンを表示する                   |
-| normal error                 | template 用ボタンは表示しない                         |
-| キャンセル後の再実行         | `generationLockRef.current` が `false` のため再開可能 |
+| エッジケース                                         | 対処                                                                          |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 問題12: `allEmpty=true` が繰り返し発火する           | `setInternalAnswers(createEmptyAnswers())` は同一構造のため React が bail-out |
+| 問題18: q1〜q4 変更で q5 effect が誤発火する         | `handleOptionSelect` の spread パターンにより q5 参照は安定                   |
+| 問題19: 古い requestId の finally が新規生成を止める | `setIsGenerating(false)` のみ requestId ガードで保護                          |
 
-### テスト構成
+### 設定可能パラメータ / 定数
 
-- `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx`
-- `apps/desktop/src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`
-- `apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs`
+| 系統                | 定数 / 変数                    | 説明                                              |
+| ------------------- | ------------------------------ | ------------------------------------------------- |
+| `answers`           | `ConversationAnswers` 型       | ウィザード全体で共有される回答 state              |
+| `internalAnswers`   | `useState(createEmptyAnswers)` | ConversationRoundStep 内部の一時 state            |
+| `q5`                | `answers.q5`                   | 外部ツール連携の選択値（useEffect の dependency） |
+| `generationLockRef` | `useRef<boolean>(false)`       | 重複生成防止のための同期フラグ                    |
 
-### Phase 11 画面証跡
+### wire-up 反映状況（確認済み）
 
-| TC    | 証跡                                                                                   | 意味                                        |
-| ----- | -------------------------------------------------------------------------------------- | ------------------------------------------- |
-| TC-03 | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png`  | template error で回復ボタンが見える         |
-| TC-04 | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png`   | cancel 後に Step 0 へ戻る                   |
-| TC-05 | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png` | normal error では template 用ボタンが出ない |
+`SkillCreateWizardShell` が `templateMode=1` を判定し、`SkillCreateWizard` から `GenerateStep` へ `isTemplateMode` を渡している。これにより、templateMode + error 時のみキャンセルボタンが表示される。
 
-補助ファイル:
-
-- `outputs/phase-11/screenshot-plan.json`
-- `outputs/phase-11/phase11-capture-metadata.json`
-- `outputs/phase-11/screenshot-coverage.md`
+| 経路        | 状態                                                                             | 参照                                                                                                                                       |
+| ----------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| ルート判定  | `URLSearchParams(location.search)` で `templateMode=1` を判定                    | `apps/desktop/src/renderer/App.tsx`                                                                                                        |
+| prop 伝播   | `SkillCreateWizard` → `GenerateStep` に `isTemplateMode={isTemplateMode}` を渡す | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                                                         |
+| VISUAL 確認 | templateMode + error でキャンセルボタン表示 / 非表示 / 遷移を確認                | `outputs/phase-11/screenshots/MTC-01-template-error-cancel.png` / `MTC-02-template-cancel-step0.png` / `MTC-03-normal-error-no-cancel.png` |
+| 回帰確認    | Step 1 リセットと q5 再計算も PASS                                               | `outputs/phase-11/screenshots/MTC-04-retry-reset-step1.png` / `MTC-05-q5-external-checklist.png`                                           |

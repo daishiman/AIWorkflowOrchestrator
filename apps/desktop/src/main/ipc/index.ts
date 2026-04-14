@@ -725,10 +725,12 @@ export function registerAllIpcHandlers(
     isRateLimited: false,
     lastHealthCheck: null,
   });
+  const effectiveRuntimeHealthPolicy =
+    options?.healthPolicy ?? runtimeHealthPolicy;
   const runtimePolicyResolver = new RuntimePolicyResolver(
     authKeyService,
     subscriptionAuthProvider,
-    options?.healthPolicy,
+    effectiveRuntimeHealthPolicy,
   );
 
   // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
@@ -1052,7 +1054,7 @@ export function registerAllIpcHandlers(
           resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
           notificationService,
-          healthPolicy: options?.healthPolicy ?? runtimeHealthPolicy,
+          healthPolicy: effectiveRuntimeHealthPolicy,
         })
       : undefined;
 

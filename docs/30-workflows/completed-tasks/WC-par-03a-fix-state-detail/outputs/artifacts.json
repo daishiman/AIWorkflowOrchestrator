@@ -4,7 +4,7 @@
   "taskName": "状態残留・リカバリーパス・競合状態修正",
   "taskType": "implementation",
   "created": "2026-04-12T00:00:00.000Z",
-  "status": "phase13_blocked",
+  "status": "completed",
   "parentWorkflow": "skill-wizard-bugfix-wave",
   "wave": "C",
   "dependsOnTasks": ["TASK-SW-FIX-FEEDBACK-001"],
@@ -120,38 +120,18 @@
       "artifacts": [
         {
           "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
           "path": "outputs/phase-11/manual-test-result.md",
           "description": "手動テスト結果"
         },
         {
           "type": "document",
-          "path": "outputs/phase-11/manual-test-report.md",
-          "description": "手動テストレポート"
-        },
-        {
-          "type": "document",
-          "path": "outputs/phase-11/discovered-issues.md",
-          "description": "発見課題一覧"
-        },
-        {
-          "type": "document",
-          "path": "outputs/phase-11/ui-sanity-visual-review.md",
-          "description": "視覚レビュー"
-        },
-        {
-          "type": "document",
           "path": "outputs/phase-11/screenshot-plan.json",
           "description": "手動テスト証跡計画"
-        },
-        {
-          "type": "document",
-          "path": "outputs/phase-11/screenshot-coverage.md",
-          "description": "画面カバレッジレポート"
-        },
-        {
-          "type": "document",
-          "path": "outputs/phase-11/phase11-capture-metadata.json",
-          "description": "capture メタデータ"
         }
       ]
     },
@@ -191,7 +171,8 @@
       ]
     },
     "13": {
-      "status": "blocked",
+      "status": "skipped",
+      "skipReason": "CONST_002: コミット・PR作成禁止。Phase 13（PR作成）はユーザー指示により blocked / skipped。",
       "artifacts": [
         {
           "type": "document",

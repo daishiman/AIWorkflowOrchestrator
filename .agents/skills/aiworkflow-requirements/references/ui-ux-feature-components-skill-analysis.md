@@ -199,6 +199,13 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
 | `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
 | `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
 
 `skill_wizard_open` の `source` は呼び出し元で設定し、`App.tsx` の `/advanced/skill-create-wizard` は `direct`、`SkillManagementPanel.tsx` は create / lifecycle 起点に応じて `direct` / `lifecycle_panel` を渡す。`skill_wizard_next_action` は CompleteStep 側で 1 回だけ発火し、SkillCreateWizard 側で重複送信しない。
 
