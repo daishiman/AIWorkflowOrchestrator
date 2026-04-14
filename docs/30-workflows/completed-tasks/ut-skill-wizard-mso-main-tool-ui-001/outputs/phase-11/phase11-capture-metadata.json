@@ -1,0 +1,44 @@
+{
+  "taskId": "UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001",
+  "phase": 11,
+  "captureDate": "2026-04-13",
+  "environment": "Electron + Playwright",
+  "screenshots": [
+    {
+      "id": "q5-single-select",
+      "filename": "q5-single-select.png",
+      "description": "Q5で1ツール選択時（バッジなし確認）",
+      "status": "completed",
+      "testCoverage": "TC-3"
+    },
+    {
+      "id": "q5-multi-select-badge",
+      "filename": "q5-multi-select-badge.png",
+      "description": "Q5で2ツール選択時（先頭ツールに主ツールバッジ表示）",
+      "status": "completed",
+      "testCoverage": "TC-1, TC-4"
+    },
+    {
+      "id": "q3-no-badge",
+      "filename": "q3-no-badge.png",
+      "description": "Q3で複数選択時（バッジなし確認）",
+      "status": "completed",
+      "testCoverage": "TC-5"
+    },
+    {
+      "id": "q4-no-badge",
+      "filename": "q4-no-badge.png",
+      "description": "Q4で複数選択時（バッジなし確認）",
+      "status": "completed",
+      "testCoverage": "RG-MSO-Q4"
+    },
+    {
+      "id": "q6-no-badge",
+      "filename": "q6-no-badge.png",
+      "description": "Q6で複数選択時（バッジなし確認）",
+      "status": "completed",
+      "testCoverage": "RG-MSO-Q6"
+    }
+  ],
+  "note": "5件のスクリーンショットを outputs/phase-11/screenshots/ に保存済み"
+}
