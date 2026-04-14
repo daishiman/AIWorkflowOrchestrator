@@ -159,6 +159,52 @@
 
 ---
 
+### タスク: TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001                                                                                   |
+| 完了日     | 2026-04-13                                                                                                                |
+| タスク種別 | ui / docs / workflow-sync                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx` / `apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.tsx` |
+| PR         | 未作成（Phase 13 blocked）                                                                                                |
+
+#### 実装内容
+
+- `VisualCronPicker` に `weeklyError` / `monthlyError` / `onValidationChange` を追加し、visual mode の妥当性を親へ通知
+- monthly error の文言を `1〜31` に統一
+- Phase 11 screenshot を `value=` 初期値注入で固定し、monthly invalid / valid を current build で再現
+- direct input / custom cron validation は別タスクとして分離
+- alert の微差分は follow-up task に切り出した
+
+#### Phase 12 成果物
+
+| 成果物                     | パス                                                              |
+| -------------------------- | ----------------------------------------------------------------- |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                   | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック      | `outputs/phase-12/phase12-task-spec-compliance-check.md`          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/integration/scheduleIntegration.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `outputs/phase-11/screenshots/scene-01-weekly-empty-weekdays-error.png`
+- `outputs/phase-11/screenshots/scene-02-weekly-valid-weekdays-ok.png`
+- `outputs/phase-11/screenshots/scene-03-monthly-invalid-date-error.png`
+- `outputs/phase-11/screenshots/scene-04-monthly-valid-date-ok.png`
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001
+
+---
+
 ### タスク: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（2026-04-11）
 
 | 項目       | 値                                                                                                  |

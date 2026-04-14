@@ -43,6 +43,19 @@ Phase 12 close-out 後の ledger sync（backlog→completed）は 2026-04-13 に
 
 Renderer 側エラーメッセージ UI の完成扱いを backlog / completed / task-workflow / issue 番号で同一化し、Phase 12 close-out 後の current facts が分岐しないようにした。今回の同期はドキュメントと台帳の整合性を閉じるためのもので、実装ファイルには触れていない。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
+
+### 変更内容
+- `SKILL.md` description / Trigger に `VisualCronPicker` / `TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001` / `onValidationChange` / `weeklyError` / `monthlyError` / `dayOfMonth` / `role="alert"` を追加
+- `references/ui-ux-forms.md` に VisualCronPicker schedule validation の alert / callback 契約を追記
+- `references/ui-ux-feature-components-core.md` に VisualCronPicker UI validation の component contract を追記
+- `references/task-workflow-completed-recent-2026-04e.md` / `references/lessons-learned-current-2026-04.md` / `indexes/resource-map.md` を current facts へ同期
+- `outputs/phase-11` / `outputs/phase-12` の current facts を UI validation 完了版へ同期
+- `task-specification-creator` 側は current facts 変更なしのため no-op
+
+### 背景
+VisualCronPicker の UI validation が完了し、Phase 11 のスクリーンショット証跡と Phase 12 の current contract を正本へ反映する必要があった。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
 ### 変更内容

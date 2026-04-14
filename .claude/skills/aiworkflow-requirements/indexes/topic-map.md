@@ -1354,8 +1354,9 @@ node scripts/list-specs.js --topics
 | 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L68 |
 | LLM Adapter Error Banner（TASK-RT-01） | L124 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L163 |
-| 続き | L272 |
+| VisualCronPicker UI validation（TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001） | L163 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L193 |
+| 続き | L302 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1402,6 +1403,11 @@ node scripts/list-specs.js --topics
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
 | Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L259 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L308 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L337 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -1463,9 +1469,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | フォーム設計 | L8 |
-| 認証UI設計 | L69 |
-| APIキー設定UI設計 | L287 |
-| 変更履歴 | L372 |
+| 認証UI設計 | L84 |
+| APIキー設定UI設計 | L302 |
+| 変更履歴 | L387 |
 
 ### references/ui-ux-history-panel.md
 
@@ -4686,14 +4692,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
-
-### references/task-workflow-completed-recent-2026-04f.md
-
-| セクション | 行 |
-|------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4865,9 +4865,6 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L15 |
 | 利用順序 | L45 |
 | 関連ドキュメント | L51 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 

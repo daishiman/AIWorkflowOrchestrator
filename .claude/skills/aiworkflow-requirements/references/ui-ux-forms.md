@@ -64,6 +64,21 @@
 | submit時   | 最終確認、サーバーサイド検証                   |
 | 入力中     | 文字数制限、フォーマット案内（過度に使わない） |
 
+### VisualCronPicker の schedule validation
+
+VisualCronPicker のような schedule 設定 UI では、フォームのバリデーション状態を親へ通知しつつ、フィールド直下で alert を表示する。
+
+| 状態 | ルール | 表示 |
+| --- | --- | --- |
+| weekly | 曜日が 0 件 | `role="alert"` の `text-xs` 赤色メッセージ |
+| monthly | `dayOfMonth < 1` または `dayOfMonth > 31` | `role="alert"` の `text-sm` 赤色メッセージ |
+
+**通知契約**
+
+- `onValidationChange?: (isValid: boolean) => void` で親コンポーネントへ保存可否を伝える
+- visual validation は `VisualCronPicker` が所有し、`DayOfMonthSelector` / `WeekdaySelector` は入力 UI に専念する
+- direct input / custom cron の検証は別タスクとして分離する
+
 ---
 
 ## 認証UI設計
