@@ -14,8 +14,6 @@ import { renderErrorCard } from "./generate-step/ErrorCards";
 
 // ---- 型定義 ----
 
-export type GenerationMode = "llm" | "template";
-
 export type GenerationStage =
   | "idle"
   | "planning"

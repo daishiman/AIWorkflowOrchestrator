@@ -1,6 +1,6 @@
 # Phase 11: 発見課題
 
-## タスクID: TASK-SW-FIX-FEEDBACK-001
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
 ## 発見課題
 
@@ -8,7 +8,5 @@
 
 ## 参考メモ
 
-| 項目      | 内容                                                                                |
-| --------- | ----------------------------------------------------------------------------------- |
-| MINOR-001 | `skillPath === ""` の表示方針は未定義だが、今回の修正範囲は `null` ガードに限定した |
-| MINOR-002 | `fetchSkills` 失敗時は成功導線を優先し、catch で握りつぶす現行方針を維持した        |
+- `step-2-generating.png` と `step-3-complete.png` を分けて保存したことで、TC-06 の経路確認が追いやすくなった
+- 旧 `generationMode` / `hasActivatedLlmMode` の残骸はコード側で解消済み

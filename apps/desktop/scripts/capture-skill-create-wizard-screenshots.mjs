@@ -187,7 +187,8 @@ const defaultScenarios = [
 
 const modeMgmtScenarios = [
   {
-    file: "step0-no-radio-button.png",
+    tcId: "TC-01",
+    file: "step-0-no-radio.png",
     route: wizardRoute,
     selector: '[data-testid="wizard-step-info"]',
     viewport: { width: 1440, height: 900 },
@@ -195,42 +196,8 @@ const modeMgmtScenarios = [
     note: "Step 0 の初期表示。ラジオボタンが存在しないことを確認する。",
   },
   {
-    file: "step0-filled.png",
-    route: wizardRoute,
-    selector: '[data-testid="wizard-step-info"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "dark",
-    preCapture: async (page) => {
-      await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
-      await page.click('button[aria-label="外部連携"]');
-      await page.waitForTimeout(150);
-    },
-  },
-  {
-    file: "step-indicator-stepN.png",
-    route: wizardRoute,
-    selector: 'nav[aria-label="ウィザードの進捗"]',
-    captureSelector: 'nav[aria-label="ウィザードの進捗"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "dark",
-    preCapture: async (page) => {
-      await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
-      await page.click('button[aria-label="外部連携"]');
-      await page.getByRole("button", { name: "次へ" }).click();
-      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
-      await page.waitForTimeout(150);
-    },
-  },
-  {
-    file: "step1-conversation.png",
+    tcId: "TC-03",
+    file: "step-1-conversation.png",
     route: wizardRoute,
     selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
@@ -248,7 +215,29 @@ const modeMgmtScenarios = [
     },
   },
   {
-    file: "step2-generating.png",
+    tcId: "TC-05",
+    file: "step-1-questions.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-conversation-round"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill(
+        "#purpose",
+        "毎朝Slackに通知するスキルを作成したい",
+      );
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.waitForSelector("text=Q4: 出力先（どこへ）");
+      await page.waitForTimeout(150);
+    },
+  },
+  {
+    tcId: "TC-06A",
+    file: "step-2-generating.png",
     route: `${wizardRoute}?mode=slow`,
     selector: '[data-testid="wizard-step-generate"]',
     viewport: { width: 1440, height: 900 },
@@ -272,7 +261,8 @@ const modeMgmtScenarios = [
     },
   },
   {
-    file: "step3-complete.png",
+    tcId: "TC-06B",
+    file: "step-3-complete.png",
     route: `${wizardRoute}?mode=slow`,
     selector: '[data-testid="wizard-step-complete"]',
     viewport: { width: 1440, height: 900 },
@@ -444,7 +434,9 @@ async function main() {
     "phase11-capture-metadata.json",
   );
   const baseUrl = `http://127.0.0.1:${options.port}`;
-  const scenarioList = workflowRoot.includes("WB-par-02a-fix-mode-mgmt")
+  const scenarioList = String(options.workflowRoot).includes(
+    "WB-par-02a-fix-mode-mgmt",
+  )
     ? modeMgmtScenarios
     : defaultScenarios;
   const needsHarness = scenarioList.some(
@@ -488,7 +480,7 @@ async function main() {
       const screenshotPath = path.join(screenshotDir, scenario.file);
       const stat = await fs.stat(screenshotPath);
       capturedFiles.push({
-        tcId: scenario.file.slice(0, 5),
+        tcId: scenario.tcId ?? scenario.file.slice(0, 5),
         state: scenario.file.replace(/\.png$/, ""),
         file: `screenshots/${scenario.file}`,
         capturedAt: stat.mtime.toISOString(),
