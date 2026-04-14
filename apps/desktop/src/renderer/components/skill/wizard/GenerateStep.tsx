@@ -66,6 +66,8 @@ export interface GenerateStepProps {
   planResult?: PlanResult | null;
   onExecutePlan?: () => void;
   onCancelPlan?: () => void;
+  /** 生成モード（"template" の場合はエラー時にキャンセルボタンを表示する — 問題13修正） */
+  mode?: GenerationMode;
 }
 
 // ---- ステップ表示の状態判定 ----
@@ -100,6 +102,7 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
       planResult,
       onExecutePlan,
       onCancelPlan,
+      mode,
     },
     ref,
   ) => {
@@ -108,6 +111,9 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
     const showPlanControls =
       Boolean(planResult) || (Boolean(error) && Boolean(onCancelPlan));
     const showCancelButton = isActive && !(onCancelPlan && showPlanControls);
+    // templateモードのエラー時にキャンセルボタンを表示（問題13修正）
+    const showTemplateCancelButton =
+      mode === "template" && Boolean(error) && !isActive && Boolean(onCancel);
 
     return (
       <div
@@ -262,6 +268,17 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
             className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
           >
             キャンセル
+          </button>
+        )}
+
+        {/* Template Mode Cancel Button（問題13修正: エラー時にStep 0へ戻る手段を提供） */}
+        {showTemplateCancelButton && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
+          >
+            最初からやり直す
           </button>
         )}
       </div>

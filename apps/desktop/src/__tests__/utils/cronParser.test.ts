@@ -82,16 +82,16 @@ describe("cronToVisualConfig", () => {
     expect(result?.dayOfMonth).toBe(31);
   });
 
-  it("CP-10B: '0 9 0 * *' → custom フォールバック", () => {
+  it("CP-10B: '0 9 0 * *' → monthly, dayOfMonth=0（範囲外は UI 側でバリデーション）", () => {
     const result = cronToVisualConfig("0 9 0 * *");
-    expect(result?.frequency).toBe("custom");
-    expect(result?.rawCronExpression).toBe("0 9 0 * *");
+    expect(result?.frequency).toBe("monthly");
+    expect(result?.dayOfMonth).toBe(0);
   });
 
-  it("CP-10C: '0 9 32 * *' → custom フォールバック", () => {
+  it("CP-10C: '0 9 32 * *' → monthly, dayOfMonth=32（範囲外は UI 側でバリデーション）", () => {
     const result = cronToVisualConfig("0 9 32 * *");
-    expect(result?.frequency).toBe("custom");
-    expect(result?.rawCronExpression).toBe("0 9 32 * *");
+    expect(result?.frequency).toBe("monthly");
+    expect(result?.dayOfMonth).toBe(32);
   });
 
   it("CP-11: 無効な式（空文字）→ null", () => {
