@@ -4,6 +4,19 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-14 — TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
+
+- `references/task-workflow-completed-recent-2026-04f.md`: TASK-SW-FIX-MODE-MGMT-001 completed タスク記録追加
+- `references/lessons-learned-skill-wizard-mode-mgmt.md`: 新規作成（L-MODE-001〜005）
+- `references/lessons-learned-current-2026-04.md`: ポインタエントリ追加
+
+| 項目     | 内容                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------ |
+| 種別     | state-deprecation / Phase 12 close-out / skill-sync                                                                |
+| 変更対象 | generationMode / hasActivatedLlmMode 廃止・SkillInfoStep ラジオボタン削除・Step 0→1→2→3 正規フロー確立（PR #2148） |
+| 結果     | LLM 専用一本化完了。36/36 UT PASS / typecheck PASS / grep 残存ゼロ / TC-06 DOM query 0件確認                       |
+| 検証     | vitest 36 passed / typecheck PASS                                                                                  |
+
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
 
 ### 変更内容
@@ -46,6 +59,7 @@ Renderer 側エラーメッセージ UI の完成扱いを backlog / completed /
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
 
 ### 変更内容
+
 - `SKILL.md` description / Trigger に `VisualCronPicker` / `TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001` / `onValidationChange` / `weeklyError` / `monthlyError` / `dayOfMonth` / `role="alert"` を追加
 - `references/ui-ux-forms.md` に VisualCronPicker schedule validation の alert / callback 契約を追記
 - `references/ui-ux-feature-components-core.md` に VisualCronPicker UI validation の component contract を追記
@@ -54,28 +68,33 @@ Renderer 側エラーメッセージ UI の完成扱いを backlog / completed /
 - `task-specification-creator` 側は current facts 変更なしのため no-op
 
 ### 背景
+
 VisualCronPicker の UI validation が完了し、Phase 11 のスクリーンショット証跡と Phase 12 の current contract を正本へ反映する必要があった。
 
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
 ### 変更内容
+
 - `indexes/resource-map.md` に TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 エントリを追加（純粋関数ガード / Number.isInteger / 双方向ガード / 対称ブロック構文）
 - `references/lessons-learned-current-2026-04.md` に L-MTHGRD-001〜003 教訓を追加（NaN排除 / 双方向ガード / 対称パターン）
 - `references/task-workflow-completed-recent-2026-04e.md` に TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 完了記録を追加
 - LOGS.md 2ファイル同波更新
 
 ### 背景
+
 Phase 12 の current facts sync では resource-map / lessons-learned / task-workflow-completed の追加が未実施のまま残っていた。impl-spec-to-skill-sync で漏れを解消。
 
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 current facts sync
 
 ### 変更内容
+
 - `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` の completed / blocked 同期を確認
 - `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/{documentation-changelog,skill-feedback-report,phase12-task-spec-compliance-check,unassigned-task-detection}.md` を current facts に更新
 - `task-specification-creator/SKILL.md` の Phase 12 三者同期ルール追加と同波で log を更新
 - LOGS.md 2ファイル同波更新
 
 ### 背景
+
 monthly guard の実装だけでなく、Phase 12 current facts の二重化を残さないため。
 
 ## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync（lessons-learned / resource-map / topic-map / skill 補完）
@@ -1210,12 +1229,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - analyticsSlice（Zustand action-only store）実装・テスト・ドキュメント全 Phase 完了
 - 参照: apps/desktop/src/renderer/store/slices/analyticsSlice.ts + **tests**/analyticsSlice.test.ts
 
-| 項目     | 内容                                                                                                                                                                               |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 種別     | implementation / TDD / analytics integration                                                                                                                                       |
-| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
-| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
-| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
 | 項目     | 内容                                                                                                                                                                                                            |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
