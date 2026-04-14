@@ -8,6 +8,10 @@
 import { readdir, readFile, stat, access } from "fs/promises";
 import { join, resolve, normalize, relative } from "path";
 import grayMatter from "gray-matter";
+import {
+  MAX_SKILL_NAME_LENGTH,
+  SKILL_NAME_PATTERN,
+} from "@repo/shared/constants";
 import type {
   ClaudeCliSkillMetadata,
   ScanResult,
@@ -31,16 +35,6 @@ export interface GetSkillDetailOptions {
   includeScripts?: boolean;
   includeReferences?: boolean;
 }
-
-/**
- * Skill name validation pattern (kebab-case)
- */
-const SKILL_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-/**
- * Maximum skill name length
- */
-const MAX_SKILL_NAME_LENGTH = 64;
 
 /**
  * Scans and filters skills from the skills directory

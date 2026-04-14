@@ -60,6 +60,27 @@
 
 ---
 
+### タスク: TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 Renderer 側エラーメッセージ UI 表示 E2E 確認（2026-04-13）
+
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001                                                |
+| 完了日     | 2026-04-13                                                                               |
+| タスク種別 | verification / docs-sync                                                                 |
+| 関連Issue  | #2007                                                                                    |
+| Phase 13   | blocked（PR 作成は別途）                                                                 |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md`        |
+
+#### 同期内容
+
+- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管
+- `task-workflow-completed.md` に完了記録を追加
+- `task-workflow.md` の intro current facts を更新
+- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
+- `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` に同期ログを追加
+
+---
+
 ### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
 
 | 項目       | 値                                                                                         |
@@ -284,6 +305,28 @@
   - AC-2: weekdays重複除去・昇順ソートPASS
   - AC-5: JSDocに空weekdays挙動を明記 PASS
 - 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
+
+---
+
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+
+- タスクID: UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+- 完了日: 2026-04-13
+- 種別: shared定数中央集権化 / IPC / テスト強化
+- 実装ファイル（新規）:
+  - `packages/shared/src/constants/skillName.ts` — SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth
+  - `packages/shared/src/constants/skillName.test.ts` — バリデーションテスト（パストラバーサル・境界値含む）
+- 実装ファイル（修正）:
+  - `packages/shared/src/constants/index.ts` — skillName.ts を re-export 追加
+  - `packages/shared/src/claude-cli/constants.ts` — shared定数を import し再export（互換性維持）
+  - `apps/desktop/src/main/claude-cli/SkillScanner.ts` — `@repo/shared/constants` から import へ切り替え
+  - `.claude/skills/skill-creator/scripts/init_skill.js` — runtime fallback 機構追加
+  - `.agents/skills/skill-creator/scripts/init_skill.js` — 同上（ミラー）
+- 設計上の知見:
+  - shared定数化パターン: `constants/<topic>.ts` → `index.ts` re-export → consumers import
+  - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
+  - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
+- lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
 
 ---
 

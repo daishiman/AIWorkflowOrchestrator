@@ -17,3 +17,4 @@ export {
 export type { AllowedTool, RiskLevel, ToolRiskConfigEntry } from "./security";
 
 export { TOOL_RISK_CONFIG } from "./security";
+export { SKILL_NAME_PATTERN, MAX_SKILL_NAME_LENGTH } from "./skillName";

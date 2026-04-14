@@ -286,7 +286,43 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 | 外部CLIエージェント委譲  | agents/delegate-to-external-cli.md                   |
 | マルチスキル同時設計     | agents/design-multi-skill.md                         |
 | フィードバック記録       | scripts/log_usage.js                                 |
+| スキル初期化             | scripts/init_skill.js                                |
 | Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
+
+---
+
+## scripts/init_skill.js の動作仕様
+
+スキルディレクトリを初期化するスクリプト。18-skills.md §6.4 準拠。
+
+### スキル名バリデーション（共有定数参照）
+
+`init_skill.js` は起動時に `loadSkillNameConstants()` を非同期実行し、`@repo/shared/constants` から以下の定数を動的ロードする：
+
+| 定数                 | 値                              | 用途                     |
+| -------------------- | ------------------------------- | ------------------------ |
+| `SKILL_NAME_PATTERN` | `^[a-z0-9]+(-[a-z0-9]+)*$`     | スキル名フォーマット検証 |
+| `MAX_SKILL_NAME_LENGTH` | `64`                         | スキル名最大文字数       |
+
+### runtime fallback 機構
+
+```
+1. @repo/shared/constants package import を試行
+      ↓ 失敗した場合
+2. packages/shared/dist/src/constants/index.js（相対パス）を試行
+      ↓ 両方失敗した場合
+3. 詳細エラーメッセージを出力して終了（各エラー原因を両方表示）
+```
+
+- ビルド前環境（`@repo/shared` 未ビルド）でも `dist/` が存在すれば動作する
+- 両方失敗した場合はエラーを throw し、hardcoded 値へのサイレントフォールバックは行わない
+
+### 使用例
+
+```bash
+node scripts/init_skill.js my-new-skill --path .claude/skills
+node scripts/init_skill.js my-new-skill --resources agents,references
+```
 
 ---
 
