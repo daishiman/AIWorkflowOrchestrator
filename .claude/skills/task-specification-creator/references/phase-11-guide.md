@@ -12,42 +12,48 @@
    ↓
 3. 各カテゴリのテスト項目を実行・記録
    ↓
-4. UI/UX変更タスクの場合: 画面カバレッジマトリクスを作成
-   4-1. git diff で変更コンポーネント一覧を洗い出す
-   4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
-   4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
-   4-4. 撮影計画 `screenshot-plan.md` または capture script の対象一覧を作成
-   4-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
+4. docs-only task の場合: `manual-test-result.md` に証跡を1ファイル集約
+   4-1. テスト件数サマリー（区分別 PASS/FAIL/SKIP + 実施情報）を記録
+   4-2. edge case 一覧表（EC-NNN ID・観点・仕様判断根拠ID）を記録
+   4-3. 仕様判断根拠（SD-NNN ID・判断内容・根拠・影響範囲）を記録
+   4-4. 実行コマンド・確認対象・判定を記録
    ↓
-5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
-   5-1. ルートベース撮影（ページ全体）
-   5-2. コンポーネント単位撮影（--selector で要素指定）
-   5-3. インタラクション状態撮影（--action + --action-target）
-   5-4. ダークモード撮影（--dark）
+5. UI/UX変更タスクの場合: 画面カバレッジマトリクスを作成
+   5-1. git diff で変更コンポーネント一覧を洗い出す
+   5-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
+   5-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
+   5-4. 撮影計画 `screenshot-plan.md` または capture script の対象一覧を作成
+   5-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
    ↓
-6. UI/UX変更タスクの場合: 画面カバレッジレポートを作成
-   6-1. コンポーネント/表示状態/インタラクション/テーマ各カバレッジ算出
-   6-2. 必須項目（優先度[A][B]）100%を確認（未達の場合は追加撮影、推奨[C]・任意[D]はN/A記録で代替可）
-   6-3. `validate-phase11-screenshot-coverage.js` でTC証跡の紐付けを検証
+6. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
+   6-1. ルートベース撮影（ページ全体）
+   6-2. コンポーネント単位撮影（--selector で要素指定）
+   6-3. インタラクション状態撮影（--action + --action-target）
+   6-4. ダークモード撮影（--dark）
    ↓
-7. UI/UX変更タスクの場合: 各スクリーンショットのUI/UX品質を評価
-   7-1. 仕様照合チェックリスト（レイアウト/カラーパレット/8pxグリッド/テーマ/エラーUI）で評価
-   7-2. Apple HIG準拠・WCAG AA準拠の観点で品質問題を発見
-   7-3. 発見した問題を discovered-issues.md に記録（重要度: 高/中/低）
+7. UI/UX変更タスクの場合: 画面カバレッジレポートを作成
+   7-1. コンポーネント/表示状態/インタラクション/テーマ各カバレッジ算出
+   7-2. 必須項目（優先度[A][B]）100%を確認（未達の場合は追加撮影、推奨[C]・任意[D]はN/A記録で代替可）
+   7-3. `validate-phase11-screenshot-coverage.js` でTC証跡の紐付けを検証
    ↓
-8. UI/UX品質問題が発見された場合: 修正→再撮影→再評価のサイクル
-   8-1. 重要度「高」の問題は Phase 11 内で修正（CSS/レイアウト調整等）
-   8-2. 修正後に該当箇所を再撮影し、品質基準をクリアしたことを確認
-   8-3. 修正困難な問題は discovered-issues.md に記録し、未タスク候補とする
+8. UI/UX変更タスクの場合: 各スクリーンショットのUI/UX品質を評価
+   8-1. 仕様照合チェックリスト（レイアウト/カラーパレット/8pxグリッド/テーマ/エラーUI）で評価
+   8-2. Apple HIG準拠・WCAG AA準拠の観点で品質問題を発見
+   8-3. 発見した問題を discovered-issues.md に記録（重要度: 高/中/低）
    ↓
-9. 結果を outputs/phase-11/manual-test-result.md に出力
+9. UI/UX品質問題が発見された場合: 修正→再撮影→再評価のサイクル
+   9-1. 重要度「高」の問題は Phase 11 内で修正（CSS/レイアウト調整等）
+   9-2. 修正後に該当箇所を再撮影し、品質基準をクリアしたことを確認
+   9-3. 修正困難な問題は discovered-issues.md に記録し、未タスク候補とする
    ↓
-10. 発見課題（修正済み・未修正）を outputs/phase-11/discovered-issues.md に出力
+10. 結果を outputs/phase-11/manual-test-result.md に出力
+   ↓
+11. 発見課題（修正済み・未修正）を outputs/phase-11/discovered-issues.md に出力
 ```
 
 ### Phase 11
 
-- docs-only task: navigation、archive discoverability、mirror parity を確認する。
+- docs-only task: navigation、archive discoverability、mirror parity を確認し、`manual-test-result.md` に `テスト件数サマリー` / `edge case 一覧表` / `仕様判断根拠` / `実行記録` を1ファイル集約する（EC-NNN / SD-NNN 採番ルール準拠）。
 - UI task: 上記に加えて screenshot と Apple UI/UX 視覚検証を行う。
 - representative evidence は workflow 配下 `outputs/phase-11/` に置く。
 - 実装統合タスクで visible surface の追加がない場合は、Phase 11 を `NON_VISUAL` として設計し、`manual-test-checklist.md` / `manual-test-result.md` を正本にする。screenshot 契約を要求しないのに `UI` / `スクリーンショット` wording を残すと validator が不要な画面証跡を要求するため、仕様書本文でも non-visual 前提を明示する。
@@ -195,14 +201,15 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - Phase 12成果物には「実際に使った最終コマンド」を記録し、次回再監査で同じ経路を再利用する。
 
 補足:
-- `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
-- `outputs/phase-11/manual-test-checklist.md` を必ず作成し、TC-ID ごとの実施可否を記録する
-- `outputs/phase-11/screenshot-plan.json`（または同等の capture plan）を残し、TC-ID と撮影対象を明示する
+- docs-only task では `manual-test-result.md` に Summary / edge case / 仕様判断根拠 / 実行記録を必ず揃え、補助成果物（`manual-test-checklist.md` / `discovered-issues.md`）は必要時に同期する。
+- UI/UX変更タスクでは `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
+- UI/UX変更タスクでは `outputs/phase-11/manual-test-checklist.md` を必ず作成し、TC-ID ごとの実施可否を記録する
+- UI/UX変更タスクでは `outputs/phase-11/screenshot-plan.json`（または同等の capture plan）を残し、TC-ID と撮影対象を明示する
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
-- `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
+- スクリーンショット検証を行う場合、`manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `ケース` や `MT-*` を visual TC の正式IDとして使わない。visual evidence は `TC-11-*` 系へ寄せ、review note や補助確認は `NV-*` 等の別枠へ分離する。
-- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止、見出し文字列は完全一致）
-- `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
+- UI/UX変更タスクでは `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止、見出し文字列は完全一致）
+- UI/UX変更タスクでは `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
 

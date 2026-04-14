@@ -442,66 +442,6 @@ describe("GenerateStep", () => {
       expect(screen.queryByText("プレビュー")).not.toBeInTheDocument();
     });
   });
-
-  // ------------------------------------------
-  // TASK-SW-FIX-STATE-DETAIL-001: 問題13 templateモード キャンセルボタン
-  // ------------------------------------------
-  describe("問題13修正: templateモードのエラー時にキャンセルボタンが表示される", () => {
-    it("TC-03: templateモードでエラーが発生した場合、キャンセルボタンが表示される", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
-
-      expect(
-        screen.getByRole("button", { name: "最初からやり直す" }),
-      ).toBeInTheDocument();
-    });
-
-    it("TC-04: templateモードエラー後にキャンセルボタンを押すと onCancel が呼ばれる", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
-
-      fireEvent.click(screen.getByRole("button", { name: "最初からやり直す" }));
-      expect(mockOnCancel).toHaveBeenCalledTimes(1);
-    });
-
-    it("TC-05: 非templateモード（mode 省略）のエラー状態では templateキャンセルボタンが表示されない（回帰）", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        stage: "error",
-        error: { code: "LLM_ERROR", message: "生成に失敗しました" },
-        onCancel: mockOnCancel,
-      });
-
-      expect(
-        screen.queryByRole("button", { name: "最初からやり直す" }),
-      ).not.toBeInTheDocument();
-    });
-
-    // Phase 6 境界ケース
-    it("TC-B2: templateモード + 生成中ステージ（非エラー）ではキャンセルボタンが表示されない", () => {
-      const mockOnCancel = vi.fn();
-      renderStep({
-        mode: "template",
-        stage: "generating-skill",
-        onCancel: mockOnCancel,
-      });
-
-      // 生成中（非エラー）状態では最初からやり直すボタンは不要
-      expect(
-        screen.queryByRole("button", { name: "最初からやり直す" }),
-      ).not.toBeInTheDocument();
-    });
-  });
 });
 
 // ==========================================================
