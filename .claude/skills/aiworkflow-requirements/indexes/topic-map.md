@@ -4881,6 +4881,7 @@ node scripts/list-specs.js --topics
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L62 |
 | 完了タスク（2026-03後半） | L90 |
 | 完了タスク（機能別アーカイブ） | L98 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L198 |
 
 ### references/task-workflow-history.md
 

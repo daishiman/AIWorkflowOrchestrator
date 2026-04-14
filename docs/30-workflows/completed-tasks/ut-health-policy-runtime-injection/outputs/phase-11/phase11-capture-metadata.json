@@ -1,0 +1,16 @@
+{
+  "taskId": "UT-HEALTH-POLICY-RUNTIME-INJECTION-001",
+  "phase": 11,
+  "captureMode": "NON_VISUAL",
+  "captureDate": "2026-04-14",
+  "reason": "本タスクは Main Process の DI チェーン変更のみ。Renderer/UI への影響なし。スクリーンショット不要。",
+  "screenshots": [],
+  "manualTestResult": "PASS",
+  "testFiles": [
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md",
+    "outputs/phase-11/ui-sanity-visual-review.md"
+  ],
+  "discoveredIssues": 0
+}

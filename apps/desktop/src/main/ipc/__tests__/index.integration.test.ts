@@ -231,6 +231,9 @@ vi.mock("../../services/runtime/RuntimePolicyResolver", () => ({
 vi.mock("../../services/runtime/RuntimeSkillCreatorFacade", () => ({
   RuntimeSkillCreatorFacade: vi.fn().mockImplementation(() => ({})),
 }));
+vi.mock("../beforeQuitGuard", () => ({
+  registerBeforeQuitGuard: vi.fn().mockReturnValue(vi.fn()),
+}));
 vi.mock("../../services/runtime/SkillCreatorSourceResolver", () => ({
   SkillCreatorSourceResolver: vi.fn().mockImplementation(() => ({})),
 }));
@@ -292,6 +295,10 @@ import { registerDisclosureHandlers } from "../disclosureHandlers";
 import { registerAdvancedConsoleHandlers } from "../advancedConsoleHandlers";
 import { DefaultApprovalGate } from "../../services/runtime/ApprovalGate";
 import { getClaudeCliManager } from "../../claude-cli";
+import { getSkillExecutorInstance } from "../skillHandlers";
+import { RuntimePolicyResolver } from "../../services/runtime/RuntimePolicyResolver";
+import { RuntimeSkillCreatorFacade } from "../../services/runtime/RuntimeSkillCreatorFacade";
+import type { HealthPolicy } from "@repo/shared/types";
 
 describe("registerAllIpcHandlers - Safety Governance Integration", () => {
   let mockMainWindow: BrowserWindow;
@@ -404,6 +411,62 @@ describe("registerAllIpcHandlers - Safety Governance Integration", () => {
     expect(failedNames).not.toContain("registerApprovalHandlers");
     expect(failedNames).not.toContain("registerDisclosureHandlers");
     expect(failedNames).not.toContain("registerAdvancedConsoleHandlers");
+  });
+
+  it("healthPolicy 未指定時は既定 policy が RuntimePolicyResolver と RuntimeSkillCreatorFacade の両方に渡ること", () => {
+    vi.mocked(getSkillExecutorInstance).mockReturnValueOnce({} as never);
+
+    registerAllIpcHandlers(mockMainWindow);
+
+    const resolverCall = vi.mocked(RuntimePolicyResolver).mock.calls[0];
+    const facadeCall = vi.mocked(RuntimeSkillCreatorFacade).mock.calls[0];
+    expect(resolverCall).toBeDefined();
+    expect(facadeCall).toBeDefined();
+
+    const injectedResolverPolicy = resolverCall?.[2];
+    const injectedFacadeDeps = facadeCall?.[0] as {
+      healthPolicy?: HealthPolicy;
+    };
+
+    expect(injectedResolverPolicy).toEqual(
+      expect.objectContaining({
+        isConnectionAvailable: false,
+        isDegraded: false,
+        isRateLimited: false,
+        healthStatus: "unknown",
+        lastCheckedAt: null,
+      }),
+    );
+    expect(injectedFacadeDeps.healthPolicy).toBe(injectedResolverPolicy);
+  });
+
+  it("healthPolicy 指定時は明示 policy が RuntimePolicyResolver と RuntimeSkillCreatorFacade の両方に渡ること", () => {
+    vi.mocked(getSkillExecutorInstance).mockReturnValueOnce({} as never);
+    const customHealthPolicy: HealthPolicy = {
+      isConnectionAvailable: true,
+      isDegraded: true,
+      isRateLimited: true,
+      healthStatus: "degraded",
+      lastCheckedAt: new Date("2026-04-14T09:00:00.000Z"),
+      errorDetail: "custom policy",
+    };
+
+    registerAllIpcHandlers(mockMainWindow, undefined, {
+      healthPolicy: customHealthPolicy,
+    });
+
+    const resolverCall = vi.mocked(RuntimePolicyResolver).mock.calls[0];
+    const facadeCall = vi.mocked(RuntimeSkillCreatorFacade).mock.calls[0];
+    expect(resolverCall).toBeDefined();
+    expect(facadeCall).toBeDefined();
+
+    const injectedResolverPolicy = resolverCall?.[2];
+    const injectedFacadeDeps = facadeCall?.[0] as {
+      healthPolicy?: HealthPolicy;
+    };
+
+    expect(injectedResolverPolicy).toBe(customHealthPolicy);
+    expect(injectedFacadeDeps.healthPolicy).toBe(customHealthPolicy);
   });
 });
 
