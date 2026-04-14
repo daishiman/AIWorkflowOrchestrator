@@ -143,6 +143,7 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/indexes/resource-map.md .agents/skills/aiworkflow-requirements/indexes/resource-map.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md .agents/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow-completed-recent-2026-04e.md .agents/skills/aiworkflow-requirements/references/task-workflow-completed-recent-2026-04e.md)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md .agents/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime-2026-04.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/indexes/resource-map.md /Users/dm/.claude/skills/aiworkflow-requirements/indexes/resource-map.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/indexes/keywords.json /Users/dm/.claude/skills/aiworkflow-requirements/indexes/keywords.json)",
       "Bash(cp .claude/skills/aiworkflow-requirements/indexes/topic-map.md /Users/dm/.claude/skills/aiworkflow-requirements/indexes/topic-map.md)",
@@ -151,7 +152,10 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md /Users/dm/.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/environment-variables.md /Users/dm/.claude/skills/aiworkflow-requirements/references/environment-variables.md)",
       "Bash(cp .claude/skills/task-specification-creator/SKILL.md /Users/dm/.claude/skills/task-specification-creator/SKILL.md)",
-      "Bash(cp .claude/skills/task-specification-creator/LOGS.md /Users/dm/.claude/skills/task-specification-creator/LOGS.md)"
+      "Bash(cp .claude/skills/task-specification-creator/LOGS.md /Users/dm/.claude/skills/task-specification-creator/LOGS.md)",
+      "Bash([ -d \"$AGENTS_BASE\" ])",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.claude/skills/task-specification-creator/references/patterns-lessons-and-pitfalls.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.agents/skills/task-specification-creator/references/patterns-lessons-and-pitfalls.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.claude/skills/task-specification-creator/LOGS.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.agents/skills/task-specification-creator/LOGS.md)"
     ],
     "deny": [],
     "ask": []
