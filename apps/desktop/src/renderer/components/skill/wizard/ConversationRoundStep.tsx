@@ -223,6 +223,10 @@ function resolveGenerationMethod(
     ? "complete"
     : "skip";
 }
+
+function serializeConversationAnswers(answers: ConversationAnswers): string {
+  return JSON.stringify(answers);
+}
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface ConversationRoundStepProps {
@@ -262,11 +266,22 @@ export const ConversationRoundStep = ({
   const [showSummaryCard, setShowSummaryCard] = useState(false);
   const [scheduleTouched, setScheduleTouched] = useState(false);
   const [timezoneTouched, setTimezoneTouched] = useState(false);
+  const lastSyncedAnswersSignatureRef = useRef<string | null>(null);
 
-  const isQ5Required = formData.category === "external-integration";
-  const currentQuestion = currentPage === 1 ? 1 : 4;
+  const isQ5Required = formData.category.includes("external-integration");
+  // 回答済み問数を集計してProgressBarに渡す（問題16修正: 固定値1・4から動的計算へ）
+  const answeredCount = QUESTION_KEYS.filter((key) =>
+    isQuestionAnswered(internalAnswers[key]),
+  ).length;
+  // 最小値1を保証（未回答でも「質問0/6」とは表示しない）
+  const currentQuestion = Math.max(1, answeredCount);
 
   useEffect(() => {
+    const signature = serializeConversationAnswers(internalAnswers);
+    if (lastSyncedAnswersSignatureRef.current === signature) {
+      return;
+    }
+    lastSyncedAnswersSignatureRef.current = signature;
     onAnswersChange(internalAnswers);
   }, [internalAnswers, onAnswersChange]);
 

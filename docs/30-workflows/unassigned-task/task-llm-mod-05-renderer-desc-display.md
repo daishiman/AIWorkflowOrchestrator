@@ -1,5 +1,16 @@
 # TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY
 
+## メタ情報
+
+```yaml
+issue_number: 2159
+task_id: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY
+status: open
+priority: low
+scale: small
+task_type: improvement
+```
+
 ## 概要
 
 LLM provider catalog の `description` フィールドを renderer でも表示する follow-up。

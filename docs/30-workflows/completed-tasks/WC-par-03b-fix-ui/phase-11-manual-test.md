@@ -11,7 +11,7 @@
 | 前提Phase  | Phase 10                                                                |
 | 後続Phase  | Phase 12                                                                |
 | 作成日     | 2026-04-12                                                              |
-| ステータス | pending                                                                 |
+| ステータス | completed                                                               |
 
 ## 目的
 
@@ -20,12 +20,12 @@
 
 ## 実行タスク
 
-- [ ] Electronアプリを起動してスキルウィザードを開く
-- [ ] カテゴリ複数選択UIを目視確認する
-- [ ] カテゴリ解除動作を目視確認する
-- [ ] InterviewProgressBarの動的変化を目視確認する
-- [ ] 全ウィザードボタンの外観統一を目視確認する
-- [ ] ライトモード・ダークモードの両方で外観を確認する
+- [x] Electronアプリを起動してスキルウィザードを開く
+- [x] カテゴリ複数選択UIを目視確認する
+- [x] カテゴリ解除動作を目視確認する
+- [x] InterviewProgressBarの動的変化を目視確認する
+- [x] 全ウィザードボタンの外観統一を目視確認する
+- [x] ライトモード・ダークモードの両方で外観を確認する
 
 ## 参照資料
 
@@ -33,6 +33,22 @@
 | -------- | ------------------------- | ---------------------- |
 | 要件定義 | `phase-1-requirements.md` | 受け入れ基準AC-1〜AC-5 |
 | 設計書   | `phase-2-design.md`       | 期待するUI動作の仕様   |
+
+## 証跡
+
+| 種別                   | パス                                                           |
+| ---------------------- | -------------------------------------------------------------- |
+| スクリーンショット一覧 | `outputs/phase-11/screenshot-manifest.json`                    |
+| 画面証跡 1             | `outputs/phase-11/screenshots/smart-defaults-applied.png`      |
+| 画面証跡 2             | `outputs/phase-11/screenshots/q3-schedule-expanded.png`        |
+| 画面証跡 3             | `outputs/phase-11/screenshots/q1-single-select.png`            |
+| 画面証跡 4             | `outputs/phase-11/screenshots/q1-multi-select.png`             |
+| 画面証跡 5             | `outputs/phase-11/screenshots/q1-all-deselected.png`           |
+| 画面証跡 6             | `outputs/phase-11/screenshots/q3-schedule-plus-manual.png`     |
+| 画面証跡 7             | `outputs/phase-11/screenshots/q3-schedule-collapsed.png`       |
+| 画面証跡 8             | `outputs/phase-11/screenshots/apply-summary-card-defaults.png` |
+| 画面証跡 9             | `outputs/phase-11/screenshots/keyboard-focus-button.png`       |
+| Console audit          | `outputs/phase-11/devtools-audit.md`                           |
 
 ## 実行手順
 
@@ -108,8 +124,8 @@ Step 1（ConversationRoundStep）に進み、以下の手順で確認する。
 
 ## 完了条件
 
-- [ ] カテゴリを複数選択できることを目視確認した
-- [ ] 選択済みカテゴリを再クリックで解除できることを目視確認した
-- [ ] 全ウィザードボタンの外観が統一されていることを目視確認した（hardcoded `bg-blue-600`なし）
-- [ ] `InterviewProgressBar`が実際の回答進捗に応じて動的変化することを目視確認した
-- [ ] ライトモード・ダークモード両方でUIが正常に表示されることを確認した
+- [x] カテゴリを複数選択できることを目視確認した
+- [x] 選択済みカテゴリを再クリックで解除できることを目視確認した
+- [x] 全ウィザードボタンの外観が統一されていることを目視確認した（hardcoded `bg-blue-600`なし）
+- [x] `InterviewProgressBar`が実際の回答進捗に応じて動的変化することを目視確認した
+- [x] ライトモード・ダークモード両方でUIが正常に表示されることを確認した

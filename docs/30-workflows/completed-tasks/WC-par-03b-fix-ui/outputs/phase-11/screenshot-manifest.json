@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-04-14T06:17:28.558Z",
+  "route": "/advanced/skill-create-wizard?skipAuth=true",
+  "captures": [
+    {
+      "file": "smart-defaults-applied.png",
+      "path": "screenshots/smart-defaults-applied.png",
+      "capturedAt": "2026-04-14T06:13:31.652Z"
+    },
+    {
+      "file": "q3-schedule-expanded.png",
+      "path": "screenshots/q3-schedule-expanded.png",
+      "capturedAt": "2026-04-14T06:13:33.404Z"
+    },
+    {
+      "file": "q1-single-select.png",
+      "path": "screenshots/q1-single-select.png",
+      "capturedAt": "2026-04-14T06:13:35.536Z"
+    },
+    {
+      "file": "q1-multi-select.png",
+      "path": "screenshots/q1-multi-select.png",
+      "capturedAt": "2026-04-14T06:13:37.343Z"
+    },
+    {
+      "file": "q1-all-deselected.png",
+      "path": "screenshots/q1-all-deselected.png",
+      "capturedAt": "2026-04-14T06:13:40.303Z"
+    },
+    {
+      "file": "q3-schedule-plus-manual.png",
+      "path": "screenshots/q3-schedule-plus-manual.png",
+      "capturedAt": "2026-04-14T06:13:42.385Z"
+    },
+    {
+      "file": "q3-schedule-collapsed.png",
+      "path": "screenshots/q3-schedule-collapsed.png",
+      "capturedAt": "2026-04-14T06:13:44.254Z"
+    },
+    {
+      "file": "apply-summary-card-defaults.png",
+      "path": "screenshots/apply-summary-card-defaults.png",
+      "capturedAt": "2026-04-14T06:17:12.966Z"
+    },
+    {
+      "file": "keyboard-focus-button.png",
+      "path": "screenshots/keyboard-focus-button.png",
+      "capturedAt": "2026-04-14T06:17:14.794Z"
+    }
+  ]
+}

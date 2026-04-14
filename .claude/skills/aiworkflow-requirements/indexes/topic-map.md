@@ -1399,11 +1399,19 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L266 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L315 |
 | Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L344 |
+| UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L266 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L259 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L308 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L337 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -5118,4 +5126,3 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
-

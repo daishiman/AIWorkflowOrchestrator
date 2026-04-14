@@ -86,7 +86,7 @@ export const ApplySummaryCard = ({
   onConfirm,
   onCancel,
 }: ApplySummaryCardProps) => {
-  const isQ5Required = formData.category === "external-integration";
+  const isQ5Required = formData.category.includes("external-integration");
   const q5SelectedOptions = answers.q5.selectedOptions ?? [];
   const q5FreeText = answers.q5.freeText ?? "";
   const isQ5Unanswered =
