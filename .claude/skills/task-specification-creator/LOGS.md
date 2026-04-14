@@ -167,6 +167,10 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 - `SKILL.md` 変更履歴に v10.09.45 を追記
 - `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
 - LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
@@ -2689,6 +2693,12 @@ UT-SKILL-WIZARD-FB-04 三者同期チェックリスト標準化の Phase 12 clo
 
 TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード追加）の Phase 12 close-out sync。NON_VISUALタスクにおける環境ブロッカー分離記録・純粋関数ガード戦略・NON_VISUAL宣言明記の3点を知見として記録。
 
+| 項目     | 内容                                                                                                                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
+| 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
+| 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
+| 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
 | 項目     | 内容                                                                                                                                                                      |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                           |

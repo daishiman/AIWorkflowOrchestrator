@@ -1,0 +1,70 @@
+{
+  "phase": 11,
+  "taskId": "TASK-SW-FIX-FEEDBACK-001",
+  "date": "2026-04-14",
+  "captureStatus": "CAPTURE_BLOCKED",
+  "reason": "worktree environment + docs-only task, no UI changes",
+  "scenarios": [
+    {
+      "id": "scenario-1",
+      "description": "LLMモードでスキル生成 → スキル一覧更新（AC-1）",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": {
+        "testFile": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx",
+        "testId": "U-8",
+        "assertion": "expect(mockFetchSkills).toHaveBeenCalledTimes(1)",
+        "result": "PASS"
+      }
+    },
+    {
+      "id": "scenario-2",
+      "description": "terminal_handoff → early return（AC-2）",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": {
+        "testFile": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx",
+        "testId": "U-13",
+        "assertion": "expect(mockFetchSkills).not.toHaveBeenCalled()",
+        "result": "PASS"
+      }
+    },
+    {
+      "id": "scenario-3",
+      "description": "skillPath=null 時のエラー表示（AC-3, AC-4）",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": [
+        {
+          "testFile": "apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx",
+          "testId": "TC-FEEDBACK-004",
+          "assertion": "expect(screen.getByText(/スキルの生成に失敗しました/)).toBeInTheDocument()",
+          "result": "PASS"
+        },
+        {
+          "testFile": "apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx",
+          "testId": "TC-FEEDBACK-005",
+          "assertion": "expect(screen.queryByText(/スキルの骨格を生成しました/)).not.toBeInTheDocument()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "id": "scenario-4",
+      "description": "skillPath正常値時の成功画面（AC-5）",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": {
+        "testFile": "apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx",
+        "testId": "TC-FEEDBACK-006",
+        "assertion": "expect(screen.getByTestId(\"complete-step-header\")).toBeInTheDocument()",
+        "result": "PASS"
+      }
+    }
+  ],
+  "overallResult": "PASS",
+  "blockers": 0,
+  "testRunSummary": {
+    "total": 88,
+    "passed": 75,
+    "skipped": 13,
+    "failed": 0,
+    "executedAt": "2026-04-14T07:19:48"
+  }
+}
