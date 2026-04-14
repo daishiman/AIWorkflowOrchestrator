@@ -108,7 +108,7 @@
 
 #### lessons-learned
 
-- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
+- `references/lessons-learned-current-2026-04.md` に current facts を追記済み / 同波同期済み
 
 ### タスク: TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション追加（2026-04-12）
 

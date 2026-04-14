@@ -4,6 +4,19 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-14 - TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（resource-map エントリ追加 / .agents ミラー同期 / SKILL.md Trigger 補完）
+
+### 変更内容
+
+- `indexes/resource-map.md` に TASK-SW-FIX-FEEDBACK-001（Skill Complete Step UI修正）/ TASK-SW-FIX-DATAFLOW-001（Skill Wizard context bridge 実装）のクイックルックアップ行を追加
+- `indexes/resource-map.md` 変更履歴に v1.31.0 エントリを追加
+- `.agents/skills/aiworkflow-requirements/` を `.claude/skills/aiworkflow-requirements/` と同期
+- `SKILL.md` frontmatter description には既に TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 の current facts・Trigger キーワードが反映済みであることを確認
+
+### 背景
+
+Phase 12 close-out 後の impl-spec-to-skill-sync として、SkillCreateWizard 関連の2タスク（Wave A: DATAFLOW-001 context bridge / Wave B: FEEDBACK-001 UI修正）の成果物導線を resource-map に追加し、.agents ミラーを最新化した。lessons-learned / topic-map / task-workflow-completed-recent-2026-04e.md は前セッションで同期済み。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
 
 ### 変更内容
