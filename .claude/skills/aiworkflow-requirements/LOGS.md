@@ -2,6 +2,33 @@
 
 ## 概要
 
+このログは aiworkflow-requirements の current facts 同期履歴を残す。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期
+
+### 変更内容
+
+- `references/task-workflow-backlog.md` に TASK-SW-FIX-UI-001 を Wave C 未実施タスクとして登録
+- backlog 注記に WC-par-03b-fix-ui Phase 3/4 完了状況（仕様書作成済み・Phase 5 以降未実施）を追加
+- `indexes/topic-map.md` に TASK-SW-FIX-UI-001 current facts を追加
+
+### 背景
+
+TASK-SW-FIX-UI-001 の unassigned-task ファイル（`docs/30-workflows/unassigned-task/TASK-SW-FIX-UI-001.md`）と仕様書（`docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/`）は存在していたが、task-workflow-backlog テーブルへの登録が漏れていた。WC-par-03b-fix-ui は Phase 1-4 仕様書が完成した時点での同波同期が必要だった。
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に TASK-SW-FIX-STATE-DETAIL-001 の current facts を追加
+- `references/task-workflow-completed.md` / `references/task-workflow-backlog.md` を Phase 10〜13 current facts に同期
+- `indexes/topic-map.md` に state detail current facts 行を追加
+- `SKILL.md` の current facts を `isTemplateMode` wire-up / `resolveExternalIntegration` 再計算 / `generationLockRef` finally 解除へ更新
+
+### 背景
+
+Wave C の state detail タスクは実装が完了していても、PR 禁止により Phase 13 が skipped / blocked になるため、workflow・skill・topic-map の current facts を同波で残す必要があった。
+
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）

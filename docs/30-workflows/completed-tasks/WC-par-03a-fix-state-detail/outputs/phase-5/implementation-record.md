@@ -1,177 +1,146 @@
 # Phase 5: 実装記録
 
-## タスク: TASK-SW-FIX-STATE-DETAIL-001
+## 概要
 
-## 修正ファイル一覧
+TASK-SW-FIX-STATE-DETAIL-001 の 4 件のバグを 3 ファイルに最小変更で修正した。
 
-| ファイル                                                                      | 変更内容                                                                   | 対象問題   |
-| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------- |
-| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | `useRef` import 追加、`isInternalChangeRef` パターン追加、useEffect 分割   | 問題12     |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | `mode?: GenerationMode` props 追加、テンプレートモードキャンセルボタン追加 | 問題13     |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | `q5SeriRef` + useEffect 追加、finally ブロック修正                         | 問題18・19 |
+## 変更ファイル一覧
+
+| ファイル                                                                      | 変更種別                      | 対応バグ   |
+| ----------------------------------------------------------------------------- | ----------------------------- | ---------- |
+| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | useEffect 追加                | 問題12     |
+| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | prop 追加 + JSX 追加          | 問題13     |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | useEffect 追加 + finally 修正 | 問題18・19 |
 
 ---
 
-## 問題12: ConversationRoundStep — answers prop 変化時に internalAnswers がリセットされない
+## 問題12: ConversationRoundStep — internalAnswers リトライ時リセット
 
-### 修正内容 (`ConversationRoundStep.tsx`)
+**ファイル**: `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`
 
-**変更点 1: `useRef` import 追加**
+**変更内容**: `answers` prop が空値（全フィールドが未選択）に変化した際に `internalAnswers` を `createEmptyAnswers()` でリセットする `useEffect` を追加。
 
-```tsx
-// Before
-import React, { useEffect, useState } from "react";
-
-// After
-import React, { useEffect, useRef, useState } from "react";
-```
-
-**変更点 2: `isInternalChangeRef` フラグ導入 + useEffect 分割**
-
-```tsx
-// 内部操作による親→子エコーを識別するフラグ（問題12: 無限ループ防止）
-const isInternalChangeRef = useRef(false);
-
-// Effect 1: 内部状態変化を親に通知
+```typescript
+// 問題12修正: answers prop が空値（リトライによるリセット）に変化した場合に internalAnswers をリセット
 useEffect(() => {
-  isInternalChangeRef.current = true;
-  onAnswersChange(internalAnswers);
-}, [internalAnswers, onAnswersChange]);
-
-// Effect 2: answers prop 変化時に internalAnswers をリセット（問題12修正）
-useEffect(() => {
-  if (isInternalChangeRef.current) {
-    isInternalChangeRef.current = false;
-    return;
+  const allEmpty = QUESTION_KEYS.every(
+    (k) =>
+      (answers[k].selectedOptions ?? []).length === 0 &&
+      !(answers[k].freeText ?? "").trim() &&
+      answers[k].scheduleConfig === undefined,
+  );
+  if (allEmpty) {
+    setInternalAnswers(createEmptyAnswers());
   }
-  setInternalAnswers(
-    applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
-  );
-}, [answers, smartDefaults]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers]);
 ```
 
-**設計根拠:**
+**実装判断**:
 
-- `isInternalChangeRef` = 内部変更か外部変更かを識別するための ref フラグ
-- Effect 1 が `onAnswersChange` を呼ぶ → 親が `answers` prop を更新 → Effect 2 がトリガー
-- Effect 2 では `isInternalChangeRef.current` が `true` の場合（内部発火）は `false` に戻してスキップ
-- 外部（リトライ）による prop 変化時のみ `setInternalAnswers` を実行
+- `allEmpty` チェックにより、通常フロー（非空への変化）では何もしない
+- 無限ループ回避: 親が `onAnswersChange` で `internalAnswers` を反映するが、空値にはならないため再トリガーなし
+- React 18 バッチング: 実運用では `goToStep(0)` と `setAnswers(DEFAULT_ANSWERS)` が同一バッチで実行されコンポーネントがアンマウントされるため、ループは発生しない
 
 ---
 
-## 問題13: GenerateStep — templateモードのエラー時にキャンセルボタンがない
+## 問題13: GenerateStep — templateモードエラー時キャンセルボタン追加
 
-### 修正内容 (`GenerateStep.tsx`)
+**ファイル**: `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`
 
-**変更点: `mode` prop 追加 + テンプレートモードキャンセルボタン**
+**変更内容**:
 
-```tsx
-// Props に追加
-export interface GenerateStepProps {
-  // ... 既存 props
-  mode?: GenerationMode;
-}
+1. `GenerateStepProps` に `isTemplateMode?: boolean` を追加
+2. エラー表示ブロックの後に templateMode 専用キャンセルボタンを追加
 
-// コンポーネント内に追加
-const showTemplateCancelButton =
-  mode === "template" && Boolean(error) && !isActive && Boolean(onCancel);
+```typescript
+// GenerateStepProps に追加
+isTemplateMode?: boolean;
 
-// JSX: 既存のキャンセルボタンの後に追加
-{
-  showTemplateCancelButton && (
-    <button
-      type="button"
-      onClick={onCancel}
-      className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
-    >
-      最初からやり直す
-    </button>
-  );
-}
+// コンポーネントの destructuring に追加
+isTemplateMode = false,
+
+// JSX に追加（エラー表示の後）
+{/* 問題13修正: templateモードのエラー時にキャンセルボタンを表示してStep 0に戻れるようにする */}
+{isTemplateMode && error && onCancel && (
+  <button
+    type="button"
+    onClick={onCancel}
+    className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
+  >
+    キャンセル
+  </button>
+)}
 ```
+
+**実装判断**:
+
+- 既存の `showCancelButton` は `isActive`（生成中）の場合のみ表示するため、エラー状態（`isActive=false`）では非表示になる
+- `isTemplateMode` prop を追加することで、templateモード特有のエラー回復経路を分離
+- 非templateモードの既存動作に影響なし
 
 ---
 
-## 問題18: SkillCreateWizard — q5 変更時に resolveExternalIntegration が再計算されない
+## 問題18: SkillCreateWizard — q5 変更後 resolveExternalIntegration 未再計算
 
-### 修正内容 (`SkillCreateWizard.tsx`)
+**ファイル**: `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 
-**変更点: `q5SeriRef` + q5 監視 useEffect 追加**
+**変更内容**: `answers.q5` が変化した際に `resolveExternalIntegration` を再計算する `useEffect` を追加。
 
-```tsx
-// q5 内容変化検出用 ref（JSON.stringify 比較）
-const q5SeriRef = useRef("");
-
-// q5 変化時のみ resolveExternalIntegration を再計算
+```typescript
+// 問題18修正: q5 変更後に hasExternalIntegration / externalToolName を再計算する
 useEffect(() => {
-  const q5Ser = JSON.stringify(answers.q5);
-  if (q5Ser === q5SeriRef.current) return;
-  q5SeriRef.current = q5Ser;
-  const defaults = smartDefaults ?? DEFAULT_SMART_DEFAULTS;
+  const defaults = smartDefaults ?? inferSmartDefaults(formData);
   const integration = resolveExternalIntegration(answers.q5, defaults.tool);
   setHasExternalIntegration(integration.hasExternalIntegration);
   setExternalToolName(integration.externalToolName);
-}, [answers, smartDefaults]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [answers.q5]);
 ```
 
-**設計根拠:**
+**実装判断**:
 
-- `answers.q5` は immutable update により常に新しい参照になるため `===` 比較では検出できない
-- `JSON.stringify` でコンテンツ変化のみを検出し、不要な再計算を防ぐ
+- `answers.q5` のみを依存配列に指定し、q1〜q4・q6 の変化では再計算しない
+- `handleOptionSelect` では変更した質問以外の q は同一参照を保つため、q5 以外の変化では effect は発火しない
+- `smartDefaults` が null の場合は `inferSmartDefaults(formData)` でフォールバック
 
 ---
 
-## 問題19: SkillCreateWizard — generationLockRef がキャンセルパスで解放されない
+## 問題19: SkillCreateWizard — generationLockRef キャンセル時リセットなし
 
-### 修正内容 (`SkillCreateWizard.tsx`)
+**ファイル**: `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 
-**変更点: `finally` ブロックのロック解放順序修正**
+**変更内容**: `handleGenerate` の `finally` ブロックを修正し、全3経路（正常完了・エラー・キャンセル）で `generationLockRef.current = false` を実行するよう変更。
 
-```tsx
-// Before
+```typescript
 } finally {
-  if (requestId === generationRequestIdRef.current) {
-    setIsGenerating(false);
-    generationLockRef.current = false;  // requestId 条件の内側: キャンセル時に未解放
-  }
-}
-
-// After
-} finally {
-  generationLockRef.current = false;  // 常に解放（全パス対称）
+  // 問題19修正: 正常完了・エラー・キャンセルの全経路でロックを必ず解放する
+  generationLockRef.current = false;
   if (requestId === generationRequestIdRef.current) {
     setIsGenerating(false);
   }
 }
 ```
 
-**設計根拠:**
+**実装判断**:
 
-- `generationLockRef` は「生成中かどうか」を示すグローバルガード
-- キャンセル時は `requestId !== generationRequestIdRef.current` になるため、旧コードでは `false` に戻らなかった
-- `finally` ブロックで無条件に解放し、成功・エラー・キャンセルの全パスで対称性を確保
-
----
-
-## テスト修正内容
-
-### `vitest.config.ts`
-
-- `resolve.alias` に `@repo/shared/types/skillWizard` を追加
-  - 原因: `vite-tsconfig-paths` v6 は tsconfig の `exclude` 対象ファイルのパスを解決しない
-
-### `ConversationRoundStep.test.tsx`
-
-- `describe("問題12修正...")` 内に `let mock` 宣言 + `beforeEach` を追加
-  - 原因: 既存の mock 変数は別の `describe` スコープに属していた
+- 既存コードでは finally ブロックで `generationLockRef.current = false` が実行されていなかった（またはエラーパスのみ解放されなかった）
+- `finally` に移動することで、throw・return・正常終了のいずれでも解放が保証される
 
 ---
 
-## テスト結果サマリー
+## テスト結果
 
-| テストファイル                   | テスト数 | 結果                                                |
-| -------------------------------- | -------- | --------------------------------------------------- |
-| `GenerateStep.test.tsx`          | 40       | 全Pass (TC-03, TC-04, TC-05 含む)                   |
-| `ConversationRoundStep.test.tsx` | 86       | 全Pass (TC-01, TC-02 含む)                          |
-| `SkillCreateWizard.test.tsx`     | 40       | 全Pass (TC-06, TC-07, TC-06b, TC-08/09, TC-10 含む) |
-| **合計**                         | **166**  | **全Pass**                                          |
+全テストスイートが exit code 0 で完了（TC-01〜TC-10 含む）。
+
+| TC       | 説明                                                       | 結果 |
+| -------- | ---------------------------------------------------------- | ---- |
+| TC-01    | answers 空値変化で internalAnswers リセット                | PASS |
+| TC-02    | 通常フローで internalAnswers 保持（回帰）                  | PASS |
+| TC-03    | isTemplateMode=true + エラーでキャンセルボタン表示         | PASS |
+| TC-04    | isTemplateMode=true エラー後キャンセルで onCancel 呼ばれる | PASS |
+| TC-05    | 通常モードのエラーでキャンセルボタン非表示（回帰）         | PASS |
+| TC-06    | q5 変更後 CompleteStep に外部統合が反映される              | PASS |
+| TC-07    | q1 変更でも外部統合は変化しない（回帰）                    | PASS |
+| TC-08/09 | 生成完了 → 別のスキルを作る → 再生成可能                   | PASS |
+| TC-10    | 生成完了後 lockRef 解放され重複生成なし（回帰）            | PASS |

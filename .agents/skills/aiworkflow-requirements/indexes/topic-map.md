@@ -3555,6 +3555,9 @@ node scripts/list-specs.js --topics
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L253 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L298 |
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L313 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4587,7 +4590,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L331 |
+| 続き | L334 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4863,6 +4866,12 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L285 |
 | 完了タスク（機能別アーカイブ） | L293 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L402 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L23 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L43 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L55 |
+| 完了タスク（2026-03後半） | L230 |
+| 完了タスク（機能別アーカイブ） | L238 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L347 |
 
 ### references/task-workflow-history.md
 
@@ -4899,6 +4908,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L15 |
 | 利用順序 | L44 |
 | 関連ドキュメント | L49 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 
 ### references/testing-accessibility.md
 

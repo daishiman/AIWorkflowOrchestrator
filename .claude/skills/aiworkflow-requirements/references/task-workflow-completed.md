@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` 状態残留・リカバリーパス・競合状態修正（Phase 10〜12 completed / Phase 13 skipped）
 - [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
 - 2026-04-13: `TASK-SW-FIX-MODE-MGMT-001` SkillCreateWizard mode/state current facts sync（本ファイルに詳細記録）
@@ -118,6 +119,18 @@ Renderer 側エラーメッセージ UI の completed 反映を backlog / comple
 #### 苦戦箇所
 
 - `skill_wizard_step1_completed` の `method: "skip"` は旧「Step 1 スキップモード」の意味ではなく、「未回答ありで生成実行した」計装値だったため、仕様書側の意味付けを current code に合わせて修正した
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync
+
+### 変更内容
+
+- `docs/30-workflows/WC-par-03a-fix-state-detail/index.md` を completed / skipped / blocked の current facts に更新
+- `phase-10-final-review.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` / `phase-13-pr-creation.md` の status を current facts に同期
+- `task-workflow.md` / `task-workflow-backlog.md` / `task-specification-creator/SKILL.md` / `aiworkflow-requirements/SKILL.md` / `LOGS.md` / `topic-map.md` を同波更新
+
+### 背景
+
+Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 はユーザー指示により skipped / blocked になった。`isTemplateMode` wire-up と q5 再計算は実装側 current facts として保持し、ドキュメントだけ stale にしないよう同期した。
 
 ## 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync
 

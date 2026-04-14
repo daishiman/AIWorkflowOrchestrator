@@ -7,6 +7,8 @@
 
 > 2026-04-07: `UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` は completed へ移管済み。関連 backlog エントリはなし。
 > 2026-04-13: `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` は completed へ移管済み。関連 backlog エントリは打ち消し線で保持。
+> 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` は Phase 10〜12 completed / Phase 13 skipped（PR禁止）として閉じており、追加 backlog は作成していない。
+> 2026-04-14: `TASK-SW-FIX-UI-001` を Wave C 未実施タスクとして backlog 登録。タスク仕様書（Phase 1-13）は `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/` に作成済み（Phase 3/4 まで完了）。
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
@@ -16,6 +18,7 @@
 | W2-seq-03b | `describe.skip` 内の旧testid参照クリーンアップ（`skill-lifecycle-request-input` を `auth-regression.test.tsx` の skip ブロックから除去） | Low | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 未タスク検出（2026-04-08） | 未作成 |
 | W2-seq-03c | VISUAL タスク screenshot bundle 整合性スキーム確立（`screenshot-plan.json` の taskId と実ディレクトリの同期メカニズム実装） | Medium | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 未タスク検出（2026-04-08） | 未作成 |
 | W2-seq-03d | Phase 1 requirement definition に carry-over section 追加（前タスク成果物の棚卸しを Phase 1 で必須化） | Medium | UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001 Phase 12 未タスク検出（2026-04-08） | 未作成 |
+| TASK-SW-FIX-UI-001 | スキルウィザード UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar・カテゴリ解除）— Phase 3/4 仕様書作成済み、Phase 5 以降未実施（問題2・3・11・15・16） | 中 | スキルウィザードバグ修正ウェーブ クラスターD Phase 12 未タスク検出（2026-04-12） | `docs/30-workflows/unassigned-task/TASK-SW-FIX-UI-001.md` / `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/` |
 | ~~TASK-FIX-LIFECYCLE-PANEL-ERROR-001~~                                | ~~SkillLifecyclePanel の `handoff` 時 error clear 漏れ是正（全 snapshot 取り込み経路で `applyWorkflowSnapshot()` を共有）~~                                                 | ~~高~~   | ~~fix-lifecycle-panel-error close-out sync（2026-04-02）~~ **完了: 2026-04-03**                                                         | ~~`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`~~                                                                                                                            |
 | TASK-RT-04-APIKEYPANEL-REMOVAL-001                                    | ApiKeySettingsPanel の完全廃止（AuthKeySection への委譲完了後に削除）                                                                                                          | 低       | TECH-M-01（rt-04-authkey-component-dedup Phase 3 / 2026-04-06）                                                                      | `docs/30-workflows/unassigned-task/TASK-RT-04-APIKEYPANEL-REMOVAL-001.md`                                                                                                              |
 | TASK-A11Y-FOCUS-TRAP-001                                              | モーダル表示中の背景フォーカストラップ是正                                                                                                                                   | 高       | UT-UIUX-PLAYWRIGHT-E2E-001 Phase 11 / `SEM-006`（2026-03-31）                                                                       | `docs/30-workflows/unassigned-task/TASK-A11Y-FOCUS-TRAP-001.md`                                                                                                                        |

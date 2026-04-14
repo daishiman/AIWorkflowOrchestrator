@@ -5,6 +5,12 @@
 30種の思考法による多角的検証（2026-04-12）で特定された18件の問題を修正する実装タスク群。
 6件の既知問題に加え、**Step 1の回答がスキル生成に一切渡されていない**という核心欠陥（問題7）を含む12件の新規問題を解消する。
 
+## 現在の状態
+
+- Wave C の `WC-par-03a-fix-state-detail` は Phase 10〜12 完了済み
+- Phase 13 は PR 禁止のため skipped / blocked
+- `SkillCreateWizard` / `GenerateStep` / `ConversationRoundStep` の current facts は同期済み
+
 ## 設計根拠（30思考法による検証結果）
 
 ### 真に解くべき問題（論点思考による定義）

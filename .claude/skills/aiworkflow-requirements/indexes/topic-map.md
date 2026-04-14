@@ -1399,10 +1399,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L266 |
@@ -4586,6 +4582,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 残課題（未タスク） | L6 |
 | 続き | L332 |
+| 続き | L334 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4860,6 +4857,12 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L297 |
 | 完了タスク（機能別アーカイブ） | L305 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L414 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L23 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L43 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L55 |
+| 完了タスク（2026-03後半） | L230 |
+| 完了タスク（機能別アーカイブ） | L238 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L347 |
 
 ### references/task-workflow-history.md
 
@@ -4896,6 +4899,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L16 |
 | 利用順序 | L73 |
 | 関連ドキュメント | L78 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 
 ### references/testing-accessibility.md
 

@@ -32,6 +32,18 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 ### 背景
 `TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
 
+このログは task-specification-creator の current facts 同期履歴を残す。
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.49 を追記
+- `SKILL.md` の `Phase 12 実行時によくある漏れ` に [FB-STATEDETAIL-001] を追加
+- `aiworkflow-requirements` 側の `task-workflow` / `task-workflow-completed` / `task-workflow-backlog` / `topic-map` / `LOGS` を current facts に同期
+
+### 背景
+Phase 10〜13 の current facts を閉じる際に、Phase 13 の skipped / blocked 記録と state detail の実装ガイドがずれると、Phase 12 の documentation が stale になりやすい。`isTemplateMode` wire-up と `generationLockRef` finally 解除を同波で固定した。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -124,6 +136,18 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
 
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
+## 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/index.md` を `completed` / `blocked` current facts に更新
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` / `skill-feedback-report.md` を current facts に更新
+- `task-workflow-completed-recent-2026-04f.md` を追加し、`task-workflow-completed.md` の最近タスク索引を同波更新
+- `SKILL.md` / `LOGS.md` / shared export 参照の current facts を同期
+
+### 背景
+shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
+
+## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 ## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -140,6 +164,10 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 
 ### 変更内容
 
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
 - `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
