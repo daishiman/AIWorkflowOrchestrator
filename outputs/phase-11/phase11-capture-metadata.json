@@ -1,27 +1,57 @@
 {
-  "generatedAt": "2026-04-13T12:21:46.493Z",
+  "generatedAt": "2026-04-13T22:35:56.305Z",
   "captureMethod": "current_build_vite_playwright",
-  "baseUrl": "http://127.0.0.1:5184",
+  "baseUrl": "http://127.0.0.1:5201",
+  "harnessPath": "/phase11-w1-par-02c-complete-step.html",
+  "viewportSet": [
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 1440,
+      "height": 1200
+    }
+  ],
   "screenshots": [
     {
-      "file": "skill-list-updated-after-llm.png",
-      "selector": "[data-testid=\"skill-management-imported-section\"]",
-      "output": "outputs/phase-11/screenshots/skill-list-updated-after-llm.png"
+      "tcId": "TC-01",
+      "file": "step-0-no-radio.png",
+      "output": "outputs/phase-11/screenshots/step-0-no-radio.png",
+      "capturedAt": "2026-04-13T22:35:47.864Z",
+      "captureMethod": "current_build_vite_playwright"
     },
     {
-      "file": "complete-step-null-error.png",
-      "selector": "[data-testid=\"complete-step-error-header\"]",
-      "output": "outputs/phase-11/screenshots/complete-step-null-error.png"
+      "tcId": "TC-03",
+      "file": "step-1-conversation.png",
+      "output": "outputs/phase-11/screenshots/step-1-conversation.png",
+      "capturedAt": "2026-04-13T22:35:49.247Z",
+      "captureMethod": "current_build_vite_playwright"
     },
     {
-      "file": "complete-step-null-no-success.png",
-      "selector": "[data-testid=\"complete-step\"]",
-      "output": "outputs/phase-11/screenshots/complete-step-null-no-success.png"
+      "tcId": "TC-05",
+      "file": "step-1-questions.png",
+      "output": "outputs/phase-11/screenshots/step-1-questions.png",
+      "capturedAt": "2026-04-13T22:35:50.743Z",
+      "captureMethod": "current_build_vite_playwright"
     },
     {
-      "file": "complete-step-success.png",
-      "selector": "[data-testid=\"wizard-step-complete\"]",
-      "output": "outputs/phase-11/screenshots/complete-step-success.png"
+      "tcId": "TC-06A",
+      "file": "step-2-generating.png",
+      "output": "outputs/phase-11/screenshots/step-2-generating.png",
+      "capturedAt": "2026-04-13T22:35:53.212Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-06B",
+      "file": "step-3-complete.png",
+      "output": "outputs/phase-11/screenshots/step-3-complete.png",
+      "capturedAt": "2026-04-13T22:35:56.295Z",
+      "captureMethod": "current_build_vite_playwright"
     }
   ]
 }

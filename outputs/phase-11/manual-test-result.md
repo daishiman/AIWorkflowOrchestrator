@@ -1,23 +1,32 @@
 # Phase 11: 手動テスト結果
 
-## タスクID: TASK-SW-FIX-FEEDBACK-001
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
 ## 実施状況
 
-手動テストは Electron アプリの起動が必要だったため、`current_build_vite_playwright` の capture script で画面証跡を取得した。
-自動テスト（85件 ALL GREEN）に加えて、VISUAL 証跡 4枚を保存済み。
+手動テストは Electron 実機で capture script を使い、`outputs/phase-11/screenshots/` に 5 枚の証跡を保存した。
+加えてユニットテストと静的解析で TC-06 を確認した。
 
 ## 視覚確認ポイント
 
-- エラーUI: `role="alert"` により スクリーンリーダー対応済み
-- 成功UI: `role="status"` により 従来動作を維持
-- エラーボタン: `data-testid="complete-step-retry-button"` で識別可能
-- アクションカード: `skillPath=null` 時は非表示（TC-FEEDBACK-004b 確認）
+- Step 0 にラジオボタンが表示されない
+- Step 0→1 の正規遷移が発生する
+- Step 1 の Q1〜Q6 が表示される
+- Step 2 の生成中 UI が表示される
+- Step 3 の完了 UI が表示される
 
-## 証跡
+## TC-ID 別確認結果
 
-- `outputs/phase-11/screenshots/skill-list-updated-after-llm.png`
-- `outputs/phase-11/screenshots/complete-step-null-error.png`
-- `outputs/phase-11/screenshots/complete-step-null-no-success.png`
-- `outputs/phase-11/screenshots/complete-step-success.png`
-- `outputs/phase-11/phase11-capture-metadata.json`
+| TC-ID | 結果 | 証跡                                                                                                     |
+| ----- | ---- | -------------------------------------------------------------------------------------------------------- |
+| TC-01 | PASS | `outputs/phase-11/screenshots/step-0-no-radio.png`                                                       |
+| TC-02 | PASS | `outputs/phase-11/screenshots/step-1-conversation.png`                                                   |
+| TC-03 | PASS | `outputs/phase-11/screenshots/step-1-questions.png`                                                      |
+| TC-04 | PASS | `outputs/phase-11/screenshots/step-2-generating.png`                                                     |
+| TC-05 | PASS | `outputs/phase-11/screenshots/step-3-complete.png`                                                       |
+| TC-06 | PASS | `SkillCreateWizard.test.tsx` / `wizard-exports.test.ts` / `SkillCreateWizard.store-integration.test.tsx` |
+
+## 補足
+
+- TC-06 は `step-2-generating.png` と `step-3-complete.png` の実機証跡に加え、静的解析で残骸ゼロを確認した。
+- `outputs/phase-11/phase11-capture-metadata.json` と `outputs/phase-11/screenshot-plan.json` も current fact として保存済み。

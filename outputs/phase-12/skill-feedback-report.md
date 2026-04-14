@@ -1,22 +1,21 @@
-# Phase 12: スキルフィードバックレポート
+# Phase 12 成果物: スキルフィードバックレポート
 
-## タスクID: TASK-SW-FIX-FEEDBACK-001
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
-## フィードバックサマリー
+## 仕様書品質フィードバック
 
-- 修正コスト: 2ファイル・実質少量の追加のみ（仕様通り）
-- 問題6/8/14/20: 全件解消
-- 回帰なし: 既存テスト85件 ALL GREEN
-- VISUAL 証跡: screenshot 4枚と capture metadata を保存済み
+### 残すべきパターン
 
-## 学習事項
+- Phase 1 での grep 全件確認（影響範囲分析）は効果的だった
+- Wave A/B/C への分割実施により実装が適切に段階化された
+- TC-06 の「静的残骸ゼロ確認」テストパターンは他の廃止系タスクにも再利用できる
 
-1. `createSkill` (agentSlice) が内部で `fetchSkills` を呼ぶため templateモードは既存で解決済み
-2. React early return は全 hooks 宣言後に配置する必要がある
-3. `skillPath === null` と `skillPath === undefined` を区別する型ガードが重要
-4. UI タスクでは phase 11 の screenshot evidence を phase 12 から逆参照できるように、implementation guide へ file path を明示しておくと再利用しやすい
+### 改善余地
 
-## 再発防止メモ
+- state 廃止のタスクでは、public export や barrel export の監査を Phase 1 に含めると漏れを減らせる
+- スクリーンショット計画は tcId と file 名を 1:1 に寄せると追跡しやすい
 
-- `fetchSkills` の呼び忘れは future fix で再発しやすいため、LLM モードの成功パスに限定した test case を維持する
-- `skillPath === null` のガードは `success header` の条件とセットでレビューする
+### 後続 Wave への再利用知見
+
+- `generationMode` 廃止のパターン（state 削除→UI 削除→props 削除→テスト更新）は今後の state 廃止タスクの標準手順として参照可能
+- `step-2-generating.png` / `step-3-complete.png` の分割 capture は end-to-end flow の説明に有効
