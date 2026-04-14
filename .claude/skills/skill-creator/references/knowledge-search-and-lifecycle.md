@@ -4,7 +4,7 @@
 > ナレッジの分割・進化・検索パイプライン・成果物出力・バージョン管理・フィードバックループを定義する。
 > 実装例: `xLOCAL-sakamoto-mind-advisor/scripts/search_knowledge.js`（Index-Search型）、`ubm-goal-setting/scripts/detect-knowledge-updates.sh`（Router-Registry型）
 >
-> **version**: 2.0.0 | **last_reviewed**: 2026-04-13
+> **version**: 2.0.0 | **last_reviewed**: 2026-04-14
 
 ---
 

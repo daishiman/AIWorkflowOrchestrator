@@ -96,3 +96,50 @@
 - 見た目のラベルと意味のラベルを分けると、`getByRole` exact match テストが安定する
 - 将来削除予定のバッジは機能フラグ + 専用関数 + 削除手順書の 3 点セットで実装する
 - 詳細: `lessons-learned-skill-wizard-mso-main-tool-badge.md`
+
+---
+
+### タスク: TASK-SW-FIX-MODE-MGMT-001 スキルウィザード generationMode廃止・LLM専用化（2026-04-14）
+
+| 項目       | 値                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-FIX-MODE-MGMT-001                                                                                         |
+| ステータス | **完了（実装 + 仕様同期）**                                                                                       |
+| タイプ     | bug-fix / state-deprecation / flow-correction                                                                     |
+| 優先度     | 高                                                                                                                |
+| 完了日     | 2026-04-14                                                                                                        |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` / `wizard/SkillInfoStep.tsx` / wizard テスト群 |
+| 成果物     | `docs/30-workflows/WB-par-02a-fix-mode-mgmt/outputs/phase-12/`                                                    |
+| PR         | #2148                                                                                                             |
+
+#### 実施内容
+
+- `SkillInfoStep.tsx` から仕様外ラジオボタン（「テンプレートから作成」「LLMで生成」）を完全削除した
+- `SkillCreateWizard.tsx` から `generationMode` / `hasActivatedLlmMode` の二重フラグ state を廃止した
+- `handleStep0Next` を `goNext()` のみに統一し、Step 0→1→2→3 の正規フローを確立した（`goToStep(2)` の分岐除去）
+- TC-06「静的残骸ゼロ確認テスト」を追加し、DOM query で `input[name="generationMode"]` が 0件であることを動的検証した
+- Wave A（TASK-SW-FIX-DATAFLOW-001 実装）+ Wave B（本タスク：テスト・ドキュメント）の二段階で完了した
+
+#### 検証証跡
+
+| コマンド                                                            | 結果                   |
+| ------------------------------------------------------------------- | ---------------------- |
+| `pnpm --filter @repo/desktop typecheck`                             | PASS                   |
+| `pnpm --filter @repo/desktop exec vitest run .../SkillCreateWizard` | PASS（36 tests）       |
+| grep `generationMode` 全ファイル検索                                | 残存参照ゼロ確認       |
+| `outputs/phase-11/screenshots/` 5枚                                 | Step 0ラジオなし確認済 |
+
+#### 苦戦箇所
+
+| 苦戦箇所                                                           | 解決策                                                                           |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Wave A完了後に TDD Red フェーズを実施しても Red 状態を作れなかった | Wave A・B を同時計画し、Phase 4 実施時点で実装未完状態を維持する必要性を認識した |
+| 二重フラグ廃止の影響範囲（state/UI/props/呼び出し側）が広範        | 廃止 6ステップ手順（state→UI→props→呼び出し側→grep→DOM確認）を標準化した         |
+| Electron 実機起動なしでの視覚証跡確保                              | 36 UT PASS + grep ゼロ確認 + TC-06 DOM query + typecheck の多層防御で代替した    |
+
+#### lessons-learned
+
+- state 廃止は「state削除 → UI削除 → props削除 → 呼び出し側修正 → grep → DOM確認」の 6ステップで完結させる
+- TC-06 型の動的廃止検証（DOM query で旧要素が 0件）を廃止系タスクのデフォルトテストとして組み込む
+- Wave 分割実施では、TDD Red フェーズを Wave A・B の計画段階で同時設計する
+- 詳細: `lessons-learned-skill-wizard-mode-mgmt.md`
