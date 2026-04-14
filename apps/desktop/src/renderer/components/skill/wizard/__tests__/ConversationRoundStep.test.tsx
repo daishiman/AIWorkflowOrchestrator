@@ -28,7 +28,7 @@ import {
 const defaultFormData: SkillInfoFormData = {
   skillName: "",
   purpose: "テスト目的",
-  category: "automation",
+  category: ["automation"],
 };
 
 const defaultAnswers: ConversationAnswers = {
@@ -95,7 +95,7 @@ describe("ConversationRoundStep", () => {
       expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
     });
 
-    it("「次のページ」クリック後に「質問 4/6」が表示される", () => {
+    it("「次のページ」クリック後も未回答なら「質問 1/6」のまま（動的計算）", () => {
       render(
         <ConversationRoundStep
           formData={defaultFormData}
@@ -108,7 +108,59 @@ describe("ConversationRoundStep", () => {
       );
       expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: /次のページ|次へ/ }));
-      expect(screen.getByText(/質問 4\/6/)).toBeInTheDocument();
+      expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
+    });
+
+    it("回答済みが2件なら「質問 2/6」が表示される", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q1: { selectedOptions: ["自分のみ"], freeText: "" },
+            q2: { selectedOptions: ["テキスト"], freeText: "" },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+
+      expect(screen.getByText(/質問 2\/6/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("progressbar", { name: /質問 2\/6/ }),
+      ).toHaveAttribute("aria-valuenow", "2");
+    });
+
+    it("回答済みが3件なら「質問 3/6」が表示される", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q1: { selectedOptions: ["自分のみ"], freeText: "" },
+            q2: { selectedOptions: ["テキスト"], freeText: "" },
+            q3: {
+              selectedOptions: ["定期実行"],
+              freeText: "",
+              scheduleConfig: {
+                cronExpression: "0 9 * * 1-5",
+                timezone: "Asia/Tokyo",
+              },
+            },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+
+      expect(screen.getByText(/質問 3\/6/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("progressbar", { name: /質問 3\/6/ }),
+      ).toHaveAttribute("aria-valuenow", "3");
     });
   });
 
@@ -416,7 +468,7 @@ describe("ConversationRoundStep", () => {
     it("category=external-integration のとき Q5 に必須マークが表示される", () => {
       render(
         <ConversationRoundStep
-          formData={{ ...defaultFormData, category: "external-integration" }}
+          formData={{ ...defaultFormData, category: ["external-integration"] }}
           smartDefaults={defaultSmartDefaults}
           answers={defaultAnswers}
           onAnswersChange={mockOnAnswersChange}

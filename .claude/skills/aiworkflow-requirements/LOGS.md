@@ -31,6 +31,58 @@ Wave C の state detail タスクは実装が完了していても、PR 禁止�
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-14 - TASK-SW-FIX-UI-001 impl-spec-to-skill-sync（UI整合性修正 / Phase 11 screenshot 9枚 / artifacts parity）
+
+### 変更内容
+
+- `references/task-workflow.md` / `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04f.md` に TASK-SW-FIX-UI-001 の completed record を追加
+- `references/ui-ux-feature-components-skill-analysis.md` に UI 整合性修正 current facts を追加
+- `indexes/topic-map.md` に UI 整合性修正の current facts エントリを追加
+- `docs/30-workflows/WC-par-03b-fix-ui/artifacts.json` / `outputs/artifacts.json` の parity completed を反映
+
+### 背景
+
+UI 整合性修正の current facts を、実装・スクリーンショット・台帳で同 wave に固定した。Phase 11 は 9 枚の screenshot evidence と DevTools audit PASS を残し、Phase 12 は canonical 6 成果物を complete した。
+
+## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
+
+### 変更内容
+
+- `references/lessons-learned-skill-wizard-mso-main-tool-badge.md` を新規作成（L-MSO-001〜003: visual label / accessible name 分離パターン・exact match テスト安定化・削除容易バッジ設計）
+- `references/task-workflow-completed-recent-2026-04f.md` に UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 完了記録を追加
+- `references/ui-ux-feature-components-skill-analysis.md` に ConversationRoundStep MainToolBadge セクションを追加
+- `indexes/resource-map.md` にクイックルックアップ行を追加
+
+### 背景
+
+Phase 12 close-out 後の impl-spec-to-skill-sync として、ARIA 責務分離パターン（`aria-labelledby` / `aria-describedby`）と削除容易バッジ設計を体系化・記録した。今後同種の「ボタン内補助バッジ追加」タスクでは L-MSO-001〜003 を参照することで苦戦を回避できる。
+
+## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 impl-spec-to-skill-sync（lessons-learned / resource-map / SKILL.md Trigger 補完）
+
+### 変更内容
+
+- `references/lessons-learned-current-2026-04.md` に L-RT01-RENDERER-FINAL-001 教訓セクションを追記（IPC単体テスト通過 ≠ UI表示到達 パターン記録）
+- `indexes/resource-map.md` に TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 エントリを追加（SkillLifecyclePanel DOM assertion / data-testid / workflowError 導線）
+- `SKILL.md` frontmatter description Trigger キーワードに `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` / `workflowError` / `skill-lifecycle-error` / `data-testid` / `L-RT01-RENDERER-FINAL-001` を追加
+
+### 背景
+
+Phase 12 close-out 後の ledger sync（backlog→completed）は 2026-04-13 に実施済みだったが、lessons-learned への教訓記録・resource-map エントリ・SKILL.md Trigger キーワード追加が未実施のまま残っていた。本エントリで漏れを解消。
+
+## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 completed ledger sync（backlog→completed / issue 2007 alignment）
+
+### 変更内容
+
+- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管し、打ち消し線 + 完了注記を付与
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04e.md` に renderer error UI task の完了記録を追加
+- `task-workflow.md` の intro current facts に `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` の completion を反映
+- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
+- `task-specification-creator/LOGS.md` にも同波の同期ログを追記
+
+### 背景
+
+Renderer 側エラーメッセージ UI の完成扱いを backlog / completed / task-workflow / issue 番号で同一化し、Phase 12 close-out 後の current facts が分岐しないようにした。今回の同期はドキュメントと台帳の整合性を閉じるためのもので、実装ファイルには触れていない。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
 
 ### 変更内容
@@ -1372,6 +1424,24 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - analyticsSlice（Zustand action-only store）実装・テスト・ドキュメント全 Phase 完了
 - 参照: apps/desktop/src/renderer/store/slices/analyticsSlice.ts + **tests**/analyticsSlice.test.ts
 
+| 項目     | 内容                                                                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                       |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
 | 項目     | 内容                                                                                                                                                                               |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 種別     | implementation / TDD / analytics integration                                                                                                                                       |
