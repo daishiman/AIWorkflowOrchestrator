@@ -16,6 +16,12 @@ allowed-tools:
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
+## 変更履歴
+
+| Date | Changes |
+| ---- | ------- |
+| 2026-04-14 | TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync: `resource-map` に2タスクのクイックルックアップ行追加（v1.31.0）、`.agents/` ミラー完全同期、`LOGS.md` sync 記録追加。current facts（`fetchSkills()` LLM 成功パス、`skillPath` null guard、`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` context bridge、Phase 11 screenshot evidence）反映済み |
+
 ## クイックスタート
 
 ### 仕様を探す
