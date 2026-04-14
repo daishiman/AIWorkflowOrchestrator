@@ -2229,6 +2229,9 @@ VisualCronPicker はスケジュール設定を視覚的に行うコンポーネ
 
 - `role="alert"` で inline 表示
 - 毎週で曜日が 0 件のとき表示（保存不可）
+- monthly で `dayOfMonth < 1 || dayOfMonth > 31` のときも inline 表示
+- weekly の alert は `text-xs`、monthly の alert は `text-sm` を基本とする
+- `onValidationChange?: (isValid: boolean) => void` で親コンポーネントに保存可否を通知する
 
 ### AdvancedToggle
 
@@ -2236,6 +2239,7 @@ VisualCronPicker はスケジュール設定を視覚的に行うコンポーネ
 - `showAdvancedToggle` が `false` の場合は表示しない
 - 複雑な cron 式（ステップ値・範囲など）は自動で custom モードになる
 - `value` が custom / 逆変換不能な式のときは direct input を初期表示する
+- direct input モードは custom cron 編集用として扱い、weekly/monthly の visual validation とは分離する
 
 ### cron 式バリデーション（scheduleConfigValidator.ts）
 

@@ -207,146 +207,63 @@ Monaco Diff Editorは`@monaco-editor/react`を使用してサイドバイサイ�
 
 ---
 
-## SkillCreateWizard LLM / template 併用パターン（TASK-SC-07 current facts）
+## SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts）
 
 ### 概要
 
-`SkillCreateWizard` は、template と LLM の 2 経路を併存させるウィザードとして扱う。  
-Step 0 は `generationMode` によって分岐し、template 側は `SkillInfoStep`、LLM 側は説明文 textarea を表示する。  
-Step 1 以降は `ConversationRoundStep` → `GenerateStep` → `CompleteStep` の共通導線を使う。
+現行 `SkillCreateWizard` は `generationMode` 切替を持たない LLM 専用 Wizard であり、UI topology は 4 step 固定である。  
+旧 template / LLM 併用フロー、`planResult` 表示、`executePlan()` 導線は現行コンポーネント契約では使わない。
 
-### コンポーネント構成
+### current topology
 
-| 階層 | コンポーネント | 分類 | 説明 |
-| --- | --- | --- | --- |
-| 1 | `SkillCreateWizard` | organisms | Step 0〜3 の orchestration、本タスクの current facts の正本 |
-| 1-1 | `StepIndicator` | atoms | current step の進行表示 |
-| 1-2 | `SkillInfoStep` | molecules | template 側の Step 0。スキル名・目的・カテゴリを入力 |
-| 1-3 | `ConversationRoundStep` | molecules | Step 1。6問インタビューと smartDefaults の適用 |
-| 1-4 | `GenerateStep` | molecules | Step 2。進捗、planResult、execute / cancel、terminal handoff guidance を表示 |
-| 1-5 | `CompleteStep` | molecules | Step 3。`skillPath`、外部連携チェック、次の行動カードを表示 |
-
-### Step 0 の分岐
-
-| モード | UI | 目的 |
+| Step | コンポーネント | 役割 |
 | --- | --- | --- |
-| `template` | `SkillInfoStep` | 既存のテンプレート導線を維持する |
-| `llm` | textarea + `次へ` | `planSkill` に渡す説明文を入力する |
-
-### `GenerateStep` の current facts
-
-| props | 役割 |
-| --- | --- |
-| `generationProgress` | 進捗メッセージを表示 |
-| `planResult` | `integrated_api` / `terminal_handoff` の計画結果を表示 |
-| `onExecutePlan` | `integrated_api` のときだけ実行ボタンで使用 |
-| `onCancelPlan` | LLM 計画を破棄して Step 0 に戻す |
-
-### `CompleteStep` の current facts
-
-| props | 役割 |
-| --- | --- |
-| `skillPath` | 生成先パスを表示 |
-| `hasExternalIntegration` | 外部連携チェックリストの有無を決める |
-| `externalToolName` | Slack / GitHub / Notion などのツール名を表示 |
-| `onRetry` | 失敗/不一致時に Step 0 へ戻す |
-| `onCreateAnother` | 別スキル作成へ戻す |
-
-### 実装ルール
-
-- `DescribeStep.tsx` は deprecated で、current facts の正本ではない。
-- `SkillInfoStep` を template 側の唯一の Step 0 として扱う。
-- `planResult.type === "terminal_handoff"` の場合、`GenerateStep` では guidance を表示し、`実行する` を出さない。
-- `phase-11` の既存スクリーンショットは Step 0 / Step 1 / Step 3 の visual evidence として参照する。
-
-### 関連タスク
-
-| タスクID | 内容 | ステータス |
-| --- | --- | --- |
-| TASK-SC-07 | SkillCreateWizard LLM / template 併用フロー | **完了**（2026-04-09） |
-| TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel plan/execute 接続 | **完了** |
-
-## SkillCreateWizard LLM 連携フロー（TASK-SC-07）
-
-> 完了日: 2026-04-09（W2-seq-03a 対応込み）
-
-### コンポーネント構成（current topology）
-
-| Step   | コンポーネント                                                 | 役割                                                                                       |
-| ------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Step 0 | `SkillInfoStep`（template モード）/ LLM 説明入力（llm モード） | スキル名・目的・カテゴリ入力 or LLM 説明テキスト入力。`generationMode` ラジオボタンで切替  |
-| Step 1 | `ConversationRoundStep`                                        | 会話形式 6 問（Q1〜Q6）。`smartDefaults` を初期値として提供                                |
-| Step 2 | `GenerateStep`                                                 | 生成中プログレス表示。template / LLM モード共通                                            |
-| Step 3 | `CompleteStep`                                                 | 生成完了後のアクションカード（即実行 / エディタで開く / 別スキル作成）と品質フィードバック |
-
-> `DescribeStep.tsx` は W2-seq-03b で `SkillInfoStep` に置き換えられた。`DescribeStep.tsx` は deprecation コメントのみが残る旧ファイル。
+| Step 0 | `SkillInfoStep` | スキル名・目的・カテゴリ入力 |
+| Step 1 | `ConversationRoundStep` | 6 問インタビュー、smart defaults 適用、未回答を含む生成起動 |
+| Step 2 | `GenerateStep` | 生成中 progress / preview / error / cancel / retry の表示 |
+| Step 3 | `CompleteStep` | `skillPath` 表示、品質フィードバック、次アクション、条件付き外部連携チェック |
 
 ### コンポーネント階層
 
-```
+```text
 SkillCreateWizard
 ├── StepIndicator
-├── [Step 0] SkillInfoStep | LLM description textarea
+├── [Step 0] SkillInfoStep
 ├── [Step 1] ConversationRoundStep
 ├── [Step 2] GenerateStep
-│   └── generate-step/ErrorCards（atoms: API_KEY_NOT_SET / LLM_ERROR / NETWORK_ERROR）
 └── [Step 3] CompleteStep
 ```
 
-### generationMode 切替フロー
+### Step ごとの UI 契約
 
-```
-Step 0（template モード）
-  → SkillInfoStep に formData / onFormDataChange / onNext を渡す
-  → 「次へ」で handleStep0Next() → inferSmartDefaults → Step 1
-  → Step 1 の「生成」で handleGenerate(method) → createSkill() → Step 2 → Step 3
+| Step | current facts |
+| --- | --- |
+| Step 0 | `SkillInfoStep` に `formData` / `onFormDataChange` / `onNext` を渡す |
+| Step 1 | `ConversationRoundStep` に `formData` / `smartDefaults` / `answers` / `onAnswersChange` / `onBack` / `onGenerate` を渡す |
+| Step 2 | `GenerateStep` は `stage` / `percent` / `message` / `previewContent` / `error` / `isGenerating` / `onCancel` / `onRetry` / `generationProgress` を受け取る |
+| Step 3 | `CompleteStep` は `skillPath` / `hasExternalIntegration` / `externalToolName` / `onExecuteNow` / `onOpenInEditor` / `onCreateAnother` / `onQualityFeedback` / `onRetry` を受け取る |
 
-Step 0（llm モード）
-  → LLM 説明入力 textarea に llmDescription を渡す
-  → 「次へ」で handleLlmGenerate() → planSkill(description) → Step 2
-  → Step 2 で planResult 表示 → 「実行する」で handleExecutePlan()
-  → executePlan(planId, skillSpec) → getWorkflowState(planId) → Step 3
-```
+### current rules
 
-### GenerateStep Props（current）
+| 項目 | current facts |
+| --- | --- |
+| Step 0 正本 | `SkillInfoStep`。`DescribeStep.tsx` は deprecation 履歴のみ |
+| Step 1 正本 | `ConversationRoundStep`。`skip` は「未回答ありで生成実行」の意味であり、UI step の非表示ではない |
+| 生成経路 | `handleGenerate()` → `buildSkillContext()` → `createSkill()` → `GenerateStep` → `CompleteStep` |
+| progress / error surface | `GenerateStep` は streaming progress と store error を bridge した表示のみ担う |
+| 次アクション計装 | `CompleteStep` の `skill_wizard_next_action` payload は `execute` / `edit` / `close` |
+| 外部連携チェック | `hasExternalIntegration === true` のときだけ checklist を表示 |
 
-| Prop                 | 型                        | 説明                                                                                           |
-| -------------------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
-| `stage`              | `GenerationStage`         | idle / planning / generating-skill / generating-agents / validating / done / error / cancelled |
-| `percent`            | `number`                  | プログレスバー表示（0-100）                                                                    |
-| `message`            | `string`                  | 現在の進捗メッセージ                                                                           |
-| `previewContent`     | `string \| null`          | プレビューパネル表示内容                                                                       |
-| `error`              | `GenerationError \| null` | エラー種別（code: API_KEY_NOT_SET / LLM_ERROR / NETWORK_ERROR）                                |
-| `isGenerating`       | `boolean`                 | ボタン disabled 制御                                                                           |
-| `generationProgress` | `string \| null`          | Store 由来の進捗メッセージ（legacy）                                                           |
-| `planResult`         | `PlanResult \| null`      | LLM モード: 計画結果表示（integrated_api / terminal_handoff）                                  |
-| `onExecutePlan`      | `() => void`              | LLM モード: 「実行する」ボタン                                                                 |
-| `onCancelPlan`       | `() => void`              | LLM モード: 「キャンセル」ボタン                                                               |
-| `onCancel`           | `() => void`              | template モード: キャンセルボタン                                                              |
-| `onRetry`            | `() => void`              | template モード: リトライボタン                                                                |
+### historical facts と current facts の境界
 
-### LLM API アクセスパターン（SkillCreatorRuntimeApi）
+以下は履歴として残すが、現行コンポーネント契約では扱わない。
 
-```typescript
-// SkillCreateWizard.tsx ローカル型（window 経由で取得）
-type SkillCreatorRuntimeApi = {
-  planSkill?: (prompt: string, authMode?: string, apiKey?: string) => Promise<...>;
-  executePlan?: (planId: string, skillSpec: string, ...) => Promise<...>;  // skillSpec 必須（C-1）
-  getWorkflowState?: (planId: string) => Promise<...>;
-};
-```
+- Step 0 の `generationMode` ラジオボタン
+- `llmDescription` textarea
+- `planResult` / `onExecutePlan` / `onCancelPlan`
+- `executePlan()` 後の snapshot 再読込 UI
 
-`window.skillCreatorAPI` → `window.electronAPI.skillCreator` の順にフォールバック。
-
-### snapshot 再読込パターン
-
-`executePlan()` 成功後に `getWorkflowState(planId)` を呼び出し、以下の情報を snapshot から取得する：
-
-- `snapshot.handoffBundle` → terminal_handoff PlanResult に変換して表示
-- `snapshot.verifyResult.status === "fail"` → エラーメッセージを UI に表示
-- `snapshot.persistResult.skillPath` → `CompleteStep` に `skillPath` として渡す
-
-### StepIndicator ステップ名称（current）
+### StepIndicator ステップ名称
 
 ```typescript
 export const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"];
@@ -354,11 +271,11 @@ export const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了
 
 ### 関連タスク
 
-| タスクID   | 内容                                                      | ステータス             |
-| ---------- | --------------------------------------------------------- | ---------------------- |
-| TASK-SC-07 | SkillCreateWizard LLM 生成フロー接続                      | **完了**（2026-04-09） |
-| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新   | 未着手                 |
-| TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 未着手（LOW）          |
-| TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化                 | 未着手（LOW）          |
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-SW-FIX-MODE-MGMT-001 | SkillCreateWizard mode/state current facts 是正 | **完了**（2026-04-13、Phase 12 close-out / Phase 13 blocked） |
+| UT-SKILL-WIZARD-W2-seq-03a | SkillCreateWizard オーケストレーション更新 | **完了**（2026-04-08） |
+| UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 | `SkillInfoStep` カテゴリ UI 改善 | **完了**（2026-04-11） |
+| TASK-SC-07 | 旧 LLM / template 併用フロー同期 | **履歴**（2026-04-09） |
 
 ---

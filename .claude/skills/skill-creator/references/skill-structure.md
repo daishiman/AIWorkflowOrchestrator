@@ -10,18 +10,27 @@
 
 ```
 skill-name/
-├── SKILL.md              # 必須: 中枢（500行以内推奨）
-├── agents/               # 推奨: Task仕様書（実行直前にロード）
+├── SKILL.md                     # 必須: 中枢（500行以内推奨）
+├── agents/                      # 推奨: Task仕様書（実行直前にロード）
 │   ├── task-1.md
 │   └── task-n.md
-├── scripts/              # 任意: 実行可能コード（Python/Bash/Node等）
-│   └── log_usage.js     # 推奨: フィードバックループ用
-├── references/           # 任意: 必要時に読む参照資料（知識の外部化）
-└── assets/               # 任意: 出力で使用する素材（テンプレ/雛形等）
+├── scripts/                     # 任意: 実行可能コード（Python/Bash/Node等）
+│   ├── log_usage.js            # 推奨: フィードバックループ用
+│   ├── search_knowledge.js     # 知識ベースがある場合: 精度優先検索エンジン
+│   └── build_index.js          # 知識ベースがある場合: インデックス検証
+├── references/                  # 任意: 必要時に読む参照資料（知識の外部化）
+├── assets/                      # 任意: 出力で使用する素材（テンプレ/雛形等）
+└── knowledge/                   # 条件付き: 外部素材・ペルソナ・蓄積知識がある場合
+    ├── knowledge-index.json    # Index-Search型: カテゴリ索引 + global_keywords
+    ├── router.json             # Router-Registry型: カテゴリ→ファイル対応
+    ├── schema.json             # スキーマ定義（バリデーション用）
+    ├── registry.json           # 処理済みファイル追跡（Router-Registry型）
+    └── knowledge-{category}.json  # カテゴリ別データ（複数）
 ```
 
-**運用指針**: agents/scripts/references/assets はゼロベースで選定し、目的に必要なものだけ作成する。空ディレクトリは作成しない。
-**責務分離**: agents/scripts/references/assets は責務単位で分割し、1ファイル=1責務を基本とする。複数責務の同居を避ける。
+**運用指針**: agents/scripts/references/assets/knowledge はゼロベースで選定し、目的に必要なものだけ作成する。空ディレクトリは作成しない。
+**責務分離**: 各ディレクトリは責務単位で分割し、1ファイル=1責務を基本とする。複数責務の同居を避ける。
+**knowledge/ 使用判断**: 外部素材依存・ペルソナ再現・継続的蓄積・精度優先検索のいずれかに該当する場合に作成する。詳細は [knowledge-management-guide.md](knowledge-management-guide.md) を参照。
 
 **作成禁止ファイル**:
 

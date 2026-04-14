@@ -3,6 +3,11 @@
  * @module claude-cli/constants
  */
 
+import {
+  MAX_SKILL_NAME_LENGTH,
+  SKILL_NAME_PATTERN,
+} from "../constants/skillName";
+
 /**
  * IPC Channel names for Claude CLI operations
  */
@@ -39,7 +44,7 @@ export const CLAUDE_CLI_DEFAULTS = {
   /** Grace period for process termination (5 seconds) */
   GRACE_PERIOD_MS: 5000,
   /** Maximum skill name length */
-  MAX_SKILL_NAME_LENGTH: 64,
+  MAX_SKILL_NAME_LENGTH,
   /** Scan cache TTL (5 minutes) */
   SCAN_CACHE_TTL_MS: 5 * 60 * 1000,
 } as const;
@@ -49,10 +54,7 @@ export const CLAUDE_CLI_DEFAULTS = {
  */
 export const VALID_SCRIPT_EXTENSIONS = [".mjs", ".js", ".ts", ".sh", ".py"];
 
-/**
- * Skill name validation pattern (kebab-case)
- */
-export const SKILL_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export { SKILL_NAME_PATTERN, MAX_SKILL_NAME_LENGTH };
 
 /**
  * Session ID pattern (UUID v4)

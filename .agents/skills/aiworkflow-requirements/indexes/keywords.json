@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2946,
+  "totalKeywords": 2939,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -555,8 +555,7 @@
       "api-core.md"
     ],
     "HTTP": [
-      "api-core.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md"
+      "api-core.md"
     ],
     "ステータスコード": [
       "api-core.md"
@@ -718,6 +717,7 @@
       "security-skill-ipc-history.md",
       "security-skill-ipc.md",
       "task-workflow-completed-ipc-preload-foundation.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "technology-desktop.md",
       "technology-devops.md",
       "ui-history-data-types.md",
@@ -1516,6 +1516,7 @@
       "security-skill-ipc.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
@@ -1549,6 +1550,7 @@
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -1587,6 +1589,7 @@
       "security-skill-execution-permission.md",
       "security-skill-execution.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
@@ -1629,7 +1632,6 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-plan-exec-hardening.md",
@@ -2006,6 +2008,7 @@
       "security-skill-execution-permission.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -2564,7 +2567,6 @@
     ],
     "Provider": [
       "api-ipc-system-skill-creator-part2.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
       "llm-ipc-types.md",
       "testing-fixtures.md"
     ],
@@ -2778,7 +2780,9 @@
     ],
     "NAME": [
       "api-ipc-system-skill-creator-part2.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "追記": [
       "api-ipc-system-skill-creator-part2.md"
@@ -3825,9 +3829,11 @@
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "SkillCreator": [
       "arch-state-management-skill-creator.md",
@@ -4021,7 +4027,6 @@
     ],
     "SkillCreateWizard": [
       "arch-ui-components-core.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -4312,7 +4317,6 @@
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
@@ -5843,7 +5847,6 @@
     ],
     "ガード": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md"
@@ -7834,35 +7837,6 @@
     "レガシーコード整理": [
       "lessons-learned-current-2026-04.md"
     ],
-    "SW": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "DATAFLOW": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "コンテキストブリッジ実装": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "FEEDBACK": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-phase12-lifecycle-early-b.md"
-    ],
-    "SkillWizard": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "フィードバックループ修正": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "CONVERTER": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "WEEKDAYS": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04e.md"
-    ],
-    "cronConverter": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -8202,6 +8176,10 @@
     "ハンドラ重複登録サイレントフェイル": [
       "lessons-learned-ipc-preload-runtime-2026-04.md"
     ],
+    "PATTERN": [
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "task-workflow-completed-recent-2026-04e.md"
+    ],
     "エラーコールバックガード": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -8240,6 +8218,9 @@
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "UIUX": [
+      "lessons-learned-phase12-lifecycle-early-b.md"
+    ],
+    "FEEDBACK": [
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "DIALOG": [
@@ -9423,18 +9404,6 @@
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
-    ],
-    "確認": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "PROVIDER": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "TRACKING": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "REACH": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "確認": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
@@ -12410,6 +12379,9 @@
     ],
     "to": [
       "task-workflow-completed-recent-2026-04d.md"
+    ],
+    "WEEKDAYS": [
+      "task-workflow-completed-recent-2026-04e.md"
     ],
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"

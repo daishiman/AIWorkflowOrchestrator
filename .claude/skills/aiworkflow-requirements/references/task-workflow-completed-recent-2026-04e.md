@@ -180,6 +180,52 @@
 
 ---
 
+### タスク: TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001                                                                                   |
+| 完了日     | 2026-04-13                                                                                                                |
+| タスク種別 | ui / docs / workflow-sync                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx` / `apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.tsx` |
+| PR         | 未作成（Phase 13 blocked）                                                                                                |
+
+#### 実装内容
+
+- `VisualCronPicker` に `weeklyError` / `monthlyError` / `onValidationChange` を追加し、visual mode の妥当性を親へ通知
+- monthly error の文言を `1〜31` に統一
+- Phase 11 screenshot を `value=` 初期値注入で固定し、monthly invalid / valid を current build で再現
+- direct input / custom cron validation は別タスクとして分離
+- alert の微差分は follow-up task に切り出した
+
+#### Phase 12 成果物
+
+| 成果物                     | パス                                                              |
+| -------------------------- | ----------------------------------------------------------------- |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                   | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック      | `outputs/phase-12/phase12-task-spec-compliance-check.md`          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/integration/scheduleIntegration.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `outputs/phase-11/screenshots/scene-01-weekly-empty-weekdays-error.png`
+- `outputs/phase-11/screenshots/scene-02-weekly-valid-weekdays-ok.png`
+- `outputs/phase-11/screenshots/scene-03-monthly-invalid-date-error.png`
+- `outputs/phase-11/screenshots/scene-04-monthly-valid-date-ok.png`
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001
+
+---
+
 ### タスク: UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 SkillInfoStep カテゴリ選択 UI 改善（2026-04-11）
 
 | 項目       | 値                                                                                                  |
@@ -259,6 +305,50 @@
   - AC-2: weekdays重複除去・昇順ソートPASS
   - AC-5: JSDocに空weekdays挙動を明記 PASS
 - 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
+
+---
+
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+
+- タスクID: UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+- 完了日: 2026-04-13
+- 種別: shared定数中央集権化 / IPC / テスト強化
+- 実装ファイル（新規）:
+  - `packages/shared/src/constants/skillName.ts` — SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth
+  - `packages/shared/src/constants/skillName.test.ts` — バリデーションテスト（パストラバーサル・境界値含む）
+- 実装ファイル（修正）:
+  - `packages/shared/src/constants/index.ts` — skillName.ts を re-export 追加
+  - `packages/shared/src/claude-cli/constants.ts` — shared定数を import し再export（互換性維持）
+  - `apps/desktop/src/main/claude-cli/SkillScanner.ts` — `@repo/shared/constants` から import へ切り替え
+  - `.claude/skills/skill-creator/scripts/init_skill.js` — runtime fallback 機構追加
+  - `.agents/skills/skill-creator/scripts/init_skill.js` — 同上（ミラー）
+- 設計上の知見:
+  - shared定数化パターン: `constants/<topic>.ts` → `index.ts` re-export → consumers import
+  - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
+  - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
+- lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 完了日: 2026-04-13
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（対称パターン参考）
+- 関連Issue: #2108
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/renderer/utils/cronParser.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronParser.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronHumanizer.test.ts`
+  - `apps/desktop/src/__tests__/components/schedule/VisualCronPicker.test.tsx`
+- AC一覧:
+  - AC-1: dayOfMonth が整数かつ 1〜31 の範囲外なら空文字を返す（例外なし）PASS
+  - AC-2: 正常な dayOfMonth では既存の cron 式を返す PASS
+  - AC-3: cronParser.ts で不正 monthly は custom にフォールバック PASS
+- lessons-learned: `references/lessons-learned-current-2026-04.md` §MONTHLY-GUARD（L-MTHGRD-001〜003）
 
 ---
 
