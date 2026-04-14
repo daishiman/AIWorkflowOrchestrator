@@ -17,6 +17,12 @@
 
 ---
 
+## 現在の状態
+
+- Phase 10〜12 は completed
+- Phase 13 は PR 禁止のため skipped / blocked
+- `isTemplateMode` wire-up、`resolveExternalIntegration` 再計算、`generationLockRef` finally 解除は current facts へ反映済み
+
 ## タスク概要
 
 ### 目的
@@ -123,10 +129,10 @@ graph TD
 | 7     | カバレッジ確認   | seq      | Phase 6  | -      | pending    |
 | 8     | リファクタリング | seq      | Phase 7  | -      | pending    |
 | 9     | 品質保証         | seq      | Phase 8  | -      | pending    |
-| 10    | 最終レビュー     | seq      | Phase 9  | GATE   | pending    |
-| 11    | 手動テスト       | seq      | Phase 10 | VISUAL | pending    |
-| 12    | ドキュメント更新 | par      | Phase 11 | -      | pending    |
-| 13    | PR作成           | seq      | Phase 12 | -      | pending    |
+| 10    | 最終レビュー     | seq      | Phase 9  | GATE   | completed  |
+| 11    | 手動テスト       | seq      | Phase 10 | VISUAL | completed  |
+| 12    | ドキュメント更新 | par      | Phase 11 | -      | completed  |
+| 13    | PR作成           | seq      | Phase 12 | -      | skipped    |
 
 ---
 
