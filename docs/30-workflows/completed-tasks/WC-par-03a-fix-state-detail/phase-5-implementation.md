@@ -26,19 +26,19 @@
 
 ### Task 2: GenerateStep修正（問題13）
 
-- `GenerateStep.tsx`のtemplateモードエラー表示ブロックにキャンセルボタンを追加する
-- `handleCancelTemplateGeneration`ハンドラーを実装し、Step 0（`SkillInfoStep`）に戻るコールバックを呼び出す
+- `GenerateStep.tsx` の template モードエラー表示ブロックに `mode === "template"` のキャンセルボタンを追加する
+- `onCancel` を Step 0（`SkillInfoStep`）への復帰コールバックとして接続する
 - 非templateモードのUI（既存の通常モード）に影響がないことを確認する
 
 ### Task 3: SkillCreateWizard修正（問題18）
 
-- `SkillCreateWizard.tsx`でq5の回答変更を検出し、`resolveExternalIntegration`を再呼び出しするロジックを追加する
-- `hasExternalIntegration`と`externalToolName`が変更後の最新値で更新されることを確認する
-- 不要な再計算（q5以外の変更では再実行されないこと）を防止する実装を確認する
+- `SkillCreateWizard.tsx` で q5 の回答変更を検出し、`resolveExternalIntegration` を再呼び出しするロジックを追加する
+- `hasExternalIntegration` と `externalToolName` が変更後の最新値で更新されることを確認する
+- q5 以外の変更では再計算を抑止する current facts を維持する
 
 ### Task 4: SkillCreateWizard修正（問題19）
 
-- `generationLockRef`のfinally節を修正し、正常完了・エラー・キャンセルの全3経路で`generationLockRef.current = false`が実行されるようにする
+- `generationLockRef` の finally 節を修正し、正常完了・エラー・キャンセルの全3経路で `generationLockRef.current = false` が実行されるようにする
 - キャンセル時の非同期処理の中断とロック解放が対称的に行われることを確認する
 - ロックが`true`のまま残留するケースが発生しないことをコードレビュー観点で確認する
 

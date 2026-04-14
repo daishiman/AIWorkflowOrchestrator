@@ -2550,7 +2550,8 @@ node scripts/list-specs.js --topics
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
 | SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L353 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L345 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L391 |
 
 ### references/arch-state-management.md
 
@@ -2579,6 +2580,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts） | L210 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L283 |
 
 ### references/arch-ui-components-details.md
 
@@ -3445,6 +3447,17 @@ node scripts/list-specs.js --topics
 | L-MODE-003: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する | L34 |
 | L-MODE-004: Electron 実機なしでの視覚証跡の多層防御 | L47 |
 | L-MODE-005: SkillCreateWizard の確定フロー（本タスク後の正規仕様） | L59 |
+
+### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L22 |
+| L-MSO-001: visual label と accessible name は別管理する | L80 |
+| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
+| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
+| スキル改善提案（task-specification-creator への反映事項） | L112 |
 
 ### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
 
@@ -4736,11 +4749,21 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04g.md
 
 | セクション | 行 |
 |------------|----|
@@ -4869,6 +4892,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L87 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L107 |
+| 完了タスク（2026-03後半） | L282 |
+| 完了タスク（機能別アーカイブ） | L290 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L399 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L29 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L49 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L50 |
@@ -4909,6 +4937,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
 | 仕様書インデックス | L17 |
 | 利用順序 | L128 |
 | 関連ドキュメント | L133 |
