@@ -280,10 +280,10 @@ templateモードでエラーが発生した後、ウィザードを Step 0 に�
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03a-fix-state-detail/index.md`（詳細仕様書インデックス）
-- `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03a-fix-state-detail/phase-1-requirements.md`（要件定義）
-- `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03a-fix-state-detail/phase-2-design.md`（設計書）
-- `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03a-fix-state-detail/phase-5-implementation.md`（実装指針）
+- `docs/30-workflows/WC-par-03a-fix-state-detail/index.md`（詳細仕様書インデックス）
+- `docs/30-workflows/WC-par-03a-fix-state-detail/phase-1-requirements.md`（要件定義）
+- `docs/30-workflows/WC-par-03a-fix-state-detail/phase-2-design.md`（設計書）
+- `docs/30-workflows/WC-par-03a-fix-state-detail/phase-5-implementation.md`（実装指針）
 - `docs/30-workflows/skill-wizard-bugfix-wave/index.md`（バグ修正ウェーブ全体方針）
 
 ### 関連ファイル

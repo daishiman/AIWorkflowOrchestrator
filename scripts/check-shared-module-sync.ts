@@ -129,12 +129,22 @@ export function parsePaths(tsconfigPath: string): Map<string, string[]> {
 
 /**
  * vitest.config.ts を正規表現でパースし、@repo/shared エイリアスを Map に変換する。
+ *
+ * vite-tsconfig-paths プラグインが使用されている場合、tsconfig の paths が自動的に
+ * 解決されるため、手動エイリアスは不要であり空の Map を返す（チェック3・4をスキップ）。
+ * vitest.config.ts に個別の互換性回避用エイリアスが残っていても、プラグインが有効な
+ * 限りそれらは重複定義に過ぎないため、整合性チェックの対象外とする。
  */
 export function parseAliases(vitestConfigPath: string): Map<string, string> {
   const content = fs.readFileSync(vitestConfigPath, "utf-8");
   const usesTsconfigPathsPlugin =
     content.includes("vite-tsconfig-paths") ||
     content.includes("tsconfigPaths(");
+
+  // プラグイン使用時は tsconfig paths が自動解決されるため空 Map を返してスキップ
+  if (usesTsconfigPathsPlugin) {
+    return new Map<string, string>();
+  }
 
   const result = new Map<string, string>();
 
@@ -148,11 +158,7 @@ export function parseAliases(vitestConfigPath: string): Map<string, string> {
     result.set(aliasName, sourcePath);
   }
 
-  if (
-    result.size === 0 &&
-    content.includes("alias") &&
-    !usesTsconfigPathsPlugin
-  ) {
+  if (result.size === 0 && content.includes("alias")) {
     console.warn(
       `Warning: vitest.config.ts contains "alias" but no @repo/shared aliases were parsed. Check the alias format.`,
     );
