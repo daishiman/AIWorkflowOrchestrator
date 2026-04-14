@@ -399,11 +399,20 @@ Production deployment skill.`;
     it("should reject path traversal attempts", () => {
       expect(SkillScanner.validateSkillName("../skill")).toBe(false);
       expect(SkillScanner.validateSkillName("skill/..")).toBe(false);
+      expect(SkillScanner.validateSkillName("skill\\..")).toBe(false);
       expect(SkillScanner.validateSkillName("..")).toBe(false);
     });
 
     it("should reject empty names", () => {
       expect(SkillScanner.validateSkillName("")).toBe(false);
+    });
+
+    it("should accept names at the maximum boundary and reject over the boundary", () => {
+      const maxLengthName = "a".repeat(64);
+      const overMaxLengthName = "a".repeat(65);
+
+      expect(SkillScanner.validateSkillName(maxLengthName)).toBe(true);
+      expect(SkillScanner.validateSkillName(overMaxLengthName)).toBe(false);
     });
 
     it("should reject names exceeding max length", () => {
@@ -426,6 +435,7 @@ Production deployment skill.`;
 
       expect(() => skillScanner.resolveSkillPath("../etc/passwd")).toThrow();
       expect(() => skillScanner.resolveSkillPath("skill/../..")).toThrow();
+      expect(() => skillScanner.resolveSkillPath("skill\\..")).toThrow();
     });
 
     it("should validate skill exists", async () => {

@@ -64,6 +64,8 @@ export interface GenerateStepProps {
   planResult?: PlanResult | null;
   onExecutePlan?: () => void;
   onCancelPlan?: () => void;
+  /** 問題13修正: templateモードでエラー時にキャンセルボタンを表示する */
+  isTemplateMode?: boolean;
 }
 
 // ---- ステップ表示の状態判定 ----
@@ -98,6 +100,7 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
       planResult,
       onExecutePlan,
       onCancelPlan,
+      isTemplateMode = false,
     },
     ref,
   ) => {
@@ -212,6 +215,17 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
         {/* Error Display */}
         {error &&
           renderErrorCard(error.code, error.message, onRetry, onOpenSettings)}
+
+        {/* 問題13修正: templateモードのエラー時にキャンセルボタンを表示してStep 0に戻れるようにする */}
+        {isTemplateMode && error && onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="self-center px-4 py-2 text-sm rounded-lg border border-[var(--border-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors"
+          >
+            キャンセル
+          </button>
+        )}
 
         {/* Legacy plan/execute controls */}
         {showPlanControls && (

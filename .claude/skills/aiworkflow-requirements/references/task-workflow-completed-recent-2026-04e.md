@@ -4,6 +4,34 @@
 
 ---
 
+### タスク: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（2026-04-13）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                    |
+| 完了日     | 2026-04-13                                                                                                |
+| タスク種別 | docs-only（`spec_created` / NON_VISUAL）                                                                  |
+| 関連Issue  | #2033（CLOSED）                                                                                           |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                              |
+
+#### 実施内容
+
+- Phase 11 `manual-test-result` テンプレートに「テスト件数と内訳」「edge case 一覧表」「仕様判断根拠」を導入し、証跡分散を1ファイルへ一本化
+- `task-specification-creator` の Phase 11 テンプレート群（guide / detail / test-report）へ同構造を反映
+- docs-only タスクとして `spec_created` を維持しつつ、Phase 12 Step 1 の system spec 同期（task-workflow / lessons-learned / LOGS / topic-map）を実施
+
+#### 検証証跡
+
+- `docs/30-workflows/UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001/phase-11-manual-test.md`: テンプレート試作（NON_VISUAL）
+- `docs/30-workflows/UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001/phase-12-documentation.md`: Step 1-A〜1-C 同期要件
+- `task-specification-creator` 側テンプレート更新差分: AC-1〜AC-5 反映
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §UT-SKILL-WIZARD-FB-05（L-FB05-001〜003）
+
+---
+
 ### タスク: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正（2026-04-13）
 
 | 項目       | 値                                                                                         |
@@ -284,6 +312,28 @@
   - AC-2: weekdays重複除去・昇順ソートPASS
   - AC-5: JSDocに空weekdays挙動を明記 PASS
 - 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
+
+---
+
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+
+- タスクID: UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+- 完了日: 2026-04-13
+- 種別: shared定数中央集権化 / IPC / テスト強化
+- 実装ファイル（新規）:
+  - `packages/shared/src/constants/skillName.ts` — SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth
+  - `packages/shared/src/constants/skillName.test.ts` — バリデーションテスト（パストラバーサル・境界値含む）
+- 実装ファイル（修正）:
+  - `packages/shared/src/constants/index.ts` — skillName.ts を re-export 追加
+  - `packages/shared/src/claude-cli/constants.ts` — shared定数を import し再export（互換性維持）
+  - `apps/desktop/src/main/claude-cli/SkillScanner.ts` — `@repo/shared/constants` から import へ切り替え
+  - `.claude/skills/skill-creator/scripts/init_skill.js` — runtime fallback 機構追加
+  - `.agents/skills/skill-creator/scripts/init_skill.js` — 同上（ミラー）
+- 設計上の知見:
+  - shared定数化パターン: `constants/<topic>.ts` → `index.ts` re-export → consumers import
+  - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
+  - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
+- lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
 
 ---
 

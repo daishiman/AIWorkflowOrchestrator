@@ -178,6 +178,13 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（CompleteStep からのコールバック） |
 | `skill_wizard_next_action` | `{ action: "execute" \| "edit" \| "close" }` | CompleteStep（アクションカード onClick） |
 | `skill_wizard_abandon` | `{ step, stepName }` | SkillCreateWizard（未完了で離脱した場合のみ） |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
 | `skill_wizard_open` | `{ source }` | SkillCreateWizard（マウント時 useEffect） |
 | `skill_wizard_step_complete` | `{ step, stepName }` | SkillCreateWizard（Step 0 / 1 / 2 完了時） |
 | `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（`handleGenerate()` 冒頭。`skip` は未回答あり実行の意味） |
@@ -253,6 +260,21 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 ### 関連未タスク
 
 本タスクで新規未タスクは検出されていない（`unassigned-task-detection.md`: 0件）。
+
+---
+
+## UI整合性修正（TASK-SW-FIX-UI-001 / completed）
+
+TASK-SW-FIX-UI-001 で `SkillInfoStep` / `ConversationRoundStep` / `SkillCreateWizard` / `ApplySummaryCard` の current facts を UI 整合性修正後の内容へ揃えた。  
+Phase 11 は 9 枚のスクリーンショットと DevTools audit PASS で完了し、Phase 12 は canonical 6 成果物と root / outputs artifacts parity を completed で固定した。
+
+### current facts
+
+- `SkillInfoFormData.category` は `SkillCategory[]` で複数選択を許可する
+- `handleCategoryClick` は再クリックで解除するトグル動作
+- `ConversationRoundStep` / `ApplySummaryCard` の Q5 必須判定は `external-integration` の配列包含で決定する
+- `SkillCreateWizard` は `resolvePrimarySkillCategory()` で代表カテゴリを決める
+- ボタンは `bg-[var(--status-primary)]` / `text-[var(--text-inverse)]` に統一済み
 
 ---
 

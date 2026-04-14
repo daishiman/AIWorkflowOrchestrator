@@ -975,6 +975,41 @@ export function getSkillCategoryLabel(category: SkillCategory): string {
 }
 
 /**
+ * 複数カテゴリから代表値を決定するための優先順。
+ * 入力配列の並び順に依存せず、同じ集合なら同じ代表値を返す。
+ */
+const SKILL_CATEGORY_PRIORITY: readonly SkillCategory[] = [
+  "automation",
+  "external-integration",
+  "data-analysis",
+  "code-support",
+  "other",
+];
+
+/**
+ * 複数選択された SkillCategory から、代表値を決定的に返す。
+ * 優先順は `SKILL_CATEGORY_PRIORITY` に固定し、入力配列の順序に依存しない。
+ *
+ * @param categories - Step 0 で選択されたカテゴリ配列
+ * @returns 代表カテゴリ、未選択なら undefined
+ */
+export function resolvePrimarySkillCategory(
+  categories: SkillCategory[],
+): SkillCategory | undefined {
+  if (categories.length === 0) {
+    return undefined;
+  }
+
+  for (const category of SKILL_CATEGORY_PRIORITY) {
+    if (categories.includes(category)) {
+      return category;
+    }
+  }
+
+  return categories[0];
+}
+
+/**
  * Step 0 のフォームデータ。
  * `skillName` は任意入力で、省略も空文字も許容する。
  */
@@ -983,8 +1018,8 @@ export interface SkillInfoFormData {
   skillName?: string;
   /** スキルの目的・概要（必須） */
   purpose: string;
-  /** スキルカテゴリ（未選択時は null） */
-  category: SkillCategory | null;
+  /** スキルカテゴリ（複数選択可・未選択時は空配列） */
+  category: SkillCategory[];
 }
 
 /**
@@ -1483,7 +1518,7 @@ export function buildSkillContext(
 
   return {
     skillName: normStr(formData.skillName),
-    category: formData.category ?? undefined,
+    category: resolvePrimarySkillCategory(formData.category),
     purpose: normStr(formData.purpose),
     q1Purpose: extractAnswerText(answers.q1),
     q2Target: extractAnswerText(answers.q2),

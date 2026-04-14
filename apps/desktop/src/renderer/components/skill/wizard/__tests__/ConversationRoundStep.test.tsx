@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent, within, act } from "@testing-library/react";
 import {
   ConversationRoundStep,
   applySmartDefaults,
@@ -23,12 +23,12 @@ import {
   SEMANTIC_LABEL_MAP,
   resolveSemanticLabel,
   type QuestionSemanticLabelMap,
-} from "@repo/shared/types/skillWizard";
+} from "../../../../../../../../packages/shared/src/types/skill-wizard-label-map";
 
 const defaultFormData: SkillInfoFormData = {
   skillName: "",
   purpose: "テスト目的",
-  category: "automation",
+  category: ["automation"],
 };
 
 const defaultAnswers: ConversationAnswers = {
@@ -95,7 +95,7 @@ describe("ConversationRoundStep", () => {
       expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
     });
 
-    it("「次のページ」クリック後に「質問 4/6」が表示される", () => {
+    it("「次のページ」クリック後も未回答なら「質問 1/6」のまま（動的計算）", () => {
       render(
         <ConversationRoundStep
           formData={defaultFormData}
@@ -108,7 +108,59 @@ describe("ConversationRoundStep", () => {
       );
       expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
       fireEvent.click(screen.getByRole("button", { name: /次のページ|次へ/ }));
-      expect(screen.getByText(/質問 4\/6/)).toBeInTheDocument();
+      expect(screen.getByText(/質問 1\/6/)).toBeInTheDocument();
+    });
+
+    it("回答済みが2件なら「質問 2/6」が表示される", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q1: { selectedOptions: ["自分のみ"], freeText: "" },
+            q2: { selectedOptions: ["テキスト"], freeText: "" },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+
+      expect(screen.getByText(/質問 2\/6/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("progressbar", { name: /質問 2\/6/ }),
+      ).toHaveAttribute("aria-valuenow", "2");
+    });
+
+    it("回答済みが3件なら「質問 3/6」が表示される", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={{
+            ...defaultAnswers,
+            q1: { selectedOptions: ["自分のみ"], freeText: "" },
+            q2: { selectedOptions: ["テキスト"], freeText: "" },
+            q3: {
+              selectedOptions: ["定期実行"],
+              freeText: "",
+              scheduleConfig: {
+                cronExpression: "0 9 * * 1-5",
+                timezone: "Asia/Tokyo",
+              },
+            },
+          }}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+
+      expect(screen.getByText(/質問 3\/6/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("progressbar", { name: /質問 3\/6/ }),
+      ).toHaveAttribute("aria-valuenow", "3");
     });
   });
 
@@ -416,7 +468,7 @@ describe("ConversationRoundStep", () => {
     it("category=external-integration のとき Q5 に必須マークが表示される", () => {
       render(
         <ConversationRoundStep
-          formData={{ ...defaultFormData, category: "external-integration" }}
+          formData={{ ...defaultFormData, category: ["external-integration"] }}
           smartDefaults={defaultSmartDefaults}
           answers={defaultAnswers}
           onAnswersChange={mockOnAnswersChange}
@@ -1305,10 +1357,10 @@ describe("resolveSemanticLabel / applySmartDefaults（semantic default 入力元
   });
 
   // ------------------------------------------
-  // TC-12: @repo/shared からの import 確認
+  // TC-12: SEMANTIC_LABEL_MAP の import 確認
   // ------------------------------------------
-  describe("TC-12: @repo/shared からの import 確認", () => {
-    it("TC-12: SEMANTIC_LABEL_MAP が @repo/shared から import できる", () => {
+  describe("TC-12: SEMANTIC_LABEL_MAP の import 確認", () => {
+    it("TC-12: SEMANTIC_LABEL_MAP が利用できる", () => {
       expect(SEMANTIC_LABEL_MAP).toBeDefined();
     });
 
@@ -1509,5 +1561,134 @@ describe("resolveSemanticLabel / applySmartDefaults（semantic default 入力元
       // "週次" → resolveSemanticLabel → "週に1回"（Q6 options にないため freeText に格納）
       expect(result.q6.freeText).toBe("週に1回");
     });
+  });
+});
+
+// ============================================================
+// TASK-SW-FIX-STATE-DETAIL-001: 問題12 internalAnswers リセット（TC-01/TC-02）
+// ============================================================
+
+describe("TASK-SW-FIX-STATE-DETAIL-001: 問題12 internalAnswers リセット", () => {
+  let mockOnAnswersChange: ReturnType<typeof vi.fn>;
+  let mockOnBack: ReturnType<typeof vi.fn>;
+  let mockOnGenerate: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockOnAnswersChange = vi.fn();
+    mockOnBack = vi.fn();
+    mockOnGenerate = vi.fn();
+  });
+
+  it("TC-01: answersが空値に変化するとinternalAnswersがリセットされる（問題12修正）", async () => {
+    const { rerender } = render(
+      <ConversationRoundStep
+        formData={defaultFormData}
+        smartDefaults={defaultSmartDefaults}
+        answers={completeAnswers}
+        onAnswersChange={mockOnAnswersChange}
+        onBack={mockOnBack}
+        onGenerate={mockOnGenerate}
+      />,
+    );
+
+    // 初期状態: completeAnswers の選択が反映されている
+    expect(screen.getByRole("button", { name: "自分のみ" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    // answers を空値にリセット（リトライシミュレーション）
+    await act(async () => {
+      rerender(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+    });
+
+    // internalAnswers がリセットされていること
+    expect(screen.getByRole("button", { name: "自分のみ" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+  });
+
+  it("TC-02: 通常フローでユーザーが操作してもinternalAnswersが保持される（回帰）", () => {
+    render(
+      <ConversationRoundStep
+        formData={defaultFormData}
+        smartDefaults={defaultSmartDefaults}
+        answers={defaultAnswers}
+        onAnswersChange={mockOnAnswersChange}
+        onBack={mockOnBack}
+        onGenerate={mockOnGenerate}
+      />,
+    );
+
+    // ユーザーが選択
+    fireEvent.click(screen.getByRole("button", { name: "自分のみ" }));
+
+    // internalAnswers が保持されていること（リセットされていない）
+    expect(screen.getByRole("button", { name: "自分のみ" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    // onAnswersChange の最新呼び出しに選択が含まれること
+    const lastAnswers = mockOnAnswersChange.mock.calls.at(
+      -1,
+    )?.[0] as ConversationAnswers;
+    expect(lastAnswers.q1.selectedOptions).toContain("自分のみ");
+  });
+
+  it("TC-11: 非空のanswers変化ではinternalAnswersがリセットされない（境界）", async () => {
+    const { rerender } = render(
+      <ConversationRoundStep
+        formData={defaultFormData}
+        smartDefaults={defaultSmartDefaults}
+        answers={defaultAnswers}
+        onAnswersChange={mockOnAnswersChange}
+        onBack={mockOnBack}
+        onGenerate={mockOnGenerate}
+      />,
+    );
+
+    // ユーザーが選択
+    fireEvent.click(screen.getByRole("button", { name: "自分のみ" }));
+    expect(screen.getByRole("button", { name: "自分のみ" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    // 非空のanswersで再レンダリング（選択内容を反映した props）
+    const updatedAnswers: ConversationAnswers = {
+      ...defaultAnswers,
+      q1: { selectedOptions: ["自分のみ"], freeText: "" },
+    };
+
+    await act(async () => {
+      rerender(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={updatedAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+    });
+
+    // 非空のanswersなのでリセットされずinternalAnswersが保持されること
+    expect(screen.getByRole("button", { name: "自分のみ" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 });
