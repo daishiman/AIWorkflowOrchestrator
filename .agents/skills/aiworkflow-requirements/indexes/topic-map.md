@@ -1401,6 +1401,14 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L259 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L308 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L337 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L252 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L301 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L330 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L266 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L315 |
 | Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L344 |
@@ -3410,6 +3418,17 @@ node scripts/list-specs.js --topics
 | L-SC07-008: generationLockRef による二重実行防止 | L97 |
 | 応用候補 | L108 |
 
+### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L22 |
+| L-MSO-001: visual label と accessible name は別管理する | L80 |
+| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
+| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
+| スキル改善提案（task-specification-creator への反映事項） | L112 |
+
 ### references/lessons-learned-skill-wizard-mode-mgmt.md
 
 | セクション | 行 |
@@ -4719,6 +4738,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
@@ -4925,6 +4947,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L15 |
 | 利用順序 | L45 |
 | 関連ドキュメント | L51 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 | 利用順序 | L98 |
 | 関連ドキュメント | L103 |
 
