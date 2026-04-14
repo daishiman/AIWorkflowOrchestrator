@@ -122,11 +122,6 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
       "@renderer": resolve(__dirname, "src/renderer"),
       "@main": resolve(__dirname, "src/main"),
-      // vite-tsconfig-paths v6 はexclude済みテストファイルではtsconfig paths を解決しないため明示追加
-      "@repo/shared/types/skillWizard": resolve(
-        __dirname,
-        "../../packages/shared/src/types/skill-wizard-label-map.ts",
-      ),
       "@anthropic-ai/claude-agent-sdk": resolve(
         __dirname,
         "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",
