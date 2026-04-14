@@ -3154,6 +3154,7 @@ node scripts/list-specs.js --topics
 | Phase-12 IPC 4層型同期（2026-04-06） | L78 |
 | TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06） | L112 |
 | UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001 IPC ハンドラ重複登録サイレントフェイル（2026-04-07） | L116 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001（2026-04-13） | L188 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -4710,7 +4711,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 

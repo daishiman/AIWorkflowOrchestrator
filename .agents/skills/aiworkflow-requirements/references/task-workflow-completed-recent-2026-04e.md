@@ -387,6 +387,45 @@
 
 ---
 
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+
+- タスクID: UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+- 完了日: 2026-04-13
+- 種別: shared定数中央集権化 / IPC / テスト強化
+- 実装ファイル（新規）:
+  - `packages/shared/src/constants/skillName.ts` — SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth
+  - `packages/shared/src/constants/skillName.test.ts` — バリデーションテスト（パストラバーサル・境界値含む）
+- 実装ファイル（修正）:
+  - `packages/shared/src/constants/index.ts` — skillName.ts を re-export 追加
+  - `packages/shared/src/claude-cli/constants.ts` — shared定数を import し再export（互換性維持）
+  - `apps/desktop/src/main/claude-cli/SkillScanner.ts` — `@repo/shared/constants` から import へ切り替え
+  - `.claude/skills/skill-creator/scripts/init_skill.js` — runtime fallback 機構追加
+  - `.agents/skills/skill-creator/scripts/init_skill.js` — 同上（ミラー）
+- 設計上の知見:
+  - shared定数化パターン: `constants/<topic>.ts` → `index.ts` re-export → consumers import
+  - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
+  - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
+- lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
+
+---
+
+## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 完了日: 2026-04-12
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+- AC一覧:
+  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
+  - AC-2: weekdays重複除去・昇順ソートPASS
+  - AC-5: JSDocに空weekdays挙動を明記 PASS
+- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
+
+---
+
 ## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
 - タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001

@@ -6,6 +6,8 @@ import { describe, it, expect } from "vitest";
 import {
   DANGEROUS_PATTERNS,
   ALLOWED_TOOLS_WHITELIST,
+  MAX_SKILL_NAME_LENGTH,
+  SKILL_NAME_PATTERN,
   isDangerousCommand,
   isProtectedPath,
   matchGlobPattern,
@@ -16,6 +18,15 @@ import {
 
 describe("Phase 11: Manual Import Verification", () => {
   describe("Task 11-2: Import from @repo/shared/constants", () => {
+    it("should export skill name constants", () => {
+      expect(MAX_SKILL_NAME_LENGTH).toBe(64);
+      expect(Number.isInteger(MAX_SKILL_NAME_LENGTH)).toBe(true);
+      expect(SKILL_NAME_PATTERN).toBeInstanceOf(RegExp);
+      expect(SKILL_NAME_PATTERN.source).toBe("^[a-z0-9]+(-[a-z0-9]+)*$");
+      expect(SKILL_NAME_PATTERN.test("my-skill")).toBe(true);
+      expect(SKILL_NAME_PATTERN.test("My_Skill")).toBe(false);
+    });
+
     it("should export DANGEROUS_PATTERNS with correct counts", () => {
       expect(DANGEROUS_PATTERNS.BASH_COMMANDS.length).toBe(24);
       expect(DANGEROUS_PATTERNS.PROTECTED_PATHS.length).toBe(25);

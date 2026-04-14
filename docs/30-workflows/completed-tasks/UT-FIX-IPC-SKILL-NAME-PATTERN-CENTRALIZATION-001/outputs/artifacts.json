@@ -1,0 +1,134 @@
+{
+  "taskId": "UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001",
+  "taskName": "スキル名バリデーション正規表現の shared 定数一元化",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "createdAt": "2026-04-06T00:00:00.000Z",
+  "lastUpdated": "2026-04-13T12:00:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-2/design-document.md",
+        "outputs/phase-2/file-change-list.md",
+        "outputs/phase-2/build-config-analysis.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/red-test-result.md",
+        "outputs/phase-4/integration-test-plan.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-files.md",
+        "outputs/phase-5/contract-diff.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-result.md",
+        "outputs/phase-6/edge-case-result.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-7/coverage-plan.md",
+        "outputs/phase-7/uncovered-analysis-plan.md",
+        "outputs/phase-7/traceability-coverage-report.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/post-refactor-test-plan.md",
+        "outputs/phase-8/responsibility-boundary-map.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/causal-loop-check.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/corrective-action-plan.md",
+        "outputs/phase-10/release-readiness-checklist.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/evidence-index.md",
+        "outputs/phase-11/screenshot-plan.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-13T00:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "completedAt": null,
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  }
+}
