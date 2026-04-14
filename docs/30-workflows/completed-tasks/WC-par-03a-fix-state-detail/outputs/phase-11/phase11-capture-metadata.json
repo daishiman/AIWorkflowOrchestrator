@@ -1,0 +1,35 @@
+{
+  "taskId": "TASK-SW-FIX-STATE-DETAIL-001",
+  "generatedAt": "2026-04-14T02:38:23.243Z",
+  "captureMethod": "current_build_vite_playwright",
+  "workflowRoot": "docs/30-workflows/WC-par-03a-fix-state-detail",
+  "harnessPath": "/advanced/skill-create-wizard",
+  "route": "/advanced/skill-create-wizard?skipAuth=true&mode=error",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "cases": [
+    {
+      "tcId": "TC-03",
+      "state": "template-error-cancel",
+      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png",
+      "selector": "[data-testid=\"wizard-step-generate\"]",
+      "capturedAt": "2026-04-14T02:38:19.887Z"
+    },
+    {
+      "tcId": "TC-04",
+      "state": "template-error-step0",
+      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png",
+      "selector": "[data-testid=\"wizard-step-info\"]",
+      "capturedAt": "2026-04-14T02:38:21.483Z"
+    },
+    {
+      "tcId": "TC-05",
+      "state": "normal-error-no-cancel",
+      "output": "outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png",
+      "selector": "[data-testid=\"wizard-step-generate\"]",
+      "capturedAt": "2026-04-14T02:38:23.231Z"
+    }
+  ]
+}
