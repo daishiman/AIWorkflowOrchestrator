@@ -86,6 +86,7 @@ vi.mock("react-router-dom", () => ({
     React.createElement("div", { "data-testid": "routes" }, children),
   Route: ({ element }: { element: React.ReactNode }) =>
     React.createElement("div", { "data-testid": "route" }, element),
+  useLocation: () => ({ search: "", pathname: "/" }),
 }));
 
 // AuthGuard モック

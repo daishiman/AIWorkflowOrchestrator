@@ -21,7 +21,7 @@ import {
   resolveSemanticLabel,
   SEMANTIC_LABEL_MAP,
   type QuestionSemanticLabelMap,
-} from "@repo/shared/types/skillWizard";
+} from "../../../../../../../packages/shared/src/types/skill-wizard-label-map";
 import { ApplySummaryCard } from "./ApplySummaryCard";
 import { InterviewProgressBar } from "./InterviewProgressBar";
 import { validateSkillWizardScheduleConfig } from "../../../utils/scheduleConfigValidator";
@@ -94,6 +94,15 @@ function isQuestionAnswered(answer: QuestionAnswer): boolean {
   );
 }
 
+function isConversationAnswersEmpty(answers: ConversationAnswers): boolean {
+  return QUESTION_KEYS.every(
+    (k) =>
+      (answers[k].selectedOptions ?? []).length === 0 &&
+      !(answers[k].freeText ?? "").trim() &&
+      answers[k].scheduleConfig === undefined,
+  );
+}
+
 const QUESTION_KEYS = [
   "q1",
   "q2",
@@ -156,7 +165,7 @@ function createQuestionAnswer(
     return { selectedOptions: ["その他"], freeText: "Notion" };
   }
 
-  // SEMANTIC_LABEL_MAP（@repo/shared）を参照して rawValue を UI ラベルへ正規化する。
+  // skill-wizard-label-map.ts の SEMANTIC_LABEL_MAP を参照して rawValue を UI ラベルへ正規化する。
   // 未定義の questionId や rawValue はフォールバックとして元の値をそのまま使用する。
   const resolved = resolveSemanticLabel(normalizedKey, questionId, labelMap);
   const displayValue =
@@ -253,6 +262,7 @@ export const ConversationRoundStep = ({
   const [internalAnswers, setInternalAnswers] = useState<ConversationAnswers>(
     () => applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
   );
+  const previousAnswersRef = useRef<ConversationAnswers | null>(null);
   const [showSummaryCard, setShowSummaryCard] = useState(false);
   const [scheduleTouched, setScheduleTouched] = useState(false);
   const [timezoneTouched, setTimezoneTouched] = useState(false);
@@ -266,30 +276,29 @@ export const ConversationRoundStep = ({
   // 最小値1を保証（未回答でも「質問0/6」とは表示しない）
   const currentQuestion = Math.max(1, answeredCount);
 
-  // 内部操作による親→子エコーを識別するフラグ（問題12: 無限ループ防止）
-  const isInternalChangeRef = useRef(false);
-
   useEffect(() => {
     const signature = serializeConversationAnswers(internalAnswers);
     if (lastSyncedAnswersSignatureRef.current === signature) {
       return;
     }
     lastSyncedAnswersSignatureRef.current = signature;
-    isInternalChangeRef.current = true;
     onAnswersChange(internalAnswers);
   }, [internalAnswers, onAnswersChange]);
 
-  // answers prop 変化時に internalAnswers をリセット（問題12修正）
-  // 親から直接変更（リトライ等）の場合のみリセット。内部操作による echo は isInternalChangeRef で除外。
+  // 問題12修正: answers prop が空値（リトライによるリセット）に変化した場合に internalAnswers をリセット
   useEffect(() => {
-    if (isInternalChangeRef.current) {
-      isInternalChangeRef.current = false;
-      return;
+    const previousAnswers = previousAnswersRef.current;
+    previousAnswersRef.current = answers;
+
+    if (
+      previousAnswers &&
+      !isConversationAnswersEmpty(previousAnswers) &&
+      isConversationAnswersEmpty(answers)
+    ) {
+      setInternalAnswers(createEmptyAnswers());
     }
-    setInternalAnswers(
-      applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
-    );
-  }, [answers, smartDefaults]);
+    // 初回マウントで smart defaults を潰さないため、リセットは遷移時のみ行う。
+  }, [answers]);
 
   // ─── ハンドラ ───────────────────────────────────────────────────────────────
 

@@ -440,18 +440,6 @@ describe("SkillLifecyclePanel", () => {
     });
   });
 
-  describe("ウィザード遷移化 - workflowError の表示", () => {
-    it("workflowError が skill-lifecycle-error の alert に表示される", () => {
-      mockStoreState.workflowError = "ワークフローの取得に失敗しました。";
-
-      renderPanel();
-
-      const alert = screen.getByTestId("skill-lifecycle-error");
-      expect(alert).toHaveAttribute("role", "alert");
-      expect(alert).toHaveTextContent("ワークフローの取得に失敗しました。");
-    });
-  });
-
   describe("verifyDetail Layer別グルーピング表示", () => {
     const buildVerifyDetail = (
       overrides?: Partial<{

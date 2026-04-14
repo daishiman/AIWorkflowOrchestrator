@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴の先頭に `v10.09.47` を追加し、EC-NNN / SD-NNN 採番ルール・edge case 一覧表・仕様判断根拠テーブル導入を反映
+- `.agents/skills/task-specification-creator/SKILL.md` に同エントリを mirror sync
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を outputs/phase-12/ に生成
+
+### 背景
+
+FB-05 は docs-only / `spec_created` タスクとして Phase 11 テスト証跡テンプレートに新 3 セクションを導入した。skill-feedback-report.md に記録した LOW 2件（件数集約 / edge case 表カラム整理）は v2 テンプレートで既に解消済み。
+
 ## 2026-04-14 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -43,6 +55,18 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 ### 背景
 
 Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
+
+このログは task-specification-creator の current facts 同期履歴を残す。
+
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `SKILL.md` 変更履歴に v10.09.49 を追記
+- `SKILL.md` の `Phase 12 実行時によくある漏れ` に [FB-STATEDETAIL-001] を追加
+- `aiworkflow-requirements` 側の `task-workflow` / `task-workflow-completed` / `task-workflow-backlog` / `topic-map` / `LOGS` を current facts に同期
+
+### 背景
+Phase 10〜13 の current facts を閉じる際に、Phase 13 の skipped / blocked 記録と state detail の実装ガイドがずれると、Phase 12 の documentation が stale になりやすい。`isTemplateMode` wire-up と `generationLockRef` finally 解除を同波で固定した。
 
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
@@ -121,18 +145,6 @@ VISUAL タスクでは screenshot evidence と Phase 12 docs の current facts �
 ### 背景
 
 shared 型の追加に対して、`types/index` と `package index` の再公開だけでなく、`agentSlice` consumer wiring まで同 wave で閉じる必要があった。
-
-## 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 completed ledger sync
-
-### 変更内容
-- `task-workflow-backlog.md` の `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` を completed 扱いへ移管し、打ち消し線 + 完了注記を付与
-- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04e.md` に完了記録を追加
-- `task-workflow.md` の intro current facts に completion を反映
-- `docs/30-workflows/unassigned-task/task-ut-rt-01-renderer-error-ui-check-001.md` の status / issue 番号を #2007 に統一
-- `aiworkflow-requirements/LOGS.md` にも同波の同期ログを追記
-
-### 背景
-task-specification-creator 側でも task workflow の completed / backlog / issue 番号が分岐しないように、renderer error UI task の完了移管を同波で固定した。
 
 ## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
 
@@ -2683,28 +2695,3 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加） |
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。   |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                   |
-| 項目     | 内容                                                                                                                                                                                                                           |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
-| 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加）                                                     |
-| 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
-| 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
-
-## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `aiworkflow-requirements/LOGS.md` に TASK-SW-FIX-STATE-DETAIL-001 Phase 12 close-out エントリを追加
-- `task-specification-creator/LOGS.md` に本エントリを追加
-- `task-specification-creator/SKILL.md` に STATE-DETAIL Feedback エントリ（STATE-DETAIL-01/02/03）を追加
-
-### 背景
-
-TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の Phase 12 close-out sync。template error cancel 導線・answers reset・generationLockRef finally release の 3 修正を実装した知見を記録。UI state machine の 3 経路（正常完了・エラー・キャンセル）保証パターンを feedback として定型化。
-
-| 項目     | 内容                                                                                                                                                                                                                |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 種別     | bug-fix / state-management / Phase 12 close-out / skill-sync                                                                                                                                                        |
-| 変更対象 | `SkillCreateWizard.tsx`（resetGeneratedState / generationLockRef finally）、`GenerateStep.tsx`（template cancel 導線）、`ConversationRoundStep.tsx`（answers prop 再同期）                                          |
-| 結果     | template error → キャンセル → Step 0 戻り導線を実装。answers reset と generationLockRef.current = false を finally で保証。Phase 11 screenshot 3 枚・Phase 12 docs 6 件で close-out |
-| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）

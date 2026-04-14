@@ -1,83 +1,71 @@
 # Phase 12: ドキュメント変更履歴
 
-## タスク情報
-
-| 項目     | 内容                         |
-| -------- | ---------------------------- |
-| タスクID | TASK-SW-FIX-STATE-DETAIL-001 |
-| Phase    | 12                           |
-| 作成日   | 2026-04-14                   |
+## 対象: TASK-SW-FIX-STATE-DETAIL-001
 
 ---
 
-## current / baseline
+## Current Facts（今回の変更）
 
-| 区分     | 状態                                                                                                               |
-| -------- | ------------------------------------------------------------------------------------------------------------------ |
-| baseline | 変更前の state detail workflow。Phase 11 証跡なし、Phase 12 出力未作成。                                           |
-| current  | `internalAnswers` リセット、template cancel、q5 再計算、ロック解除、Phase 11 画像 bundle、Phase 12 docs 一式完了。 |
+### 実装変更ファイル
 
-## 変更ファイル一覧
+| ファイル                                                                      | 変更種別   | 変更内容                                          | 対応バグ   |
+| ----------------------------------------------------------------------------- | ---------- | ------------------------------------------------- | ---------- |
+| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | コード変更 | `useEffect([answers])` + `allEmpty` チェック追加  | 問題12     |
+| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | コード変更 | `isTemplateMode` prop + キャンセルボタン JSX 追加 | 問題13     |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | コード変更 | `useEffect([answers.q5])` + `finally` 修正        | 問題18・19 |
 
-### コード
+### テストファイル追加・変更
 
-| ファイル                                                                      | 変更                                               |
-| ----------------------------------------------------------------------------- | -------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | stale guard / q5 再計算 / lock release / mode 伝播 |
-| `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`          | template error の回復ボタン                        |
-| `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | `answers` 変化時の再初期化                         |
-| `apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs`           | Phase 11 screenshot bundle 生成                    |
+| ファイル                                                                                     | 変更種別   | 追加 TC                    |
+| -------------------------------------------------------------------------------------------- | ---------- | -------------------------- |
+| `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` | テスト追加 | TC-01, TC-02, TC-11        |
+| `apps/desktop/src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx`          | テスト追加 | TC-03, TC-04, TC-05, TC-12 |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`            | テスト追加 | TC-06〜TC-10, TC-13        |
 
-### テスト
+### 仕様書ファイル（新規作成）
 
-| ファイル                                                                                     | 変更                                   |
-| -------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`            | cancel 後の遅延 reject / mode 伝播検証 |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx`          | template cancel 表示検証               |
-| `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` | internalAnswers 再初期化検証           |
+| ファイル                                                                                               | Phase | 内容                     |
+| ------------------------------------------------------------------------------------------------------ | ----- | ------------------------ |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-1/requirements-definition.md`             | 1     | 要件定義書               |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-2/design-document.md`                     | 2     | 設計書                   |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-3/review-result.md`                       | 3     | 設計レビュー結果         |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-4/test-specifications.md`                 | 4     | テスト仕様書             |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-5/implementation-record.md`               | 5     | 実装記録                 |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-6/extended-test-record.md`                | 6     | テスト拡充記録           |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-7/coverage-report.md`                     | 7     | カバレッジレポート       |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-8/refactoring-record.md`                  | 8     | リファクタリング記録     |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-9/quality-report.md`                      | 9     | 品質保証レポート         |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-10/final-review-result.md`                | 10    | 最終レビュー結果         |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-11/manual-test-checklist.md`              | 11    | 手動テストチェックリスト |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-11/manual-test-result.md`                 | 11    | 手動テスト結果           |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-11/screenshot-plan.json`                  | 11    | スクリーンショット計画   |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/implementation-guide.md`               | 12    | 実装ガイド               |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/system-spec-update-summary.md`         | 12    | 仕様更新サマリ           |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/documentation-changelog.md`            | 12    | 本ファイル               |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/unassigned-task-detection.md`          | 12    | 未タスク検出             |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/skill-feedback-report.md`              | 12    | スキルフィードバック     |
+| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/phase-12/phase12-task-spec-compliance-check.md` | 12    | 準拠チェック             |
 
-### Phase 11 evidence
+---
 
-| ファイル                                         | 変更             |
-| ------------------------------------------------ | ---------------- |
-| `outputs/phase-11/manual-test-result.md`         | 結果固定         |
-| `outputs/phase-11/manual-test-report.md`         | 実施レポート     |
-| `outputs/phase-11/discovered-issues.md`          | 0件固定          |
-| `outputs/phase-11/ui-sanity-visual-review.md`    | 視覚レビュー     |
-| `outputs/phase-11/screenshot-plan.json`          | 撮影計画         |
-| `outputs/phase-11/screenshot-coverage.md`        | 100% coverage    |
-| `outputs/phase-11/phase11-capture-metadata.json` | capture metadata |
-| `outputs/phase-11/screenshots/*.png`             | 3枚追加          |
+## Baseline Facts（変更なし）
 
-### Phase 12 docs
+### 変更しなかったファイル（意図的 no-op）
 
-| ファイル                                                 | 変更                                        |
-| -------------------------------------------------------- | ------------------------------------------- |
-| `outputs/phase-12/implementation-guide.md`               | 中学生向け説明 + 技術説明 + screenshot refs |
-| `outputs/phase-12/system-spec-update-summary.md`         | current facts / parity / status 更新        |
-| `outputs/phase-12/documentation-changelog.md`            | 本ファイル                                  |
-| `outputs/phase-12/unassigned-task-detection.md`          | 0件固定                                     |
-| `outputs/phase-12/skill-feedback-report.md`              | 30思考法 traceability                       |
-| `outputs/phase-12/phase12-task-spec-compliance-check.md` | root evidence                               |
+| ファイル                                                                               | 理由                                                            |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `ConversationRoundStep.tsx` の既存 `useEffect([internalAnswers])`                      | 既存ロジックの責務を変更しない                                  |
+| `GenerateStep.tsx` の `showCancelButton` ロジック                                      | `isActive`（生成中）条件と `isTemplateMode`（エラー）条件は独立 |
+| `SkillCreateWizard.tsx` の `resolveExternalIntegration` 呼び出し（handleStep0Next 内） | 初期計算は変更しない                                            |
+| テストファイルの既存テスト（TC-01〜TC-10 以外）                                        | 回帰テストとして維持                                            |
 
-### ワークフロー / 台帳
+---
 
-| ファイル                                                                                       | 変更                       |
-| ---------------------------------------------------------------------------------------------- | -------------------------- |
-| `docs/30-workflows/WC-par-03a-fix-state-detail/index.md`                                       | completed / blocked へ更新 |
-| `docs/30-workflows/WC-par-03a-fix-state-detail/artifacts.json`                                 | completed / blocked へ更新 |
-| `docs/30-workflows/WC-par-03a-fix-state-detail/outputs/artifacts.json`                         | root 同値 mirror           |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                           | current facts 追加         |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                 | 完了記録追加               |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed-recent-2026-04g.md` | 新規作成                   |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`                                               | 更新                       |
-| `.claude/skills/task-specification-creator/LOGS.md`                                            | 更新                       |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`                                              | current facts 追記         |
-| `.claude/skills/task-specification-creator/SKILL.md`                                           | current facts 追記         |
-| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                                  | state detail section 追記  |
-| `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                               | bugfix ルックアップ追記    |
+## Validator 結果
 
-## 判定
-
-- current facts は workflow / code / screenshot / skill ledger の 4 面で整合。
-- baseline に対する差分は、すべて今回の bugfix に直接対応する。
+| チェック項目          | 結果        | 詳細                                                                             |
+| --------------------- | ----------- | -------------------------------------------------------------------------------- |
+| TypeScript 型チェック | PASS        | 変更対象ファイルで型エラーなし                                                   |
+| ESLint                | PASS        | 変更対象 TS/TSX ファイルで警告・エラーなし                                       |
+| Vitest 対象3ファイル  | exit code 0 | `ConversationRoundStep` / `GenerateStep` / `SkillCreateWizard` の 168 tests PASS |
+| Prettier フォーマット | PASS        | 変更対象 TS/TSX ファイルは Prettier check 通過                                   |
