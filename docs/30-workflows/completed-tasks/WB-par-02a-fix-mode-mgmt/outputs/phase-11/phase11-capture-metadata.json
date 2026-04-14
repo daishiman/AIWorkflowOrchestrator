@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-04-13T12:36:10.929Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5183",
+  "harnessPath": "/phase11-w1-par-02c-complete-step.html",
+  "viewportSet": [
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 1440,
+      "height": 1200
+    }
+  ],
+  "screenshots": [
+    {
+      "tcId": "step0",
+      "file": "step0-no-radio-button.png",
+      "output": "outputs/phase-11/screenshots/step0-no-radio-button.png",
+      "capturedAt": "2026-04-13T12:36:04.824Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "step0",
+      "file": "step0-filled.png",
+      "output": "outputs/phase-11/screenshots/step0-filled.png",
+      "capturedAt": "2026-04-13T12:36:05.679Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "step-",
+      "file": "step-indicator-stepN.png",
+      "output": "outputs/phase-11/screenshots/step-indicator-stepN.png",
+      "capturedAt": "2026-04-13T12:36:06.582Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "step1",
+      "file": "step1-conversation.png",
+      "output": "outputs/phase-11/screenshots/step1-conversation.png",
+      "capturedAt": "2026-04-13T12:36:07.477Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "step2",
+      "file": "step2-generating.png",
+      "output": "outputs/phase-11/screenshots/step2-generating.png",
+      "capturedAt": "2026-04-13T12:36:08.553Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "step3",
+      "file": "step3-complete.png",
+      "output": "outputs/phase-11/screenshots/step3-complete.png",
+      "capturedAt": "2026-04-13T12:36:10.926Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}

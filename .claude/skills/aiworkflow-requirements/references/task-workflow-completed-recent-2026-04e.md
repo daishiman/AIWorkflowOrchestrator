@@ -1,6 +1,62 @@
-# 完了タスク記録 — 2026-04-11
+# 完了タスク記録 — 2026-04-13
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正（2026-04-13）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-FEEDBACK-001                                                                   |
+| 完了日     | 2026-04-13                                                                                 |
+| タスク種別 | implementation（VISUAL / feedback fix）                                                    |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実装内容
+
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` に `useFetchSkills` を導入し、LLM モード成功時に `await fetchSkills()` を追加
+- `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx` で `skillPath === null` の場合はエラーUIを返すように変更
+- `CompleteStep` の成功ヘッダーは `skillPath !== null` の場合のみ表示するように是正
+- `outputs/phase-11/` に VISUAL 証跡 4枚と `phase11-capture-metadata.json` を保存
+- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / feedback / compliance を current facts に同期
+
+#### Phase 11/12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                       |
+| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+
+#### 検証証跡
+
+- `apps/desktop/scripts/capture-task-skill-fix-feedback-phase11.mjs`: PASS
+- `outputs/phase-11/screenshots/skill-list-updated-after-llm.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-error.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-null-no-success.png`: PASS
+- `outputs/phase-11/screenshots/complete-step-success.png`: PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `outputs/artifacts.json` / `docs/30-workflows/WB-par-02b-fix-feedback/artifacts.json`: parity PASS
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                 | 解決策                                                                 |
+| --- | ---------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | 画面証跡は Electron ではなく build から取る必要があった | Vite + Playwright の capture script を追加して current_build を固定した |
+| 2   | `skillPath===null` と `skillPath===""` の扱いを混同しやすい | 今回は `null` ガードに限定し、未タスク化は行わない方針に整理した      |
+
+#### lessons-learned
+
+- `phase11-capture-metadata.json` と screenshot path は Phase 12 implementation guide へ必ず逆参照する
+- `fetchSkills` 呼び忘れは LLM 成功パスの regression として test case で固定する
 
 ---
 
@@ -100,6 +156,52 @@
 #### lessons-learned
 
 - `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-SEMANTIC-001（L-CRON-SEM-001〜003）
+
+---
+
+### タスク: TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001                                                                                   |
+| 完了日     | 2026-04-13                                                                                                                |
+| タスク種別 | ui / docs / workflow-sync                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx` / `apps/desktop/src/renderer/phase11-task-ui-schedule-visual-picker.tsx` |
+| PR         | 未作成（Phase 13 blocked）                                                                                                |
+
+#### 実装内容
+
+- `VisualCronPicker` に `weeklyError` / `monthlyError` / `onValidationChange` を追加し、visual mode の妥当性を親へ通知
+- monthly error の文言を `1〜31` に統一
+- Phase 11 screenshot を `value=` 初期値注入で固定し、monthly invalid / valid を current build で再現
+- direct input / custom cron validation は別タスクとして分離
+- alert の微差分は follow-up task に切り出した
+
+#### Phase 12 成果物
+
+| 成果物                     | パス                                                              |
+| -------------------------- | ----------------------------------------------------------------- |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                   | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック      | `outputs/phase-12/phase12-task-spec-compliance-check.md`          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.validation.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/components/schedule/VisualCronPicker.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/integration/scheduleIntegration.test.tsx --reporter=dot`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `outputs/phase-11/screenshots/scene-01-weekly-empty-weekdays-error.png`
+- `outputs/phase-11/screenshots/scene-02-weekly-valid-weekdays-ok.png`
+- `outputs/phase-11/screenshots/scene-03-monthly-invalid-date-error.png`
+- `outputs/phase-11/screenshots/scene-04-monthly-valid-date-ok.png`
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001
 
 ---
 
@@ -204,6 +306,28 @@
   - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
   - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
 - lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 完了日: 2026-04-13
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（対称パターン参考）
+- 関連Issue: #2108
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/renderer/utils/cronParser.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronParser.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronHumanizer.test.ts`
+  - `apps/desktop/src/__tests__/components/schedule/VisualCronPicker.test.tsx`
+- AC一覧:
+  - AC-1: dayOfMonth が整数かつ 1〜31 の範囲外なら空文字を返す（例外なし）PASS
+  - AC-2: 正常な dayOfMonth では既存の cron 式を返す PASS
+  - AC-3: cronParser.ts で不正 monthly は custom にフォールバック PASS
+- lessons-learned: `references/lessons-learned-current-2026-04.md` §MONTHLY-GUARD（L-MTHGRD-001〜003）
 
 ---
 
