@@ -556,6 +556,7 @@
     ],
     "HTTP": [
       "api-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "ステータスコード": [
@@ -2482,6 +2483,10 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "PROVIDER": [
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
@@ -7574,6 +7579,9 @@
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md"
     ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "フィールド独立推論性": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
@@ -7820,6 +7828,15 @@
     "cron": [
       "lessons-learned-current-2026-04.md"
     ],
+    "VisualCronPicker": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md"
+    ],
+    "validation": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
     "WEEKGRD": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7884,15 +7901,6 @@
     ],
     "宣言を明示する": [
       "lessons-learned-current-2026-04.md"
-    ],
-    "VisualCronPicker": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md"
-    ],
-    "validation": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "DESCRIBE": [
       "lessons-learned-current-2026-04.md",
@@ -9615,9 +9623,6 @@
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
-    ],
-    "PROVIDER": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "quality": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -14138,9 +14143,6 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
-    ],
-    "テスト証跡一本化テンプレート": [
-      "lessons-learned-current-2026-04.md"
     ]
   }
 }

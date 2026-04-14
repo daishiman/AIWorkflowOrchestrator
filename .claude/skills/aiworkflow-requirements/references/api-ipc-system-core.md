@@ -71,19 +71,20 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | XSS攻撃                    | React自動エスケープ + IPC経由で文字列のみ送信 |
 | レート制限対応             | プロバイダー側のレート制限エラーを通知        |
 
-## Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001）
+## Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001 / UT-W3-ANALYTICS-HTTP-PROVIDER-001）
 
-> 実装同期: 2026-04-12  
+> 実装同期: 2026-04-14
 > ステータス: `implemented`
 
-`trackEvent` の sink を Main プロセスへ橋渡しするために、analytics 専用 invoke チャネルを追加した。  
-呼び出しは Renderer 直接送信ではなく、Preload API を経由する。
+`trackEvent` の sink を Main プロセスへ橋渡しするために analytics 専用 invoke チャネルを追加した。  
+呼び出しは Renderer 直接送信ではなく Preload API を経由する。Main 側の実送信は `AnalyticsHttpProvider` が担い、送信統計は `analytics:get-stats` で参照する。
 
 ### チャネル一覧
 
 | チャネル | 方向 | 用途 | Request | Response |
 | --- | --- | --- | --- | --- |
-| `analytics:send` | Renderer → Main | usage event の受信・記録 | `{ eventName, payload, timestamp, optedOut? }` | `{ success, skipped?, error? }` |
+| `analytics:send` | Renderer → Main | usage event の受信・送信依頼 | `{ eventName, payload, timestamp, optedOut? }` | `{ success, skipped?, error?, retryCount? }` |
+| `analytics:get-stats` | Renderer → Main | 送信統計・opt-out 状態取得 | なし | `{ sentCount, failedCount, analyticsOptOut }` |
 
 ### current contract
 
@@ -91,16 +92,19 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | --- | --- | --- |
 | Renderer | `apps/desktop/src/renderer/utils/trackEvent.ts` | dev は `console.info` のみ。prod は `getAnalyticsAdapter().send()` |
 | Renderer Adapter | `apps/desktop/src/renderer/utils/analyticsAdapter.ts` | offline queue（max 500 / TTL 7日）、store 由来 `analyticsOptOut` 判定、online 復帰 flush |
-| Preload Channel | `apps/desktop/src/preload/channels.ts` | `IPC_CHANNELS.ANALYTICS_SEND = "analytics:send"` と `ALLOWED_INVOKE_CHANNELS` 登録 |
-| Preload API | `apps/desktop/src/preload/index.ts` | `analyticsAPI.send(request)` を `contextBridge` 公開 |
-| Main IPC | `apps/desktop/src/main/ipc/analyticsHandler.ts` | payload 検証 + `analyticsOptOut` 最終判定 + 開発時ログ記録 + `sendToAnalyticsProvider` による production-only HTTP POST（`ANALYTICS_ENDPOINT_URL` / `AbortController` 5000ms / 失敗は握り潰し） |
+| Preload Channel | `apps/desktop/src/preload/channels.ts` | `IPC_CHANNELS.ANALYTICS_SEND = "analytics:send"` / `IPC_CHANNELS.ANALYTICS_GET_STATS = "analytics:get-stats"` と `ALLOWED_INVOKE_CHANNELS` 登録 |
+| Preload API | `apps/desktop/src/preload/index.ts` | `analyticsAPI.send(request)` / `analyticsAPI.getStats()` を `contextBridge` 公開 |
+| Main IPC | `apps/desktop/src/main/ipc/analyticsHandler.ts` | payload 検証 + `analyticsOptOut` 最終判定 + 開発時ログ記録 + `AnalyticsHttpProvider` へ委譲。`ANALYTICS_ENDPOINT_URL` 未設定時は no-op、4xx は非 retry、5xx/abort/network は retry、`sentCount` / `failedCount` を更新 |
+| Analytics Service | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts` | HTTP POST、指数バックオフ最大 3 回、AbortController 5 秒 timeout、store DI、`skipped` 伝播 |
 | Main Registry | `apps/desktop/src/main/ipc/index.ts` | `registerAnalyticsHandlers()` で起動時登録 |
 
 ### セキュリティ・運用ルール
 
 - opt-out は Renderer と Main の二重判定で強制する
 - store 読み取り失敗時は safe-side で送信抑止する
-- 本チャネルは fire-and-forget で扱うが、handler 側は validation failure のみ `success: false` を返し、HTTP 送信失敗は握り潰して `success: true` を維持する
+- `AnalyticsHttpProvider` は URL をログに出さず、失敗時も例外を外へ投げない
+- `analytics:send` は handler の `skipped` を落とさず、そのまま Renderer に返す
+- `analytics:get-stats` は `sentCount` / `failedCount` / `analyticsOptOut` のみ返し、URL は公開しない
 
 ---
 

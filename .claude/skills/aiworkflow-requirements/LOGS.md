@@ -122,6 +122,19 @@ Phase 12 close-out 後の ledger sync（backlog→completed）は 2026-04-13 に
 
 Renderer 側エラーメッセージ UI の完成扱いを backlog / completed / task-workflow / issue 番号で同一化し、Phase 12 close-out 後の current facts が分岐しないようにした。今回の同期はドキュメントと台帳の整合性を閉じるためのもので、実装ファイルには触れていない。
 
+## 2026-04-14 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 current facts sync
+
+### 変更内容
+- `references/api-ipc-system-core.md` を `AnalyticsHttpProvider` / `analytics:get-stats` / `sentCount` / `failedCount` の current contract へ更新
+- `references/environment-variables.md` を `ANALYTICS_ENDPOINT_URL` の no-op / non-production-only 前提なしの扱いへ更新
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04e.md` に analytics HTTP provider 完了記録を追加
+- `references/lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜004 を追加
+- `scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `docs/30-workflows/UT-W3-ANALYTICS-HTTP-PROVIDER-001/outputs/phase-12/` 6成果物を current facts へ同期
+
+### 背景
+analytics transport の実装は Main IPC 直書きではなく `AnalyticsHttpProvider` へ切り出され、stats API も追加された。旧 `sendToAnalyticsProvider` / production-only 前提を残すと later task の current facts がずれるため、same-wave で同期した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 補完同期（L-FB05-004追加・keywords補完・topic-map詳細化）
 
 ### 変更内容
