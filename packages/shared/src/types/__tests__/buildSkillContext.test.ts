@@ -4,7 +4,11 @@
  * TC-07〜TC-08: buildSkillGenerationPrompt テスト
  */
 import { describe, it, expect } from "vitest";
-import { buildSkillContext, buildSkillGenerationPrompt } from "../skillCreator";
+import {
+  buildSkillContext,
+  buildSkillGenerationPrompt,
+  resolvePrimarySkillCategory,
+} from "../skillCreator";
 import type {
   ConversationAnswers,
   SkillCreationContext,
@@ -40,7 +44,7 @@ describe("buildSkillContext", () => {
       const formData: SkillInfoFormData = {
         skillName: "my-skill",
         purpose: "メール自動整理",
-        category: "automation",
+        category: ["automation"],
       };
       const answers = makeAnswers({
         q1: { selectedOptions: [], freeText: "一般ユーザー" },
@@ -64,8 +68,34 @@ describe("buildSkillContext", () => {
       expect(context.q6Constraints).toBe("完了メッセージ");
     });
 
+    it("複数カテゴリが選択されていても代表値は優先順で決まり、入力順に依存しない", () => {
+      const formData: SkillInfoFormData = {
+        skillName: "my-skill",
+        purpose: "メール自動整理",
+        category: ["code-support", "automation", "data-analysis"],
+      };
+
+      const context = buildSkillContext(formData, makeAnswers());
+
+      expect(context.category).toBe("automation");
+      expect(
+        resolvePrimarySkillCategory([
+          "data-analysis",
+          "code-support",
+          "automation",
+        ]),
+      ).toBe("automation");
+      expect(
+        resolvePrimarySkillCategory([
+          "automation",
+          "code-support",
+          "data-analysis",
+        ]),
+      ).toBe("automation");
+    });
+
     it("freeText が selectedOptions より優先される", () => {
-      const formData: SkillInfoFormData = { purpose: "テスト", category: null };
+      const formData: SkillInfoFormData = { purpose: "テスト", category: [] };
       const answers = makeAnswers({
         q1: { selectedOptions: ["選択肢A"], freeText: "手入力テキスト" },
       });
@@ -76,7 +106,7 @@ describe("buildSkillContext", () => {
     });
 
     it("freeText が空の場合 selectedOptions が使われる", () => {
-      const formData: SkillInfoFormData = { purpose: "テスト", category: null };
+      const formData: SkillInfoFormData = { purpose: "テスト", category: [] };
       const answers = makeAnswers({
         q1: { selectedOptions: ["開発者", "運用担当者"], freeText: "" },
       });
@@ -89,7 +119,7 @@ describe("buildSkillContext", () => {
 
   describe("TC-02: 空文字フィールドが undefined に正規化される", () => {
     it("freeText が空文字の場合 undefined になる", () => {
-      const formData: SkillInfoFormData = { purpose: "テスト", category: null };
+      const formData: SkillInfoFormData = { purpose: "テスト", category: [] };
       const answers = makeAnswers({
         q1: { selectedOptions: [], freeText: "" },
       });
@@ -100,7 +130,7 @@ describe("buildSkillContext", () => {
     });
 
     it("freeText がスペースのみの場合 undefined になる", () => {
-      const formData: SkillInfoFormData = { purpose: "テスト", category: null };
+      const formData: SkillInfoFormData = { purpose: "テスト", category: [] };
       const answers = makeAnswers({
         q2: { selectedOptions: [], freeText: "   " },
       });
@@ -114,7 +144,7 @@ describe("buildSkillContext", () => {
       const formData: SkillInfoFormData = {
         skillName: "",
         purpose: "テスト",
-        category: null,
+        category: [],
       };
       const context = buildSkillContext(formData, makeAnswers());
 
@@ -124,7 +154,7 @@ describe("buildSkillContext", () => {
     it("category が null の場合 undefined になる", () => {
       const formData: SkillInfoFormData = {
         purpose: "テスト",
-        category: null,
+        category: [],
       };
       const context = buildSkillContext(formData, makeAnswers());
 
@@ -136,7 +166,7 @@ describe("buildSkillContext", () => {
     it("入力されたフィールドのみ値を持ち、未入力は undefined", () => {
       const formData: SkillInfoFormData = {
         purpose: "タスク管理",
-        category: null,
+        category: [],
       };
       const answers = makeAnswers({
         q1: { selectedOptions: ["PM"], freeText: "" },

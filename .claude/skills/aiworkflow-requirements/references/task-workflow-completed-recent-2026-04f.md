@@ -1,8 +1,50 @@
-# 完了タスク記録 — 2026-04-13
+# 完了タスク記録 — 2026-04-14
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
 ---
+
+### タスク: TASK-SW-FIX-UI-001 UI整合性修正（2026-04-14）
+
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-FIX-UI-001                                                                                          |
+| ステータス | **完了（実装 + 仕様同期）**                                                                                 |
+| タイプ     | ui-consistency / visual-audit / workflow-sync                                                               |
+| 優先度     | 低                                                                                                          |
+| 完了日     | 2026-04-14                                                                                                  |
+| 対象       | `docs/30-workflows/WC-par-03b-fix-ui/` / `packages/shared/src/types/skillCreator.ts` / `apps/desktop/src/renderer/components/skill/` |
+| 成果物     | `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/`                                                     |
+| PR         | 未作成（Phase 13 blocked）                                                                                  |
+
+#### 実施内容
+
+- `SkillInfoFormData.category` を `SkillCategory[]` 化し、`resolvePrimarySkillCategory()` で代表カテゴリを決定するようにした
+- `SkillInfoStep` / `ConversationRoundStep` / `ApplySummaryCard` / `SkillCreateWizard` の current facts を UI 整合性修正後の内容へ揃えた
+- Phase 11 のスクリーンショット 9 枚と DevTools audit PASS を current facts として保存した
+- Phase 12 の canonical 6 成果物と root / outputs の artifacts parity を completed で固定した
+
+#### 検証証跡
+
+| コマンド / 証跡 | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit --pretty false` | PASS |
+| `outputs/phase-11/screenshot-manifest.json` | PASS（9 PNGs） |
+| `outputs/phase-11/devtools-audit.md` | PASS（Console error count 0） |
+| `artifacts.json` / `outputs/artifacts.json` | PASS（parity） |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策 |
+| --- | --- |
+| 代表カテゴリを `category[0]` で固定すると選択順に依存する | `resolvePrimarySkillCategory()` に置き換えて優先順位を共通化した |
+| Phase 11 証跡と Phase 12 文書の同期がずれやすい | 9 枚のスクリーンショットと audit PASS を Phase 12 側でも明示した |
+
+#### lessons-learned
+
+- UI の current facts は実装・証跡・台帳を同 wave で閉じる
+- 配列化した state で単一値を要する経路は、暗黙の先頭参照より明示的な優先順位関数が安全
 
 ### タスク: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration（2026-04-13）
 

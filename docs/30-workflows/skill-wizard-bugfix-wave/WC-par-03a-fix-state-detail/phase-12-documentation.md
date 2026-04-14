@@ -8,8 +8,8 @@
 | Phase名    | ドキュメント更新             |
 | 対象機能   | TASK-SW-FIX-STATE-DETAIL-001 |
 | 前提Phase  | Phase 11: 手動テスト         |
-| 次Phase    | Phase 13: PR作成             |
-| ステータス | pending                      |
+| 次Phase    | Phase 13: PR作成（skipped）  |
+| ステータス | completed                    |
 | 作成日     | 2026-04-12                   |
 
 ## 目的
@@ -59,9 +59,9 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 - TypeScriptの型定義、APIシグネチャ/使用例、エラーハンドリング、エッジケース、設定可能パラメータ/定数一覧を含める
 - `useEffect` 依存配列に `answers` を追加して `internalAnswers` の残留を防ぐ
-- `GenerateStep` の template モードにキャンセルボタンを追加し、Step 0 へ戻れる導線を明示する
-- `resolveExternalIntegration` を `q5` 変更後に再計算し、外部統合の表示値を最新化する
-- `generationLockRef` を `finally` で必ず解除し、キャンセル・失敗・成功のいずれでも再実行可能にする
+- `GenerateStep` の template モードキャンセル導線は current facts として反映済みで、Step 0 へ戻れる設計を明示する
+- `resolveExternalIntegration` は `q5` 変更後に再計算され、外部統合の表示値を最新化する
+- `generationLockRef` は `finally` で必ず解除され、キャンセル・失敗・成功のいずれでも再実行可能である
 - 4件の修正箇所を file path 単位で明記する
 - 設定可能パラメータ/定数は `answers`、`internalAnswers`、`q5`、`generationLockRef` の4系統で整理する
 
@@ -94,7 +94,7 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 ### Step 2: システム仕様更新
 
 - `ConversationRoundStep` / `GenerateStep` / `SkillCreateWizard` の state contract を `system-spec-update-summary.md` に記録する
-- `useEffect` 依存配列、キャンセル導線、`resolveExternalIntegration` 再計算、`generationLockRef` 解除の current facts と no-op / update 判定を残す
+- `useEffect` 依存配列、template モードキャンセル導線、`resolveExternalIntegration` 再計算、`generationLockRef` 解除の current facts と no-op / update 判定を残す
 - `artifacts.json` と `outputs/artifacts.json` の同期結果を final evidence として記録する
 
 成果物: `outputs/phase-12/system-spec-update-summary.md`
@@ -162,20 +162,20 @@ UI の表示と実際の状態をそろえることが、使いやすさと安�
 
 ## 完了条件
 
-- [ ] 必須6成果物が揃っている
-- [ ] 計画系文言が除去されている
-- [ ] skill準拠結果が記録されている
-- [ ] 30思考法の総括が残っている
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
+- [x] 必須6成果物が揃っている
+- [x] 計画系文言が除去されている
+- [x] skill準拠結果が記録されている
+- [x] 30思考法の総括が残っている
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 
-→ [Phase 13: PR作成](./phase-13-pr-creation.md)
+→ [Phase 13: PR作成](./phase-13-pr-creation.md)（skipped / blocked）
