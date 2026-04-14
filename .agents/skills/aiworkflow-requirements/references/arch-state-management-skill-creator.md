@@ -340,44 +340,6 @@ guidance --> degraded: Manual 操作キャンセル
 - `hasActivatedLlmMode`
 - `planSkill()` / `executePlan()` / `getWorkflowState()` を Wizard 内で直接扱う前提
 
----
-
-## SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts）
-
-> current facts 同期日: 2026-04-14
-
-### 概要
-
-`SkillCreateWizard` の state detail は、template error / cancel / retry / answers 再同期を wizard scope で完結させる。
-`catch` 側では stale reject を弾き、`finally` 側で `generationLockRef` を確実に解放する。
-`ConversationRoundStep` の local state は `answers` prop の変更に追随し、Step 1 の再訪問や template recovery 後も親 state と乖離しない。
-
-### state / ref
-
-| 項目 | current facts |
-| --- | --- |
-| `generationLockRef` | 生成中の再入防止。cancel / error / success のいずれでも `finally` で解除する |
-| `templateGenerationRequestIdRef` | 古い `createSkill()` 応答を破棄する stale guard |
-| `answers` | Step 1 の質問回答 state。prop 変更時に local state を再初期化する |
-| `smartDefaults` | Step 0 の推論結果。template recovery でも再計算せず維持する |
-
-### handlers
-
-| ハンドラ | current facts |
-| --- | --- |
-| `handleGenerate(method)` | template / skip 系の失敗も含めて current request を開始し、`templateGenerationRequestIdRef` で過去応答を無効化する |
-| `handleCancelGeneration()` | 進行中生成を中断し、error / progress state をクリアして Step 0 へ戻す |
-| `handleRetry()` | 生成結果関連 state を初期化し、入力値を維持したまま Step 0 に戻す |
-
-### current rules
-
-| 項目 | current facts |
-| --- | --- |
-| stale reject guard | cancel 後に遅延 reject が届いても UI error を再表示しない |
-| lock release | `generationLockRef` は success / error / cancel の全経路で解放する |
-| answers reset | `answers` prop が更新されたら local `internalAnswers` を再初期化する |
-| template recovery | template 失敗時のみ `最初からやり直す` を導線として露出する |
-
 ### 関連タスク
 
 | タスクID | 内容 | ステータス |

@@ -1281,6 +1281,91 @@
 | 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針）     |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-001                                                                                                                                               |
 
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
+
+### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
+
+**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
+**バージョン**: 3.14.0相当
+
+**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
+**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
+**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
+**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
+**実装パターン**:
+
+```typescript
+if (weekdays.length === 0) {
+  throw new InvalidConfigError(
+    "weekdays must not be empty when frequency is 'weekly'",
+  );
+}
+```
+
+**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容                                                                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる                                                                 |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった                                                                |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した                                                       |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                                         |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった                                                                                                  |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した                                                    |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる）                                            |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                               |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容                                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続                      |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない                                                              |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル）                                                                                                          |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                  |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                                              | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                                             |
+
+---
+
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
+
+### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
+
+**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
+**バージョン**: 3.14.0相当
+
+**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
+**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
+**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
+**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
+**実装パターン**:
+
+```typescript
+if (weekdays.length === 0) {
+  throw new InvalidConfigError(
+    "weekdays must not be empty when frequency is 'weekly'",
+  );
+}
+```
+
+**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
+
+---
 
 ## TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12）
 

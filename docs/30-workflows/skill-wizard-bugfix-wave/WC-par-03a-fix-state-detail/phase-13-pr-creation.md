@@ -33,23 +33,18 @@ PRを作成する。今回はユーザー指示により PR / push / commit を�
 
 ## 参照資料
 
-| 資料名               | パス                                             | 説明               |
-| -------------------- | ------------------------------------------------ | ------------------ |
-| 設計書               | `outputs/phase-2/design-document.md`             | 背景要約           |
-| 実装記録             | `outputs/phase-5/implementation-record.md`       | 修正内容           |
-| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`        | テスト差分         |
-| カバレッジレポート   | `outputs/phase-7/coverage-report.md`             | coverage要約       |
-| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`          | 整理内容           |
-| 品質保証レポート     | `outputs/phase-9/quality-report.md`              | 品質ゲート         |
-| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`        | 判定               |
-| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`         | evidence状態       |
-| 手動テストレポート   | `outputs/phase-11/manual-test-report.md`         | 実施概要           |
-| 発見課題一覧         | `outputs/phase-11/discovered-issues.md`          | blocker / note     |
-| 視覚レビュー         | `outputs/phase-11/ui-sanity-visual-review.md`    | UI/UX 所見         |
-| 画面カバレッジ       | `outputs/phase-11/screenshot-coverage.md`        | 100% 判定          |
-| capture メタデータ   | `outputs/phase-11/phase11-capture-metadata.json` | evidence inventory |
-| ドキュメント更新     | `phase-12-documentation.md`                      | 直前成果物         |
-| ローカルチェック結果 | `outputs/phase-13/local-check-result.md`         | 実行時に更新       |
+| 資料名               | パス                                       | 説明         |
+| -------------------- | ------------------------------------------ | ------------ |
+| 設計書               | `outputs/phase-2/design-document.md`       | 背景要約     |
+| 実装記録             | `outputs/phase-5/implementation-record.md` | 修正内容     |
+| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`  | テスト差分   |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | coverage要約 |
+| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`    | 整理内容     |
+| 品質保証レポート     | `outputs/phase-9/quality-report.md`        | 品質ゲート   |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`  | 判定         |
+| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`   | evidence状態 |
+| ドキュメント更新     | `phase-12-documentation.md`                | 直前成果物   |
+| ローカルチェック結果 | `outputs/phase-13/local-check-result.md`   | 実行時に更新 |
 
 ## 成果物
 
