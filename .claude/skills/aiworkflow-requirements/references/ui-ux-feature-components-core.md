@@ -160,6 +160,36 @@
 
 ---
 
+## VisualCronPicker UI validation（TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001）
+
+`VisualCronPicker` の UI バリデーションは、visual mode の `weeklyError` / `monthlyError` を親へ通知しながら、alert を inline 表示する contract である。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `VisualCronPicker` | organism | - | `onValidationChange` と visual validation 状態を管理 |
+| `WeekdaySelector` | molecule | `VisualCronPicker` | 曜日の選択 UI のみ担当 |
+| `DayOfMonthSelector` | molecule | `VisualCronPicker` | 日付選択 UI のみ担当 |
+| inline alert | atom | `VisualCronPicker` | `role="alert"` でエラーを表示 |
+
+### 表示ルール
+
+| 状態 | 条件 | 表示 |
+| --- | --- | --- |
+| weekly error | `frequency === "weekly"` かつ `weekdays.length === 0` | `text-xs` の alert |
+| monthly error | `frequency === "monthly"` かつ `dayOfMonth < 1 || dayOfMonth > 31` | `text-sm` の alert |
+| valid | 上記以外 | alert 非表示 |
+
+### 契約
+
+- `onValidationChange?: (isValid: boolean) => void`
+- visual validation の責務は `VisualCronPicker` に集約する
+- direct input / custom cron のバリデーションは別タスクで扱う
+- Phase 11 の証跡は `outputs/phase-11/screenshots/*.png` と `phase11-capture-metadata.json` で固定する
+
+---
+
 ## Community Visualization UI コンポーネント（CONV-08-05）
 
 コミュニティ構造を可視化するUIコンポーネント群。グラフベースのコミュニティ表示、フィルタリング、検索、詳細表示などの機能を提供する。

@@ -11,10 +11,13 @@
 | 優先度       | **中**                                                         |
 | 見積もり規模 | 中規模                                                         |
 | タスク種別   | VISUAL                                                         |
-| ステータス   | 未着手                                                         |
+| ステータス   | 参照用（正式タスクへ昇格済み）                                 |
 | 発見元       | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 Phase 12 未タスク検出 |
 | 発見日       | 2026-04-12                                                     |
 | 依存タスク   | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001（推奨）                |
+
+> 注記: この未タスク記録は後に正式タスク `docs/30-workflows/TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001/` として実施済み。
+> ここでは発見当時のメモを残し、現行の実施状況は正式タスク側を参照する。
 
 ---
 
