@@ -11,9 +11,9 @@ const TOOL_KEYWORDS: Array<{
   keyword: string;
   tool: NonNullable<SmartDefaultResult["tool"]>;
 }> = [
-  { keyword: "Slack", tool: "slack" },
-  { keyword: "GitHub", tool: "github" },
-  { keyword: "Notion", tool: "notion" },
+  { keyword: "slack", tool: "slack" },
+  { keyword: "github", tool: "github" },
+  { keyword: "notion", tool: "notion" },
 ];
 
 const SCHEDULED_PATTERN = /毎日|毎週|定期|スケジュール/;
@@ -27,8 +27,9 @@ function inferTool(purpose: string): {
   tool: SmartDefaultResult["tool"];
   log: string | null;
 } {
+  const normalizedPurpose = purpose.toLowerCase();
   for (const { keyword, tool } of TOOL_KEYWORDS) {
-    if (purpose.includes(keyword)) {
+    if (normalizedPurpose.includes(keyword)) {
       return {
         tool,
         log: `purpose に '${keyword}' を検出 → tool = '${tool}'`,
@@ -61,16 +62,16 @@ function inferFormat(category: SkillInfoFormData["category"]): {
   format: SmartDefaultResult["format"];
   log: string | null;
 } {
-  if (category === "code-support") {
+  if (category.includes("code-support")) {
     return {
       format: "code",
-      log: "category = 'code-support' → format = 'code'",
+      log: "category includes 'code-support' → format = 'code'",
     };
   }
-  if (category === "data-analysis") {
+  if (category.includes("data-analysis")) {
     return {
       format: "structured",
-      log: "category = 'data-analysis' → format = 'structured'",
+      log: "category includes 'data-analysis' → format = 'structured'",
     };
   }
   return { format: null, log: null };

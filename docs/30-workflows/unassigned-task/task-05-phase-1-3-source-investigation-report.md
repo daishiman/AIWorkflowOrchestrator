@@ -2,6 +2,11 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 2158
+task_id: TASK-05-SOURCE-INVESTIGATION
+```
+
 | 項目     | 内容                                           |
 | -------- | ---------------------------------------------- |
 | 調査ID   | TASK-05-SOURCE-INVESTIGATION                   |

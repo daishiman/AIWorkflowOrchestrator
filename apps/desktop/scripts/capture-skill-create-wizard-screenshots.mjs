@@ -187,7 +187,8 @@ const defaultScenarios = [
 
 const modeMgmtScenarios = [
   {
-    file: "step0-no-radio-button.png",
+    tcId: "TC-01",
+    file: "step-0-no-radio.png",
     route: wizardRoute,
     selector: '[data-testid="wizard-step-info"]',
     viewport: { width: 1440, height: 900 },
@@ -195,73 +196,58 @@ const modeMgmtScenarios = [
     note: "Step 0 の初期表示。ラジオボタンが存在しないことを確認する。",
   },
   {
-    file: "step0-filled.png",
-    route: wizardRoute,
-    selector: '[data-testid="wizard-step-info"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "dark",
-    preCapture: async (page) => {
-      await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
-      await page.click('button[aria-label="外部連携"]');
-      await page.waitForTimeout(150);
-    },
-  },
-  {
-    file: "step-indicator-stepN.png",
-    route: wizardRoute,
-    selector: 'nav[aria-label="ウィザードの進捗"]',
-    captureSelector: 'nav[aria-label="ウィザードの進捗"]',
-    viewport: { width: 1440, height: 900 },
-    colorScheme: "dark",
-    preCapture: async (page) => {
-      await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
-      await page.click('button[aria-label="外部連携"]');
-      await page.getByRole("button", { name: "次へ" }).click();
-      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
-      await page.waitForTimeout(150);
-    },
-  },
-  {
-    file: "step1-conversation.png",
+    tcId: "TC-03",
+    file: "step-1-conversation.png",
     route: wizardRoute,
     selector: '[data-testid="wizard-step-conversation-round"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
       await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
+      await page.fill("#purpose", "毎朝Slackに通知するスキルを作成したい");
       await page.click('button[aria-label="外部連携"]');
       await page.getByRole("button", { name: "次へ" }).click();
-      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
       await page.waitForTimeout(150);
     },
   },
   {
-    file: "step2-generating.png",
+    tcId: "TC-05",
+    file: "step-1-questions.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-conversation-round"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "朝の通知ワークフロー");
+      await page.fill("#purpose", "毎朝Slackに通知するスキルを作成したい");
+      await page.click('button[aria-label="外部連携"]');
+      await page.getByRole("button", { name: "次へ" }).click();
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.getByRole("button", { name: "次のページ" }).click();
+      await page.waitForSelector("text=Q4: 出力先（どこへ）");
+      await page.waitForTimeout(150);
+    },
+  },
+  {
+    tcId: "TC-06A",
+    file: "step-2-generating.png",
     route: `${wizardRoute}?mode=slow`,
     selector: '[data-testid="wizard-step-generate"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
       await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
+      await page.fill("#purpose", "毎朝Slackに通知するスキルを作成したい");
       await page.click('button[aria-label="外部連携"]');
       await page.getByRole("button", { name: "次へ" }).click();
-      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
       await page.getByRole("button", { name: "次のページ" }).click();
       await page.waitForTimeout(120);
       await page.getByRole("button", { name: "今すぐ生成する" }).click();
@@ -272,26 +258,164 @@ const modeMgmtScenarios = [
     },
   },
   {
-    file: "step3-complete.png",
+    tcId: "TC-06B",
+    file: "step-3-complete.png",
     route: `${wizardRoute}?mode=slow`,
     selector: '[data-testid="wizard-step-complete"]',
     viewport: { width: 1440, height: 900 },
     colorScheme: "dark",
     preCapture: async (page) => {
       await page.fill("#skill-name", "朝の通知ワークフロー");
-      await page.fill(
-        "#purpose",
-        "毎朝Slackに通知するスキルを作成したい",
-      );
+      await page.fill("#purpose", "毎朝Slackに通知するスキルを作成したい");
       await page.click('button[aria-label="外部連携"]');
       await page.getByRole("button", { name: "次へ" }).click();
-      await page.waitForSelector('[data-testid="wizard-step-conversation-round"]');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
       await page.getByRole("button", { name: "次のページ" }).click();
       await page.waitForTimeout(120);
       await page.getByRole("button", { name: "今すぐ生成する" }).click();
       await page.waitForSelector('[aria-label="適用サマリー"]');
       await page.getByRole("button", { name: "生成する", exact: true }).click();
       await page.waitForSelector('[data-testid="wizard-step-complete"]');
+      await page.waitForTimeout(200);
+    },
+  },
+];
+
+const stateDetailScenarios = [
+  {
+    tcId: "MTC-01",
+    priority: "A",
+    file: "MTC-01-template-error-cancel.png",
+    route: `${wizardRoute}?mode=error&templateMode=1`,
+    selector: '[data-testid="wizard-step-generate"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "テンプレート確認スキル");
+      await page.fill("#purpose", "Slackで日報を送るテンプレートを確認する");
+      await page.click('button[aria-label="外部連携"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.click('button:has-text("次のページ")');
+      await page.click('button:has-text("今すぐ生成する")');
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.click('button:has-text("生成する")');
+      await page.waitForSelector('[data-testid="wizard-step-generate"]');
+      await page.waitForSelector('button:has-text("キャンセル")');
+      await page.waitForTimeout(200);
+    },
+  },
+  {
+    tcId: "MTC-02",
+    priority: "A",
+    file: "MTC-02-template-cancel-step0.png",
+    route: `${wizardRoute}?mode=error&templateMode=1`,
+    selector: '[data-testid="wizard-step-info"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "テンプレート確認スキル");
+      await page.fill("#purpose", "Slackで日報を送るテンプレートを確認する");
+      await page.click('button[aria-label="外部連携"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.click('button:has-text("次のページ")');
+      await page.click('button:has-text("今すぐ生成する")');
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.click('button:has-text("生成する")');
+      await page.waitForSelector('[data-testid="wizard-step-generate"]');
+      await page.click('button:has-text("キャンセル")');
+      await page.waitForSelector('[data-testid="wizard-step-info"]');
+      await page.waitForTimeout(200);
+    },
+  },
+  {
+    tcId: "MTC-03",
+    priority: "A",
+    file: "MTC-03-normal-error-no-cancel.png",
+    route: `${wizardRoute}?mode=error`,
+    selector: '[data-testid="wizard-step-generate"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "通常モード確認スキル");
+      await page.fill("#purpose", "Slackで通知する");
+      await page.click('button[aria-label="外部連携"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.click('button:has-text("次のページ")');
+      await page.click('button:has-text("今すぐ生成する")');
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.click('button:has-text("生成する")');
+      await page.waitForSelector('[data-testid="wizard-step-generate"]');
+      await page.waitForSelector("text=生成エラー");
+      await page.waitForTimeout(200);
+    },
+  },
+  {
+    tcId: "MTC-04",
+    priority: "B",
+    file: "MTC-04-retry-reset-step1.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-conversation-round"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "リトライ確認スキル");
+      await page.fill("#purpose", "Slackで日報を送る");
+      await page.click('button[aria-label="外部連携"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.click('button:has-text("自分のみ")');
+      await page.click('button:has-text("次のページ")');
+      await page.click('button:has-text("今すぐ生成する")');
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.click('button:has-text("生成する")');
+      await page.waitForSelector('[data-testid="wizard-step-complete"]');
+      await page.click('[data-testid="complete-step-feedback-unsatisfied"]');
+      await page.waitForSelector('[data-testid="wizard-step-info"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.waitForTimeout(200);
+    },
+  },
+  {
+    tcId: "MTC-05",
+    priority: "B",
+    file: "MTC-05-q5-external-checklist.png",
+    route: wizardRoute,
+    selector: '[data-testid="wizard-step-complete"]',
+    viewport: { width: 1440, height: 900 },
+    colorScheme: "dark",
+    preCapture: async (page) => {
+      await page.fill("#skill-name", "外部連携確認スキル");
+      await page.fill("#purpose", "Slackで日報を送る");
+      await page.click('button[aria-label="外部連携"]');
+      await page.click('button:has-text("次へ")');
+      await page.waitForSelector(
+        '[data-testid="wizard-step-conversation-round"]',
+      );
+      await page.click('button:has-text("次のページ")');
+      await page.click('button:has-text("Slack")');
+      await page.click('button:has-text("今すぐ生成する")');
+      await page.waitForSelector('[aria-label="適用サマリー"]');
+      await page.click('button:has-text("生成する")');
+      await page.waitForSelector('[data-testid="wizard-step-complete"]');
+      await page.waitForSelector(
+        '[data-testid="complete-step-external-checklist"]',
+      );
       await page.waitForTimeout(200);
     },
   },
@@ -444,9 +568,13 @@ async function main() {
     "phase11-capture-metadata.json",
   );
   const baseUrl = `http://127.0.0.1:${options.port}`;
-  const scenarioList = workflowRoot.includes("WB-par-02a-fix-mode-mgmt")
-    ? modeMgmtScenarios
-    : defaultScenarios;
+  const scenarioList = String(options.workflowRoot).includes(
+    "WC-par-03a-fix-state-detail",
+  )
+    ? stateDetailScenarios
+    : String(options.workflowRoot).includes("WB-par-02a-fix-mode-mgmt")
+      ? modeMgmtScenarios
+      : defaultScenarios;
   const needsHarness = scenarioList.some(
     (scenario) => scenario.appReadySelector !== undefined,
   );
@@ -488,10 +616,11 @@ async function main() {
       const screenshotPath = path.join(screenshotDir, scenario.file);
       const stat = await fs.stat(screenshotPath);
       capturedFiles.push({
-        tcId: scenario.file.slice(0, 5),
+        tcId: scenario.tcId ?? scenario.file.slice(0, 5),
         state: scenario.file.replace(/\.png$/, ""),
         file: `screenshots/${scenario.file}`,
         capturedAt: stat.mtime.toISOString(),
+        priority: scenario.priority ?? "B",
       });
       process.stdout.write(
         `Captured ${path.join(screenshotDir, scenario.file)}\n`,
@@ -507,13 +636,7 @@ async function main() {
           captures: capturedFiles.map((entry) => ({
             tcId: entry.tcId,
             state: entry.state,
-            priority:
-              entry.tcId === "TC-05" ||
-              entry.tcId === "TC-07" ||
-              entry.tcId === "TC-08" ||
-              entry.tcId === "TC-09"
-                ? "A"
-                : "B",
+            priority: entry.priority,
             file: entry.file,
           })),
         },

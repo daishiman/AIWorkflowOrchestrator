@@ -4,7 +4,7 @@
   "taskName": "状態残留・リカバリーパス・競合状態修正",
   "taskType": "implementation",
   "created": "2026-04-12T00:00:00.000Z",
-  "status": "pending",
+  "status": "completed",
   "parentWorkflow": "skill-wizard-bugfix-wave",
   "wave": "C",
   "dependsOnTasks": ["TASK-SW-FIX-FEEDBACK-001"],
@@ -15,7 +15,7 @@
   ],
   "phases": {
     "1": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -25,7 +25,7 @@
       ]
     },
     "2": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -35,7 +35,7 @@
       ]
     },
     "3": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -45,7 +45,7 @@
       ]
     },
     "4": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -55,7 +55,7 @@
       ]
     },
     "5": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -65,7 +65,7 @@
       ]
     },
     "6": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -75,7 +75,7 @@
       ]
     },
     "7": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -85,7 +85,7 @@
       ]
     },
     "8": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -95,7 +95,7 @@
       ]
     },
     "9": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -105,7 +105,7 @@
       ]
     },
     "10": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -115,7 +115,7 @@
       ]
     },
     "11": {
-      "status": "pending",
+      "status": "completed",
       "visualType": "VISUAL",
       "artifacts": [
         {
@@ -136,7 +136,7 @@
       ]
     },
     "12": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "type": "document",
@@ -171,7 +171,8 @@
       ]
     },
     "13": {
-      "status": "pending",
+      "status": "skipped",
+      "skipReason": "CONST_002: コミット・PR作成禁止。Phase 13（PR作成）はユーザー指示により blocked / skipped。",
       "artifacts": [
         {
           "type": "document",

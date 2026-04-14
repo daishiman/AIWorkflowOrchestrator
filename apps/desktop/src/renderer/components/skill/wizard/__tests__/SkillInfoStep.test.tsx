@@ -21,7 +21,7 @@ import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
 const defaultFormData: SkillInfoFormData = {
   skillName: "",
   purpose: "",
-  category: null,
+  category: [],
 };
 
 const CATEGORY_EXPECTATIONS = [
@@ -141,13 +141,13 @@ describe("SkillInfoStep", () => {
       expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
     });
 
-    it("カテゴリが未選択（null）のとき「次へ」ボタンは無効", () => {
+    it("カテゴリが未選択（空配列）のとき「次へ」ボタンは無効", () => {
       render(
         <SkillInfoStep
           formData={{
             ...defaultFormData,
             purpose: "1234567890",
-            category: null,
+            category: [],
           }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
@@ -162,7 +162,7 @@ describe("SkillInfoStep", () => {
           formData={{
             ...defaultFormData,
             purpose: "1234567890",
-            category: "automation",
+            category: ["automation"],
           }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
@@ -210,27 +210,49 @@ describe("SkillInfoStep", () => {
       );
       fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
       expect(onFormDataChange).toHaveBeenCalledWith(
-        expect.objectContaining({ category: "external-integration" }),
+        expect.objectContaining({ category: ["external-integration"] }),
       );
     });
 
-    it("選択中のカテゴリを再クリックしても onFormDataChange は呼ばれない", () => {
+    it("選択中のカテゴリを再クリックすると onFormDataChange が呼ばれトグル解除される", () => {
       const onFormDataChange = vi.fn();
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "automation" }}
+          formData={{ ...defaultFormData, category: ["automation"] }}
           onFormDataChange={onFormDataChange}
           onNext={vi.fn()}
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: "自動化" }));
-      expect(onFormDataChange).not.toHaveBeenCalled();
+      expect(onFormDataChange).toHaveBeenCalledWith(
+        expect.objectContaining({ category: [] }),
+      );
+    });
+
+    it("複数カテゴリ選択時に1つだけ解除しても残りの選択は維持される", () => {
+      const onFormDataChange = vi.fn();
+      render(
+        <SkillInfoStep
+          formData={{
+            ...defaultFormData,
+            category: ["automation", "external-integration"],
+          }}
+          onFormDataChange={onFormDataChange}
+          onNext={vi.fn()}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
+
+      expect(onFormDataChange).toHaveBeenCalledWith(
+        expect.objectContaining({ category: ["automation"] }),
+      );
     });
 
     it("選択中のカテゴリタグに aria-pressed=true が付与される", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "external-integration" }}
+          formData={{ ...defaultFormData, category: ["external-integration"] }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />,
@@ -250,7 +272,7 @@ describe("SkillInfoStep", () => {
           formData={{
             ...defaultFormData,
             purpose: "10文字以上の目的入力テスト",
-            category: "automation",
+            category: ["automation"],
           }}
           onFormDataChange={vi.fn()}
           onNext={onNext}
@@ -269,7 +291,7 @@ describe("SkillInfoStep", () => {
           formData={{
             ...defaultFormData,
             purpose: "あいうえおかきくけこ",
-            category: "automation",
+            category: ["automation"],
           }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
@@ -298,7 +320,7 @@ describe("SkillInfoStep", () => {
           formData={{
             skillName: "",
             purpose: "1234567890",
-            category: "automation",
+            category: ["automation"],
           }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
@@ -310,7 +332,7 @@ describe("SkillInfoStep", () => {
     it("カテゴリが external-integration のとき選択状態が正しく表示される", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "external-integration" }}
+          formData={{ ...defaultFormData, category: ["external-integration"] }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />,
@@ -368,7 +390,7 @@ describe("SkillInfoStep", () => {
     it("選択中カテゴリタグの aria-pressed が true になる", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "automation" }}
+          formData={{ ...defaultFormData, category: ["automation"] }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />,
@@ -382,7 +404,7 @@ describe("SkillInfoStep", () => {
     it("未選択カテゴリタグの aria-pressed が false になる", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "automation" }}
+          formData={{ ...defaultFormData, category: ["automation"] }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />,
@@ -407,7 +429,7 @@ describe("SkillInfoStep", () => {
       );
       fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
       expect(onFormDataChange).toHaveBeenCalledWith(
-        expect.objectContaining({ category: "external-integration" }),
+        expect.objectContaining({ category: ["external-integration"] }),
       );
     });
   });
@@ -461,7 +483,7 @@ describe("SkillInfoStep", () => {
     it("aria-pressed は選択中のカテゴリだけ true になる", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, category: "external-integration" }}
+          formData={{ ...defaultFormData, category: ["external-integration"] }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />,
@@ -478,7 +500,7 @@ describe("SkillInfoStep", () => {
 
   // Phase 6: エッジケーステスト（TC-EC）
   describe("カテゴリ選択エッジケース", () => {
-    it("formData.category が null のとき全ボタンが aria-pressed='false' であること", () => {
+    it("formData.category が空配列のとき全ボタンが aria-pressed='false' であること", () => {
       render(
         <SkillInfoStep
           formData={defaultFormData}
@@ -575,7 +597,7 @@ describe("SkillInfoStep", () => {
         );
         fireEvent.click(screen.getByRole("button", { name: label }));
         expect(onFormDataChange).toHaveBeenCalledWith(
-          expect.objectContaining({ category: value }),
+          expect.objectContaining({ category: [value] }),
         );
         cleanup();
       }

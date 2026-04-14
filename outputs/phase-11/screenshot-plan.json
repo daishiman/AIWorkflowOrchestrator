@@ -1,26 +1,36 @@
 {
-  "taskId": "UT-SKILL-WIZARD-W2-seq-03b",
-  "taskName": "wizard/index.ts エクスポート更新",
-  "mode": "VISUAL",
-  "captureMethod": "representative-screenshot-reuse+manual-review",
-  "screenshots": [
+  "generatedAt": "2026-04-13T22:35:56.305Z",
+  "route": "/advanced/skill-create-wizard",
+  "captures": [
     {
-      "id": "TC-11-01",
-      "file": "TC-11-01-step0-description-category.png",
-      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
-      "description": "Step 0 の代表画面を再利用し、レイアウト維持を確認する",
-      "expectedState": "SkillInfoStep / layout unchanged"
+      "tcId": "TC-01",
+      "state": "step-0-no-radio",
+      "priority": "B",
+      "file": "screenshots/step-0-no-radio.png"
     },
     {
-      "id": "TC-11-02",
-      "file": "TC-11-02-step1-page1-defaults.png",
-      "sourceTaskId": "UT-SKILL-WIZARD-W1-par-02b",
-      "description": "Step 1 の代表画面を再利用し、進捗表示とカード配置の維持を確認する",
-      "expectedState": "ConversationRoundStep / layout unchanged"
+      "tcId": "TC-03",
+      "state": "step-1-conversation",
+      "priority": "B",
+      "file": "screenshots/step-1-conversation.png"
+    },
+    {
+      "tcId": "TC-05",
+      "state": "step-1-questions",
+      "priority": "A",
+      "file": "screenshots/step-1-questions.png"
+    },
+    {
+      "tcId": "TC-06A",
+      "state": "step-2-generating",
+      "priority": "B",
+      "file": "screenshots/step-2-generating.png"
+    },
+    {
+      "tcId": "TC-06B",
+      "state": "step-3-complete",
+      "priority": "B",
+      "file": "screenshots/step-3-complete.png"
     }
-  ],
-  "notes": [
-    "current diff は export / type / deprecated comment のみ",
-    "新規キャプチャは不要だが screenshot verification 要求に従い代表証跡を current workflow に再リンクした"
   ]
 }
