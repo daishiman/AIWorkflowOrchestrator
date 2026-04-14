@@ -1,0 +1,223 @@
+{
+  "feature": "TASK-SW-FIX-STATE-DETAIL-001",
+  "taskId": "TASK-SW-FIX-STATE-DETAIL-001",
+  "taskName": "状態残留・リカバリーパス・競合状態修正",
+  "taskType": "implementation",
+  "created": "2026-04-12T00:00:00.000Z",
+  "status": "phase13_blocked",
+  "parentWorkflow": "skill-wizard-bugfix-wave",
+  "wave": "C",
+  "dependsOnTasks": ["TASK-SW-FIX-FEEDBACK-001"],
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx",
+    "apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx",
+    "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx"
+  ],
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specifications.md",
+          "description": "テスト仕様書"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-record.md",
+          "description": "実装記録"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/extended-test-record.md",
+          "description": "テスト拡充記録"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "visualType": "VISUAL",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "視覚レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "手動テスト証跡計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "画面カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "capture メタデータ"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカルチェック結果"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}
