@@ -1,0 +1,76 @@
+{
+  "taskId": "UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001",
+  "taskName": "Phase 11 テスト証跡の一本化テンプレート整備（edge case一覧表）",
+  "taskType": "docs-only",
+  "issueNumber": 2033,
+  "createdAt": "2026-04-13",
+  "status": "spec_created",
+  "artifacts": {
+    "phase-1": {
+      "requirements-definition": "outputs/phase-1/requirements-definition.md",
+      "acceptance-criteria": "outputs/phase-1/acceptance-criteria.md",
+      "scope-definition": "outputs/phase-1/scope-definition.md"
+    },
+    "phase-2": {
+      "design-document": "outputs/phase-2/design-document.md",
+      "edge-case-table-format": "outputs/phase-2/edge-case-table-format.md",
+      "template-structure": "outputs/phase-2/template-structure.md"
+    },
+    "phase-3": {
+      "design-review-report": "outputs/phase-3/design-review-report.md"
+    },
+    "phase-4": {
+      "test-specification": "outputs/phase-4/test-specification.md",
+      "validation-criteria": "outputs/phase-4/validation-criteria.md"
+    },
+    "phase-5": {
+      "phase11-template-updated": ".claude/skills/task-specification-creator/references/phase-template-phase11.md",
+      "phase11-detail-template-updated": ".claude/skills/task-specification-creator/references/phase-template-phase11-detail.md",
+      "phase11-test-report-template-updated": ".claude/skills/task-specification-creator/references/phase-11-test-report-template.md"
+    },
+    "phase-6": {
+      "regression-test-report": "outputs/phase-6/regression-test-report.md"
+    },
+    "phase-7": {
+      "coverage-report": "outputs/phase-7/coverage-report.md"
+    },
+    "phase-8": {
+      "refactoring-record": "outputs/phase-8/refactoring-record.md"
+    },
+    "phase-9": {
+      "quality-assurance-report": "outputs/phase-9/quality-assurance-report.md"
+    },
+    "phase-10": {
+      "final-review-report": "outputs/phase-10/final-review-report.md"
+    },
+    "phase-11": {
+      "manual-test-checklist": "outputs/phase-11/manual-test-checklist.md",
+      "manual-test-result": "outputs/phase-11/manual-test-result.md",
+      "discovered-issues": "outputs/phase-11/discovered-issues.md"
+    },
+    "phase-12": {
+      "implementation-guide": "outputs/phase-12/implementation-guide.md",
+      "system-spec-update-summary": "outputs/phase-12/system-spec-update-summary.md",
+      "documentation-changelog": "outputs/phase-12/documentation-changelog.md",
+      "unassigned-task-detection": "outputs/phase-12/unassigned-task-detection.md",
+      "skill-feedback-report": "outputs/phase-12/skill-feedback-report.md",
+      "phase12-task-spec-compliance-check": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+    },
+    "phase-13": {
+      "local-check-result": "outputs/phase-13/local-check-result.md",
+      "change-summary": "outputs/phase-13/change-summary.md",
+      "pr-info": "outputs/phase-13/pr-info.md"
+    }
+  },
+  "canonicalNames": {
+    "phase11Template": "phase-template-phase11.md",
+    "phase11DetailTemplate": "phase-template-phase11-detail.md",
+    "phase11TestReportTemplate": "phase-11-test-report-template.md",
+    "edgeCaseTable": "edge-case-table",
+    "testEvidenceConsolidation": "test-evidence-consolidation"
+  },
+  "dependencies": {
+    "blockedBy": [],
+    "blocks": []
+  }
+}

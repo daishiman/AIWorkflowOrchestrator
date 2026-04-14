@@ -13930,6 +13930,9 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ]
   }
 }

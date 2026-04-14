@@ -7820,15 +7820,6 @@
     "cron": [
       "lessons-learned-current-2026-04.md"
     ],
-    "VisualCronPicker": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md"
-    ],
-    "validation": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
-    ],
     "WEEKGRD": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7893,6 +7884,15 @@
     ],
     "宣言を明示する": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "VisualCronPicker": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md"
+    ],
+    "validation": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "DESCRIBE": [
       "lessons-learned-current-2026-04.md",
@@ -14138,6 +14138,9 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ]
   }
 }

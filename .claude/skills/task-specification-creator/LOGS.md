@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴の先頭に `v10.09.47` を追加し、EC-NNN / SD-NNN 採番ルール・edge case 一覧表・仕様判断根拠テーブル導入を反映
+- `.agents/skills/task-specification-creator/SKILL.md` に同エントリを mirror sync
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を outputs/phase-12/ に生成
+
+### 背景
+
+FB-05 は docs-only / `spec_created` タスクとして Phase 11 テスト証跡テンプレートに新 3 セクションを導入した。skill-feedback-report.md に記録した LOW 2件（件数集約 / edge case 表カラム整理）は v2 テンプレートで既に解消済み。
+
 ## 2026-04-14 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
 ### 変更内容
