@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2984,
+  "totalKeywords": 2985,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -14153,6 +14153,9 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ]
   }
 }

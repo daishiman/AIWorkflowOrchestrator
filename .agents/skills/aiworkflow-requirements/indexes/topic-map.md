@@ -3046,6 +3046,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L5 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L45 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L76 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L99 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L124 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L155 |
+| TASK-RT-06 教訓（2026-03-29） | L186 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L208 |
+| TASK-P0-04 教訓（2026-03-30） | L239 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L275 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L369 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L423 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L463 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L503 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L534 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L546 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L569 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L577 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L611 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L645 |
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L5 |
 | UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L36 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L59 |
@@ -3083,9 +3103,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L148 |
-| クイックリファレンス: カテゴリ別検索ガイド | L168 |
-| 分割ファイル一覧 | L172 |
+| 分割ファイル一覧 | L150 |
+| クイックリファレンス: カテゴリ別検索ガイド | L170 |
+| 分割ファイル一覧 | L174 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3546,6 +3566,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
@@ -4718,6 +4743,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L373 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L390 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L412 |
@@ -4896,6 +4925,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L50 |
+| 仕様書インデックス | L11 |
+| 利用順序 | L40 |
+| 関連ドキュメント | L45 |
 | 仕様書インデックス | L15 |
 | 利用順序 | L44 |
 | 関連ドキュメント | L49 |

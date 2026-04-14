@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2984,
+  "totalKeywords": 2985,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2376,7 +2376,6 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
-      "task-workflow-completed.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-skill-analysis.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -3698,8 +3697,7 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "task-workflow-completed.md"
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
@@ -7130,8 +7128,7 @@
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "task-workflow-completed.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "sandbox": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -7837,15 +7834,6 @@
     "cron": [
       "lessons-learned-current-2026-04.md"
     ],
-    "VisualCronPicker": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md"
-    ],
-    "validation": [
-      "lessons-learned-current-2026-04.md",
-      "ui-ux-feature-components-core.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
-    ],
     "WEEKGRD": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -7911,6 +7899,15 @@
     "宣言を明示する": [
       "lessons-learned-current-2026-04.md"
     ],
+    "VisualCronPicker": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md"
+    ],
+    "validation": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-feature-components-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
     "DESCRIBE": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
@@ -7964,12 +7961,10 @@
       "lessons-learned-current-2026-04.md"
     ],
     "RENDERER": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed.md"
+      "lessons-learned-current-2026-04.md"
     ],
     "CHECK": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed.md"
+      "lessons-learned-current-2026-04.md"
     ],
     "表示": [
       "lessons-learned-current-2026-04.md"
@@ -8587,8 +8582,7 @@
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "error": [
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "task-workflow-completed.md"
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "notification": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -14159,6 +14153,9 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
     ]
   }
 }

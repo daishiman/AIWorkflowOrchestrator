@@ -2,6 +2,46 @@
 
 > 親ファイル: [lessons-learned-current.md](lessons-learned-current.md)
 
+## UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13）
+
+### L-FB05-001: docs-only でも Phase 11 証跡テンプレートは「件数・edge case・判断根拠」の3点を1ファイルで完結させる
+
+| 項目       | 内容                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | テスト件数・edge case・仕様判断根拠が別ファイルに分散すると、Phase 12 レビューで全体像確認に時間がかかる                                |
+| 解決策     | `manual-test-result` テンプレートの冒頭に「テスト件数と内訳」、中段に「edge case 一覧表」、末尾に「仕様判断根拠」を固定配置した            |
+| 標準ルール | docs-only / NON_VISUAL でも、証跡テンプレートは 1 ファイル完結を優先する                                                                  |
+| 関連タスク | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                                                      |
+
+### L-FB05-002: edge case テーブルは SD-ID 参照で仕様判断を再利用し、重複記述を避ける
+
+| 項目       | 内容                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 各 edge case 行に判断理由を全文で書くと、同じ仕様判断を実装・テスト・ドキュメントで重複記載しやすい                                      |
+| 解決策     | edge case 一覧表は `仕様判断根拠ID` を参照し、判断の正文は「仕様判断根拠」テーブルに集約する                                               |
+| 標準ルール | case 行は検証結果、判断テーブルは意思決定根拠という責務分離を維持する                                                                     |
+| 関連タスク | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                                                      |
+
+### L-FB05-003: `spec_created` close-out でも system spec 同期（workflow / lesson / logs / topic-map）を同 wave で閉じる
+
+| 項目       | 内容                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | docs-only だからと system spec 側の反映を後回しにすると、`spec_created` 状態と current facts の同期が崩れる                             |
+| 解決策     | `task-workflow`・`lessons-learned`・`LOGS`・`topic-map` を同 wave で更新し、Phase 12 Step 1 の同期条件を先に満たしてから close-out した |
+| 標準ルール | `spec_created` タスクは実装有無に関係なく、台帳系4点（workflow/lesson/logs/topic-map）を同一波で更新する                                  |
+| 関連タスク | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                                                      |
+
+### L-FB05-004: `.agents` / `.claude` ミラーディレクトリの同期コストを最小化するため、差分は同一 wave で一括反映する
+
+| 項目       | 内容                                                                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `.claude/skills/` と `.agents/skills/` の二重ミラー構成では、変更箇所が増えるほど同期漏れリスクが高くなり、diff 確認コストが実装コストを上回ることがある              |
+| 解決策     | 変更対象ファイルをリストアップしてから `cp` または Edit ツールで `.agents/` 側へ一括コピーし、最後に `diff -qr .claude/skills/ .agents/skills/` で差分ゼロを確認する    |
+| 標準ルール | ミラー同期は「変更→即コピー」の都度反映ではなく、wave 末尾に「一括コピー→diff 確認」をセットで行う                                                                    |
+| 関連タスク | UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001                                                                                                                   |
+
+---
+
 ## UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11）
 
 ### L-FB03-001: `format` は `category` からのみ推論する
@@ -1134,6 +1174,67 @@
 
 ---
 
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                           | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
+| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                          |
+
+---
+
+## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
+
+### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
+
+**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
+**バージョン**: 3.14.0相当
+
+**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
+**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
+**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
+**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
+**実装パターン**:
+
+```typescript
+if (weekdays.length === 0) {
+  throw new InvalidConfigError(
+    "weekdays must not be empty when frequency is 'weekly'",
+  );
+}
+```
+
+**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
+
+---
+
 ## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 月次ガード処理 教訓（2026-04-13）
 
 ### L-MTHGRD-001: `Number.isInteger` で NaN/小数/Infinity を一度に排除する
@@ -1395,6 +1496,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする                |
 | 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する                                 |
 | 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001                                                                                                          |
+
+---
+
+## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
+
+### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる |
+| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった |
+| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した |
+| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
+| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった |
+| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した |
+| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
+| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続 |
+| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
+| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
+| 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
 
 ---
 
