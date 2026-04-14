@@ -30,7 +30,6 @@ const mockCreateSkill = vi.fn();
 const mockFetchSkills = vi.fn();
 const mockClearGenerationState = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
-const mockInferSmartDefaults = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -64,23 +63,6 @@ vi.mock("../../../hooks/useStreamingProgress", () => ({
 vi.mock("../../../hooks/useCancelGeneration", () => ({
   useCancelGeneration: () => ({ cancelGeneration: vi.fn() }),
 }));
-
-vi.mock(
-  "../../../../../../../packages/shared/src/services/skillCreator/index.ts",
-  () => ({
-    inferSmartDefaults: (...args: unknown[]) => mockInferSmartDefaults(...args),
-  }),
-);
-
-const defaultSmartDefaults: SmartDefaultResult = {
-  who: "チームメンバー",
-  input: "テキスト",
-  timing: "定期実行",
-  output: "通知",
-  tool: "Slack",
-  format: "Markdown",
-  inferenceLog: ["mock"],
-};
 
 function renderWizard(
   onClose = vi.fn(),
@@ -129,7 +111,6 @@ describe("SkillCreateWizard", () => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
     mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
-    mockInferSmartDefaults.mockReturnValue(defaultSmartDefaults);
     mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
@@ -600,12 +581,6 @@ describe("SkillCreateWizard", () => {
 
   describe("TASK-SW-FIX-STATE-DETAIL-001: 問題18 resolveExternalIntegration再計算", () => {
     it("TC-06: Step1でq5を変更後に生成完了するとCompleteStepに反映される", async () => {
-      // smart defaults で tool=null（外部連携なし）になる purpose
-      mockInferSmartDefaults.mockReturnValue({
-        ...defaultSmartDefaults,
-        tool: null,
-      });
-
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       // Step 0 → Step 1（Slackキーワードなし）
@@ -638,12 +613,6 @@ describe("SkillCreateWizard", () => {
     });
 
     it("TC-07: q5以外のq1を変更しても外部連携状態に副作用がない（回帰）", async () => {
-      // smart defaults で tool=null
-      mockInferSmartDefaults.mockReturnValue({
-        ...defaultSmartDefaults,
-        tool: null,
-      });
-
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       fillStep0("汎用タスクの実行を自動化するための目的説明", "外部連携");
