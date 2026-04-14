@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-13
+> 自動生成: 2026-04-14
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1401,9 +1401,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L259 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L308 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L337 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L266 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L315 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L344 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3410,6 +3410,27 @@ node scripts/list-specs.js --topics
 | L-SC07-008: generationLockRef による二重実行防止 | L97 |
 | 応用候補 | L108 |
 
+### references/lessons-learned-skill-wizard-mode-mgmt.md
+
+| セクション | 行 |
+|------------|----|
+| L-MODE-001: state 廃止は 6 ステップで完結させる | L8 |
+| L-MODE-002: TC-06 型の動的廃止検証テストを廃止系タスクの標準に組み込む | L20 |
+| L-MODE-003: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する | L34 |
+| L-MODE-004: Electron 実機なしでの視覚証跡の多層防御 | L47 |
+| L-MODE-005: SkillCreateWizard の確定フロー（本タスク後の正規仕様） | L59 |
+
+### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L22 |
+| L-MSO-001: visual label と accessible name は別管理する | L80 |
+| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
+| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
+| スキル改善提案（task-specification-creator への反映事項） | L112 |
+
 ### references/lessons-learned-skill-wizard-redesign.md
 
 | セクション | 行 |
@@ -3523,11 +3544,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
-| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
-| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4691,11 +4710,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4864,9 +4881,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L15 |
-| 利用順序 | L45 |
-| 関連ドキュメント | L51 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 
