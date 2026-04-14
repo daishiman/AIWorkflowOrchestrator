@@ -944,6 +944,240 @@ describe("ConversationRoundStep", () => {
       expect(mockOnBack).toHaveBeenCalledTimes(1);
     });
   });
+
+  // ------------------------------------------
+  // UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: Q5「主ツール」バッジ表示（Phase 4 TDD Red）
+  // ------------------------------------------
+  describe("UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: Q5「主ツール」バッジ表示", () => {
+    const goToPage2 = () => {
+      fireEvent.click(screen.getByRole("button", { name: /次のページ|次へ/ }));
+    };
+
+    it("TC-1: Q5で2ツール選択時に先頭ツールに「主ツール」バッジが表示される（AC-1）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      expect(screen.getByText("主ツール")).toBeInTheDocument();
+      expect(
+        within(screen.getByRole("button", { name: "Slack" })).getByText(
+          "主ツール",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-2: Q5で2ツール選択時に2番目ツールにバッジが表示されない（AC-1）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      expect(
+        within(screen.getByRole("button", { name: "GitHub" })).queryByText(
+          "主ツール",
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it("TC-3: Q5で1ツールのみ選択時にバッジが表示されない（AC-2）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+
+    it("TC-4: バッジのaria-labelに「主ツールとして使用される」が付与される（AC-3）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      expect(
+        screen.getByLabelText("主ツールとして使用される"),
+      ).toBeInTheDocument();
+    });
+
+    it("TC-5: Q3で複数選択してもバッジが表示されない（副作用なし・AC-4）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "手動実行" }));
+      fireEvent.click(screen.getByRole("button", { name: "定期実行" }));
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+
+    it("TC-6: Q5で3ツール選択時も先頭のみバッジが表示される（AC-1拡張）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      fireEvent.click(screen.getByRole("button", { name: "その他" }));
+      expect(screen.getAllByText("主ツール")).toHaveLength(1);
+      expect(
+        within(screen.getByRole("button", { name: "Slack" })).getByText(
+          "主ツール",
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  // ------------------------------------------
+  // UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: 拡充テスト（Phase 6）
+  // ------------------------------------------
+  describe("UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: 拡充テスト（Phase 6）", () => {
+    const goToPage2 = () => {
+      fireEvent.click(screen.getByRole("button", { name: /次のページ|次へ/ }));
+    };
+
+    it("FP-MSO-01: Q5で2ツール選択後に先頭を解除すると1件になりバッジが消える（AC-2）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      // バッジ表示確認
+      expect(screen.getByText("主ツール")).toBeInTheDocument();
+      // Slack を解除して1件だけに（ボタン名は Slack のまま維持される）
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      // バッジ消去確認
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+
+    it("FP-MSO-02: Q5で0件選択時にバッジが表示されない（AC-6）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+
+    it("CMD-MSO-01: Q5でGitHubを最初に選択するとGitHubに主ツールバッジが付く", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "GitHub" }));
+      fireEvent.click(screen.getByRole("button", { name: "Slack" }));
+      // 先頭選択はGitHub → GitHubに主ツールバッジ
+      expect(
+        within(screen.getByRole("button", { name: "GitHub" })).getByText(
+          "主ツール",
+        ),
+      ).toBeInTheDocument();
+      // Slackにはバッジなし
+      expect(
+        within(screen.getByRole("button", { name: "Slack" })).queryByText(
+          "主ツール",
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it("RG-MSO-Q4: Q4で複数選択してもバッジが表示されない（AC-4）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "チャット返信" }));
+      fireEvent.click(screen.getByRole("button", { name: "ファイル保存" }));
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+
+    it("RG-MSO-Q6: Q6で複数選択してもバッジが表示されない（AC-4）", () => {
+      render(
+        <ConversationRoundStep
+          formData={defaultFormData}
+          smartDefaults={defaultSmartDefaults}
+          answers={defaultAnswers}
+          onAnswersChange={mockOnAnswersChange}
+          onBack={mockOnBack}
+          onGenerate={mockOnGenerate}
+        />,
+      );
+      goToPage2();
+      fireEvent.click(screen.getByRole("button", { name: "Markdown" }));
+      fireEvent.click(screen.getByRole("button", { name: "JSON" }));
+      expect(screen.queryByText("主ツール")).not.toBeInTheDocument();
+    });
+  });
 });
 
 // ============================================================

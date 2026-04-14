@@ -4,6 +4,53 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
+
+### 変更内容
+- `SKILL.md` description / Trigger に `VisualCronPicker` / `TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001` / `onValidationChange` / `weeklyError` / `monthlyError` / `dayOfMonth` / `role="alert"` を追加
+- `references/ui-ux-forms.md` に VisualCronPicker schedule validation の alert / callback 契約を追記
+- `references/ui-ux-feature-components-core.md` に VisualCronPicker UI validation の component contract を追記
+- `references/task-workflow-completed-recent-2026-04e.md` / `references/lessons-learned-current-2026-04.md` / `indexes/resource-map.md` を current facts へ同期
+- `outputs/phase-11` / `outputs/phase-12` の current facts を UI validation 完了版へ同期
+- `task-specification-creator` 側は current facts 変更なしのため no-op
+
+### 背景
+VisualCronPicker の UI validation が完了し、Phase 11 のスクリーンショット証跡と Phase 12 の current contract を正本へ反映する必要があった。
+
+## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（close-out current facts + lessons-learned）
+
+### 変更内容
+- `SKILL.md` frontmatter description の重複段落を統合し、current facts キーワード（`TASK-SW-FIX-DATAFLOW-001` / `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `context bridge` / `NON_VISUAL 再分類` / `artifacts.json parity` / `L-DATAFLOW-001〜003`）を最新版に一本化
+- `indexes/resource-map.md` に TASK-SW-FIX-DATAFLOW-001 の current facts 導線（SkillCreateWizard context bridge + parity）を追加
+- `indexes/topic-map.md` に SkillCreateWizard context bridge/current facts の索引行を追加
+- `references/task-workflow.md` 冒頭に TASK-SW-FIX-DATAFLOW-001 close-out 同期の 1 文を追記
+- `references/lessons-learned-current-2026-04.md` に L-DATAFLOW-001〜003 を追記（NON_VISUAL 代替証跡パターン / artifacts.json 2点 parity / IPC context bridge 後方互換設計）
+
+### 背景
+Phase 12 close-out 後の仕様同期で、Skill Wizard dataflow 修正の current facts（NON_VISUAL 判定と artifacts parity）が aiworkflow-requirements 側インデックスへ未反映だったため、同波で補完した。また lessons-learned への教訓記録が「追記予定」のまま未実施だったため本エントリで完結させた。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
+
+### 変更内容
+- `indexes/resource-map.md` に TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 エントリを追加（純粋関数ガード / Number.isInteger / 双方向ガード / 対称ブロック構文）
+- `references/lessons-learned-current-2026-04.md` に L-MTHGRD-001〜003 教訓を追加（NaN排除 / 双方向ガード / 対称パターン）
+- `references/task-workflow-completed-recent-2026-04e.md` に TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 完了記録を追加
+- LOGS.md 2ファイル同波更新
+
+### 背景
+Phase 12 の current facts sync では resource-map / lessons-learned / task-workflow-completed の追加が未実施のまま残っていた。impl-spec-to-skill-sync で漏れを解消。
+
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 current facts sync
+
+### 変更内容
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/artifacts.json` と `outputs/artifacts.json` の completed / blocked 同期を確認
+- `docs/30-workflows/TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001/outputs/phase-12/{documentation-changelog,skill-feedback-report,phase12-task-spec-compliance-check,unassigned-task-detection}.md` を current facts に更新
+- `task-specification-creator/SKILL.md` の Phase 12 三者同期ルール追加と同波で log を更新
+- LOGS.md 2ファイル同波更新
+
+### 背景
+monthly guard の実装だけでなく、Phase 12 current facts の二重化を残さないため。
+
 ## 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync（lessons-learned / resource-map / topic-map / skill 補完）
 
 ### 変更内容

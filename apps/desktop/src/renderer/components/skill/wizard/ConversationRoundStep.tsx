@@ -102,6 +102,28 @@ const QUESTION_KEYS = [
   "q5",
   "q6",
 ] as const satisfies readonly QuestionKey[];
+
+const MAIN_TOOL_BADGE_ENABLED = true;
+
+interface MainToolBadgeProps {
+  questionKey: QuestionKey;
+  optionValue: string;
+  selectedOptions: readonly string[];
+}
+
+function shouldShowMainToolBadge({
+  questionKey,
+  optionValue,
+  selectedOptions,
+}: MainToolBadgeProps): boolean {
+  return (
+    MAIN_TOOL_BADGE_ENABLED &&
+    questionKey === "q5" &&
+    selectedOptions.length >= 2 &&
+    selectedOptions[0] === optionValue
+  );
+}
+
 function createEmptyAnswers(): ConversationAnswers {
   return {
     q1: { selectedOptions: [], freeText: "" },
@@ -399,22 +421,44 @@ export const ConversationRoundStep = ({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {q.options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => handleOptionSelect(key, opt)}
-              aria-pressed={selectedOptions.includes(opt)}
-              className={[
-                "px-3 py-1.5 rounded-lg text-sm border transition-colors",
-                selectedOptions.includes(opt)
-                  ? "bg-[var(--status-primary)] text-[var(--text-inverse)] border-[var(--status-primary)]"
-                  : "border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]",
-              ].join(" ")}
-            >
-              {opt}
-            </button>
-          ))}
+          {q.options.map((opt, optionIndex) => {
+            // TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001): 主ツールバッジ - resolveExternalIntegration の主ツール参照ロジック変更後に削除
+            const isMainTool = shouldShowMainToolBadge({
+              questionKey: key,
+              optionValue: opt,
+              selectedOptions,
+            });
+            const optionId = `${key}-${optionIndex}`;
+            const optionLabelId = `${optionId}-label`;
+            const mainToolBadgeId = `${optionId}-main-tool-badge`;
+            return (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => handleOptionSelect(key, opt)}
+                aria-pressed={selectedOptions.includes(opt)}
+                aria-labelledby={optionLabelId}
+                aria-describedby={isMainTool ? mainToolBadgeId : undefined}
+                className={[
+                  "inline-flex items-center px-3 py-1.5 rounded-lg text-sm border transition-colors",
+                  selectedOptions.includes(opt)
+                    ? "bg-[var(--status-primary)] text-[var(--text-inverse)] border-[var(--status-primary)]"
+                    : "border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]",
+                ].join(" ")}
+              >
+                <span id={optionLabelId}>{opt}</span>
+                {isMainTool && (
+                  <span
+                    id={mainToolBadgeId}
+                    aria-label="主ツールとして使用される"
+                    className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800"
+                  >
+                    主ツール
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         <div className="flex flex-col gap-1">

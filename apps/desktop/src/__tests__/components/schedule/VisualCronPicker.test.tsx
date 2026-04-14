@@ -199,6 +199,18 @@ describe("VisualCronPicker", () => {
     expect(screen.queryByText("毎日")).not.toBeInTheDocument();
   });
 
+  it("VP-18B: 不正な monthly cron はビジュアルモードでエラーメッセージを表示する", () => {
+    render(<VisualCronPicker value="0 9 0 * *" onChange={mockOnChange} />);
+    // 直接入力テキストボックスは表示されない（ビジュアルモード）
+    expect(
+      screen.queryByRole("textbox", { name: "カスタムcron式" }),
+    ).not.toBeInTheDocument();
+    // 日付バリデーションエラーが表示される
+    expect(
+      screen.getByText(/日付は1〜31の範囲で入力してください/),
+    ).toBeInTheDocument();
+  });
+
   it("VP-18: 直接入力モードから戻ると visual state に反映される", () => {
     render(<VisualCronPicker onChange={mockOnChange} />);
     fireEvent.click(screen.getByText("高度な設定"));
