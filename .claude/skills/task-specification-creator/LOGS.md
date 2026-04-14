@@ -32,6 +32,18 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 ### 背景
 `TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
 
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 impl-spec-to-skill-sync
 
 ### 変更内容

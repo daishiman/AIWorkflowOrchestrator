@@ -29,7 +29,6 @@ const mockCreateSkill = vi.fn();
 const mockFetchSkills = vi.fn();
 const mockClearGenerationState = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
-const mockInferSmartDefaults = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -63,23 +62,6 @@ vi.mock("../../../hooks/useStreamingProgress", () => ({
 vi.mock("../../../hooks/useCancelGeneration", () => ({
   useCancelGeneration: () => ({ cancelGeneration: vi.fn() }),
 }));
-
-vi.mock(
-  "../../../../../../../packages/shared/src/services/skillCreator/index.ts",
-  () => ({
-    inferSmartDefaults: (...args: unknown[]) => mockInferSmartDefaults(...args),
-  }),
-);
-
-const defaultSmartDefaults: SmartDefaultResult = {
-  who: "チームメンバー",
-  input: "テキスト",
-  timing: "定期実行",
-  output: "通知",
-  tool: "Slack",
-  format: "Markdown",
-  inferenceLog: ["mock"],
-};
 
 function renderWizard(onClose = vi.fn()) {
   render(<SkillCreateWizard onClose={onClose} />);
@@ -125,7 +107,6 @@ describe("SkillCreateWizard", () => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
     mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
-    mockInferSmartDefaults.mockReturnValue(defaultSmartDefaults);
     mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
@@ -512,7 +493,7 @@ describe("SkillCreateWizard", () => {
       const result: SmartDefaultResult = inferSmartDefaults({
         skillName: "テスト",
         purpose: "Slack通知を送る",
-        category: "automation",
+        category: ["automation"],
       });
       expect(result.tool).toBe("slack");
     });
@@ -520,7 +501,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に 'SLACK'（大文字）を含む場合も tool='slack' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "SLACK通知を毎日送る",
-        category: null,
+        category: [],
       });
       expect(result.tool).toBe("slack");
     });
@@ -528,7 +509,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に 'github' を含む場合、tool='github' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "GitHubのPRをレビューする",
-        category: null,
+        category: [],
       });
       expect(result.tool).toBe("github");
     });
@@ -536,7 +517,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に 'notion' を含む場合、tool='notion' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "Notionページを更新する",
-        category: null,
+        category: [],
       });
       expect(result.tool).toBe("notion");
     });
@@ -544,7 +525,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に '毎日' を含む場合、timing='scheduled' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "毎日レポートを生成する",
-        category: null,
+        category: [],
       });
       expect(result.timing).toBe("scheduled");
     });
@@ -552,7 +533,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に '定期' を含む場合、timing='scheduled' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "定期的にデータを集計する",
-        category: null,
+        category: [],
       });
       expect(result.timing).toBe("scheduled");
     });
@@ -560,7 +541,7 @@ describe("SkillCreateWizard", () => {
     it("purpose に 'リアルタイム' を含む場合、timing='realtime' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "リアルタイムで通知する",
-        category: null,
+        category: [],
       });
       expect(result.timing).toBe("realtime");
     });
@@ -568,7 +549,7 @@ describe("SkillCreateWizard", () => {
     it("category='code-support' の場合、format='code' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "コードレビューを行う",
-        category: "code-support",
+        category: ["code-support"],
       });
       expect(result.format).toBe("code");
     });
@@ -576,7 +557,7 @@ describe("SkillCreateWizard", () => {
     it("category='data-analysis' の場合、format='structured' を推論すること", () => {
       const result = inferSmartDefaults({
         purpose: "データを分析する",
-        category: "data-analysis",
+        category: ["data-analysis"],
       });
       expect(result.format).toBe("structured");
     });
@@ -584,7 +565,7 @@ describe("SkillCreateWizard", () => {
     it("推論対象キーワードが含まれない場合、各フィールドが null を返すこと", () => {
       const result = inferSmartDefaults({
         purpose: "汎用的なタスク",
-        category: null,
+        category: [],
       });
       expect(result.tool).toBeNull();
       expect(result.timing).toBeNull();
@@ -594,7 +575,7 @@ describe("SkillCreateWizard", () => {
     it("purpose が空文字の場合、全フィールドが null を返すこと", () => {
       const result = inferSmartDefaults({
         purpose: "",
-        category: null,
+        category: [],
       });
       expect(result.tool).toBeNull();
       expect(result.timing).toBeNull();
@@ -604,7 +585,7 @@ describe("SkillCreateWizard", () => {
     it("inferenceLog が配列として返ること（推論0件でも）", () => {
       const result = inferSmartDefaults({
         purpose: "汎用タスク",
-        category: null,
+        category: [],
       });
       expect(Array.isArray(result.inferenceLog)).toBe(true);
     });
@@ -612,7 +593,7 @@ describe("SkillCreateWizard", () => {
     it("Slack を推論した場合 inferenceLog に根拠が記録されること", () => {
       const result = inferSmartDefaults({
         purpose: "slack通知を送る",
-        category: null,
+        category: [],
       });
       expect(result.inferenceLog).toContain(
         "purpose に 'slack' を検出 → tool = 'slack'",

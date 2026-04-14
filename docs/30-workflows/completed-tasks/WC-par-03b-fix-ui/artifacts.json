@@ -2,7 +2,7 @@
   "taskId": "TASK-SW-FIX-UI-001",
   "taskName": "UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）",
   "taskType": "implementation",
-  "status": "pending",
+  "status": "completed",
   "wave": "C",
   "created": "2026-04-12T00:00:00.000Z",
   "dependencies": ["TASK-SW-FIX-FEEDBACK-001"],
@@ -15,23 +15,23 @@
   ],
   "phases": {
     "phase-1": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-1-requirements.md"]
     },
     "phase-2": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-2-design.md"]
     },
     "phase-3": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-3-design-review.md"]
     },
     "phase-4": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-4-test-creation.md"]
     },
     "phase-5": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "phase-5-implementation.md",
         "packages/shared/src/types/skillCreator.ts",
@@ -41,32 +41,46 @@
       ]
     },
     "phase-6": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-6-test-expansion.md"]
     },
     "phase-7": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-7-coverage-check.md"]
     },
     "phase-8": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-8-refactoring.md"]
     },
     "phase-9": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-9-quality-assurance.md"]
     },
     "phase-10": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["phase-10-final-review.md"]
     },
     "phase-11": {
-      "status": "pending",
-      "artifacts": ["phase-11-manual-test.md"],
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/screenshot-manifest.json",
+        "outputs/phase-11/devtools-audit.md",
+        "outputs/phase-11/screenshots/smart-defaults-applied.png",
+        "outputs/phase-11/screenshots/q3-schedule-expanded.png",
+        "outputs/phase-11/screenshots/q1-single-select.png",
+        "outputs/phase-11/screenshots/q1-multi-select.png",
+        "outputs/phase-11/screenshots/q1-all-deselected.png",
+        "outputs/phase-11/screenshots/q3-schedule-plus-manual.png",
+        "outputs/phase-11/screenshots/q3-schedule-collapsed.png",
+        "outputs/phase-11/screenshots/apply-summary-card-defaults.png",
+        "outputs/phase-11/screenshots/keyboard-focus-button.png"
+      ],
       "note": "VISUAL: 画面変更を伴うため目視確認必須"
     },
     "phase-12": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/system-spec-update-summary.md",

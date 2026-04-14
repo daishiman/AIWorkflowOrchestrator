@@ -12,7 +12,7 @@
 | タスク種別   | UI task（VISUAL）                                                               |
 | 対象問題番号 | 問題2・問題3・問題11・問題15・問題16                                            |
 | 作成日       | 2026-04-12                                                                      |
-| ステータス   | pending                                                                         |
+| ステータス   | completed                                                                       |
 
 ## 目的
 
@@ -45,18 +45,18 @@
 
 | Phase    | ファイル                       | 概要                         | ステータス |
 | -------- | ------------------------------ | ---------------------------- | ---------- |
-| Phase 1  | `phase-1-requirements.md`      | 要件定義                     | pending    |
-| Phase 2  | `phase-2-design.md`            | 設計                         | pending    |
-| Phase 3  | `phase-3-design-review.md`     | 設計レビュー                 | pending    |
-| Phase 4  | `phase-4-test-creation.md`     | テスト作成                   | pending    |
-| Phase 5  | `phase-5-implementation.md`    | 実装                         | pending    |
-| Phase 6  | `phase-6-test-expansion.md`    | テスト拡充                   | pending    |
-| Phase 7  | `phase-7-coverage-check.md`    | カバレッジ確認               | pending    |
-| Phase 8  | `phase-8-refactoring.md`       | リファクタリング             | pending    |
-| Phase 9  | `phase-9-quality-assurance.md` | 品質保証                     | pending    |
-| Phase 10 | `phase-10-final-review.md`     | 最終レビュー                 | pending    |
-| Phase 11 | `phase-11-manual-test.md`      | 手動テスト（VISUAL）         | pending    |
-| Phase 12 | `phase-12-documentation.md`    | ドキュメント更新             | pending    |
+| Phase 1  | `phase-1-requirements.md`      | 要件定義                     | completed  |
+| Phase 2  | `phase-2-design.md`            | 設計                         | completed  |
+| Phase 3  | `phase-3-design-review.md`     | 設計レビュー                 | completed  |
+| Phase 4  | `phase-4-test-creation.md`     | テスト作成                   | completed  |
+| Phase 5  | `phase-5-implementation.md`    | 実装                         | completed  |
+| Phase 6  | `phase-6-test-expansion.md`    | テスト拡充                   | completed  |
+| Phase 7  | `phase-7-coverage-check.md`    | カバレッジ確認               | completed  |
+| Phase 8  | `phase-8-refactoring.md`       | リファクタリング             | completed  |
+| Phase 9  | `phase-9-quality-assurance.md` | 品質保証                     | completed  |
+| Phase 10 | `phase-10-final-review.md`     | 最終レビュー                 | completed  |
+| Phase 11 | `phase-11-manual-test.md`      | 手動テスト（VISUAL）         | completed  |
+| Phase 12 | `phase-12-documentation.md`    | ドキュメント更新             | completed  |
 | Phase 13 | `phase-13-pr-creation.md`      | PR作成（ユーザー承認後のみ） | pending    |
 
 ## 実行方法

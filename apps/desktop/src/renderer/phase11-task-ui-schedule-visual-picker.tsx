@@ -16,7 +16,7 @@ type PickerPreset = "empty" | "daily" | "weekly" | "monthly" | "custom";
 const DEFAULT_FORM_DATA: SkillInfoFormData = {
   skillName: "",
   purpose: "スケジュール設定 UI の手動検証",
-  category: "automation",
+  category: ["automation"],
 };
 
 const DEFAULT_ANSWERS: ConversationAnswers = {

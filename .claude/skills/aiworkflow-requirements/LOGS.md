@@ -4,6 +4,19 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-14 - TASK-SW-FIX-UI-001 impl-spec-to-skill-sync（UI整合性修正 / Phase 11 screenshot 9枚 / artifacts parity）
+
+### 変更内容
+
+- `references/task-workflow.md` / `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04f.md` に TASK-SW-FIX-UI-001 の completed record を追加
+- `references/ui-ux-feature-components-skill-analysis.md` に UI 整合性修正 current facts を追加
+- `indexes/topic-map.md` に UI 整合性修正の current facts エントリを追加
+- `docs/30-workflows/WC-par-03b-fix-ui/artifacts.json` / `outputs/artifacts.json` の parity completed を反映
+
+### 背景
+
+UI 整合性修正の current facts を、実装・スクリーンショット・台帳で同 wave に固定した。Phase 11 は 9 枚の screenshot evidence と DevTools audit PASS を残し、Phase 12 は canonical 6 成果物を complete した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
 
 ### 変更内容

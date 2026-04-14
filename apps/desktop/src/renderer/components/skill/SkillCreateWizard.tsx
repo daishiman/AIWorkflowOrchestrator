@@ -31,7 +31,10 @@ import type {
   SkillInfoFormData,
   SmartDefaultResult,
 } from "@repo/shared/types/skillCreator";
-import { buildSkillContext } from "@repo/shared/types/skillCreator";
+import {
+  buildSkillContext,
+  resolvePrimarySkillCategory,
+} from "@repo/shared/types/skillCreator";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
   useCreateSkill,
@@ -45,6 +48,8 @@ import {
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
+import { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
+export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
 
 // ────────────────────────────────────────────────────────────────────────────
 // 定数
@@ -63,7 +68,7 @@ const SKILL_GENERATION_OPTIONS = {
 const DEFAULT_FORM_DATA: SkillInfoFormData = {
   skillName: "",
   purpose: "",
-  category: null,
+  category: [],
 };
 
 const DEFAULT_ANSWERS: ConversationAnswers = {
@@ -150,72 +155,6 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
     code: "LLM_ERROR",
     message: error,
   };
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// inferSmartDefaults
-// ────────────────────────────────────────────────────────────────────────────
-
-/**
- * Step 0 の入力から Q1〜Q6 の初期値を推論する純粋関数。
- * - purpose に "Slack" → tool = "slack"
- * - purpose に "GitHub" → tool = "github"
- * - purpose に "Notion" → tool = "notion"
- * - purpose に "毎日/毎週/定期/スケジュール" → timing = "scheduled"
- * - purpose に "リアルタイム/即座/すぐに" → timing = "realtime"
- * - category === "code-support" → format = "code"
- * - category === "data-analysis" → format = "structured"
- */
-export function inferSmartDefaults(
-  data: SkillInfoFormData,
-): SmartDefaultResult {
-  const purpose = data.purpose ?? "";
-  const purposeLower = purpose.toLowerCase();
-  const inferenceLog: string[] = [];
-  const result: SmartDefaultResult = {
-    who: null,
-    input: null,
-    timing: null,
-    output: null,
-    tool: null,
-    format: null,
-  };
-
-  // ツール推論（大文字小文字を区別しない）
-  if (purposeLower.includes("slack")) {
-    result.tool = "slack";
-    inferenceLog.push("purpose に 'slack' を検出 → tool = 'slack'");
-  } else if (purposeLower.includes("github")) {
-    result.tool = "github";
-    inferenceLog.push("purpose に 'github' を検出 → tool = 'github'");
-  } else if (purposeLower.includes("notion")) {
-    result.tool = "notion";
-    inferenceLog.push("purpose に 'notion' を検出 → tool = 'notion'");
-  }
-
-  // タイミング推論
-  if (/毎日|毎週|定期|スケジュール/.test(purpose)) {
-    result.timing = "scheduled";
-    inferenceLog.push(
-      "purpose に定期実行キーワードを検出 → timing = 'scheduled'",
-    );
-  } else if (/リアルタイム|即座|すぐに/.test(purpose)) {
-    result.timing = "realtime";
-    inferenceLog.push(
-      "purpose にリアルタイムキーワードを検出 → timing = 'realtime'",
-    );
-  }
-
-  // フォーマット推論
-  if (data.category === "code-support") {
-    result.format = "code";
-    inferenceLog.push("category = 'code-support' → format = 'code'");
-  } else if (data.category === "data-analysis") {
-    result.format = "structured";
-    inferenceLog.push("category = 'data-analysis' → format = 'structured'");
-  }
-
-  return { ...result, inferenceLog };
 }
 
 function resolveKnownTool(input: string | null | undefined): string | null {
@@ -458,7 +397,7 @@ export const SkillCreateWizard = React.forwardRef<
       // W3-seq-04 計装 3: 生成完了イベント（AC-03）—失敗時は発火しない
       trackEvent("skill_wizard_generation_completed", {
         method,
-        category: formData.category ?? "other",
+        category: resolvePrimarySkillCategory(formData.category) ?? "other",
         hasExternalIntegration: integration.hasExternalIntegration,
       });
       wizardCompletedRef.current = true;
