@@ -4,6 +4,21 @@
 
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
+## 2026-04-13 - UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 完了
+
+### 変更内容
+- `packages/shared/src/constants/skillName.ts` 新規作成（SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth）
+- `packages/shared/src/constants/skillName.test.ts` 新規作成（パストラバーサル対策・境界値テスト含む）
+- `packages/shared/src/constants/index.ts` に skillName.ts の re-export 追加
+- `packages/shared/src/claude-cli/constants.ts` が shared 定数を import し再export（互換性維持）
+- `apps/desktop/src/main/claude-cli/SkillScanner.ts` を `@repo/shared/constants` から import へ切り替え
+- `.claude/skills/skill-creator/scripts/init_skill.js` および `.agents/` ミラーに runtime fallback 機構追加
+- `references/lessons-learned-ipc-preload-runtime-2026-04.md` に L-SKILLNAME-001〜003 追加
+- `references/task-workflow-completed-recent-2026-04e.md` に完了エントリ追加
+
+### 背景
+SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH が SkillScanner.ts と init_skill.js に重複定義されていた。shared定数化により single source of truth を確立し、runtime fallback 機構で standalone CLI スクリプトの互換性を維持した。
+
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
 
 ### 変更内容
@@ -237,6 +252,7 @@ Phase 12 の閉じ作業では、成果物だけでなく LOGS と topic-map ま
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-13 - UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 完了（`packages/shared/src/constants/skillName.ts` 新規（SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH single source of truth）/ `constants/index.ts` re-export 追加 / `claude-cli/constants.ts` 互換性維持 re-export / `SkillScanner.ts` shared import 切替 / `init_skill.js` runtime fallback 追加 / `lessons-learned-ipc-preload-runtime-2026-04.md` L-SKILLNAME-001〜003 追加 / `task-workflow-completed-recent-2026-04e.md` 完了エントリ追加 / `indexes/resource-map.md` タスク行追加） |
 | 2026-04-13 - UT-W3-ANALYTICS-STORE-INTEGRATION-001 Phase 12 close-out sync（`apps/desktop/src/renderer/store/slices/agentSlice.ts` に analytics wiring 追加 / `analyticsSlice.ts` を helper 化 / `packages/shared/src/types/index.ts` + `packages/shared/index.ts` で `SkillAnalyticsEventType`・`SkillAnalyticsEvent` を再公開 / `outputs/phase-12` current facts 更新 / `task-workflow-completed`・`LOGS`・`SKILL` 同波更新） |
 | 2026-04-12 - TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 impl-spec-to-skill-sync（`phase-12-documentation.md` ステータス「未実施」→「完了」更新・Task 12-1〜12-6 全完了マーク / `lessons-learned-current-2026-04.md` に L-WEEKGRD-001〜003 追記（純粋関数ガード戦略・環境ブロッカー分離・NON_VISUAL宣言）/ `task-specification-creator/SKILL.md` WEEKGRD-01〜03 Feedback追記 / `task-workflow-completed-recent-2026-04e.md` 完了エントリ追加 / LOGS.md 同波更新） |
 | 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync（`lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜003 追加（vi.stubGlobal fetch モック / AbortController + finally clearTimeout / 空文字 URL エッジケース早期識別）/ `indexes/resource-map.md` に UT-W3-ANALYTICS-HTTP-PROVIDER-001 エントリ追加 / `task-workflow-completed-recent-2026-04e.md` に完了記録追加 / `api-ipc-system-core.md` current contract + `environment-variables.md` の `ANALYTICS_ENDPOINT_URL` 追加は Phase 12 で実施済み） |

@@ -923,6 +923,23 @@
 - 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
 - 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
 
+## L-WEEKGRD-001: weekly空weekdaysガードは例外でなく空文字返却で設計する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 / AC-1
+- 症状: weekdays: []時に例外を投げると、呼び出し元のバリデーション制御が複雑化する
+- 解決策: ガード処理で空文字""を返し、呼び出し元の既存バリデーションに委ねる
+- 再発防止: 純粋関数ガードのデフォルト戦略は「例外なし・無効値返却」を採用する
+
+## L-WEEKGRD-002: NON_VISUAL純粋関数タスクのPhase 11は source-level PASSと環境ブロッカーを分離して記録する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: vitestがesbuild host/binary mismatch（0.21.5 vs 0.25.12）で停止した場合、製品FAILと環境FAILが混在しがち
+- 解決策: discovered-issues.md でproduct_blockerとenvironment_issueを別カテゴリで記録し、product blocker 0件を明記
+- 再発防止: 環境要因は製品バックログに入れない
+
+## L-WEEKGRD-003: Phase 11 NON_VISUALタスクではui-sanity-visual-review.mdにNON_VISUAL宣言を明示する
+- タスク: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 症状: visual reviewファイルが空だとreviewerが証跡漏れと誤解する
+- 解決策: ui-sanity-visual-review.mdの冒頭に「本タスクはpure function変更のため画面変更なし（NON_VISUAL）」と明記
+
 ---
 
 ## TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 VisualCronPicker UI validation（2026-04-13）

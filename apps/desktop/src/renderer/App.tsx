@@ -190,6 +190,17 @@ function App(): JSX.Element {
       return;
     }
 
+    // Store API が利用できない場合（テスト環境・electronAPI未注入）は
+    // デフォルト値で同期的に初期化して act() 境界外の state 更新警告を防ぐ
+    if (!getStoreApi()?.get) {
+      setIsOnboardingCompleted(false);
+      setIsOnboardingDismissed(false);
+      setOnboardingInitialName(getFallbackOnboardingName());
+      setOnboardingInitialStarterTool(null);
+      setIsOnboardingReady(true);
+      return;
+    }
+
     let isActive = true;
 
     const loadOnboardingState = async (): Promise<void> => {
