@@ -4,6 +4,13 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-14 — impl-spec-to-skill-sync (UT-SKILL-NAME-PATTERN-001)
+
+- `docs/00-requirements/18-skills.md`: セクション 3.2.2.2「定数定義と一元化管理」追記（`SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` の実装定数参照を明示）
+- `.agents/skills/skill-creator/SKILL.md`: ナレッジ管理行2件と基礎設計参照リストを `.claude` 正本に同期
+- `references/task-workflow-completed-recent-2026-04f.md`: UT-SKILL-NAME-PATTERN-001 completed エントリ追加
+- Phase-12 検証: 全 AC PASS（監査 no-op・テスト 60件全合格）
+
 ## 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期
 
 ### 変更内容

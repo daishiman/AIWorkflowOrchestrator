@@ -197,6 +197,45 @@
 
 ---
 
+### タスク: UT-SKILL-NAME-PATTERN-001 skill-name-pattern-shared-constant（2026-04-14）
+
+| 項目       | 値                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-NAME-PATTERN-001                                                                 |
+| ステータス | **完了（監査 + no-op確認 + docs同期）**                                                   |
+| タイプ     | refactoring / audit / docs-sync                                                           |
+| 優先度     | medium                                                                                    |
+| 完了日     | 2026-04-14                                                                                |
+| 対象       | `packages/shared/src/constants/skillName.ts` / `packages/shared/src/constants/index.ts` |
+| 成果物     | `docs/30-workflows/ut-skill-name-pattern-001/outputs/phase-12/`                          |
+| PR         | Phase 13（ユーザー承認後）                                                                |
+
+#### 実施内容
+
+- Phase 1 で現行 state を監査し `SKILL_NAME_PATTERN` と `MAX_SKILL_NAME_LENGTH` が `skillName.ts` に集約済みと確認（drift なし）
+- `SkillScanner.ts` と `init_skill.js` が `@repo/shared/constants` を参照していることを確認
+- 既存テスト 60 件 ALL PASS（skillName 11 + manual-import 14 + scanner 35）
+- Phase 12 で `docs/00-requirements/18-skills.md` との整合を確認し no-op と判定
+- impl-spec-to-skill-sync で `18-skills.md` にセクション 3.2.2.2（定数一元化管理）を追記
+
+#### 検証証跡
+
+| 検証項目                                | 結果                                    |
+| --------------------------------------- | --------------------------------------- |
+| AC-1〜AC-5 全受入基準                   | PASS                                    |
+| `pnpm --filter @repo/shared test`       | 11 tests PASS                           |
+| `pnpm --filter @repo/desktop typecheck` | PASS                                    |
+| `grep @repo/shared/constants` 全参照    | SkillScanner.ts・init_skill.js 確認済み |
+
+#### 苦戦箇所
+
+| 苦戦箇所                                                                  | 解決策                                                                   |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 過去タスク ID（UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001）との混在 | index.md の発見元を明記し「監査・確認系」として分類した                  |
+| Phase 12 の no-op と impl-spec-to-skill-sync 追記推奨の矛盾               | タスクスコープ（drift確認）と監査スコープ（改善余地）は異なると判断し追記 |
+
+---
+
 ### タスク: TASK-SW-FIX-MODE-MGMT-001 スキルウィザード generationMode廃止・LLM専用化（2026-04-14）
 
 | 項目       | 値                                                                                                                |
