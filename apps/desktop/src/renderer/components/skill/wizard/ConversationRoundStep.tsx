@@ -521,9 +521,9 @@ export const ConversationRoundStep = ({
         {key === "q3" && selectedOptions.includes("定期実行") && (
           <div className="flex flex-col gap-3 rounded-lg border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-[var(--text-secondary)]">
+              <p className="text-xs text-[var(--text-secondary)]">
                 スケジュール（cron式）
-              </label>
+              </p>
               <VisualCronPicker
                 value={scheduleConfig?.cronExpression ?? ""}
                 onChange={(cron) => handleCronChange(cron)}
