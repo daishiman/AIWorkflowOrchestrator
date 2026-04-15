@@ -12,28 +12,25 @@
 
 ## 変更ファイルと行番号サマリ
 
-| ファイル                                                                     | 変更種別 | 対象行（変更前） | 内容                                           |
-| ---------------------------------------------------------------------------- | -------- | ---------------- | ---------------------------------------------- |
-| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 8-9（import） | `import os from "os"` を追加                   |
-| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 154-165       | `--path` → `--plan` / `--output` + try/finally |
-| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | 修正     | 既存テスト末尾   | TC-01〜TC-07 のテストケース追加                |
+| ファイル                                                                     | 変更種別 | 対象行（変更前）  | 内容                                                      |
+| ---------------------------------------------------------------------------- | -------- | ----------------- | --------------------------------------------------------- |
+| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 8-11（import） | `import { randomUUID } from "crypto"` / `os` を追加       |
+| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 154-198        | `skillName` plan / `skillMdPath` / 存在確認 / try/finally |
+| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | 修正     | 既存テスト末尾    | TC-01〜TC-07 のテストケース追加                           |
 
 ## Task 1: import 追加
 
 **ファイル**: `apps/desktop/src/main/services/skill/SkillCreatorService.ts`
 
 ```typescript
-// 変更前（行 8-9）
-import path from "path";
-import fs from "fs/promises";
-
-// 変更後
+// 変更後（行 8-11）
+import { randomUUID } from "crypto";
 import os from "os";
 import path from "path";
 import fs from "fs/promises";
 ```
 
-## Task 2: SKILL.md 生成ブロック置き換え（行 154-165）
+## Task 2: SKILL.md 生成ブロック置き換え（行 154-198）
 
 **変更前**:
 
@@ -52,19 +49,38 @@ if (!generateResult.success) {
 
 ```typescript
 // SKILL.md生成
-const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${Date.now()}.json`);
+const skillMdPath = path.join(skillDir, "SKILL.md");
+const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
 try {
   const plan = {
-    name: options.name,
-    description: options.description,
-    tasks: [],
+    skillName: options.name,
+    workflow: {
+      summary: options.description,
+      anchors: [],
+      trigger: {
+        description: `Use when ${options.name} is requested`,
+        keywords: [options.name],
+      },
+      phases: [],
+      tasks: [],
+    },
+    directories: {},
+    files: [],
   };
   await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
   const generateResult = await this.scriptExecutor.execute(
     "generate_skill_md.js",
-    ["--plan", tmpPlanPath, "--output", path.join(skillDir, "SKILL.md")],
+    ["--plan", tmpPlanPath, "--output", skillMdPath],
   );
-  if (!generateResult.success) {
+  let shouldUseFallback = !generateResult.success;
+  if (!shouldUseFallback) {
+    try {
+      await fs.access(skillMdPath);
+    } catch {
+      shouldUseFallback = true;
+    }
+  }
+  if (shouldUseFallback) {
     await this.ensureSkillMdExists(skillDir, options.name, options.description);
   }
 } finally {
@@ -75,7 +91,7 @@ try {
 **行番号の変化**:
 
 - 変更前: 行 154-165（12行）
-- 変更後: 行 154-178 程度（+14行）
+- 変更後: 行 154-198 程度（+34行）
 
 ## Task 3: テスト更新
 
@@ -85,15 +101,15 @@ TC-01〜TC-07 を追加する。詳細は `outputs/phase-4/test-design.md` の�
 **追加テストの概要**:
 
 1. `fs` モジュールのモック追加（`vi.mock("fs/promises")`）
-2. TC-01〜TC-03: `--plan` / `--output` 引数検証
-3. TC-04〜TC-05: フォールバック動作検証
+2. TC-01〜TC-03: `--plan` / `--output` 引数検証 + plan JSON の内容確認
+3. TC-04〜TC-05: フォールバック動作検証（失敗時 / 成功だが SKILL.md 未生成時）
 4. TC-06〜TC-07: finally cleanup 検証（成功・失敗両経路）
 
 ## Task 4: 動作確認コマンド
 
 ```bash
 # SkillCreatorService のテストのみ実行
-pnpm --filter @repo/desktop test -- --testPathPattern="SkillCreatorService"
+pnpm --filter @repo/desktop exec vitest run "src/main/services/skill/__tests__/SkillCreatorService.test.ts"
 
 # 型チェック（import os の型解決確認）
 pnpm --filter @repo/desktop typecheck
@@ -105,7 +121,10 @@ pnpm --filter @repo/desktop lint
 ## 実装完了チェックリスト
 
 - [ ] `import os from "os"` が追加されている
+- [ ] `import { randomUUID } from "crypto"` が追加されている
 - [ ] `--path` 引数が `--plan` / `--output` 引数に置き換えられている
+- [ ] `skillName` plan と `skillMdPath` が使用されている
+- [ ] 生成後の `SKILL.md` 存在確認が追加されている
 - [ ] `try/finally` ブロックで tmp ファイルが確実に削除される
 - [ ] TC-01〜TC-07 が全件 Green
 - [ ] 既存テストが破壊されていない

@@ -30,9 +30,9 @@ const generateResult = await this.scriptExecutor.execute(
 );
 ```
 
-`generate_skill_md.js` の仕様では `--plan <json>` と `--output <path>` が必須引数として要求される。
+`generate_skill_md.js` の仕様では `skillName` を含む構造計画 JSON を `--plan <json>` で受け取り、`--output <path>` へ SKILL.md を出力する。
 `--path` は当スクリプトに存在しない引数であるため、スクリプトはオプション解析エラーで終了コード非ゼロを返す。
-結果として `generateResult.success` が常に `false` になり、以下のフォールバックのみが実行される：
+結果として `generateResult.success` が常に `false` になり、SKILL.md 生成はフォールバック経路に落ちる：
 
 ```typescript
 if (!generateResult.success) {
@@ -40,12 +40,8 @@ if (!generateResult.success) {
 }
 ```
 
-`ensureSkillMdExists` フォールバックが生成する SKILL.md には：
-
-- YAML フロントマター（`---` で囲まれたメタ情報ブロック）が不足する
-- `## Task一覧` セクションが不足する
-
-これにより、スキル仕様書として期待される完全な構造が得られない。
+`ensureSkillMdExists` フォールバックが生成する SKILL.md は YAML フロントマターを持つが、
+`## Task一覧` は持たないため、スキル仕様書としては最小構成に留まる。
 
 ### Task 2: 解決アプローチの決定（B案採用）
 
@@ -55,7 +51,7 @@ if (!generateResult.success) {
 
 - 問題: スクリプトの仕様変更は影響範囲が広く、他の呼び出し箇所が存在する可能性がある
 
-**B案（採用）**: `SkillCreatorService` 側で `description` から最小限の構造計画 JSON を組み立て、
+**B案（採用）**: `SkillCreatorService` 側で `skillName` と `workflow.summary` を含む最小構造計画 JSON を組み立て、
 tmp json ファイルに書いて `--plan` / `--output` 引数で渡す。finally 節で cleanup する。
 
 - 理由: スクリプトの仕様に合わせてサービス側を修正する方が変更範囲が局所的かつ安全
@@ -64,12 +60,22 @@ B案の実装イメージ：
 
 ```typescript
 // tmp jsonファイルを生成してスクリプトに --plan / --output で渡す
-const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${Date.now()}.json`);
+const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
 try {
   const plan = {
-    name: options.name,
-    description: options.description,
-    tasks: [],
+    skillName: options.name,
+    workflow: {
+      summary: options.description,
+      anchors: [],
+      trigger: {
+        description: `Use when ${options.name} is requested`,
+        keywords: [options.name],
+      },
+      phases: [],
+      tasks: [],
+    },
+    directories: {},
+    files: [],
   };
   await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
   const generateResult = await this.scriptExecutor.execute(

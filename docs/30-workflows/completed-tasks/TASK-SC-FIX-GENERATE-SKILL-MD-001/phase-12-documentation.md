@@ -63,12 +63,12 @@ tmpファイルに書き込んでから`--plan`/`--output`引数で渡すよう�
 
 - 変更ファイル: `apps/desktop/src/main/services/skill/SkillCreatorService.ts`（行152-165）
 - 変更ファイル: `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts`
-- planオブジェクトの最小構造: `{ name: string; description: string }` をJSONシリアライズしてtmpファイルへ書き込む
+- planオブジェクトの最小構造: `{ skillName: string; workflow: { summary: string; anchors: []; trigger: {}; phases: []; tasks: [] }; directories: {}; files: [] }` をJSONシリアライズしてtmpファイルへ書き込む
 - tmpファイルパスはUUIDを含む一意なパスを使用し、`finally`節で`fs.unlink`により削除する
-- `spawnFile`の引数: `["--plan", tmpPath, "--output", path.join(skillDir, "SKILL.md")]`
-- `generateResult.success`かつSKILL.mdが存在する場合のみフォールバックをスキップする
+- `scriptExecutor.execute("generate_skill_md.js", ["--plan", tmpPath, "--output", path.join(skillDir, "SKILL.md")])` で呼び出す
+- `generateResult.success` かつ `SKILL.md` が存在する場合のみフォールバックをスキップする
 - `fs.unlink`の失敗は握りつぶし（non-fatal）、メインの戻り値に影響させない
-- 設定可能パラメータ/定数: スクリプト名`"generate_skill_md.js"`、引数名`"--plan"`・`"--output"`の3系統で整理する
+- 設定可能パラメータ/定数: スクリプト名`"generate_skill_md.js"`、引数名`"--plan"`・`"--output"`、tmpファイル名プレフィックス`skill-plan-`の3系統で整理する
 
 成果物: `outputs/phase-12/implementation-guide.md`
 
@@ -89,9 +89,9 @@ tmpファイルに書き込んでから`--plan`/`--output`引数で渡すよう�
 
 ### Step 2: システム仕様更新
 
-- `SkillCreatorService.generateSkillMd`のシグネチャとplan JSON構造を`system-spec-update-summary.md`に記録する
-- tmpファイル生成・`--plan`/`--output`渡し・`finally`cleanup の current facts と no-op / update 判定を残す
-- `artifacts.json` と `outputs/artifacts.json` の同期結果を final evidence として記録する
+- `SkillCreatorService.createSkill` の SKILL.md 生成ブロックと plan JSON構造を `system-spec-update-summary.md` に記録する
+- tmpファイル生成・`--plan`/`--output`渡し・`finally`cleanup・生成後の `SKILL.md` 存在確認 の current facts と no-op / update 判定を残す
+- `artifacts.json` の同期結果を final evidence として記録する
 
 成果物: `outputs/phase-12/system-spec-update-summary.md`
 

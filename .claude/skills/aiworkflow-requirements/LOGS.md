@@ -4,6 +4,20 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-15 — impl-spec-to-skill-sync (TASK-SC-FIX-GENERATE-SKILL-MD-001)
+
+### 変更内容
+
+- `references/lessons-learned-current-2026-04.md` に L-SC-FIX-001/002 を追加（generate_skill_md.js 引数パターン・temp file cleanup パターン）
+- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SC-FIX-GENERATE-SKILL-MD-001 完了記録を追加
+- `.claude/skills/skill-creator/SKILL.md` に generate_skill_md.js スクリプト仕様（引数・plan JSON 構造・呼び出しパターン）を追加
+
+### 背景
+
+TASK-SC-FIX-GENERATE-SKILL-MD-001（generate_skill_md.js 引数ミスマッチ修正）が実装完了。
+`["--path", skillDir]` から `["--plan", tmpPlanPath, "--output", skillMdPath]` への引数修正と
+temp ファイル管理パターンを lessons-learned・task-workflow・skill-creator SKILL.md に反映した。
+
 ## 2026-04-14 — impl-spec-to-skill-sync (UT-SKILL-NAME-PATTERN-001)
 
 - `docs/00-requirements/18-skills.md`: セクション 3.2.2.2「定数定義と一元化管理」追記（`SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` の実装定数参照を明示）

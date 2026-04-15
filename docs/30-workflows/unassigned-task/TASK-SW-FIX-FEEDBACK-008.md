@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 2131
+issue_number: 2176
 task_id: TASK-SW-FIX-FEEDBACK-008
 parent_task_id: TASK-SW-FIX-FEEDBACK-001
 status: open
@@ -12,21 +12,21 @@ scale: medium
 task_type: BUGFIX
 ```
 
-| 項目         | 内容                                                                           |
-| ------------ | ------------------------------------------------------------------------------ |
-| タスクID     | TASK-SW-FIX-FEEDBACK-008                                                       |
-| 親タスクID   | TASK-SW-FIX-FEEDBACK-001（スキルウィザード current facts 同期・skill準拠検証） |
-| タスク名     | `fetchSkills()` 非ブロッキング化（follow-up）                                  |
-| 分類         | バグ修正（エラーハンドリング改善）                                             |
-| 対象機能     | `SkillLifecyclePanel.tsx` の `handleExecutePlan` / `processWorkflowOutcome`    |
-| 優先度       | 中（`priority:medium`）                                                        |
-| 見積もり規模 | 中規模（`scale:medium`）                                                       |
-| ステータス   | 未実施（`status:open`）                                                        |
-| 実行ウェーブ | Wave C（TASK-SW-FIX-FEEDBACK-001 完了後に着手可能）                            |
-| 依存タスク   | TASK-SW-FIX-FEEDBACK-001（Wave B 完了済み）                                    |
-| 発見元       | TASK-SW-FIX-FEEDBACK-001 Phase 11 手動テスト（NOTE-001）                       |
-| 関連Issue    | #2131（TASK-SW-FIX-FEEDBACK-001 の GitHub Issue）                              |
-| 発見日       | 2026-04-14                                                                     |
+| 項目         | 内容                                                                            |
+| ------------ | ------------------------------------------------------------------------------- |
+| タスクID     | TASK-SW-FIX-FEEDBACK-008                                                        |
+| 親タスクID   | TASK-SW-FIX-FEEDBACK-001（スキルウィザード current facts 同期・skill準拠検証）  |
+| タスク名     | `fetchSkills()` 非ブロッキング化（follow-up）                                   |
+| 分類         | バグ修正（エラーハンドリング改善）                                              |
+| 対象機能     | `SkillLifecyclePanel.tsx` の `handleExecutePlan` / `processWorkflowOutcome`     |
+| 優先度       | 中（`priority:medium`）                                                         |
+| 見積もり規模 | 中規模（`scale:medium`）                                                        |
+| ステータス   | 未実施（`status:open`）                                                         |
+| 実行ウェーブ | Wave C（TASK-SW-FIX-FEEDBACK-001 完了後に着手可能）                             |
+| 依存タスク   | TASK-SW-FIX-FEEDBACK-001（Wave B 完了済み）                                     |
+| 発見元       | TASK-SW-FIX-FEEDBACK-001 Phase 11 手動テスト（NOTE-001）                        |
+| 関連Issue    | #2176（本タスクの独自Issue）、#2131（TASK-SW-FIX-FEEDBACK-001 の GitHub Issue） |
+| 発見日       | 2026-04-14                                                                      |
 
 ---
 
@@ -778,12 +778,14 @@ graph TD
 
 TASK-SW-FIX-FEEDBACK-001 での調査と本仕様書作成時点での予測苦戦箇所を記録する。
 
-| 項目                                     | 内容                                                                                                                                                            |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-floating-promises` lint ルール対応   | ESLint の `@typescript-eslint/no-floating-promises` ルールにより、`void` キーワードなしの `.catch()` チェーンが警告を出す可能性がある。Phase 3 で確認必須       |
-| `handleExecutePlan` outer catch との境界 | `handleExecutePlan` の `fetchSkills` は outer try-catch（L1117-1123）に包まれているため、non-blocking 化後の例外伝播パスを Phase 3 で整理すること               |
-| 2箇所の修正パターンの統一                | `processWorkflowOutcome` と `handleExecutePlan` の2箇所を修正するが、コンテキストが異なるため完全同一パターンにならない可能性がある。Phase 8 で整合性を確認する |
-| テストで `fetchSkills` のモック化        | `useFetchSkills` フックをテストでモックする方法は既存テスト（U-8）で確立済み。reject させるパターンへの拡張を Phase 4 で確認すること                            |
+実施後は各行の「対応」「再発防止」列を実際の結果で更新すること（Phase 12 skill-feedback-report へ転記できる粒度で書くこと）。
+
+| 症状                                                                                                                    | 原因                                                                                               | 対応（予測）                                                                                                                               | 再発防止                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `void fetchSkills().catch(...)` が ESLint の `no-floating-promises` ルールで警告を出す可能性がある                      | `.catch()` チェーンの有無に関わらず `void` キーワードが必要かどうかのルール解釈が不明確            | Phase 3 で `.catch()` チェーンが `no-floating-promises` を回避できるか確認し、必要なら `void` を前置する                                   | Phase 2 設計書に「lint ルール互換性確認」を必須チェック項目として追加する                                               |
+| `handleExecutePlan` の outer try-catch（L1117-1123）内で `fetchSkills` を non-blocking 化すると例外伝播パスが複雑になる | `handleExecutePlan` は outer try-catch を持ち、その中に `fetchSkills` が含まれているため境界が曖昧 | Phase 3 でレビューし、non-blocking 化後も outer catch が機能することを確認する                                                             | 同一関数内に複数の try-catch がある場合、Phase 2 で例外伝播図を Before/After で明示する                                 |
+| `processWorkflowOutcome` と `handleExecutePlan` の2箇所で修正パターンが微妙に異なり、整合性チェックが煩雑になる         | コンテキスト（関数の責務・outer catch の有無）が異なるため完全同一パターンの適用が困難             | Phase 8 リファクタリングで両箇所のパターン統一を確認し、同一パターン適用不可の場合はコメントで理由を明記する                               | 複数箇所への同一修正パターン適用タスクでは、Phase 2 に「各適用箇所の文脈差異テーブル」を必須セクションとして設ける      |
+| `useFetchSkills` フックを reject させるテストモックの書き方が既存テストと異なり、Phase 4 で試行錯誤が発生する可能性     | 既存テスト（U-8）は成功ケースのモックのみ確立済みで、reject パターンへの拡張方法が未検証           | Phase 4 で既存 U-8 のモック設定を参照し、`mockResolvedValue` から `mockRejectedValue` への切り替え方法を確認してから U-NEW-1〜3 を実装する | テスト作成 Phase では reject パターンのモック方法を Phase 4 仕様書に明記する（TASK-SW-FIX-FEEDBACK-001 のパターン流用） |
 
 ---
 

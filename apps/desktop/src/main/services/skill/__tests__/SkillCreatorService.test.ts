@@ -18,6 +18,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import os from "os";
+import * as fsPromises from "fs/promises";
 import { SkillCreatorService } from "../SkillCreatorService";
 import { ScriptExecutor } from "../ScriptExecutor";
 import { ResourceLoader } from "../ResourceLoader";
@@ -26,6 +28,7 @@ import type { CreateSkillOptions, InterviewResult } from "@repo/shared/types";
 // Mock dependencies
 vi.mock("../ScriptExecutor");
 vi.mock("../ResourceLoader");
+vi.mock("fs/promises");
 
 describe("SkillCreatorService", () => {
   let service: SkillCreatorService;
@@ -65,12 +68,36 @@ describe("SkillCreatorService", () => {
       () => mockResourceLoader as unknown as ResourceLoader,
     );
 
+    // fs/promises デフォルトモック（createSkill内のensureSkillMdExists・generate blockで使用）
+    vi.mocked(fsPromises.mkdir).mockResolvedValue(undefined);
+    vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
+    vi.mocked(fsPromises.writeFile).mockResolvedValue();
+    vi.mocked(fsPromises.unlink).mockResolvedValue();
+    vi.mocked(fsPromises.readdir).mockResolvedValue([]);
+    vi.mocked(fsPromises.readFile).mockResolvedValue(Buffer.from(""));
+
     service = new SkillCreatorService();
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
+
+  const allowGeneratedSkillMd = () => {
+    mockScriptExecutor.execute.mockImplementation(async () => ({
+      success: true,
+      stdout: "",
+      stderr: "",
+      exitCode: 0,
+    }));
+    vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+      const resolvedPath = String(target);
+      if (/test-skill[\\/\\\\]SKILL\.md$/.test(resolvedPath)) {
+        return;
+      }
+      throw new Error("ENOENT");
+    });
+  };
 
   describe("detectMode()", () => {
     it("SC-001: should detect collaborative mode for ambiguous requests", async () => {
@@ -1030,6 +1057,209 @@ describe("SkillCreatorService", () => {
       expect(result.summary?.skipped).toBe(0);
       expect(result.results).toBeDefined();
       expect(result.results?.length).toBe(0);
+    });
+  });
+
+  // ===================================================================
+  // TASK-SC-FIX-GENERATE-SKILL-MD-001: generate_skill_md.js 引数修正
+  // TC-01〜TC-07: AC-1〜AC-5 の検証テスト
+  // ===================================================================
+
+  describe("generate_skill_md.js 引数検証 (TC-01〜TC-03: AC-1対応)", () => {
+    beforeEach(() => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+    });
+
+    it("TC-01: generate_skill_md.js を --plan と --output 引数で呼び出し、plan JSON が skillName/workflow を含む", async () => {
+      // Arrange
+      allowGeneratedSkillMd();
+      const ensureSpy = vi.spyOn(service as any, "ensureSkillMdExists");
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      const generateCall = mockScriptExecutor.execute.mock.calls.find(
+        ([script]: [string]) => script === "generate_skill_md.js",
+      );
+      expect(generateCall).toBeDefined();
+      const args = generateCall![1] as string[];
+      expect(args).toContain("--plan");
+      expect(args).toContain("--output");
+      expect(args).not.toContain("--path");
+
+      const planWriteCall = vi
+        .mocked(fsPromises.writeFile)
+        .mock.calls.find(
+          ([filePath]: [unknown]) =>
+            typeof filePath === "string" &&
+            /skill-plan-[0-9a-f-]{36}\.json$/.test(filePath),
+        );
+      expect(planWriteCall).toBeDefined();
+      const plan = JSON.parse(planWriteCall![1] as string);
+      expect(plan.skillName).toBe("test-skill");
+      expect(plan.workflow.summary).toBe("Test description");
+      expect(plan.workflow.anchors).toEqual([]);
+      expect(plan.workflow.trigger).toMatchObject({
+        keywords: ["test-skill"],
+      });
+      expect(plan.workflow.phases).toEqual([]);
+      expect(plan.workflow.tasks).toEqual([]);
+      expect(plan.directories).toEqual({});
+      expect(plan.files).toEqual([]);
+      expect(ensureSpy).not.toHaveBeenCalled();
+    });
+
+    it("TC-02: --plan の次要素が os.tmpdir() 配下の UUID 付きパスである", async () => {
+      // Arrange
+      allowGeneratedSkillMd();
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      const generateCall = mockScriptExecutor.execute.mock.calls.find(
+        ([script]: [string]) => script === "generate_skill_md.js",
+      );
+      const args = generateCall![1] as string[];
+      const planIdx = args.indexOf("--plan");
+      expect(planIdx).toBeGreaterThanOrEqual(0);
+      expect(args[planIdx + 1]).toContain(os.tmpdir());
+      expect(args[planIdx + 1]).toMatch(/skill-plan-[0-9a-f-]{36}\.json$/);
+    });
+
+    it("TC-03: --output の次要素が skillDir/SKILL.md である", async () => {
+      // Arrange
+      allowGeneratedSkillMd();
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      const generateCall = mockScriptExecutor.execute.mock.calls.find(
+        ([script]: [string]) => script === "generate_skill_md.js",
+      );
+      const args = generateCall![1] as string[];
+      const outputIdx = args.indexOf("--output");
+      expect(outputIdx).toBeGreaterThanOrEqual(0);
+      expect(args[outputIdx + 1]).toMatch(/test-skill[/\\]SKILL\.md$/);
+    });
+  });
+
+  describe("フォールバック動作 (TC-04〜TC-05: AC-4対応)", () => {
+    it("TC-04: generate_skill_md.js が失敗した場合に ensureSkillMdExists が呼ばれ、Task一覧付きの fallback SKILL.md を書き込む", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockImplementation(async (script: string) => {
+        if (script === "generate_skill_md.js") {
+          return {
+            success: false,
+            stdout: "",
+            stderr: "MODULE_NOT_FOUND: Cannot find module",
+            exitCode: 1,
+          };
+        }
+        return { success: true, stdout: "", stderr: "", exitCode: 0 };
+      });
+      const ensureSpy = vi.spyOn(service as any, "ensureSkillMdExists");
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      expect(ensureSpy).toHaveBeenCalledTimes(1);
+      const fallbackWriteCall = vi
+        .mocked(fsPromises.writeFile)
+        .mock.calls.find(
+          ([filePath]: [unknown]) =>
+            typeof filePath === "string" &&
+            /test-skill[\\/\\\\]SKILL\.md$/.test(filePath),
+        );
+      expect(fallbackWriteCall).toBeDefined();
+      const fallbackContent = fallbackWriteCall![1] as string;
+      expect(fallbackContent).toContain("name: test-skill");
+      expect(fallbackContent).toContain("## Task一覧");
+      expect(fallbackContent).toContain("| Task | 責務 | 入力 | 出力 |");
+    });
+
+    it("TC-05: 生成成功でも SKILL.md が存在しない場合は ensureSkillMdExists が呼ばれる", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
+      const ensureSpy = vi.spyOn(service as any, "ensureSkillMdExists");
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      expect(ensureSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("tmp ファイル cleanup (TC-06〜TC-07: AC-5対応)", () => {
+    it("TC-06: SKILL.md が存在する成功時に tmp json ファイルを削除する", async () => {
+      // Arrange
+      allowGeneratedSkillMd();
+      const ensureSpy = vi.spyOn(service as any, "ensureSkillMdExists");
+
+      // Act
+      await service.createSkill({
+        name: "test-skill",
+        description: "Test description",
+        mode: "create",
+      });
+
+      // Assert
+      expect(ensureSpy).not.toHaveBeenCalled();
+      expect(vi.mocked(fsPromises.unlink)).toHaveBeenCalledWith(
+        expect.stringMatching(/skill-plan-[0-9a-f-]{36}\.json$/),
+      );
+    });
+
+    it("TC-07: tmp json cleanup が失敗しても createSkill は成功として完了する", async () => {
+      // Arrange
+      allowGeneratedSkillMd();
+      vi.mocked(fsPromises.unlink).mockRejectedValueOnce(
+        new Error("unlink failed"),
+      );
+
+      // Act / Assert
+      await expect(
+        service.createSkill({
+          name: "test-skill",
+          description: "Test description",
+          mode: "create",
+        }),
+      ).resolves.toContain("test-skill");
     });
   });
 });
