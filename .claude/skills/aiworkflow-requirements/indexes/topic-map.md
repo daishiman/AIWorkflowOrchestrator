@@ -4883,6 +4883,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L208 |
 | 完了タスク（機能別アーカイブ） | L216 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L316 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L94 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L114 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L115 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L127 |
+| 完了タスク（2026-03後半） | L155 |
+| 完了タスク（機能別アーカイブ） | L163 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L263 |
 
 ### references/task-workflow-history.md
 

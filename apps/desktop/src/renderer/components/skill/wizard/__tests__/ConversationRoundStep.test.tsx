@@ -14,6 +14,25 @@ import {
   ConversationRoundStep,
   applySmartDefaults,
 } from "../ConversationRoundStep";
+
+// VisualCronPicker をシンプルな input に置き換えてテスト分離
+// ConversationRoundStep 単体テストは VisualCronPicker の内部実装に依存しない
+vi.mock("../../../schedule/VisualCronPicker", () => ({
+  VisualCronPicker: ({
+    value,
+    onChange,
+  }: {
+    value: string;
+    onChange: (v: string) => void;
+  }) => (
+    <input
+      aria-label="cron式"
+      value={value ?? ""}
+      onChange={(e) => onChange(e.target.value)}
+      onBlur={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
 import type {
   SkillInfoFormData,
   ConversationAnswers,
