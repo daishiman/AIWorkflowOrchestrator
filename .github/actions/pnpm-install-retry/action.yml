@@ -82,15 +82,12 @@ runs:
           exit 0
         fi
         BIN_DIR=$(dirname "$INSTALL_SCRIPT")
-        PATH_TXT="$BIN_DIR/path.txt"
-        if [ ! -f "$PATH_TXT" ]; then
-          echo "Electron path.txt not found. Skipping binary check."
-          exit 0
-        fi
-        ELECTRON_BIN="$BIN_DIR/$(cat "$PATH_TXT")"
-        if [ ! -f "$ELECTRON_BIN" ]; then
-          echo "Electron binary missing at $ELECTRON_BIN. Downloading..."
-          node "$INSTALL_SCRIPT"
+        # electron パッケージは path.json にバイナリ相対パスを保存する（path.txt ではない）
+        # dist/ ディレクトリの有無でバイナリ存在を確認する
+        DIST_DIR="$BIN_DIR/dist"
+        if [ -d "$DIST_DIR" ] && [ -n "$(ls -A "$DIST_DIR" 2>/dev/null)" ]; then
+          echo "Electron binary OK: $DIST_DIR"
         else
-          echo "Electron binary OK: $ELECTRON_BIN"
+          echo "Electron binary missing in $DIST_DIR. Downloading..."
+          node "$INSTALL_SCRIPT"
         fi
