@@ -24,6 +24,18 @@
 
 index と artifacts の status が stale のままだと、CI 最適化の close-out が `spec_created` のまま残ってしまう。今回の同期で Phase 12 完了の current facts を正本へ固定した。
 
+## 2026-04-15 - TASK-CRON-CUSTOM-VALIDATION-001 Phase 12 close-out / system spec N/A 確認
+
+### 変更内容
+
+- システム仕様更新なし（contract 変更なし → Step 2 N/A 確認）
+- `VisualCronPicker.tsx` は内部バリデーションロジック追加のみ、新規 interface / IPC / export なし
+- skill-feedback の知見は `task-specification-creator/SKILL.md` と `phase-template-core.md` に反映済み
+
+### 背景
+
+TASK-CRON-CUSTOM-VALIDATION-001 の Phase 12 close-out。aiworkflow-requirements 側は system spec 更新不要（内部実装変更のみ）のため、N/A 確認と LOGS 記録のみ実施。
+
 ## 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期
 
 ### 変更内容
