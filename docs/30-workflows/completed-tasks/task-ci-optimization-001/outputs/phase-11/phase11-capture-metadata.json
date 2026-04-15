@@ -1,0 +1,9 @@
+{
+  "captureMode": "NON_VISUAL",
+  "reason": "本タスクはGitHub Actions CIの設定変更のみ。UI/UX変更なし。検証はCI実行ログと計測値で実施。",
+  "phase": 11,
+  "taskId": "task-ci-optimization-001",
+  "date": "2026-04-14",
+  "screenshotRequired": false,
+  "verificationMethod": "ci-log-and-timing"
+}
