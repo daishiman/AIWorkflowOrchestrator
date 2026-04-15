@@ -1595,6 +1595,60 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
 | 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
 | 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+
+## 2026-04-12 — impl-spec-to-skill-sync (cron-weekdays-guard)
+
+- lessons-learned-current-2026-04.md: L-CRON-WEEKDAY-GUARD-001 追記（API層防御的ガードパターン）
+- task-workflow.md: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001 completed ledger 追記
+- 参照: apps/desktop/src/renderer/utils/cronConverter.ts + cronConverter.test.ts
+
+## 2026-04-13 — UT-W3-ANALYTICS-STORE-INTEGRATION-001 completed
+
+- analyticsSlice（Zustand action-only store）実装・テスト・ドキュメント全 Phase 完了
+- 参照: apps/desktop/src/renderer/store/slices/analyticsSlice.ts + **tests**/analyticsSlice.test.ts
+
+| 項目     | 内容                                                                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                       |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+| 項目     | 内容                                                                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                       |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+| 項目     | 内容                                                                                                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                       |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+| 項目     | 内容                                                                                                                                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / TDD / analytics integration                                                                                                                                                                    |
+| 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
+| 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
+| 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
 | 項目     | 内容                                                                                                                                                                               |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 種別     | implementation / TDD / analytics integration                                                                                                                                       |
