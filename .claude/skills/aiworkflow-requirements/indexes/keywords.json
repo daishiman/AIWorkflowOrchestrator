@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2981,
+  "totalKeywords": 2984,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1765,6 +1765,8 @@
       "arch-electron-services-details-part2.md",
       "arch-electron-services-details.md",
       "arch-state-management-details.md",
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-details.md",
       "architecture-implementation-patterns-details.md",
@@ -3877,6 +3879,8 @@
     ],
     "STATE": [
       "arch-state-management-reference.md",
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "task-workflow-completed.md"
     ],
@@ -4040,6 +4044,24 @@
       "arch-ui-components-core.md",
       "task-workflow-completed.md"
     ],
+    "state": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed.md"
+    ],
+    "recovery": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md"
+    ],
+    "DETAIL": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "task-workflow-completed.md"
+    ],
     "Snapshot": [
       "arch-state-management-skill-creator.md"
     ],
@@ -4164,13 +4186,6 @@
     ],
     "ログインフローの": [
       "architecture-auth-security-core.md"
-    ],
-    "state": [
-      "architecture-auth-security-core.md",
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed.md"
     ],
     "ownership": [
       "architecture-auth-security-core.md"
@@ -10092,7 +10107,8 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md"
+      "task-workflow-completed-recent-2026-04f.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
@@ -12854,9 +12870,6 @@
       "ui-ux-advanced.md"
     ],
     "最近の完了タスク": [
-      "task-workflow-completed.md"
-    ],
-    "DETAIL": [
       "task-workflow-completed.md"
     ],
     "機能別アーカイブ": [

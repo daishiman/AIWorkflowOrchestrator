@@ -2,6 +2,19 @@
 
 ## 役割
 
+## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/task-ci-optimization-001/index.md` の Phase 1-12 を `完了` に更新し、トップステータスを `Phase 12 完了（PR未着手）` に同期
+- `docs/30-workflows/task-ci-optimization-001/artifacts.json` の `status` を `phase12_completed` に更新し、Phase 1 / Phase 9 の `status` も `completed` に是正
+- `docs/30-workflows/task-ci-optimization-001/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase-12-documentation.md` を current facts に反映
+- `.agents` mirror の `LOGS.md` / `SKILL.md` を同波で同期
+
+### 背景
+
+CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
 ### 変更内容
