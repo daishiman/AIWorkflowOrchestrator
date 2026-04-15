@@ -282,7 +282,6 @@ export const SkillCreateWizard = React.forwardRef<
     setExternalToolName(integration.externalToolName);
     // 依存を q5 に絞ることで、他の回答変更で外部連携状態を再計算しない。
   }, [answers.q5]);
-
   const invalidateGenerationRequests = () => {
     generationRequestIdRef.current += 1;
   };
@@ -409,6 +408,7 @@ export const SkillCreateWizard = React.forwardRef<
       generationLockRef.current = false;
       if (requestId === generationRequestIdRef.current) {
         setIsGenerating(false);
+        generationLockRef.current = false;
       }
     }
   };

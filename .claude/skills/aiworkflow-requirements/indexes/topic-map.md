@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-14
+> 自動生成: 2026-04-15
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1399,20 +1399,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L219 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L248 |
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L259 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L308 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L337 |
-| SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L252 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L301 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L330 |
 | UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L266 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L281 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L330 |
@@ -2562,7 +2550,8 @@ node scripts/list-specs.js --topics
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
 | SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L353 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L345 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L391 |
 
 ### references/arch-state-management.md
 
@@ -2591,6 +2580,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts） | L210 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L283 |
 
 ### references/arch-ui-components-details.md
 
@@ -3458,17 +3448,6 @@ node scripts/list-specs.js --topics
 | L-SC07-007: DescribeStep の deprecated 管理と SkillInfoStep への移行 | L86 |
 | L-SC07-008: generationLockRef による二重実行防止 | L97 |
 | 応用候補 | L108 |
-
-### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
-
-| セクション | 行 |
-|------------|----|
-| タスク概要 | L9 |
-| 実装パターン（将来参照用） | L22 |
-| L-MSO-001: visual label と accessible name は別管理する | L80 |
-| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
-| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
-| スキル改善提案（task-specification-creator への反映事項） | L112 |
 
 ### references/lessons-learned-skill-wizard-mode-mgmt.md
 
@@ -4779,6 +4758,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 
+### references/task-workflow-completed-recent-2026-04g.md
+
+| セクション | 行 |
+|------------|----|
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4903,13 +4887,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L29 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L49 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L50 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L62 |
-| 完了タスク（2026-03後半） | L90 |
-| 完了タスク（機能別アーカイブ） | L98 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L198 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L94 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L114 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L115 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L127 |
+| 完了タスク（2026-03後半） | L155 |
+| 完了タスク（機能別アーカイブ） | L163 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L263 |
 
 ### references/task-workflow-history.md
 
@@ -4943,15 +4927,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
-| 仕様書インデックス | L15 |
-| 利用順序 | L45 |
-| 関連ドキュメント | L51 |
-| 仕様書インデックス | L17 |
-| 利用順序 | L101 |
-| 関連ドキュメント | L106 |
+| 仕様書インデックス | L18 |
+| 利用順序 | L129 |
+| 関連ドキュメント | L134 |
 
 ### references/testing-accessibility.md
 
