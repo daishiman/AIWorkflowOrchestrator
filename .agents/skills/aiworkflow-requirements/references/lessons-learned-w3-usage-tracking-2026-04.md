@@ -161,4 +161,3 @@
 | 標準ルール   | retry は transport 障害と server 側一時障害に限定する。client error は 1 回で止める。`skipped` は analytics 送信結果の一部として維持する                                                                                |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
 | 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`, `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                |
-| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
