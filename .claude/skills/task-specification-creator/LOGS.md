@@ -26,6 +26,18 @@
 
 analytics HTTP provider の Phase 12 close-out で、implementation-guide だけでなく system-spec / changelog / compliance / feedback を 6 成果物として確定させる必要があった。skill 側の Phase 12 ルールに current facts を反映し、次回の close-out でも同じ漏れが再発しないようにした。
 
+## 2026-04-15 - TASK-CI-FUTURE-002 phase 12 close-out sync
+
+### 変更内容
+
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を `docs/30-workflows/task-ci-future-002-test-web-sharding/outputs/phase-12/` に確認
+- skill-feedback-report の知見（CI 設定変更は API / IPC 変更なし → system spec 更新は N/A 確認のみでよい）を記録
+- CI 設定タスクへのテンプレート適合性: 良好（P50 チェックによるパッケージ名乖離解消が改善候補として残存）
+
+### 背景
+
+TASK-CI-FUTURE-002（test-web ジョブのシャード 2 並列化）の Phase 12 close-out。task-specification-creator スキル側は system spec 更新不要の CI タスクのため、N/A 確認と LOGS 記録のみ実施。
+
 ## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
 
 ### 変更内容
@@ -38,6 +50,18 @@ analytics HTTP provider の Phase 12 close-out で、implementation-guide だけ
 ### 背景
 
 CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
+
+## 2026-04-15 - TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴へ TASK-SC-IMP-CREATE-WORKFLOW-001 の close-out を追記する前提を整えた
+- `outputs/phase-12/` の 6 成果物、63件 Green、`outputs/artifacts.json` parity、screenshot N/A を same-wave で確認
+- `phase12-task-spec-compliance-check.md` の planned wording 0件を current facts として固定
+
+### 背景
+
+Phase 12 では、実装の可観測性と台帳の整合性を同時に閉じる必要があった。`runCreateWorkflow` の戻り値観測・未タスク分離・エレガント再検証をまとめて current facts 化する。
 
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
@@ -2769,6 +2793,26 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加） |
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。   |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                   |
+
+
+## 2026-04-15 — TASK-CI-FUTURE-005 仕様書作成記録
+
+### 変更内容
+
+- TASK-CI-FUTURE-005（CI-M-01 実測確認）の Phase 1-12 仕様書を作成・実行完了
+- docs/30-workflows/task-ci-future-005-queuing-time-verification/ に全成果物を出力
+
+### 背景
+
+TASK-CI-OPT-001 Phase 3 MINOR 指摘 CI-M-01（シャード数 17 でのキューイング未確認）を解決するため、
+NON_VISUAL docs-only タスクとして実施。実測結果: 最大 59秒 ≤ 60秒 → シャード数 17 継続。
+
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / Phase 1-12 全フェーズ実行                                      |
+| 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`                |
+| 結果     | Phase 1-12 全成果物出力完了。CI-M-01 解決済み記録。spec_created ステータス更新完了      |
+| 検証     | AC-1〜AC-5 全達成。シナリオカバレッジ 100%                                              |
 | 項目     | 内容                                                                                                                                                                                                                           |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
