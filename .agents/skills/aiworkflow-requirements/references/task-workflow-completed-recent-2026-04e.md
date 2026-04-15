@@ -1,6 +1,38 @@
-# 完了タスク記録 — 2026-04-13
+# 完了タスク記録 — 2026-04-14
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-14）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                   |
+| 完了日     | 2026-04-14                                                                                          |
+| タスク種別 | ipc / test / docs / workflow-sync                                                                   |
+| 関連Issue  | #2125（CLOSED）                                                                                     |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                         |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts` を新規実装し、HTTP POST / retry / timeout / `skipped` / counter 更新を集約した
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` の TODO を解消し、provider の戻り値をそのまま返すようにした
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` に `analytics:get-stats` ハンドラーを追加し、`sentCount` / `failedCount` / `analyticsOptOut` を返すようにした
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/preload/index.ts` / `apps/desktop/src/preload/types.ts` を同波で更新し、4 層整合を維持した
+- `AnalyticsHttpProvider.test.ts` と `analyticsHandler.test.ts` を current facts に合わせて拡充し、4xx 非 retry と `skipped` 伝播を固定した
+- Phase 12 outputs 6 件（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/analytics/__tests__/AnalyticsHttpProvider.test.ts src/main/ipc/__tests__/analyticsHandler.test.ts`: PASS（37 tests）
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
+- `task-workflow-completed.md` / recent bundle / lesson file / LOGS: 同期済み
+
+#### lessons-learned
+
+- `references/lessons-learned-w3-usage-tracking-2026-04.md` §UT-W3-ANALYTICS-HTTP-PROVIDER-001（L-W3-HTTP-001〜004）
 
 ---
 
@@ -482,62 +514,17 @@
 
 ---
 
-### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-13）
+## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
 
-| 項目       | 値                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                   |
-| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
-| タイプ     | ipc / test / docs / workflow-sync                                                                   |
-| 優先度     | 高                                                                                                  |
-| 完了日     | 2026-04-13                                                                                          |
-| 対象       | `apps/desktop/src/main/ipc/analyticsHandler.ts` の `sendToAnalyticsProvider` HTTP POST 実装        |
-| 成果物     | `docs/30-workflows/UT-W3-ANALYTICS-HTTP-PROVIDER-001/`                                              |
-| PR         | 未作成（Phase 13 blocked）                                                                          |
-
-#### 実施内容
-
-**analyticsHandler.ts**
-
-- `sendToAnalyticsProvider` 関数を追加（非公開・production-only HTTP POST）
-- `ANALYTICS_ENDPOINT_URL` 環境変数が未設定の場合は静かにスキップ
-- `NODE_ENV !== "production"` の場合はスキップ（開発中はコンソールログのみ）
-- `AbortController` + 5000ms タイムアウトで外部サービス障害時のブロックを防止
-- `try/catch` でエラーを握り潰し、IPC 応答を壊さない設計（FR-04, NFR-01）
-- `finally { clearTimeout(timeoutId) }` でタイマーを確実に解放
-
-**analyticsHandler.test.ts**
-
-- `vi.stubGlobal("fetch", ...)` / `vi.unstubAllGlobals()` パターンでグローバル fetch をモック
-- TC-01〜TC-08（基本動作）、TC-E01〜TC-E05（エッジケース）、TC-R01〜TC-R03（regression）を追加
-- AC カバレッジ 100%（AC-01〜AC-07 全て到達）
-- 合計 25 件のテストが GREEN
-
-**Phase 12 sync**
-
-- `api-ipc-system-core.md` の current contract に `sendToAnalyticsProvider` HTTP POST の振る舞いを反映
-- `environment-variables.md` に `ANALYTICS_ENDPOINT_URL` セクションを追加
-- `lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜003 を追加
-- `indexes/resource-map.md` に UT-W3-ANALYTICS-HTTP-PROVIDER-001 エントリを追加
-- `LOGS.md` に impl-spec-to-skill-sync エントリを追加
-
-#### 検証証跡
-
-- Phase 4 Red テスト（TC-01, TC-08）: 失敗確認済み
-- Phase 5 実装後: 全 25 件 GREEN
-- Phase 6 拡張テスト: TC-E01〜TC-E05, TC-R01〜TC-R03 GREEN
-- Phase 7 AC カバレッジ: AC-01〜AC-07 全て到達（100%）
-- Phase 11: NON_VISUAL 判定（docs-only / Electron Main プロセス内部動作）
-- Phase 12 Task Spec コンプライアンス: 27/27 全項目準拠
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                                              | 解決策                                                                          |
-| --- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| 1   | グローバル `fetch` のモック方法                                        | `vi.stubGlobal("fetch", vi.fn())` + `afterEach(() => vi.unstubAllGlobals())` |
-| 2   | TC-E04 空文字 URL のエッジケースが Phase 4 で漏れた                  | Phase 6 で追加。次回は Phase 4 でガード条件の全 falsy パターンを列挙する        |
-| 3   | `AbortController` タイムアウト後の `fetch` Promise 状態の確認方法    | `mockRejectedValue(new DOMException("...", "AbortError"))` でモックして検証     |
-
-#### lessons-learned
-
-- `references/lessons-learned-w3-usage-tracking-2026-04.md`（L-W3-HTTP-001〜003）を参照
+- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
+- 完了日: 2026-04-12
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+- AC一覧:
+  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
+  - AC-2: weekdays重複除去・昇順ソートPASS
+  - AC-5: JSDocに空weekdays挙動を明記 PASS
+- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。

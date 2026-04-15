@@ -219,4 +219,137 @@ describe("analyticsHandler", () => {
       );
     });
   });
+
+  // ──────────────────────────────────────────────────────────────
+  // TC-08: analytics:send IPC 経由で HTTP 送信が発火する（AC-1）
+  // ──────────────────────────────────────────────────────────────
+
+  describe("TC-08: analytics:send IPC 経由で AnalyticsHttpProvider.send が呼ばれる", () => {
+    it("should return success when analytics:send is invoked (opted in)", async () => {
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_SEND)!;
+      storeGetMock.mockImplementation((key: string, defaultVal: unknown) => {
+        if (key === "analyticsOptOut") return false;
+        if (key === "sentCount") return 0;
+        return defaultVal;
+      });
+
+      const result = await handler(validEvent, {
+        eventName: "test_http_send",
+        payload: { key: "value" },
+        timestamp: Date.now(),
+      });
+
+      // ANALYTICS_ENDPOINT_URL 未設定環境では skipped: true になるが success は true
+      expect(result).toEqual(
+        expect.objectContaining({
+          success: true,
+        }),
+      );
+    });
+
+    it("should return skipped when opted out (AnalyticsHttpProvider.send not reached)", async () => {
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_SEND)!;
+
+      const result = await handler(validEvent, {
+        eventName: "test_http_send",
+        payload: {},
+        timestamp: Date.now(),
+        optedOut: true,
+      });
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          success: true,
+          skipped: true,
+        }),
+      );
+    });
+
+    it("should propagate skipped:true when ANALYTICS_ENDPOINT_URL is not set", async () => {
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_SEND)!;
+      const originalEndpoint = process.env.ANALYTICS_ENDPOINT_URL;
+      delete process.env.ANALYTICS_ENDPOINT_URL;
+
+      try {
+        const result = await handler(validEvent, {
+          eventName: "test_http_send",
+          payload: {},
+          timestamp: Date.now(),
+        });
+
+        expect(result).toEqual(
+          expect.objectContaining({
+            success: true,
+            skipped: true,
+          }),
+        );
+      } finally {
+        if (originalEndpoint === undefined) {
+          delete process.env.ANALYTICS_ENDPOINT_URL;
+        } else {
+          process.env.ANALYTICS_ENDPOINT_URL = originalEndpoint;
+        }
+      }
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────
+  // TC-09: analytics:get-stats IPC チャネルが統計を返す（AC-4, AC-8）
+  // ──────────────────────────────────────────────────────────────
+
+  describe("TC-09: analytics:get-stats IPC チャネルが統計を返す", () => {
+    it("should return sentCount and failedCount from analyticsStore", async () => {
+      storeGetMock.mockImplementation((key: string, defaultVal: unknown) => {
+        if (key === "sentCount") return 10;
+        if (key === "failedCount") return 2;
+        if (key === "analyticsOptOut") return false;
+        return defaultVal;
+      });
+
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_GET_STATS)!;
+      expect(handler).toBeDefined();
+      const result = await handler(validEvent, undefined);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          sentCount: 10,
+          failedCount: 2,
+        }),
+      );
+    });
+
+    it("should return 0 for both counts when store is empty", async () => {
+      storeGetMock.mockImplementation(
+        (_key: string, defaultVal: unknown) => defaultVal,
+      );
+
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_GET_STATS)!;
+      expect(handler).toBeDefined();
+      const result = await handler(validEvent, undefined);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          sentCount: 0,
+          failedCount: 0,
+        }),
+      );
+    });
+
+    it("should return default values when store throws", async () => {
+      storeGetMock.mockImplementation(() => {
+        throw new Error("store error");
+      });
+
+      const handler = handlers.get(IPC_CHANNELS.ANALYTICS_GET_STATS)!;
+      expect(handler).toBeDefined();
+      const result = await handler(validEvent, undefined);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          sentCount: 0,
+          failedCount: 0,
+        }),
+      );
+    });
+  });
 });

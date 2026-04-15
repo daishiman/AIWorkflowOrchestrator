@@ -2,6 +2,28 @@
 > 親ファイル: [lessons-learned-current.md](lessons-learned-current.md)
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 
+## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
+
+### L-SC-FIX-001: generate_skill_md.js は `--path <dir>` ではなく `--plan <json> --output <path>` を要求する
+
+| 項目       | 内容                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SkillCreatorService.ts` が `["--path", skillDir]` でスクリプトを呼び出していたため、`generateResult.success` が常に `false` となり `ensureSkillMdExists` フォールバックのみで動作し続けていた |
+| 解決策     | `os.tmpdir()` 配下に UUID 付き一時 JSON ファイルを生成し、`["--plan", tmpPlanPath, "--output", skillMdPath]` で呼び出す。`finally` でクリーンアップ              |
+| 標準ルール | `generate_skill_md.js` を呼ぶときは `--plan <planJsonPath> --output <outputPath>` を必ず指定すること                                                           |
+| 関連タスク | TASK-SC-FIX-GENERATE-SKILL-MD-001                                                                                                                              |
+
+### L-SC-FIX-002: 外部スクリプトへの JSON データ渡しは temp ファイル経由とし、finally で確実にクリーンアップする
+
+| 項目       | 内容                                                                                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | スクリプト引数として大きなオブジェクトを渡す場合、コマンドライン引数の文字数制限に引っかかる可能性がある                                                  |
+| 解決策     | `os.tmpdir()` + `randomUUID()` でユニークな一時ファイルを生成し、JSON を書き込んでパスのみを引数に渡す。`finally` ブロックで `.catch(() => {})` つきクリーンアップを実施 |
+| 標準ルール | 一時ファイルのクリーンアップは `finally` ブロックで行い、クリーンアップ失敗は non-fatal として `.catch(() => {})` で許容する                              |
+| 関連タスク | TASK-SC-FIX-GENERATE-SKILL-MD-001                                                                                                                        |
+
+---
+
 ## UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13）
 
 ### L-FB05-001: docs-only でも Phase 11 証跡テンプレートは「件数・edge case・判断根拠」の3点を1ファイルで完結させる

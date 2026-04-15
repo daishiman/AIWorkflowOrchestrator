@@ -1791,6 +1791,22 @@ export interface PermissionAPI {
   }>;
 }
 
+// ===== Analytics operations =====
+
+export interface AnalyticsAPI {
+  send: (request: {
+    eventName: string;
+    payload: Record<string, unknown>;
+    timestamp: number;
+    optedOut?: boolean;
+  }) => Promise<{ success: boolean; skipped?: boolean; error?: string }>;
+  getStats: () => Promise<{
+    sentCount: number;
+    failedCount: number;
+    analyticsOptOut: boolean;
+  }>;
+}
+
 // ===== Skill Schedule types (TASK-9G) =====
 
 export type { ScheduledSkill };
@@ -1837,6 +1853,7 @@ export interface SkillDebugAPI {
 declare global {
   interface Window {
     electronAPI: ElectronAPI;
+    analyticsAPI: AnalyticsAPI;
     slideApi: SlideApi;
     agentAPI: AgentExecutionAPI;
     agentSDKAPI: AgentSDKAPI;
