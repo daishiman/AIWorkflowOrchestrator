@@ -32,6 +32,19 @@ TASK-SC-FIX-GENERATE-SKILL-MD-001（generate_skill_md.js 引数ミスマッチ�
 `["--path", skillDir]` から `["--plan", tmpPlanPath, "--output", skillMdPath]` への引数修正と
 temp ファイル管理パターンを lessons-learned・task-workflow・skill-creator SKILL.md に反映した。
 
+## 2026-04-15 - TASK-CI-FUTURE-002 phase 12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed-recent-2026-04g.md`: TASK-CI-FUTURE-002 完了エントリ追加（test-web シャード化、`.github/workflows/ci.yml` 変更、Phase 1〜12 完了、Phase 13 blocked）
+- `references/task-workflow-completed.md`: インデックス先頭に 2026-04-15 TASK-CI-FUTURE-002 エントリ追加
+- `SKILL.md` current facts に `TASK-CI-FUTURE-002` / `test-web シャード化` / `test-desktop 17→15` / `GitHub Free Tier 並列 20 上限` / `phase13_blocked` を追加
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で更新
+
+### 背景
+
+TASK-CI-FUTURE-002（test-web ジョブのシャード 2 並列化）の Phase 12 が完了したため、台帳・インデックス・SKILL.md current facts を同波で閉じた。CI 設定のみの変更で API / IPC 変更なし。
+
 ## 2026-04-15 - TASK-SW-FIX-FEEDBACK-008 current facts sync
 
 ### 変更内容

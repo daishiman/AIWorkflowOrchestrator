@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2987,
+  "totalKeywords": 2995,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -557,6 +557,7 @@
     ],
     "HTTP": [
       "api-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "ステータスコード": [
@@ -1233,7 +1234,6 @@
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1407,6 +1407,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-skill-build-harness-guard.md",
@@ -1531,7 +1532,6 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed.md",
       "testing-component-patterns-core.md",
@@ -1581,6 +1581,7 @@
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -2003,6 +2004,7 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -2117,7 +2119,6 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
@@ -2504,6 +2505,10 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "PROVIDER": [
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
@@ -3996,7 +4001,6 @@
       "arch-ui-components-core.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -4503,6 +4507,7 @@
       "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
@@ -5539,6 +5544,7 @@
     ],
     "js": [
       "directory-structure-core.md",
+      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "technology-core.md"
@@ -6754,6 +6760,7 @@
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
@@ -6823,6 +6830,7 @@
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
@@ -6845,6 +6853,7 @@
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
@@ -7877,6 +7886,18 @@
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
+    "GENERATE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "MD": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "generate": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "引数修正": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "テスト証跡一本化テンプレート": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8068,7 +8089,6 @@
     ],
     "整合性修正": [
       "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -8213,6 +8233,7 @@
     ],
     "関連ファイル": [
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "Worktree": [
@@ -9194,6 +9215,7 @@
     "タスク概要": [
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "generationMode": [
@@ -9337,6 +9359,34 @@
     "への反映事項": [
       "lessons-learned-skill-wizard-mso-main-tool-badge.md"
     ],
+    "notion": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "freeText": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "特別ケース解消": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "NOTION": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "SPECIAL": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "CASE": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "ELIMINATE": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "設計選択の記録": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md"
+    ],
+    "依存関係": [
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
     "Wizard": [
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
@@ -9357,9 +9407,6 @@
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "ICON": [
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
-    "依存関係": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "生成フロー接続": [
@@ -9712,9 +9759,6 @@
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
-    ],
-    "PROVIDER": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "quality": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -10097,7 +10141,8 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md"
+      "task-workflow-completed-recent-2026-04f.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
@@ -12687,18 +12732,6 @@
     ],
     "WEEKDAYS": [
       "task-workflow-completed-recent-2026-04e.md"
-    ],
-    "完了タスク台帳": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "カテゴリ複数選択・ボタン統一・": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "ProgressBar": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "修正": [
-      "task-workflow-completed-recent-2026-04g.md"
     ],
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"
