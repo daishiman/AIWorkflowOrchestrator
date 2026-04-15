@@ -55,6 +55,7 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
     );
     const [enabled, setEnabled] = useState(schedule?.enabled ?? true);
     const [isSaving, setIsSaving] = useState(false);
+    const [pickerIsValid, setPickerIsValid] = useState(true);
     const cronValidationError =
       scheduleType === "cron" ? validateCronExpression(cronExpression) : null;
 
@@ -225,8 +226,9 @@ export const ScheduleDialog: React.FC<ScheduleDialogProps> = memo(
                 value={cronExpression}
                 onChange={setCronExpression}
                 disabled={isSaving}
+                onValidationChange={setPickerIsValid}
               />
-              {cronValidationError && (
+              {pickerIsValid && cronValidationError && (
                 <p role="alert" className="text-xs text-red-500">
                   {cronValidationError}
                 </p>

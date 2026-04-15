@@ -206,6 +206,48 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 | `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
 | `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
 | `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
+| `skill_wizard_open` | `{ source }` | SkillCreateWizard（マウント時 useEffect） |
+| `skill_wizard_step_complete` | `{ step, stepName }` | SkillCreateWizard（Step 0 / 1 / 2 完了時） |
+| `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（`handleGenerate()` 冒頭。`skip` は未回答あり実行の意味） |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（`createSkill()` 成功後のみ） |
+| `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（CompleteStep からのコールバック） |
+| `skill_wizard_next_action` | `{ action: "execute" \| "edit" \| "close" }` | CompleteStep（アクションカード onClick） |
+| `skill_wizard_abandon` | `{ step, stepName }` | SkillCreateWizard（未完了で離脱した場合のみ） |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
+| `skill_wizard_open` | `{ source }` | SkillCreateWizard（マウント時 useEffect） |
+| `skill_wizard_step_complete` | `{ step, stepName }` | SkillCreateWizard（Step 0 / 1 / 2 完了時） |
+| `skill_wizard_step1_completed` | `{ method, skippedAtQuestion }` | SkillCreateWizard（`handleGenerate()` 冒頭。`skip` は未回答あり実行の意味） |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（`createSkill()` 成功後のみ） |
+| `skill_skeleton_quality_feedback` | `{ satisfied, generationMethod }` | SkillCreateWizard（CompleteStep からのコールバック） |
+| `skill_wizard_next_action` | `{ action: "execute" \| "edit" \| "close" }` | CompleteStep（アクションカード onClick） |
+| `skill_wizard_abandon` | `{ step, stepName }` | SkillCreateWizard（未完了で離脱した場合のみ） |
+| イベント名                          | payload                                        | 計装責務                                                                           |
+| ----------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `skill_wizard_started`              | `{}`                                           | SkillCreateWizard（マウント時 useEffect）                                          |
+| `skill_wizard_step1_completed`      | `{ method, skippedAtQuestion }`                | SkillCreateWizard（handleGenerate 冒頭）                                           |
+| `skill_wizard_generation_completed` | `{ method, category, hasExternalIntegration }` | SkillCreateWizard（createSkill 成功後のみ）                                        |
+| `skill_skeleton_quality_feedback`   | `{ satisfied, generationMethod }`              | SkillCreateWizard（handleQualityFeedback 経由）→ CompleteStep からコールバック受信 |
+| `skill_wizard_next_action`          | `{ action: "edit" \| "execute" \| "close" }`   | CompleteStep（アクションカード onClick）                                           |
 
 `skill_wizard_open` の `source` は呼び出し元で設定し、`App.tsx` の `/advanced/skill-create-wizard` は `direct`、`SkillManagementPanel.tsx` は create / lifecycle 起点に応じて `direct` / `lifecycle_panel` を渡す。`skill_wizard_next_action` は CompleteStep 側で 1 回だけ発火し、SkillCreateWizard 側で重複送信しない。
 
@@ -267,6 +309,134 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 ### 関連未タスク
 
 本タスクで新規未タスクは検出されていない（`unassigned-task-detection.md`: 0件）。
+
+---
+
+## ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed）
+
+UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 で `ConversationRoundStep` の Q5 に「主ツール」バッジを追加し、複数ツール選択時の先頭選択項目を視覚的に明示した。Phase 1-12 を完了。
+
+### 実装コンポーネント
+
+| 区分       | 対象                                                          | 役割                                                                                                        |
+| ---------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 機能フラグ | `MAIN_TOOL_BADGE_ENABLED`                                     | 将来削除を容易にするフラグ（単一箇所制御）                                                                  |
+| 関数       | `shouldShowMainToolBadge()`                                   | Q5 かつ 2 選択以上 かつ 先頭値が一致する場合のみ `true` を返す判定ロジック                                  |
+| UI         | `<span aria-label="主ツールとして使用される">主ツール</span>` | ピル型バッジ（`bg-blue-100 text-blue-800 px-2 py-0.5 text-xs font-medium`）                                 |
+| ARIA       | `aria-labelledby` / `aria-describedby`                        | ボタン名を選択肢テキストに固定し、バッジは補助情報として関連付け（button accessible name は変更しない設計） |
+
+### current contract（ARIA 責務分離パターン）
+
+```typescript
+// ボタンの accessible name は選択肢テキストに固定（バッジがあっても変わらない）
+<button aria-labelledby={`option-label-${optionValue}`}>
+  <span id={`option-label-${optionValue}`}>{label}</span>
+  {shouldShowMainToolBadge(questionKey, optionValue, selectedOptions) && (
+    <span aria-label="主ツールとして使用される">主ツール</span>
+  )}
+</button>
+```
+
+- `screen.getByRole("button", { name: "Slack" })` のような exact match テストがそのまま使える
+- バッジ削除時: `MAIN_TOOL_BADGE_ENABLED` / `shouldShowMainToolBadge` / バッジ JSX / TC-1〜TC-6 の 4 箇所のみ変更
+
+### 進捗ステータス
+
+| 項目                 | 状態                 | 参照                                                                                         |
+| -------------------- | -------------------- | -------------------------------------------------------------------------------------------- |
+| ワークフロー仕様     | ✅ Phase 12 完了     | `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/`                                    |
+| 実装コード           | ✅ 完了              | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                |
+| テスト資産           | ✅ 完了（16 ケース） | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` |
+| 画面検証証跡（5 枚） | ✅ 取得済み          | `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-11/screenshots/`       |
+| Issue                | #2071                | —                                                                                            |
+
+### 苦戦箇所（再利用用）
+
+| 苦戦箇所                                                          | 再発条件                                | 今回の対処                                                       | 再利用ルール                                                                 |
+| ----------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| button 内バッジが accessible name に混入して `getByRole` が崩れる | `aria-label` を button 直接に付ける場合 | `aria-labelledby` でボタン名を固定し、バッジは別スパンに分離した | ボタン内に補助表示を追加する際は、button 名を変えてよいか Phase 2 で確認する |
+| 暫定バッジの削除箇所が実装段階で散らばる                          | バッジロジックを各所に埋め込む場合      | フラグ + 専用関数 + 削除手順書の 3 点セットで一本化した          | 削除予定のバッジは機能フラグ + 専用関数 + 削除手順書で実装する               |
+
+詳細: `lessons-learned-skill-wizard-mso-main-tool-badge.md`（L-MSO-001〜003）
+
+---
+
+## UI整合性修正（TASK-SW-FIX-UI-001 / completed）
+
+TASK-SW-FIX-UI-001 で `SkillInfoStep` / `ConversationRoundStep` / `SkillCreateWizard` / `ApplySummaryCard` の current facts を UI 整合性修正後の内容へ揃えた。  
+Phase 11 は 9 枚のスクリーンショットと DevTools audit PASS で完了し、Phase 12 は canonical 6 成果物と root / outputs artifacts parity を completed で固定した。
+
+### current facts
+
+- `SkillInfoFormData.category` は `SkillCategory[]` で複数選択を許可する
+- `handleCategoryClick` は再クリックで解除するトグル動作
+- `ConversationRoundStep` / `ApplySummaryCard` の Q5 必須判定は `external-integration` の配列包含で決定する
+- `SkillCreateWizard` は `resolvePrimarySkillCategory()` で代表カテゴリを決める
+- ボタンは `bg-[var(--status-primary)]` / `text-[var(--text-inverse)]` に統一済み
+
+---
+
+## ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed）
+
+UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 で `ConversationRoundStep` の Q5 に「主ツール」バッジを追加し、複数ツール選択時の先頭選択項目を視覚的に明示した。Phase 1-12 を完了。
+
+### 実装コンポーネント
+
+| 区分       | 対象                                                          | 役割                                                                                                        |
+| ---------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 機能フラグ | `MAIN_TOOL_BADGE_ENABLED`                                     | 将来削除を容易にするフラグ（単一箇所制御）                                                                  |
+| 関数       | `shouldShowMainToolBadge()`                                   | Q5 かつ 2 選択以上 かつ 先頭値が一致する場合のみ `true` を返す判定ロジック                                  |
+| UI         | `<span aria-label="主ツールとして使用される">主ツール</span>` | ピル型バッジ（`bg-blue-100 text-blue-800 px-2 py-0.5 text-xs font-medium`）                                 |
+| ARIA       | `aria-labelledby` / `aria-describedby`                        | ボタン名を選択肢テキストに固定し、バッジは補助情報として関連付け（button accessible name は変更しない設計） |
+
+### current contract（ARIA 責務分離パターン）
+
+```typescript
+// ボタンの accessible name は選択肢テキストに固定（バッジがあっても変わらない）
+<button aria-labelledby={`option-label-${optionValue}`}>
+  <span id={`option-label-${optionValue}`}>{label}</span>
+  {shouldShowMainToolBadge(questionKey, optionValue, selectedOptions) && (
+    <span aria-label="主ツールとして使用される">主ツール</span>
+  )}
+</button>
+```
+
+- `screen.getByRole("button", { name: "Slack" })` のような exact match テストがそのまま使える
+- バッジ削除時: `MAIN_TOOL_BADGE_ENABLED` / `shouldShowMainToolBadge` / バッジ JSX / TC-1〜TC-6 の 4 箇所のみ変更
+
+### 進捗ステータス
+
+| 項目                 | 状態                 | 参照                                                                                         |
+| -------------------- | -------------------- | -------------------------------------------------------------------------------------------- |
+| ワークフロー仕様     | ✅ Phase 12 完了     | `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/`                                    |
+| 実装コード           | ✅ 完了              | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                |
+| テスト資産           | ✅ 完了（16 ケース） | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` |
+| 画面検証証跡（5 枚） | ✅ 取得済み          | `docs/30-workflows/ut-skill-wizard-mso-main-tool-ui-001/outputs/phase-11/screenshots/`       |
+| Issue                | #2071                | —                                                                                            |
+
+### 苦戦箇所（再利用用）
+
+| 苦戦箇所                                                          | 再発条件                                | 今回の対処                                                       | 再利用ルール                                                                 |
+| ----------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| button 内バッジが accessible name に混入して `getByRole` が崩れる | `aria-label` を button 直接に付ける場合 | `aria-labelledby` でボタン名を固定し、バッジは別スパンに分離した | ボタン内に補助表示を追加する際は、button 名を変えてよいか Phase 2 で確認する |
+| 暫定バッジの削除箇所が実装段階で散らばる                          | バッジロジックを各所に埋め込む場合      | フラグ + 専用関数 + 削除手順書の 3 点セットで一本化した          | 削除予定のバッジは機能フラグ + 専用関数 + 削除手順書で実装する               |
+
+詳細: `lessons-learned-skill-wizard-mso-main-tool-badge.md`（L-MSO-001〜003）
+
+---
+
+## UI整合性修正（TASK-SW-FIX-UI-001 / completed）
+
+TASK-SW-FIX-UI-001 で `SkillInfoStep` / `ConversationRoundStep` / `SkillCreateWizard` / `ApplySummaryCard` の current facts を UI 整合性修正後の内容へ揃えた。  
+Phase 11 は 9 枚のスクリーンショットと DevTools audit PASS で完了し、Phase 12 は canonical 6 成果物と root / outputs artifacts parity を completed で固定した。
+
+### current facts
+
+- `SkillInfoFormData.category` は `SkillCategory[]` で複数選択を許可する
+- `handleCategoryClick` は再クリックで解除するトグル動作
+- `ConversationRoundStep` / `ApplySummaryCard` の Q5 必須判定は `external-integration` の配列包含で決定する
+- `SkillCreateWizard` は `resolvePrimarySkillCategory()` で代表カテゴリを決める
+- ボタンは `bg-[var(--status-primary)]` / `text-[var(--text-inverse)]` に統一済み
 
 ---
 
