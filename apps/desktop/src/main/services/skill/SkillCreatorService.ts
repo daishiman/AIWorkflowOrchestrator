@@ -5,6 +5,8 @@
  * Facadeパターンで複雑なスキル作成処理を統合する
  */
 
+import { randomUUID } from "crypto";
+import os from "os";
 import path from "path";
 import fs from "fs/promises";
 import { ScriptExecutor } from "./ScriptExecutor";
@@ -149,19 +151,51 @@ export class SkillCreatorService {
         );
       }
     }
-    await this.ensureSkillMdExists(skillDir, options.name, options.description);
-
     // SKILL.md生成
-    const generateResult = await this.scriptExecutor.execute(
-      "generate_skill_md.js",
-      ["--path", skillDir],
+    const skillMdPath = path.join(skillDir, "SKILL.md");
+    const tmpPlanPath = path.join(
+      os.tmpdir(),
+      `skill-plan-${randomUUID()}.json`,
     );
-    if (!generateResult.success) {
-      await this.ensureSkillMdExists(
-        skillDir,
-        options.name,
-        options.description,
+    try {
+      const plan = {
+        skillName: options.name,
+        workflow: {
+          summary: options.description,
+          anchors: [],
+          trigger: {
+            description: `Use when ${options.name} is requested`,
+            keywords: [options.name],
+          },
+          phases: [],
+          tasks: [],
+        },
+        directories: {},
+        files: [],
+      };
+      await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
+      const generateResult = await this.scriptExecutor.execute(
+        "generate_skill_md.js",
+        ["--plan", tmpPlanPath, "--output", skillMdPath],
       );
+      let shouldUseFallback = !generateResult.success;
+      if (!shouldUseFallback) {
+        try {
+          await fs.access(skillMdPath);
+        } catch {
+          shouldUseFallback = true;
+        }
+      }
+      if (shouldUseFallback) {
+        await this.ensureSkillMdExists(
+          skillDir,
+          options.name,
+          options.description,
+        );
+      }
+    } finally {
+      // cleanup failure is non-fatal
+      await fs.unlink(tmpPlanPath).catch(() => {});
     }
 
     // タスク仕様書生成（オプション）
@@ -818,6 +852,12 @@ allowed-tools:
 
 ## 概要
 ${description}
+
+## Task一覧
+
+| Task | 責務 | 入力 | 出力 |
+| ---- | ---- | ---- | ---- |
+| TODO | TODO | TODO | TODO |
 `;
       await fs.writeFile(skillMdPath, fallbackSkillMd, "utf-8");
     }
