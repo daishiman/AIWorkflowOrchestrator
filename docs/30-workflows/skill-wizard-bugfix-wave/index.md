@@ -7,9 +7,15 @@
 
 ## 現在の状態
 
-- Wave C の `WC-par-03a-fix-state-detail` は Phase 10〜12 完了済み
-- Phase 13 は PR 禁止のため skipped / blocked
+- **全5タスク Phase 12 完了済み（全ウェーブ完了）**
+- Wave A: `WA-seq-01-fix-dataflow` → status: phase12_completed（2026-04-13）
+- Wave B: `WB-par-02a-fix-mode-mgmt` → status: phase12_completed（2026-04-13）
+- Wave B: `WB-par-02b-fix-feedback` → status: phase12_completed（2026-04-13）
+- Wave C: `WC-par-03a-fix-state-detail` → status: completed（Phase 12 完了）
+- Wave C: `WC-par-03b-fix-ui` → status: completed（Phase 12 完了、2026-04-14）
+- Phase 13 は PR 禁止のため全タスク skipped / blocked
 - `SkillCreateWizard` / `GenerateStep` / `ConversationRoundStep` の current facts は同期済み
+- 全タスクのタスク仕様書ディレクトリは `docs/30-workflows/completed-tasks/` に移動済み
 
 ## 設計根拠（30思考法による検証結果）
 
@@ -73,13 +79,13 @@ WA-seq-01-fix-dataflow                     （Wave A: 直列・先行必須）
 
 ## 修正優先順位（影響度 × 修正コスト）
 
-| Wave                   | ディレクトリ名                | タスクID                     | 問題番号         | 影響度 | コスト |
-| ---------------------- | ----------------------------- | ---------------------------- | ---------------- | ------ | ------ | ------------------- |
-| **WA（即時必須）**     | `WA-seq-01-fix-dataflow`      | TASK-SW-FIX-DATAFLOW-001     | 7, 17            | 極大   | 低     |
-| **WB（次スプリント）** | `WB-par-02a-fix-mode-mgmt`    | TASK-SW-FIX-MODE-MGMT-001    | 1, 9, 10         | 大     | 中     |
-| **WB（次スプリント）** | `WB-par-02b-fix-feedback`     | TASK-SW-FIX-FEEDBACK-001     | 6, 8, 14, 20     | 大     | 極低   |
-| **WC（後続）**         | `WC-par-03a-fix-state-detail` | TASK-SW-FIX-STATE-DETAIL-001 | 12, 13, 18, 19   | 中     | 中     |
-| **WC（後続）**         | `WC-par-03b-fix-ui`           | TASK-SW-FIX-UI-001           | 2, 3, 11, 15, 16 | 小     | 低     | **完了** 2026-04-14 |
+| Wave                   | ディレクトリ名                | タスクID                     | 問題番号         | 影響度 | コスト | 完了状態                     |
+| ---------------------- | ----------------------------- | ---------------------------- | ---------------- | ------ | ------ | ---------------------------- |
+| **WA（即時必須）**     | `WA-seq-01-fix-dataflow`      | TASK-SW-FIX-DATAFLOW-001     | 7, 17            | 極大   | 低     | **Phase 12 完了** 2026-04-13 |
+| **WB（次スプリント）** | `WB-par-02a-fix-mode-mgmt`    | TASK-SW-FIX-MODE-MGMT-001    | 1, 9, 10         | 大     | 中     | **Phase 12 完了** 2026-04-13 |
+| **WB（次スプリント）** | `WB-par-02b-fix-feedback`     | TASK-SW-FIX-FEEDBACK-001     | 6, 8, 14, 20     | 大     | 極低   | **Phase 12 完了** 2026-04-13 |
+| **WC（後続）**         | `WC-par-03a-fix-state-detail` | TASK-SW-FIX-STATE-DETAIL-001 | 12, 13, 18, 19   | 中     | 中     | **Phase 12 完了** 2026-04-14 |
+| **WC（後続）**         | `WC-par-03b-fix-ui`           | TASK-SW-FIX-UI-001           | 2, 3, 11, 15, 16 | 小     | 低     | **Phase 12 完了** 2026-04-14 |
 
 ## タスク種別
 

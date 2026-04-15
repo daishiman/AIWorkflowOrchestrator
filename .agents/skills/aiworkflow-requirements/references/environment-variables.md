@@ -31,9 +31,11 @@
 
 #### `ANALYTICS_ENDPOINT_URL` の扱い
 
-- `apps/desktop/src/main/ipc/analyticsHandler.ts` の `sendToAnalyticsProvider` が参照する
-- `NODE_ENV === "production"` のときだけ HTTP POST 送信に使用する
-- 未設定または空文字の場合は静かに送信をスキップする
+- `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts` が参照する
+- `process.env` からのみ読み取り、electron-store には保存しない
+- 未設定または空文字の場合は `{ success: true, skipped: true }` で静かに送信をスキップする
+- `NODE_ENV` による production-only 制限は置かず、設定がある環境で送信する
+- HTTP 4xx は再試行しない。HTTP 5xx / abort / network error は最大 3 回まで再試行する
 - ログやエラーメッセージに URL 本体を出力しない
 
 ### データベース接続

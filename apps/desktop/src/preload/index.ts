@@ -45,6 +45,7 @@ import type {
   NotificationClearRequest,
   NotificationNewEvent,
   HistorySearchRequest,
+  AnalyticsAPI,
   ReplaceFileSingleRequest,
   ReplaceFileAllRequest,
   ReplaceWorkspaceAllRequest,
@@ -624,19 +625,9 @@ const permissionAPI: PermissionAPI = {
   clearAll: () => safeInvoke(IPC_CHANNELS.PERMISSION_CLEAR_ALL),
 };
 
-// Analytics API（UT-W3-ANALYTICS-ADAPTER-001）
-// Renderer → IPC → Main でイベントを送信。CSP制限を回避するためIPC経由。
-export interface AnalyticsAPI {
-  send: (request: {
-    eventName: string;
-    payload: Record<string, unknown>;
-    timestamp: number;
-    optedOut?: boolean;
-  }) => Promise<{ success: boolean; skipped?: boolean; error?: string }>;
-}
-
 const analyticsAPI: AnalyticsAPI = {
   send: (request) => safeInvoke(IPC_CHANNELS.ANALYTICS_SEND, request),
+  getStats: () => safeInvoke(IPC_CHANNELS.ANALYTICS_GET_STATS),
 };
 
 // Use contextBridge APIs to expose Electron APIs to renderer
