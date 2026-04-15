@@ -40,7 +40,7 @@ pnpm --filter @repo/desktop typecheck
 ```
 
 - `fs.unlink`の戻り値型・`tmpPath`の型が正しいことを確認する
-- `spawnFile`の引数型がstring[]に適合していることを確認する
+- `scriptExecutor.execute` の引数型が string[] に適合していることを確認する
 - `generateSkillMd`メソッドの戻り値型が変わっていないことを確認する
 
 ### Task 3: test実行

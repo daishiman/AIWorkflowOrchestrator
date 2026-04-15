@@ -29,8 +29,8 @@ AC-1〜AC-5・4条件・設計書との整合性の総合判定を行い、
 
 ### Task 2: 設計書との整合性確認
 
-- B案（SkillCreatorService側でdescriptionから最小JSON組み立て→tmpファイル書き込み→`--plan`/`--output`で渡す→finally節でcleanup）が実装に正確に反映されていることを確認する
-- 変更範囲が`SkillCreatorService.ts`の行152-165と`SkillCreatorService.test.ts`の2ファイルに収まっていることを確認する
+- B案（SkillCreatorService側で`skillName` と `workflow.summary` を含む最小計画JSONを組み立て→UUID付きtmpファイルへ書き込み→`--plan`/`--output`で渡す→finally節でcleanup→生成後の SKILL.md 存在確認→fallback時は `## Task一覧` を含む出力）が実装に正確に反映されていることを確認する
+- 変更範囲が`SkillCreatorService.ts`の行152-188と`SkillCreatorService.test.ts`の2ファイルに収まっていることを確認する
 - 過剰実装（設計外の変更）がないことを確認する
 
 ### Task 3: リグレッションなしの確認
@@ -47,11 +47,11 @@ AC-1〜AC-5・4条件・設計書との整合性の総合判定を行い、
 
 ## 参照資料
 
-| 資料名           | パス                                       | 説明               |
-| ---------------- | ------------------------------------------ | ------------------ |
-| 設計書           | `outputs/phase-2/design-document.md`       | 設計原則と変更範囲 |
-| 実装記録         | `outputs/phase-5/implementation-record.md` | 実装修正の要約     |
-| 品質保証レポート | `phase-9-quality-assurance.md`             | gate入力           |
+| 資料名           | パス                                     | 説明               |
+| ---------------- | ---------------------------------------- | ------------------ |
+| 設計書           | `phase-2-design.md`                      | 設計原則と変更範囲 |
+| 実装記録         | `outputs/phase-5/implementation-plan.md` | 実装修正の要約     |
+| 品質保証レポート | `phase-9-quality-assurance.md`           | gate入力           |
 
 ## 統合テスト連携
 

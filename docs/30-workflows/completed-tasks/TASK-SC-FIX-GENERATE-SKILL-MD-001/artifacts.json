@@ -1,0 +1,180 @@
+{
+  "feature": "TASK-SC-FIX-GENERATE-SKILL-MD-001",
+  "taskId": "TASK-SC-FIX-GENERATE-SKILL-MD-001",
+  "taskName": "generate_skill_md.js 引数修正",
+  "taskType": "implementation",
+  "created": "2026-04-14T00:00:00.000Z",
+  "completed": "2026-04-15T00:00:00.000Z",
+  "status": "completed",
+  "parentWorkflow": "skill-creator-workflow-fix-lane",
+  "dependsOnTasks": [],
+  "targetFiles": [
+    "apps/desktop/src/main/services/skill/SkillCreatorService.ts",
+    "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts"
+  ],
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計書"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "description": "実装計画書"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/extended-test-record.md",
+          "description": "テスト拡充記録"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト（N/A）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（N/A）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1/Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"]
+  }
+}

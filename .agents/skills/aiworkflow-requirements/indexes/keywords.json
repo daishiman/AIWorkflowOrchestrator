@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2984,
+  "totalKeywords": 2988,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1407,6 +1407,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-skill-build-harness-guard.md",
@@ -1783,6 +1784,7 @@
       "patterns-details.md",
       "quality-requirements-details.md",
       "security-electron-ipc-details.md",
+      "task-workflow-completed.md",
       "technology-devops-details.md",
       "testing-component-patterns-details.md",
       "ui-ux-agent-execution-details.md",
@@ -5554,6 +5556,7 @@
     ],
     "js": [
       "directory-structure-core.md",
+      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "technology-core.md"
@@ -7891,6 +7894,18 @@
       "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "GENERATE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "MD": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "generate": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "引数修正": [
+      "lessons-learned-current-2026-04.md"
     ],
     "テスト証跡一本化テンプレート": [
       "lessons-learned-current-2026-04.md"
