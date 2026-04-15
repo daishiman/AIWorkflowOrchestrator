@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-14
+> 自動生成: 2026-04-15
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2550,7 +2550,8 @@ node scripts/list-specs.js --topics
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L175 |
 | Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L202 |
 | SkillCreateWizard 生成状態配置ルール（TASK-SW-FIX-MODE-MGMT-001 current facts） | L277 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L353 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L345 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L391 |
 
 ### references/arch-state-management.md
 
@@ -2579,6 +2580,7 @@ node scripts/list-specs.js --topics
 |------------|----|
 | Monaco Diff Editor統合パターン | L6 |
 | SkillCreateWizard コンポーネント構成（TASK-SW-FIX-MODE-MGMT-001 current facts） | L210 |
+| SkillCreateWizard state detail recovery（TASK-SW-FIX-STATE-DETAIL-001 current facts） | L283 |
 
 ### references/arch-ui-components-details.md
 
@@ -4758,6 +4760,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 
+### references/task-workflow-completed-recent-2026-04g.md
+
+| セクション | 行 |
+|------------|----|
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4914,6 +4921,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L220 |
 | 完了タスク（機能別アーカイブ） | L228 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L337 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L94 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L114 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L115 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L127 |
+| 完了タスク（2026-03後半） | L155 |
+| 完了タスク（機能別アーカイブ） | L163 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L263 |
 
 ### references/task-workflow-history.md
 
@@ -4959,11 +4973,16 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L16 |
 | 利用順序 | L73 |
 | 関連ドキュメント | L78 |
+| 仕様書インデックス | L18 |
+| 利用順序 | L129 |
+| 関連ドキュメント | L134 |
 | 仕様書インデックス | L17 |
 | 利用順序 | L101 |
 | 関連ドキュメント | L106 |
 | 利用順序 | L43 |
 | 関連ドキュメント | L48 |
+| 利用順序 | L128 |
+| 関連ドキュメント | L133 |
 
 ### references/testing-accessibility.md
 

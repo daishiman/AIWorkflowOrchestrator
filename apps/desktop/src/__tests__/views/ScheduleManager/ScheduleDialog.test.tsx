@@ -32,7 +32,7 @@ describe("ScheduleDialog", () => {
 
     expect(mockOnSave).not.toHaveBeenCalled();
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "cron式は5フィールド必要",
+      "cron式は5つのフィールドが必要です",
     );
   });
 

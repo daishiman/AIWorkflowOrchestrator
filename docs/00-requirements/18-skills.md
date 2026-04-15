@@ -184,6 +184,21 @@ UIウィザードや補助ツールで自然言語からスキル名を生成す
 同名のディレクトリがすでに存在する場合は、呼び出し側が `-2` 以降の連番で一意化する。
 `SkillService.toWizardSkillName()` はこの規則に従う。
 
+### 3.2.2.2 定数定義と一元化管理
+
+`name` フィールドの検証ルールは実装リポジトリ側で以下の定数として一元管理される：
+
+| 定数名                  | 値                         | 場所                                         |
+| ----------------------- | -------------------------- | -------------------------------------------- |
+| `SKILL_NAME_PATTERN`    | `^[a-z0-9]+(-[a-z0-9]+)*$` | `packages/shared/src/constants/skillName.ts` |
+| `MAX_SKILL_NAME_LENGTH` | `64`                       | `packages/shared/src/constants/skillName.ts` |
+| `MIN_SKILL_NAME_LENGTH` | `1`                        | `packages/shared/src/constants/skillName.ts` |
+
+export 経路は `packages/shared/src/constants/index.ts` を経由する。
+`skill-creator` / `skill-wizard` / Renderer の IPC 境界でも同一定数を参照することで、検証ルールの divergence を防ぐ。
+
+関連タスク: `UT-SKILL-NAME-PATTERN-001`
+
 ### 3.2.3 description フィールド（最重要：トリガー設計）
 
 **descriptionはスキルの主要なトリガーメカニズム。**

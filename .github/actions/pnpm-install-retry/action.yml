@@ -1,10 +1,41 @@
 name: "Install dependencies with retry"
-description: "Run pnpm install with retries to mitigate transient network failures"
+description: "Run pnpm install with retries and node_modules cache"
 
 runs:
   using: "composite"
   steps:
+    # CI Optimization (TASK-CI-OPT-001):
+    # node_modules をキャッシュして pnpm install の固定費を削減する。
+    # キャッシュキーは pnpm-lock.yaml のハッシュで管理し、lockfile 変更時に自動無効化する。
+    #
+    # 【Electron バイナリ分離キャッシュ設計】
+    # ELECTRON_SKIP_BINARY_DOWNLOAD=1 のジョブ（Lint/TypeCheck 等）は
+    # Electron バイナリなしでインストールを行うため、専用キャッシュエントリに分離する。
+    # - バイナリなし: key = ...-no-electron-<hash>  （Lint/TypeCheck 等）
+    # - バイナリあり: key = ...-<hash>              （test-desktop/build 等）
+    # これにより、バイナリなしキャッシュを test-desktop が誤って利用し
+    # "Electron failed to install correctly" でクラッシュするのを防ぐ。
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          node_modules
+          apps/backend/node_modules
+          apps/desktop/node_modules
+          apps/web/node_modules
+          packages/shared/node_modules
+          packages/ui/node_modules
+        # v2 プレフィックス: 修正前の汚染キャッシュ（Electronバイナリなし）を無効化するために追加
+        key: ${{ runner.os }}-node-modules-v2-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-v2-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}
+          ${{ runner.os }}-node-modules-v2-
+
+    # CI Optimization (TASK-CI-OPT-001):
+    # キャッシュヒット時は pnpm install をスキップする（フォールバック: ミス時は通常 install）
     - name: Install dependencies with retry
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       shell: bash
       run: |
         set -euo pipefail
@@ -34,3 +65,29 @@ runs:
 
         echo "pnpm install failed after ${max_attempts} attempts"
         exit 1
+
+    # Electron バイナリ保証ステップ（ELECTRON_SKIP_BINARY_DOWNLOAD が設定されていない場合のみ実行）
+    # 【背景】pnpm ストアキャッシュ（setup-node cache:"pnpm"）は ELECTRON_SKIP_BINARY_DOWNLOAD=1 の
+    # Lint/TypeCheck ジョブが最初に作成するため、Electron バイナリが含まれない場合がある。
+    # pnpm install はストアにパッケージを発見すると postinstall を再実行しないため、
+    # バイナリが欠損したままになる。このステップで欠損を検出し、明示的にダウンロードする。
+    - name: Ensure Electron binary is present
+      if: env.ELECTRON_SKIP_BINARY_DOWNLOAD != '1'
+      shell: bash
+      run: |
+        INSTALL_SCRIPT=$(find node_modules/.pnpm -maxdepth 4 -name "install.js" \
+          -path "*/electron/install.js" 2>/dev/null | head -1)
+        if [ -z "$INSTALL_SCRIPT" ]; then
+          echo "Electron install script not found (may not be a workspace dependency). Skipping."
+          exit 0
+        fi
+        BIN_DIR=$(dirname "$INSTALL_SCRIPT")
+        # electron パッケージは path.json にバイナリ相対パスを保存する（path.txt ではない）
+        # dist/ ディレクトリの有無でバイナリ存在を確認する
+        DIST_DIR="$BIN_DIR/dist"
+        if [ -d "$DIST_DIR" ] && [ -n "$(ls -A "$DIST_DIR" 2>/dev/null)" ]; then
+          echo "Electron binary OK: $DIST_DIR"
+        else
+          echo "Electron binary missing in $DIST_DIR. Downloading..."
+          node "$INSTALL_SCRIPT"
+        fi
