@@ -1,0 +1,352 @@
+{
+  "taskId": "TASK-CI-FUTURE-002",
+  "taskName": "test-web シャード化",
+  "featureName": "task-ci-future-002-test-web-sharding",
+  "created": "2026-04-15T00:00:00Z",
+  "status": "completed",
+  "metadata": {
+    "taskType": "docs-only"
+  },
+  "github_issue": 2168,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/parallel-count-baseline.md",
+          "description": "並列数ベースライン"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/parallel-count-calculation.md",
+          "description": "並列数計算シート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/baseline-timing.md",
+          "description": "test-web ベースライン実行時間"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/vitest-config-review.md",
+          "description": "vitest.config.ts 確認結果"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ci-yml-diff-preview.md",
+          "description": "CI 設定差分イメージ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/desktop-shard-impact.md",
+          "description": "test-desktop 削減影響評価"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/shard-count-design.md",
+          "description": "シャード数設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/shard-design.md",
+          "description": "シャード設計の補助記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-strategy.md",
+          "description": "テスト戦略"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/vitest-config-decision.md",
+          "description": "vitest.config.ts 修正要否判断結果"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "Phase 4 進行可否の判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/minor-tracking.md",
+          "description": "MINOR 追跡テーブル"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/parallel-count-final.md",
+          "description": "並列数最終検証テーブル"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/local-verification.md",
+          "description": "ローカルシャード実行確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-confirmation.md",
+          "description": "RED 確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-matrix.md",
+          "description": "テストマトリクス"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-confirmation.md",
+          "description": "GREEN 確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-result.md",
+          "description": "実装結果サマリー"
+        },
+        {
+          "type": "code",
+          "path": ".github/workflows/ci.yml",
+          "description": "test-web ジョブへの matrix shard 設定追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/backend/vitest.config.ts",
+          "description": "web の vitest 設定確認（変更なし）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/edge-case-verification.md",
+          "description": "エッジケース検証結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gate-decision.md",
+          "description": "Phase 8 進行可否の判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/parallelism-coverage-report.md",
+          "description": "並列数カバレッジ可視化"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/traceability-coverage-report.md",
+          "description": "トレーサビリティカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-scenarios.md",
+          "description": "未カバーシナリオ一覧"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "description": "リファクタリング結果"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-check-result.md",
+          "description": "品質チェック結果"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/ac-verification.md",
+          "description": "AC 検証記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ci-timing-measurements.md",
+          "description": "CI 実行時間計測"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "capture メタデータ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "非視覚レビュー"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様書更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/ci-result.md",
+          "description": "CI 結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR 情報"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-ready-report.md",
+          "description": "PR 準備状況レポート"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

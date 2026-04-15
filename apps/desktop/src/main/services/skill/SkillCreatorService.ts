@@ -28,6 +28,20 @@ import type {
   ExecutionSummary,
 } from "@repo/shared/types";
 
+/**
+ * create モードで生成するスキル構造計画 JSON
+ * TASK-SC-IMP-CREATE-WORKFLOW-001: generate_skill_md.js --plan 引数に渡す
+ */
+interface StructurePlanJson {
+  skillName: string;
+  description: string;
+  purpose: string;
+  features: string[];
+  agents: string[];
+  triggers?: string[];
+  anchors?: string[];
+}
+
 export class SkillCreatorService {
   private readonly skillsDir: string;
   private readonly workflowsDir: string;
@@ -88,6 +102,8 @@ export class SkillCreatorService {
     }
 
     // モード別ワークフロー実行
+    let structurePlan: StructurePlanJson | null = null;
+
     switch (options.mode) {
       case "collaborative":
         await this.runCollaborativeWorkflow(options);
@@ -96,7 +112,8 @@ export class SkillCreatorService {
         await this.runOrchestrateWorkflow(options);
         break;
       case "create":
-        await this.runCreateWorkflow(options);
+        structurePlan = await this.runCreateWorkflow(options);
+        // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
         break;
       case "update":
         // Update workflow
@@ -105,6 +122,8 @@ export class SkillCreatorService {
         // Improve prompt workflow
         break;
     }
+
+    void structurePlan; // 将来 generateSkillMd へ渡す（タスクA完了後に接続）
 
     // スキル初期化
     const skillDir = path.join(this.skillsDir, options.name);
@@ -604,10 +623,33 @@ export class SkillCreatorService {
 
   /**
    * createモードのワークフロー実行
+   * AC-1: resourceLoader.loadAgent を呼び出す（collaborative パターン踏襲）
+   * AC-3: loadAgent 失敗時は null を返しフォールバック
+   * AC-4: options.description を使用（void options を削除）
    */
-  private async runCreateWorkflow(options: CreateSkillOptions): Promise<void> {
-    // リクエスト分析と生成
-    void options; // unused warning回避
+  private async runCreateWorkflow(
+    options: CreateSkillOptions,
+  ): Promise<StructurePlanJson | null> {
+    try {
+      const extractPurposeAgent =
+        await this.resourceLoader.loadAgent("extract-purpose");
+      const planStructureAgent =
+        await this.resourceLoader.loadAgent("plan-structure");
+
+      const structurePlan: StructurePlanJson = {
+        skillName: options.name,
+        description: options.description,
+        purpose: extractPurposeAgent,
+        features: [],
+        agents: [extractPurposeAgent, planStructureAgent],
+      };
+
+      return structurePlan;
+    } catch {
+      // AC-3: loadAgent 失敗時はフォールバック（null 返却）
+      // createSkill() 後続処理を継続させる
+      return null;
+    }
   }
 
   /**

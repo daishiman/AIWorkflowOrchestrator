@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
@@ -2797,3 +2798,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
 - CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
 - [Workspace](./task-workflow-completed-workspace.md)
+
+---
+
+### タスク: TASK-CI-FUTURE-005（2026-04-15）
+
+| 項目       | 値                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-005                                                                                                |
+| ステータス | **spec_created**                                                                                                  |
+| タイプ     | NON_VISUAL / docs-only / CI 計測                                                                                  |
+| 優先度     | 高                                                                                                                |
+| 完了日     | 2026-04-15                                                                                                        |
+| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                                            |
+| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                                         |
+| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物）                    |
+
+#### 実施内容
+
+- gh API で Run ID 24443907392 の 17 シャード全ジョブの created_at / started_at を取得・計測
+- 最大キューイング時間: 59秒（Test (desktop) (8)）
+- 判定: 59秒 <= 60秒 → シャード数 17 継続確定（Phase 13 スキップ）
+- CI-M-01 解決済みとして docs/30-workflows/completed-tasks/task-ci-optimization-001/phase-3-design-review.md に記録
+
+#### 検証証跡
+
+- gh API REST 実測 + Python 計算: max=59秒, min=3秒, avg=6.4秒
+- 17 シャード全件 created_at / started_at 取得済み（null ジョブ 0 件）
+- AC-1〜AC-5 全達成。シナリオカバレッジ 100%
+- Phase 12 準拠チェック: PASS
