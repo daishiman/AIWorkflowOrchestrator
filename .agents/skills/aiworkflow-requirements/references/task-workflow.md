@@ -126,6 +126,7 @@ Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-wor
 | [workflow-ai-runtime-execution-responsibility-realignment.md](workflow-ai-runtime-execution-responsibility-realignment.md) | workflow integration spec（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | execution responsibility / access capability foundation / policy authority / same-wave sync |
 | [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-04-07 UT-RT-02 follow-up 1件（type-expansion test） / 2026-04-04 TASK-RT-01 follow-up 1件（executeAsync snapshot message format） / 2026-03-21 runtime policy capability bridge follow-up 2件 / 2026-03-26 TASK-SDK-01 follow-up は code hardening 吸収後に close |
 | [task-workflow-history.md](task-workflow-history.md) | history bundle | 関連ドキュメント / 変更履歴 |
+
 | ファイル | 役割 | 主な見出し |
 | --- | --- | --- |
 | [task-workflow-active.md](task-workflow-active.md) | active guide | 概要 / ドキュメント構成 / フェーズ構造（概要） / 品質ゲート（概要） / 出力テンプレート / 実行時のコマンド・エージェント・スキル |
