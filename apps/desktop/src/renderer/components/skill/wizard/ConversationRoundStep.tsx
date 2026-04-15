@@ -25,6 +25,7 @@ import {
 import { ApplySummaryCard } from "./ApplySummaryCard";
 import { InterviewProgressBar } from "./InterviewProgressBar";
 import { validateSkillWizardScheduleConfig } from "../../../utils/scheduleConfigValidator";
+import { VisualCronPicker } from "../../schedule/VisualCronPicker";
 
 // ─── 問定義 ──────────────────────────────────────────────────────────────────
 
@@ -518,30 +519,15 @@ export const ConversationRoundStep = ({
         </div>
 
         {key === "q3" && selectedOptions.includes("定期実行") && (
-          <div className="grid gap-3 rounded-lg border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] p-3 md:grid-cols-2">
+          <div className="flex flex-col gap-3 rounded-lg border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
             <div className="flex flex-col gap-1">
-              <label
-                htmlFor="schedule-cron"
-                className="text-xs text-[var(--text-secondary)]"
-              >
+              <p className="text-xs text-[var(--text-secondary)]">
                 スケジュール（cron式）
-              </label>
-              <input
-                id="schedule-cron"
-                type="text"
-                value={scheduleConfig?.cronExpression ?? ""}
-                onChange={(e) => handleCronChange(e.target.value)}
-                onBlur={() => setScheduleTouched(true)}
-                placeholder="0 9 * * 1-5"
-                aria-invalid={Boolean(scheduleError)}
-                aria-describedby={
-                  scheduleError ? "schedule-cron-error" : undefined
-                }
-                className="w-full rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]"
-              />
-              <p className="text-[11px] text-[var(--text-secondary)]">
-                例: 平日9時なら `0 9 * * 1-5`
               </p>
+              <VisualCronPicker
+                value={scheduleConfig?.cronExpression ?? ""}
+                onChange={(cron) => handleCronChange(cron)}
+              />
               {scheduleError && (
                 <p
                   id="schedule-cron-error"
