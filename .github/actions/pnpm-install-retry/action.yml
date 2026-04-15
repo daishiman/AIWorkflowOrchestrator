@@ -65,3 +65,32 @@ runs:
 
         echo "pnpm install failed after ${max_attempts} attempts"
         exit 1
+
+    # Electron バイナリ保証ステップ（ELECTRON_SKIP_BINARY_DOWNLOAD が設定されていない場合のみ実行）
+    # 【背景】pnpm ストアキャッシュ（setup-node cache:"pnpm"）は ELECTRON_SKIP_BINARY_DOWNLOAD=1 の
+    # Lint/TypeCheck ジョブが最初に作成するため、Electron バイナリが含まれない場合がある。
+    # pnpm install はストアにパッケージを発見すると postinstall を再実行しないため、
+    # バイナリが欠損したままになる。このステップで欠損を検出し、明示的にダウンロードする。
+    - name: Ensure Electron binary is present
+      if: env.ELECTRON_SKIP_BINARY_DOWNLOAD != '1'
+      shell: bash
+      run: |
+        INSTALL_SCRIPT=$(find node_modules/.pnpm -maxdepth 4 -name "install.js" \
+          -path "*/electron/install.js" 2>/dev/null | head -1)
+        if [ -z "$INSTALL_SCRIPT" ]; then
+          echo "Electron install script not found (may not be a workspace dependency). Skipping."
+          exit 0
+        fi
+        BIN_DIR=$(dirname "$INSTALL_SCRIPT")
+        PATH_TXT="$BIN_DIR/path.txt"
+        if [ ! -f "$PATH_TXT" ]; then
+          echo "Electron path.txt not found. Skipping binary check."
+          exit 0
+        fi
+        ELECTRON_BIN="$BIN_DIR/$(cat "$PATH_TXT")"
+        if [ ! -f "$ELECTRON_BIN" ]; then
+          echo "Electron binary missing at $ELECTRON_BIN. Downloading..."
+          node "$INSTALL_SCRIPT"
+        else
+          echo "Electron binary OK: $ELECTRON_BIN"
+        fi
