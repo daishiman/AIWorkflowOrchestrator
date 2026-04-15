@@ -185,11 +185,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # CI Optimization (TASK-CI-OPT-001):
-        # 17シャードに分割して各シャードの実行時間を短縮（16→17に微調整）
-        # 399テストファイル ÷ 17 ≒ 23〜24ファイル/シャード
-        # GitHub Free Tier 並列上限20に対して: test-desktop×17+typecheck×1+test-shared×1+e2e×1=20
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        # CI Optimization (TASK-CI-OPT-001 + TASK-CI-FUTURE-002):
+        # test-web シャード化のため 17→15 に削減（-2シャード）
+        # 399テストファイル ÷ 15 ≒ 26〜27ファイル/シャード
+        # GitHub Free Tier 並列上限20の内訳:
+        #   test-desktop: 15シャード
+        #   test-web:      2シャード（TASK-CI-FUTURE-002 新規追加）
+        #   typecheck:     1ジョブ / test-shared: 1ジョブ / e2e-desktop: 1ジョブ
+        #   合計:         20ジョブ（上限 = 20）
+        # シャード数変更時は上記合計が 20 以内に収まることを確認すること。
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     env:
       NODE_OPTIONS: --max-old-space-size=8192
       CI: true
@@ -221,12 +226,12 @@ jobs:
       # カバレッジ条件分岐:
       # - PR時: カバレッジなし（高速フィードバック）
       # - main push時: カバレッジあり（品質メトリクス維持）
-      - name: Run desktop app tests (shard ${{ matrix.shard }}/17)
+      - name: Run desktop app tests (shard ${{ matrix.shard }}/15)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/17
+            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/15
           else
-            VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/17 --coverage
+            VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/15 --coverage
           fi
 
       - name: Upload coverage artifact
@@ -303,6 +308,49 @@ jobs:
 
       - name: Verify IPC 4-layer alignment
         run: node scripts/verify-ipc-4layer.cjs
+
+  test-web:
+    name: Test (web)
+    runs-on: ubuntu-latest
+    needs: [build-shared]
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        # test-web シャード化 (TASK-CI-FUTURE-002):
+        # @repo/backend テストを 2 並列で実行
+        # 並列数内訳は test-desktop のコメントを参照
+        shard: [1, 2]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+      CI: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Configure git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm-install-retry
+
+      - name: Download shared build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-build
+          path: packages/shared/dist/
+
+      - name: Run web app tests (shard ${{ matrix.shard }}/2)
+        run: pnpm --filter @repo/backend exec vitest run --shard=${{ matrix.shard }}/2
 
   check-module-sync:
     name: Module Sync Check
@@ -397,6 +445,7 @@ jobs:
         typecheck,
         test-shared,
         test-desktop,
+        test-web,
         e2e-desktop,
         build-shared,
         check-module-sync,

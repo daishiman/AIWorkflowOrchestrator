@@ -1,6 +1,7 @@
 # Lessons Learned（current）2026-04
 > 親ファイル: [lessons-learned-current.md](lessons-learned-current.md)
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
+> CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
 ## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
 
@@ -23,7 +24,6 @@
 | 関連タスク | TASK-SC-FIX-GENERATE-SKILL-MD-001                                                                                                                        |
 
 ---
-> 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 
 ## UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13）
 
@@ -1143,7 +1143,6 @@
 | 関連タスク | TASK-UI-SCHEDULE-CRON-SEMANTIC-001 |
 
 
-
 ## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 月次ガード処理 教訓（2026-04-13）
 
 ### L-MTHGRD-001: `Number.isInteger` で NaN/小数/Infinity を一度に排除する
@@ -1207,41 +1206,6 @@
 
 ### L-FEEDBACK-001: LLM モードと template モードで fetchSkills 責務が異なる
 
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | LLM モード（`handleExecutePlan`）の成功後にスキル一覧が更新されず、新規作成スキルが一覧に表示されない |
-| 原因       | template モードは `createSkill`（agentSlice）内部で `fetchSkills` を呼ぶが、LLM モードは独立した実行パスのため `fetchSkills` 明示呼び出しが必要 |
-| 解決策     | `handleExecutePlan` の成功パス末尾に `await fetchSkills()` を追加。失敗時は遷移阻害を防ぐため独立した try/catch でswallow する |
-| 再発防止   | LLM モード専用の regression test case（TC-FEEDBACK-001）を設けて `fetchSkills` が1回呼ばれることを固定する |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
-### L-FEEDBACK-002: skillPath null ガードと成功ヘッダーはセットで設計する
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `skillPath === null` のままでも `CompleteStep` が成功ヘッダーを表示し、ユーザーが作成失敗を認識できなかった |
-| 原因       | `skillPath !== null` の条件チェックが成功ヘッダーと early return（エラーUI）で分離されておらず、null 時の表示制御が不完全だった |
-| 解決策     | early return でエラーUI を返し（`skillPath === null` 時）、成功ヘッダーは `skillPath !== null` の場合のみ表示する2層ガードを設ける |
-| 設計原則   | 成功表示と失敗ガードは同一コンポーネント内で同時に設計する。片方だけ修正すると UI 矛盾が生じる |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
-### L-FEEDBACK-003: Electron では runtime より Vite build キャプチャが安定
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | Electron 実行環境での画面キャプチャが不安定で Phase 11 証跡取得が困難だった |
-| 解決策     | Vite build 後に Playwright で `current_build` を固定した capture script（`capture-task-skill-fix-feedback-phase11.mjs`）を追加することで安定した証跡取得が可能になった |
-| 適用条件   | VISUAL タスクの Phase 11 証跡取得時（Electron renderer コンポーネントのスクリーンショット） |
-| 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針） |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001 |
-
----
-
-## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
-## TASK-SW-FIX-FEEDBACK-001: SkillWizard フィードバックループ修正 教訓（2026-04-13）
-
-### L-FEEDBACK-001: LLM モードと template モードで fetchSkills 責務が異なる
-
 | 項目       | 内容                                                                                                                                            |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状       | LLM モード（`handleExecutePlan`）の成功後にスキル一覧が更新されず、新規作成スキルが一覧に表示されない                                           |
@@ -1270,125 +1234,6 @@
 | 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針）     |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-001                                                                                                                                               |
 
----
-
-## TASK-SW-FIX-FEEDBACK-001: SkillWizard フィードバックループ修正 教訓（2026-04-13）
-
-### L-FEEDBACK-001: LLM モードと template モードで fetchSkills 責務が異なる
-
-| 項目       | 内容                                                                                                                                            |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | LLM モード（`handleExecutePlan`）の成功後にスキル一覧が更新されず、新規作成スキルが一覧に表示されない                                           |
-| 原因       | template モードは `createSkill`（agentSlice）内部で `fetchSkills` を呼ぶが、LLM モードは独立した実行パスのため `fetchSkills` 明示呼び出しが必要 |
-| 解決策     | `handleExecutePlan` の成功パス末尾に `await fetchSkills()` を追加。失敗時は遷移阻害を防ぐため独立した try/catch でswallow する                  |
-| 再発防止   | LLM モード専用の regression test case（TC-FEEDBACK-001）を設けて `fetchSkills` が1回呼ばれることを固定する                                      |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001                                                                                                                        |
-
-### L-FEEDBACK-002: skillPath null ガードと成功ヘッダーはセットで設計する
-
-| 項目       | 内容                                                                                                                               |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | `skillPath === null` のままでも `CompleteStep` が成功ヘッダーを表示し、ユーザーが作成失敗を認識できなかった                        |
-| 原因       | `skillPath !== null` の条件チェックが成功ヘッダーと early return（エラーUI）で分離されておらず、null 時の表示制御が不完全だった    |
-| 解決策     | early return でエラーUI を返し（`skillPath === null` 時）、成功ヘッダーは `skillPath !== null` の場合のみ表示する2層ガードを設ける |
-| 設計原則   | 成功表示と失敗ガードは同一コンポーネント内で同時に設計する。片方だけ修正すると UI 矛盾が生じる                                     |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001                                                                                                           |
-
-### L-FEEDBACK-003: Electron では runtime より Vite build キャプチャが安定
-
-| 項目       | 内容                                                                                                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | Electron 実行環境での画面キャプチャが不安定で Phase 11 証跡取得が困難だった                                                                                            |
-| 解決策     | Vite build 後に Playwright で `current_build` を固定した capture script（`capture-task-skill-fix-feedback-phase11.mjs`）を追加することで安定した証跡取得が可能になった |
-| 適用条件   | VISUAL タスクの Phase 11 証跡取得時（Electron renderer コンポーネントのスクリーンショット）                                                                            |
-| 再発防止   | Phase 11 capture script には `try { ... } finally { browser.close(); server.close(); }` パターンでポート解放を確実にする（既存フィードバック FB-MSO-003 と同方針）     |
-| 関連タスク | TASK-SW-FIX-FEEDBACK-001                                                                                                                                               |
-
-## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
-
-### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
-
-**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
-**バージョン**: 3.14.0相当
-
-**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
-**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
-**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
-**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
-**実装パターン**:
-
-```typescript
-if (weekdays.length === 0) {
-  throw new InvalidConfigError(
-    "weekdays must not be empty when frequency is 'weekly'",
-  );
-}
-```
-
-**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
-
----
-
-## TASK-SW-FIX-DATAFLOW-001: SkillCreateWizard コンテキストブリッジ実装 教訓（2026-04-13）
-
-### L-DATAFLOW-001: NON_VISUAL タスクの Phase 11 代替証跡パターン
-
-| 項目       | 内容                                                                                                                                                                                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | Phase 11 を VISUAL（スクリーンショット必須）のまま設計すると、UIを介さないデータフロー修正でも screenshot 前提が残り、証跡が作れずブロックされる                                                                 |
-| 原因       | Phase 1 の `taskType: implementation` 分類時に `NON_VISUAL` 判定を行っていなかったため、Phase 11 テンプレートがデフォルトの VISUAL フローになった                                                                |
-| 解決策     | `NON_VISUAL` 再分類で `manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` の代替証跡へ切り替え、スクリーンショット要求を削除した                                                       |
-| 再発防止   | Phase 1 の要件定義で「UI画面キャプチャが不要なタスク（ユーティリティ・型定義・データフロー修正）」は `visualType: NON_VISUAL` を明示する。Phase 11 spec 先頭に `NON_VISUAL` フラグを記載しておくことで混乱を防ぐ |
-| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                                         |
-
-### L-DATAFLOW-002: artifacts.json / outputs/artifacts.json の 2点 parity 確保
-
-| 項目       | 内容                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 症状       | `docs/30-workflows/*/artifacts.json`（root）と `docs/30-workflows/*/outputs/artifacts.json`（outputs）が異なる phase status を持っていたため、Phase 12 compliance check の parity 条件を満たせなかった |
-| 原因       | Phase 11 完了時に root `artifacts.json` のみ更新し、`outputs/artifacts.json` を同波更新していなかった                                                                                                  |
-| 解決策     | Phase 12 着手前チェックとして「root `artifacts.json` と `outputs/artifacts.json` の2点 diff が0件か確認する」ステップを追加し、同一内容で再生成した                                                    |
-| 再発防止   | Phase 12 spec の事前チェックリストに「root ↔ outputs `artifacts.json` 同一性確認」を必須項目として明記する（L-CLM-003 の台帳3点同期パターンと組み合わせる）                                            |
-| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                               |
-
-### L-DATAFLOW-003: IPC 経路を通じた context bridge の後方互換設計
-
-| 項目       | 内容                                                                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 背景       | `SkillCreateWizard.tsx` → `agentSlice.ts` → `skill-api.ts` → `skillHandlers.ts` の 4 層を通じて `SkillCreationContext` を伝播させる際、既存呼び出し（context なし）を壊さない必要があった |
-| 解決策     | 全引数を `context?: SkillCreationContext`（optional）にし、`buildSkillGenerationPrompt(context)` 側で `undefined` をハンドリングする。既存呼び出しは無変更で動作継続                      |
-| 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない                                                              |
-| 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル）                                                                                                          |
-| 関連タスク | TASK-SW-FIX-DATAFLOW-001                                                                                                                                                                  |
-| 再発防止   | `complete-phase.js` 実行前に `jq '.artifacts                                                                                                                                              | keys' artifacts.json`と`outputs/artifacts.json` を diff して0件を確認する |
-| 関連タスク | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001                                                                                                                                             |
-
----
-
-## TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001: cronConverter weekdays ガード
-
-### L-CRON-WEEKDAY-GUARD-001: API層での防御的ガード実装（2026-04-12）
-
-**タスクID**: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001  
-**バージョン**: 3.14.0相当
-
-**症状**: UI側で weekdays 空配列バリデーションがあれば、API層では不要と思いがち  
-**原因**: API直接呼び出し（バッチ・テスト・将来の連携等）ではUIバリデーションをバイパスしてしまう  
-**解決策**: `visualConfigToCron` に明示的な `InvalidConfigError` ガードを追加し、呼び出し元が明確にエラーハンドリング可能にした  
-**再発防止**: 外部API/public functionは必ず入力バリデーション責務を持つ（UI依存の安全保証を排除）  
-**実装パターン**:
-
-```typescript
-if (weekdays.length === 0) {
-  throw new InvalidConfigError(
-    "weekdays must not be empty when frequency is 'weekly'",
-  );
-}
-```
-
-**効果**: API堅牢化 + 呼び出し元での明示的エラーハンドリングが可能になった
-
----
 
 ## TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12）
 
@@ -1427,7 +1272,6 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 解決策     | `validateCronSemantics` は同ファイル内の内部関数として定義し、export しない。`validateCronExpression` のみを公開 API とする                |
 | 標準ルール | バリデーター内部の段階ごとの実装関数は原則 export 不可。公開 API は最上位の `validateXxx` 関数に一本化する                                 |
 | 関連タスク | TASK-CRON-SEMANTIC-VALIDATION-001                                                                                                          |
-
 
 
 ## TASK-SW-FIX-MODE-MGMT-001: SkillCreateWizard LLM専用化・状態管理修正 教訓（2026-04-13）
@@ -1566,55 +1410,6 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
-## TASK-SW-FIX-UI-001 UI整合性修正 教訓（2026-04-14）
-
-> 詳細: [skill-feedback-report.md](../docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/outputs/phase-12/skill-feedback-report.md)
-
-### L-UI-001: null → 空配列への型設計変更はnullチェック除去の機会
-
-| 項目       | 内容                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| 症状       | `category: SkillCategory \| null` では選択前の状態を `=== null` で判定し、後続ロジックで null チェックが分散していた            |
-| 原因       | 単一選択の設計を複数選択に拡張する際、「未選択 = null」の慣習をそのまま引き継いでいた                                         |
-| 解決策     | 未選択を空配列 `[]` で表現し、型を `SkillCategory[]` に変更。全箇所の null チェックを `.length > 0` / `.includes()` に統一   |
-| 設計原則   | 複数選択フィールドの未選択状態は空配列を使う。null は「値が存在しないこと」を示す用途に限定する                                |
-| 関連タスク | TASK-SW-FIX-UI-001（問題2・15）                                                                                                |
-
----
-
-### L-UI-002: トグルロジックは includes/filter の1パターンで完結させる
-
-| 項目       | 内容                                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------------------- |
-| 背景       | カテゴリの追加・解除・再選択の3状態を実装する際に、複数の条件分岐が必要に見えた                              |
-| 解決策     | `includes(value)` で選択済みを判定し、true なら `filter(c => c !== value)`、false なら `[...arr, value]` に統一 |
-| 利点       | エッジケース（空配列・最後の1件の解除）を追加ガードなしで処理できる。コードが1関数4行に収まる                 |
-| 関連タスク | TASK-SW-FIX-UI-001（問題15）                                                                                  |
-
----
-
-### L-UI-003: ProgressBar動的計算には Math.max(1, count) で最小値を保証する
-
-| 項目       | 内容                                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| 症状       | `answeredCount` が 0 の初期状態で `currentQuestion = 0` となり「0/6」が表示されるバグリスクがあった  |
-| 解決策     | `Math.max(1, answeredCount)` により初期値・全未回答時でも最低「1/6」を表示する                      |
-| 注意点     | Page 2 開始直後（Q4 未回答）に「3/6」が表示される場合があるが、これは「回答済み数の反映」として仕様 |
-| 関連タスク | TASK-SW-FIX-UI-001（問題11・16）                                                                     |
-
----
-
-### L-UI-004: CSS変数統一はルートbarrelに波及させず subpath export に閉じる
-
-| 項目       | 内容                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| 背景       | `bg-blue-600` を CSS変数 `var(--status-primary)` に置換する際、型変更も伴うため影響範囲の管理が重要だった        |
-| 解決策     | 変更を `@repo/shared/skill-creator` の subpath export スコープに限定し、ルート barrel (`@repo/shared`) は無変更   |
-| 利点       | 外部パッケージからの import 互換性を維持しながら、内部型定義と UI スタイルを刷新できた                            |
-| 関連タスク | TASK-SW-FIX-UI-001（問題2・3）                                                                                    |
-
----
-
 ## TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14）
 
 > 詳細: [lessons-learned-skill-wizard-mode-mgmt.md](lessons-learned-skill-wizard-mode-mgmt.md)
@@ -1686,3 +1481,110 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 - **L-MODE-003**: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する（Wave A 完了後では Red 状態を作れない）
 - **L-MODE-004**: Electron 実機なし時は「36 UT + grep ゼロ + TC-06 DOM query + typecheck」の 4 点 NON_VISUAL 証跡で代替する
 - **L-MODE-005**: SkillCreateWizard 確定フロー Step 0→1→2→3（LLM 専用・分岐なし）を基準とし、逸脱を禁止する
+
+---
+
+## TASK-SW-FIX-FEEDBACK-008: fetchSkills 非ブロッキング化 教訓（2026-04-15）
+
+### L-FEEDBACK-008-001: 補助的な非同期処理は fire-and-forget + console.warn で主処理と切り離す
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `processWorkflowOutcome` / `handleExecutePlan` 内で `fetchSkills()` を `await` していたため、失敗時に `early return` が発生し `selectSkillByName` が実行されなかった      |
+| 原因       | `fetchSkills()` はスキル一覧を UI にリフレッシュする補助処理だが、`try-catch` で囲んで `setGenerationError` + `return true` を置いていたため主処理を止める構造になっていた |
+| 解決策     | `refreshSkillsInBackground()` helper（`void fetchSkills().catch(warn)`）を抽出し、`selectSkillByName` の後で呼び出すパターンに切り替えた                                  |
+| 設計原則   | 「UI リフレッシュ系の補助処理が失敗しても、ユーザーが要求した主操作（選択・遷移）は止めない」を原則とする。補助処理の失敗は `console.warn` に閉じ込め `generationError` に昇格させない |
+| 適用条件   | `fetchSkills` のようにスキル生成の成否と独立した後続リフレッシュ処理全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                 |
+
+### L-FEEDBACK-008-002: 遅延 snapshot 再処理は useEffect + ref ガードで冪等に実現する
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `executePlan` の ack が先に返り `workflowSnapshot` が遅れて到着するケースで、snapshot を store に反映後に `processWorkflowOutcome` が再実行されず `loadVerifyDetail` に到達しなかった |
+| 原因       | snapshot の到着タイミングを考慮した再処理 effect が存在しなかった                                                                                             |
+| 解決策     | `useEffect([workflowSnapshot])` で snapshot を監視し、`processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId` ガードで二重処理を防止しながら `processWorkflowOutcome` を再適用した |
+| 設計原則   | IPC の ack と実データ（snapshot）が別タイミングで到着する経路では、データ到着を `useEffect` で拾い、`ref` による冪等ガードで副作用を一度だけ実行する           |
+| 適用条件   | `executePlan` のような非同期処理で ack と snapshot が分離している IPC チャンネル全般                                                                          |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                     |
+
+### L-FEEDBACK-008-003: NON_VISUAL タスクの証跡は manual-test-result.md + phase11-capture-metadata.json を正本とする
+
+| 項目       | 内容                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | Phase 11 でスクリーンショットが要求されるかどうか曖昧で、証跡の期待値がぶれる                                                                                                          |
+| 原因       | NON_VISUAL か否かの判断基準がタスク開始前に確立されていなかった                                                                                                                         |
+| 解決策     | Phase 1 の受入条件定義時に `NON_VISUAL` フラグを明示し、証跡は `manual-test-result.md` + `phase11-capture-metadata.json` とする方針を確定。スクリーンショットは UI 変更がある場合のみ要求する |
+| 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
+| 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
+## TASK-SC-IMP-CREATE-WORKFLOW-001 create モード構造計画生成 教訓（2026-04-15）
+
+### L-SC-IMP-001: `description` edge case は型上必須の `string` として切り分け、undefined を入力破損として扱う
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `StructurePlanJson.description` を `string \| undefined` にすると型契約と衝突し、後続の `generate_skill_md.js` 引数生成で undefined 混入リスクが生まれた                |
+| 原因       | interviewResult の optional フィールドをそのまま構造計画 JSON に引き渡す設計のため、型の穴が生じた                                                                      |
+| 解決策     | `description` を型上必須の `string` として宣言し、`undefined` は `createSkill()` バリデーション段階で「入力破損」として弾く設計に整理した                                |
+| 標準ルール | 構造計画 JSON（`StructurePlanJson`）の各フィールドは必須 `string` を基本とし、optional は `triggers?` / `anchors?` のような補助フィールドのみに限定する                  |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
+
+### L-SC-IMP-002: create モードの「構造計画生成」と「`generate_skill_md.js` 接続」は別タスクとして仕様書を分離する
+
+| 項目       | 内容                                                                                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `runCreateWorkflow` の実装スコープに `generate_skill_md.js` 接続を含めようとしたため、「完了」と「接続待ち」が同じ文脈に混在し、Phase 12 の成果物判断が難しくなった                       |
+| 原因       | create モードの2段階（構造計画生成 → SKILL.md 生成スクリプト呼び出し）を1つのタスクで完結しようとした設計判断                                                                           |
+| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、スクリプト接続は別タスク（`void structurePlan` コメントで依存先を明示）とした                              |
+| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、タスク分離が可能な場合は別タスクとして仕様書を分ける                                                                     |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                                           |
+
+### L-SC-IMP-003: private method の観測可能性は TC に mock spy 引数 assertion で組み込む
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` 等が検証できず、実装の意図が TC に反映されない                                                    |
+| 解決策     | `TC-04` を `createSkill()` 経由で実行し、`mockResourceLoader.loadAgent` への呼び出しと引数を `expect` で直接検証することで private method の動作を間接観測した           |
+| 標準ルール | private method の観測可能性は、public API 経由 + mock spy 引数 assertion の組み合わせで担保する。中間値 handoff は mock spy で検証可能                                   |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
+
+---
+
+## TASK-SW-FIX-FEEDBACK-008: fetchSkills 非ブロッキング化 教訓（2026-04-15）
+
+### L-FEEDBACK-008-001: 補助的な非同期処理は fire-and-forget + console.warn で主処理と切り離す
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `processWorkflowOutcome` / `handleExecutePlan` 内で `fetchSkills()` を `await` していたため、失敗時に `early return` が発生し `selectSkillByName` が実行されなかった      |
+| 原因       | `fetchSkills()` はスキル一覧を UI にリフレッシュする補助処理だが、`try-catch` で囲んで `setGenerationError` + `return true` を置いていたため主処理を止める構造になっていた |
+| 解決策     | `refreshSkillsInBackground()` helper（`void fetchSkills().catch(warn)`）を抽出し、`selectSkillByName` の後で呼び出すパターンに切り替えた                                  |
+| 設計原則   | 「UI リフレッシュ系の補助処理が失敗しても、ユーザーが要求した主操作（選択・遷移）は止めない」を原則とする。補助処理の失敗は `console.warn` に閉じ込め `generationError` に昇格させない |
+| 適用条件   | `fetchSkills` のようにスキル生成の成否と独立した後続リフレッシュ処理全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                 |
+
+### L-FEEDBACK-008-002: 遅延 snapshot 再処理は useEffect + ref ガードで冪等に実現する
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `executePlan` の ack が先に返り `workflowSnapshot` が遅れて到着するケースで、snapshot を store に反映後に `processWorkflowOutcome` が再実行されず `loadVerifyDetail` に到達しなかった |
+| 原因       | snapshot の到着タイミングを考慮した再処理 effect が存在しなかった                                                                                             |
+| 解決策     | `useEffect([workflowSnapshot])` で snapshot を監視し、`processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId` ガードで二重処理を防止しながら `processWorkflowOutcome` を再適用した |
+| 設計原則   | IPC の ack と実データ（snapshot）が別タイミングで到着する経路では、データ到着を `useEffect` で拾い、`ref` による冪等ガードで副作用を一度だけ実行する           |
+| 適用条件   | `executePlan` のような非同期処理で ack と snapshot が分離している IPC チャンネル全般                                                                          |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                     |
+
+### L-FEEDBACK-008-003: NON_VISUAL タスクの証跡は manual-test-result.md + phase11-capture-metadata.json を正本とする
+
+| 項目       | 内容                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | Phase 11 でスクリーンショットが要求されるかどうか曖昧で、証跡の期待値がぶれる                                                                                                          |
+| 原因       | NON_VISUAL か否かの判断基準がタスク開始前に確立されていなかった                                                                                                                         |
+| 解決策     | Phase 1 の受入条件定義時に `NON_VISUAL` フラグを明示し、証跡は `manual-test-result.md` + `phase11-capture-metadata.json` とする方針を確定。スクリーンショットは UI 変更がある場合のみ要求する |
+| 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
+| 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
