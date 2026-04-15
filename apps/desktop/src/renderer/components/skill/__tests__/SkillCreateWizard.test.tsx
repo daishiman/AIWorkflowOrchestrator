@@ -16,7 +16,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
   SkillCreateWizard,
-  resolveExternalIntegration,
+  extractExternalToolNames,
   inferSmartDefaults,
   STEPS,
 } from "../SkillCreateWizard";
@@ -247,57 +247,54 @@ describe("SkillCreateWizard", () => {
   });
 
   // ============================================================
-  // 外部連携の解決ロジック
+  // 外部連携ツール名導出
   // ============================================================
-  describe("resolveExternalIntegration", () => {
+  describe("extractExternalToolNames", () => {
     const q5Answer = (value: ConversationAnswers["q5"]) => value;
 
-    it("選択が空なら smartDefaultTool を外部連携の初期値として使う", () => {
+    it("q5 が空なら smartDefaultTool を外部連携の初期値として使う", () => {
       expect(
-        resolveExternalIntegration(
+        extractExternalToolNames(
           q5Answer({ selectedOptions: [], freeText: "" }),
           "github",
         ),
-      ).toEqual({
-        hasExternalIntegration: true,
-        externalToolName: "GitHub",
-      });
+      ).toEqual(["GitHub"]);
     });
 
-    it("selectedOptions の先頭値を主ツールとして参照する", () => {
+    it("selectedOptions の複数値をそのまま導出する", () => {
       expect(
-        resolveExternalIntegration(
+        extractExternalToolNames(
           q5Answer({ selectedOptions: ["Slack", "GitHub"], freeText: "" }),
           null,
         ),
-      ).toEqual({
-        hasExternalIntegration: true,
-        externalToolName: "Slack",
-      });
+      ).toEqual(["Slack", "GitHub"]);
     });
 
     it("selectedOptions が『その他』かつ freeText が Notion の場合は Notion を採用する", () => {
       expect(
-        resolveExternalIntegration(
-          q5Answer({ selectedOptions: ["その他"], freeText: "Notion" }),
+        extractExternalToolNames(
+          q5Answer({ selectedOptions: ["その他"], freeText: " notion " }),
           null,
         ),
-      ).toEqual({
-        hasExternalIntegration: true,
-        externalToolName: "Notion",
-      });
+      ).toEqual(["Notion"]);
     });
 
-    it("先頭が「なし」の場合は後続選択より優先される", () => {
+    it("freeText のみでも既知ツールは大文字小文字を正規化する", () => {
       expect(
-        resolveExternalIntegration(
-          q5Answer({ selectedOptions: ["なし", "Slack"], freeText: "" }),
-          "notion",
+        extractExternalToolNames(
+          q5Answer({ selectedOptions: [], freeText: "sLaCk" }),
+          null,
         ),
-      ).toEqual({
-        hasExternalIntegration: false,
-        externalToolName: null,
-      });
+      ).toEqual(["Slack"]);
+    });
+
+    it("『なし』は smartDefaultTool や他選択肢より優先して空配列を返す", () => {
+      expect(
+        extractExternalToolNames(
+          q5Answer({ selectedOptions: ["なし", "Slack"], freeText: "Notion" }),
+          "github",
+        ),
+      ).toEqual([]);
     });
   });
 
@@ -363,7 +360,38 @@ describe("SkillCreateWizard", () => {
         screen.getByTestId("complete-step-external-checklist"),
       ).toBeInTheDocument();
       expect(
-        screen.getByText("Slack Webhook URL を設定する"),
+        screen.getByText("Slack, GitHub Webhook URL を設定する"),
+      ).toBeInTheDocument();
+    });
+
+    it("Q5 の『その他』+ freeText は正規化されたツール名で完了画面に反映される", async () => {
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      fillStep0("外部ツールと連携するための目的説明", "外部連携");
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "次のページ" }));
+      fireEvent.click(screen.getByRole("button", { name: "その他" }));
+      fireEvent.change(screen.getByRole("textbox", { name: "Q5 自由入力" }), {
+        target: { value: "notion" },
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results.at(-1)?.value;
+      });
+
+      expect(
+        screen.getByTestId("complete-step-external-checklist"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Notion Webhook URL を設定する"),
       ).toBeInTheDocument();
     });
   });
