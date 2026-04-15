@@ -3,7 +3,8 @@
   "taskName": "ci-optimization-001",
   "featureName": "task-ci-optimization-001",
   "createdAt": "2026-04-14T00:00:00Z",
-  "status": "phase12_completed",
+  "status": "completed",
+  "completedAt": "2026-04-15T01:48:00Z",
   "phases": [
     {
       "phase": 1,
@@ -256,5 +257,5 @@
     "AC-6: mainブランチのカバレッジ収集が継続動作"
   ],
   "dependencies": [],
-  "lastUpdated": "2026-04-14T14:46:19Z"
+  "lastUpdated": "2026-04-15T01:48:00Z"
 }
