@@ -26,10 +26,11 @@ runs:
           apps/web/node_modules
           packages/shared/node_modules
           packages/ui/node_modules
-        key: ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}${{ hashFiles('pnpm-lock.yaml') }}
+        # v2 プレフィックス: 修正前の汚染キャッシュ（Electronバイナリなし）を無効化するために追加
+        key: ${{ runner.os }}-node-modules-v2-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}${{ hashFiles('pnpm-lock.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}
-          ${{ runner.os }}-node-modules-
+          ${{ runner.os }}-node-modules-v2-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}
+          ${{ runner.os }}-node-modules-v2-
 
     # CI Optimization (TASK-CI-OPT-001):
     # キャッシュヒット時は pnpm install をスキップする（フォールバック: ミス時は通常 install）
