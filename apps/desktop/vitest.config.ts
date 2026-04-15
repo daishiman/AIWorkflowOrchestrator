@@ -8,7 +8,10 @@ import { cpus, totalmem } from "os";
 // 2026-02/03: フルスイートで OOM / worker crash が発生したため、
 // ローカル既定値を「安定性優先（低並列 + 動的ヒープ上限）」に調整。
 // 必要な場合は環境変数で上書き可能。
-const CI_MAX_FORKS = 2;
+// CI Optimization (TASK-CI-OPT-001):
+// CI_MAX_FORKS を 2→3 に引き上げ、シャード内の並列実行を強化。
+// メモリ上限 (7GB ランナー) を考慮し 3 をバランスポイントとして選択。
+const CI_MAX_FORKS = 3;
 const cpuCount = cpus().length;
 const totalMemoryGb = Math.floor(totalmem() / 1024 / 1024 / 1024);
 const totalMemoryMb = Math.floor(totalmem() / 1024 / 1024);
