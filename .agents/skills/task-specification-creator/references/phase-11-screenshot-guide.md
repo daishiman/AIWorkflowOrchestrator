@@ -52,6 +52,37 @@
 - `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス`
 - `screenshots/*.png`
 
+## CI ツールタスク（GitHub Actions）
+
+スクリーンショット取得が不可能な CI ツール変更タスクの場合、以下を標準証跡形式とする。
+
+1. **GitHub Actions 実行 URL** を `manual-test-result.md` に記録する
+2. **`gh run view <run-id> --log`** の出力を証跡として添付する
+3. Step Summary 内容は **`gh run view <run-id>`** のテキスト出力で代替する
+
+### gh コマンド証跡収集手順
+
+```bash
+# 実行 ID の取得
+gh run list --branch <branch-name> --limit 5
+
+# ログ出力（証跡として manual-test-result.md に貼り付け）
+gh run view <run-id> --log
+
+# アノテーション・Summary 確認
+gh run view <run-id>
+```
+
+### 必須証跡（CI ツールタスク）
+
+- `manual-test-result.md`（実行 URL + `gh run view` 出力を含める）
+- `manual-test-report.md`（テストケース別合否）
+- `issues.md` または `discovered-issues.md`
+
+この経路では `validate-phase11-screenshot-coverage.js` は不要。UI task のみ実行する。
+
+---
+
 ## Apple UI/UX 観点
 
 - hierarchy が明確か
