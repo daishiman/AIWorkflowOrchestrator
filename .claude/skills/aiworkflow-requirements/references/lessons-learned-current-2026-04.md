@@ -1480,3 +1480,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 - **L-MODE-003**: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する（Wave A 完了後では Red 状態を作れない）
 - **L-MODE-004**: Electron 実機なし時は「36 UT + grep ゼロ + TC-06 DOM query + typecheck」の 4 点 NON_VISUAL 証跡で代替する
 - **L-MODE-005**: SkillCreateWizard 確定フロー Step 0→1→2→3（LLM 専用・分岐なし）を基準とし、逸脱を禁止する
+
+---
+
+## TASK-SW-FIX-FEEDBACK-008: fetchSkills 非ブロッキング化 教訓（2026-04-15）
+
+### L-FEEDBACK-008-001: 補助的な非同期処理は fire-and-forget + console.warn で主処理と切り離す
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `processWorkflowOutcome` / `handleExecutePlan` 内で `fetchSkills()` を `await` していたため、失敗時に `early return` が発生し `selectSkillByName` が実行されなかった      |
+| 原因       | `fetchSkills()` はスキル一覧を UI にリフレッシュする補助処理だが、`try-catch` で囲んで `setGenerationError` + `return true` を置いていたため主処理を止める構造になっていた |
+| 解決策     | `refreshSkillsInBackground()` helper（`void fetchSkills().catch(warn)`）を抽出し、`selectSkillByName` の後で呼び出すパターンに切り替えた                                  |
+| 設計原則   | 「UI リフレッシュ系の補助処理が失敗しても、ユーザーが要求した主操作（選択・遷移）は止めない」を原則とする。補助処理の失敗は `console.warn` に閉じ込め `generationError` に昇格させない |
+| 適用条件   | `fetchSkills` のようにスキル生成の成否と独立した後続リフレッシュ処理全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                 |
+
+### L-FEEDBACK-008-002: 遅延 snapshot 再処理は useEffect + ref ガードで冪等に実現する
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `executePlan` の ack が先に返り `workflowSnapshot` が遅れて到着するケースで、snapshot を store に反映後に `processWorkflowOutcome` が再実行されず `loadVerifyDetail` に到達しなかった |
+| 原因       | snapshot の到着タイミングを考慮した再処理 effect が存在しなかった                                                                                             |
+| 解決策     | `useEffect([workflowSnapshot])` で snapshot を監視し、`processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId` ガードで二重処理を防止しながら `processWorkflowOutcome` を再適用した |
+| 設計原則   | IPC の ack と実データ（snapshot）が別タイミングで到着する経路では、データ到着を `useEffect` で拾い、`ref` による冪等ガードで副作用を一度だけ実行する           |
+| 適用条件   | `executePlan` のような非同期処理で ack と snapshot が分離している IPC チャンネル全般                                                                          |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                     |
+
+### L-FEEDBACK-008-003: NON_VISUAL タスクの証跡は manual-test-result.md + phase11-capture-metadata.json を正本とする
+
+| 項目       | 内容                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | Phase 11 でスクリーンショットが要求されるかどうか曖昧で、証跡の期待値がぶれる                                                                                                          |
+| 原因       | NON_VISUAL か否かの判断基準がタスク開始前に確立されていなかった                                                                                                                         |
+| 解決策     | Phase 1 の受入条件定義時に `NON_VISUAL` フラグを明示し、証跡は `manual-test-result.md` + `phase11-capture-metadata.json` とする方針を確定。スクリーンショットは UI 変更がある場合のみ要求する |
+| 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
+| 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
