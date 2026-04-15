@@ -134,9 +134,11 @@ vi.mock("electron-store", () => {
 // --- 全ハンドラ登録関数のモック ---
 vi.mock("../fileHandlers", () => ({
   registerFileHandlers: vi.fn(),
+  registerFsHandlers: vi.fn(),
 }));
 vi.mock("../storeHandlers", () => ({
   registerStoreHandlers: vi.fn(),
+  registerUserSettingsHandlers: vi.fn(),
 }));
 vi.mock("../dashboardHandlers", () => ({
   registerDashboardHandlers: vi.fn(),
@@ -193,6 +195,7 @@ vi.mock("../../services/HistoryService", () => ({
 }));
 vi.mock("../agentHandlers", () => ({
   registerAgentExecutionHandlers: vi.fn(),
+  registerAgentSkillHandlers: vi.fn(),
 }));
 vi.mock("../communityHandlers", () => ({
   registerCommunityHandlers: vi.fn(),
@@ -322,6 +325,7 @@ vi.mock("better-sqlite3", () => ({
 }));
 vi.mock("../conversationHandlers", () => ({
   registerConversationHandlers: vi.fn(),
+  registerChatExportHandlers: vi.fn(),
 }));
 vi.mock("../../repositories/conversationRepository", () => ({
   ConversationRepository: vi.fn().mockImplementation(() => ({})),
