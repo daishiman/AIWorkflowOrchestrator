@@ -4786,7 +4786,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5054,6 +5053,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
 | 仕様書インデックス | L17 |
 | 利用順序 | L101 |
 | 関連ドキュメント | L106 |
@@ -5072,16 +5074,6 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L18 |
 | 利用順序 | L129 |
 | 関連ドキュメント | L134 |
-| 仕様書インデックス | L17 |
-| 利用順序 | L101 |
-| 関連ドキュメント | L106 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L48 |
-| 利用順序 | L128 |
-| 関連ドキュメント | L133 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
 
 ### references/testing-accessibility.md
 
