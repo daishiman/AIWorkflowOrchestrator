@@ -416,3 +416,37 @@
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-WCE-MONACO-001
 - **システム仕様書参照**: [architecture-implementation-patterns.md](/.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+---
+
+## GitHub Actions YAML 変更タスク用テスト計画パターン（TASK-CI-FUTURE-003）
+
+> GitHub Actions YAML のみを変更するタスクで、ユニットテストが書けない場合の標準テスト計画形式。
+
+### CI 実行ベーステストケース定義パターン
+
+- **状況**: GitHub Actions YAML の変更のみで、コードの Unit Test が書けないタスク（Phase 4）
+- **パターン**: CI 実行ベースのテストケースとして「状態・事前操作・期待 Summary 出力・期待アノテーション」形式で定義する
+- **テストケース定義形式**:
+
+  | 項目 | 説明 |
+  | ---- | ---- |
+  | 状態 | CI 実行前のキャッシュ状態（Miss / Fallback / Exact Hit） |
+  | 事前操作 | キャッシュを意図的に Miss/Hit させる手順（例: 新規 branch, 既存 hash） |
+  | 期待 Summary 出力 | GitHub Actions Step Summary に出力されるテーブル内容 |
+  | 期待アノテーション | `::warning::` / `::notice::` / 出力なし |
+
+- **例**（TASK-CI-FUTURE-003）:
+
+  | # | 状態 | 事前操作 | 期待アノテーション |
+  | - | ---- | -------- | --------------- |
+  | 1 | Exact Hit | 同一 lock hash のブランチを再実行 | なし |
+  | 2 | Fallback Hit | 別ブランチ（ハッシュ違い）で実行 | `::notice::` |
+  | 3 | Miss | lockfile 変更後の初回実行 | `::warning::` |
+
+- **効果**:
+  - Unit Test が書けない GitHub Actions タスクでもテスト計画が標準化される
+  - Phase 4 成果物（テスト仕様）として CI 実行ベースの証跡と対応付けが可能
+  - Phase 11 の手動テスト（`gh run view` 証跡）と整合性が取れる
+- **発見日**: 2026-04-15
+- **関連タスク**: TASK-CI-FUTURE-003
