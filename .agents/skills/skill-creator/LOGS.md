@@ -3,6 +3,20 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-04-14 - TASK-SW-FIX-UI-001 SkillCreateWizard UI整合性修正の実装知見を反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: impl-spec-to-skill-sync
+- **Result**: success
+- **Notes**:
+  - `SkillInfoFormData.category` を `SkillCategory | null` → `SkillCategory[]` に複数選択化し、`resolvePrimarySkillCategory()` で代表カテゴリを優先順位関数で決定するパターンを確立
+  - `ApplySummaryCard` でカテゴリ配列をカンマ区切り表示に対応、`buildSkillContext()` の category 解決ロジックを更新
+  - `ConversationRoundStep` の MainToolBadge 改善、`inferSmartDefaults` のリファクタリング（69行削減）
+  - ProgressBar / ボタンスタイルの統一（SkillCreateWizard 内の UI 一貫性）
+  - 苦戦箇所: `category[0]` を代表カテゴリにすると選択順に依存するため `resolvePrimarySkillCategory()` で是正
+  - resource-map.md / task-workflow-completed-recent-2026-04f.md / LOGS.md を同波で更新
+
+---
 ## 2026-04-03 - UT-UIUX-VISUAL-BASELINE-DRIFT-001 の dark-mode baseline drift 再利用知見を SKILL / template へ反映
 
 - **Agent**: skill-creator (update)

@@ -2,7 +2,7 @@
   "taskId": "TASK-SC-IMP-CREATE-WORKFLOW-001",
   "taskName": "imp-create-workflow",
   "featureName": "skill-creator-workflow-fix-lane/TASK-SC-IMP-CREATE-WORKFLOW-001",
-  "status": "in_progress",
+  "status": "completed",
   "createdAt": "2026-04-14",
   "dependsOn": ["TASK-SC-FIX-GENERATE-SKILL-MD-001"],
   "phases": [
@@ -69,7 +69,7 @@
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "extended-test-record.md",
@@ -81,7 +81,7 @@
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "coverage-report.md",
@@ -93,7 +93,7 @@
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "refactoring-record.md",
@@ -105,7 +105,7 @@
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "quality-report.md",
@@ -117,7 +117,7 @@
     {
       "phase": 10,
       "name": "最終レビュー",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "final-review-result.md",
@@ -129,7 +129,7 @@
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "manual-test-checklist.md",
@@ -146,7 +146,7 @@
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "implementation-guide.md",

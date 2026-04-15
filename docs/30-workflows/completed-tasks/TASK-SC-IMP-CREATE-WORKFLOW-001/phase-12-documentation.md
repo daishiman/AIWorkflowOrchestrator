@@ -9,7 +9,7 @@
 | 対象機能   | TASK-SC-IMP-CREATE-WORKFLOW-001 |
 | 前提Phase  | Phase 11: 手動テスト            |
 | 次Phase    | Phase 13: PR作成                |
-| ステータス | pending                         |
+| ステータス | completed                       |
 | 作成日     | 2026-04-14                      |
 
 ## 目的
@@ -62,7 +62,7 @@ LLMによる SKILL.md 内容生成が行われず、スキルの設計図が空�
 - APIシグネチャ変更: `runCreateWorkflow(options: CreateSkillOptions): Promise<StructurePlanJson | null>`
 - データハンドオフ: `runCreateWorkflow` の戻り値は `createSkill` 内で `const structurePlan` として受け取り、後続処理へ明示引数で渡す
 - エラーハンドリング: `loadAgent` 失敗時は例外をキャッチして `null` を返す（フォールバック）
-- エッジケース: `options.description` が空文字・undefined の場合も `StructurePlanJson` を生成する
+- エッジケース: `options.description` は型上必須の `string`。空文字は許容し、`undefined` は入力破損として別途バリデーション対象にする
 - 設定可能パラメータ: `options.name`・`options.description` の2系統で構造計画JSONを構成する
 - 変更ファイル: `apps/desktop/src/main/services/skill/SkillCreatorService.ts`（行574-577修正・switch文修正）
 - テストファイル: `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts`
@@ -73,7 +73,7 @@ LLMによる SKILL.md 内容生成が行われず、スキルの設計図が空�
 
 ### Step 1-A: 完了タスク記録
 
-- `docs/30-workflows/skill-creator-workflow-fix-lane/index.md` に TASK-SC-IMP-CREATE-WORKFLOW-001 完了記録を追加する
+- `docs/30-workflows/TASK-SC-IMP-CREATE-WORKFLOW-001/index.md` と `docs/30-workflows/skill-creator-workflow-fix-lane/index.md` に TASK-SC-IMP-CREATE-WORKFLOW-001 完了記録を追加する
 - `artifacts.json` の status を `pending` から `completed` に更新する
 - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` に完了タスク記録を追加する
 - `.claude/skills/task-specification-creator/SKILL.md` / `.claude/skills/aiworkflow-requirements/SKILL.md` の変更履歴を更新する
@@ -158,19 +158,19 @@ LLMによる SKILL.md 内容生成が行われず、スキルの設計図が空�
 
 ## 完了条件
 
-- [ ] 必須6成果物が揃っている
-- [ ] 計画系文言が除去されている
-- [ ] skill準拠結果が記録されている
-- [ ] 30思考法の総括が残っている
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
+- [x] 必須6成果物が揃っている
+- [x] 計画系文言が除去されている
+- [x] skill準拠結果が記録されている
+- [x] 30思考法の総括が残っている
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 矛盾なし・漏れなし・整合性あり・依存関係整合の4条件をすべて満たしている
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 
