@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-14 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 phase12 current facts sync
+
+### 変更内容
+
+- `SKILL.md` の Phase 12 current facts / 変更履歴を analytics HTTP provider の current contract に合わせて更新
+- `AnalyticsHttpProvider` / `analytics:get-stats` / `sentCount` / `failedCount` を Phase 12 の成果物説明へ反映
+- `.agents/skills/task-specification-creator/` mirror を同 wave で同期
+
+### 背景
+
+analytics HTTP provider の Phase 12 close-out で、implementation-guide だけでなく system-spec / changelog / compliance / feedback を 6 成果物として確定させる必要があった。skill 側の Phase 12 ルールに current facts を反映し、次回の close-out でも同じ漏れが再発しないようにした。
+
 ## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
 
 ### 変更内容

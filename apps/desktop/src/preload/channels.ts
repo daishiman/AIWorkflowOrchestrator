@@ -14,8 +14,9 @@ import {
 } from "@repo/shared/src/ipc/channels";
 
 export const IPC_CHANNELS = {
-  // Analytics operations (UT-W3-ANALYTICS-ADAPTER-001)
+  // Analytics operations (UT-W3-ANALYTICS-ADAPTER-001, UT-W3-ANALYTICS-HTTP-PROVIDER-001)
   ANALYTICS_SEND: "analytics:send",
+  ANALYTICS_GET_STATS: "analytics:get-stats",
 
   // File operations
   FILE_GET_TREE: "file:get-tree",
@@ -425,8 +426,9 @@ export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 
 // Whitelist of allowed channels for security
 export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
-  // Analytics channels (UT-W3-ANALYTICS-ADAPTER-001)
+  // Analytics channels (UT-W3-ANALYTICS-ADAPTER-001, UT-W3-ANALYTICS-HTTP-PROVIDER-001)
   IPC_CHANNELS.ANALYTICS_SEND,
+  IPC_CHANNELS.ANALYTICS_GET_STATS,
   IPC_CHANNELS.FILE_GET_TREE,
   IPC_CHANNELS.FILE_READ,
   IPC_CHANNELS.FILE_WRITE,

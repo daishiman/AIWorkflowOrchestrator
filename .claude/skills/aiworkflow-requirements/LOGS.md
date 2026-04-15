@@ -220,6 +220,19 @@ Phase 12 close-out 後の ledger sync（backlog→completed）は 2026-04-13 に
 
 Renderer 側エラーメッセージ UI の完成扱いを backlog / completed / task-workflow / issue 番号で同一化し、Phase 12 close-out 後の current facts が分岐しないようにした。今回の同期はドキュメントと台帳の整合性を閉じるためのもので、実装ファイルには触れていない。
 
+## 2026-04-14 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 current facts sync
+
+### 変更内容
+- `references/api-ipc-system-core.md` を `AnalyticsHttpProvider` / `analytics:get-stats` / `sentCount` / `failedCount` の current contract へ更新
+- `references/environment-variables.md` を `ANALYTICS_ENDPOINT_URL` の no-op / non-production-only 前提なしの扱いへ更新
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04e.md` に analytics HTTP provider 完了記録を追加
+- `references/lessons-learned-w3-usage-tracking-2026-04.md` に L-W3-HTTP-001〜004 を追加
+- `scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `docs/30-workflows/UT-W3-ANALYTICS-HTTP-PROVIDER-001/outputs/phase-12/` 6成果物を current facts へ同期
+
+### 背景
+analytics transport の実装は Main IPC 直書きではなく `AnalyticsHttpProvider` へ切り出され、stats API も追加された。旧 `sendToAnalyticsProvider` / production-only 前提を残すと later task の current facts がずれるため、same-wave で同期した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 補完同期（L-FB05-004追加・keywords補完・topic-map詳細化）
 
 ### 変更内容
@@ -1634,6 +1647,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件）                              |
 | 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100%                              |
 | 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                                                   |
+
+## 2026-04-12 — impl-spec-to-skill-sync (cron-weekdays-guard)
+
+- lessons-learned-current-2026-04.md: L-CRON-WEEKDAY-GUARD-001 追記（API層防御的ガードパターン）
+- task-workflow.md: TASK-CRON-CONVERTER-WEEKDAYS-GUARD-001 completed ledger 追記
+- 参照: apps/desktop/src/renderer/utils/cronConverter.ts + cronConverter.test.ts
+
+## 2026-04-13 — UT-W3-ANALYTICS-STORE-INTEGRATION-001 completed
+
+- analyticsSlice（Zustand action-only store）実装・テスト・ドキュメント全 Phase 完了
+- 参照: apps/desktop/src/renderer/store/slices/analyticsSlice.ts + **tests**/analyticsSlice.test.ts
+
 | 項目     | 内容                                                                                                                                                                               |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 種別     | implementation / TDD / analytics integration                                                                                                                                       |
