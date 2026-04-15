@@ -1,108 +1,59 @@
-# 完了タスク記録 — 2026-04-14
+# 完了タスク台帳 — 2026-04 (g)
 
-> 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+## TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）
 
----
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-FIX-UI-001                                                                                                          |
+| ステータス | **完了（docs-only / Phase 12 close-out）**                                                                                  |
+| タイプ     | bug-fix / UI整合性 / type-migration                                                                                         |
+| 優先度     | 中                                                                                                                          |
+| 完了日     | 2026-04-14                                                                                                                  |
+| Wave       | C（WC-par-03b-fix-ui）                                                                                                      |
+| 対象       | `packages/shared/src/types/skillCreator.ts` / `wizard/SkillInfoStep.tsx` / `wizard/ConversationRoundStep.tsx` / `SkillCreateWizard.tsx` |
+| 成果物     | `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/outputs/phase-12/`                                            |
 
-### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
+### 修正問題
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SW-FIX-STATE-DETAIL-001                                                               |
-| 完了日     | 2026-04-14                                                                                 |
-| タスク種別 | implementation（VISUAL / state-detail recovery）                                           |
-| 関連Issue  | -                                                                                          |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 問題番号 | 内容 | 修正ファイル |
+| -------- | ---- | ------------ |
+| 問題2    | カテゴリ複数選択不可 | `skillCreator.ts`（`SkillCategory\|null` → `SkillCategory[]`） |
+| 問題3    | ボタンスタイル不統一 | `SkillInfoStep.tsx` / `SkillCreateWizard.tsx`（`bg-blue-600` → CSS変数） |
+| 問題11   | ProgressBar固定値   | `ConversationRoundStep.tsx`（動的計算 `Math.max(1, answeredCount)`） |
+| 問題15   | カテゴリ解除不可    | `SkillInfoStep.tsx`（`handleCategoryClick` トグル実装） |
+| 問題16   | ProgressBarカウント不正 | `ConversationRoundStep.tsx`（`isQuestionAnswered` 利用） |
 
-#### 実施内容
+### 実施内容
 
-- `SkillCreateWizard.tsx` の `catch` に stale guard を追加し、キャンセル後の遅延 reject が error を再表示しないようにした
-- `SkillCreateWizard.tsx` の `finally` で `generationLockRef` を必ず解放するようにした
-- `GenerateStep.tsx` に template mode recovery を接続し、`最初からやり直す` を template error 専用導線として固定した
-- `ConversationRoundStep.tsx` で `answers` prop 変更時に `internalAnswers` を再初期化し、Step 1 の local state を親 state に再同期した
-- `outputs/phase-11/` に screenshot bundle と metadata を保存し、template error cancel / step0 return / normal error no cancel の 3 状態を visual evidence として閉じた
-- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / skill-feedback / compliance を current facts に同期した
+- `SkillInfoFormData.category` を `SkillCategory | null` → `SkillCategory[]` に型変更し、未選択を空配列で表現
+- `handleCategoryClick` を `includes/filter` ベースのトグルロジックに変更し、複数選択・解除に対応
+- `currentQuestion` を `Math.max(1, answeredCount)` で動的計算し、実際の回答状況を反映
+- `SkillInfoStep.tsx` と `SkillCreateWizard.tsx` のボタン CSS を `var(--status-primary)` / `var(--text-inverse)` に統一
+- Phase-12 成果物 6 ファイルを `outputs/phase-12/` 配下に作成
 
-#### Phase 11/12 成果物
+### 検証証跡
 
-| 成果物                                    | パス                                                              |
-| ----------------------------------------- | ----------------------------------------------------------------- |
-| スクリーンショット計画                    | `outputs/phase-11/screenshot-plan.json`                           |
-| キャプチャメタデータ                      | `outputs/phase-11/phase11-capture-metadata.json`                  |
-| 画面証跡 1                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png` |
-| 画面証跡 2                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png` |
-| 画面証跡 3                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png` |
-| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストレポート                        | `outputs/phase-11/manual-test-report.md`                          |
-| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
-| UI サニティレビュー                       | `outputs/phase-11/ui-sanity-visual-review.md`                     |
-| スクリーンショットカバレッジ              | `outputs/phase-11/screenshot-coverage.md`                         |
-| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
-| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
-| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
-| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
-| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
-| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+| 項目 | 結果 |
+| ---- | ---- |
+| typecheck | PASS |
+| lint | PASS |
+| vitest | PASS |
+| Phase-11 手動テスト | 目視確認済み |
+| phase12-task-spec-compliance-check.md | **PASS** |
 
-#### 検証証跡
+### 苦戦箇所
 
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1`: PASS（172 tests）
-- `node apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png`: PASS
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
-- `artifacts.json` / `outputs/artifacts.json`: parity PASS
+| 苦戦箇所 | 解決策 |
+| -------- | ------ |
+| `category` 型変更の影響範囲（subpath export スコープ内に限定） | ルート barrel に変更を波及させず `@repo/shared/skill-creator` に閉じる方針を明示 |
+| `handleCategoryClick` の境界値（空配列への遷移） | `includes/filter` パターンで条件分岐なし・空配列移行を自動的に処理 |
+| `currentQuestion` の Page 2 遷移直後の表示（3/6 になる場合） | 「回答済み数の反映」として仕様書に明記し、テストで期待値として定義 |
+| `hover:bg-blue-700` の除去による hover 体験の維持 | CSS変数側でホバー状態を定義し、opacity での代替を採用 |
 
-#### 苦戦箇所
+### lessons-learned
 
-| #   | 苦戦箇所                                               | 解決策                                                                 |
-| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
-| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
-| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
-
-#### lessons-learned
-
-- 生成キャンセル後の UI は「エラーを消す」だけでなく「古い結果を再表示しない」ことまで含めて設計する
-- template recovery は通常 error と分け、`retry` と `start over` の意味を UI で明確に分離する
-- Step 1 の local state は親 state の再同期点を持たせると、再開・戻る・再生成の 3 経路で破綻しにくい
-
----
-
-### タスク: TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数ミスマッチ修正（2026-04-15）
-
-| 項目       | 値                                                                    |
-| ---------- | --------------------------------------------------------------------- |
-| タスクID   | TASK-SC-FIX-GENERATE-SKILL-MD-001                                     |
-| 完了日     | 2026-04-15                                                            |
-| タスク種別 | bugfix（SkillCreatorService / script-argument-fix）                   |
-| 関連Issue  | -                                                                     |
-| Phase 13   | skipped（PR禁止）                                                     |
-
-#### 実施内容
-
-- `SkillCreatorService.ts` の `generate_skill_md.js` 呼び出し引数を `["--path", skillDir]` から `["--plan", tmpPlanPath, "--output", skillMdPath]` へ修正
-- `os.tmpdir()` 配下に `skill-plan-{UUID}.json` として plan オブジェクトを一時書き込み、スクリプト完了後に `finally` でクリーンアップ
-- plan オブジェクト構造（`skillName`, `workflow.summary/anchors/trigger/phases/tasks`, `directories`, `files`）を正しく組み立てる実装を追加
-- フォールバック: `generate_skill_md.js` 失敗または出力ファイル不在の場合は `ensureSkillMdExists` を呼び出す
-
-#### 検証証跡
-
-- TC-01〜TC-07（generate_skill_md.js 引数検証テスト）: PASS
-- BV-001〜BV-008（境界値・セキュリティテスト）: PASS
-- SC-001〜SC-031（SkillCreatorService 統合テスト）: PASS
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                                     | 解決策                                                                           |
-| --- | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| 1   | スクリプトが `--path <dir>` を期待していると思い込んでいた   | `generate_skill_md.js` の実際の仕様（`--plan <json> --output <path>`）を確認して修正 |
-| 2   | plan オブジェクトをコマンドライン引数でどう渡すか            | コマンドライン引数の制限を避けるため temp JSON ファイル経由で渡すパターンを採用  |
-| 3   | temp ファイルのクリーンアップタイミング                      | `finally` ブロック + `.catch(() => {})` で non-fatal として処理                  |
-
-#### lessons-learned
-
-- スクリプトの引数仕様は呼び出し側ではなくスクリプト本体のソースを確認してから実装する
-- 外部スクリプトへ JSON データを渡す場合は temp ファイル経由が安全（引数文字数制限を回避）
-- temp ファイルのクリーンアップは `finally` + `.catch(() => {})` パターンで常に non-fatal に扱う
+- `null` → 空配列への移行は null チェックを一掃する機会として活用する（L-UI-001）
+- 複数選択トグルは `includes/filter` の 1 パターンで境界値まで処理できる（L-UI-002）
+- ProgressBar の初期値は `Math.max(1, count)` で最小表示を保証する（L-UI-003）
+- CSS変数統一は subpath export に閉じ、ルート barrel への影響を最小化する（L-UI-004）
+- 詳細: `lessons-learned-current-2026-04.md`（L-UI-001〜004）
