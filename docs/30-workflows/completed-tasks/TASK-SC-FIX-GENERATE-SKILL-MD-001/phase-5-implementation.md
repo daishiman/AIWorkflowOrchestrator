@@ -23,16 +23,17 @@ Phase 4 で定義した fail-first テスト（TC-01〜TC-07）を pass に反�
 
 **変更ファイル**: `apps/desktop/src/main/services/skill/SkillCreatorService.ts`
 
-**変更箇所**: 先頭の import ブロック（行 8-9 付近）
+**変更箇所**: 先頭の import ブロック（行 8-10 付近）
 
 **変更内容**:
 
 ```typescript
-// 変更前（行 8-9）
+// 変更前（行 8-10）
 import path from "path";
 import fs from "fs/promises";
 
 // 変更後
+import { randomUUID } from "crypto";
 import os from "os";
 import path from "path";
 import fs from "fs/promises";
@@ -44,7 +45,7 @@ import fs from "fs/promises";
 
 **変更ファイル**: `apps/desktop/src/main/services/skill/SkillCreatorService.ts`
 
-**変更箇所**: 行 154-165（コメント「// SKILL.md生成」から閉じ括弧まで）
+**変更箇所**: 行 152-188（コメント「// SKILL.md生成」から finally まで）
 
 **変更前**:
 
@@ -63,19 +64,38 @@ if (!generateResult.success) {
 
 ```typescript
 // SKILL.md生成
-const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${Date.now()}.json`);
+const skillMdPath = path.join(skillDir, "SKILL.md");
+const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
 try {
   const plan = {
-    name: options.name,
-    description: options.description,
-    tasks: [],
+    skillName: options.name,
+    workflow: {
+      summary: options.description,
+      anchors: [],
+      trigger: {
+        description: `Use when ${options.name} is requested`,
+        keywords: [options.name],
+      },
+      phases: [],
+      tasks: [],
+    },
+    directories: {},
+    files: [],
   };
   await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
   const generateResult = await this.scriptExecutor.execute(
     "generate_skill_md.js",
-    ["--plan", tmpPlanPath, "--output", path.join(skillDir, "SKILL.md")],
+    ["--plan", tmpPlanPath, "--output", skillMdPath],
   );
-  if (!generateResult.success) {
+  let shouldUseFallback = !generateResult.success;
+  if (!shouldUseFallback) {
+    try {
+      await fs.access(skillMdPath);
+    } catch {
+      shouldUseFallback = true;
+    }
+  }
+  if (shouldUseFallback) {
     await this.ensureSkillMdExists(skillDir, options.name, options.description);
   }
 } finally {
@@ -83,11 +103,17 @@ try {
 }
 ```
 
+補足:
+
+- `plan` は `skillName` / `workflow.summary` / `workflow.anchors` / `workflow.trigger` / `workflow.phases` / `workflow.tasks` / `directories` / `files` を含む最小形
+- フォールバックは `generateResult.success === false` の場合だけでなく、生成後に `SKILL.md` が存在しない場合も実行する
+- `ensureSkillMdExists` のフォールバック出力は YAML フロントマターと `## Task一覧` を含む
+
 **行番号の変化**:
 
-- 変更前: 行 154-165（12行）
-- 変更後: 行 154-178 程度（+14行、try/finally と plan 変数宣言の追加分）
-- 以降の行番号は 14 行後ろにずれる
+- 変更前: 行 152-165（14行）
+- 変更後: 行 152-188 程度（+36行、try/finally と plan 変数宣言の追加分）
+- 以降の行番号は 36 行後ろにずれる
 
 ### Task 3: テスト更新 — SkillCreatorService.test.ts
 
@@ -153,11 +179,11 @@ pnpm --filter @repo/desktop lint
 
 ## 変更ファイルと行番号サマリ
 
-| ファイル                                                                     | 変更種別 | 対象行（変更前） | 内容                                           |
-| ---------------------------------------------------------------------------- | -------- | ---------------- | ---------------------------------------------- |
-| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 8-9（import） | `import os from "os"` を追加                   |
-| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 154-165       | `--path` → `--plan` / `--output` + try/finally |
-| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | 修正     | 既存テスト末尾   | TC-01〜TC-07 のテストケース追加                |
+| ファイル                                                                     | 変更種別 | 対象行（変更前）  | 内容                                                                              |
+| ---------------------------------------------------------------------------- | -------- | ----------------- | --------------------------------------------------------------------------------- |
+| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 8-10（import） | `import { randomUUID } from "crypto"` + `import os from "os"` を追加              |
+| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | 修正     | 行 152-188        | `skillName` 付き plan JSON + `--plan` / `--output` + try/finally + 生成後存在確認 |
+| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | 修正     | 既存テスト末尾    | TC-01〜TC-07 のテストケース追加                                                   |
 
 ## 参照資料
 
@@ -182,7 +208,7 @@ pnpm --filter @repo/desktop lint
 ## 完了条件
 
 - [ ] import 追加（`os`）の実装ステップが記述されている
-- [ ] 行 154-165 の置き換え差分が明示されている
+- [ ] 行 152-188 の置き換え差分が明示されている
 - [ ] テストファイルへの追加内容（TC-01〜TC-07）が記述されている
 - [ ] 動作確認コマンドが記載されている
 - [ ] 本 Phase 内の全タスクを 100% 実行完了

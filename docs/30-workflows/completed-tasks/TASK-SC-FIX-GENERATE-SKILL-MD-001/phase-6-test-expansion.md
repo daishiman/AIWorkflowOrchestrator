@@ -21,14 +21,14 @@
 
 ### Task 1: `--plan`にUUIDが含まれること（一意性確認）
 
-- `generateSkillMd`を呼び出した際に`spawnFile`へ渡される`--plan`引数が一時ファイルパスを指していることを確認する
+- `generateSkillMd`を呼び出した際に`scriptExecutor.execute("generate_skill_md.js", [...])` へ渡される`--plan`引数が一時ファイルパスを指していることを確認する
 - 一時ファイルパスにUUIDが含まれ、呼び出しごとに異なる値になることを確認する
 - 同一`skillDir`で2回呼び出した際に異なる一時ファイルパスが使われることを確認する
 
 ### Task 2: generateResultがsuccessかつSKILL.mdが存在する場合、ensureSkillMdExistsが呼ばれないこと
 
-- `spawnFile`が終了コード0で返り、SKILL.mdが存在する場合に`ensureSkillMdExists`が呼ばれないことを確認する
-- `spawnFile`が終了コード0で返ってもSKILL.mdが存在しない場合は`ensureSkillMdExists`が呼ばれることを確認する
+- `scriptExecutor.execute` が終了コード0で返り、SKILL.mdが存在する場合に`ensureSkillMdExists`が呼ばれないことを確認する
+- `scriptExecutor.execute` が終了コード0で返ってもSKILL.mdが存在しない場合は`ensureSkillMdExists`が呼ばれることを確認する
 - フォールバック分岐とメイン成功分岐のどちらを通るかが`generateResult.success`とSKILL.mdの存在で決まることを確認する
 
 ### Task 3: fs.unlinkが例外をthrowしても全体処理が継続すること
@@ -39,7 +39,7 @@
 
 ### Task 4: スクリプトの標準エラーが非空の場合でもsuccessがfalseなら正しくフォールバックに入ること
 
-- `spawnFile`が終了コード1（失敗）で返った際に`ensureSkillMdExists`が呼ばれることを確認する
+- `scriptExecutor.execute` が終了コード1（失敗）で返った際に`ensureSkillMdExists`が呼ばれることを確認する
 - 標準エラー出力が空でない場合でも、終了コードが0でなければsuccessがfalseになることを確認する
 - フォールバック経路でも最終的なSKILL.mdが存在することを確認する
 
