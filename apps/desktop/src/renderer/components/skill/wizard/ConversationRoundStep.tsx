@@ -299,7 +299,6 @@ export const ConversationRoundStep = ({
     }
     // 初回マウントで smart defaults を潰さないため、リセットは遷移時のみ行う。
   }, [answers]);
-
   // ─── ハンドラ ───────────────────────────────────────────────────────────────
 
   const handleOptionSelect = (key: QuestionKey, option: string) => {

@@ -4908,6 +4908,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L90 |
 | 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L110 |
 | 完了タスク（2026-03後半） | L285 |

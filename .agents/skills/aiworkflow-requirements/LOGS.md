@@ -141,6 +141,21 @@ Renderer 側エラーメッセージ UI の完成扱いを backlog / completed /
 ### 背景
 SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH が SkillScanner.ts と init_skill.js に重複定義されていた。shared定数化により single source of truth を確立し、runtime fallback 機構で standalone CLI スクリプトの互換性を維持した。
 
+## 2026-04-13 - TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 impl-spec-to-skill-sync（VisualCronPicker UI validation）
+
+### 変更内容
+
+- `SKILL.md` description / Trigger に `VisualCronPicker` / `TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001` / `onValidationChange` / `weeklyError` / `monthlyError` / `dayOfMonth` / `role="alert"` を追加
+- `references/ui-ux-forms.md` に VisualCronPicker schedule validation の alert / callback 契約を追記
+- `references/ui-ux-feature-components-core.md` に VisualCronPicker UI validation の component contract を追記
+- `references/task-workflow-completed-recent-2026-04e.md` / `references/lessons-learned-current-2026-04.md` / `indexes/resource-map.md` を current facts へ同期
+- `outputs/phase-11` / `outputs/phase-12` の current facts を UI validation 完了版へ同期
+- `task-specification-creator` 側は current facts 変更なしのため no-op
+
+### 背景
+
+VisualCronPicker の UI validation が完了し、Phase 11 のスクリーンショット証跡と Phase 12 の current contract を正本へ反映する必要があった。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新）
 
 ### 変更内容

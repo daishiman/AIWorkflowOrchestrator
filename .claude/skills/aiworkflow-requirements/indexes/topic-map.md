@@ -4618,6 +4618,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
+| 続き | L331 |
+| 続き | L332 |
+| 続き | L334 |
+| 続き | L331 |
 | 続き | L335 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md

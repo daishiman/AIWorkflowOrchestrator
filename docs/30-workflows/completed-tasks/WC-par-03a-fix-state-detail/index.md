@@ -10,7 +10,7 @@
 | 対象機能       | スキルウィザード（Wave C）                                                                                                     |
 | 優先度         | 中                                                                                                                             |
 | 見積もり規模   | 中規模                                                                                                                         |
-| ステータス     | completed                                                                                                                      |
+| ステータス     | pending                                                                                                                        |
 | ウェーブ       | Wave C（Wave B完了後。Phase 1-4/6-13 は並列、Phase 5 は `SkillCreateWizard.tsx` / `ConversationRoundStep.tsx` 共有のため順次） |
 | 作成日         | 2026-04-12                                                                                                                     |
 | 親ワークフロー | skill-wizard-bugfix-wave                                                                                                       |
