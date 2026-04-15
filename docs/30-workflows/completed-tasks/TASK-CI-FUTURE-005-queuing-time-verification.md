@@ -10,7 +10,7 @@
 | 対象機能     | GitHub Actions CI                             |
 | 優先度       | 高                                            |
 | 見積もり規模 | 小規模                                        |
-| ステータス   | 未実施                                        |
+| ステータス   | spec_created                                  |
 | 発見元       | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01         |
 | 発見日       | 2026-04-15                                    |
 
@@ -437,11 +437,11 @@ gh run view <run-id> --json jobs \
 
 ### 発見元
 
-| 資料                                                      | 参照箇所                                                              |
-| --------------------------------------------------------- | --------------------------------------------------------------------- |
-| TASK-CI-OPT-001 Phase 3 設計レビュー                      | `docs/30-workflows/task-ci-optimization-001/phase-3-design-review.md` |
-| CI-M-01 MINOR 指摘（MINOR 追跡テーブル）                  | 同上、「ステップ3: PASS/MINOR/MAJOR 判定」内の MINOR 追跡テーブル     |
-| リスク2: シャード数 17 で GitHub Free Tier 並列上限に到達 | 同上、「ステップ2: 既知リスクの評価と対策 > リスク2」                 |
+| 資料                                                      | 参照箇所                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| TASK-CI-OPT-001 Phase 3 設計レビュー                      | `docs/30-workflows/completed-tasks/task-ci-optimization-001/phase-3-design-review.md` |
+| CI-M-01 MINOR 指摘（MINOR 追跡テーブル）                  | 同上、「ステップ3: PASS/MINOR/MAJOR 判定」内の MINOR 追跡テーブル                     |
+| リスク2: シャード数 17 で GitHub Free Tier 並列上限に到達 | 同上、「ステップ2: 既知リスクの評価と対策 > リスク2」                                 |
 
 ### 関連ファイル
 
