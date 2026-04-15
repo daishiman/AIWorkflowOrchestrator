@@ -529,6 +529,16 @@ export function SkillLifecyclePanel({
     setVerifyDetailError,
   ]);
 
+  const refreshSkillsInBackground = useCallback(() => {
+    try {
+      void fetchSkills().catch((error) => {
+        console.warn("[SkillLifecyclePanel] fetchSkills failed:", error);
+      });
+    } catch (error) {
+      console.warn("[SkillLifecyclePanel] fetchSkills failed:", error);
+    }
+  }, [fetchSkills]);
+
   const applyWorkflowSnapshot = useCallback(
     (snapshot: SkillCreatorWorkflowUiSnapshot) => {
       setWorkflowSnapshot(snapshot);
@@ -766,19 +776,10 @@ export function SkillLifecyclePanel({
       return true;
     }
 
-    try {
-      await fetchSkills();
-    } catch (error) {
-      setGenerationError(
-        error instanceof Error
-          ? error.message
-          : "スキル一覧の取得に失敗しました。",
-      );
-      return true;
-    }
     if (executeResult.skillName) {
       selectSkillByName(executeResult.skillName);
     }
+    refreshSkillsInBackground();
     setLocalPlanResult(null);
     clearGenerationState();
     return true;
@@ -898,6 +899,23 @@ export function SkillLifecyclePanel({
       cancelled = true;
     };
   }, [activeWorkflowId]);
+
+  useEffect(() => {
+    if (!workflowSnapshot) {
+      return;
+    }
+
+    if (processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId) {
+      return;
+    }
+
+    void (async () => {
+      if (await processWorkflowOutcome(workflowSnapshot)) {
+        await loadVerifyDetail(workflowSnapshot.planId);
+      }
+    })();
+  }, [workflowSnapshot]);
+
   const canOpenReviewFlow =
     Boolean(createdSkillName) &&
     !isExecuting &&
@@ -1107,11 +1125,11 @@ export function SkillLifecyclePanel({
         setGenerationError(executeResponse.error ?? "計画実行に失敗しました");
         return;
       }
-      await loadVerifyDetail(planId);
-      await fetchSkills();
       if (executeResponse.skillName) {
         selectSkillByName(executeResponse.skillName);
       }
+      await loadVerifyDetail(planId);
+      refreshSkillsInBackground();
       setLocalPlanResult(null);
       clearGenerationState();
     } catch (err) {

@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2983,
+  "totalKeywords": 2984,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1054,6 +1054,7 @@
       "security-skill-execution-permission.md",
       "security-skill-ipc-core.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md",
       "technology-devops-core.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
@@ -1764,6 +1765,8 @@
       "arch-electron-services-details-part2.md",
       "arch-electron-services-details.md",
       "arch-state-management-details.md",
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-details.md",
       "architecture-implementation-patterns-details.md",
@@ -3876,6 +3879,8 @@
     ],
     "STATE": [
       "arch-state-management-reference.md",
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "task-workflow-completed.md"
     ],
@@ -3907,7 +3912,8 @@
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
       "quality-e2e-testing.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "SkillExecutionStatus": [
       "arch-state-management-skill-creator.md",
@@ -3929,7 +3935,8 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-recent-2026-04b.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+      "task-workflow-completed-skill-lifecycle-ui-verify.md",
+      "task-workflow-completed.md"
     ],
     "SYNC": [
       "arch-state-management-skill-creator.md",
@@ -4033,6 +4040,24 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "facts": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "task-workflow-completed.md"
+    ],
+    "state": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed.md"
+    ],
+    "recovery": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md"
+    ],
+    "DETAIL": [
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
       "task-workflow-completed.md"
@@ -4161,13 +4186,6 @@
     ],
     "ログインフローの": [
       "architecture-auth-security-core.md"
-    ],
-    "state": [
-      "architecture-auth-security-core.md",
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed.md"
     ],
     "ownership": [
       "architecture-auth-security-core.md"
@@ -4632,7 +4650,8 @@
     "IMPROVEMENT": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-current-2026-03-late.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "契約ドリフト自動検出パターン": [
       "architecture-implementation-patterns-reference-ipc-naming.md"
@@ -4905,6 +4924,7 @@
       "phase-12-documentation-retrospective.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md",
       "task-workflow-phases.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -7553,7 +7573,8 @@
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "仕様差分の統合是正": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md"
@@ -8055,6 +8076,11 @@
     "管理廃止": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md"
+    ],
+    "整合性修正": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed.md",
+      "ui-ux-feature-components-skill-analysis.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -10081,7 +10107,8 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md"
+      "task-workflow-completed-recent-2026-04f.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"
@@ -12649,10 +12676,12 @@
       "task-workflow-completed-chat-lifecycle-tests.md"
     ],
     "TEMPLATE": [
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "テンプレート改善": [
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "reach": [
       "task-workflow-completed-recent-2026-04d.md",
@@ -12841,13 +12870,6 @@
       "ui-ux-advanced.md"
     ],
     "最近の完了タスク": [
-      "task-workflow-completed.md"
-    ],
-    "整合性修正": [
-      "task-workflow-completed.md",
-      "ui-ux-feature-components-skill-analysis.md"
-    ],
-    "DETAIL": [
       "task-workflow-completed.md"
     ],
     "機能別アーカイブ": [
