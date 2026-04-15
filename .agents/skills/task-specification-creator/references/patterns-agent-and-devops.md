@@ -216,6 +216,38 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-OPT-CI-TEST-PARALLEL-001
 
+### GitHub Actions キューイング時間計測パターン（TASK-CI-FUTURE-005）
+
+- **状況**: CI シャード数を変更後、GitHub Free Tier の並列上限（20 ジョブ）に近い設定でキューイングが発生するか実測確認が必要な場合
+- **パターン**: REST API でジョブの `created_at` / `started_at` を取得し Python で差分計算する
+- **Phase 2 必須チェック**: 設計前に CLI フィールドを確認する
+  ```bash
+  # CLI が返すフィールド一覧を確認（createdAt が含まれるか確認）
+  gh run view <run-id> --json jobs | jq '.jobs[0] | keys'
+  ```
+- **REST API vs CLI 比較表**:
+  | フィールド | `gh run view --json jobs` | REST API `/runs/{id}/jobs` |
+  | ---------- | ------------------------- | -------------------------- |
+  | `startedAt` | ✅ | ✅ (`started_at`) |
+  | `completedAt` | ✅ | ✅ (`completed_at`) |
+  | `createdAt` | ❌ なし | ✅ (`created_at`) |
+- **キューイング時間計算（Python 推奨）**:
+  ```python
+  from datetime import datetime
+  created = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+  started = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+  queuing_sec = (started - created).total_seconds()
+  ```
+- **measurement-result.md 必須セクション**: 全シャード個別記録表 / 統計サマリー（min/max/avg） / 異常値パターン分析 / 判定根拠
+- **前提条件確認（Phase 1 冒頭必須）**:
+  ```bash
+  git log --oneline origin/main | grep -i "<依存タスクID>"
+  ```
+- **判定閾値の根拠**: Phase 1 要件定義に閾値の発見元（タスク ID・指摘日・判定基準）を必ず記載する
+- **発見日**: 2026-04-15
+- **関連タスク**: TASK-CI-FUTURE-005, TASK-CI-OPT-001
+- **詳細教訓**: `.claude/skills/aiworkflow-requirements/references/lessons-learned-ci-measurement-template-2026-04.md`
+
 ---
 
 ## その他の実装パターン

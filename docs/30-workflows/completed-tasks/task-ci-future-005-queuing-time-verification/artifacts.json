@@ -1,0 +1,205 @@
+{
+  "taskId": "TASK-CI-FUTURE-005",
+  "taskName": "CI-M-01 実測確認（キューイング時間1分超判定）",
+  "status": "spec_created",
+  "taskType": "NON_VISUAL",
+  "metadata": {
+    "taskType": "NON_VISUAL / docs-only"
+  },
+  "createdAt": "2026-04-15",
+  "completedAt": "2026-04-15",
+  "measurementResult": {
+    "runId": "24443907392",
+    "maxQueueingSeconds": 59,
+    "minQueueingSeconds": 3,
+    "avgQueueingSeconds": 6.4,
+    "verdict": "continue_17_shards",
+    "threshold": 60,
+    "phase13Required": false
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "requirements.md",
+          "path": "outputs/phase-1/requirements.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "design.md",
+          "path": "outputs/phase-2/design.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "review.md",
+          "path": "outputs/phase-3/review.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "test-plan.md",
+          "path": "outputs/phase-4/test-plan.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（計測実行）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "measurement-result.md",
+          "path": "outputs/phase-5/measurement-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "test-expansion.md",
+          "path": "outputs/phase-6/test-expansion.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "coverage-report.md",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "refactoring-notes.md",
+          "path": "outputs/phase-8/refactoring-notes.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "qa-report.md",
+          "path": "outputs/phase-9/qa-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "final-review.md",
+          "path": "outputs/phase-10/final-review.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "manual-test-result.md",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "implementation-guide.md",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "system-spec-update-summary.md",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "documentation-changelog.md",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "unassigned-task-detection.md",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "skill-feedback-report.md",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "phase12-task-spec-compliance-check.md",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成（条件付き）",
+      "status": "skipped",
+      "condition": "キューイング時間 > 60 秒の場合のみ実施",
+      "skipReason": "最大キューイング時間 59秒 <= 60秒のため不要",
+      "artifacts": [
+        {
+          "name": "pr-creation-result.md",
+          "path": "outputs/phase-13/pr-creation-result.md",
+          "status": "skipped"
+        }
+      ]
+    }
+  ]
+}

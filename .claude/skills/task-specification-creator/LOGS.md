@@ -2793,6 +2793,26 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 変更対象 | `apps/desktop/src/renderer/utils/cronConverter.ts`（空weekdaysガード追加・JSDoc更新）、`apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`（TC-01〜TC-10 追加） |
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。   |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                   |
+
+
+## 2026-04-15 — TASK-CI-FUTURE-005 仕様書作成記録
+
+### 変更内容
+
+- TASK-CI-FUTURE-005（CI-M-01 実測確認）の Phase 1-12 仕様書を作成・実行完了
+- docs/30-workflows/task-ci-future-005-queuing-time-verification/ に全成果物を出力
+
+### 背景
+
+TASK-CI-OPT-001 Phase 3 MINOR 指摘 CI-M-01（シャード数 17 でのキューイング未確認）を解決するため、
+NON_VISUAL docs-only タスクとして実施。実測結果: 最大 59秒 ≤ 60秒 → シャード数 17 継続。
+
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / Phase 1-12 全フェーズ実行                                      |
+| 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`                |
+| 結果     | Phase 1-12 全成果物出力完了。CI-M-01 解決済み記録。spec_created ステータス更新完了      |
+| 検証     | AC-1〜AC-5 全達成。シナリオカバレッジ 100%                                              |
 | 項目     | 内容                                                                                                                                                                                                                           |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 種別     | bug-fix / TDD / Phase 12 close-out / skill-sync                                                                                                                                                                                |
