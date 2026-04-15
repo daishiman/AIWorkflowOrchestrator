@@ -1,10 +1,67 @@
 # 完了タスク記録 — 2026-04-15
+# 完了タスク記録 — 2026-04-15
+# 完了タスク台帳 — 2026-04 (g)
+# 完了タスク記録 — 2026-04-15
 # 完了タスク記録 — 2026-04-14
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
 ---
 
+### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
+### タスク: TASK-SC-IMP-CREATE-WORKFLOW-001 createモード構造計画生成（2026-04-15）
+
+| 項目       | 値                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SC-IMP-CREATE-WORKFLOW-001                                                             |
+| 完了日     | 2026-04-15                                                                                  |
+| タスク種別 | implementation（NON_VISUAL / skill-creator workflow）                                      |
+| 関連Issue  | -                                                                                           |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                |
+
+#### 実施内容
+
+- `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`extract-purpose` / `plan-structure` を読み込んで構造計画を組み立てるようにした
+- `createSkill()` では `structurePlan` を local variable として受け取り、hidden property を使わない handoff に整理した
+- `SkillCreatorService.test.ts` の `TC-04` を更新し、`runCreateWorkflow` の戻り値に `description` が入ることを直接検証するようにした
+- `outputs/phase-12/` の 6 成果物を current facts として固定し、`outputs/artifacts.json` を追加して root と parity を揃えた
+
+#### Phase 11/12 成果物
+
+| 成果物                         | パス                                                              |
+| ------------------------------ | ----------------------------------------------------------------- |
+| 手動テスト結果                 | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストチェックリスト       | `outputs/phase-11/manual-test-checklist.md`                       |
+| 実装ガイド                     | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                       | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート           | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート   | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック          | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+| parity copy                    | `outputs/artifacts.json`                                          |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts`: PASS（63 tests）
+- `outputs/phase-11/manual-test-result.md`: PASS（UI/UX変更なしのため screenshot N/A）
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `artifacts.json` / `outputs/artifacts.json`: parity PASS
+
+#### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 |
+| --- | --- | --- |
+| 1 | `description` の edge case が型契約と衝突しやすい | 型上必須の `string` として整理し、`undefined` は入力破損として切り分けた |
+| 2 | 接続待ちと完了を同じ文脈で書くと誤読されやすい | `generate_skill_md.js` 接続はタスクA、構造計画生成は本タスクと分離した |
+
+#### lessons-learned
+
+- Phase 12 は「できたこと」と「依存待ち」を同じファイルで混ぜずに書くとレビューしやすい
+- `runCreateWorkflow` の観測可能性は、private method を直接検証すると高まる
+- screenshot N/A は UI 変更なしのときだけでなく、根拠を `manual-test-result.md` に固定しておくと運用しやすい
+
+### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
+### 修正問題
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 

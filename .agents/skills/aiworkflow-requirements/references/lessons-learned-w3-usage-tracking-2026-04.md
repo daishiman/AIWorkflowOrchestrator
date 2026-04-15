@@ -161,3 +161,10 @@
 | 標準ルール   | retry は transport 障害と server 側一時障害に限定する。client error は 1 回で止める。`skipped` は analytics 送信結果の一部として維持する                                                                                |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
 | 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`, `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
+| 症状         | Phase 6 で「空文字の URL」（TC-E04）を追加したが、Phase 4 のテスト設計時点で識別できた可能性があった                                                                                                                    |
+| 原因         | `if (!url)` の条件を設計する際、`undefined` ケースに意識が集中し、`""` （空文字）を falsy として同一視することを明示しなかった                                                                                          |
+| 解決策       | ガード節を設計する際は「`undefined`」「`null`」「空文字」「空白のみ文字列」の 4 パターンを同時に列挙し、`if (!url)` が網羅するケースを Phase 4 のテスト表に明記する                                                     |
+| 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
