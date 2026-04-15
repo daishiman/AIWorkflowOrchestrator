@@ -6,6 +6,8 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
@@ -27,6 +29,58 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
+| 完了日     | 2026-04-15                                                                                 |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実施内容
+
+- `packages/shared/src/types/skill-wizard-label-map.ts` に `SemanticLabelEntry` / `SemanticLabelResult` / `resolveLabelEntry()` を追加し、semantic default の変換を shared 側へ集約した
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` から `notion` 専用のハードコード特別ケースを削除した
+- `resolveLabelEntry()` のフォールバックで raw 値の表記を保持するように修正し、`Jira` / `Markdown` / `JSON` の原表記が壊れないようにした
+- `packages/shared/src/types/__tests__/skill-wizard-label-map.test.ts` を拡張し、`notion` / `Jira` / `Markdown` の回帰を固定した
+- `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/*.md` を current facts に合わせて作成・更新した
+
+#### Phase 11/12 成果物
+
+| 成果物                                  | パス                                                                 |
+| --------------------------------------- | -------------------------------------------------------------------- |
+| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
+| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
+| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
+| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
+| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
+| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
+| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
+| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-wizard-label-map.test.ts`: PASS（16 tests）
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --maxWorkers 1`: PASS（93 tests）
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared build`: PASS
+- `pnpm --filter @repo/desktop build`: PASS
+- `grep -n "normalizedKey.*notion\\|notion.*その他\\|特別ケース" apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: 出力なし
+
+#### 苦戦箇所
+
+- raw 値を正規化した後の fallback で小文字化してしまうと、`Jira` / `Markdown` / `JSON` の元表記が壊れる
+- `resolveLabelEntry()` を shared に寄せたあとも、renderer 側の special case を残してしまうと source of truth が二重化する
+
+#### lessons-learned
+
+- `SemanticLabelEntry` のような union で「表示ラベル + 補足情報」を同時に持たせると、special case を shared に閉じやすい
+- raw 値の fallback は原表記を優先し、正規化は lookup のためだけに使う
+- 互換 wrapper を残すと、既存契約を壊さずに内部実装だけを改善できる
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
 
@@ -2744,3 +2798,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
 - CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
 - [Workspace](./task-workflow-completed-workspace.md)
+
+---
+
+### タスク: TASK-CI-FUTURE-005（2026-04-15）
+
+| 項目       | 値                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-005                                                                                                |
+| ステータス | **spec_created**                                                                                                  |
+| タイプ     | NON_VISUAL / docs-only / CI 計測                                                                                  |
+| 優先度     | 高                                                                                                                |
+| 完了日     | 2026-04-15                                                                                                        |
+| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                                            |
+| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                                         |
+| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物）                    |
+
+#### 実施内容
+
+- gh API で Run ID 24443907392 の 17 シャード全ジョブの created_at / started_at を取得・計測
+- 最大キューイング時間: 59秒（Test (desktop) (8)）
+- 判定: 59秒 <= 60秒 → シャード数 17 継続確定（Phase 13 スキップ）
+- CI-M-01 解決済みとして docs/30-workflows/completed-tasks/task-ci-optimization-001/phase-3-design-review.md に記録
+
+#### 検証証跡
+
+- gh API REST 実測 + Python 計算: max=59秒, min=3秒, avg=6.4秒
+- 17 シャード全件 created_at / started_at 取得済み（null ジョブ 0 件）
+- AC-1〜AC-5 全達成。シナリオカバレッジ 100%
+- Phase 12 準拠チェック: PASS
