@@ -26,6 +26,18 @@
 
 analytics HTTP provider の Phase 12 close-out で、implementation-guide だけでなく system-spec / changelog / compliance / feedback を 6 成果物として確定させる必要があった。skill 側の Phase 12 ルールに current facts を反映し、次回の close-out でも同じ漏れが再発しないようにした。
 
+## 2026-04-15 - TASK-CI-FUTURE-002 phase 12 close-out sync
+
+### 変更内容
+
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を `docs/30-workflows/task-ci-future-002-test-web-sharding/outputs/phase-12/` に確認
+- skill-feedback-report の知見（CI 設定変更は API / IPC 変更なし → system spec 更新は N/A 確認のみでよい）を記録
+- CI 設定タスクへのテンプレート適合性: 良好（P50 チェックによるパッケージ名乖離解消が改善候補として残存）
+
+### 背景
+
+TASK-CI-FUTURE-002（test-web ジョブのシャード 2 並列化）の Phase 12 close-out。task-specification-creator スキル側は system spec 更新不要の CI タスクのため、N/A 確認と LOGS 記録のみ実施。
+
 ## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
 
 ### 変更内容
@@ -2826,4 +2838,5 @@ TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の 
 | 変更対象 | `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/` (index.md + Phase 1-13 + artifacts.json)                                                                                                                      |
 | 結果     | notion freeText 特別ケースを解消。`resolveLabelEntry()` 追加で呼び出し元が label と freeText を明示的に分離できる設計を採用。`SemanticLabelEntry` 型を shared に定義し将来の拡張は SEMANTIC_LABEL_MAP エントリ追加のみで対応可能にした |
 | 検証     | タスク仕様書 Phase 1-13 + artifacts.json 作成完了。依存タスク（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）との整合確認済み                                                                                                  |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
 | 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
