@@ -11,8 +11,11 @@ import fs from "fs/promises";
 import path from "path";
 import Store from "electron-store";
 import { IPC_CHANNELS } from "../../preload/channels";
-import { registerFileHandlers } from "./fileHandlers";
-import { registerStoreHandlers } from "./storeHandlers";
+import { registerFileHandlers, registerFsHandlers } from "./fileHandlers";
+import {
+  registerStoreHandlers,
+  registerUserSettingsHandlers,
+} from "./storeHandlers";
 import { registerDashboardHandlers } from "./dashboardHandlers";
 import { registerGraphHandlers } from "./graphHandlers";
 import { registerAIHandlers } from "./aiHandlers";
@@ -38,7 +41,10 @@ import {
   registerNotificationHandlers,
 } from "./notificationHandlers";
 import { createHistoryServiceWithDI } from "../services/HistoryService";
-import { registerAgentExecutionHandlers } from "./agentHandlers";
+import {
+  registerAgentExecutionHandlers,
+  registerAgentSkillHandlers,
+} from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
 import {
   registerSkillHandlers,
@@ -125,7 +131,10 @@ import {
   registerSlideIpcHandlers,
   unregisterSlideIpcHandlers,
 } from "../slide/ipc-handlers";
-import { registerConversationHandlers } from "./conversationHandlers";
+import {
+  registerConversationHandlers,
+  registerChatExportHandlers,
+} from "./conversationHandlers";
 import { ConversationRepository } from "../repositories/conversationRepository";
 import { initializeConversationDatabase } from "../database/conversationDatabase";
 import {
@@ -608,7 +617,10 @@ export function registerAllIpcHandlers(
   // --- 1. 依存なしハンドラ ---
   const independentHandlers: ReadonlyArray<readonly [string, () => void]> = [
     ["registerFileHandlers", () => registerFileHandlers()],
+    ["registerFsHandlers", () => registerFsHandlers()],
     ["registerStoreHandlers", () => registerStoreHandlers()],
+    ["registerUserSettingsHandlers", () => registerUserSettingsHandlers()],
+    ["registerChatExportHandlers", () => registerChatExportHandlers()],
     ["registerDashboardHandlers", () => registerDashboardHandlers()],
     ["registerGraphHandlers", () => registerGraphHandlers()],
     ["registerAIHandlers", () => registerAIHandlers()],
@@ -745,6 +757,11 @@ export function registerAllIpcHandlers(
       runtimePolicyResolver,
       authModeServiceForRuntime,
     ),
+  );
+
+  // Agent Skill handlers (UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix)
+  track("registerAgentSkillHandlers", () =>
+    registerAgentSkillHandlers(mainWindow),
   );
 
   // Skill Management handlers (SKILL-IPC-001)
