@@ -1,6 +1,38 @@
-# 完了タスク記録 — 2026-04-13
+# 完了タスク記録 — 2026-04-14
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-14）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                   |
+| 完了日     | 2026-04-14                                                                                          |
+| タスク種別 | ipc / test / docs / workflow-sync                                                                   |
+| 関連Issue  | #2125（CLOSED）                                                                                     |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                         |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts` を新規実装し、HTTP POST / retry / timeout / `skipped` / counter 更新を集約した
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` の TODO を解消し、provider の戻り値をそのまま返すようにした
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` に `analytics:get-stats` ハンドラーを追加し、`sentCount` / `failedCount` / `analyticsOptOut` を返すようにした
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/preload/index.ts` / `apps/desktop/src/preload/types.ts` を同波で更新し、4 層整合を維持した
+- `AnalyticsHttpProvider.test.ts` と `analyticsHandler.test.ts` を current facts に合わせて拡充し、4xx 非 retry と `skipped` 伝播を固定した
+- Phase 12 outputs 6 件（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/analytics/__tests__/AnalyticsHttpProvider.test.ts src/main/ipc/__tests__/analyticsHandler.test.ts`: PASS（37 tests）
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
+- `task-workflow-completed.md` / recent bundle / lesson file / LOGS: 同期済み
+
+#### lessons-learned
+
+- `references/lessons-learned-w3-usage-tracking-2026-04.md` §UT-W3-ANALYTICS-HTTP-PROVIDER-001（L-W3-HTTP-001〜004）
 
 ---
 
@@ -31,156 +63,6 @@
 - `references/lessons-learned-current-2026-04.md` §UT-SKILL-WIZARD-FB-05（L-FB05-001〜003）
 
 ---
-
-### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
-
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SW-FIX-DATAFLOW-001                                                                   |
-| 完了日     | 2026-04-13                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / dataflow fix）                                               |
-| 関連Issue  | -                                                                                          |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
-
-#### 実装内容
-
-- `packages/shared/src/types/skillCreator.ts` に `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` を追加
-- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` で `buildSkillContext(formData, answers)` を生成し、`createSkill(formData.purpose, SKILL_GENERATION_OPTIONS, skillContext)` を呼ぶように修正
-- `apps/desktop/src/renderer/store/slices/agentSlice.ts` と `apps/desktop/src/preload/skill-api.ts` で `context` 引数を後方互換を保ったまま伝播
-- `apps/desktop/src/main/ipc/skillHandlers.ts` で `buildSkillGenerationPrompt(context)` を通じて skillName / category / Q1〜Q6 を prompt に反映
-
-#### Phase 11/12 成果物
-
-| 成果物                                    | パス                                                              |
-| ----------------------------------------- | ----------------------------------------------------------------- |
-| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                      |
-| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                          |
-| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                       |
-| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                 |
-| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                    |
-| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                  |
-| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                      |
-| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
-
-#### 検証証跡
-
-- `packages/shared/src/types/__tests__/buildSkillContext.test.ts`: PASS
-- `packages/shared/src/types/__tests__/buildSkillContext.edge.test.ts`: PASS
-- `apps/desktop/src/main/ipc/__tests__/skillHandlers.create.context.test.ts`: PASS
-- `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.createSkill.context.test.ts`: PASS
-- `phase-11-manual-test.md`: NON_VISUAL / 代替証跡
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                              | 解決策                                                                                       |
-| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 1   | Phase 11 を VISUAL のまま残すと screenshot 前提が残る | `NON_VISUAL` 再分類で manual-test-result / checklist / discovered-issues の代替証跡へ切替 |
-| 2   | `artifacts.json` と `outputs/artifacts.json` の不一致 | root / outputs を同一内容で再生成し、Phase 12 の parity 条件を満たした                    |
-
-#### lessons-learned
-
-- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
-
-### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
-
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SW-FIX-DATAFLOW-001                                                                   |
-| 完了日     | 2026-04-13                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / dataflow fix）                                               |
-| 関連Issue  | -                                                                                          |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
-
-#### 実装内容
-
-- `packages/shared/src/types/skillCreator.ts` に `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` を追加
-- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` で `buildSkillContext(formData, answers)` を生成し、`createSkill(formData.purpose, SKILL_GENERATION_OPTIONS, skillContext)` を呼ぶように修正
-- `apps/desktop/src/renderer/store/slices/agentSlice.ts` と `apps/desktop/src/preload/skill-api.ts` で `context` 引数を後方互換を保ったまま伝播
-- `apps/desktop/src/main/ipc/skillHandlers.ts` で `buildSkillGenerationPrompt(context)` を通じて skillName / category / Q1〜Q6 を prompt に反映
-
-#### Phase 11/12 成果物
-
-| 成果物                                    | パス                                                              |
-| ----------------------------------------- | ----------------------------------------------------------------- |
-| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                      |
-| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                          |
-| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                       |
-| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                 |
-| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                    |
-| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                  |
-| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                      |
-| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
-
-#### 検証証跡
-
-- `packages/shared/src/types/__tests__/buildSkillContext.test.ts`: PASS
-- `packages/shared/src/types/__tests__/buildSkillContext.edge.test.ts`: PASS
-- `apps/desktop/src/main/ipc/__tests__/skillHandlers.create.context.test.ts`: PASS
-- `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.createSkill.context.test.ts`: PASS
-- `phase-11-manual-test.md`: NON_VISUAL / 代替証跡
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                              | 解決策                                                                                       |
-| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 1   | Phase 11 を VISUAL のまま残すと screenshot 前提が残る | `NON_VISUAL` 再分類で manual-test-result / checklist / discovered-issues の代替証跡へ切替 |
-| 2   | `artifacts.json` と `outputs/artifacts.json` の不一致 | root / outputs を同一内容で再生成し、Phase 12 の parity 条件を満たした                    |
-
-#### lessons-learned
-
-- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
-
-### タスク: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）（2026-04-13）
-
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SW-FIX-DATAFLOW-001                                                                   |
-| 完了日     | 2026-04-13                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / dataflow fix）                                               |
-| 関連Issue  | -                                                                                          |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
-
-#### 実装内容
-
-- `packages/shared/src/types/skillCreator.ts` に `SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` を追加
-- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` で `buildSkillContext(formData, answers)` を生成し、`createSkill(formData.purpose, SKILL_GENERATION_OPTIONS, skillContext)` を呼ぶように修正
-- `apps/desktop/src/renderer/store/slices/agentSlice.ts` と `apps/desktop/src/preload/skill-api.ts` で `context` 引数を後方互換を保ったまま伝播
-- `apps/desktop/src/main/ipc/skillHandlers.ts` で `buildSkillGenerationPrompt(context)` を通じて skillName / category / Q1〜Q6 を prompt に反映
-
-#### Phase 11/12 成果物
-
-| 成果物                                    | パス                                                              |
-| ----------------------------------------- | ----------------------------------------------------------------- |
-| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストチェックリスト                  | `outputs/phase-11/manual-test-checklist.md`                      |
-| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                          |
-| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                       |
-| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                 |
-| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                    |
-| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                  |
-| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                      |
-| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
-
-#### 検証証跡
-
-- `packages/shared/src/types/__tests__/buildSkillContext.test.ts`: PASS
-- `packages/shared/src/types/__tests__/buildSkillContext.edge.test.ts`: PASS
-- `apps/desktop/src/main/ipc/__tests__/skillHandlers.create.context.test.ts`: PASS
-- `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.createSkill.context.test.ts`: PASS
-- `phase-11-manual-test.md`: NON_VISUAL / 代替証跡
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                              | 解決策                                                                                       |
-| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| 1   | Phase 11 を VISUAL のまま残すと screenshot 前提が残る | `NON_VISUAL` 再分類で manual-test-result / checklist / discovered-issues の代替証跡へ切替 |
-| 2   | `artifacts.json` と `outputs/artifacts.json` の不一致 | root / outputs を同一内容で再生成し、Phase 12 の parity 条件を満たした                    |
-
-#### lessons-learned
-
-- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
 
 ### タスク: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正（2026-04-13）
 
@@ -465,6 +347,50 @@
 
 ---
 
+## UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+
+- タスクID: UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001
+- 完了日: 2026-04-13
+- 種別: shared定数中央集権化 / IPC / テスト強化
+- 実装ファイル（新規）:
+  - `packages/shared/src/constants/skillName.ts` — SKILL_NAME_PATTERN / MAX_SKILL_NAME_LENGTH の single source of truth
+  - `packages/shared/src/constants/skillName.test.ts` — バリデーションテスト（パストラバーサル・境界値含む）
+- 実装ファイル（修正）:
+  - `packages/shared/src/constants/index.ts` — skillName.ts を re-export 追加
+  - `packages/shared/src/claude-cli/constants.ts` — shared定数を import し再export（互換性維持）
+  - `apps/desktop/src/main/claude-cli/SkillScanner.ts` — `@repo/shared/constants` から import へ切り替え
+  - `.claude/skills/skill-creator/scripts/init_skill.js` — runtime fallback 機構追加
+  - `.agents/skills/skill-creator/scripts/init_skill.js` — 同上（ミラー）
+- 設計上の知見:
+  - shared定数化パターン: `constants/<topic>.ts` → `index.ts` re-export → consumers import
+  - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
+  - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
+- lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
+
+---
+
+## TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+
+- タスクID: TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001
+- 完了日: 2026-04-13
+- 種別: NON_VISUAL / 純粋関数ガード追加
+- 依存: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（対称パターン参考）
+- 関連Issue: #2108
+- 実装ファイル:
+  - `apps/desktop/src/renderer/utils/cronConverter.ts`
+  - `apps/desktop/src/renderer/utils/cronParser.ts`
+  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronParser.test.ts`
+  - `apps/desktop/src/__tests__/utils/cronHumanizer.test.ts`
+  - `apps/desktop/src/__tests__/components/schedule/VisualCronPicker.test.tsx`
+- AC一覧:
+  - AC-1: dayOfMonth が整数かつ 1〜31 の範囲外なら空文字を返す（例外なし）PASS
+  - AC-2: 正常な dayOfMonth では既存の cron 式を返す PASS
+  - AC-3: cronParser.ts で不正 monthly は custom にフォールバック PASS
+- lessons-learned: `references/lessons-learned-current-2026-04.md` §MONTHLY-GUARD（L-MTHGRD-001〜003）
+
+---
+
 ### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-13）
 
 | 項目       | 値                                                                                                  |
@@ -563,40 +489,6 @@
   - runtime fallback: `@repo/shared/constants` → `packages/shared/dist/` の 2 段階フォールバック
   - 再エクスポート層: `claude-cli/constants.ts` を仲介させることで downstream の import パスを変えずに実装切り替え可能
 - lessons-learned: `references/lessons-learned-ipc-preload-runtime-2026-04.md` §L-SKILLNAME-001〜003
-
----
-
-## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
-
-- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
-- 完了日: 2026-04-12
-- 種別: NON_VISUAL / 純粋関数ガード追加
-- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
-- 実装ファイル:
-  - `apps/desktop/src/renderer/utils/cronConverter.ts`
-  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
-- AC一覧:
-  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
-  - AC-2: weekdays重複除去・昇順ソートPASS
-  - AC-5: JSDocに空weekdays挙動を明記 PASS
-- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
-
----
-
-## TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
-
-- タスクID: TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001
-- 完了日: 2026-04-12
-- 種別: NON_VISUAL / 純粋関数ガード追加
-- 依存: TASK-UI-SCHEDULE-VISUAL-PICKER-001（completed）
-- 実装ファイル:
-  - `apps/desktop/src/renderer/utils/cronConverter.ts`
-  - `apps/desktop/src/__tests__/utils/cronConverter.edge.test.ts`
-- AC一覧:
-  - AC-1: weekdays=[]時に空文字を返す（例外なし）PASS
-  - AC-2: weekdays重複除去・昇順ソートPASS
-  - AC-5: JSDocに空weekdays挙動を明記 PASS
-- 備考: vitest実行時にesbuild host/binary mismatch（環境要因）。製品blocker 0件。
 
 ---
 

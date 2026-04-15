@@ -116,37 +116,48 @@
 
 ---
 
-## UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13）
+## UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-14）
 
-### L-W3-HTTP-001: `vi.stubGlobal("fetch", ...)` + `afterEach(vi.unstubAllGlobals)` によるグローバル fetch モックパターン
-
-| 項目         | 内容                                                                                                                                                                                                                   |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状         | Node.js 組み込みの `fetch` をテストでモックしようとすると、`import` が不要なためモジュール差し替えでは対応できない                                                                                                      |
-| 原因         | グローバル `fetch` はモジュールではなく `globalThis.fetch` として提供されており、`vi.mock` の対象にできない                                                                                                              |
-| 解決策       | `vi.stubGlobal("fetch", vi.fn().mockResolvedValue(...))` でグローバルを差し替え、`afterEach(() => vi.unstubAllGlobals())` でテスト間汚染を防ぐ。成功・エラー・`AbortError` の各パスを `mockResolvedValue` / `mockRejectedValue` で切り替える |
-| 標準ルール   | Node.js 組み込みグローバル（fetch / crypto / navigator）のモックは `vi.stubGlobal` を使う。`afterEach` でのクリーンアップを必須とし、`vi.fn()` の参照をテストブロック先頭で取得して呼び出し回数の確認に使う             |
-| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
-| 対象ファイル | `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                                                                         |
-
-### L-W3-HTTP-002: AbortController + `finally clearTimeout` による production-only HTTP POST のタイムアウト設計
+### L-W3-HTTP-001: fetchFn DI を先に置くとテストは素直になる
 
 | 項目         | 内容                                                                                                                                                                                                                   |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状         | 外部 analytics サービスが応答しない場合、IPC ハンドラーが無期限にブロックされ Renderer 側の応答が遅延する                                                                                                              |
-| 原因         | `fetch` 単体ではタイムアウトを持たない。`setTimeout` だけでは fetch の完了後もタイマーが残存してリソースリークする                                                                                                      |
-| 解決策       | `AbortController` + `signal` で fetch を中断し、`const timeoutId = setTimeout(() => controller.abort(), 5000)` を `try` 前に置き、`finally { clearTimeout(timeoutId) }` でタイマーを必ず解放する                       |
-| 標準ルール   | production-only な fire-and-forget HTTP 送信は必ず `AbortController` + `finally clearTimeout` の組み合わせで実装する。タイムアウト値は定数（`ANALYTICS_TIMEOUT_MS`）として切り出し、テストでの上書しを容易にする        |
+| 症状         | 外部 HTTP 送信をテストしたいのに、グローバル `fetch` を直接触るとテストごとの汚染と設定コストが高くなる                                                                                                                  |
+| 原因         | I/O 境界を `globalThis.fetch` に固定すると、モックの切り替えとクリーンアップの責務がテスト側へ押し出される                                                                                                              |
+| 解決策       | `AnalyticsHttpProvider` の constructor に `fetchFn` を DI し、テストでは `vi.fn()` を渡す。必要なケースだけ `vi.stubGlobal` を使う |
+| 標準ルール   | I/O 境界は constructor DI を優先し、グローバルモックは最後の手段にする。テストは `fetchFn` を差し替えるだけで成功・失敗・timeout を切り替えられるようにする                                                            |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
-| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`                                                                                                                                                                        |
+| 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`, `apps/desktop/src/main/services/analytics/__tests__/AnalyticsHttpProvider.test.ts`                                                                 |
 
-### L-W3-HTTP-003: ガード条件の早期識別（空文字 URL エッジケース）
+### L-W3-HTTP-002: AbortController + `finally clearTimeout` は provider 側で閉じる
 
 | 項目         | 内容                                                                                                                                                                                                                   |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状         | Phase 6 で「空文字の URL」（TC-E04）を追加したが、Phase 4 のテスト設計時点で識別できた可能性があった                                                                                                                    |
-| 原因         | `if (!url)` の条件を設計する際、`undefined` ケースに意識が集中し、`""` （空文字）を falsy として同一視することを明示しなかった                                                                                          |
-| 解決策       | ガード節を設計する際は「`undefined`」「`null`」「空文字」「空白のみ文字列」の 4 パターンを同時に列挙し、`if (!url)` が網羅するケースを Phase 4 のテスト表に明記する                                                     |
-| 標準ルール   | 早期 return パターンの設計時は falsy 値の全パターンを明示し、Phase 4 テスト仕様に含める。`!url` が `""` を含むことはコメントで明記するか、テストケースとして固定する                                                    |
+| 症状         | 外部 analytics サービスが応答しない場合、送信処理が長引いて IPC 応答の遅延要因になる                                                                                                                                  |
+| 原因         | `fetch` 単体ではタイムアウトを持たず、`setTimeout` だけでは解放漏れが起こりうる                                                                                                                                      |
+| 解決策       | `AnalyticsHttpProvider` の `attemptSend()` 内で `AbortController` を生成し、`finally { clearTimeout(timer) }` でタイマーを確実に解放する                                                                               |
+| 標準ルール   | timeout と abort は transport 層で閉じ、Main IPC には伝播させない。`ANALYTICS_ENDPOINT_URL` の存在有無とは独立に timeout は一定で扱う                                                                                 |
 | 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
-| 対象ファイル | `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                                                                                        |
+| 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`                                                                                                                                                    |
+
+### L-W3-HTTP-003: ガード条件は `undefined` だけでなく空文字・空白も同時に見る
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | `ANALYTICS_ENDPOINT_URL` の未設定判定を考えるとき、`undefined` だけを見て空文字や空白文字列のケースを見落としやすい                                                                                                    |
+| 原因         | `if (!endpoint)` の falsy 判定が、設計書上で 4 パターンに分解されていなかった                                                                                                                                        |
+| 解決策       | `undefined` / `null` / `""` / `"   "` を同時に列挙し、no-op 条件として明文化する                                                                                                                                        |
+| 標準ルール   | 早期 return を設計するときは、falsy 値の全パターンをテスト表へ落とす。`AnalyticsHttpProvider` の no-op は「未設定または空文字」の両方を含むと明記する                                                                  |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`                                                                                                                                                    |
+
+### L-W3-HTTP-004: 4xx と 5xx の retryable 判定を分ける
+
+| 項目         | 内容                                                                                                                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状         | HTTP エラーを一律 retry すると、クライアント入力ミスの 4xx まで再送してしまう                                                                                                                                         |
+| 原因         | `response.ok === false` をそのまま retryable と誤解した                                                                                                                                                                 |
+| 解決策       | `AnalyticsSendError.retryable` を用い、`4xx` は non-retryable、`5xx` は retryable として分岐する。handler は provider の戻り値をそのまま返し、`skipped` を落とさない                                                |
+| 標準ルール   | retry は transport 障害と server 側一時障害に限定する。client error は 1 回で止める。`skipped` は analytics 送信結果の一部として維持する                                                                                |
+| 関連タスク   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                                                                                                                                      |
+| 対象ファイル | `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts`, `apps/desktop/src/main/ipc/analyticsHandler.ts`, `apps/desktop/src/main/ipc/__tests__/analyticsHandler.test.ts`                                |

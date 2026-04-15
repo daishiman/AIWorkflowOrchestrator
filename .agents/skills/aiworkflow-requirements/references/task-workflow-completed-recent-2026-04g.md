@@ -67,3 +67,42 @@
 - 生成キャンセル後の UI は「エラーを消す」だけでなく「古い結果を再表示しない」ことまで含めて設計する
 - template recovery は通常 error と分け、`retry` と `start over` の意味を UI で明確に分離する
 - Step 1 の local state は親 state の再同期点を持たせると、再開・戻る・再生成の 3 経路で破綻しにくい
+
+---
+
+### タスク: TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数ミスマッチ修正（2026-04-15）
+
+| 項目       | 値                                                                    |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-SC-FIX-GENERATE-SKILL-MD-001                                     |
+| 完了日     | 2026-04-15                                                            |
+| タスク種別 | bugfix（SkillCreatorService / script-argument-fix）                   |
+| 関連Issue  | -                                                                     |
+| Phase 13   | skipped（PR禁止）                                                     |
+
+#### 実施内容
+
+- `SkillCreatorService.ts` の `generate_skill_md.js` 呼び出し引数を `["--path", skillDir]` から `["--plan", tmpPlanPath, "--output", skillMdPath]` へ修正
+- `os.tmpdir()` 配下に `skill-plan-{UUID}.json` として plan オブジェクトを一時書き込み、スクリプト完了後に `finally` でクリーンアップ
+- plan オブジェクト構造（`skillName`, `workflow.summary/anchors/trigger/phases/tasks`, `directories`, `files`）を正しく組み立てる実装を追加
+- フォールバック: `generate_skill_md.js` 失敗または出力ファイル不在の場合は `ensureSkillMdExists` を呼び出す
+
+#### 検証証跡
+
+- TC-01〜TC-07（generate_skill_md.js 引数検証テスト）: PASS
+- BV-001〜BV-008（境界値・セキュリティテスト）: PASS
+- SC-001〜SC-031（SkillCreatorService 統合テスト）: PASS
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                     | 解決策                                                                           |
+| --- | ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| 1   | スクリプトが `--path <dir>` を期待していると思い込んでいた   | `generate_skill_md.js` の実際の仕様（`--plan <json> --output <path>`）を確認して修正 |
+| 2   | plan オブジェクトをコマンドライン引数でどう渡すか            | コマンドライン引数の制限を避けるため temp JSON ファイル経由で渡すパターンを採用  |
+| 3   | temp ファイルのクリーンアップタイミング                      | `finally` ブロック + `.catch(() => {})` で non-fatal として処理                  |
+
+#### lessons-learned
+
+- スクリプトの引数仕様は呼び出し側ではなくスクリプト本体のソースを確認してから実装する
+- 外部スクリプトへ JSON データを渡す場合は temp ファイル経由が安全（引数文字数制限を回避）
+- temp ファイルのクリーンアップは `finally` + `.catch(() => {})` パターンで常に non-fatal に扱う
