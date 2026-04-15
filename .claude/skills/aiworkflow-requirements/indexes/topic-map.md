@@ -4902,6 +4902,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L210 |
 | 完了タスク（機能別アーカイブ） | L218 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L183 |
+| 完了タスク（2026-03後半） | L211 |
+| 完了タスク（機能別アーカイブ） | L219 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L320 |
 
 ### references/task-workflow-history.md
 
@@ -4938,6 +4945,12 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L21 |
 | 利用順序 | L132 |
 | 関連ドキュメント | L137 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
+| 仕様書インデックス | L21 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L139 |
 
 ### references/testing-accessibility.md
 
