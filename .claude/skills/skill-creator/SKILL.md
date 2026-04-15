@@ -287,6 +287,7 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 | マルチスキル同時設計     | agents/design-multi-skill.md                         |
 | フィードバック記録       | scripts/log_usage.js                                 |
 | スキル初期化             | scripts/init_skill.js                                |
+| SKILL.md生成             | scripts/generate_skill_md.js                         |
 | Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
 
 ---
@@ -342,6 +343,61 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 node scripts/init_skill.js my-new-skill --path .claude/skills
 node scripts/init_skill.js my-new-skill --resources agents,references
 ```
+
+---
+
+## scripts/generate_skill_md.js の動作仕様
+
+スキルの `SKILL.md` を plan JSON から生成するスクリプト。18-skills.md §6.4 準拠。
+
+### 引数仕様
+
+```bash
+node scripts/generate_skill_md.js --plan <plan-json-path> --output <skill-md-path>
+```
+
+| 引数 | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `--plan` | string | ✓ | plan オブジェクトを含む JSON ファイルのパス |
+| `--output` | string | ✓ | 生成する SKILL.md のファイルパス |
+
+### plan JSON 構造
+
+```json
+{
+  "skillName": "my-skill",
+  "workflow": {
+    "summary": "スキルの説明文",
+    "anchors": [],
+    "trigger": {
+      "description": "Use when my-skill is requested",
+      "keywords": ["my-skill"]
+    },
+    "phases": [],
+    "tasks": []
+  },
+  "directories": {},
+  "files": []
+}
+```
+
+### SkillCreatorService での呼び出しパターン（TASK-SC-FIX-GENERATE-SKILL-MD-001）
+
+```typescript
+// temp ファイルを経由して plan JSON を渡す（引数文字数制限を回避）
+const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
+try {
+  await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
+  const result = await this.scriptExecutor.execute(
+    "generate_skill_md.js",
+    ["--plan", tmpPlanPath, "--output", skillMdPath],
+  );
+} finally {
+  await fs.unlink(tmpPlanPath).catch(() => {}); // non-fatal cleanup
+}
+```
+
+**フォールバック**: スクリプト失敗または出力ファイル不在の場合は `ensureSkillMdExists()` を呼び出す。
 
 ---
 
