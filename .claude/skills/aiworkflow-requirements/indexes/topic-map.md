@@ -4924,9 +4924,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
 
 ### references/testing-accessibility.md
 

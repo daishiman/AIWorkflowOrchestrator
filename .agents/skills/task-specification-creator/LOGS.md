@@ -51,6 +51,18 @@ TASK-CI-FUTURE-002（test-web ジョブのシャード 2 並列化）の Phase 1
 
 CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
 
+## 2026-04-15 - TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴へ TASK-SC-IMP-CREATE-WORKFLOW-001 の close-out を追記する前提を整えた
+- `outputs/phase-12/` の 6 成果物、63件 Green、`outputs/artifacts.json` parity、screenshot N/A を same-wave で確認
+- `phase12-task-spec-compliance-check.md` の planned wording 0件を current facts として固定
+
+### 背景
+
+Phase 12 では、実装の可観測性と台帳の整合性を同時に閉じる必要があった。`runCreateWorkflow` の戻り値観測・未タスク分離・エレガント再検証をまとめて current facts 化する。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -2807,6 +2819,7 @@ TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の 
 | 種別     | bug-fix / state-management / Phase 12 close-out / skill-sync                                                                                                                                                        |
 | 変更対象 | `SkillCreateWizard.tsx`（resetGeneratedState / generationLockRef finally）、`GenerateStep.tsx`（template cancel 導線）、`ConversationRoundStep.tsx`（answers prop 再同期）                                          |
 | 結果     | template error → キャンセル → Step 0 戻り導線を実装。answers reset と generationLockRef.current = false を finally で保証。Phase 11 screenshot 3 枚・Phase 12 docs 6 件で close-out |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
 
 ---
 
