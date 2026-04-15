@@ -4,6 +4,19 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-15 - TASK-CI-FUTURE-003 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` の TASK-CI-FUTURE-003 current facts を `cache-hit` + cache restore 後の `node_modules` 存在確認ベースへ更新
+- `references/task-workflow.md` の実装状況テーブルを `未実施 → 完了` に更新
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、`.agents/skills/aiworkflow-requirements/` mirror を同 wave で同期
+- `docs/30-workflows/TASK-CI-FUTURE-003-cache-hit-rate-monitoring/outputs/phase-12/phase12-task-spec-compliance-check.md` を root evidence として追加
+
+### 背景
+
+TASK-CI-FUTURE-003 の close-out では、workflow 本体・skill current facts・索引・mirror・Phase 12 evidence を同 wave で閉じる必要があった。旧いフォールバックキー前提の文言を撤去し、`node_modules` 存在確認ベースの実装に合わせた。
+
 ## 2026-04-15 — impl-spec-to-skill-sync (TASK-SW-FIX-FEEDBACK-008 task-workflow + lessons-learned sync)
 
 ### 変更内容
@@ -2238,3 +2251,33 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `packages/shared/src/types/skill-analytics.ts`（SkillAnalyticsEvent 型追加）、`apps/desktop/src/renderer/store/slices/analyticsSlice.ts`（新規）、`analyticsSlice.test.ts`（30件） |
 | 結果     | trackSkillStart / trackSkillComplete / trackSkillError の 3 アクションを実装。analyticsAdapter.send() を try/catch でラップしてUI破壊を防止。30件全 PASS / line 100% / branch 100% |
 | 検証     | typecheck PASS / lint PASS / vitest 30 passed                                                                                                                                      |
+
+## 2026-04-15 TASK-CI-FUTURE-003 完了
+
+- `.github/actions/pnpm-install-retry/action.yml` にキャッシュヒット率判定ステップを追加
+- 3状態（完全ヒット・フォールバック・ミス）の自動判定を実現
+- GitHub Actions Summary への Markdown テーブル出力を実装
+- キャッシュミス時 `::warning::`、フォールバックヒット時 `::notice::` アノテーション実装
+
+| 項目     | 内容                                                                                 |
+| -------- | ------------------------------------------------------------------------------------ |
+| 種別     | CI optimization / monitoring / GitHub Actions YAML                                   |
+| 変更対象 | `.github/actions/pnpm-install-retry/action.yml`（キャッシュヒット率確認ステップ追加） |
+| 結果     | 3状態判定・Summary 出力・アノテーション出力 実装完了。全 AC/FR 100% 網羅             |
+| 検証     | 静的コードレビュー PASS / Phase 10 最終レビューゲート PASS                           |
+
+
+## 2026-04-15 — TASK-CI-FUTURE-005 completed (spec_created)
+
+- TASK-CI-FUTURE-005: CI-M-01 実測確認（キューイング時間1分超判定）完了
+- 実測: Run ID `24443907392`、最大キューイング時間 59秒 ≤ 60秒
+- 判定: シャード数 17 継続（Phase 13 スキップ）
+- CI-M-01 解決: ✅ 解決済み
+- 参照: docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/phase-5/measurement-result.md
+
+| 項目     | 内容                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / CI 計測                                                                        |
+| 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物）        |
+| 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録              |
+| 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                            |

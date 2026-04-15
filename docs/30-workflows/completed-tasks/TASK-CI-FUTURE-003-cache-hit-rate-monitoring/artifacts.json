@@ -1,0 +1,256 @@
+{
+  "task_id": "TASK-CI-FUTURE-003",
+  "task_name": "キャッシュヒット率のモニタリング設定",
+  "workflow_dir": "docs/30-workflows/TASK-CI-FUTURE-003-cache-hit-rate-monitoring",
+  "created_at": "2026-04-15",
+  "status": "phase12_completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:02:49.644Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:13.582Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "phase 2 成果物"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:13.669Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review.md",
+          "description": "phase 3 成果物"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:13.759Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/ci-execution-plan.md",
+          "description": "phase 4 成果物"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:13.838Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files.md",
+          "description": "phase 5 成果物"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:13.980Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/extended-test-cases.md",
+          "description": "phase 6 成果物"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.062Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-plan.md",
+          "description": "phase 7 成果物"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.148Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "phase 8 成果物"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.248Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/causal-loop-audit.md",
+          "description": "phase 9 成果物"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.329Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review.md",
+          "description": "phase 10 成果物"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.436Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "phase 11 成果物"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-15T13:03:14.631Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "phase 12 成果物"
+        }
+      ]
+    },
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-1/cache-step-inventory.md",
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/yaml-sample.yml"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-3/design-review.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/ci-execution-plan.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-files.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-6/extended-test-cases.md",
+        "outputs/phase-6/regression-test-result.md"
+      ]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-7/coverage-plan.md",
+        "outputs/phase-7/uncovered-paths.md",
+        "outputs/phase-7/traceability-matrix.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/retest-plan.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-ledger.md",
+        "outputs/phase-9/causal-loop-audit.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-10/final-review.md",
+        "outputs/phase-10/remediation-plan.md",
+        "outputs/phase-10/ship-readiness.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/evidence-index.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "upstream": ["TASK-CI-OPT-001"],
+    "downstream": []
+  },
+  "source_issue": 2169,
+  "lastUpdated": "2026-04-15T13:42:03Z"
+}
