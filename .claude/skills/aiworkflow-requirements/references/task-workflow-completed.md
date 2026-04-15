@@ -11,6 +11,7 @@
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
 - 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` 状態残留・リカバリーパス・競合状態修正（Phase 10〜12 completed / Phase 13 skipped）
+- [2026-04-14: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装 / analytics:get-stats / sentCount・failedCount 更新](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
 - 2026-04-13: `TASK-SW-FIX-MODE-MGMT-001` SkillCreateWizard mode/state current facts sync（本ファイルに詳細記録）

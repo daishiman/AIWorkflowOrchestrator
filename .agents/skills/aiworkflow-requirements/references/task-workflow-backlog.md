@@ -6,6 +6,7 @@
 ## 残課題（未タスク）
 
 > 2026-04-07: `UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001` は completed へ移管済み。関連 backlog エントリはなし。
+> 2026-04-13: `TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001` は completed へ移管済み。関連 backlog エントリは打ち消し線で保持。
 > 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` は Phase 10〜12 completed / Phase 13 skipped（PR禁止）として閉じており、追加 backlog は作成していない。
 > 2026-04-14: `TASK-SW-FIX-UI-001` を Wave C 未実施タスクとして backlog 登録。タスク仕様書（Phase 1-13）は `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/` に作成済み（Phase 3/4 まで完了）。
 

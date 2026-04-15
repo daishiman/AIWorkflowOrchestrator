@@ -15,7 +15,9 @@ import {
   within,
 } from "@testing-library/react";
 import type {
+  RuntimeSkillCreatorExecuteResult,
   SkillCreatorUserInputKind,
+  SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
 } from "@repo/shared/types";
 
@@ -44,6 +46,12 @@ const mockSubmitUserInput = vi.fn();
 const mockGetWorkflowState = vi.fn();
 const mockOnWorkflowStateChanged = vi.fn();
 const MOCK_SKILL_SPEC = "canonical skill spec";
+let workflowStateChangedCallback:
+  | ((
+      snapshot: SkillCreatorWorkflowUiSnapshot | null,
+      errorMessage?: string,
+    ) => void)
+  | null = null;
 
 type MockStoreState = {
   selectedSkillName: string | null;
@@ -201,6 +209,36 @@ const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
   manualRetryRule: "認証設定を確認してから CLI で再実行する",
 });
 
+type WorkflowSnapshotWithArtifacts = SkillCreatorWorkflowUiSnapshot & {
+  phaseArtifacts: Array<{
+    kind: string;
+    payload: unknown;
+  }>;
+};
+
+const buildWorkflowSnapshotWithExecuteResult = (
+  executeResult: RuntimeSkillCreatorExecuteResult,
+): WorkflowSnapshotWithArtifacts => ({
+  planId: "plan-001",
+  currentPhase: "execute",
+  awaitingUserInput: null,
+  verifyResult: null,
+  resumeTokenEnvelope: {
+    version: "task-sdk-02-v1",
+    planId: "plan-001",
+    currentPhase: "execute",
+    artifactCount: 1,
+    updatedAt: "2026-03-27T00:00:00.000Z",
+  },
+  handoffBundle: null,
+  phaseArtifacts: [
+    {
+      kind: "execute_result",
+      payload: executeResult,
+    },
+  ],
+});
+
 beforeEach(() => {
   vi.clearAllMocks();
   mockStoreState = {
@@ -285,7 +323,17 @@ beforeEach(() => {
     success: false,
     error: "workflow state が見つかりません",
   });
-  mockOnWorkflowStateChanged.mockReturnValue(() => {});
+  mockOnWorkflowStateChanged.mockImplementation((callback) => {
+    workflowStateChangedCallback = callback;
+    return () => {
+      if (workflowStateChangedCallback === callback) {
+        workflowStateChangedCallback = null;
+      }
+    };
+  });
+  mockSetWorkflowSnapshot.mockImplementation((snapshot) => {
+    mockStoreState.workflowSnapshot = snapshot;
+  });
   mockGetVerifyDetail.mockResolvedValue({
     success: true,
     data: {
@@ -330,6 +378,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  workflowStateChangedCallback = null;
   delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
 });
 
@@ -484,7 +533,7 @@ describe("U-7: generationError displays error message", () => {
 });
 
 // =====================================================================
-// U-8: handleExecutePlan が executePlan → fetchSkills → selectSkillByName を呼ぶ
+// U-8: handleExecutePlan が executePlan → selectSkillByName → fetchSkills を呼ぶ
 // =====================================================================
 describe("U-8: handleExecutePlan triggers executePlan IPC", () => {
   it("「実行する」ボタンクリックで executePlan が呼ばれ、完了後にスキル一覧が更新される", async () => {
@@ -505,8 +554,344 @@ describe("U-8: handleExecutePlan triggers executePlan IPC", () => {
 
     expect(mockExecutePlan).toHaveBeenCalledTimes(1);
     expect(mockExecutePlan).toHaveBeenCalledWith("plan-001", MOCK_SKILL_SPEC);
-    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
     expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+    expect(mockSelectSkillByName.mock.invocationCallOrder[0]).toBeLessThan(
+      mockFetchSkills.mock.invocationCallOrder[0],
+    );
+  });
+
+  it("fetchSkills が reject しても selectSkillByName を継続し、generationError に落ちない", async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    try {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 5,
+        skillSpec: MOCK_SKILL_SPEC,
+      };
+      mockFetchSkills.mockRejectedValue(new Error("skill list refresh failed"));
+
+      renderPanel();
+
+      const executeBtn = screen.getByRole("button", { name: "実行する" });
+      await act(async () => {
+        fireEvent.click(executeBtn);
+      });
+
+      await waitFor(() => {
+        expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+        expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+        expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+      });
+      await waitFor(() => {
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          "[SkillLifecyclePanel] fetchSkills failed:",
+          expect.any(Error),
+        );
+      });
+      expect(mockSetGenerationError).not.toHaveBeenCalled();
+    } finally {
+      consoleWarnSpy.mockRestore();
+    }
+  });
+});
+
+// =====================================================================
+// U-NEW-1: ack 後の workflow-state event でも fetchSkills 失敗後に選択が続く
+// =====================================================================
+describe("U-NEW-1: processWorkflowOutcome handles fetchSkills failure", () => {
+  it("executePlan の ack 後に到着した workflow snapshot で fetchSkills が reject しても selectSkillByName が呼ばれる", async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    try {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 5,
+        skillSpec: MOCK_SKILL_SPEC,
+      };
+      mockExecutePlan.mockResolvedValue({
+        success: true,
+        data: {
+          accepted: true,
+          planId: "plan-001",
+        },
+      });
+      mockGetWorkflowState.mockResolvedValue({
+        success: false,
+        error: "workflow state not ready",
+      });
+      mockFetchSkills.mockRejectedValueOnce(
+        new Error("skill list refresh failed"),
+      );
+
+      const rendered = renderPanel();
+
+      const executeBtn = screen.getByRole("button", { name: "実行する" });
+      await act(async () => {
+        fireEvent.click(executeBtn);
+      });
+
+      await waitFor(() => {
+        expect(mockExecutePlan).toHaveBeenCalledWith(
+          "plan-001",
+          MOCK_SKILL_SPEC,
+        );
+        expect(mockGetWorkflowState).toHaveBeenCalledWith("plan-001");
+        expect(mockSelectSkillByName).not.toHaveBeenCalled();
+      });
+
+      await act(async () => {
+        workflowStateChangedCallback?.(
+          buildWorkflowSnapshotWithExecuteResult({
+            executeId: "exec-001",
+            skillName: "new-skill",
+            success: true,
+          }),
+          undefined,
+        );
+        rendered.rerender(
+          <SkillLifecyclePanel
+            onClose={vi.fn()}
+            onOpenSkillWizard={vi.fn()}
+            skillName="test-skill"
+          />,
+        );
+      });
+
+      await waitFor(() => {
+        expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+        expect(mockSelectSkillByName.mock.invocationCallOrder[0]).toBeLessThan(
+          mockFetchSkills.mock.invocationCallOrder[0],
+        );
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          "[SkillLifecyclePanel] fetchSkills failed:",
+          expect.any(Error),
+        );
+      });
+      expect(mockSetGenerationError).not.toHaveBeenCalled();
+    } finally {
+      consoleWarnSpy.mockRestore();
+    }
+  });
+});
+
+// =====================================================================
+// U-NEW-4: skillName が空なら selectSkillByName は呼ばれない
+// =====================================================================
+describe("U-NEW-4: skillName guard prevents selection", () => {
+  it("executePlan の成功レスポンスでも skillName がない場合は selectSkillByName を呼ばない", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+      skillSpec: MOCK_SKILL_SPEC,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: {
+        executeId: "exec-002",
+        skillName: undefined as unknown as string,
+        success: true,
+      } as unknown as RuntimeSkillCreatorExecuteResult,
+    });
+
+    renderPanel();
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    await waitFor(() => {
+      expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+      expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+    });
+    expect(mockSelectSkillByName).not.toHaveBeenCalled();
+    expect(mockSetGenerationError).not.toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-NEW-2: handleExecutePlan direct path で fetchSkills が reject しても selectSkillByName が呼ばれる
+// =====================================================================
+describe("U-NEW-2: handleExecutePlan handles fetchSkills failure", () => {
+  it("handleExecutePlan direct path で fetchSkills が reject しても selectSkillByName が呼ばれる", async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    try {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 5,
+        skillSpec: MOCK_SKILL_SPEC,
+      };
+      mockFetchSkills.mockRejectedValue(new Error("refresh failed"));
+
+      renderPanel();
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await waitFor(() => {
+        expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+        expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+        expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+        expect(mockSelectSkillByName.mock.invocationCallOrder[0]).toBeLessThan(
+          mockFetchSkills.mock.invocationCallOrder[0],
+        );
+      });
+    } finally {
+      consoleWarnSpy.mockRestore();
+    }
+  });
+});
+
+// =====================================================================
+// U-NEW-3: fetchSkills reject 時に generationError が呼ばれない
+// =====================================================================
+describe("U-NEW-3: fetchSkills failure does not set generationError", () => {
+  it("processWorkflowOutcome 経由で fetchSkills が reject しても generationError はセットされない", async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    try {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 5,
+        skillSpec: MOCK_SKILL_SPEC,
+      };
+      mockExecutePlan.mockResolvedValue({
+        success: true,
+        data: {
+          accepted: true,
+          planId: "plan-001",
+        },
+      });
+      mockGetWorkflowState.mockResolvedValue({
+        success: true,
+        data: buildWorkflowSnapshotWithExecuteResult({
+          executeId: "exec-001",
+          skillName: "new-skill",
+          success: true,
+        }),
+      });
+      mockFetchSkills.mockRejectedValue(new Error("network error"));
+
+      renderPanel();
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await waitFor(() => {
+        expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+      });
+      expect(mockSetGenerationError).not.toHaveBeenCalled();
+    } finally {
+      consoleWarnSpy.mockRestore();
+    }
+  });
+});
+
+// =====================================================================
+// U-NEW-5: fetchSkills 成功時に既存フローが維持される
+// =====================================================================
+describe("U-NEW-5: fetchSkills success maintains existing flow", () => {
+  it("fetchSkills 成功時も selectSkillByName が先に呼ばれ、フロー全体が維持される", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+      skillSpec: MOCK_SKILL_SPEC,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: {
+        accepted: true,
+        planId: "plan-001",
+      },
+    });
+    mockGetWorkflowState.mockResolvedValue({
+      success: true,
+      data: buildWorkflowSnapshotWithExecuteResult({
+        executeId: "exec-001",
+        skillName: "new-skill",
+        success: true,
+      }),
+    });
+
+    renderPanel();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+    });
+
+    await waitFor(() => {
+      expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
+      expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+      expect(mockSelectSkillByName.mock.invocationCallOrder[0]).toBeLessThan(
+        mockFetchSkills.mock.invocationCallOrder[0],
+      );
+    });
+    expect(mockSetGenerationError).not.toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-NEW-6: fetchSkills 失敗かつ skillName なしで副作用が増えない
+// =====================================================================
+describe("U-NEW-6: fetchSkills failure with no skillName has no extra side effects", () => {
+  it("fetchSkills が reject かつ skillName なしのとき selectSkillByName も generationError も呼ばれない", async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    try {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 5,
+        skillSpec: MOCK_SKILL_SPEC,
+      };
+      mockExecutePlan.mockResolvedValue({
+        success: true,
+        data: {
+          executeId: "exec-003",
+          skillName: undefined as unknown as string,
+          success: true,
+        },
+      });
+      mockFetchSkills.mockRejectedValue(new Error("network error"));
+
+      renderPanel();
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await waitFor(() => {
+        expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+        expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+      });
+      expect(mockSelectSkillByName).not.toHaveBeenCalled();
+      expect(mockSetGenerationError).not.toHaveBeenCalled();
+    } finally {
+      consoleWarnSpy.mockRestore();
+    }
   });
 });
 

@@ -14,6 +14,31 @@
 
 `notion` 特別ケースを shared 変換表へ移した後は、raw 値 fallback の原表記保持を skill 側にも残さないと、Phase 12 テンプレートが再び小文字 fallback を正解と誤認しやすい。`Jira` / `Markdown` / `JSON` の回帰を防ぐため、fallback ルールを skill の漏れテーブルへ昇格した。
 
+## 2026-04-14 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 phase12 current facts sync
+
+### 変更内容
+
+- `SKILL.md` の Phase 12 current facts / 変更履歴を analytics HTTP provider の current contract に合わせて更新
+- `AnalyticsHttpProvider` / `analytics:get-stats` / `sentCount` / `failedCount` を Phase 12 の成果物説明へ反映
+- `.agents/skills/task-specification-creator/` mirror を同 wave で同期
+
+### 背景
+
+analytics HTTP provider の Phase 12 close-out で、implementation-guide だけでなく system-spec / changelog / compliance / feedback を 6 成果物として確定させる必要があった。skill 側の Phase 12 ルールに current facts を反映し、次回の close-out でも同じ漏れが再発しないようにした。
+
+## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/task-ci-optimization-001/index.md` の Phase 1-12 を `完了` に更新し、トップステータスを `Phase 12 完了（PR未着手）` に同期
+- `docs/30-workflows/task-ci-optimization-001/artifacts.json` の `status` を `phase12_completed` に更新し、Phase 1 / Phase 9 の `status` も `completed` に是正
+- `docs/30-workflows/task-ci-optimization-001/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase-12-documentation.md` を current facts に反映
+- `.agents` mirror の `LOGS.md` / `SKILL.md` を同波で同期
+
+### 背景
+
+CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -46,6 +71,23 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 | 結果     | 廃止系タスクの標準パターン 3 件を再利用可能な形で定型化（500 行以内確認済み）                                                  |
 | 検証     | patterns-lessons-and-pitfalls.md 更新確認                                                                                      |
 
+## 2026-04-15 - TASK-CRON-CUSTOM-VALIDATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に v10.09.50 を追記
+- `SKILL.md` 「よくある漏れ」テーブルに [VSCPKR-03]（Props vs internal state 混同問題）を追記（replace_all で全インスタンスに適用）
+- `references/phase-template-core.md` Phase 2 セクションに「UI コンポーネントテスト設計時の Props vs internal state 確認」サブセクションを追加
+
+### 背景
+`TASK-CRON-CUSTOM-VALIDATION-001` の skill-feedback-report.md に記録された改善点1（Phase 4 でコンポーネントテスト設計時に外部props か内部state かを Phase 2 で確認しない問題）を同波 sync として反映。
+
+| 項目     | 内容 |
+| -------- | ---- |
+| 種別     | skill-feedback / Phase 12 close-out / skill-sync |
+| 変更対象 | `SKILL.md`（[VSCPKR-03] 追記）、`references/phase-template-core.md`（Phase 2 Props確認追加） |
+| 結果     | CRON-CUSTOM-VALIDATION-001 由来の pitfall を再利用可能な形で定型化 |
+
 ## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -65,6 +107,30 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 
 ### 背景
 `TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
 
 ## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
 
@@ -185,6 +251,18 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
 - `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
@@ -2571,39 +2649,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 変更内容
 
-
-- `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
-- `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
-- `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
-- `aiworkflow-requirements/LOGS.md` に 2026-04-11 ヘッドライン追加
-- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-CLM-001〜003 追加
-
-### 背景
-
-UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`satisfies Record<SkillCategory, string>` パターンによるコンパイル時ラベルドリフト防止が主な知見。SKILL.md 2ファイル同波更新。
-| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
-| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
-| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
-| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
-| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
-| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
-| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
-| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
-| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | security / bug-fix / TDD / Phase 12 close-out                                                                                                                                                                                                                                                                                                                                                                |
-| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs） |
-| 結果     | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。                                                                                                                       |
-| 検証     | vitest 101/101 PASS、typecheck PASS（EXIT:0）                                                                                                                                                                                                                                                                                                                                                                |
-
-## 2026-04-11 - UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 impl-spec-to-skill-sync
-
-### 変更内容
-
 - `task-specification-creator/SKILL.md` に v10.09.41 追記（Phase 12 と Phase 13 の境界テーブルに Task 12-6 を追加、台帳3点同期ルールの明示）
 - `task-specification-creator/SKILL.md` 行数削減（546行 → 483行）：第一変更履歴 v6.18.12〜v6.18.27 をアーカイブ、重複セクション（よく使うコマンド）を除去、第二変更履歴を圧縮
 - `aiworkflow-requirements/SKILL.md` Trigger キーワード追加（SKILL_CATEGORY_LABELS、getSkillCategoryLabel、selectedOptions 等）
@@ -2655,7 +2700,6 @@ UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 の Phase 12 close-out sync。`sat
 ## 2026-04-12 - FB-04 三者同期チェックリスト標準化 impl-spec-to-skill-sync
 
 ### 変更内容
-
 
 - `task-specification-creator/references/patterns-phase12-sync.md` にパターン10（artifacts.json 二重管理チェック）とパターン11（canonical成果物命名規約）を追加
 - `task-specification-creator/references/phase-template-execution.md` の Phase 5 追加チェック項目に `describe.skip` 内削除対象 testid 残存確認を追加
