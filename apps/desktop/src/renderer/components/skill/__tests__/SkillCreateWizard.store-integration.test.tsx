@@ -46,6 +46,7 @@ vi.mock("../../../store", () => ({
   useSetCurrentPlanResult: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
   useClearGenerationState: () => vi.fn(),
+  useResetStreamingProgress: () => vi.fn(),
   useWorkflowSnapshot: () => null,
 }));
 
@@ -87,7 +88,7 @@ function navigateToStep1(
   fireEvent.click(screen.getByRole("button", { name: "次へ" }));
 }
 
-describe.skip("SkillCreateWizard Store統合（legacy 4-step flow）", () => {
+describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
   let mockOnClose: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
@@ -124,11 +125,18 @@ describe.skip("SkillCreateWizard Store統合（legacy 4-step flow）", () => {
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
       });
-      expect(mockCreateSkill).toHaveBeenCalledWith(purpose, {
-        generateTasks: true,
-        addAgents: false,
-        addReferences: false,
-      });
+      expect(mockCreateSkill).toHaveBeenCalledWith(
+        purpose,
+        {
+          generateTasks: true,
+          addAgents: false,
+          addReferences: false,
+        },
+        expect.objectContaining({
+          purpose,
+          category: "automation",
+        }),
+      );
     });
 
     it("store.createSkill 成功後に Step 3（完了）に遷移し、CompleteStep が表示される", async () => {

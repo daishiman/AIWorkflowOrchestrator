@@ -423,6 +423,22 @@ describe("SkillCreateWizard", () => {
       ).toBeInTheDocument();
       expect(screen.queryByTestId("generation-mode-selector")).toBeNull();
     });
+
+    it("TC-06: 旧フラグ（generationMode/hasActivatedLlmMode）残骸が存在しないこと", () => {
+      renderWizard(mockOnClose);
+      // generationMode 名のラジオinputが存在しない
+      expect(
+        document.querySelectorAll('input[name="generationMode"]'),
+      ).toHaveLength(0);
+      // テンプレート系テキストが存在しない
+      expect(screen.queryByText("テンプレートから作成")).toBeNull();
+      expect(screen.queryByText("LLMで生成")).toBeNull();
+      expect(screen.queryByText("LLM で生成")).toBeNull();
+      // generation-mode-selector testidが存在しない
+      expect(screen.queryByTestId("generation-mode-selector")).toBeNull();
+      // hasActivatedLlmMode 関連UIが存在しない
+      expect(screen.queryByTestId("llm-mode-activated")).toBeNull();
+    });
   });
 
   // ============================================================
@@ -562,13 +578,13 @@ describe("SkillCreateWizard", () => {
       mockFetchSkills.mockResolvedValue(undefined);
     });
 
-    it("TC-FEEDBACK-003: [回帰] templateモード成功時、コンポーネントレベルの fetchSkills は呼ばれない（createSkill が内部処理）", async () => {
+    it("TC-FEEDBACK-003: [回帰] LLMモード成功時、コンポーネントレベルの fetchSkills は呼ばれない（createSkill が内部処理）", async () => {
       renderWizard(mockOnClose);
 
       await advanceToComplete();
 
-      // templateモードは createSkill の内部で fetchSkills が呼ばれる（storeのagentSlice）
-      // コンポーネントから明示的に fetchSkills を呼ぶのは LLM モードのみ
+      // createSkill の内部で fetchSkills が呼ばれる（store の agentSlice）
+      // コンポーネントから明示的に fetchSkills を呼ぶのは LLM モードの成功経路ではない
       expect(mockFetchSkills).not.toHaveBeenCalled();
       // createSkill が1回呼ばれていること（createSkill内でfetchSkillsが呼ばれる）
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);

@@ -74,12 +74,12 @@ WA-seq-01-fix-dataflow                     （Wave A: 直列・先行必須）
 ## 修正優先順位（影響度 × 修正コスト）
 
 | Wave                   | ディレクトリ名                | タスクID                     | 問題番号         | 影響度 | コスト |
-| ---------------------- | ----------------------------- | ---------------------------- | ---------------- | ------ | ------ |
+| ---------------------- | ----------------------------- | ---------------------------- | ---------------- | ------ | ------ | ------------------- |
 | **WA（即時必須）**     | `WA-seq-01-fix-dataflow`      | TASK-SW-FIX-DATAFLOW-001     | 7, 17            | 極大   | 低     |
 | **WB（次スプリント）** | `WB-par-02a-fix-mode-mgmt`    | TASK-SW-FIX-MODE-MGMT-001    | 1, 9, 10         | 大     | 中     |
 | **WB（次スプリント）** | `WB-par-02b-fix-feedback`     | TASK-SW-FIX-FEEDBACK-001     | 6, 8, 14, 20     | 大     | 極低   |
 | **WC（後続）**         | `WC-par-03a-fix-state-detail` | TASK-SW-FIX-STATE-DETAIL-001 | 12, 13, 18, 19   | 中     | 中     |
-| **WC（後続）**         | `WC-par-03b-fix-ui`           | TASK-SW-FIX-UI-001           | 2, 3, 11, 15, 16 | 小     | 低     |
+| **WC（後続）**         | `WC-par-03b-fix-ui`           | TASK-SW-FIX-UI-001           | 2, 3, 11, 15, 16 | 小     | 低     | **完了** 2026-04-14 |
 
 ## タスク種別
 
@@ -97,6 +97,16 @@ WA-seq-01-fix-dataflow                     （Wave A: 直列・先行必須）
 | 型定義                | `packages/shared/src/types/skillCreator.ts`                                   |
 | Redux store           | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                        |
 | 既存レーン            | `docs/30-workflows/skill-wizard-redesign-lane/index.md`                       |
+
+## 2026-04-14 - WC-par-03a-fix-state-detail / TASK-SW-FIX-STATE-DETAIL-001 close-out
+
+- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` で stale error 再表示を防ぐガードを補強し、`generationLockRef` を `finally` で必ず解放する current facts に更新した
+- `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx` に `GenerationMode = "llm" | "template"` を追加し、template error のみ「最初からやり直す」を表示するように current contract を整理した
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` で `answers` prop 変化時に internal state を再初期化し、Step 1 の回答差分が残留しないようにした
+- `apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs` で current_build_vite_playwright の 3 枚の screenshot evidence を取得し、`phase11-capture-metadata.json` を保存した
+- `outputs/phase-11/` に manual-test-result / manual-test-report / discovered-issues / ui-sanity-visual-review / screenshot-coverage を保存し、視覚・手動・AI UX の証跡を閉じた
+- `outputs/phase-12/` に implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check を同期し、Phase 12 の canonical 6 成果物を完成させた
+- `docs/30-workflows/WC-par-03a-fix-state-detail/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同値化し、task root と outputs の parity を維持した
 
 ## 作成日
 

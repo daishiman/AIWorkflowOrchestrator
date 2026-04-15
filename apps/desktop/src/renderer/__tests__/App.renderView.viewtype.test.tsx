@@ -109,7 +109,13 @@ vi.mock("react-router-dom", () => ({
     }
     return null;
   },
-  useLocation: () => ({ search: "", pathname: "/" }),
+  useLocation: vi.fn(() => ({
+    search: "",
+    pathname: "/",
+    hash: "",
+    state: null,
+    key: "default",
+  })),
 }));
 
 vi.mock("@/renderer/components/AuthGuard", () => ({

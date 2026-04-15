@@ -14,7 +14,6 @@ export type {
   GenerationError,
   GenerationStage,
   GenerationErrorCode,
-  GenerationMode,
 } from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
 export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";

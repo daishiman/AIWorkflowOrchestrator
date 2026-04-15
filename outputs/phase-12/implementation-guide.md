@@ -1,87 +1,51 @@
-# Implementation Guide: TASK-SW-FIX-FEEDBACK-001
+# Phase 12 成果物: 実装ガイド
 
-## スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
-## 概要
+## 1. 変更概要
 
-スキルウィザードの4件のフィードバックループ欠如問題（問題6・8・14・20）を修正しました。
+スキルウィザードを LLM 専用に一本化し、Step 0 のラジオボタンと `generationMode` / `hasActivatedLlmMode` の二重管理を廃止した。
+Step 0→1→2→3 の正規フローに統一し、Phase 11 のスクリーンショットも current task として再取得した。
 
-## 変更内容
+## 2. 変更内容
 
-### 1. SkillCreateWizard.tsx — LLMモード fetchSkills 追加
+### 2.1 `SkillCreateWizard.tsx`
 
-**問題**: LLMモード（handleExecutePlan）の成功パスに `fetchSkills()` が欠落しており、
-スキル生成後もスキル一覧が更新されなかった（問題6/8）。
+- `generationMode` / `hasActivatedLlmMode` state を削除
+- `handleStep0Next` は `goNext()` のみに統一
+- `handleGenerate` は Step 1 を経由して Step 2 / Step 3 に進行
+- `buildSkillContext()` を用いて LLM 生成コンテキストを組み立てる
 
-**修正**: `useFetchSkills` フックを追加し、`executePlan` 成功後に `await fetchSkills()` を実行。
-fetchSkills が失敗した場合も遷移は継続（生成自体は成功済みのため）。
+### 2.2 `SkillInfoStep.tsx`
 
-```typescript
-// apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
-import { useFetchSkills, ... } from "../../store";
+- 仕様外ラジオボタンを削除
+- `generationMode` / `onGenerationModeChange` props を削除
 
-const fetchSkills = useFetchSkills();
+### 2.3 `GenerateStep.tsx` / `wizard/index.ts`
 
-// handleExecutePlan 成功パス末尾（goToStep(3) 直前）:
-try {
-  await fetchSkills(); // 問題6/8修正
-} catch {
-  // fetchSkills失敗はログのみ
-}
-goToStep(3);
-```
+- `GenerationMode` の public export を削除
+- barrel 経由の旧 API を廃止
 
-### 2. CompleteStep.tsx — skillPath nullガード
+### 2.4 テスト
 
-**問題**: `skillPath === null` のままStep 3に到達しても成功UIが表示される（問題14/20）。
+- `wizard-exports.test.ts` で `GenerationMode` 未公開を確認
+- `SkillCreateWizard.test.tsx` に TC-06 を追加
+- `SkillCreateWizard.store-integration.test.tsx` を復帰し `createSkill(..., context)` を確認
 
-**修正**: `skillPath === null` の場合はアーリーリターンでエラーUIを表示。
-`onRetry` ボタンでStep 0へのリトライ誘導を実装。
+## 3. Phase 11 スクリーンショット
 
-```typescript
-// apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx
-if (skillPath === null) {
-  return (
-    <div data-testid="complete-step">
-      <div data-testid="complete-step-error-header" role="alert">
-        <h2>スキルの生成に失敗しました</h2>
-      </div>
-      <button data-testid="complete-step-retry-button" onClick={onRetry}>
-        もう一度試す
-      </button>
-    </div>
-  );
-}
-```
-
-## テスト追加
-
-| TC番号                    | 内容                                               |
-| ------------------------- | -------------------------------------------------- |
-| TC-FEEDBACK-001           | LLMモード成功時 fetchSkills 1回呼び出し            |
-| TC-FEEDBACK-002           | LLMモード失敗時 fetchSkills 非呼び出し             |
-| TC-FEEDBACK-003           | templateモード regression（createSkill内部が処理） |
-| TC-FEEDBACK-004〜007      | CompleteStep nullガード基本テスト                  |
-| TC-FEEDBACK-009, 011, 013 | エッジケース・回帰ガード                           |
-
-## Phase 11 視覚証跡
-
-今回の UI 変更は screenshot evidence を残す必要があるため、次の 4 枚を保存した。
-
-| ファイル                                                         | 確認内容                                                 |
-| ---------------------------------------------------------------- | -------------------------------------------------------- |
-| `outputs/phase-11/screenshots/skill-list-updated-after-llm.png`  | LLM モード完了後にスキル一覧へ新規スキルが反映されること |
-| `outputs/phase-11/screenshots/complete-step-null-error.png`      | `skillPath === null` のエラー表示                        |
-| `outputs/phase-11/screenshots/complete-step-null-no-success.png` | `skillPath === null` 時に成功ヘッダーが出ないこと        |
-| `outputs/phase-11/screenshots/complete-step-success.png`         | `skillPath` 正常値時の成功表示                           |
+| ファイル                                               | 確認内容                            |
+| ------------------------------------------------------ | ----------------------------------- |
+| `outputs/phase-11/screenshots/step-0-no-radio.png`     | Step 0 でラジオボタンが表示されない |
+| `outputs/phase-11/screenshots/step-1-conversation.png` | Step 0→1 の正規遷移                 |
+| `outputs/phase-11/screenshots/step-1-questions.png`    | Q1〜Q6 の表示                       |
+| `outputs/phase-11/screenshots/step-2-generating.png`   | 生成中状態                          |
+| `outputs/phase-11/screenshots/step-3-complete.png`     | 完了状態                            |
 
 補助メタデータ: `outputs/phase-11/phase11-capture-metadata.json`
+スクリーンショット計画: `outputs/phase-11/screenshot-plan.json`
 
-## 解消された問題
+## 4. 検証結果
 
-| 問題番号 | 内容                                              | 解消 |
-| -------- | ------------------------------------------------- | ---- |
-| 問題6    | スキル一覧リアルタイム反映されない（全般）        | ✓    |
-| 問題8    | LLMモード完了後に fetchSkills() が呼ばれない      | ✓    |
-| 問題14   | skillPath=null のまま Step 3 到達でサイレント失敗 | ✓    |
-| 問題20   | skillPath=null でも成功ヘッダーが表示される       | ✓    |
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` は PASS
+- `SkillCreateWizard.store-integration.test.tsx` では `createSkill(formData.purpose, options, context)` の第三引数も確認済み

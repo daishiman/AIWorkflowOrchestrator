@@ -1338,6 +1338,55 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
+## TASK-SW-FIX-UI-001 UI整合性修正 教訓（2026-04-14）
+
+> 詳細: [skill-feedback-report.md](../docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/outputs/phase-12/skill-feedback-report.md)
+
+### L-UI-001: null → 空配列への型設計変更はnullチェック除去の機会
+
+| 項目       | 内容                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `category: SkillCategory \| null` では選択前の状態を `=== null` で判定し、後続ロジックで null チェックが分散していた            |
+| 原因       | 単一選択の設計を複数選択に拡張する際、「未選択 = null」の慣習をそのまま引き継いでいた                                         |
+| 解決策     | 未選択を空配列 `[]` で表現し、型を `SkillCategory[]` に変更。全箇所の null チェックを `.length > 0` / `.includes()` に統一   |
+| 設計原則   | 複数選択フィールドの未選択状態は空配列を使う。null は「値が存在しないこと」を示す用途に限定する                                |
+| 関連タスク | TASK-SW-FIX-UI-001（問題2・15）                                                                                                |
+
+---
+
+### L-UI-002: トグルロジックは includes/filter の1パターンで完結させる
+
+| 項目       | 内容                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| 背景       | カテゴリの追加・解除・再選択の3状態を実装する際に、複数の条件分岐が必要に見えた                              |
+| 解決策     | `includes(value)` で選択済みを判定し、true なら `filter(c => c !== value)`、false なら `[...arr, value]` に統一 |
+| 利点       | エッジケース（空配列・最後の1件の解除）を追加ガードなしで処理できる。コードが1関数4行に収まる                 |
+| 関連タスク | TASK-SW-FIX-UI-001（問題15）                                                                                  |
+
+---
+
+### L-UI-003: ProgressBar動的計算には Math.max(1, count) で最小値を保証する
+
+| 項目       | 内容                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| 症状       | `answeredCount` が 0 の初期状態で `currentQuestion = 0` となり「0/6」が表示されるバグリスクがあった  |
+| 解決策     | `Math.max(1, answeredCount)` により初期値・全未回答時でも最低「1/6」を表示する                      |
+| 注意点     | Page 2 開始直後（Q4 未回答）に「3/6」が表示される場合があるが、これは「回答済み数の反映」として仕様 |
+| 関連タスク | TASK-SW-FIX-UI-001（問題11・16）                                                                     |
+
+---
+
+### L-UI-004: CSS変数統一はルートbarrelに波及させず subpath export に閉じる
+
+| 項目       | 内容                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| 背景       | `bg-blue-600` を CSS変数 `var(--status-primary)` に置換する際、型変更も伴うため影響範囲の管理が重要だった        |
+| 解決策     | 変更を `@repo/shared/skill-creator` の subpath export スコープに限定し、ルート barrel (`@repo/shared`) は無変更   |
+| 利点       | 外部パッケージからの import 互換性を維持しながら、内部型定義と UI スタイルを刷新できた                            |
+| 関連タスク | TASK-SW-FIX-UI-001（問題2・3）                                                                                    |
+
+---
+
 ## TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14）
 
 > 詳細: [lessons-learned-skill-wizard-mode-mgmt.md](lessons-learned-skill-wizard-mode-mgmt.md)
@@ -1351,6 +1400,20 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | 新規コンテキスト引数は必ず optional。IPC ハンドラ側でデフォルト値 / undefined guard を持ち、クライアント側に変更を強制しない |
 | 適用条件   | 既存 IPC チャンネルへの引数追加時（`skill:create` のような多層を跨ぐチャンネル） |
 | 関連タスク | TASK-SW-FIX-DATAFLOW-001 |
+
+---
+
+## TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13）
+
+### L-RT01-RENDERER-FINAL-001: Renderer error 表示 E2E は DOM assertion で完結させる
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 症状       | `executeAsync` → `onWorkflowStateSnapshot(snapshot, errorMessage)` → `setWorkflowError()` → renderer component の表示経路が長いため、IPC mock 単体テストだけでは renderer 側の DOM 表示まで確認できず漏れが発生した |
+| 原因       | IPC 層の unit test で `errorMessage` が正しく伝搬することは確認済みだったが、`SkillLifecyclePanel` が実際に `data-testid="skill-lifecycle-error"` 要素を描画するかは別の検証スコープだった |
+| 解決策     | `SkillLifecyclePanel.test.tsx` に `mockStoreState.workflowError = "..."` → `renderPanel()` → `screen.getByTestId("skill-lifecycle-error")` → `toHaveAttribute("role", "alert")` → `toHaveTextContent(...)` の positive DOM assertion テストを追加した |
+| 標準ルール | Runtime error propagation タスク完了時は、renderer component 側の表示チェック（DOM visibility + aria accessibility）を E2E 対象に含める。IPC 単体テスト通過 ≠ UI 表示到達 |
+| 関連タスク | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 |
 
 ---
 
