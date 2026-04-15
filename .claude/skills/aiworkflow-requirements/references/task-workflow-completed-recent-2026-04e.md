@@ -1,6 +1,38 @@
-# 完了タスク記録 — 2026-04-13
+# 完了タスク記録 — 2026-04-14
 
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
+
+---
+
+### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-14）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-W3-ANALYTICS-HTTP-PROVIDER-001                                                                   |
+| 完了日     | 2026-04-14                                                                                          |
+| タスク種別 | ipc / test / docs / workflow-sync                                                                   |
+| 関連Issue  | #2125（CLOSED）                                                                                     |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                         |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts` を新規実装し、HTTP POST / retry / timeout / `skipped` / counter 更新を集約した
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` の TODO を解消し、provider の戻り値をそのまま返すようにした
+- `apps/desktop/src/main/ipc/analyticsHandler.ts` に `analytics:get-stats` ハンドラーを追加し、`sentCount` / `failedCount` / `analyticsOptOut` を返すようにした
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/preload/index.ts` / `apps/desktop/src/preload/types.ts` を同波で更新し、4 層整合を維持した
+- `AnalyticsHttpProvider.test.ts` と `analyticsHandler.test.ts` を current facts に合わせて拡充し、4xx 非 retry と `skipped` 伝播を固定した
+- Phase 12 outputs 6 件（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/analytics/__tests__/AnalyticsHttpProvider.test.ts src/main/ipc/__tests__/analyticsHandler.test.ts`: PASS（37 tests）
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
+- `task-workflow-completed.md` / recent bundle / lesson file / LOGS: 同期済み
+
+#### lessons-learned
+
+- `references/lessons-learned-w3-usage-tracking-2026-04.md` §UT-W3-ANALYTICS-HTTP-PROVIDER-001（L-W3-HTTP-001〜004）
 
 ---
 
@@ -136,7 +168,7 @@
 
 #### lessons-learned
 
-- `references/lessons-learned-current-2026-04.md` に current facts を追記予定 / 同波同期
+- `references/lessons-learned-current-2026-04.md` に current facts を追記済み / 同波同期済み
 
 ### タスク: TASK-UI-SCHEDULE-CRON-SEMANTIC-001 意味論的 cron バリデーション追加（2026-04-12）
 

@@ -1,0 +1,11 @@
+{
+  "taskId": "TASK-SW-FIX-FEEDBACK-001",
+  "mode": "non_visual_placeholder",
+  "reason": "validate-phase-output.js の heuristic が phase-11 文書を visual evidence と誤判定する可能性があるため、docs-only タスクであることを明示する補助成果物を保持する。",
+  "artifacts": [
+    {
+      "file": "outputs/phase-11/screenshots/non-visual-placeholder.png",
+      "description": "NON_VISUAL タスクの validator 互換用プレースホルダー画像。UI 証跡ではない。"
+    }
+  ]
+}

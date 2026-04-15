@@ -15,7 +15,7 @@
   ],
   "phases": {
     "1": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -25,7 +25,7 @@
       ]
     },
     "2": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -35,7 +35,7 @@
       ]
     },
     "3": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -45,7 +45,7 @@
       ]
     },
     "4": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -55,7 +55,7 @@
       ]
     },
     "5": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -65,7 +65,7 @@
       ]
     },
     "6": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -75,7 +75,7 @@
       ]
     },
     "7": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -85,7 +85,7 @@
       ]
     },
     "8": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -95,7 +95,7 @@
       ]
     },
     "9": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -105,7 +105,7 @@
       ]
     },
     "10": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",
@@ -115,7 +115,7 @@
       ]
     },
     "11": {
-      "status": "completed",
+      "status": "pending",
       "visualType": "VISUAL",
       "artifacts": [
         {
@@ -136,7 +136,7 @@
       ]
     },
     "12": {
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "type": "document",

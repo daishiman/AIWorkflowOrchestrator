@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-04-15T00:27:19.590Z",
+  "captureMethod": "vite_playwright_harness",
+  "baseUrl": "http://127.0.0.1:5186",
+  "harnessPath": "/phase11-task-ui-schedule-visual-picker.html",
+  "screenshots": [
+    {
+      "id": "SC-01",
+      "scenario": "SC-01",
+      "file": "screenshots/SC-01_direct-input-initial.png",
+      "description": "direct inputモード切替直後の初期状態",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=SC-01&value=0+9+15+*+*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-15T00:27:17.479Z",
+      "required": true
+    },
+    {
+      "id": "SC-02",
+      "scenario": "SC-02",
+      "file": "screenshots/SC-02_empty-input-error.png",
+      "description": "空文字入力時のエラー表示",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=SC-02&value=0+9+15+*+*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-15T00:27:17.960Z",
+      "required": true
+    },
+    {
+      "id": "SC-03",
+      "scenario": "SC-03",
+      "file": "screenshots/SC-03_syntax-error-4fields.png",
+      "description": "4フィールドcron式入力時のsyntaxエラー",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=SC-03&value=0+9+15+*+*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-15T00:27:18.411Z",
+      "required": true
+    },
+    {
+      "id": "SC-04",
+      "scenario": "SC-04",
+      "file": "screenshots/SC-04_day-of-month-zero-error.png",
+      "description": "day-of-month=0入力時のエラー",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=SC-04&value=0+9+15+*+*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-15T00:27:19.098Z",
+      "required": true
+    },
+    {
+      "id": "SC-05",
+      "scenario": "SC-05",
+      "file": "screenshots/SC-05_valid-cron-no-error.png",
+      "description": "有効なcron式入力時の正常状態",
+      "route": "http://127.0.0.1:5186/phase11-task-ui-schedule-visual-picker.html?mode=picker&scenario=SC-05&value=0+9+*+*+*",
+      "selector": "[data-testid=\"phase11-picker-card\"]",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "capturedAt": "2026-04-15T00:27:19.551Z",
+      "required": true
+    }
+  ]
+}

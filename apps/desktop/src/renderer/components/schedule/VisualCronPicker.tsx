@@ -39,6 +39,7 @@ interface VisualCronPickerProps {
    * @remarks
    * weekly モードで曜日が未選択の場合は false が渡される。
    * monthly モードで dayOfMonth が 1〜31 の範囲外の場合は false が渡される。
+   * direct input モードで無効なcron式が入力された場合は false が渡される。
    */
   onValidationChange?: (isValid: boolean) => void;
 }
@@ -65,6 +66,49 @@ function initConfig(value?: string): VisualCronConfig {
   const parsed = cronToVisualConfig(trimmed);
   if (!parsed) return createCustomConfig(trimmed);
   return parsed;
+}
+
+/**
+ * cron式の構文バリデーション（空文字・フィールド数チェック）。
+ * 空文字またはフィールド数が5でない場合は false を返す。
+ * renderer環境制約のため、純粋な文字列操作のみを使用する。
+ */
+function validateCronSyntax(expression: string): boolean {
+  const trimmed = expression.trim();
+  if (!trimmed) return false;
+  const fields = trimmed.split(/\s+/);
+  return fields.length === 5;
+}
+
+/**
+ * cron式のday-of-month範囲バリデーション。
+ * day-of-monthフィールドが純粋な数値の場合のみ、1〜31の範囲内であることを検証する。
+ * *(ワイルドカード)、ステップ(スラッシュ区切り)、区間(ハイフン)、リスト(カンマ)、L等は対象外（trueを返す）。
+ * renderer環境制約のため、純粋な文字列操作のみを使用する。
+ */
+function validateCronDayOfMonth(expression: string): boolean {
+  const fields = expression.trim().split(/\s+/);
+  if (fields.length < 3) return false;
+  const dom = fields[2];
+  // 純粋な数値以外（*、*/2、1-15、1,15、L 等）はバリデーション対象外
+  if (!/^\d+$/.test(dom)) return true;
+  const num = parseInt(dom, 10);
+  return num >= 1 && num <= 31;
+}
+
+/**
+ * direct input モードでのエラーメッセージを取得する。
+ */
+function getDirectInputErrorMessage(expression: string): string {
+  const trimmed = expression.trim();
+  if (!trimmed) return "cron式を入力してください";
+  if (!validateCronSyntax(expression)) {
+    return "cron式は5つのフィールドが必要です（分 時 日 月 曜日）";
+  }
+  if (!validateCronDayOfMonth(expression)) {
+    return "日の値は1〜31の範囲で指定してください";
+  }
+  return "";
 }
 
 export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
@@ -214,7 +258,14 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
       config.frequency === "monthly" &&
       (config.dayOfMonth < 1 || config.dayOfMonth > 31);
 
-    const isFormValid = !weeklyError && !monthlyError;
+    // direct input モード専用バリデーション。
+    // visual モードでは常に false となり、既存の weeklyError / monthlyError に影響を与えない。
+    const directInputErrorMessage = isAdvancedMode
+      ? getDirectInputErrorMessage(directInput)
+      : "";
+    const directInputError = directInputErrorMessage !== "";
+
+    const isFormValid = !weeklyError && !monthlyError && !directInputError;
 
     useEffect(() => {
       onValidationChange?.(isFormValid);
@@ -299,6 +350,10 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
               disabled={disabled}
               placeholder="0 9 * * *"
               aria-label="カスタムcron式"
+              aria-invalid={directInputError}
+              aria-describedby={
+                directInputError ? "direct-input-error" : undefined
+              }
               className={clsx(
                 "w-full px-3 py-2 rounded-lg text-sm",
                 "bg-white/5 border border-white/10 text-white",
@@ -308,6 +363,15 @@ export const VisualCronPicker: React.FC<VisualCronPickerProps> = memo(
                 disabled && "opacity-50 cursor-not-allowed",
               )}
             />
+            {directInputError && (
+              <p
+                id="direct-input-error"
+                role="alert"
+                className="text-sm text-red-500 mt-1"
+              >
+                {directInputErrorMessage}
+              </p>
+            )}
           </div>
         )}
 

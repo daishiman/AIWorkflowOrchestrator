@@ -1,0 +1,307 @@
+{
+  "taskId": "UT-W3-ANALYTICS-HTTP-PROVIDER-001",
+  "title": "Analytics HTTP プロバイダー実装（外部分析基盤への接続）",
+  "status": "implementation_complete",
+  "created": "2026-04-14",
+  "lastUpdated": "2026-04-14T12:48:07.320Z",
+  "githubIssue": "#2125",
+  "priority": "medium",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:01.014Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-summary.md",
+          "description": "要件定義書（FR/NFR/AC/IPC4層整合性）"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:01.173Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-summary.md",
+          "description": "設計書（クラス設計/IPC4層/リトライ/DI境界）"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:01.323Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（MAJOR指摘0件）"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:09.715Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/tdd-red-log.txt",
+          "description": "TDD Red確認ログ"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:09.869Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー（TDD Green）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:10.043Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-result.md",
+          "description": "拡充テスト結果（TC-10〜TC-17）"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:33.971Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ確認書（Stmts"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:34.117Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "リファクタリング記録（変更なし）"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:34.264Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-assurance-record.md",
+          "description": "品質検証記録（typecheck/lint/test全PASS）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:34.409Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review.md",
+          "description": "最終レビュー書（AC-1〜AC-8突合・MAJOR指摘0件）"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:28:34.557Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-record.md",
+          "description": "手動テスト記録（UI変更なし・自動テスト検証済み）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-14T12:48:07.318Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "system spec update summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "documentation changelog"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "unassigned task detection"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill feedback report"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "phase12 compliance check"
+        }
+      ]
+    },
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-13": {
+      "name": "PR 作成",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "artifacts": {
+    "creates": [
+      {
+        "path": "apps/desktop/src/main/services/analytics/AnalyticsHttpProvider.ts",
+        "description": "AnalyticsHttpProvider クラス（HTTP 送信・リトライ・タイムアウト実装）",
+        "phase": "phase-5"
+      },
+      {
+        "path": "apps/desktop/src/main/services/analytics/__tests__/AnalyticsHttpProvider.test.ts",
+        "description": "AnalyticsHttpProvider ユニットテスト",
+        "phase": "phase-4"
+      }
+    ],
+    "modifies": [
+      {
+        "path": "apps/desktop/src/main/ipc/analyticsHandler.ts",
+        "description": "TODO 解消・AnalyticsHttpProvider DI・sentCount/failedCount 更新",
+        "phase": "phase-5"
+      },
+      {
+        "path": "apps/desktop/src/preload/channels.ts",
+        "description": "ANALYTICS_GET_STATS チャネル追加・ALLOWED_INVOKE_CHANNELS 登録",
+        "phase": "phase-5"
+      },
+      {
+        "path": "apps/desktop/src/preload/index.ts",
+        "description": "contextBridge に getAnalyticsStats API 追加",
+        "phase": "phase-5"
+      }
+    ]
+  },
+  "dependencies": {
+    "prerequisite": ["UT-W3-ANALYTICS-ADAPTER-001"],
+    "related": ["UT-W3-ANALYTICS-DASHBOARD-001"]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "ANALYTICS_ENDPOINT_URL が設定されている環境でイベントが HTTP POST 送信される"
+    },
+    {
+      "id": "AC-2",
+      "description": "送信失敗時（ネットワークエラー / タイムアウト）に success: false が返る"
+    },
+    {
+      "id": "AC-3",
+      "description": "リトライが最大 3 回実行される（指数バックオフ）"
+    },
+    {
+      "id": "AC-4",
+      "description": "analyticsStore.sentCount / failedCount が正確に記録される"
+    },
+    {
+      "id": "AC-5",
+      "description": "ANALYTICS_ENDPOINT_URL 未設定時は no-op で動作する"
+    },
+    {
+      "id": "AC-6",
+      "description": "AnalyticsHttpProvider.test.ts が新規作成されテストが green"
+    }
+  ]
+}

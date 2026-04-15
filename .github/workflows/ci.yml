@@ -185,9 +185,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 16シャードに分割して各シャードの実行時間を短縮
-        # 399テストファイル ÷ 16 ≒ 25ファイル/シャード
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        # CI Optimization (TASK-CI-OPT-001):
+        # 17シャードに分割して各シャードの実行時間を短縮（16→17に微調整）
+        # 399テストファイル ÷ 17 ≒ 23〜24ファイル/シャード
+        # GitHub Free Tier 並列上限20に対して: test-desktop×17+typecheck×1+test-shared×1+e2e×1=20
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
     env:
       NODE_OPTIONS: --max-old-space-size=8192
       CI: true
@@ -219,12 +221,12 @@ jobs:
       # カバレッジ条件分岐:
       # - PR時: カバレッジなし（高速フィードバック）
       # - main push時: カバレッジあり（品質メトリクス維持）
-      - name: Run desktop app tests (shard ${{ matrix.shard }}/16)
+      - name: Run desktop app tests (shard ${{ matrix.shard }}/17)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/16
+            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/17
           else
-            VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/16 --coverage
+            VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/17 --coverage
           fi
 
       - name: Upload coverage artifact
