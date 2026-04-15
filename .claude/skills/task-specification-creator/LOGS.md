@@ -47,6 +47,23 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 | 結果     | 廃止系タスクの標準パターン 3 件を再利用可能な形で定型化（500 行以内確認済み）                                                  |
 | 検証     | patterns-lessons-and-pitfalls.md 更新確認                                                                                      |
 
+## 2026-04-15 - TASK-CRON-CUSTOM-VALIDATION-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に v10.09.50 を追記
+- `SKILL.md` 「よくある漏れ」テーブルに [VSCPKR-03]（Props vs internal state 混同問題）を追記（replace_all で全インスタンスに適用）
+- `references/phase-template-core.md` Phase 2 セクションに「UI コンポーネントテスト設計時の Props vs internal state 確認」サブセクションを追加
+
+### 背景
+`TASK-CRON-CUSTOM-VALIDATION-001` の skill-feedback-report.md に記録された改善点1（Phase 4 でコンポーネントテスト設計時に外部props か内部state かを Phase 2 で確認しない問題）を同波 sync として反映。
+
+| 項目     | 内容 |
+| -------- | ---- |
+| 種別     | skill-feedback / Phase 12 close-out / skill-sync |
+| 変更対象 | `SKILL.md`（[VSCPKR-03] 追記）、`references/phase-template-core.md`（Phase 2 Props確認追加） |
+| 結果     | CRON-CUSTOM-VALIDATION-001 由来の pitfall を再利用可能な形で定型化 |
+
 ## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
 
 ### 変更内容

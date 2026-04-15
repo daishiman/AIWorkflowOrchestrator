@@ -4930,6 +4930,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L18 |
 | 利用順序 | L129 |
 | 関連ドキュメント | L134 |
+| 仕様書インデックス | L17 |
+| 利用順序 | L128 |
+| 関連ドキュメント | L133 |
 
 ### references/testing-accessibility.md
 

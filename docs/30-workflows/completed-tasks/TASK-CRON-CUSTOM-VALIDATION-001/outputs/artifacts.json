@@ -1,0 +1,370 @@
+{
+  "taskId": "TASK-CRON-CUSTOM-VALIDATION-001",
+  "taskName": "direct input / custom cron モードへの月次バリデーション追加",
+  "featureName": "TASK-CRON-CUSTOM-VALIDATION-001",
+  "taskType": "implementation",
+  "taskClassification": "improvement",
+  "created": "2026-04-14T00:00:00Z",
+  "lastUpdated": "2026-04-15T00:32:55Z",
+  "status": "completed",
+  "workflowPath": "docs/30-workflows/TASK-CRON-CUSTOM-VALIDATION-001",
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx",
+    "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.customValidation.test.tsx"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準（AC-1〜AC-8）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果（VisualCronPicker.tsx 既実装確認）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/traceability-matrix.md",
+          "description": "トレーサビリティ行列"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validation-function-design.md",
+          "description": "バリデーション関数設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/direct-input-error-design.md",
+          "description": "directInputError 設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/error-message-design.md",
+          "description": "エラーメッセージ設計"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/contradiction-checklist.md",
+          "description": "矛盾チェック表"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.customValidation.test.tsx"
+      ],
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specifications.md",
+          "description": "テストマトリクス・RED確認証跡"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": [
+        "apps/desktop/src/renderer/components/schedule/VisualCronPicker.tsx"
+      ],
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-record.md",
+          "description": "GREEN確認証跡・型チェック結果・lint結果"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "codeArtifacts": [
+        "apps/desktop/src/__tests__/components/schedule/VisualCronPicker.customValidation.test.tsx"
+      ],
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/extended-test-record.md",
+          "description": "追加テスト一覧・実行結果"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "リファクタリング記録"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "phase11Judgment": "VISUAL",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/visual-test-result.md",
+          "description": "VISUAL結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UIビジュアルレビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "スクリーンショット計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "スクリーンショットカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+          "description": "スクリーンショット証跡メタデータ"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/SC-01_direct-input-initial.png",
+          "description": "SC-01: direct inputモード切替直後の初期状態"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/SC-02_empty-input-error.png",
+          "description": "SC-02: 空文字入力時のエラー表示"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/SC-03_syntax-error-4fields.png",
+          "description": "SC-03: 4フィールドcron式入力時のsyntaxエラー"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/SC-04_day-of-month-zero-error.png",
+          "description": "SC-04: day-of-month=0入力時のエラー"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/SC-05_valid-cron-no-error.png",
+          "description": "SC-05: 有効なcron式入力時の正常状態"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ],
+      "completedAt": "2026-04-15T00:32:55Z"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカルチェック結果"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "implementation",
+    "relatedIssue": "#2141",
+    "lastUpdated": "2026-04-15T00:32:55Z"
+  }
+}

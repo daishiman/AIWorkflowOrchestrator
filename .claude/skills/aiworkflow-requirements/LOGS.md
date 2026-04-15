@@ -4,6 +4,20 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-15 - TASK-SW-FIX-FEEDBACK-008 current facts sync
+
+### 変更内容
+
+- `SKILL.md` current facts に `TASK-SW-FIX-FEEDBACK-008` / `refreshSkillsInBackground` / `workflowSnapshot` delayed outcome processing / `phase13_blocked` / `manual-test-result` / `phase11-capture-metadata` を追加
+- `docs/30-workflows/TASK-SW-FIX-FEEDBACK-008/` の root と outputs を `phase13_blocked` / `issue_number: 2152` に同期
+- `docs/30-workflows/TASK-SW-FIX-FEEDBACK-008/outputs/phase-12/{implementation-guide,system-spec-update-summary,documentation-changelog,unassigned-task-detection,skill-feedback-report,phase12-task-spec-compliance-check}.md` を current facts に合わせて更新
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で更新
+- 検証: `SkillLifecyclePanel.llm-generation.test.tsx` 42 tests PASS、`pnpm --filter @repo/desktop typecheck` PASS、`pnpm --filter @repo/desktop lint` PASS（warnings 8 件は既存箇所）
+
+### 背景
+
+`fetchSkills()` follow-up は単なる非ブロッキング化だけでなく、`workflowSnapshot` の遅延到着を再処理する実装を含んだ。加えて Phase 11 は `NON_VISUAL` で証跡が画像ではなくテキスト/metadata に寄るため、current facts に証跡の型を固定しておく必要があった。
+
 ## 2026-04-14 — impl-spec-to-skill-sync (UT-SKILL-NAME-PATTERN-001)
 
 - `docs/00-requirements/18-skills.md`: セクション 3.2.2.2「定数定義と一元化管理」追記（`SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` の実装定数参照を明示）
@@ -23,6 +37,18 @@
 ### 背景
 
 index と artifacts の status が stale のままだと、CI 最適化の close-out が `spec_created` のまま残ってしまう。今回の同期で Phase 12 完了の current facts を正本へ固定した。
+
+## 2026-04-15 - TASK-CRON-CUSTOM-VALIDATION-001 Phase 12 close-out / system spec N/A 確認
+
+### 変更内容
+
+- システム仕様更新なし（contract 変更なし → Step 2 N/A 確認）
+- `VisualCronPicker.tsx` は内部バリデーションロジック追加のみ、新規 interface / IPC / export なし
+- skill-feedback の知見は `task-specification-creator/SKILL.md` と `phase-template-core.md` に反映済み
+
+### 背景
+
+TASK-CRON-CUSTOM-VALIDATION-001 の Phase 12 close-out。aiworkflow-requirements 側は system spec 更新不要（内部実装変更のみ）のため、N/A 確認と LOGS 記録のみ実施。
 
 ## 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期
 
