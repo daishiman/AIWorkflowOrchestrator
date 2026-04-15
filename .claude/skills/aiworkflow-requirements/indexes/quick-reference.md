@@ -751,6 +751,22 @@ packages/
 
 ---
 
+### UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001（notion freeText特別ケース解消）参照導線 [仕様書作成済み 2026-04-15]
+
+**概要:** `ConversationRoundStep.tsx` 内の `createQuestionAnswer()` に残存する `notion` 特別ケースを削除し、`SEMANTIC_LABEL_MAP` のみで変換が完結するようリファクタリングする小規模タスク。`UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001` で整備した `resolveSemanticLabel()` に統一することで変換ロジックの分散を解消する。
+
+| 目的 | 参照先 |
+| --- | --- |
+| タスク仕様書（全体像・実装方針） | `docs/30-workflows/completed-tasks/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001.md` |
+| SEMANTIC_LABEL_MAP 型定義・実装 | `packages/shared/src/types/skill-wizard-label-map.ts` |
+| notion 特別ケース削除対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` |
+| 関連テストファイル | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` |
+| 依存タスク（resolveSemanticLabel 整備） | UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001 |
+| UI コンポーネント参照 | `references/arch-ui-components-core.md` |
+| 状態管理参照 | `references/arch-state-management-skill-creator.md` |
+
+---
+
 ## Cron Validation（scheduleConfigValidator）
 
 3段階バリデーション:
