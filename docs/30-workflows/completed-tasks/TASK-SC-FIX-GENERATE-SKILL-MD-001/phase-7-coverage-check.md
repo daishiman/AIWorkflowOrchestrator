@@ -43,8 +43,8 @@ pnpm --filter @repo/desktop test -- --coverage apps/desktop/src/main/services/sk
 
 ### Task 3: concern coverageの確認
 
-- `generateSkillMd`メソッドの`--plan`引数構築ロジック（tmpファイル生成）がcoverageに含まれることを確認する
-- `spawnFile`の成功・失敗分岐の両経路がcoverageに含まれることを確認する
+- `generateSkillMd`メソッドの`--plan`引数構築ロジック（UUID付きtmpファイル生成）がcoverageに含まれることを確認する
+- `scriptExecutor.execute` の成功・失敗分岐の両経路がcoverageに含まれることを確認する
 - `finally`節のfs.unlink呼び出し経路がcoverageに含まれることを確認する
 - `ensureSkillMdExists`フォールバック経路がcoverageに含まれることを確認する
 
@@ -63,7 +63,7 @@ pnpm --filter @repo/desktop test -- --coverage apps/desktop/src/main/services/sk
 ## 統合テスト連携
 
 - AC-1〜AC-5のすべてに対応するテストが存在することを確認する
-- `--plan`引数構築→スクリプト実行→SKILL.md生成の一連フローがcoverageの中核ケースとして計上されていることを確認する
+- `--plan`引数構築→スクリプト実行→SKILL.md存在確認→SKILL.md生成の一連フローがcoverageの中核ケースとして計上されていることを確認する
 
 ## 成果物
 

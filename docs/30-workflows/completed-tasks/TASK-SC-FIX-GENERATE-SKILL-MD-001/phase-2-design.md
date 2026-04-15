@@ -24,20 +24,44 @@ B案（`SkillCreatorService` 側で構造計画 JSON を組み立て、tmp フ�
 修正対象は `SkillCreatorService.ts` の以下の範囲：
 
 ```
-行 152: await this.ensureSkillMdExists(skillDir, options.name, options.description);
-行 153: （空行）
-行 154: // SKILL.md生成
-行 155: const generateResult = await this.scriptExecutor.execute(
-行 156:   "generate_skill_md.js",
-行 157:   ["--path", skillDir],
-行 158: );
-行 159: if (!generateResult.success) {
-行 160:   await this.ensureSkillMdExists(
-行 161:     skillDir,
-行 162:     options.name,
-行 163:     options.description,
-行 164:   );
-行 165: }
+行 152: // SKILL.md生成
+行 153: const skillMdPath = path.join(skillDir, "SKILL.md");
+行 154: const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
+行 155: try {
+行 156:   const plan = {
+行 157:     skillName: options.name,
+行 158:     workflow: {
+行 159:       summary: options.description,
+行 160:       anchors: [],
+行 161:       trigger: {
+行 162:         description: `Use when ${options.name} is requested`,
+行 163:         keywords: [options.name],
+行 164:       },
+行 165:       phases: [],
+行 166:       tasks: [],
+行 167:     },
+行 168:     directories: {},
+行 169:     files: [],
+行 170:   };
+行 171:   await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
+行 172:   const generateResult = await this.scriptExecutor.execute(
+行 173:     "generate_skill_md.js",
+行 174:     ["--plan", tmpPlanPath, "--output", skillMdPath],
+行 175:   );
+行 176:   let shouldUseFallback = !generateResult.success;
+行 177:   if (!shouldUseFallback) {
+行 178:     try {
+行 179:       await fs.access(skillMdPath);
+行 180:     } catch {
+行 181:       shouldUseFallback = true;
+行 182:     }
+行 183:   }
+行 184:   if (shouldUseFallback) {
+行 185:     await this.ensureSkillMdExists(skillDir, options.name, options.description);
+行 186:   }
+行 187: } finally {
+行 188:   await fs.unlink(tmpPlanPath).catch(() => {});
+行 189: }
 ```
 
 行 152 の `ensureSkillMdExists` は init 直後の最低限保証として維持する（削除しない）。
@@ -63,20 +87,31 @@ import os from "os";
 
 ```json
 {
-  "name": "<options.name>",
-  "description": "<options.description>",
-  "tasks": []
+  "skillName": "<options.name>",
+  "workflow": {
+    "summary": "<options.description>",
+    "anchors": [],
+    "trigger": {
+      "description": "Use when <skillName> is requested",
+      "keywords": ["<skillName>"]
+    },
+    "phases": [],
+    "tasks": []
+  },
+  "directories": {},
+  "files": []
 }
 ```
 
-- `name`: スキル名（必須）
-- `description`: スキルの説明（必須）
-- `tasks`: タスク一覧（空配列で最小動作可能）
+- `skillName`: スキル名（必須）
+- `workflow.summary`: スキルの説明（必須）
+- `workflow.tasks`: タスク一覧（空配列で最小動作可能）
+- `workflow.anchors` / `workflow.trigger` / `workflow.phases`: 生成スクリプトの必須補助情報
 
 tmp ファイルのパス設計：
 
 - `os.tmpdir()` を使用してシステムの一時ディレクトリに配置
-- ファイル名: `skill-plan-${Date.now()}.json`（並列実行時の衝突を避けるため timestamp を付与）
+- ファイル名: `skill-plan-${randomUUID()}.json`（並列実行時の衝突を避けるため UUID を付与）
 - エンコーディング: `utf-8`
 
 ### Task 4: tmp ファイル生成・スクリプト呼び出し・cleanup の設計
@@ -85,12 +120,22 @@ tmp ファイルのパス設計：
 
 ```typescript
 // SKILL.md生成
-const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${Date.now()}.json`);
+const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
 try {
   const plan = {
-    name: options.name,
-    description: options.description,
-    tasks: [],
+    skillName: options.name,
+    workflow: {
+      summary: options.description,
+      anchors: [],
+      trigger: {
+        description: `Use when ${options.name} is requested`,
+        keywords: [options.name],
+      },
+      phases: [],
+      tasks: [],
+    },
+    directories: {},
+    files: [],
   };
   await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
   const generateResult = await this.scriptExecutor.execute(
@@ -118,7 +163,7 @@ try {
 
 1. `scriptExecutor.execute` がスクリプト不在エラーを返す
 2. `generateResult.success` が `false` になる
-3. `ensureSkillMdExists` が呼ばれフォールバック SKILL.md が生成される（AC-4 対応）
+3. `ensureSkillMdExists` が呼ばれ、YAML フロントマターと `## Task一覧` を含むフォールバック SKILL.md が生成される（AC-4 対応）
 4. `finally` 節で tmp json が削除される（AC-5 対応）
 
 この経路は既存の `isMissingScriptError` ヘルパーの挙動と整合している。
@@ -143,7 +188,7 @@ try {
 
 ## 完了条件
 
-- [ ] 修正対象行（152-165）が特定されている
+- [ ] 修正対象行（152-188）が特定されている
 - [ ] 追加 import（`os`）が設計に含まれている
 - [ ] 構造計画 JSON の最小形が定義されている
 - [ ] tmp ファイル生成・cleanup の設計が確定している

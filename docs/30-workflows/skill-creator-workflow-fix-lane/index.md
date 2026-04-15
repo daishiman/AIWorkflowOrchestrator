@@ -9,10 +9,10 @@
 
 ## 現在の状態
 
-| タスクID                          | ステータス |
-| --------------------------------- | ---------- |
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 | pending    |
-| TASK-SC-IMP-CREATE-WORKFLOW-001   | pending    |
+| タスクID                          | ステータス  |
+| --------------------------------- | ----------- |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 | completed   |
+| TASK-SC-IMP-CREATE-WORKFLOW-001   | in_progress |
 
 ## 問題の背景
 
