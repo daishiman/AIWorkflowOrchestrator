@@ -1,6 +1,5 @@
 # トピックマップ
 
-> 自動生成: 2026-04-14
 > 自動生成: 2026-04-15
 > 生成コマンド: node scripts/generate-index.js
 
@@ -503,7 +502,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L492 |
+| 続き | L456 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1402,9 +1401,6 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L266 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L315 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L344 |
 | UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L266 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L281 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L330 |
@@ -3595,47 +3591,15 @@ node scripts/list-specs.js --topics
 | L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
 | スキル改善提案（task-specification-creator への反映事項） | L112 |
 
-### references/lessons-learned-skill-wizard-mode-mgmt.md
-
-| セクション | 行 |
-|------------|----|
-| L-MODE-001: state 廃止は 6 ステップで完結させる | L8 |
-| L-MODE-002: TC-06 型の動的廃止検証テストを廃止系タスクの標準に組み込む | L20 |
-| L-MODE-003: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する | L34 |
-| L-MODE-004: Electron 実機なしでの視覚証跡の多層防御 | L47 |
-| L-MODE-005: SkillCreateWizard の確定フロー（本タスク後の正規仕様） | L59 |
-
-### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
+### references/lessons-learned-skill-wizard-notion-special-case-eliminate.md
 
 | セクション | 行 |
 |------------|----|
 | タスク概要 | L9 |
-| 実装パターン（将来参照用） | L22 |
-| L-MSO-001: visual label と accessible name は別管理する | L80 |
-| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
-| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
-| スキル改善提案（task-specification-creator への反映事項） | L112 |
-
-### references/lessons-learned-skill-wizard-mode-mgmt.md
-
-| セクション | 行 |
-|------------|----|
-| L-MODE-001: state 廃止は 6 ステップで完結させる | L8 |
-| L-MODE-002: TC-06 型の動的廃止検証テストを廃止系タスクの標準に組み込む | L20 |
-| L-MODE-003: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する | L34 |
-| L-MODE-004: Electron 実機なしでの視覚証跡の多層防御 | L47 |
-| L-MODE-005: SkillCreateWizard の確定フロー（本タスク後の正規仕様） | L59 |
-
-### references/lessons-learned-skill-wizard-mso-main-tool-badge.md
-
-| セクション | 行 |
-|------------|----|
-| タスク概要 | L9 |
-| 実装パターン（将来参照用） | L22 |
-| L-MSO-001: visual label と accessible name は別管理する | L80 |
-| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
-| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
-| スキル改善提案（task-specification-creator への反映事項） | L112 |
+| 教訓 | L22 |
+| 設計選択の記録 | L60 |
+| 依存関係 | L72 |
+| 関連ファイル | L80 |
 
 ### references/lessons-learned-skill-wizard-redesign.md
 
@@ -4962,13 +4926,6 @@ node scripts/list-specs.js --topics
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
-| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
-| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
-| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4979,7 +4936,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5166,6 +5122,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L155 |
 | 完了タスク（機能別アーカイブ） | L163 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L263 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L170 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L182 |
+| 完了タスク（2026-03後半） | L210 |
+| 完了タスク（機能別アーカイブ） | L218 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
 
 ### references/task-workflow-history.md
 
@@ -5235,6 +5198,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L18 |
 | 利用順序 | L129 |
 | 関連ドキュメント | L134 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
 
 ### references/testing-accessibility.md
 

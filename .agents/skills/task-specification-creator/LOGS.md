@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `SKILL.md` に v10.09.50 を追加し、`SemanticLabelEntry` / `resolveLabelEntry()` / raw fallback 保持の current facts を反映
+- `SKILL.md` の `Phase 12 実行時によくある漏れ` に **[FB-NOTION-001]** を追加
+- `LOGS.md` 2ファイル同波更新と、`task-workflow-completed.md` / recent bundle の同期を current facts として固定
+
+### 背景
+
+`notion` 特別ケースを shared 変換表へ移した後は、raw 値 fallback の原表記保持を skill 側にも残さないと、Phase 12 テンプレートが再び小文字 fallback を正解と誤認しやすい。`Jira` / `Markdown` / `JSON` の回帰を防ぐため、fallback ルールを skill の漏れテーブルへ昇格した。
+
 ## 2026-04-14 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 phase12 current facts sync
 
 ### 変更内容
@@ -13,6 +25,18 @@
 ### 背景
 
 analytics HTTP provider の Phase 12 close-out で、implementation-guide だけでなく system-spec / changelog / compliance / feedback を 6 成果物として確定させる必要があった。skill 側の Phase 12 ルールに current facts を反映し、次回の close-out でも同じ漏れが再発しないようにした。
+
+## 2026-04-15 - TASK-CI-FUTURE-002 phase 12 close-out sync
+
+### 変更内容
+
+- Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を `docs/30-workflows/task-ci-future-002-test-web-sharding/outputs/phase-12/` に確認
+- skill-feedback-report の知見（CI 設定変更は API / IPC 変更なし → system spec 更新は N/A 確認のみでよい）を記録
+- CI 設定タスクへのテンプレート適合性: 良好（P50 チェックによるパッケージ名乖離解消が改善候補として残存）
+
+### 背景
+
+TASK-CI-FUTURE-002（test-web ジョブのシャード 2 並列化）の Phase 12 close-out。task-specification-creator スキル側は system spec 更新不要の CI タスクのため、N/A 確認と LOGS 記録のみ実施。
 
 ## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
 
@@ -26,6 +50,18 @@ analytics HTTP provider の Phase 12 close-out で、implementation-guide だけ
 ### 背景
 
 CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
+
+## 2026-04-15 - TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴へ TASK-SC-IMP-CREATE-WORKFLOW-001 の close-out を追記する前提を整えた
+- `outputs/phase-12/` の 6 成果物、63件 Green、`outputs/artifacts.json` parity、screenshot N/A を same-wave で確認
+- `phase12-task-spec-compliance-check.md` の planned wording 0件を current facts として固定
+
+### 背景
+
+Phase 12 では、実装の可観測性と台帳の整合性を同時に閉じる必要があった。`runCreateWorkflow` の戻り値観測・未タスク分離・エレガント再検証をまとめて current facts 化する。
 
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
@@ -95,6 +131,30 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 
 ### 背景
 `TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
 
 ## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
 
@@ -215,6 +275,18 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
 - `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
@@ -2777,3 +2849,29 @@ NON_VISUAL docs-only タスクとして実施。実測結果: 最大 59秒 ≤ 6
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`                |
 | 結果     | Phase 1-12 全成果物出力完了。CI-M-01 解決済み記録。spec_created ステータス更新完了      |
 | 検証     | AC-1〜AC-5 全達成。シナリオカバレッジ 100%                                              |
+| 項目     | 内容                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | bug-fix / state-management / Phase 12 close-out / skill-sync                                                                                                                                                        |
+| 変更対象 | `SkillCreateWizard.tsx`（resetGeneratedState / generationLockRef finally）、`GenerateStep.tsx`（template cancel 導線）、`ConversationRoundStep.tsx`（answers prop 再同期）                                          |
+| 結果     | template error → キャンセル → Step 0 戻り導線を実装。answers reset と generationLockRef.current = false を finally で保証。Phase 11 screenshot 3 枚・Phase 12 docs 6 件で close-out |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
+
+---
+
+## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 タスク仕様書作成（spec_created）
+
+### 変更内容
+
+- Phase 1〜13 全仕様書を新規作成（`docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/`）
+- artifacts.json を作成済み
+- 設計決定: Option 3 採用（resolveSemanticLabel が `{ label, freeText? }` を返す）
+- 依存: UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001
+
+| 項目     | 内容                                                                                                                                                                                                                                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | refactoring / type-extension / spec_created                                                                                                                                                                                          |
+| 変更対象 | `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/` (index.md + Phase 1-13 + artifacts.json)                                                                                                                      |
+| 結果     | notion freeText 特別ケースを解消。`resolveLabelEntry()` 追加で呼び出し元が label と freeText を明示的に分離できる設計を採用。`SemanticLabelEntry` 型を shared に定義し将来の拡張は SEMANTIC_LABEL_MAP エントリ追加のみで対応可能にした |
+| 検証     | タスク仕様書 Phase 1-13 + artifacts.json 作成完了。依存タスク（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）との整合確認済み                                                                                                  |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）

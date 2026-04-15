@@ -502,7 +502,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L492 |
+| 続き | L456 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -3488,6 +3488,16 @@ node scripts/list-specs.js --topics
 | L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
 | スキル改善提案（task-specification-creator への反映事項） | L112 |
 
+### references/lessons-learned-skill-wizard-notion-special-case-eliminate.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 教訓 | L22 |
+| 設計選択の記録 | L60 |
+| 依存関係 | L72 |
+| 関連ファイル | L80 |
+
 ### references/lessons-learned-skill-wizard-redesign.md
 
 | セクション | 行 |
@@ -4805,7 +4815,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -4994,6 +5003,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L156 |
 | 完了タスク（機能別アーカイブ） | L164 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L264 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L170 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L182 |
+| 完了タスク（2026-03後半） | L210 |
+| 完了タスク（機能別アーカイブ） | L218 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
 
 ### references/task-workflow-history.md
 
@@ -5027,34 +5043,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L17 |
-| 利用順序 | L101 |
-| 関連ドキュメント | L106 |
-| 仕様書インデックス | L14 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L50 |
-| 仕様書インデックス | L15 |
-| 利用順序 | L45 |
-| 関連ドキュメント | L51 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
-| 仕様書インデックス | L16 |
-| 利用順序 | L73 |
-| 関連ドキュメント | L78 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
-| 仕様書インデックス | L17 |
-| 利用順序 | L101 |
-| 関連ドキュメント | L106 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L48 |
-| 利用順序 | L128 |
-| 関連ドキュメント | L133 |
-| 仕様書インデックス | L13 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
 
 ### references/testing-accessibility.md
 

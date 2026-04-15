@@ -1262,4 +1262,194 @@ describe("SkillCreatorService", () => {
       ).resolves.toContain("test-skill");
     });
   });
+
+  // ===================================================================
+  // TASK-SC-IMP-CREATE-WORKFLOW-001: create モード 構造計画生成
+  // TC-01〜TC-B06: AC-1〜AC-4 の検証テスト
+  // ===================================================================
+
+  describe("create モード", () => {
+    beforeEach(() => {
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/test/skills/test-skill",
+        stderr: "",
+        exitCode: 0,
+      });
+    });
+
+    // TC-01: AC-1 — loadAgent が呼ばれる
+    it("TC-01: create モードで createSkill() を呼ぶと loadAgent が呼ばれる", async () => {
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト用スキル",
+        mode: "create",
+      });
+
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalled();
+    });
+
+    // TC-02: AC-2 — 後続処理が継続してスキルパスを返す
+    it("TC-02: runCreateWorkflow 完了後、createSkill() がスキルパスを返す", async () => {
+      const result = await service.createSkill({
+        name: "test-skill",
+        description: "テスト用スキル",
+        mode: "create",
+      });
+
+      expect(typeof result).toBe("string");
+      expect(result).toContain("test-skill");
+    });
+
+    // TC-03: AC-3 — loadAgent 失敗時もフォールバックで createSkill() 成功
+    it("TC-03: loadAgent が例外をスローしても createSkill() は成功する", async () => {
+      mockResourceLoader.loadAgent.mockRejectedValue(
+        new Error("Agent file not found"),
+      );
+
+      await expect(
+        service.createSkill({
+          name: "test-skill",
+          description: "テスト用スキル",
+          mode: "create",
+        }),
+      ).resolves.not.toThrow();
+    });
+
+    // TC-04: AC-4 — options.description が void で破棄されていない
+    it("TC-04: runCreateWorkflow は options.description を使用する（void options 削除の検証）", async () => {
+      const description = "詳細な説明テキスト";
+
+      const structurePlan = await (service as any).runCreateWorkflow({
+        name: "test-skill",
+        description,
+        mode: "create",
+      });
+
+      expect(structurePlan).toMatchObject({
+        skillName: "test-skill",
+        description,
+        purpose: "mock-agent-content",
+        agents: ["mock-agent-content", "mock-agent-content"],
+      });
+    });
+
+    // TC-05: AC-1 詳細 — "extract-purpose" エージェントを読み込む
+    it("TC-05: loadAgent は extract-purpose エージェントを読み込む", async () => {
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト用スキル",
+        mode: "create",
+      });
+
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
+        "extract-purpose",
+      );
+    });
+
+    // TC-B01: Phase 6 Task 1 — loadAgent は2エージェントを読み込む
+    it("TC-B01: loadAgent は extract-purpose と plan-structure の2エージェントを読み込む", async () => {
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト用スキル",
+        mode: "create",
+      });
+
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
+        "extract-purpose",
+      );
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
+        "plan-structure",
+      );
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledTimes(2);
+    });
+
+    // TC-B02: Phase 6 Task 2 — options.name が createSkill() に反映される
+    it("TC-B02: options.name が異なる場合でも loadAgent が呼ばれ createSkill() が成功する", async () => {
+      const result = await service.createSkill({
+        name: "my-custom-skill",
+        description: "カスタムスキル説明",
+        mode: "create",
+      });
+
+      expect(result).toContain("my-custom-skill");
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalled();
+    });
+
+    // TC-B03: Phase 6 Task 3 — loadAgent が null を返しても後続処理が継続する
+    it("TC-B03: loadAgent が null 同等の値を返しても createSkill() がスキルパスを返す", async () => {
+      mockResourceLoader.loadAgent.mockResolvedValue(null as unknown as string);
+
+      await expect(
+        service.createSkill({
+          name: "test-skill",
+          description: "テスト用スキル",
+          mode: "create",
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
+  // Phase 6 Task 4: モード分岐確認
+  describe("モード分岐（create vs collaborative / orchestrate）", () => {
+    beforeEach(() => {
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/test/skills/test-skill",
+        stderr: "",
+        exitCode: 0,
+      });
+    });
+
+    // TC-B04: collaborative モードでは extract-purpose が呼ばれない
+    it("TC-B04: collaborative モードでは extract-purpose エージェントが呼ばれない", async () => {
+      const mockInterviewResult: InterviewResult = {
+        purpose: "test purpose",
+        features: ["feature1"],
+        inputs: [],
+        outputs: [],
+        toolsNeeded: [],
+        abstractionLevel: "L2",
+      };
+
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト",
+        mode: "collaborative",
+        interviewResult: mockInterviewResult,
+      });
+
+      expect(mockResourceLoader.loadAgent).not.toHaveBeenCalledWith(
+        "extract-purpose",
+      );
+    });
+
+    // TC-B05: orchestrate モードでは runCreateWorkflow が呼ばれない
+    it("TC-B05: orchestrate モードでは extract-purpose エージェントが呼ばれない", async () => {
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト",
+        mode: "orchestrate",
+      });
+
+      expect(mockResourceLoader.loadAgent).not.toHaveBeenCalledWith(
+        "extract-purpose",
+      );
+    });
+
+    // TC-B06: create モードのみが runCreateWorkflow を経由する分岐確認
+    it("TC-B06: create モードでのみ plan-structure エージェントが読み込まれる", async () => {
+      await service.createSkill({
+        name: "test-skill",
+        description: "テスト",
+        mode: "create",
+      });
+
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
+        "plan-structure",
+      );
+    });
+  });
 });

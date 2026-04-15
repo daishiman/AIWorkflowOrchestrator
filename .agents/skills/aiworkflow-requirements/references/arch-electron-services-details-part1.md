@@ -243,10 +243,26 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 
 SkillCreatorService はスキル生成・改善・運用支援を統合する Facade として実装される。
 
+**内部型: `StructurePlanJson`（TASK-SC-IMP-CREATE-WORKFLOW-001 追加）**
+
+`create` モードで `runCreateWorkflow()` が生成する構造計画 JSON。`generate_skill_md.js --plan` に渡す予定（タスクA完了後に接続）。
+
+| フィールド    | 型         | 必須 | 説明                                   |
+| ------------- | ---------- | ---- | -------------------------------------- |
+| `skillName`   | `string`   | ○    | スキル名                               |
+| `description` | `string`   | ○    | スキル説明（undefined は入力破損扱い） |
+| `purpose`     | `string`   | ○    | `extract-purpose` エージェント出力     |
+| `features`    | `string[]` | ○    | 機能一覧                               |
+| `agents`      | `string[]` | ○    | 使用エージェント一覧                   |
+| `triggers`    | `string[]` | -    | トリガー（optional）                   |
+| `anchors`     | `string[]` | -    | アンカー（optional）                   |
+
+`createSkill()` 内で `let structurePlan: StructurePlanJson | null = null` として受け取り、`void structurePlan`（将来 `generateSkillMd` へ渡す）としてハンドオフする。
+
 | メソッド | 引数 | 戻り値 | 説明 |
 | --- | --- | --- | --- |
 | `detectMode` | `request: string` | `Promise<SkillCreatorMode>` | 要求文から作成モード判定 |
-| `createSkill` | `options: CreateSkillOptions` | `Promise<string>` | スキル新規作成 |
+| `createSkill` | `options: CreateSkillOptions` | `Promise<string>` | スキル新規作成（create モードは `runCreateWorkflow` で `StructurePlanJson` を生成） |
 | `executeTasks` | `options: ExecuteTasksOptions` | `Promise<ExecutionReport>` | タスク仕様の実行 |
 | `validateSkill` | `skillDir: string` | `Promise<boolean>` | スキル検証 |
 | `validateWithSchema` | `schemaName: string, data: unknown` | `Promise<boolean>` | スキーマ検証 |
