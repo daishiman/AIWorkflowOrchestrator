@@ -3,10 +3,10 @@
 ## メタ情報
 
 ```yaml
-issue_number: 2131
+issue_number: 2152
 task_id: TASK-SW-FIX-FEEDBACK-008
 parent_task_id: TASK-SW-FIX-FEEDBACK-001
-status: open
+status: completed
 priority: medium
 scale: medium
 task_type: BUGFIX
@@ -21,7 +21,7 @@ task_type: BUGFIX
 | 対象機能     | `SkillLifecyclePanel.tsx` の `handleExecutePlan` / `processWorkflowOutcome`    |
 | 優先度       | 中（`priority:medium`）                                                        |
 | 見積もり規模 | 中規模（`scale:medium`）                                                       |
-| ステータス   | 未実施（`status:open`）                                                        |
+| ステータス   | 実装完了（`status:completed`）                                                 |
 | 実行ウェーブ | Wave C（TASK-SW-FIX-FEEDBACK-001 完了後に着手可能）                            |
 | 依存タスク   | TASK-SW-FIX-FEEDBACK-001（Wave B 完了済み）                                    |
 | 発見元       | TASK-SW-FIX-FEEDBACK-001 Phase 11 手動テスト（NOTE-001）                       |
