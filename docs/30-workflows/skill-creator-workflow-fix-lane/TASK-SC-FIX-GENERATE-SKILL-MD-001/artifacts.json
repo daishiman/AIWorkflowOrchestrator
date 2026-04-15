@@ -1,0 +1,72 @@
+{
+  "feature": "TASK-SC-FIX-GENERATE-SKILL-MD-001",
+  "taskId": "TASK-SC-FIX-GENERATE-SKILL-MD-001",
+  "taskName": "generate_skill_md.js 引数修正",
+  "taskType": "implementation",
+  "created": "2026-04-14T00:00:00.000Z",
+  "status": "pending",
+  "parentWorkflow": "skill-creator-workflow-fix-lane",
+  "dependsOnTasks": [],
+  "targetFiles": [
+    "apps/desktop/src/main/services/skill/SkillCreatorService.ts",
+    "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts"
+  ],
+  "phases": {
+    "1": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計書"
+        }
+      ]
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "description": "実装計画書"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"]
+  }
+}
