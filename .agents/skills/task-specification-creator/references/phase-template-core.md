@@ -158,6 +158,19 @@ Factory が返す型 T を使用する注入先 Port/Interface が存在する�
 - 同名インターフェースが複数パッケージに存在する場合は `grep -rn "interface {{TypeName}}" packages/ apps/` で全定義箇所を確認する
 - 互換性検証は Phase 3 の「同名インターフェース型ドリフト検出」チェックで最終確定する
 
+### UI コンポーネントテスト設計時の Props vs internal state 確認（[VSCPKR-03] 対策）
+
+UI コンポーネントを含むタスクの Phase 4 テスト設計前に、テストで操作する入力媒体を確認する。
+
+| チェック観点 | 確認内容 |
+| --- | --- |
+| コンポーネントのモード管理 | モード切替が内部 `useState`（internal state）か、親から渡す props（external prop）か |
+| テスト操作方法の選択 | `fireEvent.click` でトグルするか、props を変えて再レンダリングするか |
+| Phase 4 仕様書への記載 | 「テスト操作対象は internal state か external prop か」を1行で明記する |
+
+- **根拠**: TASK-CRON-CUSTOM-VALIDATION-001 Phase 4 で `VisualCronPicker` の `isAdvancedMode` が内部 state であることを Phase 2 で確認せず、TDD RED のテスト操作が誤った前提で書かれた
+- **適用条件**: UI コンポーネントで複数のモード・状態を持つ場合（例: advanced/simple トグル、ウィザードステップ）
+
 ## Phase 3 のポイント
 
 - PASS / MINOR / MAJOR の戻り先を明示する。
