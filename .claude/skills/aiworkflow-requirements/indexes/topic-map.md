@@ -1035,13 +1035,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | AI/チャット IPC チャネル | L6 |
-| Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001） | L74 |
-| Skill Creator Workflow Interaction Bridge（TASK-SDK-04） | L107 |
-| Slide IPC API（スライド同期） | L151 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L232 |
-| Conversation IPC API（会話履歴永続化） | L276 |
-| Electron IPC API設計 | L312 |
-| 分割ファイル一覧 | L457 |
+| Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001 / UT-W3-ANALYTICS-HTTP-PROVIDER-001） | L74 |
+| Skill Creator Workflow Interaction Bridge（TASK-SDK-04） | L111 |
+| Slide IPC API（スライド同期） | L155 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L236 |
+| Conversation IPC API（会話履歴永続化） | L280 |
+| Electron IPC API設計 | L316 |
+| 分割ファイル一覧 | L461 |
 
 ### references/api-ipc-system-details.md
 
@@ -2792,13 +2792,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 環境変数の分類 | L15 |
-| セキュリティベストプラクティス | L80 |
-| 環境別設定 | L152 |
-| Electron アプリでの環境変数 | L204 |
-| トラブルシューティング | L261 |
-| チーム開発での運用 | L322 |
-| 必須環境変数一覧 | L360 |
-| 関連ドキュメント | L418 |
+| セキュリティベストプラクティス | L82 |
+| 環境別設定 | L154 |
+| Electron アプリでの環境変数 | L206 |
+| トラブルシューティング | L263 |
+| チーム開発での運用 | L324 |
+| 必須環境変数一覧 | L362 |
+| 関連ドキュメント | L420 |
 
 ### references/error-handling-core.md
 
@@ -3572,7 +3572,7 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
-| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-14） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4605,6 +4605,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
+| 続き | L331 |
 | 続き | L335 |
 | 続き | L331 |
 
@@ -4737,12 +4738,24 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L294 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L311 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L333 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
 
 ### references/task-workflow-completed-recent-2026-04f.md
 
@@ -4873,6 +4886,38 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L20 |
+| 完了タスク（2026-03後半） | L195 |
+| 完了タスク（機能別アーカイブ） | L203 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L312 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L22 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L42 |
+| 完了タスク（2026-03後半） | L217 |
+| 完了タスク（機能別アーカイブ） | L225 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L334 |
+| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 renderer error UI close-out sync | L24 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L102 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L122 |
+| 完了タスク（2026-03後半） | L297 |
+| 完了タスク（機能別アーカイブ） | L305 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L414 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L29 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L49 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L50 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L62 |
+| 完了タスク（2026-03後半） | L90 |
+| 完了タスク（機能別アーカイブ） | L98 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L198 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L25 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L45 |
+| 完了タスク（2026-03後半） | L220 |
+| 完了タスク（機能別アーカイブ） | L228 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L337 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L94 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L114 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L115 |
@@ -4918,10 +4963,26 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L50 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
+| 仕様書インデックス | L16 |
+| 利用順序 | L73 |
+| 関連ドキュメント | L78 |
 | 仕様書インデックス | L18 |
 | 利用順序 | L129 |
 | 関連ドキュメント | L134 |
 | 仕様書インデックス | L17 |
+| 利用順序 | L101 |
+| 関連ドキュメント | L106 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 | 利用順序 | L128 |
 | 関連ドキュメント | L133 |
 | 仕様書インデックス | L13 |

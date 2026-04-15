@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2983,
+  "totalKeywords": 2985,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -556,6 +556,7 @@
     ],
     "HTTP": [
       "api-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "ステータスコード": [
@@ -1755,6 +1756,8 @@
       "arch-electron-services-details-part2.md",
       "arch-electron-services-details.md",
       "arch-state-management-details.md",
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-details.md",
       "architecture-implementation-patterns-details.md",
@@ -2482,6 +2485,10 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
+    ],
+    "PROVIDER": [
+      "api-ipc-system-core.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
@@ -3843,7 +3850,10 @@
     ],
     "STATE": [
       "arch-state-management-reference.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "task-workflow-completed.md"
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
@@ -4004,6 +4014,24 @@
       "arch-ui-components-core.md",
       "task-workflow-completed.md"
     ],
+    "state": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed.md"
+    ],
+    "recovery": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md"
+    ],
+    "DETAIL": [
+      "arch-state-management-skill-creator.md",
+      "arch-ui-components-core.md",
+      "task-workflow-completed.md"
+    ],
     "Snapshot": [
       "arch-state-management-skill-creator.md"
     ],
@@ -4128,13 +4156,6 @@
     ],
     "ログインフローの": [
       "architecture-auth-security-core.md"
-    ],
-    "state": [
-      "architecture-auth-security-core.md",
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed.md"
     ],
     "ownership": [
       "architecture-auth-security-core.md"
@@ -7574,6 +7595,9 @@
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md"
     ],
+    "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "フィールド独立推論性": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
@@ -9616,9 +9640,6 @@
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
     ],
-    "PROVIDER": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
     "quality": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
@@ -10000,7 +10021,8 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md"
+      "task-workflow-completed-recent-2026-04f.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"

@@ -1036,13 +1036,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | AI/チャット IPC チャネル | L6 |
-| Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001） | L74 |
-| Skill Creator Workflow Interaction Bridge（TASK-SDK-04） | L107 |
-| Slide IPC API（スライド同期） | L151 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L232 |
-| Conversation IPC API（会話履歴永続化） | L276 |
-| Electron IPC API設計 | L312 |
-| 分割ファイル一覧 | L457 |
+| Analytics IPC API（UT-W3-ANALYTICS-ADAPTER-001 / UT-W3-ANALYTICS-HTTP-PROVIDER-001） | L74 |
+| Skill Creator Workflow Interaction Bridge（TASK-SDK-04） | L111 |
+| Slide IPC API（スライド同期） | L155 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L236 |
+| Conversation IPC API（会話履歴永続化） | L280 |
+| Electron IPC API設計 | L316 |
+| 分割ファイル一覧 | L461 |
 
 ### references/api-ipc-system-details.md
 
@@ -2816,13 +2816,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L6 |
 | 環境変数の分類 | L15 |
-| セキュリティベストプラクティス | L80 |
-| 環境別設定 | L152 |
-| Electron アプリでの環境変数 | L204 |
-| トラブルシューティング | L261 |
-| チーム開発での運用 | L322 |
-| 必須環境変数一覧 | L360 |
-| 関連ドキュメント | L418 |
+| セキュリティベストプラクティス | L82 |
+| 環境別設定 | L154 |
+| Electron アプリでの環境変数 | L206 |
+| トラブルシューティング | L263 |
+| チーム開発での運用 | L324 |
+| 必須環境変数一覧 | L362 |
+| 関連ドキュメント | L420 |
 
 ### references/error-handling-core.md
 
@@ -3114,6 +3114,9 @@ node scripts/list-specs.js --topics
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L578 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L612 |
 | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L646 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L577 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L611 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L645 |
 | UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L5 |
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L45 |
 | UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L76 |
@@ -3663,6 +3666,16 @@ node scripts/list-specs.js --topics
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L156 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L193 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L238 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L253 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L298 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L313 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-14） | L119 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -4826,9 +4839,25 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L373 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L390 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L412 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L429 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L446 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
@@ -4997,6 +5026,11 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L219 |
 | 完了タスク（機能別アーカイブ） | L227 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L336 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L25 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L45 |
+| 完了タスク（2026-03後半） | L220 |
+| 完了タスク（機能別アーカイブ） | L228 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L337 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L29 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L49 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L50 |
@@ -5061,6 +5095,8 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L15 |
 | 利用順序 | L45 |
 | 関連ドキュメント | L51 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
 | 仕様書インデックス | L14 |
 | 利用順序 | L43 |
 | 関連ドキュメント | L48 |
@@ -5069,6 +5105,8 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L47 |
 | 利用順序 | L98 |
 | 関連ドキュメント | L103 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 | 仕様書インデックス | L17 |
 | 利用順序 | L101 |
 | 関連ドキュメント | L106 |
