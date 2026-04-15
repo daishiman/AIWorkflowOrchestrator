@@ -1,10 +1,30 @@
 name: "Install dependencies with retry"
-description: "Run pnpm install with retries to mitigate transient network failures"
+description: "Run pnpm install with retries and node_modules cache"
 
 runs:
   using: "composite"
   steps:
+    # CI Optimization (TASK-CI-OPT-001):
+    # node_modules をキャッシュして pnpm install の固定費を削減する。
+    # キャッシュキーは pnpm-lock.yaml のハッシュで管理し、lockfile 変更時に自動無効化する。
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          node_modules
+          apps/desktop/node_modules
+          apps/web/node_modules
+          packages/shared/node_modules
+          packages/ui/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+
+    # CI Optimization (TASK-CI-OPT-001):
+    # キャッシュヒット時は pnpm install をスキップする（フォールバック: ミス時は通常 install）
     - name: Install dependencies with retry
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       shell: bash
       run: |
         set -euo pipefail

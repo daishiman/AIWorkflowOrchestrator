@@ -11,6 +11,19 @@
 - `references/task-workflow-completed-recent-2026-04f.md`: UT-SKILL-NAME-PATTERN-001 completed エントリ追加
 - Phase-12 検証: 全 AC PASS（監査 no-op・テスト 60件全合格）
 
+## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/task-ci-optimization-001/index.md` を Phase 12 完了（PR未着手）へ更新
+- `docs/30-workflows/task-ci-optimization-001/artifacts.json` を `phase12_completed` へ同期し、Phase 1 / Phase 9 の status も `completed` に是正
+- `docs/30-workflows/task-ci-optimization-001/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase-12-documentation.md` を current facts に反映
+- `.claude` / `.agents` の `SKILL.md` / `SKILL-changelog.md` / `LOGS.md` を同波で同期
+
+### 背景
+
+index と artifacts の status が stale のままだと、CI 最適化の close-out が `spec_created` のまま残ってしまう。今回の同期で Phase 12 完了の current facts を正本へ固定した。
+
 ## 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期
 
 ### 変更内容

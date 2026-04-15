@@ -2,6 +2,19 @@
 
 ## 役割
 
+## 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/task-ci-optimization-001/index.md` の Phase 1-12 を `完了` に更新し、トップステータスを `Phase 12 完了（PR未着手）` に同期
+- `docs/30-workflows/task-ci-optimization-001/artifacts.json` の `status` を `phase12_completed` に更新し、Phase 1 / Phase 9 の `status` も `completed` に是正
+- `docs/30-workflows/task-ci-optimization-001/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase-12-documentation.md` を current facts に反映
+- `.agents` mirror の `LOGS.md` / `SKILL.md` を同波で同期
+
+### 背景
+
+CI 最適化タスクの close-out は、workflow 本文・台帳・履歴の 3 面を同波で閉じないと `spec_created` / `not-started` が残存する。今回の同期で index と artifacts の整合を回復した。
+
 ## 2026-04-13 - UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -13,17 +26,6 @@
 ### 背景
 
 FB-05 は docs-only / `spec_created` タスクとして Phase 11 テスト証跡テンプレートに新 3 セクションを導入した。skill-feedback-report.md に記録した LOW 2件（件数集約 / edge case 表カラム整理）は v2 テンプレートで既に解消済み。
-
-## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
-## 2026-04-13 - TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync
-
-### 変更内容
-- `SKILL.md` 変更履歴の先頭に `v10.09.46` を追加し、`TASK-SW-FIX-DATAFLOW-001` の current facts（`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` / `skill.create(..., context)`）を反映
-- `SKILL.md` 「Phase 12 実行時によくある漏れ」テーブルに **[FB-DATAFLOW-001]** を追加し、context bridge 同期漏れ（shared 型・renderer store・preload/main IPC 契約の同一wave更新漏れ）を防止ルールとして明文化
-- 本 `LOGS.md` に同作業ログを追記（worker 2 担当範囲: `SKILL.md` / `LOGS.md`）
-
-### 背景
-`TASK-SW-FIX-DATAFLOW-001` では Skill 作成 dataflow が `context` 引数ベースへ移行しており、Phase 12 close-out 時に仕様書・成果物・実コードの同時同期が外れると reviewer が current contract を誤認しやすい。`context bridge` の同期漏れを再発防止パターンとして先に固定した。
 
 ## 2026-04-14 - TASK-SW-FIX-MODE-MGMT-001 impl-spec-to-skill-sync
 
@@ -64,6 +66,18 @@ TASK-SW-FIX-MODE-MGMT-001（SkillCreateWizard generationMode 廃止・LLM 専用
 
 ### 背景
 `TASK-SW-FIX-STATE-DETAIL-001` の state detail 改修では、template error の stale guard と wizard step 間の回答 state 同期、生成ロックの解放漏れ、Phase 11 の evidence 参照先更新が同じ波で閉じないと再発しやすい。task-specification-creator ではこれを current facts として固定し、Phase 12 の漏れパターンへ昇格した。
+
+## 2026-04-14 - TASK-SW-FIX-UI-001 phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/WC-par-03b-fix-ui/phase-12-documentation.md` を completed 化し、Phase 12 6タスクの完了状態を明記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/implementation-guide.md` に Phase 11 screenshot references と capture metadata を追記
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` を screenshot audit / parity PASS まで含めて固定
+- `docs/30-workflows/WC-par-03b-fix-ui/outputs/artifacts.json` を新規作成し、root `artifacts.json` と同値化
+
+### 背景
+
+Phase 12 の current facts を、実装ガイド・検証結果・台帳 parity・視覚証跡の 4 点で閉じる必要があった。task-specification-creator 側でも、VISUAL タスクは screenshot evidence と outputs parity を同 wave で残すことを前提化する。
 
 このログは task-specification-creator の current facts 同期履歴を残す。
 
@@ -208,6 +222,10 @@ shared 型の追加に対して、`types/index` と `package index` の再公開
 ## 2026-04-13 - TASK-UI-SCHEDULE-CRON-SEMANTIC-001 impl-spec-to-skill-sync
 
 ### 変更内容
+- `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
+- `SKILL.md` 変更履歴に v10.09.45 を追記
+- `aiworkflow-requirements/SKILL.md` Trigger キーワードに `ValidateCronOptions` / `cron-parser` / `semantic（cronバリデーション）` / `validateCronExpression` 等を追加
+- LOGS.md 2ファイル同波更新
 
 - `SKILL.md` 「よくある漏れ」テーブルに **[FB-CRONVL-001]**（Phase 2 でサードパーティライブラリ複合フィールド semantics を実測確認しないと Phase 5 で設計変更が必要になる）・**[FB-CRONVL-002]**（NON_VISUAL renderer utility の opt-in フラグ追加時に UI 統合経路を別タスク化することを Phase 1 スコープで明示する）を追記
 - `SKILL.md` 変更履歴に v10.09.45 を追記
@@ -265,16 +283,6 @@ Phase 12 の canonical 6 成果物に加えて、LOGS と topic-map を閉じる
 - Phase 12-2の仕様書更新判定: APIシグネチャ変更なし + 内部実装追加のみの場合はN/A判定が適切
 
 ---
-
-## 2026-04-13 - UT-W3-ANALYTICS-HTTP-PROVIDER-001 impl-spec-to-skill-sync
-
-### 変更内容
-- `SKILL.md` v10.09.45 changelog エントリ追加
-- 「よくある漏れ」テーブルに **[UT-W3-HTTP]** 1件（Phase 4 でガード条件の全 falsy パターン未列挙による Phase 6 追加漏れ）を追記
-- `aiworkflow-requirements/LOGS.md` 同波更新
-
-### 背景
-UT-W3-ANALYTICS-HTTP-PROVIDER-001 の Phase 6 で TC-E04（空文字 URL）が追加されたことから、Phase 4 でのガード条件設計に改善余地があった。次回類似タスクで同じ漏れが起きないよう「よくある漏れ」テーブルに記録した。
 
 ## 2026-04-11 - UT-SKILL-WIZARD-FB-03 phase 12 close-out sync
 

@@ -1,0 +1,260 @@
+{
+  "taskId": "TASK-CI-OPT-001",
+  "taskName": "ci-optimization-001",
+  "featureName": "task-ci-optimization-001",
+  "createdAt": "2026-04-14T00:00:00Z",
+  "status": "phase12_completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/current-state-analysis.md"
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:29.509Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/bottleneck-analysis.md",
+          "description": "ボトルネック分析"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:37.562Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-decisions.md",
+          "description": "設計決定記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/cache-design.md",
+          "description": "キャッシュ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validation-matrix.md",
+          "description": "バリデーションマトリックス"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:37.648Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/risk-assessment.md",
+          "description": "リスク評価"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/minor-tracking.md",
+          "description": "MINORトラッキング"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:37.654Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/verification-plan.md",
+          "description": "検証計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/rollback-criteria.md",
+          "description": "ロールバック基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/baseline-timing.md",
+          "description": "ベースライン計測"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:46.753Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-result.md",
+          "description": "実装結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-confirmation.md",
+          "description": "GREEN確認"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:46.885Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/edge-case-verification.md",
+          "description": "エッジケース検証"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:46.910Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/ci-timing-report.md",
+          "description": "CI実行時間レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/cache-effectiveness-report.md",
+          "description": "キャッシュ効果レポート"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["outputs/phase-9/quality-check-result.md"]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:58.674Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-check-result.md",
+          "description": "品質チェック結果"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:58.597Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/ac-verification.md",
+          "description": "AC検証記録"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:19:58.654Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見された問題"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ci-timing-measurements.md",
+          "description": "CI実行時間計測"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "キャプチャメタデータ"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-14T14:20:05.814Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "コンプライアンスチェック"
+        }
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: node_modulesキャッシュが正常動作（pnpm-lock.yamlハッシュキー）",
+    "AC-2: CI実行時間が7分40秒以内に削減（平均値で評価）",
+    "AC-3: test-desktopの全シャードがPASS維持",
+    "AC-4: シャード数17でmatrix動作",
+    "AC-5: CI_MAX_FORKS=3でメモリ安定動作",
+    "AC-6: mainブランチのカバレッジ収集が継続動作"
+  ],
+  "dependencies": [],
+  "lastUpdated": "2026-04-14T14:46:19Z"
+}
