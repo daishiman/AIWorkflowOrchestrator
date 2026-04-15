@@ -18,7 +18,7 @@ import type {
   SkillWizardScheduleConfig,
 } from "@repo/shared/types/skillCreator";
 import {
-  resolveSemanticLabel,
+  resolveLabelEntry,
   SEMANTIC_LABEL_MAP,
   type QuestionSemanticLabelMap,
 } from "../../../../../../../packages/shared/src/types/skill-wizard-label-map";
@@ -156,28 +156,19 @@ function createQuestionAnswer(
   }
 
   const rawValue = defaultValue.trim();
-  // toLowerCase() で正規化した値を map ルックアップに使用する。
-  // 日本語文字列は toLowerCase() で変化しないため、日英どちらの入力にも対応できる。
-  const normalizedKey = rawValue.toLowerCase();
+  // skill-wizard-label-map.ts の SEMANTIC_LABEL_MAP を参照して rawValue を UI ラベルと freeText へ正規化する。
+  // resolveLabelEntry() 側で大小文字を吸収し、未マップ値は原表記のまま返す。
+  // notion → { label: "その他", freeText: "Notion" } のような freeText 付き変換も SEMANTIC_LABEL_MAP で一元管理される。
+  const entry = resolveLabelEntry(rawValue, questionId, labelMap);
+  const displayLabel = entry?.label ?? rawValue;
+  const freeTextValue = entry?.freeText ?? "";
 
-  // notion は "その他" へマップし、freeText に "Notion" を保持する特別ケース。
-  // resolveSemanticLabel 単体では freeText の設定ができないため先行チェックする。
-  if (normalizedKey === "notion" && options.includes("その他")) {
-    return { selectedOptions: ["その他"], freeText: "Notion" };
-  }
-
-  // skill-wizard-label-map.ts の SEMANTIC_LABEL_MAP を参照して rawValue を UI ラベルへ正規化する。
-  // 未定義の questionId や rawValue はフォールバックとして元の値をそのまま使用する。
-  const resolved = resolveSemanticLabel(normalizedKey, questionId, labelMap);
-  const displayValue =
-    resolved === normalizedKey ? rawValue : (resolved ?? rawValue);
-
-  if (options.includes(displayValue as QuestionOption)) {
+  if (options.includes(displayLabel as QuestionOption)) {
     // SmartDefaultResult の string → selectedOptions: string[] 変換ポイント
-    return { selectedOptions: [displayValue], freeText: "" };
+    return { selectedOptions: [displayLabel], freeText: freeTextValue };
   }
 
-  return { selectedOptions: [], freeText: displayValue };
+  return { selectedOptions: [], freeText: freeTextValue || displayLabel };
 }
 
 export function applySmartDefaults(

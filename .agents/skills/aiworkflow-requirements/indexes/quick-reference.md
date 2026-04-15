@@ -767,6 +767,37 @@ try {
 
 ---
 
+### UT-W3-ANALYTICS-STORE-INTEGRATION-001（analyticsSlice + skill-analytics 型）参照導線 [2026-04-13完了]
+
+| 目的 | 参照先 |
+| --- | --- |
+| analyticsSlice 実装（action-only store） | `apps/desktop/src/renderer/store/slices/analyticsSlice.ts` |
+| SkillAnalyticsEventType / SkillAnalyticsEvent 型定義 | `packages/shared/src/types/skill-analytics.ts` |
+| agentSlice analytics wiring（lifecycle hooks） | `apps/desktop/src/renderer/store/slices/agentSlice.ts` |
+| 公開契約（barrel export 経路） | `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` |
+| 完了記録・苦戦箇所 | `references/task-workflow-completed-recent-2026-04f.md` |
+| 教訓（shared 型追加 wave sync / payload helper / silent error） | `references/lessons-learned-current-2026-04.md` → L-ANALYTICS-001/002/003 |
+| Phase 12 成果物 | `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/outputs/phase-12/` |
+| 後続タスク | UT-W3-ANALYTICS-HTTP-PROVIDER-001（unassigned）/ UT-W3-ANALYTICS-DASHBOARD-001（spec_created） |
+
+---
+
+### UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001（notion freeText特別ケース解消）参照導線 [仕様書作成済み 2026-04-15]
+
+**概要:** `ConversationRoundStep.tsx` 内の `createQuestionAnswer()` に残存する `notion` 特別ケースを削除し、`SEMANTIC_LABEL_MAP` のみで変換が完結するようリファクタリングする小規模タスク。`UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001` で整備した `resolveSemanticLabel()` に統一することで変換ロジックの分散を解消する。
+
+| 目的 | 参照先 |
+| --- | --- |
+| タスク仕様書（全体像・実装方針） | `docs/30-workflows/completed-tasks/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001.md` |
+| SEMANTIC_LABEL_MAP 型定義・実装 | `packages/shared/src/types/skill-wizard-label-map.ts` |
+| notion 特別ケース削除対象ファイル | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` |
+| 関連テストファイル | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` |
+| 依存タスク（resolveSemanticLabel 整備） | UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001 |
+| UI コンポーネント参照 | `references/arch-ui-components-core.md` |
+| 状態管理参照 | `references/arch-state-management-skill-creator.md` |
+
+---
+
 ## Cron Validation（scheduleConfigValidator）
 
 3段階バリデーション:
