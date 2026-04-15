@@ -1,0 +1,18 @@
+{
+  "taskId": "TASK-CI-FUTURE-002",
+  "phase": 11,
+  "captureMode": "NON_VISUAL",
+  "reason": "docs-only task: CI configuration change only, no UI changes",
+  "screenshots": [],
+  "localVerification": {
+    "shard1": "EXIT 0",
+    "shard2": "EXIT 0 (0 tests)",
+    "yamlSyntax": "PASS",
+    "parallelCount": 20
+  },
+  "ciVerification": {
+    "status": "pending",
+    "note": "To be confirmed after PR creation in Phase 13"
+  },
+  "createdAt": "2026-04-15T00:00:00Z"
+}
