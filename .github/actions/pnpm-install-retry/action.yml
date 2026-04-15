@@ -7,6 +7,14 @@ runs:
     # CI Optimization (TASK-CI-OPT-001):
     # node_modules をキャッシュして pnpm install の固定費を削減する。
     # キャッシュキーは pnpm-lock.yaml のハッシュで管理し、lockfile 変更時に自動無効化する。
+    #
+    # 【Electron バイナリ分離キャッシュ設計】
+    # ELECTRON_SKIP_BINARY_DOWNLOAD=1 のジョブ（Lint/TypeCheck 等）は
+    # Electron バイナリなしでインストールを行うため、専用キャッシュエントリに分離する。
+    # - バイナリなし: key = ...-no-electron-<hash>  （Lint/TypeCheck 等）
+    # - バイナリあり: key = ...-<hash>              （test-desktop/build 等）
+    # これにより、バイナリなしキャッシュを test-desktop が誤って利用し
+    # "Electron failed to install correctly" でクラッシュするのを防ぐ。
     - name: Cache node_modules
       id: cache-node-modules
       uses: actions/cache@v4
@@ -18,8 +26,9 @@ runs:
           apps/web/node_modules
           packages/shared/node_modules
           packages/ui/node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}${{ hashFiles('pnpm-lock.yaml') }}
         restore-keys: |
+          ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}
           ${{ runner.os }}-node-modules-
 
     # CI Optimization (TASK-CI-OPT-001):

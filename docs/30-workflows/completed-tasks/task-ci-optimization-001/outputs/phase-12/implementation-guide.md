@@ -72,11 +72,13 @@
 
 ### 変更ファイル一覧
 
-| ファイル                                        | 変更内容                                                |
-| ----------------------------------------------- | ------------------------------------------------------- |
-| `.github/actions/pnpm-install-retry/action.yml` | `actions/cache@v4` による node_modules キャッシュを追加 |
-| `.github/workflows/ci.yml`                      | test-desktop シャード数を 16→17 に変更                  |
-| `apps/desktop/vitest.config.ts`                 | `CI_MAX_FORKS` を 2→3 に変更                            |
+| ファイル                                        | 変更内容                                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------------- |
+| `.github/actions/pnpm-install-retry/action.yml` | `actions/cache@v4` による node_modules キャッシュを追加                   |
+| `.github/actions/pnpm-install-retry/action.yml` | キャッシュキーに `ELECTRON_SKIP_BINARY_DOWNLOAD` フラグを組み込み（後述） |
+| `.github/actions/pnpm-install-retry/action.yml` | `apps/backend/node_modules` をキャッシュパスに追加（TypeCheck 修正）      |
+| `.github/workflows/ci.yml`                      | test-desktop シャード数を 16→17 に変更                                    |
+| `apps/desktop/vitest.config.ts`                 | `CI_MAX_FORKS` を 2→3 に変更                                              |
 
 ---
 
@@ -155,6 +157,48 @@ OOM リスクは低い。OOM が発生した場合は `CI_MAX_FORKS = 2` に戻�
 | node_modules キャッシュ | なし          | `actions/cache@v4`        |
 | テストシャード数        | 16            | 17                        |
 | CI_MAX_FORKS            | 2             | 3                         |
+
+---
+
+---
+
+### Electron バイナリ分離キャッシュ設計（CI修正追記）
+
+#### 発生した問題
+
+`ELECTRON_SKIP_BINARY_DOWNLOAD=1` を設定した Lint / TypeCheck / build-shared ジョブが先にキャッシュを作成した場合、Electron バイナリ（`node_modules/.pnpm/electron@*/node_modules/electron/dist/`）が含まれない node_modules がキャッシュされる。
+
+その後 `test-desktop` ジョブが同一キーでキャッシュをヒットし、`pnpm install` をスキップすると Electron バイナリが存在しないまま vitest が起動し、以下のエラーで全シャードが失敗する。
+
+```
+Error: Electron failed to install correctly, please delete node_modules/electron and try installing again
+```
+
+#### 修正方針
+
+キャッシュキーに `ELECTRON_SKIP_BINARY_DOWNLOAD` フラグの有無を埋め込み、2種類のキャッシュエントリに分離する。
+
+```yaml
+key: ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}${{ hashFiles('pnpm-lock.yaml') }}
+restore-keys: |
+  ${{ runner.os }}-node-modules-${{ env.ELECTRON_SKIP_BINARY_DOWNLOAD == '1' && 'no-electron-' || '' }}
+  ${{ runner.os }}-node-modules-
+```
+
+| ジョブ種別                         | 作成キー例                              | Electron バイナリ |
+| ---------------------------------- | --------------------------------------- | ----------------- |
+| Lint / TypeCheck / build-shared 等 | `Linux-node-modules-no-electron-<hash>` | 含まない          |
+| test-desktop / build               | `Linux-node-modules-<hash>`             | 含む              |
+
+#### フォールバック動作
+
+| restore-keys 順位 | test-desktop ジョブでの動作                                                        |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| 1位（完全一致）   | `...-<hash>` にヒット → install スキップ（最速）                                   |
+| 2位（部分一致）   | `...-node-modules-` プレフィックスにヒット → install 実行（Electron ダウンロード） |
+| ミス              | フルインストール（従来と同等）                                                     |
+
+2位のフォールバックで `no-electron-` キャッシュを受け取っても `cache-hit != 'true'` なので `pnpm install` が走り、Electron バイナリが補完される。完全ヒット（1位）の場合は分離済みキーのため必ずバイナリ入りキャッシュが返る。
 
 ---
 
