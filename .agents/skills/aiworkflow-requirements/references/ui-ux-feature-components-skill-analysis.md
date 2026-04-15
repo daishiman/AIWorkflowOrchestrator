@@ -312,6 +312,21 @@ W1-par-02b 再設計により、旧設計の `ConfigureStep`（生成オプシ�
 
 ---
 
+## UI整合性修正（TASK-SW-FIX-UI-001 / completed）
+
+TASK-SW-FIX-UI-001 で `SkillInfoStep` / `ConversationRoundStep` / `SkillCreateWizard` / `ApplySummaryCard` の current facts を UI 整合性修正後の内容へ揃えた。  
+Phase 11 は 9 枚のスクリーンショットと DevTools audit PASS で完了し、Phase 12 は canonical 6 成果物と root / outputs artifacts parity を completed で固定した。
+
+### current facts
+
+- `SkillInfoFormData.category` は `SkillCategory[]` で複数選択を許可する
+- `handleCategoryClick` は再クリックで解除するトグル動作
+- `ConversationRoundStep` / `ApplySummaryCard` の Q5 必須判定は `external-integration` の配列包含で決定する
+- `SkillCreateWizard` は `resolvePrimarySkillCategory()` で代表カテゴリを決める
+- ボタンは `bg-[var(--status-primary)]` / `text-[var(--text-inverse)]` に統一済み
+
+---
+
 ## ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed）
 
 UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 で `ConversationRoundStep` の Q5 に「主ツール」バッジを追加し、複数ツール選択時の先頭選択項目を視覚的に明示した。Phase 1-12 を完了。

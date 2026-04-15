@@ -4607,10 +4607,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L331 |
-| 続き | L332 |
-| 続き | L334 |
-| 続き | L331 |
 | 続き | L335 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
@@ -4920,9 +4916,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
 
 ### references/testing-accessibility.md
 

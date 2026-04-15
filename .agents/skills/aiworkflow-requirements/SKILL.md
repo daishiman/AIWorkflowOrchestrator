@@ -20,6 +20,7 @@ AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-04-15 | TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync: `references/task-workflow.md` current facts 追加、`task-workflow-completed-recent-2026-04g.md` 完了記録確認、63件 Green / 6 成果物 / `outputs/artifacts.json` parity / screenshot N/A を current facts として固定 |
 | 2026-04-15 | TASK-SW-FIX-FEEDBACK-008 current facts sync: `refreshSkillsInBackground` / `workflowSnapshot` delayed outcome processing / `phase13_blocked` / `manual-test-result` / `phase11-capture-metadata` を追加。`.agents/` mirror、workflow root (`index.md`, `artifacts.json`, `outputs/artifacts.json`) も同波更新 |
 | 2026-04-14 | TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync: `resource-map` に2タスクのクイックルックアップ行追加（v1.31.0）、`.agents/` ミラー完全同期、`LOGS.md` sync 記録追加。current facts（`fetchSkills()` LLM 成功パス、`skillPath` null guard、`SkillCreationContext` / `buildSkillContext` / `buildSkillGenerationPrompt` context bridge、Phase 11 screenshot evidence）反映済み |
 

@@ -47,44 +47,42 @@
 - 配列化した state で単一値を要する経路は、暗黙の先頭参照より明示的な優先順位関数が安全
 
 ### タスク: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration（2026-04-13）
+### タスク: TASK-SW-FIX-UI-001 UI整合性修正（2026-04-14）
 
-| 項目       | 値                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-W3-ANALYTICS-STORE-INTEGRATION-001                                                             |
-| ステータス | **完了（実装 + 仕様同期）**                                                                       |
-| タイプ     | store / shared-types / workflow-sync                                                              |
-| 優先度     | 高                                                                                                |
-| 完了日     | 2026-04-13                                                                                        |
-| 対象       | `apps/desktop/src/renderer/store/slices/analyticsSlice.ts` / `agentSlice.ts` / shared export sync |
-| 成果物     | `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/outputs/phase-12/`                       |
-| PR         | 未作成（Phase 13 blocked）                                                                        |
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-FIX-UI-001                                                                                          |
+| ステータス | **完了（実装 + 仕様同期）**                                                                                 |
+| タイプ     | ui-consistency / visual-audit / workflow-sync                                                               |
+| 優先度     | 低                                                                                                          |
+| 完了日     | 2026-04-14                                                                                                  |
+| 対象       | `docs/30-workflows/WC-par-03b-fix-ui/` / `packages/shared/src/types/skillCreator.ts` / `apps/desktop/src/renderer/components/skill/` |
+| 成果物     | `docs/30-workflows/WC-par-03b-fix-ui/outputs/phase-12/`                                                     |
+| PR         | 未作成（Phase 13 blocked）                                                                                  |
 
 #### 実施内容
 
-- `analyticsSlice.ts` を `toAnalyticsPayload()` / `sendSkillAnalyticsEvent()` 経由にして payload 構築を明示化した
-- `agentSlice.ts` に analytics wiring を追加し、start / complete / error の lifecycle を store 側から送れるようにした
-- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` で `SkillAnalyticsEventType` / `SkillAnalyticsEvent` を再公開した
-- `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` と `packages/shared/src/types/__tests__/skill-analytics.test.ts` を追加した
-- Phase 12 outputs（implementation-guide / system-spec-update-summary / documentation-changelog / skill-feedback / compliance check）を current facts に更新した
-- `artifacts.json` / `outputs/artifacts.json` の parity を completed / blocked で揃えた
+- `SkillInfoFormData.category` を `SkillCategory[]` 化し、`resolvePrimarySkillCategory()` で代表カテゴリを決定するようにした
+- `SkillInfoStep` / `ConversationRoundStep` / `ApplySummaryCard` / `SkillCreateWizard` の current facts を UI 整合性修正後の内容へ揃えた
+- Phase 11 のスクリーンショット 9 枚と DevTools audit PASS を current facts として保存した
+- Phase 12 の canonical 6 成果物と root / outputs の artifacts parity を completed で固定した
 
 #### 検証証跡
 
-| コマンド                                                                                                                                                                          | 結果                         |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `pnpm --filter @repo/desktop typecheck`                                                                                                                                           | PASS                         |
-| `pnpm --filter @repo/shared typecheck`                                                                                                                                            | PASS                         |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/slices/__tests__/analyticsSlice.test.ts src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | PASS（93 tests）             |
-| `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-analytics.test.ts`                                                                                          | PASS（9 tests）              |
-| `docs/30-workflows/UT-W3-ANALYTICS-STORE-INTEGRATION-001/outputs/phase-11/manual-test-result.md`                                                                                  | PASS（30 tests, NON_VISUAL） |
+| コマンド / 証跡 | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit --pretty false` | PASS |
+| `outputs/phase-11/screenshot-manifest.json` | PASS（9 PNGs） |
+| `outputs/phase-11/devtools-audit.md` | PASS（Console error count 0） |
+| `artifacts.json` / `outputs/artifacts.json` | PASS（parity） |
 
 #### 苦戦箇所
 
-| 苦戦箇所                                                   | 解決策                                                                    |
-| ---------------------------------------------------------- | ------------------------------------------------------------------------- |
-| shared export 追加だけでは consumer wiring が見えなくなる  | `agentSlice.ts` で lifecycle の責務を握り、`analyticsSlice.ts` に接続した |
-| `SkillAnalyticsEvent` の公開経路が barrel で揺れる         | `types/index.ts` と `packages/shared/index.ts` を同 wave で再公開した     |
-| Phase 12 成果物だけ更新して root / outputs parity を落とす | `artifacts.json` と `outputs/artifacts.json` を同値で維持した             |
+| 苦戦箇所 | 解決策 |
+| --- | --- |
+| 代表カテゴリを `category[0]` で固定すると選択順に依存する | `resolvePrimarySkillCategory()` に置き換えて優先順位を共通化した |
+| Phase 11 証跡と Phase 12 文書の同期がずれやすい | 9 枚のスクリーンショットと audit PASS を Phase 12 側でも明示した |
 
 #### lessons-learned
 
@@ -144,6 +142,8 @@
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
 ---
+- UI の current facts は実装・証跡・台帳を同 wave で閉じる
+- 配列化した state で単一値を要する経路は、暗黙の先頭参照より明示的な優先順位関数が安全
 
 ### タスク: TASK-SW-FIX-UI-001 UI整合性修正（2026-04-14）
 

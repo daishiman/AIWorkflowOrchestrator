@@ -32,6 +32,18 @@ temp ファイル管理パターンを lessons-learned・task-workflow・skill-c
 
 `fetchSkills()` follow-up は単なる非ブロッキング化だけでなく、`workflowSnapshot` の遅延到着を再処理する実装を含んだ。加えて Phase 11 は `NON_VISUAL` で証跡が画像ではなくテキスト/metadata に寄るため、current facts に証跡の型を固定しておく必要があった。
 
+## 2026-04-15 - TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow.md` に TASK-SC-IMP-CREATE-WORKFLOW-001 の current facts を追加
+- `references/task-workflow-completed-recent-2026-04g.md` の完了記録と `outputs/phase-12/` の 6 成果物、`outputs/artifacts.json` parity を同波で固定
+- `SKILL.md` 変更履歴へ同 task の close-out を追記する前提を整えた
+
+### 背景
+
+Phase 12 の close-out では、仕様書・台帳・成果物の current facts を同一 wave で揃える必要があった。`63件 Green` と UI screenshot N/A を整合の根拠として残す。
+
 ## 2026-04-14 — impl-spec-to-skill-sync (UT-SKILL-NAME-PATTERN-001)
 
 - `docs/00-requirements/18-skills.md`: セクション 3.2.2.2「定数定義と一元化管理」追記（`SKILL_NAME_PATTERN` / `MAX_SKILL_NAME_LENGTH` の実装定数参照を明示）

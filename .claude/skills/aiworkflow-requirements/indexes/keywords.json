@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2988,
+  "totalKeywords": 2989,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7715,6 +7715,7 @@
     ],
     "WORKFLOW": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
@@ -8101,6 +8102,18 @@
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
+    "CREATE": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "create": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "モード構造計画生成": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -8381,10 +8394,6 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "CONNECTION": [
-      "lessons-learned-ipc-preload-runtime-2026-03-late.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "CREATE": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -12714,9 +12723,6 @@
     ],
     "WEEKDAYS": [
       "task-workflow-completed-recent-2026-04e.md"
-    ],
-    "create": [
-      "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "検証": [
       "task-workflow-completed-skill-create-ui-integration.md"

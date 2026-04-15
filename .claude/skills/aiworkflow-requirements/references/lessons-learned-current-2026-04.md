@@ -1480,3 +1480,36 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 - **L-MODE-003**: Wave 分割実施では TDD Red フェーズを Wave A・B 同時設計する（Wave A 完了後では Red 状態を作れない）
 - **L-MODE-004**: Electron 実機なし時は「36 UT + grep ゼロ + TC-06 DOM query + typecheck」の 4 点 NON_VISUAL 証跡で代替する
 - **L-MODE-005**: SkillCreateWizard 確定フロー Step 0→1→2→3（LLM 専用・分岐なし）を基準とし、逸脱を禁止する
+
+---
+
+## TASK-SC-IMP-CREATE-WORKFLOW-001 create モード構造計画生成 教訓（2026-04-15）
+
+### L-SC-IMP-001: `description` edge case は型上必須の `string` として切り分け、undefined を入力破損として扱う
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `StructurePlanJson.description` を `string \| undefined` にすると型契約と衝突し、後続の `generate_skill_md.js` 引数生成で undefined 混入リスクが生まれた                |
+| 原因       | interviewResult の optional フィールドをそのまま構造計画 JSON に引き渡す設計のため、型の穴が生じた                                                                      |
+| 解決策     | `description` を型上必須の `string` として宣言し、`undefined` は `createSkill()` バリデーション段階で「入力破損」として弾く設計に整理した                                |
+| 標準ルール | 構造計画 JSON（`StructurePlanJson`）の各フィールドは必須 `string` を基本とし、optional は `triggers?` / `anchors?` のような補助フィールドのみに限定する                  |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
+
+### L-SC-IMP-002: create モードの「構造計画生成」と「`generate_skill_md.js` 接続」は別タスクとして仕様書を分離する
+
+| 項目       | 内容                                                                                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `runCreateWorkflow` の実装スコープに `generate_skill_md.js` 接続を含めようとしたため、「完了」と「接続待ち」が同じ文脈に混在し、Phase 12 の成果物判断が難しくなった                       |
+| 原因       | create モードの2段階（構造計画生成 → SKILL.md 生成スクリプト呼び出し）を1つのタスクで完結しようとした設計判断                                                                           |
+| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、スクリプト接続は別タスク（`void structurePlan` コメントで依存先を明示）とした                              |
+| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、タスク分離が可能な場合は別タスクとして仕様書を分ける                                                                     |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                                           |
+
+### L-SC-IMP-003: private method の観測可能性は TC に mock spy 引数 assertion で組み込む
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` 等が検証できず、実装の意図が TC に反映されない                                                    |
+| 解決策     | `TC-04` を `createSkill()` 経由で実行し、`mockResourceLoader.loadAgent` への呼び出しと引数を `expect` で直接検証することで private method の動作を間接観測した           |
+| 標準ルール | private method の観測可能性は、public API 経由 + mock spy 引数 assertion の組み合わせで担保する。中間値 handoff は mock spy で検証可能                                   |
+| 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
