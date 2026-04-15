@@ -20,6 +20,20 @@ impl-spec-to-skill-sync プロンプトによる監査で差分を検出し、�
 
 ---
 
+## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/task-workflow.md` に UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 の current facts を追加
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` を completed 化
+- `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/artifacts.json` / `outputs/artifacts.json` を completed / blocked へ同期
+- `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/*.md` を current facts に合わせて作成
+
+### 背景
+
+`QuestionSemanticLabelMap` の freeText 搭載と `resolveLabelEntry()` 追加は、task-workflow / skill / artifacts / outputs の同 wave 同期まで閉じて初めて current facts になる。notion 特別ケースの削除を、shared 変換表・desktop 回帰テスト・Phase 12 証跡の三者で同一化した。
+
 ## 2026-04-15 — impl-spec-to-skill-sync (TASK-SC-FIX-GENERATE-SKILL-MD-001)
 
 ### 変更内容
