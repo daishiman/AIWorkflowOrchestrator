@@ -24,8 +24,6 @@
 | 関連タスク | TASK-SC-FIX-GENERATE-SKILL-MD-001                                                                                                                        |
 
 ---
-> 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
-> 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 
 ## UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13）
 
