@@ -56,7 +56,7 @@ export class AgentHandler {
   dispose(): void {
     this.disposed = true;
     ipcMain.removeHandler("agent:query");
-    ipcMain.removeHandler("agent:getStatus");
+    ipcMain.removeHandler("agent:get-status");
     ipcMain.removeHandler("agent:createSession");
     ipcMain.removeHandler("agent:resumeSession");
     ipcMain.removeHandler("agent:destroySession");
@@ -158,7 +158,7 @@ export class AgentHandler {
       },
     );
 
-    ipcMain.handle("agent:getStatus", async () => {
+    ipcMain.handle("agent:get-status", async () => {
       return this.handleGetStatus();
     });
 

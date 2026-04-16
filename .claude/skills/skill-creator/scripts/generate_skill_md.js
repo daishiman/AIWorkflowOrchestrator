@@ -56,13 +56,25 @@ function generateSkillMd(plan) {
 
   // Frontmatter生成
   const anchors = workflow.anchors || [];
-  const trigger = workflow.trigger || { description: "TODO: 発動条件", keywords: ["TODO"] };
+  const trigger = workflow.trigger || {};
+  const triggerKeywords = Array.isArray(trigger.keywords) && trigger.keywords.length > 0
+    ? trigger.keywords
+    : [skillName];
+  const triggerDescription = typeof trigger.description === "string" && trigger.description.trim() !== ""
+    ? trigger.description
+    : `Use when ${skillName} is requested`;
 
   const anchorLines = anchors.length > 0
-    ? anchors.map((a) => `  • ${a.name} / 適用: ${a.application} / 目的: ${a.purpose}`).join("\n")
+    ? anchors.map((a) => {
+      const anchor = typeof a === "string" ? { source: a } : (a || {});
+      const source = anchor.source || anchor.name || "TODO: アンカー名";
+      const application = anchor.application || "適用範囲";
+      const purpose = anchor.purpose || "目的";
+      return `  • ${source} / 適用: ${application} / 目的: ${purpose}`;
+    }).join("\n")
     : "  • TODO: アンカー名 / 適用: 適用範囲 / 目的: 目的";
 
-  const triggerLine = trigger.description + "\n  " + (trigger.keywords || []).join(", ");
+  const triggerLine = triggerDescription + "\n  " + triggerKeywords.join(", ");
 
   // ワークフロー図生成
   const phases = workflow.phases || [];

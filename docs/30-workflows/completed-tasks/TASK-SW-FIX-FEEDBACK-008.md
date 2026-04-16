@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 2152
+issue_number: 2176
 task_id: TASK-SW-FIX-FEEDBACK-008
 parent_task_id: TASK-SW-FIX-FEEDBACK-001
 status: completed

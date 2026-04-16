@@ -1521,6 +1521,43 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
+## TASK-SW-FIX-FEEDBACK-008: fetchSkills 非ブロッキング化 教訓（2026-04-15）
+
+### L-FEEDBACK-008-001: 補助的な非同期処理は fire-and-forget + console.warn で主処理と切り離す
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `processWorkflowOutcome` / `handleExecutePlan` 内で `fetchSkills()` を `await` していたため、失敗時に `early return` が発生し `selectSkillByName` が実行されなかった      |
+| 原因       | `fetchSkills()` はスキル一覧を UI にリフレッシュする補助処理だが、`try-catch` で囲んで `setGenerationError` + `return true` を置いていたため主処理を止める構造になっていた |
+| 解決策     | `refreshSkillsInBackground()` helper（`void fetchSkills().catch(warn)`）を抽出し、`selectSkillByName` の後で呼び出すパターンに切り替えた                                  |
+| 設計原則   | 「UI リフレッシュ系の補助処理が失敗しても、ユーザーが要求した主操作（選択・遷移）は止めない」を原則とする。補助処理の失敗は `console.warn` に閉じ込め `generationError` に昇格させない |
+| 適用条件   | `fetchSkills` のようにスキル生成の成否と独立した後続リフレッシュ処理全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                 |
+
+### L-FEEDBACK-008-002: 遅延 snapshot 再処理は useEffect + ref ガードで冪等に実現する
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `executePlan` の ack が先に返り `workflowSnapshot` が遅れて到着するケースで、snapshot を store に反映後に `processWorkflowOutcome` が再実行されず `loadVerifyDetail` に到達しなかった |
+| 原因       | snapshot の到着タイミングを考慮した再処理 effect が存在しなかった                                                                                             |
+| 解決策     | `useEffect([workflowSnapshot])` で snapshot を監視し、`processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId` ガードで二重処理を防止しながら `processWorkflowOutcome` を再適用した |
+| 設計原則   | IPC の ack と実データ（snapshot）が別タイミングで到着する経路では、データ到着を `useEffect` で拾い、`ref` による冪等ガードで副作用を一度だけ実行する           |
+| 適用条件   | `executePlan` のような非同期処理で ack と snapshot が分離している IPC チャンネル全般                                                                          |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                     |
+
+### L-FEEDBACK-008-003: NON_VISUAL タスクの証跡は manual-test-result.md + phase11-capture-metadata.json を正本とする
+
+| 項目       | 内容                                                                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | Phase 11 でスクリーンショットが要求されるかどうか曖昧で、証跡の期待値がぶれる                                                                                                          |
+| 原因       | NON_VISUAL か否かの判断基準がタスク開始前に確立されていなかった                                                                                                                         |
+| 解決策     | Phase 1 の受入条件定義時に `NON_VISUAL` フラグを明示し、証跡は `manual-test-result.md` + `phase11-capture-metadata.json` とする方針を確定。スクリーンショットは UI 変更がある場合のみ要求する |
+| 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
+| 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
+| 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
 ## TASK-SC-IMP-CREATE-WORKFLOW-001 create モード構造計画生成 教訓（2026-04-15）
 
 ### L-SC-IMP-001: `description` edge case は型上必須の `string` として切り分け、undefined を入力破損として扱う
@@ -1588,3 +1625,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
 | 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
+## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001: structurePlan → generate_skill_md.js 接続 教訓（2026-04-16）
+
+### L-SC-CONNECT-001: private method の多層フォールバックはシナリオ別に段階を明示して設計する
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | スクリプト実行成功でもファイルが生成されない edge case があり、`generateResult.success === true` だけでは完了を保証できなかった                                             |
+| 原因       | スクリプトの終了コード（exitCode=0）とファイル生成の有無は独立した事象。成功判定をプロセスの終了コードのみに依存していた                                                   |
+| 解決策     | フォールバック判定を2段階化: ① `!generateResult.success` → フォールバック、② `fs.access` 失敗 → フォールバック。この2段階で「プロセス失敗」と「ファイル未生成」の両方に対応 |
+| 設計原則   | スクリプト実行結果の検証は「プロセス終了コード」と「出力物の存在確認」の2段階で行う。特に生成系スクリプトは `fs.access` による出力ファイル確認が必須                        |
+| 適用条件   | `generate_skill_md.js` のような外部スクリプト呼び出しで出力ファイルを生成するパターン全般                                                                                  |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-002: StructurePlanJson → workflow 変換は purpose を trigger.description に埋め込む設計にする
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `generate_skill_md.js` が期待する `workflow.trigger.description` と `StructurePlanJson.purpose` がそのまま対応しないため、変換ロジックが必要だった                        |
+| 原因       | 2つのスキーマが独立して設計され、フィールド名と構造が異なる（`purpose` vs `trigger.description`）                                                                          |
+| 解決策     | purpose を `Use when {name} is requested. Purpose: {purpose}` 形式に正規化して `trigger.description` に埋め込む。`triggers` は空配列なら `[skillName]` にフォールバック   |
+| 設計原則   | 異なるスキーマを橋渡しする変換層では「空値・undefined のフォールバック」と「文字列正規化（trim/collapse）」を必ずペアで実装する                                              |
+| 適用条件   | `StructurePlanJson` を引数に受け取り `workflow` 形式の JSON を組み立てる変換処理全般                                                                                      |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-003: create モードの structurePlan null 時は warn ログで理由を記録し silent fallback を避ける
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `structurePlan` が null の場合、暗黙に `ensureSkillMdExists` が呼ばれ、なぜ create モードで構造計画が使われなかったのかが追跡できなかった                           |
+| 原因       | null チェックのみで fallback を呼び出し、ログ出力がなかった                                                                                                        |
+| 解決策     | `this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...)` を追加し、create モードで null になった事実を必ずログに残す                  |
+| 設計原則   | create モードで期待される出力（structurePlan）が null になることは「正常系ではない」ため、warn ログで記録する。silent fallback はデバッグを著しく困難にする          |
+| 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                            |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                       |

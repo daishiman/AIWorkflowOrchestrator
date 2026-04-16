@@ -1470,6 +1470,19 @@
 - **状態**: Phase 12完了 / Phase 13 blocked（PR pending）
 - **タスク仕様書**: `docs/30-workflows/task-cron-converter-weekdays-guard/`
 
+### UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001: IPC 4層整合CI検証スクリプト
+
+- **カテゴリ**: Quality Gate / CI Automation
+- **メインスクリプト**: `scripts/verify-ipc-4layer.cjs`（1,017行）
+- **テストファイル**: `scripts/__tests__/verify-ipc-4layer/`（parsers.test.ts, validators.test.ts, reporter.test.ts, e2e.test.ts; 113テスト全GREEN）
+- **CI統合**: `.github/workflows/ci.yml`（`verify-ipc-4layer` ジョブ）
+- **検証対象**: IPC 4層（shared channels → preload whitelist → main handler → renderer sink）のチャネル定義整合
+- **技術特徴**: Node.js標準ライブラリのみ（外部依存ゼロ）、ステートマシン方式コメント処理、spread/定数参照解決
+- **カバレッジ**: Line 89.88%, Branch 90.97%, Function 94.11%
+- **状態**: spec_created（docs-only workflow）
+- **タスク仕様書**: `docs/30-workflows/UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001/`
+- **教訓**: `lessons-learned-ipc-4layer-verification-2026-04.md`
+
 ### 検索クエリ例
 
 ```bash
@@ -1489,6 +1502,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                   |
 | ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-14 | 1.31.0     | UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 完了同期: IPC 4層整合CI検証スクリプト（`scripts/verify-ipc-4layer.cjs`）をタスク別リソースマップに登録。テスト4ファイル113件・CI統合（`.github/workflows/ci.yml`）。`lessons-learned-ipc-4layer-verification-2026-04.md` 新規作成。quick-reference.md にスクリプト実行方法を追加 |
 | 2026-04-14 | 1.31.0     | TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 完了同期: クイックルックアップに「Skill Complete Step UI修正」「Skill Wizard context bridge 実装」行を追加。CompleteStep.tsx・SkillCreateWizard.tsx・skillCreator.ts を参照先として登録。task-workflow-completed-recent-2026-04e.md に完了記録済み |
 | 2026-04-14 | 1.31.0     | TASK-SW-FIX-UI-001 完了同期: クイックルックアップに「SkillCreateWizard UI整合性修正（カテゴリ複数選択・ProgressBar・ボタン統一）」行を追加。ui-ux-feature-components-skill-analysis.md を current facts として登録。task-workflow-completed-recent-2026-04f.md に完了記録追加 |
 | 2026-04-13 | 1.30.0     | TASK-SW-FIX-MODE-MGMT-001 完了同期: クイックルックアップに「SkillCreateWizard LLM専用化・状態管理修正」行を追加。arch-ui-components-core.md・arch-state-management-skill-creator.md を current facts として登録。lessons-learned-current-2026-04.md に L-MODEMGMT-001〜004 を追加              |

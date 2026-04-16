@@ -62,6 +62,10 @@ const {
   mockRegisterChatEditHandlers,
   mockDatabaseConstructor,
   mockRegisterConversationHandlers,
+  mockRegisterFsHandlers,
+  mockRegisterUserSettingsHandlers,
+  mockRegisterChatExportHandlers,
+  mockRegisterAgentSkillHandlers,
 } = vi.hoisted(() => {
   const mockWebContentsSend = vi.fn();
   const mockIsDestroyed = vi.fn().mockReturnValue(false);
@@ -123,6 +127,10 @@ const {
       close: vi.fn(),
     }),
     mockRegisterConversationHandlers: vi.fn(),
+    mockRegisterFsHandlers: vi.fn(),
+    mockRegisterUserSettingsHandlers: vi.fn(),
+    mockRegisterChatExportHandlers: vi.fn(),
+    mockRegisterAgentSkillHandlers: vi.fn(),
   };
 });
 
@@ -187,9 +195,11 @@ vi.mock("electron-store", () => {
 // --- 全ハンドラ登録関数のモック ---
 vi.mock("../fileHandlers", () => ({
   registerFileHandlers: mockRegisterFileHandlers,
+  registerFsHandlers: mockRegisterFsHandlers,
 }));
 vi.mock("../storeHandlers", () => ({
   registerStoreHandlers: mockRegisterStoreHandlers,
+  registerUserSettingsHandlers: mockRegisterUserSettingsHandlers,
 }));
 vi.mock("../dashboardHandlers", () => ({
   registerDashboardHandlers: mockRegisterDashboardHandlers,
@@ -244,6 +254,7 @@ vi.mock("../../services/HistoryService", () => ({
 }));
 vi.mock("../agentHandlers", () => ({
   registerAgentExecutionHandlers: mockRegisterAgentExecutionHandlers,
+  registerAgentSkillHandlers: mockRegisterAgentSkillHandlers,
 }));
 vi.mock("../communityHandlers", () => ({
   registerCommunityHandlers: mockRegisterCommunityHandlers,
@@ -369,6 +380,7 @@ vi.mock("better-sqlite3", () => ({
 }));
 vi.mock("../conversationHandlers", () => ({
   registerConversationHandlers: mockRegisterConversationHandlers,
+  registerChatExportHandlers: mockRegisterChatExportHandlers,
 }));
 vi.mock("../../repositories/conversationRepository", () => ({
   ConversationRepository: vi.fn().mockImplementation(() => ({})),
@@ -591,6 +603,10 @@ describe("IPC Handler Graceful Degradation", () => {
         mockRegisterClaudeCliHandlers,
         mockRegisterChatEditHandlers,
         mockRegisterConversationHandlers,
+        mockRegisterFsHandlers,
+        mockRegisterUserSettingsHandlers,
+        mockRegisterChatExportHandlers,
+        mockRegisterAgentSkillHandlers,
       ];
       for (const mock of allMocks) {
         mock.mockImplementationOnce(() => {
