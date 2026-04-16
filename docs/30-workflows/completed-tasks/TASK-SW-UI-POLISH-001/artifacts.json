@@ -1,0 +1,198 @@
+{
+  "task_id": "TASK-SW-UI-POLISH-001",
+  "task_name": "スキルウィザード UI仕上げ（CSS変数監査・カテゴリ選択上限・アニメーション追加）",
+  "status": "phase13_blocked",
+  "created_date": "2026-04-14",
+  "issue_number": 2157,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "file": "phase-01-requirements.md",
+      "status": "pending"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "file": "phase-02-design.md",
+      "status": "pending"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "file": "phase-03-design-review.md",
+      "status": "pending"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "file": "phase-04-test-creation.md",
+      "status": "pending"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "file": "phase-05-implementation.md",
+      "status": "pending"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "file": "phase-06-test-expansion.md",
+      "status": "pending"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "file": "phase-07-coverage.md",
+      "status": "pending"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "file": "phase-08-refactoring.md",
+      "status": "pending"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "file": "phase-09-quality-assurance.md",
+      "status": "pending"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "pending"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "file": "phase-11-manual-testing.md",
+      "status": "completed",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "検出事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UI 視覚レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "証跡索引"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "スクリーンショットカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "手動テスト証跡メタデータ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "スクリーンショット計画"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "blocked",
+      "skipReason": "コミット/PR は scope 外のため実行しない"
+    }
+  ],
+  "artifacts": {
+    "source_files": [
+      "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/SkillInfoStep.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/InterviewProgressBar.tsx"
+    ],
+    "test_files": [
+      "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.tsx",
+      "apps/desktop/src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx"
+    ],
+    "doc_files": [
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/index.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-01-requirements.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-02-design.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-03-design-review.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-04-test-creation.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-05-implementation.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-06-test-expansion.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-07-coverage.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-08-refactoring.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-09-quality-assurance.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-10-final-review.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-11-manual-testing.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-12-documentation.md",
+      "docs/30-workflows/TASK-SW-UI-POLISH-001/phase-13-pr-creation.md"
+    ]
+  },
+  "dependencies": [
+    {
+      "task_id": "TASK-SW-FIX-UI-001",
+      "relation": "必須先行",
+      "reason": "カテゴリ複数選択・ボタン統一・ProgressBar 動的化が完了している前提"
+    }
+  ]
+}
