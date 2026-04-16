@@ -104,7 +104,7 @@ Phase 12 を複数の SubAgent で分担する場合、documentation-changelog �
 
 ## パターン11: canonical成果物の命名規約
 
-Phase 12 で列挙する canonical 成果物は命名規約を統一する。
+Phase 12 で列挙する成果物は、6 つの task outputs と Wave C 引き継ぎサマリーを分けて命名規約を統一する。
 
 ### canonical成果物の命名規約
 
@@ -121,4 +121,28 @@ Phase 12 で列挙する canonical 成果物は命名規約を統一する。
 - [ ] final sync の順序を守った
 - [ ] 並列 SubAgent を使った場合は documentation-changelog と unassigned-task-detection の件数を照合した（P59 対策）
 - [ ] `outputs/artifacts.json` とルート `artifacts.json` の同期を確認した（パターン10）
-- [ ] canonical 成果物が 6 件以内で命名規約に従っていることを確認した（パターン11）
+- [ ] canonical task outputs 6 件と Wave C 引き継ぎサマリー 1 件がそれぞれ命名規約に従っていることを確認した（パターン11）
+
+## パターン12: shared constant 追加タスク（non-visual）の最小単位
+
+**背景**: TASK-SW-CANCEL-001（2026-04-16）での経験から。shared に定数を1件追加する小粒度タスクの Phase 12 close-out パターン。
+
+### 最小単位（3点セット）
+
+| 要素       | 内容                                | 例                                                                |
+| ---------- | ----------------------------------- | ----------------------------------------------------------------- |
+| 正本       | shared パッケージへの追加           | `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL` を追加 |
+| 伝播       | `IPC_CHANNELS` spread で型伝播      | `IPC_CHANNELS.SKILL_CREATOR_CANCEL` として参照可能                |
+| 回帰テスト | 専用テストファイル + 既存テスト修正 | `channels-cancel.test.ts` 追加 + `channels.test.ts` 件数更新      |
+
+### 適用条件
+
+- 変更ファイルが1〜3件程度の小粒度タスク
+- UI/UX 変更なし（NON_VISUAL）
+- 後続タスクで「使用する」実装が別ワークフローに分離されている
+
+### Phase 12 close-out ルール
+
+- `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記する
+- Step 2（新規インターフェース変更）は N/A 扱いでよい（定数追加のみ）
+- 後続タスク（allowlist / handler / renderer）は別ワークフローに分離して未タスク化する
