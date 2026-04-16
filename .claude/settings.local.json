@@ -165,7 +165,12 @@
       "Bash(echo \"\")",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/lessons-learned-current.md .agents/skills/aiworkflow-requirements/references/lessons-learned-current.md)",
       "Bash(rsync -av .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md .agents/skills/aiworkflow-requirements/references/task-workflow.md .claude/skills/aiworkflow-requirements/references/)",
-      "Bash(cp .agents/skills/aiworkflow-requirements/references/__TRACKED_VAR__ .claude/skills/aiworkflow-requirements/references/__TRACKED_VAR__)"
+      "Bash(cp .agents/skills/aiworkflow-requirements/references/__TRACKED_VAR__ .claude/skills/aiworkflow-requirements/references/__TRACKED_VAR__)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.claude/skills/task-specification-creator/SKILL.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.agents/skills/task-specification-creator/SKILL.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.claude/skills/task-specification-creator/references/phase-11-screenshot-guide.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.agents/skills/task-specification-creator/references/phase-11-screenshot-guide.md)",
+      "Bash([ -d \"$BASE/.agents/skills/aiworkflow-requirements/indexes\" ])",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.claude/skills/aiworkflow-requirements/indexes/topic-map.md /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.agents/skills/aiworkflow-requirements/indexes/topic-map.md)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.claude/skills/aiworkflow-requirements/indexes/keywords.json /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260416-141820-wt-1/.agents/skills/aiworkflow-requirements/indexes/keywords.json)"
     ],
     "deny": [],
     "ask": []

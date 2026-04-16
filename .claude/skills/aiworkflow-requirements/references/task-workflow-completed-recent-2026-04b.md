@@ -3,6 +3,43 @@
 
 ## 完了タスク
 
+### タスク: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化（2026-04-16）
+
+| 項目       | 値                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY                                                                        |
+| ステータス | **完了**                                                                                                     |
+| タイプ     | implementation / renderer-ui / visual-evidence-sync                                                          |
+| 優先度     | 低                                                                                                           |
+| 完了日     | 2026-04-16                                                                                                   |
+| 対象       | `InlineModelSelector` の `description` 表示と Phase 11 screenshot 命名の canonical 化                       |
+| 成果物     | `docs/30-workflows/TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY/`                                                   |
+
+#### 実施内容
+
+- `InlineModelSelector` の description 表示を current facts と一致させ、`title` / `aria-describedby` / `sr-only` の可視化・アクセシビリティ経路を維持した
+- Phase 11 screenshot の canonical 名を `inline-model-selector-description-hidden.png` / `inline-model-selector-tooltip-visible.png` に統一した
+- `phase11-capture-metadata.json` / `manual-test-result.md` / `manual-test-checklist.md` / `implementation-guide.md` / `documentation-changelog.md` / `system-spec-update-summary.md` を新しい screenshot 名へ同期した
+- `docs/30-workflows/unassigned-task/task-llm-mod-05-renderer-desc-display.md` を `completed` 化し、`docs/30-workflows/issues/issue-1782.md` を `完了` へ更新した
+- `task-workflow-backlog.md` / `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04b.md` / `LOGS.md` / `SKILL.md` を同波で更新した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec playwright install chromium`: PASS
+- `node apps/desktop/scripts/capture-task-llm-mod-05-renderer-desc-display-phase11.mjs`: PASS
+- `outputs/phase-11/screenshots/inline-model-selector-description-hidden.png`: PASS
+- `outputs/phase-11/screenshots/inline-model-selector-tooltip-visible.png`: PASS
+
+#### 苦戦箇所
+
+- Phase 11 の旧 `TC-11-01` / `TC-11-02` 命名が docs / metadata / capture script に残りやすく、canonical 名の一本化が必要だった
+- hidden / visible の 2 枚を別々に見ると証跡が分断されるため、Phase 12 では 1 つの completed record で紐づける方が追跡しやすい
+
+#### lessons-learned
+
+- screenshot 名は `capture script` と `implementation-guide` だけでなく、completed ledger まで同時に正規化する
+- VISUAL タスクの completed 化では、旧ファイル名を残す場合でも canonical 名を主語にして記録を残す
+
 ### タスク: UT-SKILL-WIZARD-W1-par-02c CompleteStep 完了画面再設計（起点画面化）（2026-04-08）
 
 | 項目       | 値                                                                                                            |
@@ -432,7 +469,7 @@
 - `provider.test.ts`: TS-001〜A-04 約20テスト PASS（description フィールドの Zod バリデーション・伝搬検証）
 - `llm.test.ts`: description 透過・新モデル対応含む計 56+ テスト PASS
 - Phase 12 成果物完備（implementation-guide.md / documentation-changelog.md / skill-feedback-report.md）
-- 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
+- 旧未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）は 2026-04-16 に completed 化済み。詳細は本ファイル先頭の completed record を参照。
 
 ---
 

@@ -4926,7 +4926,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L335 |
+| 続き | L336 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5039,7 +5039,22 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 完了タスク | L4 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L221 |
+
+### references/task-workflow-completed-recent-2026-04c-part-1.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04c-part-2.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04c-part-3.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-recent-2026-04c-part-1.md
 
@@ -5075,6 +5090,9 @@ node scripts/list-specs.js --topics
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L358 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L375 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L397 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L358 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L375 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L397 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
@@ -5091,6 +5109,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L9 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
@@ -5233,6 +5252,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L267 |
 | 完了タスク（機能別アーカイブ） | L275 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L376 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L205 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L225 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L227 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L239 |
+| 完了タスク（2026-03後半） | L267 |
+| 完了タスク（機能別アーカイブ） | L275 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L376 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
@@ -5283,6 +5309,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L30 |
 | 利用順序 | L252 |
 | 関連ドキュメント | L257 |
+| 仕様書インデックス | L25 |
+| 利用順序 | L137 |
+| 関連ドキュメント | L143 |
 | 仕様書インデックス | L26 |
 | 利用順序 | L138 |
 | 関連ドキュメント | L144 |
