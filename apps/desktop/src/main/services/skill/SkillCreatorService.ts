@@ -606,26 +606,31 @@ export class SkillCreatorService {
 
   /**
    * createモードのワークフロー実行
-   * AC-1: purpose に options.description を使用（エージェントプロンプト文字列でない）
-   * AC-2: agents にエージェント名リストを設定
-   * AC-3: features は空配列（LLM統合は別タスク）
-   * AC-4: エラー時は null を返しフォールバック
-   * NOTE: LLM による purpose 抽出は別タスクとして実装する
+   * AC-1: resourceLoader.loadAgent を呼び出す（collaborative パターン踏襲）
+   * AC-3: loadAgent 失敗時は null を返しフォールバック
+   * AC-4: options.description を使用（void options を削除）
    */
   private async runCreateWorkflow(
     options: CreateSkillOptions,
   ): Promise<StructurePlanJson | null> {
     try {
+      const extractPurposeAgent =
+        await this.resourceLoader.loadAgent("extract-purpose");
+      const planStructureAgent =
+        await this.resourceLoader.loadAgent("plan-structure");
+
       const structurePlan: StructurePlanJson = {
         skillName: options.name,
         description: options.description,
-        purpose: options.description, // AC-1: LLM統合は別タスク、現時点は description を使用
-        features: [], // AC-3: LLM統合は別タスク
-        agents: ["extract-purpose", "plan-structure"], // AC-2: エージェント名リスト
+        purpose: extractPurposeAgent,
+        features: [],
+        agents: [extractPurposeAgent, planStructureAgent],
       };
+
       return structurePlan;
     } catch {
-      // AC-4: 将来の処理追加に備えてフォールバックを維持
+      // AC-3: loadAgent 失敗時はフォールバック（null 返却）
+      // createSkill() 後続処理を継続させる
       return null;
     }
   }
