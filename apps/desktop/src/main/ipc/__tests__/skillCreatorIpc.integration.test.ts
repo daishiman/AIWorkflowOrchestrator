@@ -260,7 +260,6 @@ describe("SkillCreator IPC Handlers", () => {
       expect(result).toEqual({ success: true, data: "/skills/test-skill" });
       expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith(
         validCreateArgs,
-        expect.any(Function),
       );
     });
 
@@ -758,14 +757,11 @@ describe("SkillCreator IPC Handlers", () => {
         });
 
         expect(result).toEqual({ success: true, data: "/path/skill" });
-        expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith(
-          {
-            name: longName,
-            description: "test",
-            mode: "create",
-          },
-          expect.any(Function),
-        );
+        expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith({
+          name: longName,
+          description: "test",
+          mode: "create",
+        });
       });
 
       // SCIT-EDG-07: 特殊文字を含むリクエスト
@@ -948,14 +944,11 @@ describe("SkillCreator IPC Handlers", () => {
 
       // ハンドラーはバリデーション通過後サービスに委譲する
       expect(result).toEqual({ success: true, data: "/path/skill" });
-      expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith(
-        {
-          name: maliciousName,
-          description: "test",
-          mode: "create",
-        },
-        expect.any(Function),
-      );
+      expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith({
+        name: maliciousName,
+        description: "test",
+        mode: "create",
+      });
     });
 
     // SCIT-SEC-10: コマンドインジェクション - スキーマ名

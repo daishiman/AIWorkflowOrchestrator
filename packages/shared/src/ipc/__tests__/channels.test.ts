@@ -68,8 +68,8 @@ describe("SKILL_CREATOR_RUNTIME_CHANNELS", () => {
     ).toBe("skill-creator:adapter-status-changed");
   });
 
-  it("プロパティ数が 4 である", () => {
-    expect(Object.keys(SKILL_CREATOR_RUNTIME_CHANNELS)).toHaveLength(4);
+  it("プロパティ数が 3 である", () => {
+    expect(Object.keys(SKILL_CREATOR_RUNTIME_CHANNELS)).toHaveLength(3);
   });
 });
 
