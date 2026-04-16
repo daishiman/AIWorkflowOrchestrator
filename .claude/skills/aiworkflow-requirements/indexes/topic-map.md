@@ -2403,6 +2403,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル管理サービス | L8 |
+| 構造計画 JSON / createSkill 接続（TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001） | L246, L260, L265 |
 
 ### references/arch-electron-services-details-part2.md
 
@@ -3215,6 +3216,7 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L602 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L636 |
+| TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16） | L6 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -4966,6 +4968,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5098,6 +5101,20 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L210 |
 | 完了タスク（機能別アーカイブ） | L218 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L183 |
+| 完了タスク（2026-03後半） | L211 |
+| 完了タスク（機能別アーカイブ） | L219 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L320 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L203 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L223 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L225 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L237 |
+| 完了タスク（2026-03後半） | L265 |
+| 完了タスク（機能別アーカイブ） | L273 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L374 |
 
 ### references/task-workflow-history.md
 
@@ -5143,6 +5160,15 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L22 |
 | 利用順序 | L133 |
 | 関連ドキュメント | L138 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
+| 仕様書インデックス | L21 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L139 |
+| 仕様書インデックス | L24 |
+| 利用順序 | L136 |
+| 関連ドキュメント | L142 |
 
 ### references/testing-accessibility.md
 
@@ -5332,4 +5358,3 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
-

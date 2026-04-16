@@ -4,6 +4,31 @@
 
 ---
 
+### タスク: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続（2026-04-16）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                 |
+| 完了日     | 2026-04-16                                                                                 |
+| タスク種別 | docs / workflow-sync                                                                       |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実施内容
+
+- `references/arch-electron-services-details-part1.md` の `StructurePlanJson` / `createSkill()` current facts を `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序へ更新
+- `references/task-workflow.md` / `references/task-workflow-completed.md` / `references/lessons-learned-current-2026-04.md` を同波で更新
+- `.agents/skills/aiworkflow-requirements/` mirror を `.claude` と一致するよう同期
+
+#### 検証証跡
+
+- `diff -qr .claude/skills/aiworkflow-requirements/ .agents/skills/aiworkflow-requirements/`: PASS
+- `references/arch-electron-services-details-part1.md` / `task-workflow.md` / `lessons-learned-current-2026-04.md`: current facts 同期済み
+
+#### lessons-learned
+
+- `references/lessons-learned-current-2026-04.md` §TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001
+
 ### タスク: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装（2026-04-14）
 
 | 項目       | 値                                                                                                  |
