@@ -4,6 +4,24 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 current facts sync
+
+### 変更内容
+
+- `references/arch-electron-services-details-part1.md` の `StructurePlanJson` / `createSkill()` current facts を `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序へ更新
+- `references/task-workflow.md` / `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04e.md` / `references/lessons-learned-current-2026-04.md` を同波で同期
+- `indexes/topic-map.md` / `indexes/keywords.json` を最小差分で更新し、`.agents/skills/aiworkflow-requirements/` mirror へ反映
+
+### 追記 (impl-spec-to-skill-sync close-out)
+
+- `indexes/topic-map.md` の `references/lessons-learned-current-2026-04.md` セクションに `TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16）` エントリを追加（欠落していた検索導線を補完）
+- `indexes/keywords.json` に `generateSkillMd` / `StructurePlanJson` / `runCreateWorkflow` キーワードを追加、`SkillCreatorService` に `arch-electron-services-details-part1.md` 参照を追加
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+`runCreateWorkflow()` と `generateSkillMd()` の責務分離が曖昧なままだと、`void structurePlan` や「将来」前提の表現が current facts に残る。`init_skill.js` 後に `generateSkillMd()` を呼ぶ現在順序へ固定した。インデックス層のシンボル名エントリ欠落を補完し、将来の検索精度を向上させた。
+
 ## 2026-04-15 - TASK-CI-FUTURE-003 current facts sync
 
 ### 変更内容

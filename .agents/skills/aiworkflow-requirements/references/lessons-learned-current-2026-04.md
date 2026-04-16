@@ -3,6 +3,17 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16）
+
+### L-SC-PLAN-001: `runCreateWorkflow()` は StructurePlanJson の生成責務に閉じ、`generateSkillMd()` は `init_skill.js` 後段で呼ぶ
+
+| 項目       | 内容                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `createSkill()` の current facts で `StructurePlanJson` を「将来渡す」と曖昧に書くと、`runCreateWorkflow()` と `generateSkillMd()` の責務境界がぼける |
+| 解決策     | `runCreateWorkflow()` は plan を組み立てるだけに限定し、`createSkill()` は `init_skill.js` 完了後に `generateSkillMd()` を呼ぶ順序を明示した |
+| 標準ルール | `createSkill()` の current facts は `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序で記述する。`void structurePlan` や将来接続表現は使わない |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                              |
+
 ## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
 
 ### L-SC-FIX-001: generate_skill_md.js は `--path <dir>` ではなく `--plan <json> --output <path>` を要求する
