@@ -1,75 +1,51 @@
 # Phase 12 成果物: 実装ガイド
 
-## タスクID: TASK-SW-STREAM-001
+## タスクID: TASK-SW-FIX-MODE-MGMT-001
 
 ## 1. 変更概要
 
-`SkillCreatorService.createSkill(options, onProgress?)` に progress callback を追加し、main process 内の生成処理を 5 段階で通知できるようにした。`onProgress` は optional のため、既存の呼び出しは壊れない。
+スキルウィザードを LLM 専用に一本化し、Step 0 のラジオボタンと `generationMode` / `hasActivatedLlmMode` の二重管理を廃止した。
+Step 0→1→2→3 の正規フローに統一し、Phase 11 のスクリーンショットも current task として再取得した。
 
-## 2. 使い方
+## 2. 変更内容
 
-```ts
-import { SkillCreatorService } from "./SkillCreatorService";
-import type { CreateSkillOptions } from "@repo/shared/types";
+### 2.1 `SkillCreateWizard.tsx`
 
-const service = new SkillCreatorService();
+- `generationMode` / `hasActivatedLlmMode` state を削除
+- `handleStep0Next` は `goNext()` のみに統一
+- `handleGenerate` は Step 1 を経由して Step 2 / Step 3 に進行
+- `buildSkillContext()` を用いて LLM 生成コンテキストを組み立てる
 
-const options: CreateSkillOptions = {
-  name: "my-skill",
-  description: "Skill description",
-  mode: "create",
-};
+### 2.2 `SkillInfoStep.tsx`
 
-const skillDir = await service.createSkill(options, (progress) => {
-  console.log(
-    `[${progress.phase}] ${progress.percentage}% ${progress.message}`,
-  );
-});
-```
+- 仕様外ラジオボタンを削除
+- `generationMode` / `onGenerationModeChange` props を削除
 
-- `onProgress` を省略しても `createSkill(options)` は動作する。
-- コールバック例外は握りつぶさず、そのまま呼び出し元へ伝播する。
-- `SkillCreatorProgressData` は現状 `SkillCreatorService.ts` 内に local 定義している。
+### 2.3 `GenerateStep.tsx` / `wizard/index.ts`
 
-## 3. 型定義
+- `GenerationMode` の public export を削除
+- barrel 経由の旧 API を廃止
 
-```ts
-type SkillCreatorProgressData = {
-  phase: string;
-  percentage: number;
-  message: string;
-};
+### 2.4 テスト
 
-type SkillCreatorProgressCallback = (
-  progress: SkillCreatorProgressData,
-) => void;
-```
+- `wizard-exports.test.ts` で `GenerationMode` 未公開を確認
+- `SkillCreateWizard.test.tsx` に TC-06 を追加
+- `SkillCreateWizard.store-integration.test.tsx` を復帰し `createSkill(..., context)` を確認
 
-- `phase`: 進捗段階名
-- `percentage`: 0-100 の進捗率
-- `message`: UI/ログ向けの短い説明文
+## 3. Phase 11 スクリーンショット
 
-## 4. 5段階の progress
+| ファイル                                               | 確認内容                            |
+| ------------------------------------------------------ | ----------------------------------- |
+| `outputs/phase-11/screenshots/step-0-no-radio.png`     | Step 0 でラジオボタンが表示されない |
+| `outputs/phase-11/screenshots/step-1-conversation.png` | Step 0→1 の正規遷移                 |
+| `outputs/phase-11/screenshots/step-1-questions.png`    | Q1〜Q6 の表示                       |
+| `outputs/phase-11/screenshots/step-2-generating.png`   | 生成中状態                          |
+| `outputs/phase-11/screenshots/step-3-complete.png`     | 完了状態                            |
 
-| 順序 | phase               | percentage | message                            | 呼び出しタイミング           |
-| ---- | ------------------- | ---------- | ---------------------------------- | ---------------------------- |
-| 1    | `planning`          | 10         | `構造を計画しています`             | モード別ワークフローへ入る前 |
-| 2    | `generating-skill`  | 40         | `SKILL.md を生成しています`        | SKILL.md 生成開始直前        |
-| 3    | `generating-agents` | 70         | `エージェント定義を生成しています` | タスク仕様書生成前           |
-| 4    | `validating`        | 90         | `スキルを検証しています`           | validateSkill 実行直前       |
-| 5    | `done`              | 100        | `完了しました`                     | 成功終了直前                 |
+補助メタデータ: `outputs/phase-11/phase11-capture-metadata.json`
+スクリーンショット計画: `outputs/phase-11/screenshot-plan.json`
 
-## 5. TASK-SW-STREAM-002 への接続準備
+## 4. 検証結果
 
-- 次タスクでは `skillCreatorHandlers.ts` の `SKILL_CREATOR_CREATE` ハンドラーから `createSkill(validatedArgs, onProgress)` を呼ぶ。
-- `onProgress` の中で `sendSkillCreatorProgress(mainWindow, progress)` を実行する。
-- `SkillCreatorProgressData` を shared 側へ移す場合は、main/renderer の両方で使う型として別タスクに切り出す。
-- progress 文言の分岐や mode 別の詳細化は、IPC 配線後に段階的に拡張するのが安全。
-
-## 6. 検証メモ
-
-- build: PASS
-- typecheck: PASS
-- vitest: PASS
-- callback 例外伝播: PASS
-- `onProgress` 未指定: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` は PASS
+- `SkillCreateWizard.store-integration.test.tsx` では `createSkill(formData.purpose, options, context)` の第三引数も確認済み
