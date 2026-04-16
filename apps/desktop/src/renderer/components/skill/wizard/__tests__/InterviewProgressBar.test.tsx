@@ -46,3 +46,63 @@ describe("InterviewProgressBar", () => {
     expect(bar.style.width).toBe("67%");
   });
 });
+
+// TASK-SW-UI-POLISH-001: アニメーション・エッジケーステスト（TC-07〜TC-09, TC-14〜TC-16）
+describe("TASK-SW-UI-POLISH-001 ProgressBar アニメーション・エッジケース", () => {
+  it("TC-07: ProgressBar の幅制御要素に transition-all / duration-300 クラスが含まれる", () => {
+    render(<InterviewProgressBar currentQuestion={1} />);
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.className).toContain("transition-all");
+    expect(bar.className).toContain("duration-300");
+  });
+
+  it("TC-08: currentQuestion=1/6 のとき width が 17% であり transition クラスが存在する", () => {
+    render(<InterviewProgressBar currentQuestion={1} totalQuestions={6} />);
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.style.width).toBe("17%");
+    expect(bar.className).toContain("transition-all");
+  });
+
+  it("TC-09: currentQuestion=6/6 のとき width が 100% であり transition クラスが存在する", () => {
+    render(<InterviewProgressBar currentQuestion={6} totalQuestions={6} />);
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.style.width).toBe("100%");
+    expect(bar.className).toContain("transition-all");
+  });
+
+  it("TC-14: currentQuestion=0 のとき 0% 表示でエラーが発生しない", () => {
+    expect(() =>
+      render(<InterviewProgressBar currentQuestion={0} totalQuestions={6} />),
+    ).not.toThrow();
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.style.width).toBe("0%");
+  });
+
+  it("TC-15: currentQuestion と totalQuestions が等しいとき 100% 表示", () => {
+    render(<InterviewProgressBar currentQuestion={6} totalQuestions={6} />);
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.style.width).toBe("100%");
+  });
+
+  it("TC-16: transition クラスが常に保持される（0→1 遷移後も存在）", () => {
+    const { rerender } = render(
+      <InterviewProgressBar currentQuestion={0} totalQuestions={6} />,
+    );
+    rerender(<InterviewProgressBar currentQuestion={1} totalQuestions={6} />);
+    const bar = document.querySelector(
+      ".bg-\\[var\\(--status-primary\\)\\]",
+    ) as HTMLElement;
+    expect(bar.className).toContain("transition-all");
+    expect(bar.className).toContain("duration-300");
+  });
+});
