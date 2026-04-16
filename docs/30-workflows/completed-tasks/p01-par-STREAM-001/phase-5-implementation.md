@@ -90,7 +90,7 @@ async createSkill(
 ): Promise<string> {
   // ... 既存の前処理 ...
 
-  // 段階1: planning（runCreateWorkflow 開始直前）
+  // 段階1: planning（createSkill 開始直後・mode 分岐前）
   onProgress?.({ phase: "planning", percentage: 10, message: "構造を計画しています" });
 
   switch (options.mode) {

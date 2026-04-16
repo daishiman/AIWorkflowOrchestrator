@@ -43,6 +43,16 @@ interface StructurePlanJson {
   anchors?: Anchor[];
 }
 
+type SkillCreatorProgressData = {
+  phase: string;
+  percentage: number;
+  message: string;
+};
+
+type SkillCreatorProgressCallback = (
+  progress: SkillCreatorProgressData,
+) => void;
+
 export class SkillCreatorService {
   private readonly skillsDir: string;
   private readonly workflowsDir: string;
@@ -81,9 +91,13 @@ export class SkillCreatorService {
    * スキルを作成
    *
    * @param options - スキル作成オプション
+   * @param onProgress - 進捗通知コールバック
    * @returns 作成されたスキルディレクトリパス
    */
-  async createSkill(options: CreateSkillOptions): Promise<string> {
+  async createSkill(
+    options: CreateSkillOptions,
+    onProgress?: SkillCreatorProgressCallback,
+  ): Promise<string> {
     // BV-001/BV-002/BV-003/BV-005: 入力バリデーション
     if (!options.name || options.name.trim() === "") {
       throw new Error("Skill name must not be empty");
@@ -107,6 +121,16 @@ export class SkillCreatorService {
     ) {
       throw new Error("Interview result is required for collaborative mode");
     }
+
+    const emitProgress = (progress: SkillCreatorProgressData): void => {
+      onProgress?.(progress);
+    };
+
+    emitProgress({
+      phase: "planning",
+      percentage: 10,
+      message: "構造を計画しています",
+    });
 
     // モード別ワークフロー実行
     let structurePlan: StructurePlanJson | null = null;
@@ -175,6 +199,12 @@ export class SkillCreatorService {
         );
       }
     }
+
+    emitProgress({
+      phase: "generating-skill",
+      percentage: 40,
+      message: "SKILL.md を生成しています",
+    });
     // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
     if (structurePlan) {
       await this.generateSkillMd(skillDir, structurePlan);
@@ -200,16 +230,34 @@ export class SkillCreatorService {
       );
     }
 
+    emitProgress({
+      phase: "generating-agents",
+      percentage: 70,
+      message: "エージェント定義を生成しています",
+    });
+
     // タスク仕様書生成（オプション）
     if (options.generateTasks) {
       await this.generateTaskSpecs(options.name, options.description);
     }
+
+    emitProgress({
+      phase: "validating",
+      percentage: 90,
+      message: "スキルを検証しています",
+    });
 
     // スキル検証
     const isValid = await this.validateSkill(skillDir);
     if (!isValid) {
       throw new Error("Skill validation failed");
     }
+
+    emitProgress({
+      phase: "done",
+      percentage: 100,
+      message: "完了しました",
+    });
 
     return skillDir;
   }

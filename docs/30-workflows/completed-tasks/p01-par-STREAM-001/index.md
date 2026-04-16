@@ -134,18 +134,18 @@ graph TD
 
 | Phase | 名称               | 仕様書                                                       | ステータス                  |
 | ----- | ------------------ | ------------------------------------------------------------ | --------------------------- |
-| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 未実施                      |
-| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 未実施                      |
-| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 未実施                      |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 未実施                      |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 未実施                      |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 未実施                      |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 未実施                      |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 未実施                      |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 未実施                      |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 未実施                      |
-| 11    | 手動テスト検証     | [phase-11-manual-test.md](phase-11-manual-test.md)           | 未実施                      |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 未実施                      |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 完了                        |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 完了                        |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 完了                        |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了                        |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 完了                        |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了                        |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了                        |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了                        |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了                        |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 完了                        |
+| 11    | 手動テスト検証     | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了                        |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 完了                        |
 | 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | ユーザー指示待ち（blocked） |
 
 ---
@@ -205,7 +205,7 @@ graph TD
 ```bash
 # Phase完了処理
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \
-  --workflow docs/30-workflows/skill-create-flow-gaps/TASK-SW-STREAM-001 --phase {{N}} \
+  --workflow docs/30-workflows/p01-par-STREAM-001 --phase {{N}} \
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 ```
 

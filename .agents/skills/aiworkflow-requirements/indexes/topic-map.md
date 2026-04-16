@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-15
+> 自動生成: 2026-04-16
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -3124,6 +3124,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L149 |
 | クイックリファレンス: カテゴリ別検索ガイド | L169 |
 | 分割ファイル一覧 | L173 |
+| 分割ファイル一覧 | L151 |
+| クイックリファレンス: カテゴリ別検索ガイド | L171 |
+| 分割ファイル一覧 | L175 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3516,6 +3519,17 @@ node scripts/list-specs.js --topics
 | 関連ファイル | L425 |
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
+
+### references/lessons-learned-stream-001-progress-callback.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| L-STREAM-001: optional callback パターンの設計判断 | L14 |
+| L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
+| L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
+| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
+| 後続タスク・未タスク | L100 |
 
 ### references/lessons-learned-templates.md
 
@@ -5065,6 +5079,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L21 |
 | 利用順序 | L132 |
 | 関連ドキュメント | L137 |
+| 仕様書インデックス | L22 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L138 |
 
 ### references/testing-accessibility.md
 

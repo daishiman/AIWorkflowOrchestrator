@@ -4,6 +4,20 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-16 - TASK-SW-STREAM-001 Phase-12 close-out sync
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に TASK-SW-STREAM-001 Phase-12 完了記録を追加（日付: 2026-04-16）
+- skill-creator-service-progress-callback 実装（`onProgress?` コールバック / 5段階進捗 / オプショナル引数）を current facts に反映
+- `references/lessons-learned-current-2026-04.md` 新規ファイル作成の記録（L-SW-STREAM-001-001 相当）
+
+### 背景
+
+TASK-SW-STREAM-001（SkillCreatorService.createSkill() コールバック引数追加）の Phase-12 完了。`onProgress?` オプショナルコールバックの追加・5段階進捗通知の実装を skill current facts として固定した。
+
+---
+
 ## 2026-04-15 - TASK-CI-FUTURE-003 current facts sync
 
 ### 変更内容

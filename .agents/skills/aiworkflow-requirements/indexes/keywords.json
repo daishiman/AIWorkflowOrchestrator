@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3013,
+  "totalKeywords": 3025,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1183,6 +1183,7 @@
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -1424,6 +1425,7 @@
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -2402,7 +2404,8 @@
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-stream-001-progress-callback.md"
     ],
     "SKCE": [
       "api-ipc-sdk-type-contracts.md",
@@ -3249,6 +3252,7 @@
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
@@ -3914,6 +3918,7 @@
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-console-migration-patterns.md",
@@ -4004,6 +4009,7 @@
       "arch-ui-components-core.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -4332,7 +4338,8 @@
       "architecture-file-conversion.md"
     ],
     "service": [
-      "architecture-file-conversion.md"
+      "architecture-file-conversion.md",
+      "lessons-learned-stream-001-progress-callback.md"
     ],
     "db": [
       "architecture-file-conversion.md"
@@ -4974,6 +4981,7 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
@@ -5167,6 +5175,7 @@
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -6769,6 +6778,7 @@
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
       "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -6840,6 +6850,7 @@
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
       "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -8579,7 +8590,8 @@
     ],
     "feedback": [
       "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-skill-wizard-redesign.md"
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md"
     ],
     "memory": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -9473,7 +9485,8 @@
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "report": [
-      "lessons-learned-skill-wizard-redesign.md"
+      "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md"
     ],
     "より": [
       "lessons-learned-skill-wizard-redesign.md"
@@ -9495,6 +9508,42 @@
     ],
     "複数選択対応": [
       "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "progress": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "callback": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "optional": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "パターンの設計判断": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "SkillCreatorProgressData": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "型の": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "移動を低優先度にした理由": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "段階": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "設計の考え方": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "再利用メモ": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "より抽出": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "後続タスク・未タスク": [
+      "lessons-learned-stream-001-progress-callback.md"
     ],
     "templates": [
       "lessons-learned-templates.md"
