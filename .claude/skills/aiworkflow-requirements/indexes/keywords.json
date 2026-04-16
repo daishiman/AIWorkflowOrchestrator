@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3033,
+  "totalKeywords": 3036,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1257,6 +1257,7 @@
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1572,6 +1573,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed.md",
       "testing-component-patterns-core.md",
@@ -2185,6 +2187,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
@@ -4174,6 +4177,7 @@
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -8593,6 +8597,7 @@
     "整合性修正": [
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -13333,6 +13338,15 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "カテゴリ複数選択・ボタン統一・": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ProgressBar": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "修正": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "TerminalHandoff": [

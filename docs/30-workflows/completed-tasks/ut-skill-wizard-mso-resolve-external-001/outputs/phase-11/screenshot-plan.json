@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-04-15T13:36:23.559Z",
+  "taskId": "UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001",
+  "route": "/advanced/skill-create-wizard",
+  "captures": [
+    {
+      "file": "q5-single-select-no-badge.png",
+      "path": "outputs/phase-11/screenshots/q5-single-select-no-badge.png",
+      "description": "Q5でSlackのみ選択した状態（主ツールバッジなし）"
+    },
+    {
+      "file": "q5-multi-select-no-badge.png",
+      "path": "outputs/phase-11/screenshots/q5-multi-select-no-badge.png",
+      "description": "Q5でSlack+GitHubを選択した状態（主ツールバッジなし）"
+    }
+  ]
+}
