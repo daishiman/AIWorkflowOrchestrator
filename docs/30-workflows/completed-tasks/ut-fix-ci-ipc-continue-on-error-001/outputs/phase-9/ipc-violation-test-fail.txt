@@ -1,0 +1,12 @@
+=== IPC 4-Layer Alignment Verification ===
+
+[Rule-1] shared で定義されたチャネルが preload ホワイトリストに未登録: FAIL (1 missing)
+  ::error::Rule-1: Channel "test:ipc-guard-violation" - shared で定義されたチャネルが preload ホワイトリストに未登録
+[Rule-2] preload invoke ホワイトリストのチャネルが main ハンドラに未実装: PASS
+[Rule-3] renderer で使用されたチャネルが shared/preload に未定義: PASS
+
+--- Summary ---
+Total rules: 3
+Passed: 2
+Failed: 1
+Exit code: 1

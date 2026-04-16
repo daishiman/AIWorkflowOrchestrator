@@ -2403,7 +2403,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル管理サービス | L8 |
-| 構造計画 JSON / createSkill 接続（TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001） | L246, L260, L265 |
 
 ### references/arch-electron-services-details-part2.md
 
@@ -3216,7 +3215,6 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L602 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L636 |
-| TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16） | L6 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3268,7 +3266,8 @@ node scripts/list-specs.js --topics
 | L-IPC4L-003: mainハンドラは6パターン対応が必要 | L27 |
 | L-IPC4L-004: ローカル定数マップでファイル内const vs 外部importの優先度管理 | L36 |
 | L-IPC4L-005: Rule-1/Rule-2のギャップは「スクリプト不具合」ではなく「コードベースの既存ギャップ」 | L45 |
-| 変更履歴 | L56 |
+| L-IPC4L-CI-001: `.cjs` 検証スクリプトのCI不安定はビルド成果物依存が原因 | L56 |
+| 変更履歴 | L69 |
 
 ### references/lessons-learned-ipc-channel-whitelist-sync.md
 
@@ -4957,7 +4956,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L9 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5083,27 +5082,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L170 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L182 |
-| 完了タスク（2026-03後半） | L210 |
-| 完了タスク（機能別アーカイブ） | L218 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L183 |
-| 完了タスク（2026-03後半） | L211 |
-| 完了タスク（機能別アーカイブ） | L219 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L320 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L203 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L223 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L225 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L237 |
-| 完了タスク（2026-03後半） | L265 |
-| 完了タスク（機能別アーカイブ） | L273 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L374 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L192 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L212 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L214 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L226 |
+| 完了タスク（2026-03後半） | L254 |
+| 完了タスク（機能別アーカイブ） | L262 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L363 |
 
 ### references/task-workflow-history.md
 
@@ -5137,24 +5122,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
-| 仕様書インデックス | L19 |
-| 利用順序 | L130 |
-| 関連ドキュメント | L135 |
-| 仕様書インデックス | L21 |
-| 利用順序 | L132 |
-| 関連ドキュメント | L137 |
-| 仕様書インデックス | L19 |
-| 利用順序 | L130 |
-| 関連ドキュメント | L135 |
-| 仕様書インデックス | L21 |
+| 仕様書インデックス | L22 |
 | 利用順序 | L133 |
-| 関連ドキュメント | L139 |
-| 仕様書インデックス | L24 |
-| 利用順序 | L136 |
-| 関連ドキュメント | L142 |
+| 関連ドキュメント | L138 |
 
 ### references/testing-accessibility.md
 
@@ -5344,3 +5314,4 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
+
