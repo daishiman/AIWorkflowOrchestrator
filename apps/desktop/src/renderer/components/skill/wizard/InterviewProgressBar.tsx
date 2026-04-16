@@ -18,7 +18,10 @@ export const InterviewProgressBar = ({
   currentQuestion,
   totalQuestions = 6,
 }: InterviewProgressBarProps) => {
-  const percent = Math.round((currentQuestion / totalQuestions) * 100);
+  const percent =
+    totalQuestions > 0
+      ? Math.round((currentQuestion / totalQuestions) * 100)
+      : 0;
   return (
     <div className="flex flex-col gap-1">
       <span className="text-sm text-[var(--text-secondary)]">
@@ -33,7 +36,7 @@ export const InterviewProgressBar = ({
         className="w-full h-2 rounded-full bg-[var(--bg-secondary)]"
       >
         <div
-          className="h-2 rounded-full bg-[var(--status-primary)] transition-all"
+          className="h-2 rounded-full bg-[var(--status-primary)] transition-all duration-300 ease-in-out"
           style={{ width: `${percent}%` }}
         />
       </div>

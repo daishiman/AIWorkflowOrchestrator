@@ -273,7 +273,12 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        const skillDir = await skillCreatorService.createSkill(validatedArgs);
+        const skillDir = await skillCreatorService.createSkill(
+          validatedArgs,
+          (progress) => {
+            sendSkillCreatorProgress(mainWindow, progress);
+          },
+        );
         return { success: true, data: skillDir };
       } catch (error) {
         return {
@@ -677,6 +682,22 @@ export function registerSkillCreatorHandlers(
     },
   );
 
+  // skill-creator:cancel - キャンセル（TASK-SC-CANCEL-001: 将来実装予定）
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_CANCEL,
+    async (event: IpcMainInvokeEvent): Promise<IpcResult<null>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_CANCEL,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      return { success: false, error: "not-implemented" };
+    },
+  );
+
   registerRuntimeSkillCreatorHandlers(
     mainWindow,
     runtimeSkillCreatorService,
@@ -719,5 +740,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   unregisterRuntimeSkillCreatorHandlers();
 }

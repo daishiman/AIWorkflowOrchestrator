@@ -12,15 +12,15 @@
 | 依存タスク | なし                                  |
 | 後続タスク | TASK-SW-CANCEL-002                    |
 | 作成日     | 2026-04-15                            |
-| ステータス | pending                               |
+| ステータス | completed                             |
 
 ## 概要
 
-`packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL: "skill-creator:cancel"` チャンネル定数を追加する。これにより IPC 4層（shared定数 → Preload ホワイトリスト → Main ハンドラー → Preload API）のうち層1（定数定義）が完成する。
+`packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL: "skill-creator:cancel"` チャンネル定数を追加する。これにより IPC 4層（shared定数 → Preload ホワイトリスト → Main ハンドラー → Preload API）のうち層1（定数定義）が完成した。
 
 ## 背景
 
-`useCancelGeneration.ts:30` のコメント「`AbortController.abort()` でメインプロセス側の処理も中断される」は将来の意図を記したメモであり、現時点では IPC チャンネル自体が存在しない。`SKILL_CREATOR_CANCEL` チャンネルが `channels.ts` に存在しないため、後続の Preload API・Main ハンドラー・Renderer フック修正を行う前に、まず定数を追加する必要がある。
+`useCancelGeneration.ts:30` のコメント「`AbortController.abort()` でメインプロセス側の処理も中断される」は将来の意図を記したメモだったが、現在は IPC チャンネル自体が存在する。`SKILL_CREATOR_CANCEL` チャンネルを `channels.ts` に追加済みのため、後続の Preload API・Main ハンドラー・Renderer フック修正は別タスクで扱う。
 
 ## 対象ファイル
 
@@ -116,18 +116,18 @@ graph TD
 
 | Phase | 名称               | 仕様書                                                       | ステータス |
 | ----- | ------------------ | ------------------------------------------------------------ | ---------- |
-| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | pending    |
-| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | pending    |
-| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | pending    |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | pending    |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | pending    |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | pending    |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | pending    |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | pending    |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | pending    |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | pending    |
-| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | pending    |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | pending    |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | completed  |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | completed  |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | completed  |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | completed  |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | completed  |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | completed  |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | completed  |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | completed  |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | completed  |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | completed  |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | completed  |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | completed  |
 | 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | blocked    |
 
 ## テストカバレッジ目標
@@ -140,13 +140,13 @@ graph TD
 
 ## IPC 4層完全接続における本タスクの役割
 
-| 層  | 担当                               | タスク             | 本タスク     |
-| --- | ---------------------------------- | ------------------ | ------------ |
-| 1   | 定数定義（shared channels.ts）     | TASK-SW-CANCEL-001 | **本タスク** |
-| 2   | ホワイトリスト（preload channels） | TASK-SW-CANCEL-002 | -            |
-| 3   | ハンドラー登録（main ipcMain）     | TASK-SW-CANCEL-003 | -            |
-| 4   | Preload API（contextBridge）       | TASK-SW-CANCEL-002 | -            |
-| 5   | Renderer 呼び出し（フック修正）    | TASK-SW-CANCEL-004 | -            |
+| 層  | 担当                               | タスク             | 本タスク |
+| --- | ---------------------------------- | ------------------ | -------- |
+| 1   | 定数定義（shared channels.ts）     | TASK-SW-CANCEL-001 | 完了     |
+| 2   | ホワイトリスト（preload channels） | TASK-SW-CANCEL-002 | 後続     |
+| 3   | ハンドラー登録（main ipcMain）     | TASK-SW-CANCEL-003 | 後続     |
+| 4   | Preload API（contextBridge）       | TASK-SW-CANCEL-002 | 後続     |
+| 5   | Renderer 呼び出し（フック修正）    | TASK-SW-CANCEL-004 | 後続     |
 
 ## 関連
 

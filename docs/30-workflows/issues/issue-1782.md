@@ -9,18 +9,18 @@ category: -
 target_feature: -
 priority: 低
 scale: -
-status: 未着手
+status: 完了
 source_phase: TASK-LLM-MOD-05 Phase 2 設計・Phase 12 未タスク検出（2026-03-30）
 created_date: 2026-03-30
 dependencies: []
 spec_path: docs/30-workflows/unassigned-task/task-llm-mod-05-renderer-desc-display.md
 ```
 
-| 項目       | 内容   |
-| ---------- | ------ |
-| 優先度     | 低     |
-| 規模       | -      |
-| ステータス | 未着手 |
+| 項目       | 内容 |
+| ---------- | ---- |
+| 優先度     | 低   |
+| 規模       | -    |
+| ステータス | 完了 |
 
 ---
 
@@ -65,4 +65,4 @@ IPC 経由で `model.description` が Renderer に到達している。
 
 - 完了タスク: `docs/30-workflows/step-04-seq-task-05-schema-extension/`
 - 仕様書: `packages/shared/src/types/llm/schemas/provider-registry.ts`
-- backlog: `references/task-workflow-backlog.md` (TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY)
+- completed: `references/task-workflow-completed.md` (TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY)

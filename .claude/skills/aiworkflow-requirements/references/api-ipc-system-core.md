@@ -464,3 +464,85 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | -------- | -------- | ------------------ |
 | [api-ipc-system-skill-creator.md](api-ipc-system-skill-creator.md) | Skill Creator Runtime Public IPC（前半） | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001）前半 |
 | [api-ipc-system-skill-creator-part2.md](api-ipc-system-skill-creator-part2.md) | ChatPanel / Console Safety / AI Provider / External API（後半） | ChatPanel IPC、Advanced Console Safety、AIプロバイダーAPI連携、execute() 永続化統合、External API Support、IPC Handler Lifecycle |
+
+---
+
+## SkillCreatorService progressコールバック IPC 仕様（TASK-SW-STREAM-001）
+
+> 実装同期: 2026-04-16
+> ステータス: `implemented`
+
+### 概要
+
+`SkillCreatorService.createSkill()` にオプショナルな進捗コールバックを追加し、5段階の進捗を Main → Renderer へ push 送信する。
+
+### 型定義
+
+#### SkillCreatorProgressData
+
+| フィールド   | 型                                                                                  | 説明                     |
+| ------------ | ----------------------------------------------------------------------------------- | ------------------------ |
+| `phase`      | `"planning" \| "generating-skill" \| "generating-agents" \| "validating" \| "done"` | 現在の進捗フェーズ       |
+| `percentage` | `number`                                                                            | 進捗率（10/40/70/90/100） |
+| `message`    | `string`                                                                            | 日本語の進捗メッセージ   |
+
+#### SkillCreatorProgressCallback
+
+```typescript
+type SkillCreatorProgressCallback = (progress: SkillCreatorProgressData) => void;
+```
+
+### createSkill() シグネチャ（更新後）
+
+```typescript
+async createSkill(
+  options: CreateSkillOptions,
+  onProgress?: SkillCreatorProgressCallback,
+): Promise<string>
+```
+
+- `onProgress` はオプショナル。未指定時は従来通り動作（後方互換）。
+- コールバック内で throw された例外は握りつぶさず呼び出し元に伝播する。
+
+### 5段階進捗イベント
+
+| phase              | percentage | message                    | タイミング              |
+| ------------------ | ---------- | -------------------------- | ----------------------- |
+| `planning`         | 10         | 構造を計画しています        | createSkill 開始直後    |
+| `generating-skill` | 40         | SKILL.md を生成しています   | SKILL.md 生成直前       |
+| `generating-agents`| 70         | エージェント定義を生成しています | タスク仕様書生成直前  |
+| `validating`       | 90         | スキルを検証しています      | validateSkill 直前      |
+| `done`             | 100        | 完了しました                | 正常終了直前            |
+
+### SKILL_CREATOR_PROGRESS IPC チャネル
+
+| チャネル                     | 方向          | 用途                   | Payload                    |
+| ---------------------------- | ------------- | ---------------------- | -------------------------- |
+| `skill-creator:progress`     | Main → Renderer | 進捗通知の push 送信  | `SkillCreatorProgressData` |
+
+### IPC 接続パターン（skillCreatorHandlers.ts）
+
+```typescript
+const skillDir = await skillCreatorService.createSkill(
+  validatedArgs,
+  (progress) => {
+    sendSkillCreatorProgress(mainWindow, progress);
+  },
+);
+// → IPC_CHANNELS.SKILL_CREATOR_PROGRESS に send
+```
+
+### 実装ファイル
+
+| ファイル | パス | 役割 |
+| --- | --- | --- |
+| `SkillCreatorService.ts` | `apps/desktop/src/main/services/skill/` | progressコールバック実装 |
+| `skillCreatorHandlers.ts` | `apps/desktop/src/main/ipc/` | IPC push 送信接続 |
+
+### 後続タスク（未タスク）
+
+| ID     | 内容                                          | 優先度 |
+| ------ | --------------------------------------------- | ------ |
+| FUP-01 | `SkillCreatorProgressData` を shared へ移動   | Low    |
+| FUP-02 | progress の phase/percentage/message を定数化  | Low    |
+| FUP-03 | mode 別に progress の詳細を変える             | Medium |
