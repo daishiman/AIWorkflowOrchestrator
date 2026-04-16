@@ -1625,3 +1625,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
 | 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
+## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001: structurePlan → generate_skill_md.js 接続 教訓（2026-04-16）
+
+### L-SC-CONNECT-001: private method の多層フォールバックはシナリオ別に段階を明示して設計する
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | スクリプト実行成功でもファイルが生成されない edge case があり、`generateResult.success === true` だけでは完了を保証できなかった                                             |
+| 原因       | スクリプトの終了コード（exitCode=0）とファイル生成の有無は独立した事象。成功判定をプロセスの終了コードのみに依存していた                                                   |
+| 解決策     | フォールバック判定を2段階化: ① `!generateResult.success` → フォールバック、② `fs.access` 失敗 → フォールバック。この2段階で「プロセス失敗」と「ファイル未生成」の両方に対応 |
+| 設計原則   | スクリプト実行結果の検証は「プロセス終了コード」と「出力物の存在確認」の2段階で行う。特に生成系スクリプトは `fs.access` による出力ファイル確認が必須                        |
+| 適用条件   | `generate_skill_md.js` のような外部スクリプト呼び出しで出力ファイルを生成するパターン全般                                                                                  |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-002: StructurePlanJson → workflow 変換は purpose を trigger.description に埋め込む設計にする
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `generate_skill_md.js` が期待する `workflow.trigger.description` と `StructurePlanJson.purpose` がそのまま対応しないため、変換ロジックが必要だった                        |
+| 原因       | 2つのスキーマが独立して設計され、フィールド名と構造が異なる（`purpose` vs `trigger.description`）                                                                          |
+| 解決策     | purpose を `Use when {name} is requested. Purpose: {purpose}` 形式に正規化して `trigger.description` に埋め込む。`triggers` は空配列なら `[skillName]` にフォールバック   |
+| 設計原則   | 異なるスキーマを橋渡しする変換層では「空値・undefined のフォールバック」と「文字列正規化（trim/collapse）」を必ずペアで実装する                                              |
+| 適用条件   | `StructurePlanJson` を引数に受け取り `workflow` 形式の JSON を組み立てる変換処理全般                                                                                      |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-003: create モードの structurePlan null 時は warn ログで理由を記録し silent fallback を避ける
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `structurePlan` が null の場合、暗黙に `ensureSkillMdExists` が呼ばれ、なぜ create モードで構造計画が使われなかったのかが追跡できなかった                           |
+| 原因       | null チェックのみで fallback を呼び出し、ログ出力がなかった                                                                                                        |
+| 解決策     | `this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...)` を追加し、create モードで null になった事実を必ずログに残す                  |
+| 設計原則   | create モードで期待される出力（structurePlan）が null になることは「正常系ではない」ため、warn ログで記録する。silent fallback はデバッグを著しく困難にする          |
+| 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                            |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                       |
