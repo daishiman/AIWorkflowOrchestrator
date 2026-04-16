@@ -1,0 +1,69 @@
+# TASK-CI-FUTURE-003: キャッシュヒット率確認ステップ
+# 配置先: .github/actions/pnpm-install-retry/action.yml
+# 既存の "Install dependencies with retry" ステップの直後に追加する
+
+- name: キャッシュヒット率確認
+  id: check-cache-hit-rate
+  if: always()
+  continue-on-error: true
+  shell: bash
+  env:
+    CACHE_HIT: ${{ steps.cache-node-modules.outputs.cache-hit }}
+  run: |
+    set -euo pipefail
+
+    cache_status="❌ キャッシュミス (Miss)"
+    cache_kind="miss"
+    cache_reason="cache-hit=false / node_modules が復元されなかった"
+    annotation_level="warning"
+    cache_restored="false"
+
+    for path in \
+      node_modules \
+      apps/backend/node_modules \
+      apps/desktop/node_modules \
+      apps/web/node_modules \
+      packages/shared/node_modules \
+      packages/ui/node_modules; do
+      if [ -d "$path" ]; then
+        cache_restored="true"
+        break
+      fi
+    done
+
+    if [ "${CACHE_HIT:-}" = "true" ]; then
+      cache_status="✅ 完全ヒット (Exact Hit)"
+      cache_kind="exact"
+      cache_reason="cache-hit=true かつ node_modules が復元済み"
+      annotation_level=""
+    elif [ "$cache_restored" = "true" ]; then
+      cache_status="⚠️ フォールバックヒット (Partial Hit)"
+      cache_kind="fallback"
+      cache_reason="cache-hit=false / node_modules がフォールバック復元済み"
+      annotation_level="notice"
+    fi
+
+    {
+      echo "cache-status=$cache_status"
+      echo "cache-kind=$cache_kind"
+      echo "cache-reason=$cache_reason"
+      echo "annotation-level=$annotation_level"
+    } >> "$GITHUB_OUTPUT"
+
+    # GitHub Actions Summary への Markdown テーブル出力
+    echo "## キャッシュヒット率レポート" >> "$GITHUB_STEP_SUMMARY"
+    echo "" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 項目 | 内容 |" >> "$GITHUB_STEP_SUMMARY"
+    echo "|------|------|" >> "$GITHUB_STEP_SUMMARY"
+    echo "| ジョブ名 | ${GITHUB_JOB:-unknown} |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 判定種別 | $cache_kind |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 判定結果 | $cache_status |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| 判定根拠 | $cache_reason |" >> "$GITHUB_STEP_SUMMARY"
+    echo "| アノテーション | $annotation_level |" >> "$GITHUB_STEP_SUMMARY"
+
+    # アノテーション出力 (ミス時: ::warning::、フォールバック時: ::notice::)
+    if [ "$annotation_level" = "warning" ]; then
+      echo "::warning::[$GITHUB_JOB] node_modules キャッシュミス。CI実行時間が増加する可能性があります。"
+    elif [ "$annotation_level" = "notice" ]; then
+      echo "::notice::[$GITHUB_JOB] node_modules キャッシュはフォールバックキーでヒットしました。完全ヒットより効率が低下しています。"
+    fi
