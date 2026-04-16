@@ -1177,6 +1177,9 @@ describe("SkillCreatorService", () => {
         }
         return { success: true, stdout: "", stderr: "", exitCode: 0 };
       });
+      const errorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
       const ensureSpy = vi.spyOn(service as any, "ensureSkillMdExists");
 
       // Act
@@ -1200,6 +1203,17 @@ describe("SkillCreatorService", () => {
       expect(fallbackContent).toContain("name: test-skill");
       expect(fallbackContent).toContain("## Task一覧");
       expect(fallbackContent).toContain("| Task | 責務 | 入力 | 出力 |");
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          "generateSkillMd fallback to ensureSkillMdExists",
+        ),
+        expect.objectContaining({
+          skillName: "test-skill",
+          reason: "generate_skill_md.js returned failure",
+          stderr: "MODULE_NOT_FOUND: Cannot find module",
+        }),
+      );
+      errorSpy.mockRestore();
     });
 
     it("TC-05: 生成成功でも SKILL.md が存在しない場合は ensureSkillMdExists が呼ばれる", async () => {
@@ -1450,6 +1464,476 @@ describe("SkillCreatorService", () => {
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
         "plan-structure",
       );
+    });
+  });
+
+  // ===================================================================
+  // TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001:
+  // runCreateWorkflow → generateSkillMd 接続
+  // TC-CONNECT-1〜4, IT-CONNECT-1〜2
+  // ===================================================================
+
+  describe("generateSkillMd 接続 (TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001)", () => {
+    const createOptions = () => ({
+      name: "test-skill",
+      description: "テスト用スキル",
+      mode: "create" as const,
+    });
+
+    describe("TC-CONNECT-1: structurePlan が返された場合", () => {
+      it("createSkill() で generateSkillMd が1回呼ばれること", async () => {
+        // Arrange
+        mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+          if (/test-skill[/\\]SKILL\.md$/.test(String(target))) return;
+          throw new Error("ENOENT");
+        });
+        const generateSkillMdSpy = vi
+          .spyOn(
+            service as unknown as {
+              generateSkillMd: (...args: unknown[]) => Promise<void>;
+            },
+            "generateSkillMd",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await service.createSkill(createOptions());
+
+        // Assert
+        expect(generateSkillMdSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("TC-CONNECT-2: structurePlan が null の場合", () => {
+      it("ensureSkillMdExists にフォールバックし、generateSkillMd は呼ばれないこと", async () => {
+        // Arrange: loadAgent を失敗させ runCreateWorkflow が null を返す
+        mockResourceLoader.loadAgent.mockRejectedValue(
+          new Error("Agent file not found"),
+        );
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        const warnSpy = vi
+          .spyOn(console, "warn")
+          .mockImplementation(() => undefined);
+        const generateSkillMdSpy = vi
+          .spyOn(
+            service as unknown as {
+              generateSkillMd: (...args: unknown[]) => Promise<void>;
+            },
+            "generateSkillMd",
+          )
+          .mockResolvedValue(undefined);
+        const ensureSkillMdExistsSpy = vi
+          .spyOn(
+            service as unknown as {
+              ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+            },
+            "ensureSkillMdExists",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await service.createSkill(createOptions());
+
+        // Assert
+        expect(generateSkillMdSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("structurePlan is null"),
+          expect.objectContaining({
+            skillName: "test-skill",
+            mode: "create",
+          }),
+        );
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledWith(
+          expect.any(String),
+          "test-skill",
+          "テスト用スキル",
+        );
+        warnSpy.mockRestore();
+      });
+    });
+
+    describe("TC-CONNECT-3: generateSkillMd のスクリプト引数確認", () => {
+      it("generate_skill_md.js を --plan と --output の引数で呼ぶこと", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+
+        // Act: generateSkillMd を直接呼び出す
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", {
+          skillName: "test-skill",
+          description: "テスト用スキル",
+          purpose: "mock-purpose",
+          features: [],
+          agents: ["agent1", "agent2"],
+        });
+
+        // Assert
+        const generateCall = mockScriptExecutor.execute.mock.calls.find(
+          ([script]: [string]) => script === "generate_skill_md.js",
+        );
+        expect(generateCall).toBeDefined();
+        const args = generateCall![1] as string[];
+        expect(args).toContain("--plan");
+        expect(args).toContain("--output");
+        expect(args[args.indexOf("--output") + 1]).toMatch(
+          /skillDir[/\\]SKILL\.md$/,
+        );
+      });
+    });
+
+    describe("TC-CONNECT-4: スクリプト実行失敗時の fallback", () => {
+      it("ensureSkillMdExists(skillDir, skillName, description) へ fallback すること", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockRejectedValue(
+          new Error("script failed"),
+        );
+        const ensureSkillMdExistsSpy = vi
+          .spyOn(
+            service as unknown as {
+              ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+            },
+            "ensureSkillMdExists",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", {
+          skillName: "test-skill",
+          description: "テスト用スキル",
+          purpose: "mock-purpose",
+          features: [],
+          agents: [],
+        });
+
+        // Assert
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledWith(
+          "/path/to/skillDir",
+          "test-skill",
+          "テスト用スキル",
+        );
+      });
+    });
+
+    describe("IT-CONNECT-1: create モード end-to-end", () => {
+      it("runCreateWorkflow → generateSkillMd → generate_skill_md.js 呼び出しの end-to-end フロー", async () => {
+        // Arrange
+        mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+          if (/test-skill[/\\]SKILL\.md$/.test(String(target))) return;
+          throw new Error("ENOENT");
+        });
+
+        // Act
+        await service.createSkill({
+          name: "test-skill",
+          description: "統合テスト用スキル",
+          mode: "create",
+        });
+
+        // Assert: generate_skill_md.js が呼ばれていること
+        const generateCall = mockScriptExecutor.execute.mock.calls.find(
+          ([script]: [string]) => script === "generate_skill_md.js",
+        );
+        expect(generateCall).toBeDefined();
+      });
+    });
+
+    describe("IT-CONNECT-2: JSON シリアライズ → tmpPlanPath 検証", () => {
+      it("generateSkillMd が tmpPlanPath に workflow 形式の JSON を書き込むこと", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+
+        const mockStructurePlan = {
+          skillName: "it-test-skill",
+          description: "IT テスト用スキル",
+          purpose: "mock-purpose",
+          features: ["feature1"],
+          agents: ["agent1"],
+          anchors: [
+            {
+              source: "Clean Code",
+              application: "SRP",
+              purpose: "責務分離",
+            },
+          ],
+          triggers: [],
+        };
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/it-test-skill", mockStructurePlan);
+
+        // Assert: writeFile が tmpPlanPath に JSON を書き込んでいること
+        const writeSpy = vi.mocked(fsPromises.writeFile);
+        const tmpWriteCall = writeSpy.mock.calls.find(
+          ([filePath]: [unknown]) =>
+            typeof filePath === "string" &&
+            /skill-plan-[0-9a-f-]{36}\.json$/.test(filePath),
+        );
+        expect(tmpWriteCall).toBeDefined();
+        const writtenPlan = JSON.parse(tmpWriteCall![1] as string);
+        expect(writtenPlan.skillName).toBe("it-test-skill");
+        expect(writtenPlan.workflow.summary).toBe("IT テスト用スキル");
+        expect(writtenPlan.workflow.anchors).toEqual([
+          {
+            source: "Clean Code",
+            application: "SRP",
+            purpose: "責務分離",
+          },
+        ]);
+        expect(writtenPlan.workflow.trigger.description).toContain(
+          "Purpose: mock-purpose",
+        );
+        expect(writtenPlan.workflow.trigger.keywords).toEqual([
+          "it-test-skill",
+        ]);
+      });
+    });
+  });
+
+  // ===================================================================
+  // Phase 6: エッジケース・異常系テスト拡充
+  // TC-5〜TC-8, IT-3〜IT-4
+  // ===================================================================
+
+  describe("エッジケース (Phase 6 拡充)", () => {
+    const mockStructurePlan = {
+      skillName: "test-skill",
+      description: "テスト用スキル",
+      purpose: "mock-agent-content",
+      features: [],
+      agents: ["mock-agent-content"],
+    };
+
+    describe("TC-5: generateSkillMd スクリプト実行失敗時のエラー処理", () => {
+      it("スクリプト実行失敗時に ensureSkillMdExists が呼ばれること", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockRejectedValue(
+          new Error("generate_skill_md.js execution failed"),
+        );
+        const ensureSkillMdExistsSpy = vi
+          .spyOn(
+            service as unknown as {
+              ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+            },
+            "ensureSkillMdExists",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", mockStructurePlan);
+
+        // Assert
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledTimes(1);
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledWith(
+          "/path/to/skillDir",
+          "test-skill",
+          "テスト用スキル",
+        );
+      });
+    });
+
+    describe("TC-6: tmpPlanPath JSON 書き込み失敗時の fallback", () => {
+      it("fs.writeFile が失敗した場合に ensureSkillMdExists が呼ばれること", async () => {
+        // Arrange
+        vi.mocked(fsPromises.writeFile).mockRejectedValueOnce(
+          new Error("EACCES: permission denied"),
+        );
+        const ensureSkillMdExistsSpy = vi
+          .spyOn(
+            service as unknown as {
+              ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+            },
+            "ensureSkillMdExists",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", mockStructurePlan);
+
+        // Assert
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("TC-7: スクリプト成功後 SKILL.md が存在する場合", () => {
+      it("スクリプト成功かつ SKILL.md 存在時は ensureSkillMdExists が呼ばれないこと", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        // SKILL.md が存在する状態をモック
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+        const ensureSkillMdExistsSpy = vi.spyOn(
+          service as unknown as {
+            ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+          },
+          "ensureSkillMdExists",
+        );
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", mockStructurePlan);
+
+        // Assert
+        expect(ensureSkillMdExistsSpy).not.toHaveBeenCalled();
+        expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+          "generate_skill_md.js",
+          expect.any(Array),
+        );
+      });
+    });
+
+    describe("TC-8: 複数回 create が実行された場合の冪等性", () => {
+      it("複数回 create を実行しても毎回 generateSkillMd が呼ばれること", async () => {
+        // Arrange
+        mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+        mockScriptExecutor.execute.mockResolvedValue({
+          success: true,
+          stdout: "",
+          stderr: "",
+          exitCode: 0,
+        });
+        vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+          if (/test-skill[/\\]SKILL\.md$/.test(String(target))) return;
+          throw new Error("ENOENT");
+        });
+        const generateSkillMdSpy = vi
+          .spyOn(
+            service as unknown as {
+              generateSkillMd: (...args: unknown[]) => Promise<void>;
+            },
+            "generateSkillMd",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act: 2回実行
+        await service.createSkill({
+          name: "test-skill",
+          description: "テスト用スキル",
+          mode: "create",
+        });
+        await service.createSkill({
+          name: "test-skill",
+          description: "テスト用スキル",
+          mode: "create",
+        });
+
+        // Assert: 2回とも generateSkillMd が呼ばれていること
+        expect(generateSkillMdSpy).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("IT-3: generate_skill_md.js 利用不可時の fallback", () => {
+      it("スクリプト ENOENT エラー時に ensureSkillMdExists が呼ばれること", async () => {
+        // Arrange
+        mockScriptExecutor.execute.mockRejectedValue(
+          new Error("ENOENT: no such file or directory, generate_skill_md.js"),
+        );
+        const ensureSkillMdExistsSpy = vi
+          .spyOn(
+            service as unknown as {
+              ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+            },
+            "ensureSkillMdExists",
+          )
+          .mockResolvedValue(undefined);
+
+        // Act
+        await (
+          service as unknown as {
+            generateSkillMd: (skillDir: string, plan: unknown) => Promise<void>;
+          }
+        ).generateSkillMd("/path/to/skillDir", mockStructurePlan);
+
+        // Assert
+        expect(ensureSkillMdExistsSpy).toHaveBeenCalledWith(
+          "/path/to/skillDir",
+          "test-skill",
+          "テスト用スキル",
+        );
+      });
+    });
+
+    describe("IT-4: ファイルシステムエラー時の動作継続確認", () => {
+      it("fs.writeFile 失敗時も generateSkillMd が例外を throw せず処理を継続すること", async () => {
+        // Arrange
+        vi.mocked(fsPromises.writeFile).mockRejectedValueOnce(
+          new Error("ENOSPC: no space left on device"),
+        );
+        vi.spyOn(
+          service as unknown as {
+            ensureSkillMdExists: (...args: unknown[]) => Promise<void>;
+          },
+          "ensureSkillMdExists",
+        ).mockResolvedValue(undefined);
+
+        // Act & Assert: 例外が呼び出し元に伝播しないこと
+        await expect(
+          (
+            service as unknown as {
+              generateSkillMd: (
+                skillDir: string,
+                plan: unknown,
+              ) => Promise<void>;
+            }
+          ).generateSkillMd("/path/to/skillDir", mockStructurePlan),
+        ).resolves.not.toThrow();
+      });
     });
   });
 });
