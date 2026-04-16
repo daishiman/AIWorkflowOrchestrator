@@ -11,14 +11,17 @@ describe("SKILL_CREATOR_CANCEL チャンネル定数", () => {
 
   // TC-02: チャンネル値が正しいこと
   it("SKILL_CREATOR_CANCEL の値が 'skill-creator:cancel' である", () => {
-    expect(SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_CANCEL).toBe(
-      "skill-creator:cancel",
-    );
+    expect(
+      (SKILL_CREATOR_RUNTIME_CHANNELS as Record<string, string>)
+        .SKILL_CREATOR_CANCEL,
+    ).toBe("skill-creator:cancel");
   });
 
   // TC-03: IPC_CHANNELS からも参照できること
   it("IPC_CHANNELS.SKILL_CREATOR_CANCEL として参照できる", () => {
-    expect(IPC_CHANNELS.SKILL_CREATOR_CANCEL).toBe("skill-creator:cancel");
+    expect((IPC_CHANNELS as Record<string, string>).SKILL_CREATOR_CANCEL).toBe(
+      "skill-creator:cancel",
+    );
   });
 
   // TC-04: 既存チャンネルと値が重複していないこと
@@ -31,11 +34,15 @@ describe("SKILL_CREATOR_CANCEL チャンネル定数", () => {
 
   // TC-05: チャンネル値が文字列型であること
   it("SKILL_CREATOR_CANCEL の値が文字列型である", () => {
-    expect(typeof IPC_CHANNELS.SKILL_CREATOR_CANCEL).toBe("string");
+    expect(
+      typeof (IPC_CHANNELS as Record<string, string>).SKILL_CREATOR_CANCEL,
+    ).toBe("string");
   });
 
   // TC-06: チャンネル値が 'skill-creator:' プレフィックスを持つこと
   it("SKILL_CREATOR_CANCEL の値が 'skill-creator:' プレフィックスを持つ", () => {
-    expect(IPC_CHANNELS.SKILL_CREATOR_CANCEL).toMatch(/^skill-creator:/);
+    expect(
+      (IPC_CHANNELS as Record<string, string>).SKILL_CREATOR_CANCEL,
+    ).toMatch(/^skill-creator:/);
   });
 });

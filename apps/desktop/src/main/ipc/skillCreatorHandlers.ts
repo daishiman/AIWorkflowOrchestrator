@@ -733,5 +733,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   unregisterRuntimeSkillCreatorHandlers();
 }

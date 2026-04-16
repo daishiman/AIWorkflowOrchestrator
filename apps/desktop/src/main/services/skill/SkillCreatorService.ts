@@ -189,6 +189,11 @@ export class SkillCreatorService {
     const abortController = new AbortController();
     this.currentAbortController = abortController;
     const operationSignal = abortController.signal;
+
+    const emitProgress = (progress: SkillCreatorProgressData): void => {
+      onProgress?.(progress);
+    };
+
     try {
       this.throwIfAborted(operationSignal);
 
@@ -196,7 +201,7 @@ export class SkillCreatorService {
       let structurePlan: StructurePlanJson | null = null;
 
       // 段階1: planning（モード別ワークフロー開始直前）
-      onProgress?.({
+      emitProgress({
         phase: "planning",
         percentage: 10,
         message: "構造を計画しています",
@@ -210,7 +215,16 @@ export class SkillCreatorService {
           await this.runOrchestrateWorkflow(options);
           break;
         case "create":
-          structurePlan = await this.runCreateWorkflow(options);
+          try {
+            structurePlan = await this.runCreateWorkflow(options);
+          } catch (error) {
+            this.logger.warn("runCreateWorkflow failed, falling back to null", {
+              skillName: options.name,
+              mode: options.mode,
+              error,
+            });
+            structurePlan = null;
+          }
           // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
           break;
         case "update":
@@ -224,7 +238,7 @@ export class SkillCreatorService {
       this.throwIfAborted(operationSignal);
 
       // 段階2: generating-skill（SKILL.md 生成開始直前）
-      onProgress?.({
+      emitProgress({
         phase: "generating-skill",
         percentage: 40,
         message: "SKILL.md を生成しています",
@@ -316,7 +330,7 @@ export class SkillCreatorService {
 
       this.throwIfAborted(operationSignal);
       // 段階3: generating-agents（エージェント定義・タスク仕様書生成開始直前）
-      onProgress?.({
+      emitProgress({
         phase: "generating-agents",
         percentage: 70,
         message: "エージェント定義を生成しています",
@@ -333,7 +347,7 @@ export class SkillCreatorService {
 
       this.throwIfAborted(operationSignal);
       // 段階4: validating（スキル検証開始直前）
-      onProgress?.({
+      emitProgress({
         phase: "validating",
         percentage: 90,
         message: "スキルを検証しています",
@@ -346,7 +360,7 @@ export class SkillCreatorService {
       }
 
       // 段階5: done（完了）
-      onProgress?.({ phase: "done", percentage: 100, message: "完了しました" });
+      emitProgress({ phase: "done", percentage: 100, message: "完了しました" });
 
       return skillDir;
     } finally {
@@ -759,9 +773,11 @@ export class SkillCreatorService {
 
   /**
    * createモードのワークフロー実行
-   * AC-1: resourceLoader.loadAgent を呼び出す（collaborative パターン踏襲）
-   * AC-3: loadAgent 失敗時は null を返しフォールバック
-   * AC-4: options.description を使用（void options を削除）
+   * AC-1: purpose に options.description を使用（エージェントプロンプト文字列でない）
+   * AC-2: agents にエージェント名リストを設定
+   * AC-3: features は空配列（LLM統合は別タスク）
+   * AC-4: エラー時は null を返しフォールバック
+   * NOTE: LLM による purpose 抽出・features 生成は別タスク（FUTURE-001/002）で実装する
    */
   /**
    * TASK-SW-STRUCT-001: runCreateWorkflow の出力仕様を修正

@@ -14,6 +14,8 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import {
   SkillCreateWizard,
   extractExternalToolNames,
@@ -761,5 +763,24 @@ describe("SkillCreateWizard", () => {
       expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
       expect(mockCreateSkill).toHaveBeenCalledTimes(2);
     });
+  });
+});
+
+describe("CSS 変数監査 (TASK-SW-UI-POLISH-001 TC-01)", () => {
+  // __dirname = .../apps/desktop/src/renderer/components/skill/__tests__
+  const skillDir = path.resolve(__dirname, "..");
+
+  it("TC-01a: SkillCreateWizard.tsx に bg-blue-* が含まれない", () => {
+    const filePath = path.join(skillDir, "SkillCreateWizard.tsx");
+    const content = fs.readFileSync(filePath, "utf-8");
+    const matches = content.match(/bg-blue-\d+/g) ?? [];
+    expect(matches).toHaveLength(0);
+  });
+
+  it("TC-01b: SkillInfoStep.tsx に bg-blue-* が含まれない", () => {
+    const filePath = path.join(skillDir, "wizard", "SkillInfoStep.tsx");
+    const content = fs.readFileSync(filePath, "utf-8");
+    const matches = content.match(/bg-blue-\d+/g) ?? [];
+    expect(matches).toHaveLength(0);
   });
 });
