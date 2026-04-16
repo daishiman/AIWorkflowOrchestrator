@@ -10,9 +10,9 @@
 
 ## 設計根拠
 
-- [phase-1-analysis.md](./00-task-spec-design-docs/phase-1-analysis.md)
-- [phase-2-solution.md](./00-task-spec-design-docs/phase-2-solution.md)
-- [phase-3-review.md](./00-task-spec-design-docs/phase-3-review.md)
+- [phase-1-analysis.md](../00-task-spec-design-docs/phase-1-analysis.md)
+- [phase-2-solution.md](../00-task-spec-design-docs/phase-2-solution.md)
+- [phase-3-review.md](../00-task-spec-design-docs/phase-3-review.md)
 
 ## 実行レーン
 

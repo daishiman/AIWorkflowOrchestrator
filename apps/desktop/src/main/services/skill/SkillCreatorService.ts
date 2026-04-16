@@ -49,6 +49,7 @@ export class SkillCreatorService {
   private readonly skillCreatorPath: string;
   private readonly scriptExecutor: ScriptExecutor;
   private readonly resourceLoader: ResourceLoader;
+  private currentAbortController: AbortController | null = null;
   private readonly logger = {
     error: (msg: string, meta?: unknown) =>
       console.error(`[SkillCreatorService] ${msg}`, meta),
@@ -62,6 +63,76 @@ export class SkillCreatorService {
     this.skillCreatorPath = DEFAULT_SKILL_CREATOR_PATH;
     this.scriptExecutor = new ScriptExecutor(this.skillCreatorPath);
     this.resourceLoader = new ResourceLoader(this.skillCreatorPath);
+  }
+
+  private createAbortError(): DOMException {
+    return new DOMException("Aborted", "AbortError");
+  }
+
+  private isAbortError(error: unknown): boolean {
+    return error instanceof Error && error.name === "AbortError";
+  }
+
+  private async pathExists(targetPath: string): Promise<boolean> {
+    try {
+      await fs.access(targetPath);
+      return true;
+    } catch (error) {
+      if (error && typeof error === "object") {
+        const code =
+          "code" in error ? String((error as { code?: unknown }).code) : "";
+        const message =
+          "message" in error
+            ? String((error as { message?: unknown }).message)
+            : "";
+        if (
+          code === "ENOENT" ||
+          /ENOENT|no such file or directory/i.test(message)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
+  private throwIfCancelled(signal?: AbortSignal): void {
+    if (signal?.aborted) {
+      throw this.createAbortError();
+    }
+  }
+
+  private async cleanupCancelledSkillDir(
+    skillDir: string,
+    existedBefore: boolean,
+    signal?: AbortSignal,
+    error?: unknown,
+  ): Promise<void> {
+    if (existedBefore) {
+      return;
+    }
+    if (!signal?.aborted && !this.isAbortError(error)) {
+      return;
+    }
+
+    try {
+      await fs.rm(skillDir, { recursive: true, force: true });
+    } catch (cleanupError) {
+      this.logger.warn("cancelled skill dir cleanup failed", {
+        skillDir,
+        cleanupError,
+      });
+    }
+  }
+
+  private executeScript(
+    scriptName: string,
+    args: string[],
+    signal?: AbortSignal,
+  ) {
+    return signal
+      ? this.scriptExecutor.execute(scriptName, args, { signal })
+      : this.scriptExecutor.execute(scriptName, args);
   }
 
   /**
@@ -81,9 +152,17 @@ export class SkillCreatorService {
    * スキルを作成
    *
    * @param options - スキル作成オプション
+   * @param onProgress - オプショナル進捗コールバック（後方互換性のためオプショナル）
    * @returns 作成されたスキルディレクトリパス
    */
-  async createSkill(options: CreateSkillOptions): Promise<string> {
+  async createSkill(
+    options: CreateSkillOptions,
+    onProgress?: (progress: {
+      phase: string;
+      percentage: number;
+      message: string;
+    }) => void,
+  ): Promise<string> {
     // BV-001/BV-002/BV-003/BV-005: 入力バリデーション
     if (!options.name || options.name.trim() === "") {
       throw new Error("Skill name must not be empty");
@@ -108,110 +187,182 @@ export class SkillCreatorService {
       throw new Error("Interview result is required for collaborative mode");
     }
 
-    // モード別ワークフロー実行
-    let structurePlan: StructurePlanJson | null = null;
-
-    switch (options.mode) {
-      case "collaborative":
-        await this.runCollaborativeWorkflow(options);
-        break;
-      case "orchestrate":
-        await this.runOrchestrateWorkflow(options);
-        break;
-      case "create":
-        structurePlan = await this.runCreateWorkflow(options);
-        // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
-        break;
-      case "update":
-        // Update workflow
-        break;
-      case "improve-prompt":
-        // Improve prompt workflow
-        break;
-    }
-
-    // スキル初期化
     const skillDir = path.join(this.skillsDir, options.name);
-    const initResult = await this.scriptExecutor.execute("init_skill.js", [
-      "--name",
-      options.name,
-      "--description",
-      options.description,
-      "--output",
-      skillDir,
-    ]);
 
-    if (!initResult.success) {
-      const shouldTryLegacyInit =
-        this.isMissingScriptError(initResult.stderr) ||
-        /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
-          initResult.stderr,
-        );
-      if (!shouldTryLegacyInit) {
-        throw new Error(`Failed to initialize skill: ${initResult.stderr}`);
+    // AbortController を初期化
+    this.currentAbortController = new AbortController();
+    const signal = this.currentAbortController.signal;
+    const skillDirExistedBefore = await this.pathExists(skillDir);
+
+    try {
+      this.throwIfCancelled(signal);
+
+      // runCreateWorkflow 開始前: planning フェーズ通知
+      onProgress?.({
+        phase: "planning",
+        percentage: 10,
+        message: "スキル構造を計画しています",
+      });
+
+      // モード別ワークフロー実行
+      let structurePlan: StructurePlanJson | null = null;
+
+      switch (options.mode) {
+        case "collaborative":
+          await this.runCollaborativeWorkflow(options, signal);
+          break;
+        case "orchestrate":
+          await this.runOrchestrateWorkflow(options, signal);
+          break;
+        case "create":
+          structurePlan = await this.runCreateWorkflow(options, signal);
+          // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
+          break;
+        case "update":
+          // Update workflow
+          break;
+        case "improve-prompt":
+          // Improve prompt workflow
+          break;
       }
 
-      const legacyInitResult = await this.scriptExecutor.execute(
+      this.throwIfCancelled(signal);
+
+      // init_skill.js 開始前: generating-skill フェーズ通知
+      onProgress?.({
+        phase: "generating-skill",
+        percentage: 40,
+        message: "スキルを初期化しています",
+      });
+
+      // スキル初期化
+      const initResult = await this.executeScript(
         "init_skill.js",
-        [options.name, "--path", this.skillsDir],
+        [
+          "--name",
+          options.name,
+          "--description",
+          options.description,
+          "--output",
+          skillDir,
+        ],
+        signal,
       );
 
-      if (!legacyInitResult.success) {
-        const shouldUseInitFallback =
-          this.isMissingScriptError(legacyInitResult.stderr) ||
+      if (!initResult.success) {
+        this.throwIfCancelled(signal);
+        const shouldTryLegacyInit =
+          this.isMissingScriptError(initResult.stderr) ||
           /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
-            legacyInitResult.stderr,
+            initResult.stderr,
           );
-        if (!shouldUseInitFallback) {
-          throw new Error(
-            `Failed to initialize skill: ${legacyInitResult.stderr}`,
-          );
+        if (!shouldTryLegacyInit) {
+          throw new Error(`Failed to initialize skill: ${initResult.stderr}`);
         }
 
-        await this.initializeSkillFallback(
+        const legacyInitResult = await this.executeScript(
+          "init_skill.js",
+          [options.name, "--path", this.skillsDir],
+          signal,
+        );
+
+        if (!legacyInitResult.success) {
+          this.throwIfCancelled(signal);
+          const shouldUseInitFallback =
+            this.isMissingScriptError(legacyInitResult.stderr) ||
+            /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
+              legacyInitResult.stderr,
+            );
+          if (!shouldUseInitFallback) {
+            throw new Error(
+              `Failed to initialize skill: ${legacyInitResult.stderr}`,
+            );
+          }
+
+          await this.initializeSkillFallback(
+            skillDir,
+            options.name,
+            options.description,
+          );
+        }
+      }
+      this.throwIfCancelled(signal);
+
+      // SKILL.md 生成前: generating-skill-md フェーズ通知
+      onProgress?.({
+        phase: "generating-skill-md",
+        percentage: 70,
+        message: "SKILL.md を生成しています",
+      });
+
+      // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
+      if (structurePlan) {
+        await this.generateSkillMd(skillDir, structurePlan, signal);
+      } else if (options.mode === "create") {
+        this.logger.warn(
+          "structurePlan is null, falling back to ensureSkillMdExists",
+          {
+            skillDir,
+            skillName: options.name,
+            mode: options.mode,
+          },
+        );
+        await this.ensureSkillMdExists(
+          skillDir,
+          options.name,
+          options.description,
+        );
+      } else {
+        await this.ensureSkillMdExists(
           skillDir,
           options.name,
           options.description,
         );
       }
-    }
-    // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
-    if (structurePlan) {
-      await this.generateSkillMd(skillDir, structurePlan);
-    } else if (options.mode === "create") {
-      this.logger.warn(
-        "structurePlan is null, falling back to ensureSkillMdExists",
-        {
-          skillDir,
-          skillName: options.name,
-          mode: options.mode,
-        },
-      );
-      await this.ensureSkillMdExists(
+
+      this.throwIfCancelled(signal);
+
+      // タスク仕様書生成（オプション）
+      if (options.generateTasks) {
+        await this.generateTaskSpecs(options.name, options.description, signal);
+      }
+
+      this.throwIfCancelled(signal);
+
+      // validateSkill 開始前: validating フェーズ通知
+      onProgress?.({
+        phase: "validating",
+        percentage: 90,
+        message: "スキルを検証しています",
+      });
+
+      // スキル検証
+      const isValid = await this.validateSkill(skillDir, signal);
+      if (!isValid) {
+        throw new Error("Skill validation failed");
+      }
+
+      this.throwIfCancelled(signal);
+
+      // 完了通知
+      onProgress?.({
+        phase: "done",
+        percentage: 100,
+        message: "完了しました",
+      });
+
+      return skillDir;
+    } catch (error) {
+      await this.cleanupCancelledSkillDir(
         skillDir,
-        options.name,
-        options.description,
+        skillDirExistedBefore,
+        signal,
+        error,
       );
-    } else {
-      await this.ensureSkillMdExists(
-        skillDir,
-        options.name,
-        options.description,
-      );
+      throw error;
+    } finally {
+      this.currentAbortController = null;
     }
-
-    // タスク仕様書生成（オプション）
-    if (options.generateTasks) {
-      await this.generateTaskSpecs(options.name, options.description);
-    }
-
-    // スキル検証
-    const isValid = await this.validateSkill(skillDir);
-    if (!isValid) {
-      throw new Error("Skill validation failed");
-    }
-
-    return skillDir;
   }
 
   /**
@@ -308,23 +459,39 @@ export class SkillCreatorService {
   }
 
   /**
+   * 実行中のスキル作成処理をキャンセルする
+   */
+  cancelCurrentOperation(): void {
+    if (this.currentAbortController) {
+      this.currentAbortController.abort();
+      this.currentAbortController = null;
+    }
+  }
+
+  /**
    * スキルを検証
    *
    * @param skillDir - スキルディレクトリパス
    * @returns 検証成功/失敗
    */
-  async validateSkill(skillDir: string): Promise<boolean> {
-    const result = await this.scriptExecutor.execute("validate_all.js", [
-      skillDir,
-    ]);
+  async validateSkill(
+    skillDir: string,
+    signal?: AbortSignal,
+  ): Promise<boolean> {
+    const result = await this.executeScript(
+      "validate_all.js",
+      [skillDir],
+      signal,
+    );
     if (result.success) {
       return true;
     }
 
-    const legacyResult = await this.scriptExecutor.execute("validate_all.js", [
-      "--path",
-      skillDir,
-    ]);
+    const legacyResult = await this.executeScript(
+      "validate_all.js",
+      ["--path", skillDir],
+      signal,
+    );
     if (legacyResult.success) {
       return true;
     }
@@ -342,13 +509,13 @@ export class SkillCreatorService {
   async validateWithSchema(
     schemaName: string,
     data: unknown,
+    signal?: AbortSignal,
   ): Promise<boolean> {
-    const result = await this.scriptExecutor.execute("validate_schema.js", [
-      "--schema",
-      schemaName,
-      "--data",
-      JSON.stringify(data),
-    ]);
+    const result = await this.executeScript(
+      "validate_schema.js",
+      ["--schema", schemaName, "--data", JSON.stringify(data)],
+      signal,
+    );
     return result.success;
   }
 
@@ -586,9 +753,13 @@ export class SkillCreatorService {
    */
   private async runCollaborativeWorkflow(
     _options: CreateSkillOptions,
+    signal?: AbortSignal,
   ): Promise<void> {
     // エージェントプロンプト読み込み
-    const hearingAgent = await this.resourceLoader.loadAgent("hearing");
+    this.throwIfCancelled(signal);
+    const hearingAgent = await this.resourceLoader.loadAgent("hearing", {
+      signal,
+    });
     // Phase実行はここで行う（将来実装）
     void hearingAgent; // unused warning回避
   }
@@ -598,6 +769,7 @@ export class SkillCreatorService {
    */
   private async runOrchestrateWorkflow(
     options: CreateSkillOptions,
+    _signal?: AbortSignal,
   ): Promise<void> {
     // 実行エンジン選択ロジック
     const engine = options.executionEngine || "claude";
@@ -612,23 +784,37 @@ export class SkillCreatorService {
    */
   private async runCreateWorkflow(
     options: CreateSkillOptions,
+    signal?: AbortSignal,
   ): Promise<StructurePlanJson | null> {
     try {
-      const extractPurposeAgent =
-        await this.resourceLoader.loadAgent("extract-purpose");
-      const planStructureAgent =
-        await this.resourceLoader.loadAgent("plan-structure");
+      this.throwIfCancelled(signal);
+      const extractPurposeAgent = await this.resourceLoader.loadAgent(
+        "extract-purpose",
+        { signal },
+      );
+      this.throwIfCancelled(signal);
+      const planStructureAgent = await this.resourceLoader.loadAgent(
+        "plan-structure",
+        { signal },
+      );
 
       const structurePlan: StructurePlanJson = {
         skillName: options.name,
         description: options.description,
-        purpose: extractPurposeAgent,
+        purpose: options.description, // LLM推論は将来タスク。現状はdescriptionをpurposeとして使用
         features: [],
-        agents: [extractPurposeAgent, planStructureAgent],
+        agents: ["extract-purpose", "plan-structure"], // エージェント名リスト
       };
 
+      // extractPurposeAgent/planStructureAgentは将来のLLM呼び出しで使用予定
+      void extractPurposeAgent;
+      void planStructureAgent;
+
       return structurePlan;
-    } catch {
+    } catch (error) {
+      if (this.isAbortError(error) || signal?.aborted) {
+        throw error;
+      }
       // AC-3: loadAgent 失敗時はフォールバック（null 返却）
       // createSkill() 後続処理を継続させる
       return null;
@@ -643,6 +829,7 @@ export class SkillCreatorService {
   private async generateSkillMd(
     skillDir: string,
     structurePlan: StructurePlanJson,
+    signal?: AbortSignal,
   ): Promise<void> {
     const tmpPlanPath = path.join(
       os.tmpdir(),
@@ -676,11 +863,14 @@ export class SkillCreatorService {
       files: [],
     };
     try {
+      this.throwIfCancelled(signal);
       await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
-      const generateResult = await this.scriptExecutor.execute(
+      const generateResult = await this.executeScript(
         "generate_skill_md.js",
         ["--plan", tmpPlanPath, "--output", skillMdPath],
+        signal,
       );
+      this.throwIfCancelled(signal);
       let shouldUseFallback = !generateResult.success;
       const fallbackReason = generateResult.success
         ? "generated skill file not found"
@@ -696,12 +886,14 @@ export class SkillCreatorService {
           };
       if (!shouldUseFallback) {
         try {
+          this.throwIfCancelled(signal);
           await fs.access(skillMdPath);
         } catch {
           shouldUseFallback = true;
         }
       }
       if (shouldUseFallback) {
+        this.throwIfCancelled(signal);
         this.logger.error("generateSkillMd fallback to ensureSkillMdExists", {
           skillDir,
           skillName: structurePlan.skillName,
@@ -715,6 +907,9 @@ export class SkillCreatorService {
         );
       }
     } catch (err) {
+      if (this.isAbortError(err) || signal?.aborted) {
+        throw err;
+      }
       this.logger.error("generateSkillMd failed", { skillDir, err });
       await this.ensureSkillMdExists(
         skillDir,
@@ -733,14 +928,16 @@ export class SkillCreatorService {
   private async generateTaskSpecs(
     name: string,
     description: string,
+    signal?: AbortSignal,
   ): Promise<void> {
-    const result = await this.scriptExecutor.execute("generate_task_specs.js", [
-      "--name",
-      name,
-      "--description",
-      description,
-    ]);
+    this.throwIfCancelled(signal);
+    const result = await this.executeScript(
+      "generate_task_specs.js",
+      ["--name", name, "--description", description],
+      signal,
+    );
     if (!result.success) {
+      this.throwIfCancelled(signal);
       const fallbackPath = path.join(this.workflowsDir, `${name}.md`);
       const fallbackContent = `# ${name}
 

@@ -19,6 +19,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import os from "os";
+import path from "path";
 import * as fsPromises from "fs/promises";
 import { SkillCreatorService } from "../SkillCreatorService";
 import { ScriptExecutor } from "../ScriptExecutor";
@@ -73,6 +74,7 @@ describe("SkillCreatorService", () => {
     vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
     vi.mocked(fsPromises.writeFile).mockResolvedValue();
     vi.mocked(fsPromises.unlink).mockResolvedValue();
+    vi.mocked(fsPromises.rm).mockResolvedValue(undefined);
     vi.mocked(fsPromises.readdir).mockResolvedValue([]);
     vi.mocked(fsPromises.readFile).mockResolvedValue(Buffer.from(""));
 
@@ -278,6 +280,106 @@ describe("SkillCreatorService", () => {
 
       // Act & Assert
       await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("SC-CANCEL-001: should cancel createSkill when cancelCurrentOperation is called", async () => {
+      // Arrange
+      const options: CreateSkillOptions = {
+        name: "cancel-skill",
+        description: "Cancelable skill",
+        mode: "create",
+      };
+      const expectedSkillDir = path.join(
+        os.homedir(),
+        ".aiworkflow",
+        "skills",
+        options.name,
+      );
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      mockScriptExecutor.execute.mockImplementation(
+        (
+          _scriptName: string,
+          _args: string[],
+          options?: { signal?: AbortSignal },
+        ) =>
+          new Promise((_resolve, reject) => {
+            const abortError = new DOMException("Aborted", "AbortError");
+            const handleAbort = () => reject(abortError);
+
+            if (options?.signal?.aborted) {
+              handleAbort();
+              return;
+            }
+
+            options?.signal?.addEventListener("abort", handleAbort, {
+              once: true,
+            });
+          }),
+      );
+
+      // Act
+      const createPromise = service.createSkill(options);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mockScriptExecutor.execute).toHaveBeenCalled();
+      service.cancelCurrentOperation();
+
+      // Assert
+      await expect(createPromise).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "init_skill.js",
+        expect.any(Array),
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
+      );
+      expect(vi.mocked(fsPromises.rm)).toHaveBeenCalledWith(expectedSkillDir, {
+        recursive: true,
+        force: true,
+      });
+    });
+
+    it("SC-CANCEL-002: should not remove an existing skill dir when canceling", async () => {
+      // Arrange
+      const options: CreateSkillOptions = {
+        name: "existing-skill",
+        description: "Cancelable skill with existing dir",
+        mode: "create",
+      };
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+      mockScriptExecutor.execute.mockImplementation(
+        (
+          _scriptName: string,
+          _args: string[],
+          options?: { signal?: AbortSignal },
+        ) =>
+          new Promise((_resolve, reject) => {
+            const abortError = new DOMException("Aborted", "AbortError");
+            const handleAbort = () => reject(abortError);
+
+            if (options?.signal?.aborted) {
+              handleAbort();
+              return;
+            }
+
+            options?.signal?.addEventListener("abort", handleAbort, {
+              once: true,
+            });
+          }),
+      );
+
+      // Act
+      const createPromise = service.createSkill(options);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      service.cancelCurrentOperation();
+
+      // Assert
+      await expect(createPromise).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(vi.mocked(fsPromises.rm)).not.toHaveBeenCalled();
     });
   });
 
@@ -1332,6 +1434,7 @@ describe("SkillCreatorService", () => {
     });
 
     // TC-04: AC-4 — options.description が void で破棄されていない
+    // TASK-SW-STRUCT-001: purpose は options.description、agents はエージェント名文字列リスト
     it("TC-04: runCreateWorkflow は options.description を使用する（void options 削除の検証）", async () => {
       const description = "詳細な説明テキスト";
 
@@ -1344,8 +1447,8 @@ describe("SkillCreatorService", () => {
       expect(structurePlan).toMatchObject({
         skillName: "test-skill",
         description,
-        purpose: "mock-agent-content",
-        agents: ["mock-agent-content", "mock-agent-content"],
+        purpose: description, // LLM推論は将来タスク。現状はdescriptionをpurposeとして使用
+        agents: ["extract-purpose", "plan-structure"], // エージェント名文字列リスト
       });
     });
 
@@ -1359,6 +1462,9 @@ describe("SkillCreatorService", () => {
 
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
         "extract-purpose",
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
       );
     });
 
@@ -1372,9 +1478,15 @@ describe("SkillCreatorService", () => {
 
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
         "extract-purpose",
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
       );
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
         "plan-structure",
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
       );
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledTimes(2);
     });
@@ -1463,6 +1575,9 @@ describe("SkillCreatorService", () => {
 
       expect(mockResourceLoader.loadAgent).toHaveBeenCalledWith(
         "plan-structure",
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
       );
     });
   });

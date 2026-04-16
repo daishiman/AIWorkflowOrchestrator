@@ -28,13 +28,13 @@
 
 ## 参照資料
 
-| 資料名                  | パス                                                                                    | 用途                         |
-| ----------------------- | --------------------------------------------------------------------------------------- | ---------------------------- |
-| phase-1-analysis.md     | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` | 問題3の現状分析              |
-| phase-2-solution.md     | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 解決アプローチB              |
-| phase-3-review.md       | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md`   | タスク粒度確認               |
-| TASK-SW-STRUCT-001 仕様 | `docs/30-workflows/skill-create-flow-gaps/p01-par-STRUCT-001/`                          | 前提タスク確認               |
-| SkillCreatorService.ts  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                           | 修正対象ファイル（:105-194） |
+| 資料名                  | パス                                                             | 用途                         |
+| ----------------------- | ---------------------------------------------------------------- | ---------------------------- |
+| phase-1-analysis.md     | `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md` | 問題3の現状分析              |
+| phase-2-solution.md     | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` | 解決アプローチB              |
+| phase-3-review.md       | `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`   | タスク粒度確認               |
+| TASK-SW-STRUCT-001 仕様 | `docs/30-workflows/skill-create-flow-gaps/p01-par-STRUCT-001/`   | 前提タスク確認               |
+| SkillCreatorService.ts  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`    | 修正対象ファイル（:105-194） |
 
 ## 実行手順
 

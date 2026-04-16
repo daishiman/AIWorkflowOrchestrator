@@ -46,7 +46,10 @@ const mockSkillCreatorService = {
   debugSkill: vi.fn(),
   generateDocs: vi.fn(),
   getStats: vi.fn(),
+  cancelCurrentOperation: vi.fn(),
 };
+
+const mockCancelCurrentSkillCreation = vi.fn();
 
 vi.mock("../../services/skill/SkillCreatorService", () => ({
   SkillCreatorService: vi.fn(() => mockSkillCreatorService),
@@ -111,6 +114,9 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
     registerSkillCreatorHandlers(
       mockMainWindow as unknown as BrowserWindowType,
       mockSkillCreatorService as unknown as any,
+      undefined,
+      undefined,
+      mockCancelCurrentSkillCreation,
     );
 
     // Default mock responses
@@ -334,11 +340,12 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
       expect(result.success).toBe(false);
     });
 
-    it("IPC-EX-004: 全ハンドラ: handler存在確認（31チャンネル）", () => {
-      // 登録される31チャンネル（progressはsendなのでhandlerMapに含まれない）
+    it("IPC-EX-004: 全ハンドラ: handler存在確認（32チャンネル）", () => {
+      // 登録される32チャンネル（progressはsendなのでhandlerMapに含まれない）
       // 12 (skillCreatorHandlers) + 16 (runtimeCreatorHandlers incl. 4 session mgmt + 1 cleanup + 1 governance + 1 adapter-status)
       // + 2 (TASK-UI-02移管: configure-api / output-overwrite-approved)
       // + 1 (TASK-SC-13: verify)
+      // + 1 (TASK-SW-CANCEL-003: cancel)
       const expectedChannels = [
         "skill-creator:detect-mode",
         "skill-creator:create",
@@ -371,6 +378,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
         "skill-creator:configure-api",
         "skill-creator:output-overwrite-approved",
         "skill-creator:verify",
+        "skill-creator:cancel",
       ];
 
       for (const channel of expectedChannels) {
@@ -388,6 +396,22 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
 
       // Assert - handlerMapからすべて削除されている
       expect(handlerMap.size).toBe(0);
+    });
+
+    it("IPC-EX-006: skill-creator:cancel ハンドラが登録され cancelCurrentOperation を呼ぶ", async () => {
+      // Arrange
+      const handler = getHandler("skill-creator:cancel");
+      expect(handler).toBeDefined();
+
+      // Act
+      const result = await handler!(createMockEvent());
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(
+        mockSkillCreatorService.cancelCurrentOperation,
+      ).toHaveBeenCalledTimes(1);
+      expect(mockCancelCurrentSkillCreation).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -697,7 +721,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
   });
 
   describe("Allowlist 包含確認", () => {
-    it("IPC-AL-001: 全15 invoke チャネルが ALLOWED_INVOKE_CHANNELS に含まれること", () => {
+    it("IPC-AL-001: 全16 invoke チャネルが ALLOWED_INVOKE_CHANNELS に含まれること", () => {
       const skillCreatorInvokeChannels = [
         CHANNELS_CONST.SKILL_CREATOR_DETECT_MODE,
         CHANNELS_CONST.SKILL_CREATOR_CREATE,
@@ -714,6 +738,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
         CHANNELS_CONST.SKILL_CREATOR_PLAN,
         CHANNELS_CONST.SKILL_CREATOR_EXECUTE_PLAN,
         CHANNELS_CONST.SKILL_CREATOR_IMPROVE_SKILL,
+        CHANNELS_CONST.SKILL_CREATOR_CANCEL,
       ];
 
       for (const channel of skillCreatorInvokeChannels) {

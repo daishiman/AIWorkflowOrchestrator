@@ -70,8 +70,8 @@ TASK-SW-STRUCT-001 完了後、`structurePlan` は意味的に正しいデータ
 - `apps/desktop/src/main/services/skill/SkillCreatorService.ts` - 実装対象（行 105-194）
 - `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` - テスト追加対象
 - `docs/30-workflows/skill-create-flow-gaps/TASK-SW-STRUCT-001/` - 前提タスク
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` - 解決アプローチB
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` - タスク粒度確認
+- `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` - 解決アプローチB
+- `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md` - タスク粒度確認
 
 ---
 

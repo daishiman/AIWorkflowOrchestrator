@@ -8,7 +8,7 @@ import { useCallback, useRef } from "react";
 import { useSetStreamingStage } from "../store";
 
 export interface UseCancelGenerationReturn {
-  cancelGeneration: () => void;
+  cancelGeneration: () => Promise<void>;
   startGeneration: () => AbortSignal;
 }
 
@@ -21,12 +21,11 @@ export function useCancelGeneration(): UseCancelGenerationReturn {
     return abortControllerRef.current.signal;
   }, []);
 
-  const cancelGeneration = useCallback(() => {
+  const cancelGeneration = useCallback(async () => {
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setStage("cancelled");
-
-    // AbortController.abort() で Main Process 側の処理も中断される
+    await window.skillCreatorAPI?.cancelGeneration?.();
   }, [setStage]);
 
   return { cancelGeneration, startGeneration };

@@ -10,6 +10,10 @@ import path from "path";
 
 export type ResourceCategory = "agents" | "references" | "assets" | "schemas";
 
+interface ResourceLoadOptions {
+  signal?: AbortSignal;
+}
+
 export class ResourceLoader {
   private readonly basePath: string;
   private cache: Map<string, string> = new Map();
@@ -25,8 +29,16 @@ export class ResourceLoader {
    * @param name - リソース名（ファイル名）
    * @returns リソース内容（文字列）
    */
-  async load(category: ResourceCategory, name: string): Promise<string> {
+  async load(
+    category: ResourceCategory,
+    name: string,
+    options: ResourceLoadOptions = {},
+  ): Promise<string> {
     const key = `${category}/${name}`;
+
+    if (options.signal?.aborted) {
+      throw new DOMException("Aborted", "AbortError");
+    }
 
     if (this.cache.has(key)) {
       return this.cache.get(key)!;
@@ -34,6 +46,9 @@ export class ResourceLoader {
 
     const resourcePath = path.join(this.basePath, category, name);
     const content = await fs.readFile(resourcePath, "utf-8");
+    if (options.signal?.aborted) {
+      throw new DOMException("Aborted", "AbortError");
+    }
     this.cache.set(key, content);
     return content;
   }
@@ -44,8 +59,11 @@ export class ResourceLoader {
    * @param agentName - エージェント名（拡張子なし）
    * @returns エージェントプロンプト内容
    */
-  async loadAgent(agentName: string): Promise<string> {
-    return this.load("agents", `${agentName}.md`);
+  async loadAgent(
+    agentName: string,
+    options: ResourceLoadOptions = {},
+  ): Promise<string> {
+    return this.load("agents", `${agentName}.md`, options);
   }
 
   /**
@@ -54,8 +72,11 @@ export class ResourceLoader {
    * @param schemaName - スキーマ名（拡張子なし）
    * @returns パースされたスキーマオブジェクト
    */
-  async loadSchema(schemaName: string): Promise<object> {
-    const content = await this.load("schemas", `${schemaName}.json`);
+  async loadSchema(
+    schemaName: string,
+    options: ResourceLoadOptions = {},
+  ): Promise<object> {
+    const content = await this.load("schemas", `${schemaName}.json`, options);
     return JSON.parse(content);
   }
 

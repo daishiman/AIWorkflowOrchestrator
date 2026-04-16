@@ -499,6 +499,9 @@ export const SkillCreateWizard = React.forwardRef<
 
       goToStep(3);
     } catch (err) {
+      if (requestId !== generationRequestIdRef.current) {
+        return;
+      }
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
@@ -532,7 +535,7 @@ export const SkillCreateWizard = React.forwardRef<
 
   /** 生成をキャンセルして Step 0 に戻る */
   const handleCancelGeneration = () => {
-    cancelGeneration();
+    void cancelGeneration().catch(() => undefined);
     resetGeneratedState(true);
     goToStep(0);
   };

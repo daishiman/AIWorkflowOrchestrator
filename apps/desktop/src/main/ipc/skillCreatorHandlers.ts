@@ -130,6 +130,7 @@ export function registerSkillCreatorHandlers(
   skillCreatorService: SkillCreatorService,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
   outputHandler?: SkillCreatorOutputHandler,
+  onCancelCurrentSkillCreation?: () => void,
 ): void {
   // skill-creator:detect-mode - リクエストからモードを判定
   ipcMain.handle(
@@ -273,7 +274,12 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        const skillDir = await skillCreatorService.createSkill(validatedArgs);
+        const skillDir = await skillCreatorService.createSkill(
+          validatedArgs,
+          (progress) => {
+            sendSkillCreatorProgress(mainWindow, progress);
+          },
+        );
         return { success: true, data: skillDir };
       } catch (error) {
         return {
@@ -677,6 +683,27 @@ export function registerSkillCreatorHandlers(
     },
   );
 
+  // skill-creator:cancel - キャンセル処理
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_CANCEL,
+    async (event: IpcMainInvokeEvent): Promise<IpcResult<void>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_CANCEL,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      skillCreatorService.cancelCurrentOperation();
+      onCancelCurrentSkillCreation?.();
+      return { success: true };
+    },
+  );
+
   registerRuntimeSkillCreatorHandlers(
     mainWindow,
     runtimeSkillCreatorService,
@@ -719,5 +746,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   unregisterRuntimeSkillCreatorHandlers();
 }
