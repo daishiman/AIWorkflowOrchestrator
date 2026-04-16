@@ -60,8 +60,14 @@ vi.mock("../../services/runtime/ApprovalGate", () => ({
 
 // --- Mock: すべての既存の依存関係（registerAllIpcHandlers の依存） ---
 // これらは統合テストの焦点ではないため、最小限のスタブで済ませる。
-vi.mock("../fileHandlers", () => ({ registerFileHandlers: vi.fn() }));
-vi.mock("../storeHandlers", () => ({ registerStoreHandlers: vi.fn() }));
+vi.mock("../fileHandlers", () => ({
+  registerFileHandlers: vi.fn(),
+  registerFsHandlers: vi.fn(),
+}));
+vi.mock("../storeHandlers", () => ({
+  registerStoreHandlers: vi.fn(),
+  registerUserSettingsHandlers: vi.fn(),
+}));
 vi.mock("../dashboardHandlers", () => ({ registerDashboardHandlers: vi.fn() }));
 vi.mock("../graphHandlers", () => ({ registerGraphHandlers: vi.fn() }));
 vi.mock("../aiHandlers", () => ({ registerAIHandlers: vi.fn() }));
@@ -101,6 +107,7 @@ vi.mock("../../services/HistoryService", () => ({
 }));
 vi.mock("../agentHandlers", () => ({
   registerAgentExecutionHandlers: vi.fn(),
+  registerAgentSkillHandlers: vi.fn(),
 }));
 vi.mock("../communityHandlers", () => ({
   registerCommunityHandlers: vi.fn(),
@@ -264,6 +271,7 @@ vi.mock("../../slide/ipc-handlers", () => ({
 }));
 vi.mock("../conversationHandlers", () => ({
   registerConversationHandlers: vi.fn(),
+  registerChatExportHandlers: vi.fn(),
 }));
 vi.mock("../../repositories/conversationRepository", () => ({
   ConversationRepository: vi.fn().mockImplementation(() => ({})),

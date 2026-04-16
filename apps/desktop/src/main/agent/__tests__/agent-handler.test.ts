@@ -102,7 +102,7 @@ describe("AgentHandler", () => {
       expect.any(Function),
     );
     expect(ipcMain.handle).toHaveBeenCalledWith(
-      "agent:getStatus",
+      "agent:get-status",
       expect.any(Function),
     );
     expect(ipcMain.handle).toHaveBeenCalledWith(
@@ -129,7 +129,7 @@ describe("AgentHandler", () => {
     handler.dispose();
 
     expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:query");
-    expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:getStatus");
+    expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:get-status");
     expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:createSession");
     expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:resumeSession");
     expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:destroySession");
