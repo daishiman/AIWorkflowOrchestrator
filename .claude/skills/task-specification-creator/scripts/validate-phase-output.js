@@ -284,7 +284,9 @@ class PhaseValidator {
     if (existsSync(artifactsPath)) {
       try {
         const artifacts = JSON.parse(readFileSync(artifactsPath, "utf-8"));
-        artifactsSignal = classifyTaskType(artifacts?.metadata?.taskType);
+        artifactsSignal = classifyTaskType(
+          artifacts?.metadata?.taskType || artifacts?.taskType,
+        );
       } catch {
         this.warnings.push(
           "Phase 11 docs-only 判定で artifacts.json の解析に失敗したため、screenshot 要件を維持します",
