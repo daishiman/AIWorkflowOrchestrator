@@ -165,9 +165,22 @@ function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) 
   const createdDate = createdSource
     ? new Date(createdSource).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0];
+  const taskType = artifacts.taskType || artifacts.metadata?.taskType;
   const overallStatus =
     normalizeStatus(artifacts.status) || deriveOverallStatus(artifacts.phases);
   const phaseMap = getPhaseMap(artifacts.phases);
+
+  const metadataRows = [
+    `| 機能名 | ${featureName} |`,
+    `| 作成日 | ${createdDate} |`,
+  ];
+  if (taskType) {
+    metadataRows.push(`| タスク種別 | ${taskType} |`);
+  }
+  metadataRows.push(
+    `| ステータス | ${STATUS_DISPLAY[overallStatus] || overallStatus} |`,
+    `| 総Phase数 | 13 |`,
+  );
 
   let content = `# ${featureName} - タスク実行仕様書
 
@@ -175,10 +188,7 @@ function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) 
 
 | 項目 | 内容 |
 | ---- | ---- |
-| 機能名 | ${featureName} |
-| 作成日 | ${createdDate} |
-| ステータス | ${STATUS_DISPLAY[overallStatus] || overallStatus} |
-| 総Phase数 | 13 |
+${metadataRows.join("\n")}
 
 ---
 
