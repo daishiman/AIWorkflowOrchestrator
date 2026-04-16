@@ -1,0 +1,18 @@
+{
+  "status": "completed",
+  "conclusion": "success",
+  "branch": "task-20260416-141958-wt-5",
+  "date": "2026-04-16",
+  "jobs": [
+    {
+      "name": "IPC 4-Layer Alignment",
+      "conclusion": "success",
+      "continue-on-error": false
+    },
+    {
+      "name": "Build",
+      "conclusion": "success"
+    }
+  ],
+  "note": "verify-ipc-4layer ジョブは continue-on-error なしで SUCCESS。ローカル実行ログに基づく記録。"
+}

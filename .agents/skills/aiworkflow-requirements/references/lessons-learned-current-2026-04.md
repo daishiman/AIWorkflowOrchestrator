@@ -3,17 +3,6 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
-## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16）
-
-### L-SC-PLAN-001: `runCreateWorkflow()` は StructurePlanJson の生成責務に閉じ、`generateSkillMd()` は `init_skill.js` 後段で呼ぶ
-
-| 項目       | 内容                                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | `createSkill()` の current facts で `StructurePlanJson` を「将来渡す」と曖昧に書くと、`runCreateWorkflow()` と `generateSkillMd()` の責務境界がぼける |
-| 解決策     | `runCreateWorkflow()` は plan を組み立てるだけに限定し、`createSkill()` は `init_skill.js` 完了後に `generateSkillMd()` を呼ぶ順序を明示した |
-| 標準ルール | `createSkill()` の current facts は `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序で記述する。`void structurePlan` や将来接続表現は使わない |
-| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                              |
-
 ## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
 
 ### L-SC-FIX-001: generate_skill_md.js は `--path <dir>` ではなく `--plan <json> --output <path>` を要求する
@@ -1578,7 +1567,7 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 症状       | `StructurePlanJson.description` を `string \| undefined` にすると型契約と衝突し、後続の `generate_skill_md.js` 引数生成で undefined 混入リスクが生まれた                |
 | 原因       | interviewResult の optional フィールドをそのまま構造計画 JSON に引き渡す設計のため、型の穴が生じた                                                                      |
 | 解決策     | `description` を型上必須の `string` として宣言し、`undefined` は `createSkill()` バリデーション段階で「入力破損」として弾く設計に整理した                                |
-| 標準ルール | 構造計画 JSON（`StructurePlanJson`）の各フィールドは必須 `string` を基本とし、optional は `triggers?` / `anchors?` のような補助フィールドのみに限定する                  |
+| 標準ルール | 構造計画 JSON（`StructurePlanJson`）は `skillName` / `description` / `purpose` を `string`、`features` / `agents` を `string[]`、`triggers?` / `anchors?` を optional として持たせる。create モードでは `purpose = options.description` / `features = []` / `agents = ["extract-purpose", "plan-structure"]` を current facts として固定する |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
 
 ### L-SC-IMP-002: create モードの「構造計画生成」と「`generate_skill_md.js` 接続」は別タスクとして仕様書を分離する
@@ -1587,17 +1576,17 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状       | `runCreateWorkflow` の実装スコープに `generate_skill_md.js` 接続を含めようとしたため、「完了」と「接続待ち」が同じ文脈に混在し、Phase 12 の成果物判断が難しくなった                       |
 | 原因       | create モードの2段階（構造計画生成 → SKILL.md 生成スクリプト呼び出し）を1つのタスクで完結しようとした設計判断                                                                           |
-| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、スクリプト接続は別タスク（`void structurePlan` コメントで依存先を明示）とした                              |
-| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、タスク分離が可能な場合は別タスクとして仕様書を分ける                                                                     |
+| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、`createSkill()` 側で `init_skill.js` 後に `generateSkillMd()` を呼ぶ順序を明示した。中継は `structurePlan` の local variable handoff で行い、未接続表現は使わない |
+| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、`createSkill()` の current facts は `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序で記述する。中継の未接続表現は使わない |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                                           |
 
 ### L-SC-IMP-003: private method の観測可能性は TC に mock spy 引数 assertion で組み込む
 
 | 項目       | 内容                                                                                                                                                                     |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` 等が検証できず、実装の意図が TC に反映されない                                                    |
-| 解決策     | `TC-04` を `createSkill()` 経由で実行し、`mockResourceLoader.loadAgent` への呼び出しと引数を `expect` で直接検証することで private method の動作を間接観測した           |
-| 標準ルール | private method の観測可能性は、public API 経由 + mock spy 引数 assertion の組み合わせで担保する。中間値 handoff は mock spy で検証可能                                   |
+| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` / `purpose` / `agents` 等を直接 pin しづらく、実装の意図が TC に反映されない                                            |
+| 解決策     | `TC-04` を `runCreateWorkflow()` 直叩きで pin し、`mockResourceLoader.loadAgent` の呼び出しではなく戻り値の `description` / `purpose` / `agents` を直接検証することで private method の動作を観測した |
+| 標準ルール | private method の観測可能性は、public API 経由の振る舞い確認と、必要に応じた private method 直叩き assertion の組み合わせで担保する。中間値 handoff は return value で検証可能                                   |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
 
 ---
@@ -1636,3 +1625,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
 | 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
+## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001: structurePlan → generate_skill_md.js 接続 教訓（2026-04-16）
+
+### L-SC-CONNECT-001: private method の多層フォールバックはシナリオ別に段階を明示して設計する
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | スクリプト実行成功でもファイルが生成されない edge case があり、`generateResult.success === true` だけでは完了を保証できなかった                                             |
+| 原因       | スクリプトの終了コード（exitCode=0）とファイル生成の有無は独立した事象。成功判定をプロセスの終了コードのみに依存していた                                                   |
+| 解決策     | フォールバック判定を2段階化: ① `!generateResult.success` → フォールバック、② `fs.access` 失敗 → フォールバック。この2段階で「プロセス失敗」と「ファイル未生成」の両方に対応 |
+| 設計原則   | スクリプト実行結果の検証は「プロセス終了コード」と「出力物の存在確認」の2段階で行う。特に生成系スクリプトは `fs.access` による出力ファイル確認が必須                        |
+| 適用条件   | `generate_skill_md.js` のような外部スクリプト呼び出しで出力ファイルを生成するパターン全般                                                                                  |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-002: StructurePlanJson → workflow 変換は purpose を trigger.description に埋め込む設計にする
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `generate_skill_md.js` が期待する `workflow.trigger.description` と `StructurePlanJson.purpose` がそのまま対応しないため、変換ロジックが必要だった                        |
+| 原因       | 2つのスキーマが独立して設計され、フィールド名と構造が異なる（`purpose` vs `trigger.description`）                                                                          |
+| 解決策     | purpose を `Use when {name} is requested. Purpose: {purpose}` 形式に正規化して `trigger.description` に埋め込む。`triggers` は空配列なら `[skillName]` にフォールバック   |
+| 設計原則   | 異なるスキーマを橋渡しする変換層では「空値・undefined のフォールバック」と「文字列正規化（trim/collapse）」を必ずペアで実装する                                              |
+| 適用条件   | `StructurePlanJson` を引数に受け取り `workflow` 形式の JSON を組み立てる変換処理全般                                                                                      |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
+
+### L-SC-CONNECT-003: create モードの structurePlan null 時は warn ログで理由を記録し silent fallback を避ける
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `structurePlan` が null の場合、暗黙に `ensureSkillMdExists` が呼ばれ、なぜ create モードで構造計画が使われなかったのかが追跡できなかった                           |
+| 原因       | null チェックのみで fallback を呼び出し、ログ出力がなかった                                                                                                        |
+| 解決策     | `this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...)` を追加し、create モードで null になった事実を必ずログに残す                  |
+| 設計原則   | create モードで期待される出力（structurePlan）が null になることは「正常系ではない」ため、warn ログで記録する。silent fallback はデバッグを著しく困難にする          |
+| 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                            |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                       |

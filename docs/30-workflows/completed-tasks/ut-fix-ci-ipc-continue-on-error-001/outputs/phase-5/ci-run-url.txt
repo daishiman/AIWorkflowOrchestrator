@@ -1,0 +1,10 @@
+# CI実行URL記録 - Phase 5
+
+実装ブランチへのpush後、GitHub Actions が自動的にトリガーされます。
+
+CI実行確認先: https://github.com/daishiman/AIWorkflowOrchestrator/actions
+
+実装変更サマリー:
+- ファイル: .github/workflows/ci.yml
+- 変更内容: verify-ipc-4layer ジョブから `continue-on-error: true` を1行削除
+- 変更日時: 2026-04-16
