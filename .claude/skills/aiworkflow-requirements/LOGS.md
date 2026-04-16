@@ -17,6 +17,19 @@
 
 TASK-CI-FUTURE-003 の close-out では、workflow 本体・skill current facts・索引・mirror・Phase 12 evidence を同 wave で閉じる必要があった。旧いフォールバックキー前提の文言を撤去し、`node_modules` 存在確認ベースの実装に合わせた。
 
+## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
+
+### 変更内容
+
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 成果物を同一 wave で確認
+- `SkillCreatorService` の `StructurePlanJson.purpose` を LLM 推論結果へ差し替え、`options.description` fallback を current facts として記録
+- `SkillCreatorService` の `ILLMClient` DI と `@repo/shared/services/llm/types` alias 追加を current facts に反映
+- `.claude/skills/aiworkflow-requirements/SKILL.md` の変更履歴を同波で更新
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001 は `extract-purpose` の raw 出力を LLM 実結果へ wire し直す close-out。Phase 12 では、実装・検証・ドキュメント・skill history を同一 wave で揃える必要があった。
+
 ## 2026-04-15 — impl-spec-to-skill-sync (TASK-SW-FIX-FEEDBACK-008 task-workflow + lessons-learned sync)
 
 ### 変更内容

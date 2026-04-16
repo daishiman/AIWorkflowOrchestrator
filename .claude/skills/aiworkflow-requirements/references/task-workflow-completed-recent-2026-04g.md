@@ -288,3 +288,25 @@
 - `apps/web` というディレクトリ名でも実体パッケージが `@repo/backend` の場合がある。P50 チェックで必ず実体確認
 - GitHub Free Tier 上限に近いジョブ追加は「削減 + 追加」で合計を固定する方針が安全
 - CI 設定変更は API / IPC 契約に触れないため、system spec 更新は N/A 確認のみでよい
+
+### タスク: TASK-SC-LLM-PURPOSE-WIRE-001 extract-purpose エージェント LLM purpose wire（2026-04-16）
+
+| 項目       | 値                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                   |
+| ステータス | **spec_created（タスク仕様書登録済み・実装未着手）**                                                                           |
+| タイプ     | docs-only（タスク仕様書作成）                                                                                                  |
+| 優先度     | 中                                                                                                                             |
+| 完了日     | 2026-04-16                                                                                                                     |
+| 関連Issue  | [#2181](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2181)（CLOSED）                                             |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                                                    |
+
+#### 実施内容
+
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/` に Phase 1〜13 全仕様書・artifacts.json・index.md を配置
+- LLM 呼び出し方式は `ILLMClient.complete()` 直接呼び出し（Option A）で確定
+- 実装は TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 完了後に着手する
+
+#### 背景
+
+`SkillCreatorService.runCreateWorkflow` 内で `extract-purpose` エージェント定義を LLM に渡し、purpose 文字列を取得する処理が未実装。`StructurePlanJson.purpose` にエージェント定義の raw 文字列が入ってしまっている問題への対応タスク。Issue #2181 は Closed 済み。
