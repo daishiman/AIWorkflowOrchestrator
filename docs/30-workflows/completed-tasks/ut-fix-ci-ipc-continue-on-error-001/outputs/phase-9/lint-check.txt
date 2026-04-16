@@ -1,0 +1,6 @@
+✖ 12 problems (0 errors, 12 warnings)
+
+（警告はすべて @typescript-eslint/no-explicit-any - 既存コードの警告、今回の変更とは無関係）
+
+Lint exit code: 0
+実行日時: 2026-04-16

@@ -7,9 +7,21 @@
 ## 最近の完了タスク（2026-04）
 
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
+- 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
+- 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` 状態残留・リカバリーパス・競合状態修正（Phase 10〜12 completed / Phase 13 skipped）
+- [2026-04-14: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装 / analytics:get-stats / sentCount・failedCount 更新](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
+- 2026-04-13: `TASK-SW-FIX-MODE-MGMT-001` SkillCreateWizard mode/state current facts sync（本ファイルに詳細記録）
+- [2026-04-13: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（edge case 一覧表）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 Renderer 側エラーメッセージ UI 表示 E2E 確認 / TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
@@ -33,6 +45,47 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+### タスク: UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 ci-ipc-continue-on-error-removal（2026-04-16）
+
+| 項目       | 値                                                         |
+| ---------- | ---------------------------------------------------------- |
+| タスクID   | UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001                       |
+| 完了日     | 2026-04-16                                                 |
+| タスク種別 | maintenance（NON_VISUAL / CI close-out）                  |
+| 関連Issue  | [#2196](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2196) |
+| Phase 13   | blocked（ユーザー承認待ち）                                |
+
+#### 実施内容
+
+- `.github/workflows/ci.yml` の `verify-ipc-4layer` job から `continue-on-error: true` を削除し、IPC 4 層違反を CI でブロックする current facts に更新した
+- `docs/30-workflows/unassigned-task/task-ipc-4layer-ci-continue-on-error-removal.md` を完了化し、完了日と Issue #2196 を保持した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/index.md` / `phase-1-requirements.md` 〜 `phase-12-documentation.md` を Phase 12 完了へ同期した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/artifacts.json` を Phase 1-12 `completed` / Phase 13 `not_started` に更新した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` と `phase12-task-spec-compliance-check.md` を current facts として作成した
+- 新規の unassigned-task / backlog は不要と判断し、追加タスク化は行っていない
+- `apps/desktop/`、`apps/backend/`、`packages/shared/` には追加修正は不要だった
+
+#### Phase 11/12 成果物
+
+| 成果物                       | パス                                                                                               |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| ドキュメント変更履歴         | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` |
+| Phase 12 準拠チェック        | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- `phase-10-final-review.md`: PASS
+- `phase-11-manual-test.md`: PASS
+- `phase-12-documentation.md` の必須成果物 2 件を作成済み
+- `NON_VISUAL` のためスクリーンショットは N/A
+- `security` job の step-level `continue-on-error` は意図的に残置
+
+#### lessons-learned
+
+- `verify-ipc-4layer` の job-level `continue-on-error` だけを外すことで、CI ブロック力と既存 security の fail-soft を両立できる
+- close-out では実装差分そのものより、phase status と artifacts の同期漏れが将来コストを生む
+- `NON_VISUAL` タスクは screenshot 不要でも、Phase 12 の文書と台帳は必ず current facts へ同期する
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
@@ -2863,16 +2916,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-CI-FUTURE-005（2026-04-15）
 
-| 項目       | 値                                                                                                                |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-CI-FUTURE-005                                                                                                |
-| ステータス | **spec_created**                                                                                                  |
-| タイプ     | NON_VISUAL / docs-only / CI 計測                                                                                  |
-| 優先度     | 高                                                                                                                |
-| 完了日     | 2026-04-15                                                                                                        |
-| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                                            |
-| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                                         |
-| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物）                    |
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-005                                                                             |
+| ステータス | **spec_created**                                                                               |
+| タイプ     | NON_VISUAL / docs-only / CI 計測                                                               |
+| 優先度     | 高                                                                                             |
+| 完了日     | 2026-04-15                                                                                     |
+| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                          |
+| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                      |
+| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物） |
 
 #### 実施内容
 
@@ -2887,3 +2940,48 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - 17 シャード全件 created_at / started_at 取得済み（null ジョブ 0 件）
 - AC-1〜AC-5 全達成。シナリオカバレッジ 100%
 - Phase 12 準拠チェック: PASS
+
+---
+
+### タスク: TASK-SW-CANCEL-001 skill-creator-cancel-channel-constant（2026-04-16）
+
+| 項目           | 値                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------- |
+| タスクID       | TASK-SW-CANCEL-001                                                                     |
+| ステータス     | **完了（Phase 12 close-out）**                                                         |
+| タイプ         | shared-constant / ipc / NON_VISUAL                                                     |
+| 優先度         | 中                                                                                     |
+| 完了日         | 2026-04-16                                                                             |
+| 対象           | `packages/shared/src/ipc/channels.ts` / `channels.test.ts` / `channels-cancel.test.ts` |
+| 元ワークフロー | `docs/30-workflows/p01-seq-CANCEL-001/`                                                |
+
+#### 実施内容
+
+- `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL: "skill-creator:cancel"` を追加（3 → 4チャンネル）
+- `IPC_CHANNELS.SKILL_CREATOR_CANCEL` として型安全に参照可能に
+- `channels.test.ts` の runtime 件数アサーションを 3 → 4 に更新し、`IPC_CHANNELS` 伝播を確認
+- `channels-cancel.test.ts` を新規追加（文字列値・重複・型の3観点で回帰テスト）
+- UI/UX 変更なし（Phase 11 スクリーンショット N/A）
+
+#### 後続タスク（別ワークフローに分離済み）
+
+| タスクID           | 内容                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| TASK-SW-CANCEL-002 | `ALLOWED_INVOKE_CHANNELS` への登録・Preload API メソッド追加 |
+| TASK-SW-CANCEL-003 | Main ハンドラー追加                                          |
+| TASK-SW-CANCEL-004 | Renderer フック修正                                          |
+
+#### 苦戦箇所
+
+| 苦戦箇所                         | 解決策概要                                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 追加後の件数アサーション更新忘れ | `channels.test.ts` の `toHaveLength(3)` を `toHaveLength(4)` に更新                                 |
+| 既存テストと専用テストの責務分離 | 既存 `channels.test.ts` は件数・伝播確認、専用 `channels-cancel.test.ts` は値・重複・型の回帰に分担 |
+
+#### 検証証跡
+
+| コマンド                                                                                                                  | 結果 |
+| ------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
+| `pnpm --filter @repo/shared build`                                                                                        | PASS |
+| `pnpm typecheck`                                                                                                          | PASS |
