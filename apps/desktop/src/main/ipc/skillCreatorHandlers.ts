@@ -273,6 +273,7 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
+        // TASK-SW-STREAM-002: onProgress コールバックを sendSkillCreatorProgress に接続
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {
@@ -682,21 +683,11 @@ export function registerSkillCreatorHandlers(
     },
   );
 
-  // skill-creator:cancel - キャンセル（TASK-SC-CANCEL-001: 将来実装予定）
-  ipcMain.handle(
-    IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-    async (event: IpcMainInvokeEvent): Promise<IpcResult<null>> => {
-      const validation = validateIpcSender(
-        event,
-        IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-        { getAllowedWindows: () => [mainWindow] },
-      );
-      if (!validation.valid) {
-        throw toIPCValidationError(validation);
-      }
-      return { success: false, error: "not-implemented" };
-    },
-  );
+  // TASK-SW-CANCEL-003: スキル生成キャンセルハンドラー
+  ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_CANCEL, async () => {
+    skillCreatorService.cancelCurrentOperation();
+    return { success: true };
+  });
 
   registerRuntimeSkillCreatorHandlers(
     mainWindow,
@@ -732,6 +723,8 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
+  // TASK-SW-CANCEL-003: キャンセルハンドラーの解除
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   // Phase 5 extended handlers
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);
