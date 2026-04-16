@@ -1,0 +1,230 @@
+{
+  "taskId": "TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001",
+  "featureName": "TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001",
+  "taskType": "NON_VISUAL",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "createdAt": "2026-04-16",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:28:43.666Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/spec-extraction-map.md",
+          "description": "要件抽出マップ（現状調査・AC・スコープ）"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:28:54.005Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-doc.md",
+          "description": "接続設計・メソッド設計・エラー処理設計・テスト設計概要"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:28:54.613Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "設計レビュー判定結果（PASS/MINOR・指摘事項）"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:35:19.594Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-plan.md",
+          "description": "テストマトリクス・Red確認結果の記録"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:41:40.635Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-notes.md",
+          "description": "変更内容・判断理由の記録"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:47:08.630Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "Phase6カバレッジレポート"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:47:13.979Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-check-result.md",
+          "description": "Phase7カバレッジ確認結果"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-04-15T22:47:14.238Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-notes.md",
+          "description": "Phase8リファクタリングノート"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-04-15T23:01:40.301Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-check-result.md",
+          "description": "品質保証レポート（静的解析・テスト・セキュリティ確認）"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-04-15T23:01:46.797Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（PASS/MINOR/MAJOR 判定・AC 充足確認）"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-04-15T23:01:53.774Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/handover-summary-wave-c.md",
+          "description": "Wave C 引き継ぎサマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12準拠チェック"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "completedAt": "2026-04-15T23:02:00.549Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12準拠チェック"
+        }
+      ]
+    }
+  ],
+  "lastUpdated": "2026-04-15T23:40:59.648Z",
+  "status": "phase12_completed"
+}

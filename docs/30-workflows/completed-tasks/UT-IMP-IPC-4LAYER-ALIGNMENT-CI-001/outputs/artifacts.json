@@ -1,0 +1,380 @@
+{
+  "taskId": "UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001",
+  "taskName": "IPC 4層整合 CI 自動検証スクリプト実装",
+  "featureName": "ipc-4layer-alignment-ci",
+  "createdAt": "2026-04-14",
+  "status": "spec_created",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        {
+          "name": "既存資産棚卸し",
+          "path": "outputs/phase-1/asset-inventory.md",
+          "status": "completed"
+        },
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "completed"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        },
+        {
+          "name": "仕様マッピング",
+          "path": "outputs/phase-1/spec-extraction-map.md",
+          "status": "completed"
+        },
+        {
+          "name": "トレーサビリティ行列",
+          "path": "outputs/phase-1/traceability-matrix.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "検証アルゴリズム設計",
+          "path": "outputs/phase-2/validation-algorithm-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "CI統合設計",
+          "path": "outputs/phase-2/ci-integration-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "テスト戦略",
+          "path": "outputs/phase-2/test-strategy.md",
+          "status": "completed"
+        },
+        {
+          "name": "依存整合マトリクス",
+          "path": "outputs/phase-2/dependency-consistency-matrix.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "ゲート判定",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "completed"
+        },
+        {
+          "name": "矛盾チェック表",
+          "path": "outputs/phase-3/contradiction-checklist.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "scripts/__tests__/verify-ipc-4layer/parsers.test.ts",
+        "scripts/__tests__/verify-ipc-4layer/validators.test.ts",
+        "scripts/__tests__/verify-ipc-4layer/reporter.test.ts",
+        "scripts/__tests__/verify-ipc-4layer/e2e.test.ts"
+      ],
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "status": "completed"
+        },
+        {
+          "name": "Red結果",
+          "path": "outputs/phase-4/red-test-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "統合テスト計画",
+          "path": "outputs/phase-4/integration-test-plan.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": ["scripts/verify-ipc-4layer.js", ".github/workflows/"],
+      "artifacts": [
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "変更ファイル一覧",
+          "path": "outputs/phase-5/changed-files.md",
+          "status": "completed"
+        },
+        {
+          "name": "契約差分",
+          "path": "outputs/phase-5/contract-diff.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "codeArtifacts": ["scripts/__tests__/verify-ipc-4layer.test.ts"],
+      "artifacts": [
+        {
+          "name": "拡張テストケース",
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "status": "completed"
+        },
+        {
+          "name": "回帰テスト結果",
+          "path": "outputs/phase-6/regression-test-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "エッジケース結果",
+          "path": "outputs/phase-6/edge-case-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": [
+        {
+          "name": "カバレッジ計画",
+          "path": "outputs/phase-7/coverage-plan.md",
+          "status": "completed"
+        },
+        {
+          "name": "未到達分析",
+          "path": "outputs/phase-7/uncovered-analysis-plan.md",
+          "status": "completed"
+        },
+        {
+          "name": "トレーサビリティ網羅率",
+          "path": "outputs/phase-7/traceability-coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": [
+        {
+          "name": "リファクタ計画",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "status": "completed"
+        },
+        {
+          "name": "再テスト計画",
+          "path": "outputs/phase-8/post-refactor-test-plan.md",
+          "status": "completed"
+        },
+        {
+          "name": "責務境界マップ",
+          "path": "outputs/phase-8/responsibility-boundary-map.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "リスク台帳",
+          "path": "outputs/phase-9/risk-register.md",
+          "status": "completed"
+        },
+        {
+          "name": "因果ループ監査",
+          "path": "outputs/phase-9/causal-loop-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "是正計画",
+          "path": "outputs/phase-10/corrective-action-plan.md",
+          "status": "completed"
+        },
+        {
+          "name": "出荷準備チェック",
+          "path": "outputs/phase-10/release-readiness-checklist.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "証跡インデックス",
+          "path": "outputs/phase-11/evidence-index.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバック",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "blocked"
+        }
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: scripts/verify-ipc-4layer.js が存在し、node scripts/verify-ipc-4layer.js で実行可能",
+    "AC-2: shared channels / preload whitelist / main handler / renderer sink の4層チャネル定義を自動抽出・比較できる",
+    "AC-3: 4層間の不整合（追記漏れ・余剰定義）を検出した場合、exit code 1 で終了し差分を表示する",
+    "AC-4: 全層が整合している場合、exit code 0 で終了する",
+    "AC-5: GitHub Actions CI ワークフローに統合され、PR時に自動実行される",
+    "AC-6: scripts/__tests__/verify-ipc-4layer.test.ts のユニットテストが全 PASS",
+    "AC-7: ALLOWED_INVOKE_CHANNELS 追記漏れ（FB-SC-13-1 相当）を検出できることをテストで実証",
+    "AC-8: scripts/verify-ipc-4layer.js のユニットテストが存在し全件パスする"
+  ],
+  "dependencies": [
+    {
+      "type": "prerequisite",
+      "taskId": "UT-SKILL-WIZARD-W4-ANALYTICS-BACKEND-001",
+      "status": "completed",
+      "description": "IPC接続実装（analytics:trackEvent チャネル追加時に4層同期の課題が発見された）"
+    },
+    {
+      "type": "related",
+      "taskId": "UT-IPC-PRELOAD-SYNC-GUARDIAN-IMPL-001",
+      "status": "unknown",
+      "description": "旧パス検出スクリプト（類似の整合性検証アプローチ）"
+    },
+    {
+      "type": "successor",
+      "taskId": "UT-IMP-ANALYTICS-BACKEND-REAL-001",
+      "status": "unassigned",
+      "description": "Analytics バックエンド実装（本タスクのCI検証で保護される後続タスク）"
+    }
+  ]
+}
