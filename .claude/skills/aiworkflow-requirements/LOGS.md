@@ -31,6 +31,23 @@ TASK-SW-STREAM-001（SkillCreatorService.createSkill() コールバック引数�
 
 `InlineModelSelector` の description 表示は実装済みでも、Phase 11 screenshot 名と completed ledger が stale のままだと current facts にならない。今回の same-wave sync で、complete 化・証跡 canonical 化・索引再生成をまとめて閉じた。
 
+## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に TASK-CI-FUTURE-007 スキルフィードバック反映エントリを追加
+- `references/lessons-learned-ci-measurement-template-2026-04.md` に L-CI-007-001/002 を追加
+  - L-CI-007-001: CI 設定追加タスクでの `workflow-static-check` カテゴリ記録（CLI 実行 vs YAML 静的確認の分離）
+  - L-CI-007-002: backend flag のような設定追加項目での変更対象・参照対象分離の方針
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートで記録された aiworkflow-requirements 側の 2 件の改善提案を反映した。
+CI 設定変更タスクの Phase 11 証跡で「CLI 実行確認」と「YAML 静的確認」が混在すると信頼性が曖昧になる問題を、lessons-learned として明文化した。
+
+---
+
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
 ## 2026-04-16 - UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 impl-spec-to-skill-sync
 
@@ -53,6 +70,18 @@ TASK-SW-STREAM-001（SkillCreatorService.createSkill() コールバック引数�
 ### 背景
 
 TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cancel チャンネル追加が完了した。UT-SDK-07（3チャンネル正本化）の後続として CANCEL-001 が4番目を追加した系譜を正本に記録する。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` current facts に TASK-CI-FUTURE-007 を追加し、phase12_completed / phase 11 non-visual / backend codecov flag / artifacts parity / outputs/artifacts.json sync を反映
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、`.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 は backend coverage upload の close-out を completed ledger / recent bundle / topic-map / keywords まで同波で閉じる必要があった。NON_VISUAL かつ phase 11 が画面を持たないため、CLI / CI / coverage / ledger を同一文脈で固定した。
 
 ---
 

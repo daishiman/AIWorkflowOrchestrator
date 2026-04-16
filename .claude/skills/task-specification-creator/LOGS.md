@@ -31,6 +31,26 @@ TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY の skill-feedback-report（Phase 12 成�
 VISUAL タスクの close-out は、画像ファイル名・metadata・manual-test・implementation guide・completed ledger を同一 wave で揃えないと stale reference が残る。今回の同期で old `TC-11-01` / `TC-11-02` 命名を canonical 名に寄せ、後続の仕様更新で参照先がぶれない状態へ閉じた。
 
 ## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
+## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
+
+### 変更内容
+
+- `references/phase-template-phase12-detail.md` の完了条件に以下を追加
+  - 「`artifacts.json` と `outputs/artifacts.json` の status が一致（parity）している【必須・TASK-CI-FUTURE-007 FB反映】」
+  - 「`NON_VISUAL` タスクでは `## 視覚証跡` セクションを `implementation-guide.md` に追加し代替証跡を明記【必須・TASK-CI-FUTURE-007 FB反映】」
+- `references/patterns-testing.md` に `workflow-static-check` 証跡分類パターンを追加
+  - CLI 実行確認 vs YAML 静的確認の 2 カテゴリ分離方式
+  - backend flag のような設定追加項目での変更対象・参照対象分離の注意事項
+- `SKILL.md` 変更履歴に v10.09.52 エントリを追加
+- `.agents/skills/task-specification-creator/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートに記録された 3 件の改善提案を反映した。
+CI 設定変更タスク（NON_VISUAL）で `## 視覚証跡` セクション・parity チェック・`workflow-static-check` 記録形式が不明確なまま残る再発を防ぐため、テンプレートとパターン集に明文化した。
+
+---
+
 ## 2026-04-16 - TASK-SW-CANCEL-001 スキルフィードバック反映
 
 ### 変更内容
@@ -41,6 +61,18 @@ VISUAL タスクの close-out は、画像ファイル名・metadata・manual-te
 ### 背景
 
 TASK-SW-CANCEL-001（`SKILL_CREATOR_CANCEL` を `SKILL_CREATOR_RUNTIME_CHANNELS` に追加）の Phase 12 スキルフィードバックレポートに記録された改善提案を反映した。non-visual な小粒度タスクで screenshot を探す無駄を防ぐため、定型句とパターンを明文化した。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に TASK-CI-FUTURE-007 の current facts を追加し、`phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync` を反映
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `aiworkflow-requirements/LOGS.md` / `indexes/topic-map.md` / `indexes/keywords.json` / `.agents/skills/task-specification-creator/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 は backend Codecov フラグと Phase 11 NON_VISUAL 証跡、台帳 parity を同波で閉じる必要があった。task-specification-creator 側も current facts を追従させ、次回の Phase 12 close-out で同じ漏れが再発しないようにした。
 
 ## 2026-04-15 - TASK-CI-FUTURE-003 スキルフィードバック反映（FB-001〜003）
 

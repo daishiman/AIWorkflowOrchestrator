@@ -450,3 +450,23 @@
   - Phase 11 の手動テスト（`gh run view` 証跡）と整合性が取れる
 - **発見日**: 2026-04-15
 - **関連タスク**: TASK-CI-FUTURE-003
+
+### workflow-static-check 証跡分類パターン（TASK-CI-FUTURE-007）
+
+> CI 設定のみ変更するタスク（GitHub Actions YAML / Codecov 設定等）で、実運用 CI ログが取れない場合の Phase 11 証跡形式。
+
+- **状況**: GitHub Actions YAML のみを変更し、実際の CI 実行ログ（`gh run view`）が取得できない場合（例: 本番 push 前 / カバレッジ収集条件がまだ満たされていない）
+- **パターン**: Phase 11 証跡を **2カテゴリに分けて**記録する
+  | カテゴリ | 記録内容 | 例 |
+  | -------- | -------- | --- |
+  | `CLI 実行確認` | ローカルで確認できた出力・コマンド結果 | `pnpm --filter @repo/backend exec vitest run --coverage` の EXIT 0 確認 |
+  | `workflow-static-check` | YAML 静的確認（条件分岐ロジック・フラグ設定値・アーティファクト名の一致） | `if: github.event_name == 'push' && github.ref == 'refs/heads/main'` ロジック確認 |
+- **効果**:
+  - 「実行した」と「ロジックを確認した」を分離するため、証跡の信頼性が明確になる
+  - Phase 11 reviewer が CLI 実行済みと静的確認のみの項目を区別できる
+  - 将来の CI 実行時に `workflow-static-check` 箇所を再検証すべき対象として明示できる
+- **適用時の注意**:
+  - `workflow-static-check` のみの確認項目は「観測待ち（CI 実行後確認）」として残すのが正しい
+  - backend flag のような **設定追加項目** は「変更対象（YAML/codecov.yml）」と「参照対象（flag パス・flag 名）」を分けて記録すると誤解が減る
+- **発見日**: 2026-04-16
+- **関連タスク**: TASK-CI-FUTURE-007

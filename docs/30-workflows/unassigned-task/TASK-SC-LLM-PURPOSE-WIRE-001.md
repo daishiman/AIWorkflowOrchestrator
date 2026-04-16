@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 2181
+issue_number: 2239 # 旧 #2181 は CLOSED。新規 Issue として #2239 を作成済み。
 ```
 
 ## メタ情報

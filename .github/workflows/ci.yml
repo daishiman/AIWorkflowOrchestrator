@@ -308,6 +308,9 @@ jobs:
       - name: Verify IPC 4-layer alignment
         run: node scripts/verify-ipc-4layer.cjs
 
+  # test-web ジョブ: ジョブ名は test-web だが実体は @repo/backend のテストを実行する。
+  # TASK-CI-FUTURE-007: push の main ブランチ時のみカバレッジを収集し Codecov の backend フラグでアップロードする。
+  # それ以外のイベントではカバレッジを付けずに高速フィードバックを優先する。
   test-web:
     name: Test (web)
     runs-on: ubuntu-latest
@@ -348,8 +351,25 @@ jobs:
           name: shared-build
           path: packages/shared/dist/
 
+      # カバレッジ条件分岐:
+      # - push / main 時のみ: カバレッジあり（品質メトリクス維持）
+      # - それ以外: カバレッジなし（高速フィードバック）
       - name: Run web app tests (shard ${{ matrix.shard }}/2)
-        run: pnpm --filter @repo/backend exec vitest run --shard=${{ matrix.shard }}/2
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/backend exec vitest run --shard=${{ matrix.shard }}/2 --coverage
+          else
+            pnpm --filter @repo/backend exec vitest run --shard=${{ matrix.shard }}/2
+          fi
+
+      - name: Upload backend coverage artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-${{ matrix.shard }}
+          path: apps/backend/coverage/
+          retention-days: 1
+          if-no-files-found: error
 
   check-module-sync:
     name: Module Sync Check
@@ -408,14 +428,15 @@ jobs:
         run: pnpm audit --audit-level=high
         continue-on-error: true
 
-  # カバレッジをCodecovにアップロード
-  # main pushトリガーのみ実行（PR時はカバレッジスキップで高速化）
-  # テストは各ジョブで実行済み、ここではアーティファクトをマージしてアップロードのみ
+  # coverage ジョブ: main push 時に各テストジョブのカバレッジアーティファクトを収集し Codecov へアップロードする。
+  # - desktop フラグ: test-desktop ジョブ（@repo/desktop）のカバレッジ
+  # - backend フラグ: test-web ジョブ（@repo/backend）のカバレッジ（TASK-CI-FUTURE-007 で追加）
+  # PR 時はカバレッジスキップで高速化。テストは各ジョブで実行済み、ここではアーティファクトをマージしてアップロードのみ。
   coverage:
     name: Upload Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [test-shared, test-desktop]
+    needs: [test-shared, test-desktop, test-web]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Download desktop coverage artifacts
@@ -425,12 +446,27 @@ jobs:
           path: coverage/desktop
           merge-multiple: true
 
-      - name: Upload coverage to Codecov
+      - name: Upload desktop coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: coverage/
+          directory: coverage/desktop
           flags: desktop
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Download backend coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: backend-coverage-*
+          path: coverage/backend
+
+      - name: Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: coverage/backend
+          flags: backend
           fail_ci_if_error: false
           verbose: true
 

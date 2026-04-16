@@ -9,6 +9,7 @@
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-16: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化](./task-workflow-completed-recent-2026-04b.md)
+- [2026-04-16: TASK-CI-FUTURE-007 @repo/backend Codecov カバレッジアップロード対応（phase12_completed / NON_VISUAL / backend codecov flag）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
@@ -168,6 +169,36 @@
 - 生成キャンセル後の UI は「エラーを消す」だけでなく「古い結果を再表示しない」ことまで含めて設計する
 - template recovery は通常 error と分け、`retry` と `start over` の意味を UI で明確に分離する
 - Step 1 の local state は親 state の再同期点を持たせると、再開・戻る・再生成の 3 経路で破綻しにくい
+
+### タスク: TASK-CI-FUTURE-007 @repo/backend Codecov カバレッジアップロード対応（2026-04-16）
+
+| 項目       | 値                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-007                                                                                                           |
+| 完了日     | 2026-04-16                                                                                                                   |
+| タスク種別 | docs-only（CI 改善 / NON_VISUAL / ledger-sync）                                                                             |
+| 関連Issue  | -                                                                                                                            |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                                                  |
+
+#### 実施内容
+
+- `task-workflow.md` の current facts に `TASK-CI-FUTURE-007` の close-out を追加し、`phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync` を反映した
+- `task-workflow-completed-recent-2026-04g.md` に `TASK-CI-FUTURE-007` の完了記録を追加した
+- `task-specification-creator/LOGS.md` と `aiworkflow-requirements/LOGS.md` を 2026-04-16 同波で更新し、`.agents` mirror も同期した
+- `indexes/topic-map.md` と `indexes/keywords.json` を再生成した
+
+#### 検証証跡
+
+- `task-workflow.md` current facts: `TASK-CI-FUTURE-007` / `phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync`
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04g.md`: 完了記録追加
+- `task-specification-creator/LOGS.md` / `aiworkflow-requirements/LOGS.md`: 2026-04-16 同期
+- `indexes/topic-map.md` / `indexes/keywords.json`: regenerate PASS
+
+#### lessons-learned
+
+- ledger と index は task-workflow 本文と同波で更新すると、current facts の齟齬を早く潰せる
+- NON_VISUAL の CI タスクでも、phase 11 の証跡型と backend codecov flag のような確認観点を文言化すると再監査しやすい
+- `outputs/artifacts.json sync` を明記すると、root と outputs の parity をレビューで追いやすい
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
