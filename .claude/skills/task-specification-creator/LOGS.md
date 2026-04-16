@@ -2,6 +2,34 @@
 
 ## 役割
 
+## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `references/phase-11-screenshot-guide.md` に `## スクリーンショット命名規則（UI task 共通）` セクションを追加（[FB-LLM-MOD-05-001]）
+  - Phase 11 screenshot は phase spec / capture script / metadata / implementation-guide の 4 か所でセマンティック canonical 名を一致させるルールを明文化
+  - TC-XX 番号はメタデータ内 `tc` フィールドのみ残し、ファイル名には使わない方針を追加
+  - canonical 名は Phase 1 または Phase 4 で先に確定させる drift 防止ルールを追加
+- `SKILL.md` Phase 11 行に `[FB-LLM-MOD-05-001]` タグとセマンティック命名ルールの要約を追記
+- `.agents/skills/task-specification-creator/` mirror（SKILL.md / references/phase-11-screenshot-guide.md）を同波で同期
+
+### 背景
+
+TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY の skill-feedback-report（Phase 12 成果物）で、Phase 11 screenshot 名が phase spec / capture script / metadata / implementation-guide で一致していなかった問題が報告された。TC-11-01 / TC-11-02 のような内部番号が canonical として使われ、docs 側のセマンティック名と乖離が発生した。今回の impl-spec-to-skill-sync で、同問題を将来のタスクで再発させないためのルールを phase-11-screenshot-guide と SKILL.md に還流した。
+
+## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
+
+### 変更内容
+
+- `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` の completed 化に合わせて、Phase 11 screenshot 名を `inline-model-selector-description-hidden.png` / `inline-model-selector-tooltip-visible.png` に canonical 化
+- `task-workflow-backlog.md` の該当 row を completed 化し、`task-workflow-completed.md` / `task-workflow-completed-recent-2026-04b.md` を current facts に同期
+- `phase11-capture-metadata.json` / `manual-test-result.md` / `implementation-guide.md` / `documentation-changelog.md` / `system-spec-update-summary.md` の screenshot references を新命名へ統一
+- `task-workflow-completed-recent-2026-04b.md` に completed record を追加し、`phase11` の visual evidence を 2 枚の canonical 名で追跡可能にした
+
+### 背景
+
+VISUAL タスクの close-out は、画像ファイル名・metadata・manual-test・implementation guide・completed ledger を同一 wave で揃えないと stale reference が残る。今回の同期で old `TC-11-01` / `TC-11-02` 命名を canonical 名に寄せ、後続の仕様更新で参照先がぶれない状態へ閉じた。
+
 ## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
 
 ### 変更内容

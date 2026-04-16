@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3036,
+  "totalKeywords": 3041,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6169,26 +6169,7 @@
     "SkillCreatorService": [
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "arch-electron-services-details-part1.md"
-    ],
-    "generateSkillMd": [
-      "arch-electron-services-details-part1.md",
-      "lessons-learned-current-2026-04.md"
-    ],
-    "StructurePlanJson": [
-      "arch-electron-services-details-part1.md",
-      "lessons-learned-current-2026-04.md"
-    ],
-    "runCreateWorkflow": [
-      "arch-electron-services-details-part1.md",
-      "lessons-learned-current-2026-04.md"
-    ],
-    "TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001": [
-      "arch-electron-services-details-part1.md",
-      "task-workflow.md",
-      "task-workflow-completed-recent-2026-04e.md",
-      "lessons-learned-current-2026-04.md"
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
@@ -8625,6 +8606,24 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
+    "PLAN": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "CONNECT": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "runCreateWorkflow": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "generateSkillMd": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続順序": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "fetchSkills": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8643,6 +8642,13 @@
     ],
     "モード構造計画生成": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "structurePlan": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -8993,11 +8999,6 @@
     "CONNECTION": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-part-2.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "PLAN": [
-      "lessons-learned-ipc-preload-runtime-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FF": [
@@ -10365,9 +10366,6 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
     "使用率計装": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "接続": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "TRACKING": [

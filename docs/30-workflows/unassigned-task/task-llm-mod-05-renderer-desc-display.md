@@ -5,7 +5,7 @@
 ```yaml
 issue_number: 2159
 task_id: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY
-status: open
+status: completed
 priority: low
 scale: small
 task_type: improvement

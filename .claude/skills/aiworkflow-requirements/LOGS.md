@@ -4,6 +4,19 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
+
+### 変更内容
+
+- `references/task-workflow-backlog.md` の `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` row を completed 化し、`task-workflow-completed.md` / `task-workflow-completed-recent-2026-04b.md` を同波で更新
+- `outputs/phase-11/screenshots/inline-model-selector-description-hidden.png` / `outputs/phase-11/screenshots/inline-model-selector-tooltip-visible.png` を canonical evidence として固定し、`phase11-capture-metadata.json` の旧命名依存を解消
+- `issue-1782.md` を `完了` 化し、`unassigned-task/task-llm-mod-05-renderer-desc-display.md` の status も completed へ更新
+- `node scripts/generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成（3041 keywords）
+
+### 背景
+
+`InlineModelSelector` の description 表示は実装済みでも、Phase 11 screenshot 名と completed ledger が stale のままだと current facts にならない。今回の same-wave sync で、complete 化・証跡 canonical 化・索引再生成をまとめて閉じた。
+
 ## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 current facts sync
 
 ### 変更内容
