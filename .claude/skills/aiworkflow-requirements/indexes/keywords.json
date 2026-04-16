@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3033,
+  "totalKeywords": 3038,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1257,6 +1257,7 @@
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1572,6 +1573,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed.md",
       "testing-component-patterns-core.md",
@@ -2185,6 +2187,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
@@ -4174,6 +4177,7 @@
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -8593,6 +8597,7 @@
     "整合性修正": [
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -8619,6 +8624,22 @@
     ],
     "モード構造計画生成": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "PLAN": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "CONNECT": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "structurePlan": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -8969,11 +8990,6 @@
     "CONNECTION": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-part-2.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "PLAN": [
-      "lessons-learned-ipc-preload-runtime-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FF": [
@@ -10341,9 +10357,6 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
     "使用率計装": [
-      "lessons-learned-w3-usage-tracking-2026-04.md"
-    ],
-    "接続": [
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "TRACKING": [
@@ -13333,6 +13346,15 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "カテゴリ複数選択・ボタン統一・": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ProgressBar": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "修正": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "TerminalHandoff": [

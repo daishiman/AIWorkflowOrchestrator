@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-04-15T13:36:23.559Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5199",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "screenshots": [
+    {
+      "file": "q5-single-select-no-badge.png",
+      "output": "outputs/phase-11/screenshots/q5-single-select-no-badge.png",
+      "capturedAt": "2026-04-15T13:35:44.957Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "file": "q5-multi-select-no-badge.png",
+      "output": "outputs/phase-11/screenshots/q5-multi-select-no-badge.png",
+      "capturedAt": "2026-04-15T13:36:23.537Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}

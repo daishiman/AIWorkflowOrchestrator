@@ -32,13 +32,13 @@
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
-| 完了日     | 2026-04-15                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
-| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                                                       |
+| ---------- | ------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                        |
+| 完了日     | 2026-04-15                                                               |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination） |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089) |
+| Phase 13   | blocked（ユーザー承認待ち）                                              |
 
 #### 実施内容
 
@@ -50,16 +50,16 @@
 
 #### Phase 11/12 成果物
 
-| 成果物                                  | パス                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------- |
-| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
-| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
-| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
-| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
-| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
-| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
-| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
-| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+| 成果物                       | パス                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                 |
+| 手動テストレポート           | `outputs/phase-11/manual-test-report.md`                 |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 #### 検証証跡
 
@@ -84,13 +84,13 @@
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SW-FIX-STATE-DETAIL-001                                                               |
-| 完了日     | 2026-04-14                                                                                 |
-| タスク種別 | implementation（VISUAL / state-detail recovery）                                           |
-| 関連Issue  | -                                                                                          |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                               |
+| ---------- | ------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-STATE-DETAIL-001                     |
+| 完了日     | 2026-04-14                                       |
+| タスク種別 | implementation（VISUAL / state-detail recovery） |
+| 関連Issue  | -                                                |
+| Phase 13   | blocked（ユーザー承認待ち）                      |
 
 #### 実施内容
 
@@ -103,24 +103,24 @@
 
 #### Phase 11/12 成果物
 
-| 成果物                                    | パス                                                              |
-| ----------------------------------------- | ----------------------------------------------------------------- |
-| スクリーンショット計画                    | `outputs/phase-11/screenshot-plan.json`                           |
-| キャプチャメタデータ                      | `outputs/phase-11/phase11-capture-metadata.json`                  |
-| 画面証跡 1                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png` |
-| 画面証跡 2                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png` |
-| 画面証跡 3                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png` |
-| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストレポート                        | `outputs/phase-11/manual-test-report.md`                          |
-| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
-| UI サニティレビュー                       | `outputs/phase-11/ui-sanity-visual-review.md`                     |
-| スクリーンショットカバレッジ              | `outputs/phase-11/screenshot-coverage.md`                         |
-| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
-| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
-| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
-| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
-| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
-| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+| 成果物                                 | パス                                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------- |
+| スクリーンショット計画                 | `outputs/phase-11/screenshot-plan.json`                                                |
+| キャプチャメタデータ                   | `outputs/phase-11/phase11-capture-metadata.json`                                       |
+| 画面証跡 1                             | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png`  |
+| 画面証跡 2                             | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png`   |
+| 画面証跡 3                             | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png` |
+| 手動テスト結果                         | `outputs/phase-11/manual-test-result.md`                                               |
+| 手動テストレポート                     | `outputs/phase-11/manual-test-report.md`                                               |
+| 発見事項記録                           | `outputs/phase-11/discovered-issues.md`                                                |
+| UI サニティレビュー                    | `outputs/phase-11/ui-sanity-visual-review.md`                                          |
+| スクリーンショットカバレッジ           | `outputs/phase-11/screenshot-coverage.md`                                              |
+| 実装ガイド                             | `outputs/phase-12/implementation-guide.md`                                             |
+| システム仕様書更新サマリー             | `outputs/phase-12/system-spec-update-summary.md`                                       |
+| 変更履歴                               | `outputs/phase-12/documentation-changelog.md`                                          |
+| 未タスク検出レポート                   | `outputs/phase-12/unassigned-task-detection.md`                                        |
+| スキルフィードバックレポート           | `outputs/phase-12/skill-feedback-report.md`                                            |
+| Phase 12 準拠チェック（root evidence） | `outputs/phase-12/phase12-task-spec-compliance-check.md`                               |
 
 #### 検証証跡
 
@@ -134,11 +134,11 @@
 
 #### 苦戦箇所
 
-| #   | 苦戦箇所                                               | 解決策                                                                 |
-| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
-| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
-| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
+| #   | 苦戦箇所                                            | 解決策                                                                    |
+| --- | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | キャンセル後の遅延 reject が error 表示を復活させる | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした       |
+| 2   | template 失敗時の復帰導線が曖昧になりやすい         | `mode="template"` のときだけ `最初からやり直す` を出すように固定した      |
+| 3   | `answers` の local state が親 state とずれる        | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
 
 #### lessons-learned
 
@@ -167,6 +167,7 @@
 - `skill_wizard_step1_completed` の `method: "skip"` は旧「Step 1 スキップモード」の意味ではなく、「未回答ありで生成実行した」計装値だったため、仕様書側の意味付けを current code に合わせて修正した
 
 ## 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync
+
 ## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync
 
 ### 変更内容
@@ -209,8 +210,8 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ## 完了タスク（2026-03後半）
 
-- [2026-03-29～31: TASK-P0-02 / TASK-P0-05 / TASK-LLM-MOD-05 / TASK-RT-01 / TASK-RT-02 / TASK-RT-04 / UT-RT-06-* / TASK-UIUX-FEEDBACK-001 など](./task-workflow-completed-recent-2026-03d.md)
-- [2026-03-25～28: TASK-SDK-03 / TASK-SDK-04 / TASK-SDK-05 / TASK-SDK-06 / UT-IMP-RUNTIME-WORKFLOW-* / UT-LLM-MOD-01-005 / TASK-SDK-01 / TASK-SDK-02 など](./task-workflow-completed-recent-2026-03c.md)
+- [2026-03-29～31: TASK-P0-02 / TASK-P0-05 / TASK-LLM-MOD-05 / TASK-RT-01 / TASK-RT-02 / TASK-RT-04 / UT-RT-06-\* / TASK-UIUX-FEEDBACK-001 など](./task-workflow-completed-recent-2026-03d.md)
+- [2026-03-25～28: TASK-SDK-03 / TASK-SDK-04 / TASK-SDK-05 / TASK-SDK-06 / UT-IMP-RUNTIME-WORKFLOW-\* / UT-LLM-MOD-01-005 / TASK-SDK-01 / TASK-SDK-02 など](./task-workflow-completed-recent-2026-03c.md)
 - [2026-03-22～26（後半）: TASK-SDK-08 / TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 / TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 / TASK-SC-04 / UT-SC-03-003 / TASK-IMP-SLIDE-MODIFIER / TASK-IMP-TERMINAL-HANDOFF / TASK-IMP-TRANSCRIPT / TASK-IMP-SETTINGS-SHELL / TASK-IMP-CANONICAL-BRIDGE / TASK-IMP-HEALTH-POLICY / TASK-IMP-ADVANCED-CONSOLE-SAFETY など](./task-workflow-completed-recent-2026-03e.md)
 - [2026-03-19～21: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 / TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001](./task-workflow-completed-recent-2026-03b.md)
 - [2026-03-10～18: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 / TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 / TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 / TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / TASK-SKILL-LIFECYCLE-01 / TASK-UI-06/07/08/04B](./task-workflow-completed-recent-2026-03a.md)
@@ -273,11 +274,11 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 苦戦箇所（詳細は lessons-learned）
 
-| 苦戦箇所                                       | 解決策概要                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------- |
-| 並行マージコンフリクト検出（`||||||| Stash base` マーカー） | PR前チェックリストにコンフリクトマーカー検索を追加            |
-| インデックステーブル全行への列追加の手間       | 20行超のテーブルは置換スクリプト化が有効                      |
-| 正本・履歴判別の属人化解消                     | 冒頭 `> 区分: XXX` ラベルの統一付与で解消                     |
+| 苦戦箇所                                 | 解決策概要                                |
+| ---------------------------------------- | ----------------------------------------- | --- | --- | --- | --- | --- | ---------------------- | -------------------------------------------------- |
+| 並行マージコンフリクト検出（`            |                                           |     |     |     |     |     | Stash base` マーカー） | PR前チェックリストにコンフリクトマーカー検索を追加 |
+| インデックステーブル全行への列追加の手間 | 20行超のテーブルは置換スクリプト化が有効  |
+| 正本・履歴判別の属人化解消               | 冒頭 `> 区分: XXX` ラベルの統一付与で解消 |
 
 → 詳細: [lessons-learned-verify-contract-consolidation.md](lessons-learned-verify-contract-consolidation.md)
 
@@ -285,15 +286,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-FIX-IPC-SKILL-NAME-001 ipcMain重複登録・スキル名正規化修正（2026-04-06）
 
-| 項目             | 値                                                                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID         | TASK-FIX-IPC-SKILL-NAME-001                                                                                                    |
-| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
-| タイプ           | bug-fix / ipc / skill-name-normalization                                                                                        |
-| 優先度           | 高                                                                                                                              |
-| 完了日           | 2026-04-06                                                                                                                      |
-| 対象             | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化                                        |
-| 成果物           | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                                                        |
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-IPC-SKILL-NAME-001                                                              |
+| ステータス | **完了（Phase 12 close-out）**                                                           |
+| タイプ     | bug-fix / ipc / skill-name-normalization                                                 |
+| 優先度     | 高                                                                                       |
+| 完了日     | 2026-04-06                                                                               |
+| 対象       | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化 |
+| 成果物     | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                 |
 
 #### 実施内容
 
@@ -313,9 +314,11 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 ---
 
 ### タスク: UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 phase-spec-template Task/Step 分離と NON_VISUAL evidence hardening（2026-04-06）
+
 ### タスク: UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001 task-specification-creator Phase-12 テンプレート改善（2026-04-06）
 
 ## UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善
+
 - 完了日: 2026-04-06
 - 内容: Phase-12 validator 改善（NEXT_PART_HEADING導入、fence-safe化）、テンプレート構造化、SKILL.md v10.09.35 更新
 - 成果物: 6ファイル（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
@@ -324,15 +327,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 packages/shared/src/ipc/channels.ts を desktop 実装へ同期（2026-04-06）
 
-| 項目             | 値                                                                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID         | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                      |
-| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
-| タイプ           | refactor / ipc / shared-normalization / NON_VISUAL                                                                             |
-| 優先度           | 高                                                                                                                              |
-| 完了日           | 2026-04-06                                                                                                                      |
-| 対象             | `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/preload/channels.ts` / `governance-bundle.test.ts`                   |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-sdk-07-shared-ipc-channel-contract-001.md`                                          |
+| 項目             | 値                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| タスクID         | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                    |
+| ステータス       | **完了（Phase 12 close-out）**                                                                               |
+| タイプ           | refactor / ipc / shared-normalization / NON_VISUAL                                                           |
+| 優先度           | 高                                                                                                           |
+| 完了日           | 2026-04-06                                                                                                   |
+| 対象             | `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/preload/channels.ts` / `governance-bundle.test.ts` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-sdk-07-shared-ipc-channel-contract-001.md`                        |
 
 #### 実施内容
 
@@ -343,11 +346,11 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 苦戦箇所（詳細は lessons-learned-phase12-workflow-lifecycle.md）
 
-| 苦戦箇所                                            | 解決策概要                                                                          |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| shared パッケージ内テストで `@repo/shared` エイリアスが解決できない | テストファイル内インポートを相対パスに変更（`../channels` 等）                     |
-| IPC チャネル命名規則の既存パターン未把握            | Phase 1 開始前に `grep -n "CHANNELS" channels.ts` で命名規則を表として整理         |
-| TDD Red Phase 前の設計前提整合未確認               | allowlist / 既存テスト期待値への影響範囲を Phase 3 先行ステップで文書化            |
+| 苦戦箇所                                                            | 解決策概要                                                                 |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| shared パッケージ内テストで `@repo/shared` エイリアスが解決できない | テストファイル内インポートを相対パスに変更（`../channels` 等）             |
+| IPC チャネル命名規則の既存パターン未把握                            | Phase 1 開始前に `grep -n "CHANNELS" channels.ts` で命名規則を表として整理 |
+| TDD Red Phase 前の設計前提整合未確認                                | allowlist / 既存テスト期待値への影響範囲を Phase 3 先行ステップで文書化    |
 
 ---
 
@@ -357,15 +360,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
 
-| 項目       | 値                                                                                                          |
-| ---------- | ----------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-01                                                                                                  |
-| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
-| タイプ     | implementation / IPC 4層統合                                                                                |
-| 優先度     | 高                                                                                                          |
-| 完了日     | 2026-04-06                                                                                                  |
-| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
-| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
+| 項目       | 値                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                               |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                 |
+| タイプ     | implementation / IPC 4層統合                                                                             |
+| 優先度     | 高                                                                                                       |
+| 完了日     | 2026-04-06                                                                                               |
+| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
 
 #### 実施内容
 
@@ -376,10 +379,10 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 解決策概要 |
-| --- | --- |
-| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
-| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
+| 苦戦箇所                | 解決策概要                                                                                                |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import                     |
+| preload variadic 化     | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
 
 → 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
 
@@ -387,14 +390,14 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
 
-| 項目       | 値                                                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-01                                                                                                |
-| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
-| タイプ     | implementation / UI routing                                                                               |
-| 優先度     | 高                                                                                                        |
-| 完了日     | 2026-04-06                                                                                                |
-| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
+| 項目       | 値                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-01                                                                                               |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                 |
+| タイプ     | implementation / UI routing                                                                              |
+| 優先度     | 高                                                                                                       |
+| 完了日     | 2026-04-06                                                                                               |
+| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                |
 | 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
 
 #### 実施内容
@@ -407,10 +410,10 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 解決策概要 |
-| --- | --- |
+| 苦戦箇所                                                      | 解決策概要                                                                              |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
-| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
+| snapshot nullability チェックの冗長化                         | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避             |
 
 → 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
 → 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
@@ -418,19 +421,20 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 ---
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
+
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
 
-| 項目             | 値                                                                                     |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| タスクID         | UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001                                                   |
-| ステータス       | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                                |
-| タイプ           | docs-only / NON_VISUAL                                                                 |
-| 優先度           | 中                                                                                     |
-| 完了日           | 2026-04-06                                                                             |
-| 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
-| GitHub Issue     | #1919                                                                                  |
-| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md`         |
+| 項目             | 値                                                                          |
+| ---------------- | --------------------------------------------------------------------------- |
+| タスクID         | UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001                                        |
+| ステータス       | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                     |
+| タイプ           | docs-only / NON_VISUAL                                                      |
+| 優先度           | 中                                                                          |
+| 完了日           | 2026-04-06                                                                  |
+| 対象             | `task-specification-creator` / Phase 仕様書テンプレート                     |
+| GitHub Issue     | #1919                                                                       |
+| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                   |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md` |
 
 #### 実施内容
 
@@ -452,16 +456,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ---
 
-| 項目             | 値                                                                                     |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| タスクID         | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001                          |
-| ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                      |
-| タイプ           | docs-improvement / runtime follow-up / notification                                    |
-| 優先度           | 中                                                                                     |
-| 完了日           | 2026-04-06                                                                             |
-| 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
-| GitHub Issue     | #1896                                                                                  |
-| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
+| 項目             | 値                                                                                                    |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001                                        |
+| ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                                     |
+| タイプ           | docs-improvement / runtime follow-up / notification                                                   |
+| 優先度           | 中                                                                                                    |
+| 完了日           | 2026-04-06                                                                                            |
+| 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知                      |
+| GitHub Issue     | #1896                                                                                                 |
+| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`                   |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容
@@ -477,15 +481,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-P0-08 |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 13 blocked）** |
-| タイプ | implementation / renderer-session-resume |
-| 優先度 | 高 |
-| 完了日 | 2026-04-06 |
-| 対象 | `SkillLifecyclePanel` / `SessionResumePrompt` / `SessionIndicator` / session persistence bridge |
-| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/` |
+| 項目       | 値                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-P0-08                                                                                                   |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                                                      |
+| タイプ     | implementation / renderer-session-resume                                                                     |
+| 優先度     | 高                                                                                                           |
+| 完了日     | 2026-04-06                                                                                                   |
+| 対象       | `SkillLifecyclePanel` / `SessionResumePrompt` / `SessionIndicator` / session persistence bridge              |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/` |
 
 #### 実施内容
 
@@ -511,15 +515,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-P0-02 |
-| ステータス | **完了** |
-| タイプ | implementation / runtime orchestration |
-| 優先度 | 高 |
-| 完了日 | 2026-03-30 |
-| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
-| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+| 項目       | 値                                                                        |
+| ---------- | ------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-02                                                                |
+| ステータス | **完了**                                                                  |
+| タイプ     | implementation / runtime orchestration                                    |
+| 優先度     | 高                                                                        |
+| 完了日     | 2026-03-30                                                                |
+| 対象       | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物     | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/`              |
 
 #### 実施内容
 
@@ -647,7 +651,7 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | 優先度     | 高                                                                                                    |
 | 完了日     | 2026-04-04                                                                                            |
 | 対象       | `RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / structured error flow |
-| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                      |
+| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                       |
 
 #### 実施内容
 
@@ -675,15 +679,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 executeAsync() の error message 伝搬パス統一（2026-04-06）
 
-| 項目       | 値                                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                 |
-| ステータス | **完了**                                                                                                               |
-| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                               |
-| 優先度     | 中                                                                                                                     |
-| 完了日     | 2026-04-06                                                                                                             |
+| 項目       | 値                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                                      |
+| ステータス | **完了**                                                                                                                                    |
+| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                                                    |
+| 優先度     | 中                                                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                                                  |
 | 対象       | `RuntimeSkillCreatorFacade.executeAsync()` / `RuntimeSkillCreatorFacade.executeAsync.test.ts` / `outputs/phase-11/*` / `outputs/phase-12/*` |
-| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                           |
+| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                                                 |
 
 #### 実施内容
 
@@ -713,16 +717,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001（2026-04-06）
 
-| 項目       | 値                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                           |
-| ステータス | **完了**                                                                                         |
-| タイプ     | refactoring / ui                                                                                |
-| 優先度     | 中                                                                                               |
-| 完了日     | 2026-04-06                                                                                       |
+| 項目       | 値                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                            |
+| ステータス | **完了**                                                                                          |
+| タイプ     | refactoring / ui                                                                                  |
+| 優先度     | 中                                                                                                |
+| 完了日     | 2026-04-06                                                                                        |
 | 対象       | `useAuthKeyManagement` 新規追加 / `AuthKeySection` への統合 / `ApiKeySettingsPanel` 委譲 / 型統一 |
-| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                               |
-| GitHub     | Issue #1903                                                                                      |
+| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                                |
+| GitHub     | Issue #1903                                                                                       |
 
 #### 実施内容
 
@@ -879,15 +883,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-07 hardcoded-agent-names-dynamic-resolution — plan/improve 動的解決と root dedupe（2026-04-06）
 
-| 項目       | 値                                                                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-P0-07                                                                                                                                       |
-| ステータス | **完了**                                                                                                                                         |
-| タイプ     | refactoring / docs sync                                                                                                                          |
-| 優先度     | 高                                                                                                                                               |
-| 完了日     | 2026-04-06                                                                                                                                       |
+| 項目       | 値                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-07                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ステータス | **完了**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| タイプ     | refactoring / docs sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 優先度     | 高                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 完了日     | 2026-04-06                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`, `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts`, `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan-resource-selection.test.ts`, `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution/outputs/phase-12/*` |
-| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution |
+| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 #### 実施内容
 
@@ -2264,11 +2268,11 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### Phase 12 未タスク
 
-| 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
-| --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/completed-tasks/UT-HEALTH-POLICY-RUNTIME-INJECTION-001/` |
-| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
+| 未タスクID                                 | 概要                                                              | 優先度 | タスク仕様書                                                                                     |
+| ------------------------------------------ | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001    | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md`                   |
+| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~              | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/completed-tasks/UT-HEALTH-POLICY-RUNTIME-INJECTION-001/` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001    | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md`                   |
 
 ---
 
@@ -2478,16 +2482,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-SDK-SC-02 Conversation UI 質問受信・回答送信 UI コンポーネント（2026-04-03）
 
-| 項目       | 値                                                                    |
-| ---------- | --------------------------------------------------------------------- |
-| タスクID   | TASK-SDK-SC-02                                                        |
-| ステータス | **Phase 1-12 完了**                                                   |
-| タイプ     | implementation                                                        |
-| 優先度     | 高                                                                    |
-| 完了日     | 2026-04-03                                                            |
-| 依存タスク | TASK-SDK-SC-01                                                        |
-| 後続タスク | なし                                                                  |
-| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/`              |
+| 項目       | 値                                                       |
+| ---------- | -------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-02                                           |
+| ステータス | **Phase 1-12 完了**                                      |
+| タイプ     | implementation                                           |
+| 優先度     | 高                                                       |
+| 完了日     | 2026-04-03                                               |
+| 依存タスク | TASK-SDK-SC-01                                           |
+| 後続タスク | なし                                                     |
+| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/` |
 
 #### 実施内容
 
@@ -2510,13 +2514,13 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### テストケース追加内訳
 
-| テストファイル                              | テスト数 | 主な検証内容                                           |
-| ------------------------------------------- | -------- | ------------------------------------------------------ |
-| `ChoiceButton.test.tsx`                     | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed  |
-| `FreeTextInput.test.tsx`                    | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear   |
-| `ConversationProgress.test.tsx`             | 3        | 表示形式・プログレスバー幅                             |
-| `QuestionCard.test.tsx`                     | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力 |
-| `SkillCreatorConversationPanel.test.tsx`    | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
+| テストファイル                           | テスト数 | 主な検証内容                                                           |
+| ---------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| `ChoiceButton.test.tsx`                  | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed                  |
+| `FreeTextInput.test.tsx`                 | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear                   |
+| `ConversationProgress.test.tsx`          | 3        | 表示形式・プログレスバー幅                                             |
+| `QuestionCard.test.tsx`                  | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力            |
+| `SkillCreatorConversationPanel.test.tsx` | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
 
 #### Phase 12 未タスク
 
@@ -2526,13 +2530,13 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 RuntimeSkillCreatorFacade adapter guard（2026-04-04）
 
-| 項目       | 値                                                                                                                           |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                              |
-| ステータス | **完了**                                                                                                                     |
-| タイプ     | implementation                                                                                                               |
-| 優先度     | 高                                                                                                                           |
-| 完了日     | 2026-04-04                                                                                                                   |
+| 項目       | 値                                              |
+| ---------- | ----------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 |
+| ステータス | **完了**                                        |
+| タイプ     | implementation                                  |
+| 優先度     | 高                                              |
+| 完了日     | 2026-04-04                                      |
 
 #### 実施内容
 
@@ -2549,13 +2553,13 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: UT-SDK-L34-UI-DISPLAY-001 SkillLifecyclePanel Layer別グルーピング（2026-04-04）
 
-| 項目       | 値                                                |
-| ---------- | ------------------------------------------------- |
-| タスクID   | UT-SDK-L34-UI-DISPLAY-001                         |
-| ステータス | **完了**                                          |
-| タイプ     | implementation                                    |
-| 優先度     | 中                                                |
-| 完了日     | 2026-04-04                                        |
+| 項目       | 値                        |
+| ---------- | ------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-001 |
+| ステータス | **完了**                  |
+| タイプ     | implementation            |
+| 優先度     | 中                        |
+| 完了日     | 2026-04-04                |
 
 #### 実施内容
 
@@ -2566,13 +2570,13 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent の出力型統合（2026-04-04）
 
-| 項目       | 値                                                                             |
-| ---------- | ------------------------------------------------------------------------------ |
-| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                |
-| ステータス | **完了**                                                                       |
-| タイプ     | implementation                                                                 |
-| 優先度     | low                                                                            |
-| 完了日     | 2026-04-04                                                                     |
+| 項目       | 値                                              |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 |
+| ステータス | **完了**                                        |
+| タイプ     | implementation                                  |
+| 優先度     | low                                             |
+| 完了日     | 2026-04-04                                      |
 
 #### 実施内容
 
@@ -2591,15 +2595,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out（2026-04-06）
 
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-09                                                                                                                                      |
-| ステータス | **完了**                                                                                                                                        |
-| タイプ     | implementation / TDD / governance                                                                                                               |
-| 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
-| 対象       | `runtime/governance/` サブディレクトリ（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink` / `index.ts`）     |
-| 成果物     | `docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`（Phase 1-13 仕様書 15ファイル）                                                 |
+| 項目       | 値                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09                                                                                                                                   |
+| ステータス | **完了**                                                                                                                                     |
+| タイプ     | implementation / TDD / governance                                                                                                            |
+| 優先度     | 最高                                                                                                                                         |
+| 完了日     | 2026-04-06                                                                                                                                   |
+| 対象       | `runtime/governance/` サブディレクトリ（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink` / `index.ts`） |
+| 成果物     | `docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`（Phase 1-13 仕様書 15ファイル）                                              |
 
 #### 実施内容
 
@@ -2625,16 +2629,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-UI-03-REMAINING IPC renderer移行完了（2026-04-07）
 
-| 項目       | 値                                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-03-REMAINING                                                                                                                                    |
-| ステータス | **完了**                                                                                                                                                |
-| タイプ     | refactor / IPC-preload-migration / NON_VISUAL                                                                                                          |
-| 優先度     | P0                                                                                                                                                      |
-| 完了日     | 2026-04-07                                                                                                                                              |
+| 項目       | 値                                                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-03-REMAINING                                                                                                                                             |
+| ステータス | **完了**                                                                                                                                                         |
+| タイプ     | refactor / IPC-preload-migration / NON_VISUAL                                                                                                                    |
+| 優先度     | P0                                                                                                                                                               |
+| 完了日     | 2026-04-07                                                                                                                                                       |
 | 対象       | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx`、`apps/desktop/src/renderer/components/organisms/AgentView/GovernanceSummaryPanel.tsx` |
-| 成果物     | `docs/30-workflows/task-ui-03-ipc-renderer-migration/`（Phase 1-13 仕様書・Phase 12 6成果物）                                                          |
-| 関連Issue  | #1940                                                                                                                                                   |
+| 成果物     | `docs/30-workflows/task-ui-03-ipc-renderer-migration/`（Phase 1-13 仕様書・Phase 12 6成果物）                                                                    |
+| 関連Issue  | #1940                                                                                                                                                            |
 
 #### 実施内容
 
@@ -2657,15 +2661,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-07）
 
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-09-U1                                                                                                                                   |
-| ステータス | **完了**                                                                                                                                        |
-| タイプ     | implementation / TDD / security                                                                                                                 |
-| 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-07                                                                                                                                      |
-| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
-| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09-U1                                                                                              |
+| ステータス | **完了**                                                                                                   |
+| タイプ     | implementation / TDD / security                                                                            |
+| 優先度     | 最高                                                                                                       |
+| 完了日     | 2026-04-07                                                                                                 |
+| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                      |
+| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト） |
 
 #### 実施内容
 
@@ -2692,27 +2696,27 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 派生未タスク
 
-| 未タスクID         | 内容                                              | 優先度 |
-| ------------------ | ------------------------------------------------- | ------ |
-| TASK-P0-09-U1-A    | improve() canUseTool 配線（SDK callback 経由化）  | 中     |
-| TASK-P0-09-U1-B    | renderer UI への governance 結果表示              | 中     |
-| TASK-P0-09-U1-C    | audit 永続化（ring buffer → ストレージ）          | 低     |
+| 未タスクID      | 内容                                             | 優先度 |
+| --------------- | ------------------------------------------------ | ------ |
+| TASK-P0-09-U1-A | improve() canUseTool 配線（SDK callback 経由化） | 中     |
+| TASK-P0-09-U1-B | renderer UI への governance 結果表示             | 中     |
+| TASK-P0-09-U1-C | audit 永続化（ring buffer → ストレージ）         | 低     |
 
 ---
 
 ### タスク: TASK-UI-04 仕様書ステータス乖離修正（Spec Status Drift Correction）（2026-04-07）
 
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-04                                                                                                                                      |
-| ステータス | **完了（Phase 12 close-out）**                                                                                                                  |
-| タイプ     | maintenance / docs-only / 品質管理                                                                                                              |
-| 優先度     | P0（最高）                                                                                                                                      |
-| 完了日     | 2026-04-07                                                                                                                                      |
-| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正）                                        |
-| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                                                        |
-| 関連Issue  | #1941                                                                                                                                           |
-| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                                                              |
+| 項目       | 値                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                               |
+| ステータス | **完了（Phase 12 close-out）**                                                                           |
+| タイプ     | maintenance / docs-only / 品質管理                                                                       |
+| 優先度     | P0（最高）                                                                                               |
+| 完了日     | 2026-04-07                                                                                               |
+| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正） |
+| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                 |
+| 関連Issue  | #1941                                                                                                    |
+| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                       |
 
 #### 実施内容
 
@@ -2736,15 +2740,15 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-UI-04 仕様書ステータス乖離修正（2026-04-07）
 
-| 項目       | 値                                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-04                                                                                                                |
-| ステータス | **phase12_completed**（Phase 13 未実施）                                                                                  |
-| タイプ     | docs-only / メンテナンス / 品質管理                                                                                       |
-| 優先度     | P0                                                                                                                        |
-| 完了日     | 2026-04-07                                                                                                                |
-| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                               |
-| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs）       |
+| 項目       | 値                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-UI-04                                                                                                         |
+| ステータス | **phase12_completed**（Phase 13 未実施）                                                                           |
+| タイプ     | docs-only / メンテナンス / 品質管理                                                                                |
+| 優先度     | P0                                                                                                                 |
+| 完了日     | 2026-04-07                                                                                                         |
+| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                         |
+| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs） |
 
 #### 実施内容
 
@@ -2771,16 +2775,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001（2026-04-06）
 
-| 項目       | 値                                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                                                  |
-| ステータス | **完了**                                                                                                                                                |
-| タイプ     | ui-task / IPC surface 追加                                                                                                                              |
-| 優先度     | 高                                                                                                                                                      |
-| 完了日     | 2026-04-06                                                                                                                                              |
-| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                                                               |
-| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                   |
-| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                                                               |
+| 項目       | 値                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                |
+| ステータス | **完了**                                                                                                              |
+| タイプ     | ui-task / IPC surface 追加                                                                                            |
+| 優先度     | 高                                                                                                                    |
+| 完了日     | 2026-04-06                                                                                                            |
+| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                             |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                              |
 
 #### 実施内容
 
@@ -2803,16 +2807,16 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 ### タスク: TASK-CI-FUTURE-005（2026-04-15）
 
-| 項目       | 値                                                                                                                |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-CI-FUTURE-005                                                                                                |
-| ステータス | **spec_created**                                                                                                  |
-| タイプ     | NON_VISUAL / docs-only / CI 計測                                                                                  |
-| 優先度     | 高                                                                                                                |
-| 完了日     | 2026-04-15                                                                                                        |
-| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                                            |
-| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                                         |
-| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物）                    |
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-005                                                                             |
+| ステータス | **spec_created**                                                                               |
+| タイプ     | NON_VISUAL / docs-only / CI 計測                                                               |
+| 優先度     | 高                                                                                             |
+| 完了日     | 2026-04-15                                                                                     |
+| 発生元     | TASK-CI-OPT-001 Phase 3 MINOR CI-M-01                                                          |
+| 対象       | GitHub Actions CI（シャード数 17 のキューイング時間実測）                                      |
+| 成果物     | docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/（Phase 1-12 全成果物） |
 
 #### 実施内容
 
@@ -2827,3 +2831,48 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - 17 シャード全件 created_at / started_at 取得済み（null ジョブ 0 件）
 - AC-1〜AC-5 全達成。シナリオカバレッジ 100%
 - Phase 12 準拠チェック: PASS
+
+---
+
+### タスク: TASK-SW-CANCEL-001 skill-creator-cancel-channel-constant（2026-04-16）
+
+| 項目           | 値                                                                                     |
+| -------------- | -------------------------------------------------------------------------------------- |
+| タスクID       | TASK-SW-CANCEL-001                                                                     |
+| ステータス     | **完了（Phase 12 close-out）**                                                         |
+| タイプ         | shared-constant / ipc / NON_VISUAL                                                     |
+| 優先度         | 中                                                                                     |
+| 完了日         | 2026-04-16                                                                             |
+| 対象           | `packages/shared/src/ipc/channels.ts` / `channels.test.ts` / `channels-cancel.test.ts` |
+| 元ワークフロー | `docs/30-workflows/p01-seq-CANCEL-001/`                                                |
+
+#### 実施内容
+
+- `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL: "skill-creator:cancel"` を追加（3 → 4チャンネル）
+- `IPC_CHANNELS.SKILL_CREATOR_CANCEL` として型安全に参照可能に
+- `channels.test.ts` の runtime 件数アサーションを 3 → 4 に更新し、`IPC_CHANNELS` 伝播を確認
+- `channels-cancel.test.ts` を新規追加（文字列値・重複・型の3観点で回帰テスト）
+- UI/UX 変更なし（Phase 11 スクリーンショット N/A）
+
+#### 後続タスク（別ワークフローに分離済み）
+
+| タスクID           | 内容                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| TASK-SW-CANCEL-002 | `ALLOWED_INVOKE_CHANNELS` への登録・Preload API メソッド追加 |
+| TASK-SW-CANCEL-003 | Main ハンドラー追加                                          |
+| TASK-SW-CANCEL-004 | Renderer フック修正                                          |
+
+#### 苦戦箇所
+
+| 苦戦箇所                         | 解決策概要                                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| 追加後の件数アサーション更新忘れ | `channels.test.ts` の `toHaveLength(3)` を `toHaveLength(4)` に更新                                 |
+| 既存テストと専用テストの責務分離 | 既存 `channels.test.ts` は件数・伝播確認、専用 `channels-cancel.test.ts` は値・重複・型の回帰に分担 |
+
+#### 検証証跡
+
+| コマンド                                                                                                                  | 結果 |
+| ------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
+| `pnpm --filter @repo/shared build`                                                                                        | PASS |
+| `pnpm typecheck`                                                                                                          | PASS |

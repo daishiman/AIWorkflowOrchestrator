@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-15
+> 自動生成: 2026-04-16
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -4955,6 +4955,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L9 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5082,11 +5083,11 @@ node scripts/list-specs.js --topics
 | 最近の完了タスク（2026-04） | L7 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L170 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L182 |
-| 完了タスク（2026-03後半） | L210 |
-| 完了タスク（機能別アーカイブ） | L218 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L318 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L183 |
+| 完了タスク（2026-03後半） | L211 |
+| 完了タスク（機能別アーカイブ） | L219 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L320 |
 
 ### references/task-workflow-history.md
 
@@ -5120,12 +5121,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
-| 仕様書インデックス | L19 |
-| 利用順序 | L130 |
-| 関連ドキュメント | L135 |
 | 仕様書インデックス | L21 |
 | 利用順序 | L132 |
 | 関連ドキュメント | L137 |
