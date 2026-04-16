@@ -1,32 +1,23 @@
 # Phase 11: 手動テスト結果
 
-## タスクID: TASK-SW-FIX-MODE-MGMT-001
+## タスクID: TASK-SW-STREAM-001
 
-## 実施状況
+## 実施方法
 
-手動テストは Electron 実機で capture script を使い、`outputs/phase-11/screenshots/` に 5 枚の証跡を保存した。
-加えてユニットテストと静的解析で TC-06 を確認した。
+非 UI タスクとして CLI で確認した。`SkillCreatorService.createSkill(options, onProgress?)` の進捗通知と例外伝播を、build / typecheck / vitest の 3 本立てで検証した。
 
-## 視覚確認ポイント
+## 実行結果
 
-- Step 0 にラジオボタンが表示されない
-- Step 0→1 の正規遷移が発生する
-- Step 1 の Q1〜Q6 が表示される
-- Step 2 の生成中 UI が表示される
-- Step 3 の完了 UI が表示される
-
-## TC-ID 別確認結果
-
-| TC-ID | 結果 | 証跡                                                                                                     |
-| ----- | ---- | -------------------------------------------------------------------------------------------------------- |
-| TC-01 | PASS | `outputs/phase-11/screenshots/step-0-no-radio.png`                                                       |
-| TC-02 | PASS | `outputs/phase-11/screenshots/step-1-conversation.png`                                                   |
-| TC-03 | PASS | `outputs/phase-11/screenshots/step-1-questions.png`                                                      |
-| TC-04 | PASS | `outputs/phase-11/screenshots/step-2-generating.png`                                                     |
-| TC-05 | PASS | `outputs/phase-11/screenshots/step-3-complete.png`                                                       |
-| TC-06 | PASS | `SkillCreateWizard.test.tsx` / `wizard-exports.test.ts` / `SkillCreateWizard.store-integration.test.tsx` |
+| 確認項目            | 実行コマンド / 根拠                                                                                                      | 結果         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| build               | `pnpm --filter @repo/desktop build`                                                                                      | PASS         |
+| typecheck           | `pnpm --filter @repo/desktop typecheck`                                                                                  | PASS         |
+| vitest              | `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts`     | PASS (14/14) |
+| callback 例外伝播   | `SkillCreatorService.progress.test.ts` の TC-11 で `onProgress` が投げた `コールバックエラー` が reject されることを確認 | PASS         |
+| `onProgress` 未指定 | TC-07 で `onProgress` を渡さずに `createSkill` が完了することを確認                                                      | PASS         |
 
 ## 補足
 
-- TC-06 は `step-2-generating.png` と `step-3-complete.png` の実機証跡に加え、静的解析で残骸ゼロを確認した。
-- `outputs/phase-11/phase11-capture-metadata.json` と `outputs/phase-11/screenshot-plan.json` も current fact として保存済み。
+- `SkillCreatorService.progress.test.ts` は 14 テストすべて PASS。
+- 進捗の 5 段階は `planning` / `generating-skill` / `generating-agents` / `validating` / `done` で確認した。
+- `onProgress` は `emitProgress()` から直接呼び出されるため、コールバック例外は隠蔽されず呼び出し元へ伝播する。
