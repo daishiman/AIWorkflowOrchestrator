@@ -302,3 +302,56 @@ export function registerFileHandlers(): void {
     },
   );
 }
+
+/**
+ * FS channels (fs:writeFile / fs:readFile) ハンドラー
+ * UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix
+ * shared: FILE_SYSTEM_CHANNELS
+ */
+export function registerFsHandlers(): void {
+  // fs:writeFile - ファイル書き込み
+  ipcMain.handle(
+    IPC_CHANNELS.FS_WRITE_FILE,
+    async (
+      _event,
+      { filePath, content }: { filePath: string; content: string },
+    ): Promise<{ success: boolean; error?: string }> => {
+      try {
+        const validation = validatePath(filePath);
+        if (!validation.valid) {
+          return { success: false, error: validation.error };
+        }
+        await fs.writeFile(filePath, content, "utf-8");
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+
+  // fs:readFile - ファイル読み取り
+  ipcMain.handle(
+    IPC_CHANNELS.FS_READ_FILE,
+    async (
+      _event,
+      { filePath }: { filePath: string },
+    ): Promise<{ success: boolean; data?: string; error?: string }> => {
+      try {
+        const validation = validatePath(filePath);
+        if (!validation.valid) {
+          return { success: false, error: validation.error };
+        }
+        const content = await fs.readFile(filePath, "utf-8");
+        return { success: true, data: content };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+}

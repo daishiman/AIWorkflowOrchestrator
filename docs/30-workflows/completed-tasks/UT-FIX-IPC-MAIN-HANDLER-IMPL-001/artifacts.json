@@ -1,0 +1,30 @@
+{
+  "taskId": "UT-FIX-IPC-MAIN-HANDLER-IMPL-001",
+  "taskName": "IPC mainハンドラ 未実装チャネル実装",
+  "taskType": "bugfix",
+  "status": "completed",
+  "wave": null,
+  "created": "2026-04-15T00:00:00.000Z",
+  "completedAt": "2026-04-15T10:39:00.000Z",
+  "dependencies": [],
+  "parallelWith": ["UT-FIX-IPC-PRELOAD-CHANNEL-SYNC-001"],
+  "targetProblems": ["CI Rule-2 violation (8 channels)"],
+  "affectedFiles": [
+    "apps/desktop/src/main/ipc/authHandlers.ts",
+    "apps/desktop/src/main/ipc/storeHandlers.ts",
+    "apps/desktop/src/main/ipc/agentHandlers.ts",
+    "apps/desktop/src/main/ipc/index.ts"
+  ],
+  "phases": {
+    "phase-4-test-creation": { "status": "completed" },
+    "phase-5-implementation": { "status": "completed" },
+    "phase-6-test-expansion": { "status": "completed" },
+    "phase-7-coverage-check": { "status": "completed" },
+    "phase-8-refactoring": { "status": "completed" },
+    "phase-9-quality-assurance": { "status": "completed" },
+    "phase-10-final-review": { "status": "completed" },
+    "phase-11-manual-test": { "status": "completed" },
+    "phase-12-documentation": { "status": "completed" },
+    "phase-13-pr-creation": { "status": "completed" }
+  }
+}

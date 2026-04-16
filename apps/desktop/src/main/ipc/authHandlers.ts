@@ -169,7 +169,9 @@ type AuthInvokeChannel =
   | (typeof IPC_CHANNELS)["AUTH_LOGOUT"]
   | (typeof IPC_CHANNELS)["AUTH_GET_SESSION"]
   | (typeof IPC_CHANNELS)["AUTH_REFRESH"]
-  | (typeof IPC_CHANNELS)["AUTH_CHECK_ONLINE"];
+  | (typeof IPC_CHANNELS)["AUTH_CHECK_ONLINE"]
+  | (typeof IPC_CHANNELS)["AUTH_START_OAUTH_FLOW"]
+  | (typeof IPC_CHANNELS)["AUTH_TEST_CALLBACK"];
 
 /**
  * AuthFlowOrchestrator インスタンスを取得（テスト用）
@@ -436,6 +438,70 @@ export function registerAuthHandlers(
         success: true,
         data: { online: net.isOnline() },
       };
+    },
+  );
+
+  // auth:start-oauth-flow - PKCE対応OAuth認証フロー開始
+  registerValidatedAuthHandler(
+    IPC_CHANNELS.AUTH_START_OAUTH_FLOW,
+    async (
+      _event,
+      { provider }: { provider: string },
+    ): Promise<IPCResponse<void>> => {
+      if (!isValidProvider(provider)) {
+        return {
+          success: false,
+          error: {
+            code: AUTH_ERROR_CODES.INVALID_PROVIDER,
+            message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
+          },
+        };
+      }
+      void authFlowOrchestrator!
+        .startOAuthFlow(provider as OAuthProvider)
+        .catch((error) => {
+          console.error(
+            "[AuthHandlers] auth:start-oauth-flow failed:",
+            sanitizeErrorMessage(error),
+          );
+        });
+      return { success: true };
+    },
+  );
+
+  // auth:test-callback - 開発用: コールバックURLを手動送信
+  registerValidatedAuthHandler(
+    IPC_CHANNELS.AUTH_TEST_CALLBACK,
+    async (
+      _event,
+      { callbackUrl }: { callbackUrl: string },
+    ): Promise<IPCResponse<void>> => {
+      if (!callbackUrl || typeof callbackUrl !== "string") {
+        return {
+          success: false,
+          error: {
+            code: AUTH_ERROR_CODES.INVALID_PROVIDER,
+            message: "callbackUrl is required",
+          },
+        };
+      }
+      try {
+        await processAuthCallback(
+          callbackUrl,
+          mainWindow,
+          supabase,
+          secureStorage,
+        );
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: {
+            code: AUTH_ERROR_CODES.SESSION_FAILED,
+            message: sanitizeErrorMessage(error),
+          },
+        };
+      }
     },
   );
 }
