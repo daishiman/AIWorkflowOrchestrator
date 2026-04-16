@@ -2403,6 +2403,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | スキル管理サービス | L8 |
+| 構造計画 JSON / createSkill 接続（TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001） | L246, L260, L265 |
 
 ### references/arch-electron-services-details-part2.md
 
@@ -3215,6 +3216,7 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L602 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L636 |
+| TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow / generateSkillMd 接続順序 教訓（2026-04-16） | L6 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -5313,4 +5315,3 @@ node scripts/list-specs.js --topics
 | SkillLifecyclePanel 責務別props分離パターン | L82 |
 
 ---
-
