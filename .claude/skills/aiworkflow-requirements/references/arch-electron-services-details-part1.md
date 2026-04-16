@@ -251,11 +251,13 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | ------------- | ---------- | ---- | -------------------------------------- |
 | `skillName`   | `string`   | ○    | スキル名                               |
 | `description` | `string`   | ○    | スキル説明（undefined は入力破損扱い） |
-| `purpose`     | `string`   | ○    | `extract-purpose` エージェント出力     |
-| `features`    | `string[]` | ○    | 機能一覧                               |
-| `agents`      | `string[]` | ○    | 使用エージェント一覧                   |
+| `purpose`     | `string`   | ○    | `options.description` をそのまま保持（create モードの橋渡し値） |
+| `features`    | `string[]` | ○    | 機能一覧（create モードでは空配列）     |
+| `agents`      | `string[]` | ○    | 使用エージェント名一覧（create モードでは `["extract-purpose", "plan-structure"]`） |
 | `triggers`    | `string[]` | -    | トリガー（optional）                   |
-| `anchors`     | `string[]` | -    | アンカー（optional）                   |
+| `anchors`     | `Anchor[]` | -    | アンカー（optional）                   |
+
+`create` モードの current facts では、`purpose` は `options.description`、`features` は空配列、`agents` は固定の 2 名リストとして扱う。
 
 `createSkill()` は `runCreateWorkflow()` で得た `StructurePlanJson` を保持し、`init_skill.js` 完了後に `generateSkillMd()` を呼び出して skill.md を生成する。`void structurePlan` のような未接続ハンドオフ表現は使わない。
 

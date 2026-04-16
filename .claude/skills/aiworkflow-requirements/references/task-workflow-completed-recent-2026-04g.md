@@ -85,6 +85,43 @@
 ### 修正問題
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
+### タスク: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow戻り値をgenerateSkillMdへ接続（2026-04-16）
+
+| 項目       | 値                                                        |
+| ---------- | --------------------------------------------------------- |
+| タスクID   | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                |
+| 完了日     | 2026-04-16                                                |
+| タスク種別 | implementation（NON_VISUAL / skill-creator service）      |
+| 関連Issue  | -                                                         |
+| Phase 13   | blocked（ユーザー承認待ち）                               |
+
+#### 実施内容
+
+- `SkillCreatorService.ts` に `generateSkillMd()` プライベートメソッドを追加し、`runCreateWorkflow()` が返す `StructurePlanJson` を `generate_skill_md.js --plan` に渡してSKILL.mdを生成するようにした
+- `createSkill()` で `structurePlan` を local variable として受け取り、`init_skill.js` 完了後に `generateSkillMd()` を呼ぶ順序を確立した
+- `structurePlan` が null の場合は `ensureSkillMdExists` にフォールバックするレジリエンスパターンを実装した
+- `SkillCreatorService.test.ts` に 12 件のテストを追加し合計82件全PASS
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillCreatorService.test.ts`: PASS（82 tests）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- Phase 12 PASS（system spec no-op）
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                          | 解決策                                                        |
+| --- | ------------------------------------------------- | ------------------------------------------------------------- |
+| 1   | tmp file パスとSKILL.md生成パスの2段階検証        | `fs.access(skillMdPath)` で生成確認、失敗時フォールバック     |
+| 2   | `StructurePlanJson` → workflow形式への変換が必要  | `plan.workflow.trigger.description` にpurposeを組み込む変換層 |
+
+#### lessons-learned
+
+- `generate_skill_md.js` は直接 `StructurePlanJson` を受け取らず `workflow` 形式に変換が必要
+- tmp file cleanup は finally + `.catch(() => {})` パターンでnon-fatalにする
+
+---
+
 ### タスク: TASK-SC-IMP-CREATE-WORKFLOW-001 createモード構造計画生成（2026-04-15）
 
 | 項目       | 値                                                    |
@@ -97,10 +134,10 @@
 
 #### 実施内容
 
-- `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`extract-purpose` / `plan-structure` を読み込んで構造計画を組み立てるようにした
+- `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`purpose = options.description` / `agents = ["extract-purpose", "plan-structure"]` / `features = []` の current facts を返すようにした
 - `createSkill()` では `structurePlan` を local variable として受け取り、hidden property を使わない handoff に整理した
 - `SkillCreatorService.test.ts` の `TC-04` を更新し、`runCreateWorkflow` の戻り値に `description` が入ることを直接検証するようにした
-- `outputs/phase-12/` の 6 成果物を current facts として固定し、`outputs/artifacts.json` を追加して root と parity を揃えた
+- `docs/30-workflows/p01-par-STRUCT-001/artifacts.json` を canonical manifest として current facts に固定し、`outputs/artifacts.json` は別 workflow の ledger として扱うようにした
 
 #### Phase 11/12 成果物
 
