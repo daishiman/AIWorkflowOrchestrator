@@ -8,6 +8,7 @@
 
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-16: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
@@ -642,7 +643,7 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - `provider.test.ts`: TS-001〜A-04 約20テスト PASS（description フィールドの Zod バリデーション・伝搬検証）
 - `llm.test.ts`: description 透過・新モデル対応含む計 56+ テスト PASS
 - Phase 12 成果物完備（implementation-guide.md / documentation-changelog.md / skill-feedback-report.md）
-- 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
+- 旧未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）は 2026-04-16 に completed 化済み。詳細は [2026-04-16 の completed record](./task-workflow-completed-recent-2026-04b.md) を参照
 
 ---
 

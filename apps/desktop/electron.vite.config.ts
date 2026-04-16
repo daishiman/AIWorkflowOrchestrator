@@ -84,6 +84,10 @@ export default defineConfig(({ mode }) => {
               __dirname,
               "src/renderer/phase11-approval-request-surface.html",
             ),
+            "phase11-task-llm-mod-05-renderer-desc-display": resolve(
+              __dirname,
+              "src/renderer/phase11-task-llm-mod-05-renderer-desc-display.html",
+            ),
           },
         },
       },
