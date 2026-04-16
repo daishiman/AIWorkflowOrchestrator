@@ -86,6 +86,10 @@ test("phases が配列でも Phase 12/13 の status を正しく出力する", (
       {
         taskName: "sample-array-workflow",
         createdAt: "2026-03-26",
+        taskType: "NON_VISUAL",
+        metadata: {
+          taskType: "NON_VISUAL",
+        },
         phases: createArrayPhases(),
       },
       null,
@@ -97,8 +101,9 @@ test("phases が配列でも Phase 12/13 の status を正しく出力する", (
   const indexContent = readFileSync(join(root, "index.md"), "utf8");
 
   assert.equal(result.status, 0, result.stderr);
+  assert.match(indexContent, /\| タスク種別 \| NON_VISUAL \|/);
   assert.match(indexContent, /\| 12 \| ドキュメント更新 \| \[phase-12-documentation\.md\]\(phase-12-documentation\.md\) \| 完了 \|/);
-  assert.match(indexContent, /\| 13 \| PR作成 \| \[phase-13-pr-creation\.md\]\(phase-13-pr-creation\.md\) \| blocked \|/);
+  assert.match(indexContent, /\| 13 \| PR作成 \| \[phase-13-pr-creation\.md\]\(phase-13-pr-creation\.md\) \| ユーザー指示待ち（blocked） \|/);
   assert.match(indexContent, /\| ステータス \| Phase 12 完了（PR未着手） \|/);
 });
 

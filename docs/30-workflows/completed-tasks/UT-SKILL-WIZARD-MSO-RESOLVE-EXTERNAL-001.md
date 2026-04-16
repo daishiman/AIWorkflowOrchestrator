@@ -10,8 +10,9 @@ category: 新機能
 target_feature: skill-wizard/resolve-external-integration
 priority: 低
 scale: 中規模
-status: 未実施
+status: phase12_completed
 created_date: 2026-04-09
+completed_date: 2026-04-15
 dependencies: [UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001]
 dependencies_status:
   UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001: completed # 2026-04-13 完了（Issue #2071 CLOSED）

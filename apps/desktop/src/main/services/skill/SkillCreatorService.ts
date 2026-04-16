@@ -26,6 +26,7 @@ import type {
   TaskResult,
   TaskSpec,
   ExecutionSummary,
+  Anchor,
 } from "@repo/shared/types";
 
 /**
@@ -39,7 +40,7 @@ interface StructurePlanJson {
   features: string[];
   agents: string[];
   triggers?: string[];
-  anchors?: string[];
+  anchors?: Anchor[];
 }
 
 export class SkillCreatorService {
@@ -48,6 +49,12 @@ export class SkillCreatorService {
   private readonly skillCreatorPath: string;
   private readonly scriptExecutor: ScriptExecutor;
   private readonly resourceLoader: ResourceLoader;
+  private readonly logger = {
+    error: (msg: string, meta?: unknown) =>
+      console.error(`[SkillCreatorService] ${msg}`, meta),
+    warn: (msg: string, meta?: unknown) =>
+      console.warn(`[SkillCreatorService] ${msg}`, meta),
+  };
 
   constructor(skillsDir?: string, workflowsDir?: string) {
     this.skillsDir = skillsDir || DEFAULT_SKILLS_DIR;
@@ -123,8 +130,6 @@ export class SkillCreatorService {
         break;
     }
 
-    void structurePlan; // 将来 generateSkillMd へ渡す（タスクA完了後に接続）
-
     // スキル初期化
     const skillDir = path.join(this.skillsDir, options.name);
     const initResult = await this.scriptExecutor.execute("init_skill.js", [
@@ -170,51 +175,29 @@ export class SkillCreatorService {
         );
       }
     }
-    // SKILL.md生成
-    const skillMdPath = path.join(skillDir, "SKILL.md");
-    const tmpPlanPath = path.join(
-      os.tmpdir(),
-      `skill-plan-${randomUUID()}.json`,
-    );
-    try {
-      const plan = {
-        skillName: options.name,
-        workflow: {
-          summary: options.description,
-          anchors: [],
-          trigger: {
-            description: `Use when ${options.name} is requested`,
-            keywords: [options.name],
-          },
-          phases: [],
-          tasks: [],
-        },
-        directories: {},
-        files: [],
-      };
-      await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
-      const generateResult = await this.scriptExecutor.execute(
-        "generate_skill_md.js",
-        ["--plan", tmpPlanPath, "--output", skillMdPath],
-      );
-      let shouldUseFallback = !generateResult.success;
-      if (!shouldUseFallback) {
-        try {
-          await fs.access(skillMdPath);
-        } catch {
-          shouldUseFallback = true;
-        }
-      }
-      if (shouldUseFallback) {
-        await this.ensureSkillMdExists(
+    // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
+    if (structurePlan) {
+      await this.generateSkillMd(skillDir, structurePlan);
+    } else if (options.mode === "create") {
+      this.logger.warn(
+        "structurePlan is null, falling back to ensureSkillMdExists",
+        {
           skillDir,
-          options.name,
-          options.description,
-        );
-      }
-    } finally {
-      // cleanup failure is non-fatal
-      await fs.unlink(tmpPlanPath).catch(() => {});
+          skillName: options.name,
+          mode: options.mode,
+        },
+      );
+      await this.ensureSkillMdExists(
+        skillDir,
+        options.name,
+        options.description,
+      );
+    } else {
+      await this.ensureSkillMdExists(
+        skillDir,
+        options.name,
+        options.description,
+      );
     }
 
     // タスク仕様書生成（オプション）
@@ -649,6 +632,98 @@ export class SkillCreatorService {
       // AC-3: loadAgent 失敗時はフォールバック（null 返却）
       // createSkill() 後続処理を継続させる
       return null;
+    }
+  }
+
+  /**
+   * structurePlan を基に SKILL.md を生成する。
+   * generate_skill_md.js を --plan オプション付きで呼び出す。
+   * 失敗時は ensureSkillMdExists にフォールバックする。
+   */
+  private async generateSkillMd(
+    skillDir: string,
+    structurePlan: StructurePlanJson,
+  ): Promise<void> {
+    const tmpPlanPath = path.join(
+      os.tmpdir(),
+      `skill-plan-${randomUUID()}.json`,
+    );
+    const skillMdPath = path.join(skillDir, "SKILL.md");
+    const normalizedPurpose =
+      typeof structurePlan.purpose === "string"
+        ? structurePlan.purpose.replace(/\s+/g, " ").trim()
+        : "";
+    const triggerDescription = normalizedPurpose
+      ? `Use when ${structurePlan.skillName} is requested. Purpose: ${normalizedPurpose}`
+      : `Use when ${structurePlan.skillName} is requested`;
+    const triggerKeywords = structurePlan.triggers?.length
+      ? structurePlan.triggers
+      : [structurePlan.skillName];
+    // StructurePlanJson を generate_skill_md.js が受け取る workflow 形式に変換
+    const plan = {
+      skillName: structurePlan.skillName,
+      workflow: {
+        summary: structurePlan.description,
+        anchors: structurePlan.anchors || [],
+        trigger: {
+          description: triggerDescription,
+          keywords: triggerKeywords,
+        },
+        phases: [],
+        tasks: [],
+      },
+      directories: {},
+      files: [],
+    };
+    try {
+      await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
+      const generateResult = await this.scriptExecutor.execute(
+        "generate_skill_md.js",
+        ["--plan", tmpPlanPath, "--output", skillMdPath],
+      );
+      let shouldUseFallback = !generateResult.success;
+      const fallbackReason = generateResult.success
+        ? "generated skill file not found"
+        : "generate_skill_md.js returned failure";
+      const fallbackMeta = generateResult.success
+        ? {
+            skillMdPath,
+          }
+        : {
+            skillMdPath,
+            stderr: generateResult.stderr,
+            exitCode: generateResult.exitCode,
+          };
+      if (!shouldUseFallback) {
+        try {
+          await fs.access(skillMdPath);
+        } catch {
+          shouldUseFallback = true;
+        }
+      }
+      if (shouldUseFallback) {
+        this.logger.error("generateSkillMd fallback to ensureSkillMdExists", {
+          skillDir,
+          skillName: structurePlan.skillName,
+          reason: fallbackReason,
+          ...fallbackMeta,
+        });
+        await this.ensureSkillMdExists(
+          skillDir,
+          structurePlan.skillName,
+          structurePlan.description,
+        );
+      }
+    } catch (err) {
+      this.logger.error("generateSkillMd failed", { skillDir, err });
+      await this.ensureSkillMdExists(
+        skillDir,
+        structurePlan.skillName,
+        structurePlan.description,
+      );
+    } finally {
+      // cleanup failure is non-fatal
+      await fs.unlink(tmpPlanPath).catch(() => {});
     }
   }
 

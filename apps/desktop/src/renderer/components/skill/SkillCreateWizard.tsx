@@ -50,6 +50,11 @@ import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 import { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
 export { inferSmartDefaults } from "./wizard/utils/inferSmartDefaults";
+import {
+  fetchToolIntegrationInfo,
+  type ExternalToolIntegration,
+} from "./fetchToolIntegrationInfo";
+export type { ExternalToolIntegration } from "./fetchToolIntegrationInfo";
 
 // ────────────────────────────────────────────────────────────────────────────
 // 定数
@@ -89,10 +94,18 @@ const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
   format: null,
 };
 
-interface ExternalIntegrationState {
-  hasExternalIntegration: boolean;
-  externalToolName: string | null;
+export interface MergedExternalIntegration {
+  tools: ExternalToolIntegration[];
+  apiEndpoints: string[];
+  authMethods: string[];
+  mainOperations: string[];
 }
+
+const EXTERNAL_TOOL_LABELS = {
+  slack: "Slack",
+  github: "GitHub",
+  notion: "Notion",
+} as const;
 
 // ────────────────────────────────────────────────────────────────────────────
 // ユーティリティ関数
@@ -157,64 +170,125 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
   };
 }
 
-function resolveKnownTool(input: string | null | undefined): string | null {
-  const normalized = (input ?? "").trim().toLowerCase();
-  if (!normalized) return null;
-  if (normalized.includes("slack")) return "slack";
-  if (normalized.includes("github")) return "github";
-  if (normalized.includes("notion")) return "notion";
-  return null;
+export function mergeIntegrations(
+  infos: ExternalToolIntegration[],
+): MergedExternalIntegration {
+  return {
+    tools: infos,
+    apiEndpoints: [...new Set(infos.flatMap((info) => info.apiEndpoints))],
+    authMethods: [...new Set(infos.flatMap((info) => info.authMethods))],
+    mainOperations: [...new Set(infos.flatMap((info) => info.mainOperations))],
+  };
 }
 
-function toExternalToolName(tool: string | null): string | null {
-  if (!tool) return null;
-  if (tool === "slack") return "Slack";
-  if (tool === "github") return "GitHub";
-  if (tool === "notion") return "Notion";
-  return tool;
+function defaultMergedExternalIntegration(): MergedExternalIntegration {
+  return {
+    tools: [],
+    apiEndpoints: [],
+    authMethods: [],
+    mainOperations: [],
+  };
 }
 
-export function resolveExternalIntegration(
+function summarizeExternalIntegration(integration: MergedExternalIntegration): {
+  hasExternalIntegration: boolean;
+  externalToolName: string | null;
+} {
+  return {
+    hasExternalIntegration: integration.tools.length > 0,
+    externalToolName:
+      integration.tools.length > 0
+        ? integration.tools.map((tool) => tool.toolName).join(", ")
+        : null,
+  };
+}
+
+function normalizeExternalToolName(
+  toolName: string | null | undefined,
+): string {
+  const trimmed = toolName?.trim() ?? "";
+  if (!trimmed) {
+    return "";
+  }
+
+  const normalizedKey =
+    trimmed.toLowerCase() as keyof typeof EXTERNAL_TOOL_LABELS;
+  return EXTERNAL_TOOL_LABELS[normalizedKey] ?? trimmed;
+}
+
+export function extractExternalToolNames(
   q5Answer: ConversationAnswers["q5"],
-  smartDefaultTool: string | null | undefined,
-): ExternalIntegrationState {
-  // 複数選択時は先頭値を主ツールとして参照する。
-  // 複数ツールの並列統合対応は別タスクのスコープ。
-  const selected = (q5Answer.selectedOptions[0] ?? "").trim();
-  const freeText = q5Answer.freeText.trim();
+  smartDefaultTool: string | null,
+): string[] {
+  const selectedOptions = (q5Answer.selectedOptions ?? [])
+    .map((option) => option.trim())
+    .filter(Boolean);
+  const freeText = q5Answer.freeText ?? "";
+  const normalizedFreeText = normalizeExternalToolName(freeText);
+  const isQ5Empty =
+    selectedOptions.length === 0 && freeText.trim().length === 0;
 
-  if (selected === "なし") {
-    return { hasExternalIntegration: false, externalToolName: null };
-  }
-  if (selected === "Slack") {
-    return { hasExternalIntegration: true, externalToolName: "Slack" };
-  }
-  if (selected === "GitHub") {
-    return { hasExternalIntegration: true, externalToolName: "GitHub" };
-  }
-  if (selected === "その他") {
-    return {
-      hasExternalIntegration: true,
-      externalToolName: freeText.length > 0 ? freeText : null,
-    };
-  }
-  if (freeText.length > 0) {
-    const known = resolveKnownTool(freeText);
-    return {
-      hasExternalIntegration: true,
-      externalToolName: toExternalToolName(known) ?? freeText,
-    };
+  if (selectedOptions.includes("なし")) {
+    return [];
   }
 
-  const knownFromDefault = resolveKnownTool(smartDefaultTool);
-  if (knownFromDefault) {
-    return {
-      hasExternalIntegration: true,
-      externalToolName: toExternalToolName(knownFromDefault),
-    };
+  if (isQ5Empty) {
+    const fallbackTool = normalizeExternalToolName(smartDefaultTool);
+    return fallbackTool && fallbackTool !== "なし" ? [fallbackTool] : [];
   }
 
-  return { hasExternalIntegration: false, externalToolName: null };
+  const toolNames = new Set<string>();
+  for (const option of selectedOptions) {
+    if (option === "その他") {
+      if (normalizedFreeText) {
+        toolNames.add(normalizedFreeText);
+      }
+      continue;
+    }
+
+    if (option !== "なし") {
+      toolNames.add(normalizeExternalToolName(option));
+    }
+  }
+
+  if (selectedOptions.length === 0 && normalizedFreeText) {
+    toolNames.add(normalizedFreeText);
+  }
+
+  return [...toolNames];
+}
+
+export async function resolveExternalIntegration(
+  toolNames: string[],
+): Promise<MergedExternalIntegration> {
+  const normalizedToolNames = [
+    ...new Set(
+      toolNames
+        .map((name) => normalizeExternalToolName(name))
+        .filter((name) => name !== "" && name !== "なし" && name !== "その他"),
+    ),
+  ];
+
+  if (normalizedToolNames.length === 0) {
+    return defaultMergedExternalIntegration();
+  }
+
+  const results = await Promise.all(
+    normalizedToolNames.map(async (toolName) => {
+      try {
+        return await fetchToolIntegrationInfo(toolName);
+      } catch {
+        return null;
+      }
+    }),
+  );
+
+  return mergeIntegrations(
+    results.filter(
+      (integration): integration is ExternalToolIntegration =>
+        integration !== null,
+    ),
+  );
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -276,12 +350,32 @@ export const SkillCreateWizard = React.forwardRef<
 
   // 問題18修正: q5 変更後に hasExternalIntegration / externalToolName を再計算する
   useEffect(() => {
-    const defaults = smartDefaults ?? inferSmartDefaults(formData);
-    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
-    setHasExternalIntegration(integration.hasExternalIntegration);
-    setExternalToolName(integration.externalToolName);
-    // 依存を q5 に絞ることで、他の回答変更で外部連携状態を再計算しない。
-  }, [answers.q5]);
+    const toolNames = extractExternalToolNames(
+      answers.q5,
+      smartDefaults?.tool ?? null,
+    );
+
+    if (toolNames.length === 0) {
+      setHasExternalIntegration(false);
+      setExternalToolName(null);
+      return;
+    }
+
+    let isStale = false;
+    void resolveExternalIntegration(toolNames).then((integration) => {
+      if (isStale) {
+        return;
+      }
+      const summary = summarizeExternalIntegration(integration);
+      setHasExternalIntegration(summary.hasExternalIntegration);
+      setExternalToolName(summary.externalToolName);
+    });
+
+    return () => {
+      isStale = true;
+    };
+    // q5 本体と smartDefaults.tool の変化時だけ再計算する。
+  }, [answers.q5, smartDefaults?.tool]);
   const invalidateGenerationRequests = () => {
     generationRequestIdRef.current += 1;
   };
@@ -322,12 +416,14 @@ export const SkillCreateWizard = React.forwardRef<
   /**
    * Step 0 → Step 1 遷移。formData からスマートデフォルトを推論して保存する。
    */
-  const handleStep0Next = () => {
+  const handleStep0Next = async () => {
     const defaults = inferSmartDefaults(formData);
     setSmartDefaults(defaults);
-    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
-    setHasExternalIntegration(integration.hasExternalIntegration);
-    setExternalToolName(integration.externalToolName);
+    const toolNames = extractExternalToolNames(answers.q5, defaults.tool);
+    const integration = await resolveExternalIntegration(toolNames);
+    const summary = summarizeExternalIntegration(integration);
+    setHasExternalIntegration(summary.hasExternalIntegration);
+    setExternalToolName(summary.externalToolName);
     trackEvent("skill_wizard_step_complete", { step: 0, stepName: STEPS[0] });
     goNext();
   };
@@ -361,7 +457,8 @@ export const SkillCreateWizard = React.forwardRef<
     if (!smartDefaults) {
       setSmartDefaults(defaults);
     }
-    const integration = resolveExternalIntegration(answers.q5, defaults.tool);
+    const toolNames = extractExternalToolNames(answers.q5, defaults.tool);
+    const integration = await resolveExternalIntegration(toolNames);
 
     clearGenerationState();
     resetStreamingProgress();
@@ -386,14 +483,16 @@ export const SkillCreateWizard = React.forwardRef<
         return;
       }
       setSkillPath(path);
-      setHasExternalIntegration(integration.hasExternalIntegration);
-      setExternalToolName(integration.externalToolName);
+      const hasExt = integration.tools.length > 0;
+      const summary = summarizeExternalIntegration(integration);
+      setHasExternalIntegration(summary.hasExternalIntegration);
+      setExternalToolName(summary.externalToolName);
 
       // W3-seq-04 計装 3: 生成完了イベント（AC-03）—失敗時は発火しない
       trackEvent("skill_wizard_generation_completed", {
         method,
         category: resolvePrimarySkillCategory(formData.category) ?? "other",
-        hasExternalIntegration: integration.hasExternalIntegration,
+        hasExternalIntegration: hasExt,
       });
       wizardCompletedRef.current = true;
       trackEvent("skill_wizard_step_complete", { step: 2, stepName: STEPS[2] });

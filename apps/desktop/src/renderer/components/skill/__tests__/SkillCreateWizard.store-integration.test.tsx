@@ -76,8 +76,10 @@ const spySkillCreate = vi.fn();
 /**
  * Step 0 (SkillInfoStep) → Step 1 (ConversationRoundStep) 遷移ヘルパー。
  * purpose は 10 文字以上、category は必須。
+ * handleStep0Next が async（resolveExternalIntegration を await）になったため
+ * "次へ" クリックは act で包んで非同期完了を待つ。
  */
-function navigateToStep1(
+async function navigateToStep1(
   purpose = "テストスキルの説明文",
   category = "自動化",
 ) {
@@ -85,7 +87,9 @@ function navigateToStep1(
     target: { value: purpose },
   });
   fireEvent.click(screen.getByRole("button", { name: category }));
-  fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+  });
 }
 
 describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
@@ -108,7 +112,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
   describe("store action 経由のスキル作成", () => {
     it("「今すぐ生成する」→「生成する」クリックで store.createSkill が呼ばれる（window.electronAPI.skill.create は直接呼ばれない）", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -120,7 +124,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("store.createSkill に purpose と options が正しく渡される", async () => {
       const purpose = "このスキルの目的と説明文";
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1(purpose);
+      await navigateToStep1(purpose);
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -141,7 +145,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
 
     it("store.createSkill 成功後に Step 3（完了）に遷移し、CompleteStep が表示される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -165,7 +169,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("CompleteStep の 👎 で Step 0 に戻り formData が保持される", async () => {
       const purpose = "テストスキルの説明文字列";
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1(purpose);
+      await navigateToStep1(purpose);
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -186,7 +190,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("store.createSkill 失敗時にエラーメッセージが表示される", async () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -197,7 +201,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("store.createSkill 失敗時に Error 以外のオブジェクトでもフォールバックメッセージが表示される", async () => {
       mockCreateSkill.mockRejectedValue("unknown");
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -208,7 +212,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("store.createSkill が空文字列を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue("");
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -219,7 +223,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("生成中は GenerateStep にローディング状態が表示される", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -236,7 +240,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
 
     it("生成成功で Step 3（完了）に遷移する", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -247,7 +251,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("生成失敗で Step 2（生成中）のまま（エラー表示）", async () => {
       mockCreateSkill.mockRejectedValue(new Error("失敗"));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -263,7 +267,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("createSkill が null を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue(null);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -274,7 +278,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("createSkill が undefined を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue(undefined);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -285,7 +289,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("createSkill が null を返した場合に完了ステップに遷移しない", async () => {
       mockCreateSkill.mockResolvedValue(null);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -304,7 +308,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("生成中は ConversationRoundStep（今すぐ生成するボタン）が非表示になる", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
@@ -321,7 +325,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     it("生成中は「戻る」ボタンも表示されない", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      navigateToStep1();
+      await navigateToStep1();
       fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));

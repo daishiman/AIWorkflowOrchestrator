@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
+
+### 変更内容
+
+- `.claude/skills/task-specification-creator/` の canonical 更新を先行し、`LOGS.md` に 2026-04-16 の close-out sync を追記
+- `.agents/skills/task-specification-creator/` mirror を同内容で同期
+- `SKILL.md` の create ワークフロー step 4 に `[FB-SC-PLAN-001]` `artifacts.json` の metadata 重複 key 防止ルールを追記
+- `SKILL.md` の Phase 6 説明に `[FB-SC-PLAN-001]` 曖昧列挙語（「など」）回避ルールを追記
+- `.agents/skills/task-specification-creator/SKILL.md` mirror を同波で同期
+
+### 背景
+
+TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 の Phase 12 close-out で、canonical を先に更新してから mirror を追従させる接続順序を current facts として固定した。impl-spec-to-skill-sync で skill-feedback-report の改善点（artifacts.json duplicate key / 仕様文曖昧列挙）をインライン防止ルールとして SKILL.md へ還流した。
+
 ## 2026-04-15 - TASK-CI-FUTURE-003 スキルフィードバック反映（FB-001〜003）
 
 ### 変更内容
@@ -2820,6 +2834,20 @@ TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001（cronConverter.ts 空weekdaysガード
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。   |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                   |
 
+## 2026-04-15 TASK-CI-FUTURE-003 Phase 12 準拠確認
+
+- GitHub Actions YAML 変更タスクとして Phase 1〜12 を順序通りに完了
+- アーキテクチャ発見（キャッシュステップがカスタムアクション内）に対して Phase 2 で設計変更を決定・記録
+- Phase 4 テスト作成で「CI 実行ベースのテスト計画」形式を採用（ユニットテスト不可の性質）
+- FB-001〜FB-003 をスキルフィードバックレポートに記録
+
+| 項目     | 内容                                                                   |
+| -------- | ---------------------------------------------------------------------- |
+| 種別     | Phase 12 close-out / CI monitoring / GitHub Actions                    |
+| 変更対象 | `.github/actions/pnpm-install-retry/action.yml`                        |
+| 結果     | Phase 1〜12 全成果物出力完了。実装ファイル変更 1 件                    |
+| 検証     | Phase 10 最終レビューゲート PASS / AC・FR 網羅率 100%                  |
+
 
 ## 2026-04-15 — TASK-CI-FUTURE-005 仕様書作成記録
 
@@ -2846,19 +2874,10 @@ NON_VISUAL docs-only タスクとして実施。実測結果: 最大 59秒 ≤ 6
 | 結果     | weekdays=[] の早期リターン（空文字返却・例外なし）実装完了。weekdays重複除去・昇順ソート正規化追加。vitest環境要因（esbuild mismatch）は製品blockerと分離して記録済み。                                                        |
 | 検証     | source-level: TC-01〜TC-10 PASS（10件）。環境ブロッカー（esbuild darwin binary mismatch）は製品コードとは独立した環境起因として分類済み                                                                                       |
 
-## 2026-04-15 TASK-CI-FUTURE-003 Phase 12 準拠確認
+## 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 impl-spec-to-skill-sync
 
-- GitHub Actions YAML 変更タスクとして Phase 1〜12 を順序通りに完了
-- アーキテクチャ発見（キャッシュステップがカスタムアクション内）に対して Phase 2 で設計変更を決定・記録
-- Phase 4 テスト作成で「CI 実行ベースのテスト計画」形式を採用（ユニットテスト不可の性質）
-- FB-001〜FB-003 をスキルフィードバックレポートに記録
+### 変更内容
 
-| 項目     | 内容                                                                   |
-| -------- | ---------------------------------------------------------------------- |
-| 種別     | Phase 12 close-out / CI monitoring / GitHub Actions                    |
-| 変更対象 | `.github/actions/pnpm-install-retry/action.yml`                        |
-| 結果     | Phase 1〜12 全成果物出力完了。実装ファイル変更 1 件                    |
-| 検証     | Phase 10 最終レビューゲート PASS / AC・FR 網羅率 100%                  |
 - `aiworkflow-requirements/LOGS.md` に TASK-SW-FIX-STATE-DETAIL-001 Phase 12 close-out エントリを追加
 - `task-specification-creator/LOGS.md` に本エントリを追加
 - `task-specification-creator/SKILL.md` に STATE-DETAIL Feedback エントリ（STATE-DETAIL-01/02/03）を追加

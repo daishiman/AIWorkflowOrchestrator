@@ -104,7 +104,7 @@ Phase 12 を複数の SubAgent で分担する場合、documentation-changelog �
 
 ## パターン11: canonical成果物の命名規約
 
-Phase 12 で列挙する canonical 成果物は命名規約を統一する。
+Phase 12 で列挙する成果物は、6 つの task outputs と Wave C 引き継ぎサマリーを分けて命名規約を統一する。
 
 ### canonical成果物の命名規約
 
@@ -121,4 +121,4 @@ Phase 12 で列挙する canonical 成果物は命名規約を統一する。
 - [ ] final sync の順序を守った
 - [ ] 並列 SubAgent を使った場合は documentation-changelog と unassigned-task-detection の件数を照合した（P59 対策）
 - [ ] `outputs/artifacts.json` とルート `artifacts.json` の同期を確認した（パターン10）
-- [ ] canonical 成果物が 6 件以内で命名規約に従っていることを確認した（パターン11）
+- [ ] canonical task outputs 6 件と Wave C 引き継ぎサマリー 1 件がそれぞれ命名規約に従っていることを確認した（パターン11）
