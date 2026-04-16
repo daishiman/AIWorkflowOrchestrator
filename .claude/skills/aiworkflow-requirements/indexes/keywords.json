@@ -8606,24 +8606,6 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
-    "PLAN": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-part-3.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "CONNECT": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "runCreateWorkflow": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "generateSkillMd": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "接続順序": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "fetchSkills": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8641,6 +8623,15 @@
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "モード構造計画生成": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PLAN": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "CONNECT": [
       "lessons-learned-current-2026-04.md"
     ],
     "structurePlan": [
@@ -8847,6 +8838,15 @@
       "lessons-learned-ipc-4layer-verification-2026-04.md"
     ],
     "コードベースの既存ギャップ": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "cjs": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "検証スクリプトの": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "不安定はビルド成果物依存が原因": [
       "lessons-learned-ipc-4layer-verification-2026-04.md"
     ],
     "Channel": [

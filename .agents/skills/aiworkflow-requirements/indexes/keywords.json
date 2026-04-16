@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3041,
+  "totalKeywords": 3038,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -8606,24 +8606,6 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
-    "PLAN": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-part-3.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "CONNECT": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "runCreateWorkflow": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "generateSkillMd": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "接続順序": [
-      "lessons-learned-current-2026-04.md"
-    ],
     "fetchSkills": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8641,6 +8623,15 @@
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "モード構造計画生成": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PLAN": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "CONNECT": [
       "lessons-learned-current-2026-04.md"
     ],
     "structurePlan": [

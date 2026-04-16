@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-16 - TASK-SW-CANCEL-001〜004 cancel chain impl-spec-to-skill-sync（残フィードバック反映）
+
+### 変更内容
+
+- `references/patterns-phase12-sync.md` 再利用チェックリストに3項目追加:
+  - `LOGS.md` 2ファイル更新済み確認（aiworkflow-requirements + task-specification-creator）
+  - `topic-map.md` 更新要否確認
+  - テストファイルの追加・修正を `documentation-changelog.md` に記録
+- `references/phase-12-documentation-guide.md` Task 12-3 にテストファイル記録ルール追加（専用ファイル + 既存ファイル修正の2点セット）
+
+### 背景
+
+TASK-SW-CANCEL-001 スキルフィードバックレポートに記録された改善提案のうち、前回未反映だった3件（テストファイル変更履歴記録・LOGS.md ×2 必須化・topic-map 確認）を今回反映した。
+
 ## 2026-04-16 - TASK-SW-CANCEL-001 スキルフィードバック反映
 
 ### 変更内容
