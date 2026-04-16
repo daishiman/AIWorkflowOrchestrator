@@ -1,0 +1,47 @@
+{
+  "taskId": "TASK-SW-UI-POLISH-001",
+  "generatedAt": "2026-04-16T08:37:17.522Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5199",
+  "route": "http://127.0.0.1:5199/advanced/skill-create-wizard?skipAuth=true",
+  "viewportSet": [
+    {
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "screenshots": [
+    {
+      "tcId": "TC-01",
+      "file": "TASK-SW-UI-POLISH-001-category-limit-light.png",
+      "output": "outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-category-limit-light.png",
+      "theme": "light",
+      "capturedAt": "2026-04-16T08:37:17.522Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-02",
+      "file": "TASK-SW-UI-POLISH-001-category-limit-dark.png",
+      "output": "outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-category-limit-dark.png",
+      "theme": "dark",
+      "capturedAt": "2026-04-16T08:37:17.522Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-03",
+      "file": "TASK-SW-UI-POLISH-001-progressbar-light.png",
+      "output": "outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-progressbar-light.png",
+      "theme": "light",
+      "capturedAt": "2026-04-16T08:37:17.522Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-04",
+      "file": "TASK-SW-UI-POLISH-001-progressbar-dark.png",
+      "output": "outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-progressbar-dark.png",
+      "theme": "dark",
+      "capturedAt": "2026-04-16T08:37:17.522Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}

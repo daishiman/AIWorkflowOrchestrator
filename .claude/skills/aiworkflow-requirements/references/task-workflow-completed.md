@@ -6,6 +6,9 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
+- [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-16: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
@@ -29,6 +32,47 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+### タスク: UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 ci-ipc-continue-on-error-removal（2026-04-16）
+
+| 項目       | 値                                                         |
+| ---------- | ---------------------------------------------------------- |
+| タスクID   | UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001                       |
+| 完了日     | 2026-04-16                                                 |
+| タスク種別 | maintenance（NON_VISUAL / CI close-out）                  |
+| 関連Issue  | [#2196](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2196) |
+| Phase 13   | blocked（ユーザー承認待ち）                                |
+
+#### 実施内容
+
+- `.github/workflows/ci.yml` の `verify-ipc-4layer` job から `continue-on-error: true` を削除し、IPC 4 層違反を CI でブロックする current facts に更新した
+- `docs/30-workflows/unassigned-task/task-ipc-4layer-ci-continue-on-error-removal.md` を完了化し、完了日と Issue #2196 を保持した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/index.md` / `phase-1-requirements.md` 〜 `phase-12-documentation.md` を Phase 12 完了へ同期した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/artifacts.json` を Phase 1-12 `completed` / Phase 13 `not_started` に更新した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` と `phase12-task-spec-compliance-check.md` を current facts として作成した
+- 新規の unassigned-task / backlog は不要と判断し、追加タスク化は行っていない
+- `apps/desktop/`、`apps/backend/`、`packages/shared/` には追加修正は不要だった
+
+#### Phase 11/12 成果物
+
+| 成果物                       | パス                                                                                               |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| ドキュメント変更履歴         | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` |
+| Phase 12 準拠チェック        | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- `phase-10-final-review.md`: PASS
+- `phase-11-manual-test.md`: PASS
+- `phase-12-documentation.md` の必須成果物 2 件を作成済み
+- `NON_VISUAL` のためスクリーンショットは N/A
+- `security` job の step-level `continue-on-error` は意図的に残置
+
+#### lessons-learned
+
+- `verify-ipc-4layer` の job-level `continue-on-error` だけを外すことで、CI ブロック力と既存 security の fail-soft を両立できる
+- close-out では実装差分そのものより、phase status と artifacts の同期漏れが将来コストを生む
+- `NON_VISUAL` タスクは screenshot 不要でも、Phase 12 の文書と台帳は必ず current facts へ同期する
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
@@ -599,7 +643,7 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - `provider.test.ts`: TS-001〜A-04 約20テスト PASS（description フィールドの Zod バリデーション・伝搬検証）
 - `llm.test.ts`: description 透過・新モデル対応含む計 56+ テスト PASS
 - Phase 12 成果物完備（implementation-guide.md / documentation-changelog.md / skill-feedback-report.md）
-- 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
+- 旧未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）は 2026-04-16 に completed 化済み。詳細は [2026-04-16 の completed record](./task-workflow-completed-recent-2026-04b.md) を参照
 
 ---
 
