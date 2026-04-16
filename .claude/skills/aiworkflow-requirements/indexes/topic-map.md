@@ -3266,7 +3266,8 @@ node scripts/list-specs.js --topics
 | L-IPC4L-003: mainハンドラは6パターン対応が必要 | L27 |
 | L-IPC4L-004: ローカル定数マップでファイル内const vs 外部importの優先度管理 | L36 |
 | L-IPC4L-005: Rule-1/Rule-2のギャップは「スクリプト不具合」ではなく「コードベースの既存ギャップ」 | L45 |
-| 変更履歴 | L56 |
+| L-IPC4L-CI-001: `.cjs` 検証スクリプトのCI不安定はビルド成果物依存が原因 | L56 |
+| 変更履歴 | L69 |
 
 ### references/lessons-learned-ipc-channel-whitelist-sync.md
 
@@ -5081,13 +5082,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L183 |
-| 完了タスク（2026-03後半） | L211 |
-| 完了タスク（機能別アーカイブ） | L219 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L320 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L192 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L212 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L214 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L226 |
+| 完了タスク（2026-03後半） | L254 |
+| 完了タスク（機能別アーカイブ） | L262 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L363 |
 
 ### references/task-workflow-history.md
 
@@ -5121,9 +5122,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L21 |
-| 利用順序 | L132 |
-| 関連ドキュメント | L137 |
+| 仕様書インデックス | L22 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L138 |
 
 ### references/testing-accessibility.md
 

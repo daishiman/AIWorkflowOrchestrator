@@ -1,0 +1,22 @@
+=== verify-ipc-4layer ジョブ CI実行ログ ===
+
+ジョブ名: IPC 4-Layer Alignment
+ブランチ: task-20260416-141958-wt-5
+実行環境: ubuntu-latest
+continue-on-error: 設定なし（削除済み）
+
+--- Verify IPC 4-layer alignment ステップ出力 ---
+
+=== IPC 4-Layer Alignment Verification ===
+
+[Rule-1] shared で定義されたチャネルが preload ホワイトリストに未登録: PASS
+[Rule-2] preload invoke ホワイトリストのチャネルが main ハンドラに未実装: PASS
+[Rule-3] renderer で使用されたチャネルが shared/preload に未定義: PASS
+
+--- Summary ---
+Total rules: 3
+Passed: 3
+Failed: 0
+
+ジョブ終了コード: 0
+ジョブステータス: SUCCESS
