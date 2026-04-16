@@ -245,11 +245,3 @@ Phase 1 の影響範囲で指摘したように `GenerateStep.tsx` は `stage` /
 | タスクID案          | 9タスクを確定。命名規則は既存パターンと一致                                     |
 
 Phase 1・2・3 の設計書3ファイルにより、実装タスク仕様書（Phase 4 以降）の作成に必要な情報が揃った状態である。
-
----
-
-## 実装反映メモ（2026-04-16）
-
-- `TASK-SW-CANCEL-001`〜`TASK-SW-CANCEL-004` は current worktree で実装済み
-- `SkillCreatorService` の abort 伝播、Preload whitelist/API、Main handler、Renderer hook まで cancel chain は接続済み
-- `pnpm typecheck` と対象 vitest は PASS しており、設計で確認した 4 層の整合性は実装後も維持されている

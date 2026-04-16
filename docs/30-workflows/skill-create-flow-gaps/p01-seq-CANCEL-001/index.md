@@ -2,18 +2,17 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                 |
-| ---------- | ---------------------------------------------------- |
-| タスクID   | TASK-SW-CANCEL-001                                   |
-| タスク名   | skill-creator-cancel-channel-constant                |
-| 種別       | バグ修正                                             |
-| 優先度     | High                                                 |
-| スケール   | 小規模                                               |
-| 依存タスク | なし                                                 |
-| 後続タスク | TASK-SW-CANCEL-002                                   |
-| 作成日     | 2026-04-15                                           |
-| 完了日     | 2026-04-16                                           |
-| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| 項目       | 内容                                  |
+| ---------- | ------------------------------------- |
+| タスクID   | TASK-SW-CANCEL-001                    |
+| タスク名   | skill-creator-cancel-channel-constant |
+| 種別       | バグ修正                              |
+| 優先度     | High                                  |
+| スケール   | 小規模                                |
+| 依存タスク | なし                                  |
+| 後続タスク | TASK-SW-CANCEL-002                    |
+| 作成日     | 2026-04-15                            |
+| ステータス | completed                             |
 
 ## 概要
 

@@ -2,25 +2,23 @@
 
 ## メタ情報
 
-| 項目       | 内容                                     |
-| ---------- | ---------------------------------------- |
-| タスクID   | TASK-SW-CANCEL-003                       |
-| タスク名   | skill-creator-cancel-main-handler        |
-| 種別       | バグ修正                                 |
-| 優先度     | High                                     |
-| スケール   | 中規模                                   |
-| 依存タスク | TASK-SW-CANCEL-002                       |
-| 後続タスク | TASK-SW-CANCEL-004                       |
-| 作成日     | 2026-04-15                               |
-| ステータス | completed（current worktree で実装済み） |
+| 項目       | 内容                              |
+| ---------- | --------------------------------- |
+| タスクID   | TASK-SW-CANCEL-003                |
+| タスク名   | skill-creator-cancel-main-handler |
+| 種別       | バグ修正                          |
+| 優先度     | High                              |
+| スケール   | 中規模                            |
+| 依存タスク | TASK-SW-CANCEL-002                |
+| 後続タスク | TASK-SW-CANCEL-004                |
+| 作成日     | 2026-04-15                        |
+| ステータス | pending                           |
 
 ## 概要
 
 `apps/desktop/src/main/services/skill/SkillCreatorService.ts` にキャンセルフラグ（`currentAbortController`）を追加し、`cancelCurrentOperation()` メソッドを実装する。さらに `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` に `SKILL_CREATOR_CANCEL` IPC ハンドラーを追加し、`unregisterSkillCreatorHandlers()` にも対応する `removeHandler` を追加する。
 
 加えて、`useCancelGeneration.startGeneration()` の戻り値（`AbortSignal`）の利用箇所を確認し、接続ロジックへの影響を評価する作業もスコープに含む。
-
-> **追記（2026-04-16）**: current worktree ではこの要件も実装済み。以下は当時の task spec を記録として残している。
 
 ## 背景
 

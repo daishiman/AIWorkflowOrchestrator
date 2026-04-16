@@ -2,20 +2,14 @@
   "taskId": "TASK-SW-STRUCT-002",
   "taskName": "struct-002-connect-structure-plan-to-skill-md",
   "featureName": "skill-create-flow-gaps/TASK-SW-STRUCT-002",
-  "status": "completed",
+  "status": "pending",
   "createdAt": "2026-04-15",
-  "completedAt": "2026-04-16",
-  "implementationReference": {
-    "pr": "#2209",
-    "relatedTask": "TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001",
-    "commit": "c21cc553c"
-  },
   "dependsOn": ["TASK-SW-STRUCT-001"],
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "requirements.md",
@@ -27,7 +21,7 @@
     {
       "phase": 2,
       "name": "設計",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "design.md",
@@ -39,7 +33,7 @@
     {
       "phase": 3,
       "name": "設計レビューゲート",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "review.md",
@@ -51,7 +45,7 @@
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "test-design.md",
@@ -63,7 +57,7 @@
     {
       "phase": 5,
       "name": "実装",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "implementation-plan.md",
@@ -75,7 +69,7 @@
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "extended-test-record.md",
@@ -87,7 +81,7 @@
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "coverage-report.md",
@@ -99,7 +93,7 @@
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "refactoring-record.md",
@@ -111,7 +105,7 @@
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "quality-report.md",
@@ -123,7 +117,7 @@
     {
       "phase": 10,
       "name": "最終レビューゲート",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "final-review-result.md",
@@ -135,7 +129,7 @@
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "manual-test-checklist.md",
@@ -152,7 +146,7 @@
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "completed",
+      "status": "pending",
       "artifacts": [
         {
           "name": "implementation-guide.md",
@@ -179,17 +173,17 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "completed",
+      "status": "blocked",
       "artifacts": [
         {
           "name": "change-summary.md",
           "path": "outputs/phase-13/change-summary.md",
-          "description": "PR説明用の変更要約（PR #2209 として完了）"
+          "description": "PR説明用の変更要約（ユーザー承認後に作成）"
         },
         {
           "name": "local-check-result.md",
           "path": "outputs/phase-13/local-check-result.md",
-          "description": "ローカルチェック結果"
+          "description": "ローカルチェック結果（ユーザー承認後に更新）"
         }
       ]
     }
