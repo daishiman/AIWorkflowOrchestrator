@@ -1,0 +1,26 @@
+{
+  "feature": "ut-fix-ipc-preload-channel-sync-001",
+  "created": "2026-04-15T00:00:00.000Z",
+  "lastUpdated": "2026-04-15T21:52:00.000Z",
+  "status": "completed",
+  "metadata": {
+    "taskType": "fix",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  },
+  "phases": {
+    "1": { "status": "completed" },
+    "2": { "status": "completed" },
+    "3": { "status": "completed" },
+    "4": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "5": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "6": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "7": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "8": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "9": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "10": { "status": "completed", "completedAt": "2026-04-15T21:52:00.000Z" },
+    "11": { "status": "skipped", "note": "manual test N/A" },
+    "12": { "status": "completed" },
+    "13": { "status": "skipped" }
+  }
+}

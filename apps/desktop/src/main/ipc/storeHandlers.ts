@@ -172,5 +172,52 @@ export function registerStoreHandlers(): void {
   );
 }
 
+// User Settings handlers (settings:get / settings:update)
+// UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix
+const USER_SETTINGS_STORE_KEY = "user-settings";
+
+export function registerUserSettingsHandlers(): void {
+  ipcMain.handle(
+    IPC_CHANNELS.USER_SETTINGS_GET,
+    async (
+      _event,
+    ): Promise<
+      { success: true; data: unknown } | { success: false; error: string }
+    > => {
+      try {
+        const data = getStore().get(USER_SETTINGS_STORE_KEY, {});
+        return { success: true, data };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.USER_SETTINGS_UPDATE,
+    async (
+      _event,
+      updates: Record<string, unknown>,
+    ): Promise<{ success: boolean; error?: string }> => {
+      try {
+        const current = getStore().get(USER_SETTINGS_STORE_KEY, {}) as Record<
+          string,
+          unknown
+        >;
+        getStore().set(USER_SETTINGS_STORE_KEY, { ...current, ...updates });
+        return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+}
+
 // Export store getter for use in other handlers
 export { getStore };
