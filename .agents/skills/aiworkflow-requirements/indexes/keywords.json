@@ -5960,7 +5960,26 @@
     "SkillCreatorService": [
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md"
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "arch-electron-services-details-part1.md"
+    ],
+    "generateSkillMd": [
+      "arch-electron-services-details-part1.md",
+      "lessons-learned-current-2026-04.md"
+    ],
+    "StructurePlanJson": [
+      "arch-electron-services-details-part1.md",
+      "lessons-learned-current-2026-04.md"
+    ],
+    "runCreateWorkflow": [
+      "arch-electron-services-details-part1.md",
+      "lessons-learned-current-2026-04.md"
+    ],
+    "TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001": [
+      "arch-electron-services-details-part1.md",
+      "task-workflow.md",
+      "task-workflow-completed-recent-2026-04e.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",

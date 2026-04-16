@@ -113,27 +113,6 @@ const QUESTION_KEYS = [
   "q6",
 ] as const satisfies readonly QuestionKey[];
 
-const MAIN_TOOL_BADGE_ENABLED = true;
-
-interface MainToolBadgeProps {
-  questionKey: QuestionKey;
-  optionValue: string;
-  selectedOptions: readonly string[];
-}
-
-function shouldShowMainToolBadge({
-  questionKey,
-  optionValue,
-  selectedOptions,
-}: MainToolBadgeProps): boolean {
-  return (
-    MAIN_TOOL_BADGE_ENABLED &&
-    questionKey === "q5" &&
-    selectedOptions.length >= 2 &&
-    selectedOptions[0] === optionValue
-  );
-}
-
 function createEmptyAnswers(): ConversationAnswers {
   return {
     q1: { selectedOptions: [], freeText: "" },
@@ -453,15 +432,8 @@ export const ConversationRoundStep = ({
 
         <div className="flex flex-wrap gap-2">
           {q.options.map((opt, optionIndex) => {
-            // TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001): 主ツールバッジ - resolveExternalIntegration の主ツール参照ロジック変更後に削除
-            const isMainTool = shouldShowMainToolBadge({
-              questionKey: key,
-              optionValue: opt,
-              selectedOptions,
-            });
             const optionId = `${key}-${optionIndex}`;
             const optionLabelId = `${optionId}-label`;
-            const mainToolBadgeId = `${optionId}-main-tool-badge`;
             return (
               <button
                 key={opt}
@@ -469,7 +441,6 @@ export const ConversationRoundStep = ({
                 onClick={() => handleOptionSelect(key, opt)}
                 aria-pressed={selectedOptions.includes(opt)}
                 aria-labelledby={optionLabelId}
-                aria-describedby={isMainTool ? mainToolBadgeId : undefined}
                 className={[
                   "inline-flex items-center px-3 py-1.5 rounded-lg text-sm border transition-colors",
                   selectedOptions.includes(opt)
@@ -478,15 +449,6 @@ export const ConversationRoundStep = ({
                 ].join(" ")}
               >
                 <span id={optionLabelId}>{opt}</span>
-                {isMainTool && (
-                  <span
-                    id={mainToolBadgeId}
-                    aria-label="主ツールとして使用される"
-                    className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800"
-                  >
-                    主ツール
-                  </span>
-                )}
               </button>
             );
           })}

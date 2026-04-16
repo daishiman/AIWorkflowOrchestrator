@@ -150,7 +150,9 @@ async function advanceToStep1() {
     target: { value: "テスト用の目的を十分に記述します" },
   });
   fireEvent.click(screen.getByRole("button", { name: "自動化" }));
-  fireEvent.click(screen.getByRole("button", { name: /次へ/i }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: /次へ/i }));
+  });
 }
 
 async function generateWith(method: "complete" | "skip") {

@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
+
+### 変更内容
+
+- `.claude/skills/task-specification-creator/` の canonical 更新を先行し、`LOGS.md` に 2026-04-16 の close-out sync を追記
+- `.agents/skills/task-specification-creator/` mirror を同内容で同期
+- `SKILL.md` の create ワークフロー step 4 に `[FB-SC-PLAN-001]` `artifacts.json` の metadata 重複 key 防止ルールを追記
+- `SKILL.md` の Phase 6 説明に `[FB-SC-PLAN-001]` 曖昧列挙語（「など」）回避ルールを追記
+- `.agents/skills/task-specification-creator/SKILL.md` mirror を同波で同期
+
+### 背景
+
+TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 の Phase 12 close-out で、canonical を先に更新してから mirror を追従させる接続順序を current facts として固定した。impl-spec-to-skill-sync で skill-feedback-report の改善点（artifacts.json duplicate key / 仕様文曖昧列挙）をインライン防止ルールとして SKILL.md へ還流した。
+
 ## 2026-04-15 - TASK-CI-FUTURE-003 スキルフィードバック反映（FB-001〜003）
 
 ### 変更内容
