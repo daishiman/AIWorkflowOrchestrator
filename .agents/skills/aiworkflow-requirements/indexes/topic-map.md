@@ -3034,6 +3034,17 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L178 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L283 |
 
+### references/lessons-learned-ci-measurement-template-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| L-CI-MEASURE-001: `gh run view --json jobs` 返却フィールドの事前把握 | L6 |
+| L-CI-MEASURE-002: REST API vs CLI 選択指針の事前記載 | L18 |
+| L-CI-MEASURE-003: Python を計算スクリプトの正規手順に採用 | L30 |
+| L-CI-MEASURE-004: 全シャード計測値の記録と統計サマリーの併記 | L42 |
+| L-CI-MEASURE-005: 前提条件（依存タスクマージ確認）の自動チェック | L54 |
+| L-CI-MEASURE-006: キューイング閾値の根拠を Phase 1 要件定義に組み込む | L65 |
+
 ### references/lessons-learned-conversation-db-robustness.md
 
 | セクション | 行 |
@@ -3070,26 +3081,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L5 |
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L27 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L67 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L98 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L121 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L146 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L177 |
-| TASK-RT-06 教訓（2026-03-29） | L208 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L230 |
-| TASK-P0-04 教訓（2026-03-30） | L261 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L297 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L392 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L446 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L486 |
-| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L526 |
-| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L557 |
-| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L569 |
-| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L592 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L601 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L635 |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L6 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L28 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L68 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L99 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L122 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L147 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L178 |
+| TASK-RT-06 教訓（2026-03-29） | L209 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L231 |
+| TASK-P0-04 教訓（2026-03-30） | L262 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L298 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L393 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L447 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L487 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L527 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L558 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L570 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L602 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L636 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3110,6 +3121,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L150 |
 | クイックリファレンス: カテゴリ別検索ガイド | L170 |
 | 分割ファイル一覧 | L174 |
+| 分割ファイル一覧 | L149 |
+| クイックリファレンス: カテゴリ別検索ガイド | L169 |
+| 分割ファイル一覧 | L173 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3131,6 +3145,17 @@ node scripts/list-specs.js --topics
 |------------|----|
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L7 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L41 |
+
+### references/lessons-learned-ipc-4layer-verification-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| L-IPC4L-001: コメント処理はステートマシン方式で文字列リテラル内パターンを保護する | L8 |
+| L-IPC4L-002: spread/定数参照の解決には `buildConstValueMap()` パターンが有効 | L17 |
+| L-IPC4L-003: mainハンドラは6パターン対応が必要 | L27 |
+| L-IPC4L-004: ローカル定数マップでファイル内const vs 外部importの優先度管理 | L36 |
+| L-IPC4L-005: Rule-1/Rule-2のギャップは「スクリプト不具合」ではなく「コードベースの既存ギャップ」 | L45 |
+| 変更履歴 | L56 |
 
 ### references/lessons-learned-ipc-channel-whitelist-sync.md
 
@@ -3580,6 +3605,33 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UT-SKILL-WIZARD-W3-seq-04 使用率計装 教訓（2026-04-08） | L8 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L74 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L112 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L127 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L172 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L187 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L156 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L193 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L238 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L253 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L298 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L313 |
+| UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
+| UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
+| UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-13） | L119 |
 | UT-W3-ANALYTICS-ADAPTER-001 analytics adapter接続 教訓（2026-04-12） | L66 |
 | UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 E2E trackEvent 確認 教訓（2026-04-12） | L104 |
 | UT-W3-ANALYTICS-HTTP-PROVIDER-001 HTTP Provider 実装 教訓（2026-04-14） | L119 |
@@ -4746,6 +4798,47 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L373 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L390 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L412 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L429 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L446 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L312 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L244 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L227 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L273 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L290 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L199 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L121 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L138 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L171 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L373 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L390 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L412 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L429 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L446 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L301 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L318 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L340 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
@@ -4924,9 +5017,54 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
+| 仕様書インデックス | L18 |
+| 利用順序 | L129 |
+| 関連ドキュメント | L134 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L49 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
+| 関連ドキュメント | L50 |
+| 仕様書インデックス | L11 |
+| 利用順序 | L40 |
+| 関連ドキュメント | L45 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
+| 利用順序 | L98 |
+| 関連ドキュメント | L103 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
+| 仕様書インデックス | L14 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
+| 仕様書インデックス | L13 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
+| 利用順序 | L98 |
+| 関連ドキュメント | L103 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
+| 仕様書インデックス | L17 |
+| 利用順序 | L101 |
+| 関連ドキュメント | L106 |
+| 仕様書インデックス | L18 |
+| 利用順序 | L129 |
+| 関連ドキュメント | L134 |
+| 仕様書インデックス | L15 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L51 |
 | 仕様書インデックス | L19 |
 | 利用順序 | L130 |
 | 関連ドキュメント | L135 |
+| 仕様書インデックス | L21 |
+| 利用順序 | L132 |
+| 関連ドキュメント | L137 |
 
 ### references/testing-accessibility.md
 

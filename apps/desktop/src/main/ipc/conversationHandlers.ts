@@ -247,3 +247,28 @@ export function registerConversationHandlers(
     },
   );
 }
+
+/**
+ * Chat Export IPC Handlers (UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix)
+ * 将来の実装タスク: UT-FIX-IPC-MAIN-HANDLER-IMPL-001
+ */
+export function registerChatExportHandlers(): void {
+  // chat:exportSession - セッション履歴エクスポート
+  ipcMain.handle(
+    IPC_CHANNELS.CHAT_EXPORT_SESSION,
+    async (
+      _event,
+      _request: { sessionId: string; format?: "markdown" | "json" },
+    ) => {
+      return { success: true, data: null };
+    },
+  );
+
+  // chat:previewExport - エクスポートプレビュー情報取得
+  ipcMain.handle(
+    IPC_CHANNELS.CHAT_PREVIEW_EXPORT,
+    async (_event, _request: { sessionId: string }) => {
+      return { success: true, data: { messageCount: 0, estimatedSize: 0 } };
+    },
+  );
+}

@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2999,
+  "totalKeywords": 3036,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -32,7 +32,10 @@
       "interfaces-chat-history-core.md",
       "interfaces-rag-file-selection.md",
       "ipc-4-layer-pattern.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -299,6 +302,8 @@
       "ipc-type-resolution-guide.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -617,7 +622,8 @@
       "ui-ux-panels.md"
     ],
     "REST": [
-      "api-endpoints.md"
+      "api-endpoints.md",
+      "lessons-learned-ci-measurement-template-2026-04.md"
     ],
     "エンドポイント命名規則": [
       "api-endpoints.md"
@@ -676,6 +682,8 @@
       "ipc-4-layer-pattern.md",
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -685,12 +693,18 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
@@ -1138,6 +1152,8 @@
       "interfaces-auth-core.md",
       "interfaces-llm.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -1150,6 +1166,10 @@
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
@@ -1157,6 +1177,9 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -1234,6 +1257,7 @@
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1323,8 +1347,10 @@
       "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
@@ -1376,11 +1402,16 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -1407,6 +1438,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -1446,8 +1478,10 @@
     "execute": [
       "api-ipc-agent-core.md",
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
@@ -1475,6 +1509,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -1483,10 +1518,16 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -1532,6 +1573,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed.md",
       "testing-component-patterns-core.md",
@@ -1558,17 +1600,25 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -1631,6 +1681,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -1653,6 +1704,7 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
@@ -1701,8 +1753,10 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -1979,6 +2033,9 @@
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
@@ -1986,12 +2043,19 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -2075,11 +2139,15 @@
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
@@ -2119,6 +2187,7 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
@@ -2320,6 +2389,7 @@
       "arch-ui-components-history.md",
       "arch-ui-components.md",
       "interfaces-chat-history-core.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "llm-ipc-types.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -2376,10 +2446,16 @@
     ],
     "RT": [
       "api-ipc-sdk-type-contracts.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -2397,22 +2473,29 @@
     ],
     "STREAM": [
       "api-ipc-sdk-type-contracts.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SKCE": [
       "api-ipc-sdk-type-contracts.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "TYPE": [
       "api-ipc-sdk-type-contracts.md",
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-console-migration-patterns.md",
@@ -2426,10 +2509,13 @@
       "api-ipc-sdk-type-contracts.md",
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "システム": [
@@ -2455,6 +2541,9 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
       "master-design.md",
@@ -2494,15 +2583,21 @@
     "ANALYTICS": [
       "api-ipc-system-core.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "ADAPTER": [
       "api-ipc-system-core.md",
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
@@ -2615,7 +2710,9 @@
     ],
     "External": [
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "security-electron-ipc-examples.md"
     ],
@@ -2624,6 +2721,9 @@
       "lessons-learned-current-2026-03-late.md",
       "task-workflow-backlog-part2.md",
       "task-workflow-completed-recent-2026-03e.md",
+      "task-workflow-completed-recent-2026-04c-part-1.md",
+      "task-workflow-completed-recent-2026-04c-part-2.md",
+      "task-workflow-completed-recent-2026-04c-part-3.md",
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed.md"
     ],
@@ -2644,6 +2744,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-auth-core.md",
       "interfaces-llm.md",
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -2651,9 +2752,12 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -2726,6 +2830,8 @@
       "lessons-learned-current-2026-03-mid.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
@@ -2784,7 +2890,9 @@
     ],
     "Support": [
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "SC": [
@@ -2792,10 +2900,15 @@
       "arch-electron-services-details-part2.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "interfaces-agent-sdk-skill-editor.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
@@ -2821,11 +2934,14 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "Management": [
-      "api-ipc-system-skill-creator-part2.md"
+      "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-current-2026-04-state-management.md"
     ],
     "NAME": [
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "task-workflow-completed-recent-2026-04e.md"
@@ -2845,6 +2961,7 @@
       "api-ipc-system-skill-creator-part2.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
@@ -2852,6 +2969,7 @@
     "IMPLEMENTATION": [
       "api-ipc-system-skill-creator-part2.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "Runtime": [
@@ -2860,9 +2978,13 @@
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
@@ -2876,6 +2998,9 @@
     ],
     "前半": [
       "api-ipc-system-skill-creator.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "task-workflow-completed-recent-2026-04b.md"
     ],
@@ -2886,12 +3011,16 @@
       "arch-state-management-skill-creator.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -2940,6 +3069,7 @@
     "CLI": [
       "arch-claude-cli.md",
       "interfaces-agent-sdk-integration.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "security-skill-ipc-core.md"
     ],
@@ -2968,6 +3098,9 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
@@ -3002,7 +3135,13 @@
     ],
     "Part": [
       "arch-electron-services-details-part1.md",
-      "arch-electron-services-details-part2.md"
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md"
     ],
     "スキル管理基盤": [
       "arch-electron-services-details-part1.md"
@@ -3033,7 +3172,9 @@
       "interfaces-agent-sdk-skill-core.md",
       "interfaces-agent-sdk-skill-details.md",
       "interfaces-agent-sdk-ui.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -3054,6 +3195,7 @@
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
@@ -3063,6 +3205,8 @@
       "arch-electron-services-details-part2.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "RuntimePolicyResolver": [
@@ -3072,12 +3216,17 @@
       "arch-electron-services-details-part2.md",
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-skill-wizard-redesign.md"
@@ -3152,8 +3301,10 @@
     ],
     "DI": [
       "arch-electron-services-details-part2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -3169,7 +3320,9 @@
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
@@ -3224,8 +3377,10 @@
     ],
     "contract": [
       "arch-execution-capability-contract.md",
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
@@ -3240,7 +3395,11 @@
       "arch-execution-capability-contract.md",
       "architecture-implementation-patterns-shared.md",
       "directory-structure-core.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
@@ -3309,10 +3468,14 @@
     "HEALTH": [
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -3430,6 +3593,7 @@
     "STORE": [
       "arch-state-management-core.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -3474,6 +3638,8 @@
       "lessons-learned-current-2026-03-mid.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -3553,7 +3719,9 @@
     "再設計": [
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -3752,8 +3920,10 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
       "interfaces-llm.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-skill-wizard-llm-connection.md",
@@ -3892,6 +4062,7 @@
       "arch-state-management-reference.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
@@ -3944,6 +4115,7 @@
     ],
     "SYNC": [
       "arch-state-management-skill-creator.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -3982,6 +4154,8 @@
     "SkillCreateWizard": [
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-wizard-llm-connection.md",
@@ -3999,8 +4173,11 @@
     "SW": [
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
@@ -4008,6 +4185,7 @@
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
       "error-handling-details.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -4018,6 +4196,7 @@
     "MGMT": [
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "task-workflow-completed.md"
@@ -4029,6 +4208,10 @@
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -4046,6 +4229,7 @@
     "facts": [
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "task-workflow-completed.md"
     ],
     "Snapshot": [
@@ -4054,6 +4238,7 @@
     "State": [
       "arch-state-management-skill-creator.md",
       "csrf-state-parameter.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "security-implementation.md"
@@ -4404,7 +4589,9 @@
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -4471,6 +4658,8 @@
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "quality-requirements.md"
     ],
@@ -4496,10 +4685,18 @@
     ],
     "教訓": [
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
@@ -4877,10 +5074,15 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -4966,6 +5168,8 @@
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-wizard-redesign.md",
@@ -5158,6 +5362,7 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -5350,6 +5555,8 @@
     "CI": [
       "deployment-core.md",
       "deployment-gha.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -5459,6 +5666,7 @@
     ],
     "main": [
       "deployment-gha.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
     "マージ時": [
@@ -5544,6 +5752,7 @@
     ],
     "js": [
       "directory-structure-core.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
@@ -5687,6 +5896,7 @@
     ],
     "エラー": [
       "error-handling-details.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "envelope": [
@@ -5862,7 +6072,10 @@
     "Integration": [
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
@@ -5912,7 +6125,8 @@
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Schedule": [
-      "interfaces-agent-sdk-skill-editor.md"
+      "interfaces-agent-sdk-skill-editor.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md"
     ],
     "Fork": [
       "interfaces-agent-sdk-skill-editor.md"
@@ -5937,6 +6151,7 @@
     "DOCS": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "スキル分析": [
@@ -6266,6 +6481,7 @@
     ],
     "バリデーション": [
       "interfaces-rag-chunk-embedding.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "rag-knowledge-graph.md",
       "rag-search-types.md"
@@ -6708,6 +6924,9 @@
       "legacy-ordinal-family-register.md"
     ],
     "Lessons": [
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-archive-2026-03-mid.md",
       "lessons-learned-archive-2026-03.md",
@@ -6720,19 +6939,28 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -6778,6 +7006,9 @@
       "lessons-learned.md"
     ],
     "Learned": [
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-2.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-archive-2026-03-mid.md",
       "lessons-learned-archive-2026-03.md",
@@ -6790,19 +7021,28 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -6848,9 +7088,15 @@
       "lessons-learned.md"
     ],
     "WIZARD": [
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
       "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
@@ -6862,41 +7108,59 @@
       "ui-ux-navigation-chat-patterns.md"
     ],
     "FB": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md"
     ],
     "フィールド独立推論性": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "trackEvent": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed.md"
     ],
     "analytics": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
     "adapter": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "差し替え": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "VALIDATION": [
+      "lessons-learned-2026-04-early-part-1.md",
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
@@ -6908,87 +7172,124 @@
       "ui-ux-feature-components-core.md"
     ],
     "session": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "persistence": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "and": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-templates.md"
     ],
     "resume": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "channel": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "契約整合": [
+      "lessons-learned-2026-04-early-part-1.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "Output": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "SkillFileWriter": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "persist": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
     "ハードコード": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "NAMES": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "の動的解決": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "先行完了パターン教訓": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "APPROVAL": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "REQUEST": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "SURFACE": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "MAINLINE": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "ui-ux-settings-core.md"
     ],
     "MIGRATION": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-skill-execute-hook-migration.md",
@@ -6996,12 +7297,16 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "policy": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "移管": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
@@ -7011,24 +7316,32 @@
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
     "WORKTREE": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "CONFLICT": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "並列": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "worktree": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
@@ -7036,126 +7349,173 @@
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "コンフリクト解消": [
+      "lessons-learned-2026-04-early-part-2.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md"
     ],
     "CONVERSATION": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
     ],
     "ROUND": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "STEP": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "seq": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "SmartDefault": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "推論サービス実装": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "INJECTION": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "healthPolicy": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "注入": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "par": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "SkillInfoStep": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "DescribeStep": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "wizard": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "exports": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "Google": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md"
     ],
     "Calendar": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "スキル新規追加": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "PANEL": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "TRANSITION": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "SkillLifecyclePanel": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
+      "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md"
     ],
     "アーカイブ": [
@@ -7243,6 +7603,7 @@
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
@@ -7327,6 +7688,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -7352,6 +7714,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-skill-import-analysis-view.md",
@@ -7418,6 +7781,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
@@ -7458,6 +7822,7 @@
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -7471,8 +7836,10 @@
     ],
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
@@ -7551,7 +7918,9 @@
     ],
     "PRELOAD": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "task-workflow-completed-ut-06-safety-gate.md"
@@ -7652,6 +8021,7 @@
     ],
     "import": [
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
@@ -7677,6 +8047,7 @@
     ],
     "wiring": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "workflow": [
@@ -7716,6 +8087,7 @@
     "FAILURE": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "failure": [
@@ -7800,6 +8172,67 @@
     "再監査教訓": [
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
+    ],
+    "計測テンプレート": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "MEASURE": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "gh": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "run": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-skill-remove-contract.md"
+    ],
+    "view": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "task-workflow-completed-agent-view-line-budget.md"
+    ],
+    "json": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "jobs": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "返却フィールドの事前把握": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "vs": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
+      "testing-component-patterns-core.md"
+    ],
+    "選択指針の事前記載": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "Python": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "を計算スクリプトの正規手順に採用": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "全シャード計測値の記録と統計サマリーの併記": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "前提条件": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "依存タスクマージ確認": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "の自動チェック": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "キューイング閾値の根拠を": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "要件定義に組み込む": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
     ],
     "Robustness": [
       "lessons-learned-conversation-db-robustness.md"
@@ -7887,105 +8320,151 @@
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
+    "preload": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-ipc-preload-foundation.md",
+      "ui-history-integration.md"
+    ],
+    "ホワイトリスト同期": [
+      "lessons-learned-current-2026-04-runtime-sdk.md"
+    ],
     "GENERATE": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "MD": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "generate": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "引数修正": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
     "テスト証跡一本化テンプレート": [
+      "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md"
     ],
+    "Feedback": [
+      "lessons-learned-current-2026-04-schedule-feedback.md"
+    ],
     "SCHEDULE": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "task-workflow-completed-recent-2026-04e.md",
       "ui-ux-feature-components-core.md"
     ],
     "VISUAL": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "PICKER": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "CATEGORY": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "LABEL": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "MAPPING": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "SkillCategory": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "ラベルマッピング集約": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "CRON": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "task-workflow-completed-recent-2026-04e.md",
       "ui-ux-feature-components-core.md"
     ],
     "SEMANTIC": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "意味論的": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "cron": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "VisualCronPicker": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "ui-ux-feature-components-core.md"
     ],
     "validation": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "ui-ux-feature-components-core.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "WEEKGRD": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "weekly": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "weekdays": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "ガードは例外でなく空文字返却で設計する": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "NON": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "純粋関数タスクの": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "source": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "level": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "PASS": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "と環境ブロッカーを分離して記録する": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "タスクでは": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "ui": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -8000,9 +8479,11 @@
       "ui-ux-feature-components-advanced.md"
     ],
     "sanity": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "visual": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -8010,73 +8491,97 @@
       "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "review": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "宣言を明示する": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "DESCRIBE": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-redesign.md"
     ],
     "DELETION": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "レガシーコード整理": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "analyticsSlice": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "agentSlice": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "MONTHLY": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "月次ガード処理": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "DATAFLOW": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "コンテキストブリッジ実装": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "FEEDBACK": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "SkillWizard": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
     "フィードバックループ修正": [
+      "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md"
     ],
+    "Mode": [
+      "lessons-learned-current-2026-04-state-management.md"
+    ],
     "専用化・状態管理修正": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "RENDERER": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "CHECK": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "表示": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md"
     ],
     "確認": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "スキルウィザード": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "mode": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -8085,13 +8590,21 @@
       "task-workflow-completed.md"
     ],
     "管理廃止": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "整合性修正": [
+      "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
+    ],
+    "Wizard": [
+      "lessons-learned-current-2026-04-wizard-integration.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "workflow-onboarding-wizard-alignment.md"
     ],
     "fetchSkills": [
       "lessons-learned-current-2026-04.md"
@@ -8102,6 +8615,7 @@
     "CREATE": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "create": [
@@ -8153,11 +8667,6 @@
     "Payload": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
-    "vs": [
-      "lessons-learned-governance-hooks-phase-policy.md",
-      "lessons-learned-skill-creator-ipc-handler-scope.md",
-      "testing-component-patterns-core.md"
-    ],
     "Visual": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
@@ -8186,6 +8695,7 @@
     "phase": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "ui-ux-feature-components-skill-analysis.md"
@@ -8259,17 +8769,66 @@
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
+    "層整合": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "検証": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "コメント処理はステートマシン方式で文字列リテラル内パターンを保護する": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "spread": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "定数参照の解決には": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "buildConstValueMap": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "パターンが有効": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ハンドラは": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "パターン対応が必要": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ローカル定数マップでファイル内": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "const": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "外部": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "の優先度管理": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "Rule": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "のギャップは": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "スクリプト不具合": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "ではなく": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "コードベースの既存ギャップ": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
     "Channel": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
     ],
     "同期ガード": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
-    ],
-    "preload": [
-      "lessons-learned-ipc-channel-whitelist-sync.md",
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
-      "task-workflow-completed-ipc-preload-foundation.md",
-      "ui-history-integration.md"
     ],
     "channels": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
@@ -8302,66 +8861,83 @@
     ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "HANDOFF": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "user": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "interaction": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "bridge": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "submitUserInput": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "transition": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "semantics": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CHATVIEW": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SILENT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EXT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "テスト拡充": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EDIT": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "AUTHMODE": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "再確認追補": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
@@ -8370,18 +8946,22 @@
     ],
     "CLAUDE": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CODE": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "IMPROVE": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -8393,38 +8973,47 @@
     ],
     "CONNECTION": [
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
+      "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PLAN": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FF": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "BETTER": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SQLITE": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ABI": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "VITE": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ALIAS": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SHARED": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -8434,15 +9023,18 @@
     ],
     "層型同期": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "executeAsync": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "エラー伝搬パス": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "COMPLETENESS": [
@@ -8456,6 +9048,7 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "エラーコールバックガード": [
+      "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
@@ -9110,9 +9703,6 @@
     "対象パッケージディレクトリから": [
       "lessons-learned-skill-remove-contract.md"
     ],
-    "run": [
-      "lessons-learned-skill-remove-contract.md"
-    ],
     "で実行": [
       "lessons-learned-skill-remove-contract.md"
     ],
@@ -9401,10 +9991,6 @@
     "依存関係": [
       "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md"
-    ],
-    "Wizard": [
-      "lessons-learned-skill-wizard-redesign.md",
-      "workflow-onboarding-wizard-alignment.md"
     ],
     "Redesign": [
       "lessons-learned-skill-wizard-redesign.md"
@@ -10153,6 +10739,9 @@
       "task-workflow-completed-recent-2026-03e.md",
       "task-workflow-completed-recent-2026-04a.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed-recent-2026-04c-part-1.md",
+      "task-workflow-completed-recent-2026-04c-part-2.md",
+      "task-workflow-completed-recent-2026-04c-part-3.md",
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
@@ -12666,7 +13255,10 @@
     ],
     "part": [
       "task-workflow-backlog-part2.md",
-      "task-workflow-completed-chat-lifecycle-tests-part2.md"
+      "task-workflow-completed-chat-lifecycle-tests-part2.md",
+      "task-workflow-completed-recent-2026-04c-part-1.md",
+      "task-workflow-completed-recent-2026-04c-part-2.md",
+      "task-workflow-completed-recent-2026-04c-part-3.md"
     ],
     "records": [
       "task-workflow-completed-abort-contract-auth-session-chat.md",
@@ -12704,9 +13296,6 @@
       "task-workflow-completed-ut-06-safety-gate.md",
       "ui-ux-components-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "view": [
-      "task-workflow-completed-agent-view-line-budget.md"
     ],
     "再監査記録": [
       "task-workflow-completed-agent-view-line-budget.md",
@@ -12751,8 +13340,14 @@
     "完了タスク台帳": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
-    "検証": [
-      "task-workflow-completed-skill-create-ui-integration.md"
+    "カテゴリ複数選択・ボタン統一・": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ProgressBar": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "修正": [
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"
@@ -14234,9 +14829,6 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "ビルド確認": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "json": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "SkillAnalysis": [

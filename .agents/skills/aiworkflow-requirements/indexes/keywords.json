@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 2999,
+  "totalKeywords": 3013,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -33,6 +33,7 @@
       "interfaces-rag-file-selection.md",
       "ipc-4-layer-pattern.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -617,7 +618,8 @@
       "ui-ux-panels.md"
     ],
     "REST": [
-      "api-endpoints.md"
+      "api-endpoints.md",
+      "lessons-learned-ci-measurement-template-2026-04.md"
     ],
     "エンドポイント命名規則": [
       "api-endpoints.md"
@@ -2940,6 +2942,7 @@
     "CLI": [
       "arch-claude-cli.md",
       "interfaces-agent-sdk-integration.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "security-skill-ipc-core.md"
     ],
@@ -4500,6 +4503,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
@@ -4877,6 +4881,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
@@ -5350,6 +5355,7 @@
     "CI": [
       "deployment-core.md",
       "deployment-gha.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -6720,6 +6726,7 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
@@ -6790,6 +6797,7 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
@@ -7801,6 +7809,66 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
+    "計測テンプレート": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "MEASURE": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "gh": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "run": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-skill-remove-contract.md"
+    ],
+    "view": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "task-workflow-completed-agent-view-line-budget.md"
+    ],
+    "json": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "jobs": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "返却フィールドの事前把握": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "vs": [
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
+      "testing-component-patterns-core.md"
+    ],
+    "選択指針の事前記載": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "Python": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "を計算スクリプトの正規手順に採用": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "全シャード計測値の記録と統計サマリーの併記": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "前提条件": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "依存タスクマージ確認": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "の自動チェック": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "キューイング閾値の根拠を": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
+    "要件定義に組み込む": [
+      "lessons-learned-ci-measurement-template-2026-04.md"
+    ],
     "Robustness": [
       "lessons-learned-conversation-db-robustness.md"
     ],
@@ -8093,6 +8161,12 @@
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
     ],
+    "fetchSkills": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "非ブロッキング化": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "CREATE": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -8103,12 +8177,6 @@
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "モード構造計画生成": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "fetchSkills": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "非ブロッキング化": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -8152,11 +8220,6 @@
     ],
     "Payload": [
       "lessons-learned-governance-hooks-phase-policy.md"
-    ],
-    "vs": [
-      "lessons-learned-governance-hooks-phase-policy.md",
-      "lessons-learned-skill-creator-ipc-handler-scope.md",
-      "testing-component-patterns-core.md"
     ],
     "Visual": [
       "lessons-learned-governance-hooks-phase-policy.md"
@@ -9108,9 +9171,6 @@
       "lessons-learned-skill-remove-contract.md"
     ],
     "対象パッケージディレクトリから": [
-      "lessons-learned-skill-remove-contract.md"
-    ],
-    "run": [
       "lessons-learned-skill-remove-contract.md"
     ],
     "で実行": [
@@ -12705,9 +12765,6 @@
       "ui-ux-components-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
-    "view": [
-      "task-workflow-completed-agent-view-line-budget.md"
-    ],
     "再監査記録": [
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -14234,9 +14291,6 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "ビルド確認": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "json": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "SkillAnalysis": [

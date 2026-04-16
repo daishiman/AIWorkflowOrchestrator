@@ -334,3 +334,49 @@ export function unregisterEnvironmentHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT);
   ipcMain.removeHandler(IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES);
 }
+
+/**
+ * Agent Skills IPCハンドラーを登録する (UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix)
+ * 将来の実装タスク: UT-FIX-IPC-MAIN-HANDLER-IMPL-001
+ */
+export function registerAgentSkillHandlers(mainWindow: BrowserWindow): void {
+  // agent:get-skills - スキル一覧取得
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_GET_SKILLS,
+    async (_event: IpcMainInvokeEvent) => {
+      return { success: true, data: [] };
+    },
+  );
+
+  // agent:get-skill-detail - スキル詳細取得
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_GET_SKILL_DETAIL,
+    async (_event: IpcMainInvokeEvent, _skillId: string) => {
+      return { success: true, data: null };
+    },
+  );
+
+  // agent:execute - エージェント実行
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTE,
+    async (_event: IpcMainInvokeEvent, _request: unknown) => {
+      return { success: true, data: null };
+    },
+  );
+
+  // agent:permission-respond - 権限リクエスト応答
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_PERMISSION_RESPOND,
+    async (_event: IpcMainInvokeEvent, _response: unknown) => {
+      mainWindow.webContents.send(IPC_CHANNELS.AGENT_PERMISSION_REQUEST, null);
+      return { success: true };
+    },
+  );
+}
+
+export function unregisterAgentSkillHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_GET_SKILLS);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_GET_SKILL_DETAIL);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTE);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_PERMISSION_RESPOND);
+}

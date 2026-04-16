@@ -1,0 +1,201 @@
+{
+  "taskId": "TASK-SW-STREAM-001",
+  "featureName": "skill-creator-service-progress-callback",
+  "createdDate": "2026-04-15",
+  "metadata": {
+    "taskId": "TASK-SW-STREAM-001",
+    "taskType": "NON_VISUAL"
+  },
+  "status": "pending",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "pending"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テストスイート（進捗コールバック）",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts",
+          "status": "pending",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装（createSkill コールバック引数追加）",
+          "path": "apps/desktop/src/main/services/skill/SkillCreatorService.ts",
+          "status": "pending",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト拡充（エッジケース・コールバック未指定ケース）",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts",
+          "status": "pending",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "pending"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "pending"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "pending"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "pending"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "pending"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "blocked"
+        }
+      ]
+    }
+  ]
+}
