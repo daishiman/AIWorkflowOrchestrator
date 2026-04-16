@@ -5,6 +5,18 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
+## 2026-04-16 - UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-ipc-4layer-verification-2026-04.md` に L-IPC4L-CI-001 を追加: CI `.cjs` 検証スクリプトのビルド成果物依存・`continue-on-error: true` 原則禁止ルール
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+`UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` タスクの苦戦箇所（ローカルPASSでCI不安定になった原因と診断手順）が `lessons-learned-ipc-4layer-verification-2026-04.md` に未反映だったため追記。同種のCI設定タスクで同じ問題が再発しないよう標準ルールとして固定した。
+
+## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 current facts sync
 
 ### 変更内容
 
@@ -29,6 +41,19 @@ TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cance
 ### 背景
 
 TASK-CI-FUTURE-003 の close-out では、workflow 本体・skill current facts・索引・mirror・Phase 12 evidence を同 wave で閉じる必要があった。旧いフォールバックキー前提の文言を撤去し、`node_modules` 存在確認ベースの実装に合わせた。
+
+## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
+
+### 変更内容
+
+- `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 成果物を同一 wave で確認
+- `SkillCreatorService` の `StructurePlanJson.purpose` を LLM 推論結果へ差し替え、`options.description` fallback を current facts として記録
+- `SkillCreatorService` の `ILLMClient` DI と `@repo/shared/services/llm/types` alias 追加を current facts に反映
+- `.claude/skills/aiworkflow-requirements/SKILL.md` の変更履歴を同波で更新
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001 は `extract-purpose` の raw 出力を LLM 実結果へ wire し直す close-out。Phase 12 では、実装・検証・ドキュメント・skill history を同一 wave で揃える必要があった。
 
 ## 2026-04-15 — impl-spec-to-skill-sync (TASK-SW-FIX-FEEDBACK-008 task-workflow + lessons-learned sync)
 

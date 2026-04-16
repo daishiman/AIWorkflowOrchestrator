@@ -14,7 +14,9 @@ issue_number: 2196
 | 対象機能     | GitHub Actions CI / verify-ipc-4layer       |
 | 優先度       | 中                                          |
 | 見積もり規模 | 小規模                                      |
-| ステータス   | 未実施                                      |
+| ステータス   | 完了                                        |
+| 完了日       | 2026-04-16                                  |
+| 対応Issue    | #2196                                       |
 | 発見元       | UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Phase 12 |
 | 発見日       | 2026-04-15                                  |
 

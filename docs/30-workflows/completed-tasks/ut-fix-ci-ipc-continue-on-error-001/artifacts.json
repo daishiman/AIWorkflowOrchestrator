@@ -1,0 +1,108 @@
+{
+  "taskId": "UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001",
+  "taskName": "ci-ipc-continue-on-error-removal",
+  "createdAt": "2026-04-16",
+  "status": "phase12_completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/instability-analysis.md",
+        "outputs/phase-1/local-verify-result.txt"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-summary.md"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/review-gate-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-plan.md"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        ".github/workflows/ci.yml",
+        "outputs/phase-5/ci-run-url.txt",
+        "outputs/phase-5/local-verify-result.txt"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/ci-green-evidence.md",
+        "outputs/phase-6/ci-run-summary.json",
+        "outputs/phase-6/ci-verify-ipc-log.txt",
+        "outputs/phase-6/local-verify-rerun.txt"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/ci-integrity-summary.md",
+        "outputs/phase-7/needs-graph-check.md",
+        "outputs/phase-7/other-jobs-impact-check.md",
+        "outputs/phase-7/rule-all-pass-check.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/post-refactoring-ci-check.md",
+        "outputs/phase-8/refactoring-checklist.md",
+        "outputs/phase-8/timeout-check.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/build-and-coverage-check.md",
+        "outputs/phase-9/ipc-violation-test-fail.txt",
+        "outputs/phase-9/ipc-violation-test-result.md",
+        "outputs/phase-9/lint-check.txt",
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/typecheck-result.txt"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  }
+}

@@ -1,0 +1,14 @@
+=== IPC 4-Layer Alignment Verification ===
+
+[Rule-1] shared で定義されたチャネルが preload ホワイトリストに未登録: PASS
+[Rule-2] preload invoke ホワイトリストのチャネルが main ハンドラに未実装: PASS
+[Rule-3] renderer で使用されたチャネルが shared/preload に未定義: PASS
+
+--- Summary ---
+Total rules: 3
+Passed: 3
+Failed: 0
+Exit code: 0
+
+実行日時: 2026-04-16
+Phase 5との差分: なし（同一結果）
