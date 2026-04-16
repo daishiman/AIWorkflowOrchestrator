@@ -2,42 +2,42 @@
   "taskId": "TASK-SW-STRUCT-001",
   "taskName": "struct-001-fix-run-create-workflow-output",
   "featureName": "skill-create-flow-gaps/TASK-SW-STRUCT-001",
-  "status": "pending",
+  "status": "completed",
   "createdAt": "2026-04-15",
   "dependsOn": [],
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "requirements.md",
           "path": "outputs/phase-1/requirements.md",
-          "description": "要件定義書・受入条件・問題背景"
+          "description": "要件定義書・受入条件・現在の実装状態"
         }
       ]
     },
     {
       "phase": 2,
       "name": "設計",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "design.md",
           "path": "outputs/phase-2/design.md",
-          "description": "runCreateWorkflow出力仕様修正の詳細設計・型変更計画"
+          "description": "runCreateWorkflow 出力仕様修正の設計と current state 反映"
         }
       ]
     },
     {
       "phase": 3,
       "name": "設計レビューゲート",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
-          "name": "review.md",
-          "path": "outputs/phase-3/review.md",
+          "name": "gate-decision.md",
+          "path": "outputs/phase-3/gate-decision.md",
           "description": "設計レビュー結果・リスク評価・ゲート判定"
         }
       ]
@@ -45,19 +45,19 @@
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "test-design.md",
           "path": "outputs/phase-4/test-design.md",
-          "description": "TDD Redフェーズテストケース・回帰テスト計画"
+          "description": "TDD Red フェーズのテスト設計と struct-001.test 反映"
         }
       ]
     },
     {
       "phase": 5,
       "name": "実装",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "implementation-plan.md",
@@ -69,7 +69,7 @@
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "extended-test-record.md",
@@ -81,19 +81,19 @@
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "coverage-report.md",
           "path": "outputs/phase-7/coverage-report.md",
-          "description": "AC対応表・branch coverage確認"
+          "description": "AC 対応表・branch coverage 確認"
         }
       ]
     },
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "refactoring-record.md",
@@ -105,7 +105,7 @@
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "quality-report.md",
@@ -117,7 +117,7 @@
     {
       "phase": 10,
       "name": "最終レビューゲート",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "final-review-result.md",
@@ -129,12 +129,12 @@
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "manual-test-checklist.md",
           "path": "outputs/phase-11/manual-test-checklist.md",
-          "description": "手動テストチェックリスト（実フロー・structurePlan内容確認）"
+          "description": "手動テストチェックリスト（実フロー・structurePlan 内容確認）"
         },
         {
           "name": "manual-test-result.md",
@@ -146,7 +146,7 @@
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "implementation-guide.md",
@@ -178,7 +178,7 @@
         {
           "name": "change-summary.md",
           "path": "outputs/phase-13/change-summary.md",
-          "description": "PR説明用の変更要約（ユーザー承認後に作成）"
+          "description": "PR 説明用の変更要約（ユーザー承認後に作成）"
         },
         {
           "name": "local-check-result.md",

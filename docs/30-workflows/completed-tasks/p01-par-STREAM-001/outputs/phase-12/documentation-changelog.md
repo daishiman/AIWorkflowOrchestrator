@@ -5,7 +5,7 @@
 ## 新規作成ファイル
 
 - `apps/desktop/src/__tests__/main/services/skill/SkillCreatorService.progress.test.ts`
-- `docs/30-workflows/p01-par-STREAM-001/` 配下の全Phase仕様書
+- `docs/30-workflows/completed-tasks/p01-par-STREAM-001/` 配下の全Phase仕様書
 
 ## 変更ファイル
 

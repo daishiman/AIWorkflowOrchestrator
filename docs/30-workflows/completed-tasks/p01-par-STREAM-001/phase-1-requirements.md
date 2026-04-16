@@ -10,7 +10,7 @@
 | 前提Phase  | -                                       |
 | 後続Phase  | Phase 2                                 |
 | 作成日     | 2026-04-15                              |
-| ステータス | pending                                 |
+| ステータス | completed                               |
 
 ## 目的
 
@@ -108,11 +108,11 @@ grep -n "onProgress\|SKILL_CREATOR_PROGRESS" apps/desktop/src/preload/skill-crea
 
 ## 統合テスト連携【必須】
 
-| 判定項目                | 基準 | 結果    |
-| ----------------------- | ---- | ------- |
-| ユニットテスト Line     | 80%+ | pending |
-| ユニットテスト Branch   | 60%+ | pending |
-| ユニットテスト Function | 80%+ | pending |
+| 判定項目                | 基準 | 結果 |
+| ----------------------- | ---- | ---- |
+| ユニットテスト Line     | 80%+ | PASS |
+| ユニットテスト Branch   | 60%+ | PASS |
+| ユニットテスト Function | 80%+ | PASS |
 
 ## 多角的チェック観点
 
@@ -132,13 +132,13 @@ grep -n "onProgress\|SKILL_CREATOR_PROGRESS" apps/desktop/src/preload/skill-crea
 
 ## 完了条件
 
-- [ ] P50チェック実施済み（`createSkill` にコールバック引数がないことを確認）
-- [ ] `sendSkillCreatorProgress` の呼び出し元が存在しないことを確認済み
-- [ ] フロント・Preload 側が変更不要であることを確認済み
-- [ ] AC-1〜AC-5 が検証可能な形で定義されている
-- [ ] タスク分類（バグ修正 / 非UIタスク / NON_VISUAL）を宣言済み
-- [ ] スコープ外（TASK-SW-STREAM-002）との境界が明確
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] P50チェック実施済み（`createSkill` にコールバック引数がないことを確認）
+- [x] `sendSkillCreatorProgress` の呼び出し元が存在しないことを確認済み
+- [x] フロント・Preload 側が変更不要であることを確認済み
+- [x] AC-1〜AC-5 が検証可能な形で定義されている
+- [x] タスク分類（バグ修正 / 非UIタスク / NON_VISUAL）を宣言済み
+- [x] スコープ外（TASK-SW-STREAM-002）との境界が明確
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -152,10 +152,10 @@ grep -n "onProgress\|SKILL_CREATOR_PROGRESS" apps/desktop/src/preload/skill-crea
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

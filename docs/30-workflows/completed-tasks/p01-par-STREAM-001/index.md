@@ -17,7 +17,7 @@ SkillCreatorService.createSkill() にオプショナルコールバック引数�
 | 対象機能     | スキル作成フロー - Streaming進捗送信    |
 | 優先度       | 高                                      |
 | 見積もり規模 | 小規模                                  |
-| ステータス   | 未実施                                  |
+| ステータス   | 完了                                    |
 | 作成日       | 2026-04-15                              |
 
 ---
@@ -205,7 +205,7 @@ graph TD
 ```bash
 # Phase完了処理
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \
-  --workflow docs/30-workflows/p01-par-STREAM-001 --phase {{N}} \
+  --workflow docs/30-workflows/completed-tasks/p01-par-STREAM-001 --phase {{N}} \
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 ```
 

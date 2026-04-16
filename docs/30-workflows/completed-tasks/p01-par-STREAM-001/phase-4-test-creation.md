@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 3（PASS または MINOR）            |
 | 後続Phase  | Phase 5                                 |
 | 作成日     | 2026-04-15                              |
-| ステータス | pending                                 |
+| ステータス | completed                               |
 
 ## 目的
 
@@ -168,10 +168,10 @@ pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/
 
 ## 統合テスト連携【必須】
 
-| 判定項目       | 基準                              | 結果    |
-| -------------- | --------------------------------- | ------- |
-| Red 確認       | テストが FAIL すること（TDD Red） | pending |
-| 既存テスト影響 | 既存テストへの悪影響がないこと    | pending |
+| 判定項目       | 基準                              | 結果 |
+| -------------- | --------------------------------- | ---- |
+| Red 確認       | テストが FAIL すること（TDD Red） | PASS |
+| 既存テスト影響 | 既存テストへの悪影響がないこと    | PASS |
 
 ## 多角的チェック観点
 
@@ -190,14 +190,14 @@ pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/
 
 ## 完了条件
 
-- [ ] 既存テスト構造の調査（重複・既存パターン確認）が完了
-- [ ] テストマトリクス（TC-01〜TC-08）が定義済み
-- [ ] テストファイル `SkillCreatorService.progress.test.ts` が新規作成されている
-- [ ] TC-01〜TC-05（5段階の各フェーズ）テストが含まれている
-- [ ] TC-07（コールバック未指定ケース）テストが含まれている
-- [ ] Red 確認（実装前にテストが FAIL すること）が確認済み
-- [ ] 既存テスト（`skillCreatorHandlers.validation.test.ts` 等）への悪影響なし
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] 既存テスト構造の調査（重複・既存パターン確認）が完了
+- [x] テストマトリクス（TC-01〜TC-08）が定義済み
+- [x] テストファイル `SkillCreatorService.progress.test.ts` が新規作成されている
+- [x] TC-01〜TC-05（5段階の各フェーズ）テストが含まれている
+- [x] TC-07（コールバック未指定ケース）テストが含まれている
+- [x] Red 確認（実装前にテストが FAIL すること）が確認済み
+- [x] 既存テスト（`skillCreatorHandlers.validation.test.ts` 等）への悪影響なし
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -210,10 +210,10 @@ pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

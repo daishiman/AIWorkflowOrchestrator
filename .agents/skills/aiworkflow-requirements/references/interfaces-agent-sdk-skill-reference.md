@@ -61,6 +61,34 @@
 | `skillPath`       | `string`           | -    | スキルパス（update時）              |
 | `tasksDir`        | `string`           | -    | タスクディレクトリ（create時）      |
 
+#### SkillCreatorProgressData（TASK-SW-STREAM-001）
+
+createSkill() の進捗コールバックに渡されるデータ型。
+
+| プロパティ   | 型                                                                                  | 説明                      |
+| ------------ | ----------------------------------------------------------------------------------- | ------------------------- |
+| `phase`      | `"planning" \| "generating-skill" \| "generating-agents" \| "validating" \| "done"` | 現在の進捗フェーズ        |
+| `percentage` | `number`                                                                            | 進捗率（10/40/70/90/100） |
+| `message`    | `string`                                                                            | 日本語の進捗メッセージ    |
+
+#### SkillCreatorProgressCallback（TASK-SW-STREAM-001）
+
+```typescript
+type SkillCreatorProgressCallback = (progress: SkillCreatorProgressData) => void;
+```
+
+#### 進捗段階定数（TASK-SW-STREAM-001）
+
+| phase               | percentage | message                        |
+| ------------------- | ---------- | ------------------------------ |
+| `planning`          | 10         | 構造を計画しています            |
+| `generating-skill`  | 40         | SKILL.md を生成しています       |
+| `generating-agents` | 70         | エージェント定義を生成しています |
+| `validating`        | 90         | スキルを検証しています          |
+| `done`              | 100        | 完了しました                    |
+
+> 注意: 現状はmagic number/stringで実装。定数化は FUP-02（Low優先度）で対応予定。
+
 #### ScriptResult
 
 スクリプト実行結果。
@@ -163,7 +191,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | メソッド                  | シグネチャ                                                                 | 戻り値                                       | 説明                                                           |
 | ------------------------- | -------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------- |
 | `detectMode`              | `(request: string)`                                                        | `Promise<SkillCreatorMode>`                  | ユーザー要求からモード判定                                     |
-| `createSkill`             | `(options: CreateSkillOptions)`                                            | `Promise<string>`                            | スキル作成（戻り値は作成先パス）                               |
+| `createSkill`             | `(options: CreateSkillOptions, onProgress?: SkillCreatorProgressCallback)` | `Promise<string>`                            | スキル作成（戻り値は作成先パス）。第2引数でオプショナルな進捗コールバックを受け取る（TASK-SW-STREAM-001） |
 | `executeTasks`            | `(options: ExecuteTasksOptions)`                                           | `Promise<ExecutionReport>`                   | タスク群実行（dry-run/実行）                                   |
 | `validateSkill`           | `(skillDir: string)`                                                       | `Promise<boolean>`                           | 生成スキル検証                                                 |
 | `validateWithSchema`      | `(schemaName: string, data: unknown)`                                      | `Promise<boolean>`                           | スキーマ検証                                                   |

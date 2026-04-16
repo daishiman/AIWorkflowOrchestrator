@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 4                                 |
 | 後続Phase  | Phase 6                                 |
 | 作成日     | 2026-04-15                              |
-| ステータス | pending                                 |
+| ステータス | completed                               |
 
 ## 目的
 
@@ -148,11 +148,11 @@ pnpm --filter @repo/desktop lint
 
 ## 統合テスト連携【必須】
 
-| 判定項目       | 基準                             | 結果    |
-| -------------- | -------------------------------- | ------- |
-| Green 確認     | Phase 4 テストが全 PASS すること | pending |
-| 既存テスト回帰 | 既存テストへの影響がないこと     | pending |
-| 型チェック     | `pnpm typecheck` が 0 error      | pending |
+| 判定項目       | 基準                             | 結果 |
+| -------------- | -------------------------------- | ---- |
+| Green 確認     | Phase 4 テストが全 PASS すること | PASS |
+| 既存テスト回帰 | 既存テストへの影響がないこと     | PASS |
+| 型チェック     | `pnpm typecheck` が 0 error      | PASS |
 
 ## 多角的チェック観点
 
@@ -171,15 +171,15 @@ pnpm --filter @repo/desktop lint
 
 ## 完了条件
 
-- [ ] 既存テスト回帰確認（baseline）が完了
-- [ ] `SkillCreatorProgressData` 型と `SkillCreatorProgressCallback` 型が追加されている
-- [ ] `createSkill()` のシグネチャに `onProgress?` が追加されている
-- [ ] 5段階の `onProgress?.()` 呼び出しが実装されている
-- [ ] Phase 4 テスト（TC-01〜TC-08）が全 PASS している（Green）
-- [ ] 既存テストが回帰なしで PASS している
-- [ ] `pnpm typecheck` が 0 error
-- [ ] `pnpm lint` が 0 error
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] 既存テスト回帰確認（baseline）が完了
+- [x] `SkillCreatorProgressData` 型と `SkillCreatorProgressCallback` 型が追加されている
+- [x] `createSkill()` のシグネチャに `onProgress?` が追加されている
+- [x] 5段階の `onProgress?.()` 呼び出しが実装されている
+- [x] Phase 4 テスト（TC-01〜TC-08）が全 PASS している（Green）
+- [x] 既存テストが回帰なしで PASS している
+- [x] `pnpm typecheck` が 0 error
+- [x] `pnpm lint` が 0 error
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -194,10 +194,10 @@ pnpm --filter @repo/desktop lint
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

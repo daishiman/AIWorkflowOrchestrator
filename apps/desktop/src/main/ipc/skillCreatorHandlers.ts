@@ -273,7 +273,12 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        const skillDir = await skillCreatorService.createSkill(validatedArgs);
+        const skillDir = await skillCreatorService.createSkill(
+          validatedArgs,
+          (progress) => {
+            sendSkillCreatorProgress(mainWindow, progress);
+          },
+        );
         return { success: true, data: skillDir };
       } catch (error) {
         return {

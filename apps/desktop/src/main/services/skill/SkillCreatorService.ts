@@ -143,7 +143,16 @@ export class SkillCreatorService {
         await this.runOrchestrateWorkflow(options);
         break;
       case "create":
-        structurePlan = await this.runCreateWorkflow(options);
+        try {
+          structurePlan = await this.runCreateWorkflow(options);
+        } catch (error) {
+          this.logger.warn("runCreateWorkflow failed, falling back to null", {
+            skillName: options.name,
+            mode: options.mode,
+            error,
+          });
+          structurePlan = null;
+        }
         // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
         break;
       case "update":
@@ -654,31 +663,26 @@ export class SkillCreatorService {
 
   /**
    * createモードのワークフロー実行
-   * AC-1: resourceLoader.loadAgent を呼び出す（collaborative パターン踏襲）
-   * AC-3: loadAgent 失敗時は null を返しフォールバック
-   * AC-4: options.description を使用（void options を削除）
+   * AC-1: purpose に options.description を使用（エージェントプロンプト文字列でない）
+   * AC-2: agents にエージェント名リストを設定
+   * AC-3: features は空配列（LLM統合は別タスク）
+   * AC-4: エラー時は null を返しフォールバック
+   * NOTE: LLM による purpose 抽出・features 生成は別タスク（FUTURE-001/002）で実装する
    */
   private async runCreateWorkflow(
     options: CreateSkillOptions,
   ): Promise<StructurePlanJson | null> {
     try {
-      const extractPurposeAgent =
-        await this.resourceLoader.loadAgent("extract-purpose");
-      const planStructureAgent =
-        await this.resourceLoader.loadAgent("plan-structure");
-
       const structurePlan: StructurePlanJson = {
         skillName: options.name,
         description: options.description,
-        purpose: extractPurposeAgent,
-        features: [],
-        agents: [extractPurposeAgent, planStructureAgent],
+        purpose: options.description, // AC-1: LLM統合は別タスク、現時点は description を使用
+        features: [], // AC-3: LLM統合は別タスク
+        agents: ["extract-purpose", "plan-structure"], // AC-2: エージェント名リスト
       };
-
       return structurePlan;
     } catch {
-      // AC-3: loadAgent 失敗時はフォールバック（null 返却）
-      // createSkill() 後続処理を継続させる
+      // AC-4: 将来の処理追加に備えてフォールバックを維持
       return null;
     }
   }
