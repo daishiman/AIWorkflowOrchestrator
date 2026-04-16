@@ -1,0 +1,7 @@
+Scope: 3 of 4 workspace projects
+packages/shared typecheck: Done
+apps/backend typecheck: Done
+apps/desktop typecheck: Done
+
+Typecheck exit code: 0
+実行日時: 2026-04-16

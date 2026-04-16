@@ -245,7 +245,7 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 
 **内部型: `StructurePlanJson`（TASK-SC-IMP-CREATE-WORKFLOW-001 追加）**
 
-`create` モードで `runCreateWorkflow()` が生成する構造計画 JSON。`createSkill()` は `init_skill.js` 実行後に `generateSkillMd()` へ渡す。
+`create` モードで `runCreateWorkflow()` が生成する構造計画 JSON。`generate_skill_md.js --plan` に渡す予定（タスクA完了後に接続）。
 
 | フィールド    | 型         | 必須 | 説明                                   |
 | ------------- | ---------- | ---- | -------------------------------------- |
@@ -257,12 +257,12 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | `triggers`    | `string[]` | -    | トリガー（optional）                   |
 | `anchors`     | `string[]` | -    | アンカー（optional）                   |
 
-`createSkill()` は `runCreateWorkflow()` で得た `StructurePlanJson` を保持し、`init_skill.js` 完了後に `generateSkillMd()` を呼び出して skill.md を生成する。`void structurePlan` のような未接続ハンドオフ表現は使わない。
+`createSkill()` 内で `let structurePlan: StructurePlanJson | null = null` として受け取り、`void structurePlan`（将来 `generateSkillMd` へ渡す）としてハンドオフする。
 
 | メソッド | 引数 | 戻り値 | 説明 |
 | --- | --- | --- | --- |
 | `detectMode` | `request: string` | `Promise<SkillCreatorMode>` | 要求文から作成モード判定 |
-| `createSkill` | `options: CreateSkillOptions` | `Promise<string>` | スキル新規作成（create モードは `runCreateWorkflow` で `StructurePlanJson` を生成し、`init_skill.js` 後に `generateSkillMd()` を呼ぶ） |
+| `createSkill` | `options: CreateSkillOptions` | `Promise<string>` | スキル新規作成（create モードは `runCreateWorkflow` で `StructurePlanJson` を生成） |
 | `executeTasks` | `options: ExecuteTasksOptions` | `Promise<ExecutionReport>` | タスク仕様の実行 |
 | `validateSkill` | `skillDir: string` | `Promise<boolean>` | スキル検証 |
 | `validateWithSchema` | `schemaName: string, data: unknown` | `Promise<boolean>` | スキーマ検証 |

@@ -294,7 +294,6 @@ jobs:
     name: IPC 4-Layer Alignment
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    continue-on-error: true
     env:
       ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:

@@ -60,6 +60,7 @@ function generateArtifacts(featureName, taskType) {
 
   const artifacts = {
     feature: featureName,
+    taskType: taskType,
     created: now,
     lastUpdated: now,
     status: "in_progress",
