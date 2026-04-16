@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3038,
+  "totalKeywords": 3041,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -8838,6 +8838,15 @@
       "lessons-learned-ipc-4layer-verification-2026-04.md"
     ],
     "コードベースの既存ギャップ": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "cjs": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "検証スクリプトの": [
+      "lessons-learned-ipc-4layer-verification-2026-04.md"
+    ],
+    "不安定はビルド成果物依存が原因": [
       "lessons-learned-ipc-4layer-verification-2026-04.md"
     ],
     "Channel": [

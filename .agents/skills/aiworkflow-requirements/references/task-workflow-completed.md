@@ -6,8 +6,23 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
+- [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-15: TASK-CI-FUTURE-002 test-web シャード化（CI 並列 2 追加・test-desktop 削減）](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
+- 2026-04-14: `TASK-SW-FIX-STATE-DETAIL-001` 状態残留・リカバリーパス・競合状態修正（Phase 10〜12 completed / Phase 13 skipped）
+- [2026-04-14: UT-W3-ANALYTICS-HTTP-PROVIDER-001 Analytics HTTP Provider 実装 / analytics:get-stats / sentCount・failedCount 更新](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: TASK-SW-FIX-FEEDBACK-001 スキル一覧リアルタイム反映・skillPath nullガード・成功表示修正](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-W3-ANALYTICS-STORE-INTEGRATION-001 analytics store integration / agentSlice wiring](./task-workflow-completed-recent-2026-04f.md)
+- 2026-04-13: `TASK-SW-FIX-MODE-MGMT-001` SkillCreateWizard mode/state current facts sync（本ファイルに詳細記録）
+- [2026-04-13: TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: UT-SKILL-WIZARD-FB-05-TEST-EVIDENCE-CONSOLIDATION-001 Phase 11 テスト証跡一本化テンプレート整備（edge case 一覧表）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-13: TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 Renderer 側エラーメッセージ UI 表示 E2E 確認 / TASK-SW-FIX-DATAFLOW-001 Step 1回答→スキル生成連携（Q1〜Q6コンテキストブリッジ実装）](./task-workflow-completed-recent-2026-04e.md)
+- [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
+- [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release](./task-workflow-completed-recent-2026-04g.md)
 - [2026-04-14: TASK-SW-FIX-UI-001 UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）](./task-workflow-completed-recent-2026-04f.md)
@@ -29,6 +44,99 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+### タスク: UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 ci-ipc-continue-on-error-removal（2026-04-16）
+
+| 項目       | 値                                                         |
+| ---------- | ---------------------------------------------------------- |
+| タスクID   | UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001                       |
+| 完了日     | 2026-04-16                                                 |
+| タスク種別 | maintenance（NON_VISUAL / CI close-out）                  |
+| 関連Issue  | [#2196](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2196) |
+| Phase 13   | blocked（ユーザー承認待ち）                                |
+
+#### 実施内容
+
+- `.github/workflows/ci.yml` の `verify-ipc-4layer` job から `continue-on-error: true` を削除し、IPC 4 層違反を CI でブロックする current facts に更新した
+- `docs/30-workflows/unassigned-task/task-ipc-4layer-ci-continue-on-error-removal.md` を完了化し、完了日と Issue #2196 を保持した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/index.md` / `phase-1-requirements.md` 〜 `phase-12-documentation.md` を Phase 12 完了へ同期した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/artifacts.json` を Phase 1-12 `completed` / Phase 13 `not_started` に更新した
+- `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` と `phase12-task-spec-compliance-check.md` を current facts として作成した
+- 新規の unassigned-task / backlog は不要と判断し、追加タスク化は行っていない
+- `apps/desktop/`、`apps/backend/`、`packages/shared/` には追加修正は不要だった
+
+#### Phase 11/12 成果物
+
+| 成果物                       | パス                                                                                               |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| ドキュメント変更履歴         | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/documentation-changelog.md` |
+| Phase 12 準拠チェック        | `docs/30-workflows/ut-fix-ci-ipc-continue-on-error-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- `phase-10-final-review.md`: PASS
+- `phase-11-manual-test.md`: PASS
+- `phase-12-documentation.md` の必須成果物 2 件を作成済み
+- `NON_VISUAL` のためスクリーンショットは N/A
+- `security` job の step-level `continue-on-error` は意図的に残置
+
+#### lessons-learned
+
+- `verify-ipc-4layer` の job-level `continue-on-error` だけを外すことで、CI ブロック力と既存 security の fail-soft を両立できる
+- close-out では実装差分そのものより、phase status と artifacts の同期漏れが将来コストを生む
+- `NON_VISUAL` タスクは screenshot 不要でも、Phase 12 の文書と台帳は必ず current facts へ同期する
+
+### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
+| 完了日     | 2026-04-15                                                                                 |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実施内容
+
+- `packages/shared/src/types/skill-wizard-label-map.ts` に `SemanticLabelEntry` / `SemanticLabelResult` / `resolveLabelEntry()` を追加し、semantic default の変換を shared 側へ集約した
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` から `notion` 専用のハードコード特別ケースを削除した
+- `resolveLabelEntry()` のフォールバックで raw 値の表記を保持するように修正し、`Jira` / `Markdown` / `JSON` の原表記が壊れないようにした
+- `packages/shared/src/types/__tests__/skill-wizard-label-map.test.ts` を拡張し、`notion` / `Jira` / `Markdown` の回帰を固定した
+- `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/*.md` を current facts に合わせて作成・更新した
+
+#### Phase 11/12 成果物
+
+| 成果物                                  | パス                                                                 |
+| --------------------------------------- | -------------------------------------------------------------------- |
+| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
+| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
+| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
+| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
+| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
+| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
+| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
+| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-wizard-label-map.test.ts`: PASS（16 tests）
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --maxWorkers 1`: PASS（93 tests）
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared build`: PASS
+- `pnpm --filter @repo/desktop build`: PASS
+- `grep -n "normalizedKey.*notion\\|notion.*その他\\|特別ケース" apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: 出力なし
+
+#### 苦戦箇所
+
+- raw 値を正規化した後の fallback で小文字化してしまうと、`Jira` / `Markdown` / `JSON` の元表記が壊れる
+- `resolveLabelEntry()` を shared に寄せたあとも、renderer 側の special case を残してしまうと source of truth が二重化する
+
+#### lessons-learned
+
+- `SemanticLabelEntry` のような union で「表示ラベル + 補足情報」を同時に持たせると、special case を shared に閉じやすい
+- raw 値の fallback は原表記を優先し、正規化は lookup のためだけに使う
+- 互換 wrapper を残すと、既存契約を壊さずに内部実装だけを改善できる
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 

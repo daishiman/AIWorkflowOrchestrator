@@ -5,6 +5,18 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
+## 2026-04-16 - UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-ipc-4layer-verification-2026-04.md` に L-IPC4L-CI-001 を追加: CI `.cjs` 検証スクリプトのビルド成果物依存・`continue-on-error: true` 原則禁止ルール
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+`UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` タスクの苦戦箇所（ローカルPASSでCI不安定になった原因と診断手順）が `lessons-learned-ipc-4layer-verification-2026-04.md` に未反映だったため追記。同種のCI設定タスクで同じ問題が再発しないよう標準ルールとして固定した。
+
+## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 current facts sync
 
 ### 変更内容
 
