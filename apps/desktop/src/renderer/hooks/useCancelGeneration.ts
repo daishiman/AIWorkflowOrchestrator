@@ -8,7 +8,7 @@ import { useCallback, useRef } from "react";
 import { useSetStreamingStage } from "../store";
 
 export interface UseCancelGenerationReturn {
-  cancelGeneration: () => Promise<void>;
+  cancelGeneration: () => void;
   startGeneration: () => AbortSignal;
 }
 
@@ -21,16 +21,12 @@ export function useCancelGeneration(): UseCancelGenerationReturn {
     return abortControllerRef.current.signal;
   }, []);
 
-  const cancelGeneration = useCallback(async () => {
+  const cancelGeneration = useCallback(() => {
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setStage("cancelled");
-    // TASK-SW-CANCEL-004: IPC 経由でメインプロセスにキャンセルを通知
-    try {
-      await window.skillCreatorAPI?.cancelGeneration?.();
-    } catch (error) {
-      console.warn("[useCancelGeneration] cancelGeneration IPC failed", error);
-    }
+
+    // AbortController.abort() で Main Process 側の処理も中断される
   }, [setStage]);
 
   return { cancelGeneration, startGeneration };

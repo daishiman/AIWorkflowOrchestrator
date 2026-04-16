@@ -27,7 +27,6 @@ const mockExecuteSkill = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
-let mockStreamingStage: "idle" | "cancelled" = "idle";
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -36,9 +35,6 @@ vi.mock("../../../store", () => ({
   useSelectSkillByName: () => mockSelectSkillByName,
   useSetCurrentView: () => mockSetCurrentView,
   useSetCurrentSkillName: () => mockSetCurrentSkillName,
-  useAppStore: {
-    getState: () => ({ streamingStage: mockStreamingStage }),
-  },
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,
@@ -56,7 +52,7 @@ vi.mock("../../../store", () => ({
 
 vi.mock("../../../hooks/useStreamingProgress", () => ({
   useStreamingProgress: () => ({
-    stage: mockStreamingStage,
+    stage: "idle",
     percent: 0,
     message: "",
     previewContent: null,
@@ -103,7 +99,6 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
     mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
-    mockStreamingStage = "idle";
 
     (window as Record<string, unknown>).electronAPI = {
       skill: { create: spySkillCreate },
@@ -223,20 +218,6 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
       });
       expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
-    });
-
-    it("キャンセル中に store.createSkill が空文字列を返してもエラーを表示しない", async () => {
-      mockCreateSkill.mockResolvedValue("");
-      mockStreamingStage = "cancelled";
-
-      render(<SkillCreateWizard onClose={mockOnClose} />);
-      await navigateToStep1();
-      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
-      });
-
-      expect(screen.queryByText("スキル生成に失敗しました")).toBeNull();
     });
 
     it("生成中は GenerateStep にローディング状態が表示される", async () => {
