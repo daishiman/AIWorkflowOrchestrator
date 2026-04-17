@@ -917,7 +917,11 @@ export function registerAllIpcHandlers(
       if (result.success && result.data !== undefined) {
         return { content: result.data };
       }
-      throw new Error(result.error?.message ?? "LLM query failed");
+      const error = new Error(result.error?.message ?? "LLM query failed");
+      (error as Error & { docError?: typeof result.error }).docError =
+        result.error;
+      error.name = "SkillDocsLLMError";
+      throw error;
     };
     const skillDocGenerator = new SkillDocGeneratorCls(
       queryFn,
