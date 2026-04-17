@@ -4,6 +4,25 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
+
+### 変更内容
+
+- `p02-par-STREAM-001/phase-5-implementation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `p02-par-STREAM-001/phase-6-test-expansion.md` 同上
+- `p02-par-STREAM-001/phase-9-quality-assurance.md` 同上
+- `p02-par-STREAM-001/phase-10-final-review.md` 同上
+- `p02-par-STREAM-001/phase-11-manual-test.md` 同上
+- `p02-par-STREAM-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `p02-par-STREAM-001/index.md` ステータス `未着手` → `Phase13 pending（PR作成待ち）`
+- `generate-index.js` 実行 → `indexes/keywords.json`（3078 keywords）/ `indexes/topic-map.md` 再生成
+
+### 背景
+
+Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
+
+---
+
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
 ### 変更内容

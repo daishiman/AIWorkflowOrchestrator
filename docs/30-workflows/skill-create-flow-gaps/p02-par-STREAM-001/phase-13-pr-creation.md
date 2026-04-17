@@ -23,18 +23,19 @@
 
 **変更ファイル一覧**:
 
-| ファイル                                                                     | 変更内容                                                                |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | `createSkill()` に `onProgress` コールバック引数追加・5節目での呼び出し |
-| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | コールバック呼び出し検証テスト（TC-01〜TC-10）追加                      |
+| ファイル                                                                              | 変更内容                                                                     |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                         | `createSkill()` に `onProgress` コールバック引数追加・create モード限定 emit |
+| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts` | progress 発火/非発火/順序を検証する専用テスト追加                            |
 
 **修正内容サマリ**:
 
-- `SkillCreatorProgress` 型定義を `SkillCreatorService.ts` 内に追加する
+- `SkillCreatorProgressData` 型定義を `SkillCreatorService.ts` 内に追加する
 - `createSkill()` の第2引数にオプショナルな `onProgress` コールバックを追加する
-- 処理の5節目（`planning` / `generating-skill` / `generating-agents` / `validating` / `done`）で
+- 処理の 5 節目（`planning` / `generating-skill` / `generating-agents` / `validating` / `done`）で
   コールバックを呼び出す
 - `onProgress` が未指定の場合でも既存の動作に影響しない（オプショナルチェーン使用）
+- `SkillCreatorService.progress.test.ts` で progress の発火・非発火・順序・引数内容を確認済み
 
 **validator 結果・テスト結果**（実施時に記録）:
 
@@ -42,25 +43,22 @@
 - typecheck: `pnpm --filter @repo/desktop typecheck` → TBD（Phase 9 で確認済み）
 - test: `pnpm --filter @repo/desktop test` → TBD（Phase 9 で確認済み）
 
-### Task 2: TASK-SW-STREAM-002 とのバンドル PR 検討
+### Task 2: PR 方針の確認
 
-**検討事項**:
+**確認事項**:
 
-- 本タスクと TASK-SW-STREAM-002 は異なるファイルを変更する
-  - 本タスク: `SkillCreatorService.ts`
-  - TASK-SW-STREAM-002: `skillCreatorHandlers.ts`
-- 機能として意味を成すのは TASK-SW-STREAM-002 完了後（コールバックが実際に接続されたとき）
-- バンドル PR にすることでレビュー時の文脈が伝わりやすくなる可能性がある
+- 本ブランチでは `skillCreatorHandlers.ts` と `skill-creator-api.ts` の progress 接続が既に存在する
+- そのため、`TASK-SW-STREAM-002` を待つ bundle PR 前提は不要
+- この変更単体で PR 本文を組める
 
-**方針**（ユーザー判断による）:
+**方針**:
 
-- 個別 PR: 本タスク → TASK-SW-STREAM-002 の順でマージ
-- バンドル PR: 両タスクをまとめて一度にマージ
+- 単独 PR: `SkillCreatorService.ts` と progress 専用テストの変更をまとめる
+- 追加の接続変更は不要なので、bundle PR は採らない
 
 ### Task 3: PR 実行条件の確認
 
 - ユーザー承認がない限り commit / push / PR を実行しない
-- TASK-SW-STREAM-002 の進行状況を確認してから PR 方針を決定する
 - 現時点ではユーザー指示があるまで pending 扱いとする
 
 ## 参照資料
@@ -89,13 +87,13 @@
 - [ ] ユーザー承認の有無が明記されている
 - [ ] pending 条件が明記されている
 - [ ] commit / push / PR を未実行であることが記録されている
-- [ ] TASK-SW-STREAM-002 とのバンドル PR 検討が記録されている
+- [ ] bundle PR 前提が不要であることが記録されている
 - [ ] 承認後に必要な成果物が定義されている
 
 ## タスク100%実行確認【必須】
 
 - [ ] Task 1（変更要約準備）を100%実行した
-- [ ] Task 2（バンドル PR 検討）を100%実行した
+- [ ] Task 2（PR 方針の確認）を100%実行した
 - [ ] Task 3（PR 実行条件の確認）を100%実行した
 - [ ] 成果物が定義されている
 - [ ] artifacts.json が更新されている
@@ -103,4 +101,3 @@
 ## 次 Phase
 
 - pending: ユーザー承認待ち
-- TASK-SW-STREAM-002 の進行状況確認後に PR 方針を決定する

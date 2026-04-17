@@ -5,7 +5,7 @@
 ```yaml
 issue_number: 2223
 task_id: TASK-SW-CANCEL-001
-status: open
+status: completed
 priority: high
 scale: tiny
 task_type: FEATURE

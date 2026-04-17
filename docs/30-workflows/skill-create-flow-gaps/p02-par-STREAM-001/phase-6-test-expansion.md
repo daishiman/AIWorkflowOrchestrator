@@ -9,7 +9,7 @@
 | 対象機能   | TASK-SW-STREAM-001      |
 | 前提Phase  | Phase 5: 実装           |
 | 次Phase    | Phase 7: カバレッジ確認 |
-| ステータス | 未実施                  |
+| ステータス | 完了                    |
 | 作成日     | 2026-04-16              |
 
 ## 目的
@@ -18,6 +18,10 @@ Phase 4 で作成した基本テストケース（TC-01〜TC-06）に加え、�
 呼び出し順序・呼び出し回数の検証テストを追加して網羅性を高める。
 
 ## 実行タスク
+
+1. 境界条件テストを追加する。
+2. `TASK-SW-STREAM-002` 接続を見越した拡充を行う。
+3. 回帰テストとカバレッジ確認を行う。
 
 ### Task 1: 境界条件テストの追加
 
@@ -76,17 +80,17 @@ pnpm --filter @repo/desktop test -- --testPathPattern="SkillCreatorService" --co
 
 ## 完了条件
 
-- [ ] TC-07〜TC-10 の境界条件・順序検証テストが追加されている
-- [ ] 全テストケース（TC-01〜TC-10、TC-R01〜TC-R02）が Green である
-- [ ] TASK-SW-STREAM-001-extended-test-record.md に追加テストの記録がある
+- [x] TC-07〜TC-10 の境界条件・順序検証テストが追加されている
+- [x] 全テストケース（TC-01〜TC-10、TC-R01〜TC-R02）が Green である
+- [x] TASK-SW-STREAM-001-extended-test-record.md に追加テストの記録がある
 
 ## タスク100%実行確認【必須】
 
-- [ ] Task 1（境界条件テストの追加）を100%実行した
-- [ ] Task 2（TASK-SW-STREAM-002 接続を見越した拡充）を100%実行した
-- [ ] Task 3（回帰テスト追加実行確認）を100%実行した
-- [ ] 成果物（TASK-SW-STREAM-001-extended-test-record.md）が生成されている
-- [ ] artifacts.json が更新されている
+- [x] Task 1（境界条件テストの追加）を100%実行した
+- [x] Task 2（TASK-SW-STREAM-002 接続を見越した拡充）を100%実行した
+- [x] Task 3（回帰テスト追加実行確認）を100%実行した
+- [x] 成果物（TASK-SW-STREAM-001-extended-test-record.md）が生成されている
+- [x] artifacts.json が更新されている
 
 ## 次 Phase
 

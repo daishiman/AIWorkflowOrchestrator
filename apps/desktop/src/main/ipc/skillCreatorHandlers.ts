@@ -274,6 +274,7 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
+        // progress 通知を renderer に送る
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {
