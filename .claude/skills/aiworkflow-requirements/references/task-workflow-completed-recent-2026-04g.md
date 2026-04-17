@@ -12,6 +12,38 @@
 
 # 完了タスク記録 — 2026-04-14
 
+## TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16）
+
+| 項目       | 内容                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-007                                                                                        |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                            |
+| タイプ     | docs-only / CI 改善 / ledger-sync                                                                         |
+| 優先度     | 低                                                                                                        |
+| 完了日     | 2026-04-16                                                                                                |
+| 対象       | `docs/30-workflows/task-ci-future-007-backend-codecov-upload/` / `task-workflow.md` / `task-workflow-completed.md` / `LOGS.md` / `indexes/topic-map.md` / `indexes/keywords.json` |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/artifacts.json` / `task-workflow-completed-recent-2026-04g.md` |
+
+#### 実施内容
+
+- `task-workflow.md` の current facts に `TASK-CI-FUTURE-007` の close-out を追加し、`phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync` を反映した
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04g.md` に completed record を追加した
+- `task-specification-creator/LOGS.md` と `aiworkflow-requirements/LOGS.md` を 2026-04-16 同波で更新し、`.agents` mirror も同期した
+- `indexes/topic-map.md` と `indexes/keywords.json` を再生成した
+
+#### 検証証跡
+
+- `task-workflow.md` current facts: `TASK-CI-FUTURE-007` / `phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync`
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04g.md`: 完了記録追加
+- `task-specification-creator/LOGS.md` / `aiworkflow-requirements/LOGS.md`: 2026-04-16 同期
+- `indexes/topic-map.md` / `indexes/keywords.json`: regenerate PASS
+
+#### lessons-learned
+
+- ledger と index は task-workflow 本文と同波で更新すると、current facts の齟齬を早く潰せる
+- NON_VISUAL の CI タスクでも、phase 11 の証跡型と backend codecov flag のような確認観点を文言化すると再監査しやすい
+- `outputs/artifacts.json sync` を明記すると、root と outputs の parity をレビューで追いやすい
+
 ## TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）
 
 | 項目       | 内容                                                                                                                                    |

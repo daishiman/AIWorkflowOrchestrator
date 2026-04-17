@@ -1,0 +1,105 @@
+{
+  "task_id": "TASK-CI-FUTURE-007",
+  "task_name": "@repo/backend Codecov カバレッジアップロード対応",
+  "status": "phase12_completed",
+  "taskType": "NON_VISUAL",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "created_date": "2026-04-16",
+  "completed_date": "2026-04-16",
+  "spec_path": "docs/30-workflows/task-ci-future-007-backend-codecov-upload",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-1/current-state.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/risks.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-2/design-decisions.md",
+        "outputs/phase-2/validation-matrix.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/minor-tracking.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-4/verification-plan.md",
+        "outputs/phase-4/rollback-criteria.md"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-5/implementation-result.md",
+        "outputs/phase-5/green-confirmation.md"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "outputs": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "outputs": ["outputs/phase-7/coverage-check-result.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "outputs": ["outputs/phase-8/refactoring-result.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "outputs": ["outputs/phase-9/quality-check-result.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/ac-verification.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "visualType": "NON_VISUAL",
+      "outputs": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/ci-timing-measurements.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/phase11-capture-metadata.json"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": { "status": "blocked", "outputs": [] }
+  },
+  "acceptance_criteria": ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5"],
+  "target_files": [
+    ".github/workflows/ci.yml",
+    "apps/backend/vitest.config.ts",
+    "codecov.yml"
+  ],
+  "dependencies": ["TASK-CI-FUTURE-002"],
+  "related_tasks": ["TASK-CI-OPT-001", "TASK-CI-FUTURE-002"]
+}

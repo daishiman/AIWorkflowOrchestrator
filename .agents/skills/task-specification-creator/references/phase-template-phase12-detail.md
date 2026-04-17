@@ -246,6 +246,8 @@ node scripts/complete-phase.js \
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
+- [ ] **`artifacts.json` と `outputs/artifacts.json` の status が一致（parity）している**【必須・TASK-CI-FUTURE-007 FB反映】
+- [ ] **`NON_VISUAL` タスクでは `implementation-guide.md` に `## 視覚証跡` セクションを追加し、代替証跡（CLI / CI ログ / workflow-static-check 等）を明記している**【必須・TASK-CI-FUTURE-007 FB反映】
 - [ ] **苦戦箇所セクションを記録した**
 - [ ] **本Phase内の全タスクを100%実行完了**
 
