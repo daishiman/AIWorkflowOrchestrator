@@ -3714,6 +3714,17 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
 
+### references/lessons-learned-stream-001-progress-callback.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| L-STREAM-001: optional callback パターンの設計判断 | L14 |
+| L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
+| L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
+| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
+| 後続タスク・未タスク | L100 |
+
 ### references/lessons-learned-templates.md
 
 | セクション | 行 |
@@ -5176,6 +5187,22 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L18 |
+| 利用順序 | L129 |
+| 関連ドキュメント | L134 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
+| 仕様書インデックス | L21 |
+| 利用順序 | L132 |
+| 関連ドキュメント | L137 |
+| 仕様書インデックス | L22 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L138 |
+| 仕様書インデックス | L19 |
+| 利用順序 | L130 |
+| 関連ドキュメント | L135 |
+| 仕様書インデックス | L21 |
 | 仕様書インデックス | L25 |
 | 利用順序 | L137 |
 | 関連ドキュメント | L143 |

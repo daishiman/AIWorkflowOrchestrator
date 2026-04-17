@@ -10,19 +10,22 @@
 | 前提Phase  | -                                             |
 | 後続Phase  | Phase 2                                       |
 | 作成日     | 2026-04-15                                    |
-| ステータス | pending                                       |
+| ステータス | completed                                     |
 
 ## 目的
 
-`SkillCreatorService.ts` の行 126 にある `void structurePlan` を削除し、
-`structurePlan` を `generate_skill_md.js` に渡す接続配線の要件と受け入れ基準を固定する。
-現状コードを確認し、TASK-SW-STRUCT-001 との依存関係を明確にする。
+`SkillCreatorService.ts` の current branch と upstream の差分を確認し、
+`structurePlan` の接続状態と TASK-SW-STRUCT-001 との依存関係を要件・受け入れ基準に落とし込む。
+現状コードの実装済み範囲と未完了範囲を切り分ける。
 
 ## 実行タスク
 
-- P50チェック: 対象コードの現状確認（`:126` の `void structurePlan` の存在確認）
+- P50チェック: current branch と upstream の差分確認（`void structurePlan` の有無を含む）
+- 既存コードの命名規則の記録（camelCase / kebab-case / IPC チャンネル名）
+- 前タスクとの差分棚卸し（TASK-SW-STRUCT-001 から増えた/変わった点）
 - TASK-SW-STRUCT-001 完了確認基準の定義
-- `plan` オブジェクト生成ロジック（:180-194）の現状確認
+- `plan` オブジェクト生成ロジック（:711-725）の現状確認
+- 4条件レビュー: 矛盾なし・漏れなし・整合性あり・依存関係整合を確認
 - 受け入れ基準定義: AC-1〜AC-5 を検証可能な形で固定
 - タスク分類宣言
 
@@ -40,29 +43,33 @@
 
 ### 0. P50チェック: 既実装状態の調査（必須）
 
+**【注意】 2026-04-16 の upstream マージにより実装状況が変化しています**
+
 ```bash
 # SkillCreatorService.ts の最近のコミット履歴確認
 git log --oneline -10 -- apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
-# void structurePlan の存在確認（:126 付近）
+# void structurePlan が削除済みか確認（結果0件が期待値）
 grep -n "void structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
-# structurePlan の宣言・使用箇所の確認
-grep -n "structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
-
-# plan オブジェクト生成箇所の確認（:180-194 付近）
-grep -n "const plan\|generate_skill_md" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+# generateSkillMd の呼び出し箇所確認（structurePlan を引数に呼んでいるか）
+grep -n "generateSkillMd\|structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 ```
 
 ### 1. 現状コードの確認
 
-設計書（phase-1-analysis.md）で特定された問題を実際のコードで確認する:
+**2026-04-16 時点での確認結果（コミット 26891ab1c）:**
 
-| 確認項目                       | 期待する確認内容                                                             |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| `:126` の `void structurePlan` | `void structurePlan;` コメント付きプレースホルダーが存在すること             |
-| `plan` オブジェクトの独立性    | `:180-194` の `plan` が `structurePlan` と無関係な固定値で構成されていること |
-| `runCreateWorkflow` の戻り値   | `StructurePlanJson` を返すことを確認                                         |
+| 確認項目                         | 期待する確認内容                                                                     | 状態         |
+| -------------------------------- | ------------------------------------------------------------------------------------ | ------------ |
+| `void structurePlan` の存在      | 削除済み（0件）                                                                      | **確認済み** |
+| `generateSkillMd` との接続       | `if (structurePlan) { await this.generateSkillMd(skillDir, structurePlan); }` が存在 | **確認済み** |
+| null フォールバック              | `else if (mode === "create") { logger.warn(...); ensureSkillMdExists(...) }` が存在  | **確認済み** |
+| 非 create モードのフォールバック | `else { ensureSkillMdExists(...) }` が存在                                           | **確認済み** |
+| `runCreateWorkflow` の `purpose` | まだ `extractPurposeAgent` 文字列（TASK-SW-STRUCT-001 未完了）                       | **未修正**   |
+
+現時点では AC-1〜AC-4 が current branch で確認済みのため、Phase 5 以降は
+差分が残る場合のみ実装し、差分がなければ回帰確認を主とする。
 
 ### 2. TASK-SW-STRUCT-001 完了確認基準の定義
 
@@ -133,18 +140,18 @@ TASK-SW-STRUCT-001 完了後の期待状態:
 
 ## 完了条件
 
-- [ ] P50チェック実施済み（`:126` の `void structurePlan` が存在することを確認）
-- [ ] `plan` オブジェクト生成ロジックが `structurePlan` と無関係であることを確認済み
-- [ ] TASK-SW-STRUCT-001 完了確認基準が定義済み
-- [ ] AC-1〜AC-5 が検証可能な形で定義されている
+- [ ] P50チェック実施済み（`void structurePlan` が削除済み・`generateSkillMd` 接続が実装済みを確認）
+- [ ] 実装済み分岐（structurePlan あり/null/非 create モード）の動作確認
+- [ ] TASK-SW-STRUCT-001 完了確認基準が定義済み（purpose フィールドの修正確認コマンド）
+- [ ] AC-1〜AC-5 が検証可能な形で定義されている（AC-1〜AC-4 は current branch の確認結果をドキュメント化）
 - [ ] タスク分類を宣言済み
 - [ ] スコープ外（LLM 統合・STRUCT-001）との境界が明確
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
-1. P50チェック（`:126` の `void structurePlan` 確認）
-2. `plan` オブジェクト生成ロジックの確認
+1. P50チェック（current branch と upstream の差分確認）
+2. 既存コードの命名規則と前タスク差分の棚卸し
 3. TASK-SW-STRUCT-001 完了確認基準の定義
 4. 受け入れ基準（AC-1〜AC-5）の固定
 5. タスク分類の宣言

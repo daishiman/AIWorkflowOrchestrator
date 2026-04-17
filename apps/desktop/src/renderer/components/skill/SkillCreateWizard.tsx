@@ -44,6 +44,7 @@ import {
   useClearGenerationState,
   useWorkflowSnapshot,
   useResetStreamingProgress,
+  useAppStore,
 } from "../../store";
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
@@ -106,6 +107,31 @@ const EXTERNAL_TOOL_LABELS = {
   github: "GitHub",
   notion: "Notion",
 } as const;
+
+function isAbortLikeError(error: unknown): boolean {
+  if (error instanceof Error) {
+    return (
+      error.name === "AbortError" ||
+      /abort|cancel|中断|キャンセル/i.test(error.message)
+    );
+  }
+
+  if (error && typeof error === "object") {
+    const candidate = error as {
+      name?: unknown;
+      message?: unknown;
+      code?: unknown;
+    };
+    if (candidate.name === "AbortError" || candidate.code === "ABORT_ERR") {
+      return true;
+    }
+    if (typeof candidate.message === "string") {
+      return /abort|cancel|中断|キャンセル/i.test(candidate.message);
+    }
+  }
+
+  return false;
+}
 
 // ────────────────────────────────────────────────────────────────────────────
 // ユーティリティ関数
@@ -479,6 +505,9 @@ export const SkillCreateWizard = React.forwardRef<
         return;
       }
       if (!path) {
+        if (useAppStore.getState().streamingStage === "cancelled") {
+          return;
+        }
         setError(new Error("スキル生成に失敗しました"));
         return;
       }
@@ -499,6 +528,9 @@ export const SkillCreateWizard = React.forwardRef<
 
       goToStep(3);
     } catch (err) {
+      if (isAbortLikeError(err)) {
+        return;
+      }
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );
@@ -532,7 +564,7 @@ export const SkillCreateWizard = React.forwardRef<
 
   /** 生成をキャンセルして Step 0 に戻る */
   const handleCancelGeneration = () => {
-    cancelGeneration();
+    void cancelGeneration();
     resetGeneratedState(true);
     goToStep(0);
   };
