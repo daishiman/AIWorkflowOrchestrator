@@ -2953,4 +2953,28 @@ TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の 
 | 変更対象 | `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/` (index.md + Phase 1-13 + artifacts.json)                                                                                                                        |
 | 結果     | notion freeText 特別ケースを解消。`resolveLabelEntry()` 追加で呼び出し元が label と freeText を明示的に分離できる設計を採用。`SemanticLabelEntry` 型を shared に定義し将来の拡張は SEMANTIC_LABEL_MAP エントリ追加のみで対応可能にした |
 | 検証     | タスク仕様書 Phase 1-13 + artifacts.json 作成完了。依存タスク（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）との整合確認済み                                                                                                    |
-| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）                                                                                                                                                     |
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
+
+---
+
+## 2026-04-17 - UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `task-specification-creator/SKILL.md` に **[Feedback IPC-MERGE-001]** を追加（IPCハンドラーのオブジェクトマージ戦略をPhase 2設計で明示すること）
+- `task-specification-creator/LOGS.md` に本エントリを追加
+- `aiworkflow-requirements/LOGS.md` に UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 完了エントリを追加
+- `arch-ipc-persistence.md` v1.3.0 更新内容を `indexes/topic-map.md` に反映
+- `lessons-learned-ipc-preload-runtime-2026-04.md` に deepMerge / prototype pollution 防止パターンを追記
+
+### 背景
+
+UT-FIX-STORE-SETTINGS-DEEP-MERGE-001（settings:update ハンドラーの deepMerge 化）の Phase 12 close-out sync。
+IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/ディープマージ戦略を設計段階で決定しなかったため、実装段階で後付けのリファクタが必要になった知見を定型化。
+
+| 項目     | 内容                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | bug-fix / TDD / IPC handler / security hardening / Phase 12 close-out / skill-sync                                          |
+| 変更対象 | `SKILL.md`（Feedback IPC-MERGE-001 追加）、`LOGS.md`（本エントリ）、`aiworkflow-requirements/LOGS.md`、`topic-map.md`、`lessons-learned-ipc-preload-runtime-2026-04.md` |
+| 結果     | Phase 2 設計にマージ戦略の明示義務とprototype pollution 防止を標準化。deepMerge パターンと安全要件をスキル知見として記録  |
+| 検証     | vitest PASS / typecheck PASS / lint PASS（UT-FIX-STORE-SETTINGS-DEEP-MERGE-001）                                           |                                                                                                                                                     |

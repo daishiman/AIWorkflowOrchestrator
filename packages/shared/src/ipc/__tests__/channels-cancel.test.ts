@@ -31,4 +31,18 @@ describe("SKILL_CREATOR_CANCEL チャンネル定数", () => {
     const occurrences = allValues.filter((v) => v === cancelValue);
     expect(occurrences).toHaveLength(1);
   });
+
+  // TC-05: チャンネル値が文字列型であること
+  it("SKILL_CREATOR_CANCEL の値が文字列型である", () => {
+    expect(
+      typeof (IPC_CHANNELS as Record<string, string>).SKILL_CREATOR_CANCEL,
+    ).toBe("string");
+  });
+
+  // TC-06: チャンネル値が 'skill-creator:' プレフィックスを持つこと
+  it("SKILL_CREATOR_CANCEL の値が 'skill-creator:' プレフィックスを持つ", () => {
+    expect(
+      (IPC_CHANNELS as Record<string, string>).SKILL_CREATOR_CANCEL,
+    ).toMatch(/^skill-creator:/);
+  });
 });

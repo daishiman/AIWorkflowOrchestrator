@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 1                                       |
 | 後続Phase  | Phase 3                                       |
 | 作成日     | 2026-04-15                                    |
-| ステータス | pending                                       |
+| ステータス | completed                                     |
 
 ## 目的
 
@@ -27,11 +27,11 @@
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                    | 用途                 |
-| ---------------------- | --------------------------------------------------------------------------------------- | -------------------- |
-| Phase 1 成果物         | `outputs/phase-1/requirements.md`                                                       | 要件・AC 参照        |
-| phase-2-solution.md    | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 解決アプローチB 参照 |
-| SkillCreatorService.ts | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                           | 修正対象コード確認   |
+| 資料名                 | パス                                                             | 用途                 |
+| ---------------------- | ---------------------------------------------------------------- | -------------------- |
+| Phase 1 成果物         | `outputs/phase-1/requirements.md`                                | 要件・AC 参照        |
+| phase-2-solution.md    | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` | 解決アプローチB 参照 |
+| SkillCreatorService.ts | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`    | 修正対象コード確認   |
 
 ## 実行手順
 

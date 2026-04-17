@@ -130,6 +130,7 @@ export function registerSkillCreatorHandlers(
   skillCreatorService: SkillCreatorService,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
   outputHandler?: SkillCreatorOutputHandler,
+  onCancelCurrentSkillCreation?: () => void,
 ): void {
   // skill-creator:detect-mode - リクエストからモードを判定
   ipcMain.handle(
@@ -273,6 +274,7 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
+        // TASK-SW-STREAM-002: onProgress コールバックを sendSkillCreatorProgress に接続
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {
@@ -682,19 +684,24 @@ export function registerSkillCreatorHandlers(
     },
   );
 
-  // skill-creator:cancel - キャンセル（TASK-SC-CANCEL-001: 将来実装予定）
+  // skill-creator:cancel - キャンセル処理
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-    async (event: IpcMainInvokeEvent): Promise<IpcResult<null>> => {
+    async (event: IpcMainInvokeEvent): Promise<IpcResult<void>> => {
       const validation = validateIpcSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-        { getAllowedWindows: () => [mainWindow] },
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
       );
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      return { success: false, error: "not-implemented" };
+
+      skillCreatorService.cancelCurrentOperation();
+      onCancelCurrentSkillCreation?.();
+      return { success: true };
     },
   );
 
@@ -732,6 +739,8 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
+  // TASK-SW-CANCEL-003: キャンセルハンドラーの解除
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   // Phase 5 extended handlers
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);

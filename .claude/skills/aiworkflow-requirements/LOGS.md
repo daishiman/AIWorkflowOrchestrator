@@ -56,6 +56,21 @@ TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cance
 
 ---
 
+## 2026-04-16 — impl-spec-to-skill-sync (skill-create-flow-gaps CANCEL/STREAM/STRUCT 実装反映)
+
+### 変更内容
+
+- `references/task-workflow.md`: 重複テーブル（省略形式 3件）を削除し完全形式に統一。`task-workflow-completed-recent-2026-04g.md` エントリを追加
+- `references/task-workflow-completed-recent-2026-04g.md`: 重複ヘッダー（7行 → 1行）を修正
+- `references/lessons-learned.md`: `lessons-learned-current-2026-04*`（5件）と `lessons-learned-skill-cancel-abortsignal.md`（1件）のインデックスエントリを追加
+- `references/lessons-learned-skill-cancel-abortsignal.md`: 新規作成（147行）— AbortSignal伝播・プロセスkill・settled フラグ・半完成ディレクトリ削除・IPC 4層キャンセル設計の知見を記録
+- `indexes/topic-map.md` / `indexes/keywords.json`: `generate-index.js` 再生成（464ファイル / 3042キーワード）
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+skill-create-flow-gaps（CANCEL-001〜004 / STREAM-001 / STRUCT-001）の実装完了後、システム仕様書・スキル・lessons-learned への反映が未完了だった。Phase-12準拠度 85% → 100% を目標に同波更新を実施。AbortSignal を ScriptExecutor / ResourceLoader まで伝播するキャンセル実装の知見を `lessons-learned-skill-cancel-abortsignal.md` として体系化した。
+
 ## 2026-04-15 - TASK-CI-FUTURE-003 current facts sync
 
 ### 変更内容
@@ -3422,6 +3437,19 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `.github/actions/pnpm-install-retry/action.yml`（キャッシュヒット率確認ステップ追加） |
 | 結果     | 3状態判定・Summary 出力・アノテーション出力 実装完了。全 AC/FR 100% 網羅              |
 | 検証     | 静的コードレビュー PASS / Phase 10 最終レビューゲート PASS                            |
+
+## 2026-04-17 — UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 completed
+
+- `arch-ipc-persistence.md` v1.3.0 更新: deepMerge パターン（plain-object validation・prototype pollution 防止・マージルール）と User Settings 永続化パターンを追記
+- `storeHandlers.ts` に `isPlainObject` / `cloneSafePlainObject` / `deepMergePlainObjects` / `deepMerge<T>` / `registerUserSettingsHandlers` 実装完了
+- `storeHandlers.test.ts` 全テスト PASS
+
+| 項目     | 内容                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
+| 種別     | bug-fix / TDD / IPC handler / security hardening                                                                  |
+| 変更対象 | `apps/desktop/src/main/ipc/storeHandlers.ts`、`storeHandlers.test.ts`、`arch-ipc-persistence.md`（v1.3.0 更新） |
+| 結果     | settings:update を deepMerge 化。plain object 以外を拒否し、`__proto__` / `constructor` / `prototype` を無視してprototype pollution を防止 |
+| 検証     | vitest PASS / typecheck PASS / lint PASS                                                                          |
 
 ## 2026-04-15 — TASK-CI-FUTURE-005 completed (spec_created)
 
