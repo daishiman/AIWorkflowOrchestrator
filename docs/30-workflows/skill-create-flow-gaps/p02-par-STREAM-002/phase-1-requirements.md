@@ -29,15 +29,15 @@
 
 ## 参照資料
 
-| 資料名                  | パス                                                                                    | 用途                              |
-| ----------------------- | --------------------------------------------------------------------------------------- | --------------------------------- |
-| phase-1-analysis.md     | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` | 問題1の現状分析                   |
-| phase-2-solution.md     | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 解決策設計（解決アプローチB）     |
-| phase-3-review.md       | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md`   | タスク粒度・スコープ確認（3.5節） |
-| TASK-SW-STREAM-001 仕様 | `docs/30-workflows/skill-create-flow-gaps/p01-par-STREAM-001/`                          | 前提タスク確認                    |
-| skillCreatorHandlers.ts | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                                     | 修正対象ファイル                  |
-| SkillCreateWizard.tsx   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                      | props 接続確認対象                |
-| GenerateStep.tsx        | `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx`                    | props 受取確認用                  |
+| 資料名                  | パス                                                                 | 用途                              |
+| ----------------------- | -------------------------------------------------------------------- | --------------------------------- |
+| phase-1-analysis.md     | `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md`     | 問題1の現状分析                   |
+| phase-2-solution.md     | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`     | 解決策設計（解決アプローチB）     |
+| phase-3-review.md       | `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`       | タスク粒度・スコープ確認（3.5節） |
+| TASK-SW-STREAM-001 仕様 | `docs/30-workflows/skill-create-flow-gaps/p01-par-STREAM-001/`       | 前提タスク確認                    |
+| skillCreatorHandlers.ts | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                  | 修正対象ファイル                  |
+| SkillCreateWizard.tsx   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`   | props 接続確認対象                |
+| GenerateStep.tsx        | `apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx` | props 受取確認用                  |
 
 ## 実行手順
 

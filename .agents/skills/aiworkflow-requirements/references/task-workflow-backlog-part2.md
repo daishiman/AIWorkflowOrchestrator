@@ -291,12 +291,10 @@
 | UT-TASKSPEC-DRY-REFERENCE-TABLE-001 | 参照テーブル DRY 原則強化（共通参照を index.md に集約） | 低 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案2（2026-03-24） |`docs/30-workflows/unassigned-task/UT-TASKSPEC-DRY-REFERENCE-TABLE-001.md`|
 | UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001 | Phase 12 skill-feedback-report 必須化（テンプレート・artifacts.json 自動追加） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案3（2026-03-24） |`docs/30-workflows/unassigned-task/UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001.md`|
 | ~~TASK-SC-07~~ | ~~SkillCreateWizard への LLM 生成フロー接続~~ | ~~中~~ | **完了**（2026-03-25） |`docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/`|
-| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION Phase 3 R-3（2026-03-24） |`docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md`|
 | TASK-SC-09 | detectMode "improve" モードハンドリング実装 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） |`docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md`|
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） |`docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md`|
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） |`docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md`|
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） |`docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md`|
-| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装（GenerateStep キャンセルボタンから Main Process への中断シグナル送信） | 高 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） |`docs/30-workflows/unassigned-task/TASK-SC-07-IPC-CANCEL.md`|
 | TASK-SC-07-DEBOUNCE | デバウンス100ms実装（createSkill 呼び出しの連打防止） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） |`docs/30-workflows/unassigned-task/TASK-SC-07-DEBOUNCE.md`|
 | TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装（API_KEY_MISSING エラー時の「設定を開く」ボタン押下で SettingsView へ遷移） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） |`docs/30-workflows/unassigned-task/TASK-SC-07-OPEN-SETTINGS.md`|
 | TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化（IPC エラーレスポンスから GenerationErrorCode を判定するパーサー実装） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） |`docs/30-workflows/unassigned-task/TASK-SC-07-PARSE-ERROR-CODE.md`|
