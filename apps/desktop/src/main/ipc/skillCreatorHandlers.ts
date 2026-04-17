@@ -274,7 +274,6 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        // TASK-SW-STREAM-002: onProgress コールバックを sendSkillCreatorProgress に接続
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {
@@ -739,8 +738,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
-  // TASK-SW-CANCEL-003: キャンセルハンドラーの解除
-  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   // Phase 5 extended handlers
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);
