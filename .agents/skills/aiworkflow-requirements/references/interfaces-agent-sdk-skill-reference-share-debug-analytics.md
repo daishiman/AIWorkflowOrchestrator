@@ -221,7 +221,7 @@ TASK-9F の share 型に加えて、TASK-SKILL-LIFECYCLE-08 で publish/distribu
 
 | タスクID | 内容 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
+| UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 
 ---
@@ -380,3 +380,93 @@ UT-EXECUTION-ENV-TERMINAL-001 で実装。Provider/Model 未選択時に DEFAULT
 - UT-EXECUTION-ENV-TERMINAL-RENDERER-ERROR-UI-001: Renderer 側エラー表示 UI（`terminal-config-error`）
 
 ---
+
+## LLM統合型定義（TASK-UT-9I-001）
+
+> 完了タスク: TASK-UT-9I-001（2026-04-17）
+> 実装ファイル:
+> - `apps/desktop/src/main/services/llm/LLMClient.ts` — Facade パターン
+> - `apps/desktop/src/main/services/llm/providers/AnthropicProvider.ts` — Anthropic API実装
+> - `apps/desktop/src/main/services/skill/LLMDocQueryAdapter.ts` — アダプタ層
+
+### ILLMClient インターフェース
+
+```typescript
+export interface ILLMClient {
+  query(prompt: string): Promise<LLMQueryResult>;
+}
+
+export type LLMQueryResult =
+  | { success: true; content: string }
+  | { success: false; errorCode: DocErrorCode; message: string; retryable: boolean };
+
+export type DocErrorCode =
+  | "API_KEY_MISSING"
+  | "API_KEY_INVALID"
+  | "RATE_LIMIT"
+  | "SERVER_ERROR"
+  | "TIMEOUT"
+  | "NETWORK_ERROR"
+  | "INTERNAL_ERROR";
+```
+
+### DocErrorCode と DocError コードマッピング（HTTP→DocError）
+
+| errorCode | DocError code | category | retryable |
+|-----------|--------------|----------|-----------|
+| API_KEY_MISSING | 2001 | BUSINESS | false |
+| RATE_LIMIT | 2002 | BUSINESS | true |
+| SERVER_ERROR | 2003 | BUSINESS | true |
+| TIMEOUT | 2004 | TRANSIENT | true |
+| NETWORK_ERROR | 2005 | TRANSIENT | true |
+| INTERNAL_ERROR | 2006 | SYSTEM | false |
+
+### LLMDocQueryAdapter インターフェース
+
+```typescript
+export interface ILLMDocQueryAdapter {
+  query(prompt: string): Promise<DocOperationResult<string>>;
+  isAvailable(): Promise<boolean>;
+  getProviderName(): string;
+}
+
+export type ApiKeyResolver = () => string | null | Promise<string | null>;
+```
+
+### LLMQueryFn 型（SkillDocGenerator DI注入）
+
+`SkillDocGenerator` は `LLMQueryFn` 型をコンストラクタで受け取ることで LLM 依存を抽象化する。
+
+```typescript
+export type LLMQueryFn = (prompt: string) => Promise<LLMQueryResult>;
+```
+
+### 実装上の注意点（TASK-UT-9I-001）
+
+| 項目 | 内容 |
+|------|------|
+| エラーサニタイゼーション | `sanitizeErrorMessage()` でスタックトレース・パス・IPアドレス・機密情報をパターンマッチングで除去 |
+| 非同期APIキー解決 | `ApiKeyResolver` 型で同期/非同期両方に対応。`authKeyService.getKey()` をクロージャで渡す |
+| タイムアウト実装 | `Promise.race()` + `setTimeout()` パターン。`finally` でタイムアウトIDクリーンアップ必須 |
+| Stub検出パターン | `"Generated content for:"` 文字列でstubと実装を区別 |
+
+---
+
+## UT-9I-001 current reference（LLM provider integration）
+
+2026-04-17 時点の current reference は `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/`。
+`SkillDocGenerator` の current runtime path は `LLMDocQueryAdapter` → `AnthropicProvider` → `DocErrorCode` → `DocOperationResult<string>` で統一する。
+
+### current runtime path
+
+| 項目 | 値 |
+| --- | --- |
+| current task | `UT-9I-001` / `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` |
+| adapter | `apps/desktop/src/main/services/skill/LLMDocQueryAdapter.ts` |
+| provider | `apps/desktop/src/main/services/llm/providers/AnthropicProvider.ts` |
+| error code | `DocErrorCode` |
+| query type | `DocOperationResult<string>` |
+
+#### 関連未タスク
+
+- UT-9I-002: ドキュメントテンプレート CRUD 機能実装（別タスク、現行 root は task-specification-creator 側で管理）
