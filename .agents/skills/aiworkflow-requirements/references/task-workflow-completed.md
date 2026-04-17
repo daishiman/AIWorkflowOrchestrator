@@ -7,6 +7,8 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
+- 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
+- 2026-04-17: `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` SkillDocGenerator LLM プロバイダ連携実装（LLMClient / AnthropicProvider / stub→本番置換 / Phase 12 close-out / NON_VISUAL / Issue #2245）
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-16: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化](./task-workflow-completed-recent-2026-04b.md)
@@ -1821,7 +1823,8 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 実施内容
 
-- `LLMDocQueryAdapter` を実装し、SkillDocGenerator の stubQueryFn を差し替えた
+- `LLMDocQueryAdapter` を実装し、SkillDocGenerator の queryFn DI を差し替えた
+- `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` の 2026-04-17 current reference は `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/` であり、`UT-9I-001` の runtime path は `LLMDocQueryAdapter` / `AnthropicProvider` / `DocErrorCode` に同期済み
 - `SkillDocsCapabilityResolver` で integrated-api / guidance-only / terminal-handoff の3パス判定を実装
 - `DocOperationResult<T>` 型を追加し、エラーハンドリングを統一
 - 実装完了時点の証跡として 97テスト ALL PASS、カバレッジ基準充足（LLMDocQueryAdapter 98.58%、CapabilityResolver 100%）を保持

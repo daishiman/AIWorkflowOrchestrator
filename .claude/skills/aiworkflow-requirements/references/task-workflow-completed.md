@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
+- 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
 - 2026-04-17: `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` SkillDocGenerator LLM プロバイダ連携実装（LLMClient / AnthropicProvider / stub→本番置換 / Phase 12 close-out / NON_VISUAL / Issue #2245）
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)

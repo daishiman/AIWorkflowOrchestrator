@@ -1,15 +1,18 @@
 /**
- * SkillCreatorService - 進捗コールバック ユニットテスト
- * TASK-SW-STREAM-001: createSkill() onProgress コールバック
+ * SkillCreatorService.createSkill - 進捗コールバックテスト
+ * TASK-SW-STREAM-001: skill-creator-service-progress-callback
  *
- * TC-01: onProgress が省略可能であること（undefined でクラッシュしない）
- * TC-02: createSkill が onProgress コールバックを呼び出すこと
- * TC-03: 最初の進捗コールバックが phase="planning" percentage=10 で呼ばれること
- * TC-04: percentage=40 の generating-skill 進捗が呼ばれること
- * TC-05: percentage=70 の generating-agents 進捗が呼ばれること
- * TC-06: percentage=90 の validating 進捗が呼ばれること
- * TC-07: 最後の進捗が phase="done" percentage=100 で呼ばれること
- * TC-08: 全 5 回の進捗コールバックが呼ばれること
+ * TDD: Phase 4 で作成（Red → Phase 5 実装後に Green）
+ *
+ * テストケース:
+ * TC-01: onProgress が "planning" フェーズで呼ばれること
+ * TC-02: onProgress が "generating-skill" フェーズで呼ばれること
+ * TC-03: onProgress が "generating-agents" フェーズで呼ばれること
+ * TC-04: onProgress が "validating" フェーズで呼ばれること
+ * TC-05: onProgress が "done" フェーズで呼ばれること
+ * TC-06: onProgress が合計5回呼ばれること
+ * TC-07: onProgress が未指定でも createSkill が正常完了すること
+ * TC-08: onProgress のフェーズが planning→done の順序で呼ばれること
  * TC-09: onProgress の percentage 値が正確に 10/40/70/90/100 であること
  * TC-10: onProgress の message 内容が正確な日本語文字列であること
  * TC-11: onProgress がエラーを投げた場合にそのエラーが伝播すること
@@ -18,7 +21,7 @@
  * TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import * as fsPromises from "fs/promises";
 import { SkillCreatorService } from "../SkillCreatorService";
 import { ScriptExecutor } from "../ScriptExecutor";
@@ -56,20 +59,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     outputs: ["output1"],
     toolsNeeded: ["Read", "Write"],
     abstractionLevel: "L2",
-  };
-
-  const allowSuccessfulCreate = () => {
-    mockScriptExecutor.execute.mockImplementation(async () => ({
-      success: true,
-      stdout: "",
-      stderr: "",
-      exitCode: 0,
-    }));
-    vi.mocked(fsPromises.access).mockImplementation(async (target) => {
-      const resolved = String(target);
-      if (/test-skill[\\/]SKILL\.md$/.test(resolved)) return;
-      throw new Error("ENOENT");
-    });
   };
 
   beforeEach(() => {
@@ -119,13 +108,8 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     onProgress = vi.fn();
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe("正常系: コールバックが指定された場合", () => {
     it('TC-01: onProgress が "planning" フェーズで呼ばれること (AC-2)', async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledWith(
@@ -134,7 +118,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it('TC-02: onProgress が "generating-skill" フェーズで呼ばれること (AC-3)', async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledWith(
@@ -143,7 +126,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it('TC-03: onProgress が "generating-agents" フェーズで呼ばれること (AC-3)', async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledWith(
@@ -155,7 +137,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it('TC-04: onProgress が "validating" フェーズで呼ばれること (AC-3)', async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledWith(
@@ -164,7 +145,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it('TC-05: onProgress が "done" フェーズで呼ばれること (AC-3)', async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledWith(
@@ -173,14 +153,12 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-06: onProgress が合計5回呼ばれること", async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenCalledTimes(5);
     });
 
     it("TC-08: onProgress のフェーズが planning→done の順序で呼ばれること", async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       expect(onProgress).toHaveBeenNthCalledWith(
@@ -208,7 +186,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
 
   describe("正常系: コールバックが未指定の場合 (AC-4)", () => {
     it("TC-07: onProgress が未指定でも createSkill が正常完了すること", async () => {
-      allowSuccessfulCreate();
       const result = await service.createSkill(validCreateOptions);
 
       expect(result).toContain("test-skill");
@@ -217,7 +194,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
 
   describe("エッジケース", () => {
     it("TC-09: onProgress の percentage 値が正確に 10/40/70/90/100 であること", async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       const percentages = onProgress.mock.calls.map(
@@ -227,7 +203,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-10: onProgress の message 内容が正確な日本語文字列であること", async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       const messages = onProgress.mock.calls.map(
@@ -243,7 +218,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-11: onProgress がエラーを投げた場合にそのエラーが伝播すること", async () => {
-      allowSuccessfulCreate();
       const throwingCallback = vi.fn().mockImplementation(() => {
         throw new Error("コールバックエラー");
       });
@@ -257,26 +231,12 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-12: create モード以外（collaborative）でも planning フェーズが呼ばれること", async () => {
-      allowSuccessfulCreate();
       const collaborativeOptions: CreateSkillOptions = {
         name: "collab-skill",
         description: "Collaborative skill",
         mode: "collaborative",
         interviewResult: mockInterviewResult,
       };
-
-      // collab-skill に対するファイルアクセスモックを更新
-      vi.mocked(fsPromises.access).mockImplementation(async (target) => {
-        const resolved = String(target);
-        if (/collab-skill[\\/]SKILL\.md$/.test(resolved)) return;
-        throw new Error("ENOENT");
-      });
-      mockScriptExecutor.execute.mockResolvedValue({
-        success: true,
-        stdout: "",
-        stderr: "",
-        exitCode: 0,
-      });
 
       await service.createSkill(collaborativeOptions, onProgress);
 
@@ -301,7 +261,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること", async () => {
-      allowSuccessfulCreate();
       await service.createSkill(validCreateOptions, onProgress);
 
       const calls = onProgress.mock.calls as [object][];

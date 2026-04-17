@@ -39,18 +39,11 @@ export class ScriptExecutor {
     }
   }
 
-  private createAbortError(scriptName: string): Error {
-    const error = new Error(`Script ${scriptName} was aborted`);
-    error.name = "AbortError";
-    return error;
-  }
-
   /**
    * スクリプトを実行し、結果を返す
    *
    * @param scriptName - 実行するスクリプト名（例: "detect_mode.js"）
    * @param args - スクリプトに渡す引数
-   * @param options - 実行オプション
    * @returns ScriptResult - 実行結果（success, stdout, stderr, exitCode）
    * @throws Error - パストラバーサルが検出された場合
    */
@@ -67,42 +60,17 @@ export class ScriptExecutor {
     }
 
     return new Promise((resolve, reject) => {
-      if (options.signal?.aborted) {
-        reject(this.createAbortError(scriptName));
-        return;
-      }
-
       const proc = spawn("node", [scriptPath, ...args]);
       let stdout = "";
       let stderr = "";
-      let settled = false;
 
-      const cleanup = () => {
-        options.signal?.removeEventListener("abort", handleAbort);
-      };
-
-      const settle = (fn: () => void) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        cleanup();
-        fn();
-      };
-
-      const handleAbort = () => {
-        settle(() => {
-          try {
-            proc.kill("SIGTERM");
-          } catch {
-            // noop: abort は失敗を握りつぶして AbortError を優先する
-          }
-          reject(this.createAbortError(scriptName));
-        });
+      const onAbort = () => {
+        proc.kill();
+        reject(new DOMException("Aborted", "AbortError"));
       };
 
       if (options.signal) {
-        options.signal.addEventListener("abort", handleAbort, { once: true });
+        options.signal.addEventListener("abort", onAbort, { once: true });
       }
 
       proc.stdout.on("data", (data: Buffer) => {
@@ -114,23 +82,19 @@ export class ScriptExecutor {
       });
 
       proc.on("error", (error: Error) => {
-        settle(() => {
-          reject(
-            new Error(
-              `Failed to execute script ${scriptName}: ${error.message}`,
-            ),
-          );
-        });
+        options.signal?.removeEventListener("abort", onAbort);
+        reject(
+          new Error(`Failed to execute script ${scriptName}: ${error.message}`),
+        );
       });
 
       proc.on("close", (exitCode: number | null) => {
-        settle(() => {
-          resolve({
-            success: exitCode === 0,
-            stdout: stdout.trim(),
-            stderr: stderr.trim(),
-            exitCode: exitCode ?? 1,
-          });
+        options.signal?.removeEventListener("abort", onAbort);
+        resolve({
+          success: exitCode === 0,
+          stdout: stdout.trim(),
+          stderr: stderr.trim(),
+          exitCode: exitCode ?? 1,
         });
       });
     });

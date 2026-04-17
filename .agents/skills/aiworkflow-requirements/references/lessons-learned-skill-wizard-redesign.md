@@ -390,23 +390,23 @@ TC-11-03-generate-step-retry-button.png
 
 ### L-ICON-001: native title 属性の screenshot キャプチャには overlay 注入が必要
 
-| 項目       | 内容 |
-| ---------- | ---- |
-| 症状       | `title` 属性で実装した tooltip が Playwright / Puppeteer の screenshot に映らない |
-| 原因       | ブラウザ native UI（OSレンダリング）はスクリーンショットAPI外にあるため capture 不可 |
+| 項目       | 内容                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| 症状       | `title` 属性で実装した tooltip が Playwright / Puppeteer の screenshot に映らない             |
+| 原因       | ブラウザ native UI（OSレンダリング）はスクリーンショットAPI外にあるため capture 不可          |
 | 解決策     | capture script 内で `title` の値を読んで DOM に一時 overlay 要素を注入し、screenshot 後に除去 |
-| 再発防止   | Phase 11 evidence が必要な UI tooltip は、capture script 側で overlay プロキシを用意する |
-| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+| 再発防止   | Phase 11 evidence が必要な UI tooltip は、capture script 側で overlay プロキシを用意する      |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001                                                          |
 
 ### L-ICON-002: 複合ボタン（icon + label）のテストは within(button) で構造を固定する
 
-| 項目       | 内容 |
-| ---------- | ---- |
+| 項目       | 内容                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状       | カテゴリボタン内に `<span aria-hidden>⚡</span><span>自動化</span>` が含まれると、`getByRole("button")` で icon テキストと label が混在しマッチが不安定になる |
-| 原因       | `screen.getByText()` はグローバル検索のため、button 内の span と button 外のテキストが衝突する |
-| 解決策     | `const btn = screen.getByRole("button", { name: /自動化/ }); within(btn).getByText("⚡")` のように `within(button)` スコープで検証する |
-| 再発防止   | icon + label の複合ボタンコンポーネントのテストは、必ず `within(element)` でスコープを絞る |
-| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001 |
+| 原因       | `screen.getByText()` はグローバル検索のため、button 内の span と button 外のテキストが衝突する                                                                |
+| 解決策     | `const btn = screen.getByRole("button", { name: /自動化/ }); within(btn).getByText("⚡")` のように `within(button)` スコープで検証する                        |
+| 再発防止   | icon + label の複合ボタンコンポーネントのテストは、必ず `within(element)` でスコープを絞る                                                                    |
+| 関連タスク | UT-SKILL-WIZARD-CATEGORY-UI-ICON-001                                                                                                                          |
 
 ---
 
@@ -542,3 +542,43 @@ TC-11-03-generate-step-retry-button.png
 | 判断基準   | `artifacts.json` に列挙されているものが canonical、それ以外（作業メモ・下書き・中間成果物）は補助ファイルとして別ディレクトリまたはプレフィックス（`_` など）で区別する |
 | 標準ルール | Phase-12 close-out 開始前に、canonical 成果物の命名規約を仕様書または `artifacts.json` のコメントとして明示しておく。artifacts.json に掲載 = canonical の原則を徹底する |
 | 関連タスク | UT-SKILL-WIZARD-W2-seq-03b                                                                                                                                              |
+
+---
+
+## TASK-SW-UI-POLISH-001 Skill Wizard UI仕上げ 教訓（2026-04-16）
+
+> タスクID: TASK-SW-UI-POLISH-001
+> 対象: CSS変数監査・カテゴリ選択上限・アニメーション追加（SkillInfoStep / InterviewProgressBar）
+
+### L-POLISH-001: カテゴリ選択上限の disabled 制御パターン
+
+| 項目       | 内容                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-UI-POLISH-001                                                                                                                                       |
+| 問題       | カテゴリ上限（MAX_CATEGORY_COUNT=3）到達後、未選択ボタンをクリックできてしまう状態が残っていた                                                              |
+| 解決策     | `isAtLimit` フラグで「選択済みなら常に解除可能、未選択なら上限未満のときだけ追加可能」を分岐制御。未選択ボタンにのみ `disabled` 属性を付与する              |
+| コード例   | `const isAtLimit = selectedCategories.length >= MAX_CATEGORY_COUNT;` → `disabled={isAtLimit && !isSelected}` のように選択済み判定と組み合わせる             |
+| 標準ルール | 上限制御では「追加禁止」と「解除許可」を必ず分離する。`disabled={isAtLimit}` のように上限全体を丸ごと無効化すると選択済み項目も操作できなくなり UX が壊れる |
+| 関連タスク | TASK-SW-UI-POLISH-001, TASK-SW-FIX-UI-001                                                                                                                   |
+
+### L-POLISH-002: CSS変数ベース化の静的監査テストパターン
+
+| 項目       | 内容                                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-UI-POLISH-001                                                                                                                                             |
+| 問題       | `bg-blue-*` 等のハードコードTailwindクラスが残存していても、レビューや手動確認では発見しにくい                                                                    |
+| 解決策     | テストファイルでソースファイルを `fs.readFileSync` で読み込み、正規表現 `/bg-blue-\d+/` で検索する静的監査テストを追加（`SkillCreateWizard.test.tsx` TC-01a/01b） |
+| コード例   | `const src = fs.readFileSync(filePath, 'utf-8'); expect(src).not.toMatch(/bg-blue-\d+/);`                                                                         |
+| 標準ルール | テーマ対応が必要なコンポーネントには静的CSS監査テストを添付する。ユニットテストで UI の色設計仕様を機械的に担保することで、リグレッションを防ぐ                   |
+| 関連タスク | TASK-SW-UI-POLISH-001                                                                                                                                             |
+
+### L-POLISH-003: transition アニメーションの検証戦略
+
+| 項目       | 内容                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-UI-POLISH-001                                                                                                                                          |
+| 問題       | `transition-all duration-300` 等のアニメーションCSSクラスはユニットテストだけでは視覚的効果を直接確認できない                                                  |
+| 解決策     | ユニットテストでは「クラスが DOM に付与されているか」を検証（テスト済）。視覚的確認は Phase 11 スクリーンショット（Playwright）で補完する 2 段構えの戦略を採用 |
+| コード例   | `expect(progressBarEl).toHaveClass('transition-all'); expect(progressBarEl).toHaveClass('duration-300');`                                                      |
+| 標準ルール | アニメーション仕様はユニットテスト（クラス存在確認）+ visual evidence（Phase 11 screenshot）の 2 段で担保する。視覚確認のみでは CI での回帰検出ができない      |
+| 関連タスク | TASK-SW-UI-POLISH-001                                                                                                                                          |
