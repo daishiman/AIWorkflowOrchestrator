@@ -27,11 +27,11 @@ Phase 2 の設計内容をレビューし、実装に進む前の品質ゲート
 
 ## 参照資料
 
-| 資料名            | パス                                                                                  | 用途                                |
-| ----------------- | ------------------------------------------------------------------------------------- | ----------------------------------- |
-| Phase 1 成果物    | `outputs/phase-1/requirements.md`                                                     | AC 参照                             |
-| Phase 2 設計書    | `outputs/phase-2/design.md`                                                           | レビュー対象                        |
-| phase-3-review.md | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` | TASK-SW-STRUCT-002 のタスク粒度確認 |
+| 資料名            | パス                                                           | 用途                                |
+| ----------------- | -------------------------------------------------------------- | ----------------------------------- |
+| Phase 1 成果物    | `outputs/phase-1/requirements.md`                              | AC 参照                             |
+| Phase 2 設計書    | `outputs/phase-2/design.md`                                    | レビュー対象                        |
+| phase-3-review.md | `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md` | TASK-SW-STRUCT-002 のタスク粒度確認 |
 
 ## 実行手順
 
