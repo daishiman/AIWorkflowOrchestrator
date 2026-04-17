@@ -35,12 +35,13 @@
 - [ ] 【Step 2】システム仕様を更新した場合、`system-spec-update-summary.md` と `documentation-changelog.md` の両方が「更新あり」で一致していることを確認した（片方のみ更新禁止）
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] `outputs/phase-12/system-spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
-- [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
+- [ ] `outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 1〜6 / Step 1-A〜1-G / Step 2 / root parity / artifacts 同期 / planned wording 0 件を記録した
+- [ ] `outputs/phase-12` の必須6成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
 - [ ] completed workflow の `phase-12-documentation.md` と `outputs/phase-12/*.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] `artifacts.json` / `outputs/artifacts.json` に Phase 13 先送りを示す wording（`予定` / `Phase 13 で実施` / `マージ後` / `保留` 等）が残っていない（`grep -E "予定|Phase.?13|マージ後|保留" artifacts.json outputs/artifacts.json` が 0件）⚠️ **FB-UT-UIUX-001: Phase 13 先送り wording防止**
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
-- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
+- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を 0→1 へ再同期した
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
@@ -74,7 +75,7 @@
 - [ ] UI/UX変更タスクの場合: 再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録し、失敗時は未タスク化したこと
 - [ ] UI/UX変更タスクの場合: 再撮影後に `stat` 実時刻と `manual-test-result.md` の更新時刻が一致していること
 - [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
-- [ ] `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
+- [ ] `phase-12-documentation.md` の Task 1-6 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
 - [ ] Step 2 で domain spec を更新した場合、少なくとも 1 つの正本仕様書に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード`、またはそれと等価な lessons 参照が記録されている
 - [ ] 既存未タスクを参照する場合、リンク先が **未実施なら** `docs/30-workflows/unassigned-task/`、**完了済みなら** `docs/30-workflows/completed-tasks/**/unassigned-task/` になっていることを確認した
 - [ ] `unassigned-task-detection.md` に既存未タスクを流用した理由と、物理配置確認結果（`ls docs/30-workflows/unassigned-task/`）を記録した
