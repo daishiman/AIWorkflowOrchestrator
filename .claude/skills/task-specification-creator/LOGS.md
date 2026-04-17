@@ -2,6 +2,14 @@
 
 ## 役割
 
+## 2026-04-17 - TASK-SC-SHARED-TYPE-PROMOTE-001 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `SKILL.md` の「Phase 12 実行時によくある漏れ」テーブルに **[FB-SC-TYPE-001]**（no-op close タスクで参照ファイル数棚卸し証跡を残さず Phase 12 を閉じる）・**[FB-SC-TYPE-002]**（条件付きタスクの skip Phase を `artifacts.json` で `skipped` 明示しないと phase table が不完全に見える）を追記
+- `SKILL.md` バージョンを v10.09.53 → v10.09.54 に更新
+- 参照: `outputs/phase-12/skill-feedback-report.md` の改善提案 4 件から抽出
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY impl-spec-to-skill-sync（スキルフィードバック反映）
 
 ### 変更内容

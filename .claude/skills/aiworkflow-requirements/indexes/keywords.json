@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3082,
+  "totalKeywords": 3085,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -8735,6 +8735,30 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-stream-001-progress-callback.md"
     ],
+    "SHARED": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
+      "lessons-learned-ipc-preload-runtime-part-3.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "PROMOTE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "StructurePlanJson": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "repo": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md"
+    ],
+    "昇格判断": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9131,16 +9155,6 @@
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "SHARED": [
-      "lessons-learned-ipc-preload-runtime-2026-04.md",
-      "lessons-learned-ipc-preload-runtime-part-3.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "層型同期": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -10542,9 +10556,6 @@
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md"
-    ],
-    "repo": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md"
     ],
     "設定ファイル整合": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"

@@ -146,4 +146,3 @@ Phase 12 で列挙する成果物は、6 つの task outputs と Wave C 引き�
 - `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記する
 - Step 2（新規インターフェース変更）は N/A 扱いでよい（定数追加のみ）
 - 後続タスク（allowlist / handler / renderer）は別ワークフローに分離して未タスク化する
-- [ ] canonical task outputs 6 件と Wave C 引き継ぎサマリー 1 件がそれぞれ命名規約に従っていることを確認した（パターン11）

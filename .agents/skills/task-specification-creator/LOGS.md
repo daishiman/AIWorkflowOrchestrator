@@ -2,6 +2,14 @@
 
 ## 役割
 
+## 2026-04-17 - TASK-SC-SHARED-TYPE-PROMOTE-001 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `SKILL.md` の「Phase 12 実行時によくある漏れ」テーブルに **[FB-SC-TYPE-001]**（no-op close タスクで参照ファイル数棚卸し証跡を残さず Phase 12 を閉じる）・**[FB-SC-TYPE-002]**（条件付きタスクの skip Phase を `artifacts.json` で `skipped` 明示しないと phase table が不完全に見える）を追記
+- `SKILL.md` バージョンを v10.09.53 → v10.09.54 に更新
+- 参照: `outputs/phase-12/skill-feedback-report.md` の改善提案 4 件から抽出
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY impl-spec-to-skill-sync（スキルフィードバック反映）
 
 ### 変更内容
@@ -67,6 +75,18 @@ TASK-CI-FUTURE-003 の Phase 12 スキルフィードバックレポートに記
 ### 背景
 
 Phase 12 の close-out では、仕様書・索引・ミラー・準拠証跡を同波で同期しないと current facts が stale になる。旧いフォールバックキー前提ではなく `node_modules` 存在確認を正本として固定した。
+
+## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
+
+### 変更内容
+
+- `outputs/phase-12/*.md` の 6 成果物を確認し、Phase 12 の同波 close-out を記録
+- Phase 2 で `Result<T,E>` の `success` / `data` 判別子、`@repo/shared/services/llm/types` alias、旧 TC-04 影響を先に明記する改善点を feedback 化
+- `.claude/skills/task-specification-creator/SKILL.md` の変更履歴を同波で更新
+
+### 背景
+
+LLM purpose wire のように出力形状が変わるタスクでは、Phase 2 で結果型・依存 alias・既存テスト影響を先出ししないと、Phase 5 以降で型ズレが再発しやすい。
 
 ## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
 

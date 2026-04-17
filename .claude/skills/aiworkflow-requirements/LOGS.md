@@ -18,6 +18,23 @@ TASK-SW-STREAM-001（SkillCreatorService.createSkill() コールバック引数�
 
 ---
 
+## 2026-04-16 - TASK-SC-SHARED-TYPE-PROMOTE-001 完了記録（ローカル定義維持・クローズ）
+
+### 変更内容
+
+- `StructurePlanJson` インタフェースの参照箇所棚卸しを実施
+- 参照箇所は `SkillCreatorService.ts` の 1 ファイルのみ（定義 1 + 利用 5, 合計 6 hits）と確認
+- Phase 1 判断基準「1箇所のみ → ローカル定義維持・即クローズ」に従いタスクをクローズ
+- Phase 2〜13 はすべてスキップ（昇格不要のため）
+- `artifacts.json` のステータスを `completed` に更新
+- Phase 1 / Phase 12 の全成果物を `outputs/` 配下に生成
+
+### 背景
+
+TASK-SC-07 苦戦箇所 C-4（PlanResult 型の二重定義によるシャドウイング）の再発防止として、
+`StructurePlanJson` の所有権を先行して確認する予防的タスク。
+調査の結果、問題なし（1ファイル限定）と確認でき、コード変更なしでクローズとなった。
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
 
 ### 変更内容

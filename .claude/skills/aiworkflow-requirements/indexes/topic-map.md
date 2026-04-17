@@ -5202,9 +5202,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L30 |
-| 利用順序 | L253 |
-| 関連ドキュメント | L258 |
+| 仕様書インデックス | L31 |
+| 利用順序 | L254 |
+| 関連ドキュメント | L259 |
 
 ### references/testing-accessibility.md
 
