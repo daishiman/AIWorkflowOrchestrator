@@ -5,6 +5,33 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
+## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
+- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
+- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
+
+---
+
+## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
+- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
+
+### 背景
+
+TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
+
 ## 2026-04-17 TASK-SW-STRUCT-002 Phase-12 close-out sync
 
 ### 変更内容
