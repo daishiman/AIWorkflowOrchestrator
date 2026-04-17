@@ -5,7 +5,7 @@
 
 ## Phase 12: ドキュメント更新
 
-### 必須タスク（5タスク - 全て完了必須）
+### 必須タスク（6タスク - 全て完了必須）
 
 #### Task 1: 実装ガイド作成【必須・2パート構成】
 
@@ -83,7 +83,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 
 Phase 12 は「成果物ファイルが存在する」だけでは完了扱いにしない。以下3点を同時に満たすこと:
 
-1. `outputs/phase-12/` の必須5成果物が実在する
+1. `outputs/phase-12/` の必須6成果物が実在する
 2. `artifacts.json` の `phases.12.status` が `completed` である
 3. `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが実体証跡と同期している
 
@@ -134,6 +134,29 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 
 ---
 
+#### Task 6: phase12-task-spec-compliance-check【必須・最終確認】
+
+Phase 12 の Task 1〜6 と Step 1-A〜1-G / Step 2 を 1 ファイルへ集約した root evidence。
+
+**出力**: `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
+**最低限必要な内容**:
+
+- Task 12-1〜12-5 の成果物存在確認
+- Task 12-1〜12-5 の実質監査
+- Step 1-A〜1-G の実更新確認
+- Step 2 の current fact / no-op / domain sync 確認
+- validator 結果、root parity、artifacts 同期、planned wording 0 件の記録
+
+**判定ルール（PASS 断言の防止）**:
+
+- 未充足が 1 つでもある場合、`PASS` を書かず `FAIL` または `BLOCKED` とし、blocker を列挙する
+- `PASS` は「成果物の実体 + validator 実測値 + same-wave sync 証跡」が揃った後にのみ許可する
+
+Task 6 は「存在すればよい」ではなく、Phase 12 の最終判定を裏付ける root evidence として機械検証結果を残す。
+
+---
+
 ## Phase 12 完了条件チェックリスト
 
 - [ ] 実装ガイド（Part 1: **中学生レベル概念説明**）が作成されている
@@ -155,11 +178,12 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] 【Step 2】システム仕様を更新した場合、`system-spec-update-summary.md` と `documentation-changelog.md` の両方が「更新あり」で一致していることを確認した（片方のみ更新禁止）
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] `outputs/phase-12/system-spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
-- [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
+- [ ] `outputs/phase-12` の必須6成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
 - [ ] completed workflow の `phase-12-documentation.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
-- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `system-spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
+- [ ] `outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 1〜6 / Step 1-A〜1-G / Step 2 / root parity / artifacts 同期 / planned wording 0 件を記録した
+- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を 0→1 へ再同期した
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
@@ -185,7 +209,7 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] UI/UX変更タスクの場合: 再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録し、失敗時は未タスク化したこと
 - [ ] UI/UX変更タスクの場合: 再撮影後に `stat` 実時刻と `manual-test-result.md`（必要に応じて `screenshot-coverage.md`）の更新時刻が一致していること
 - [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
-- [ ] `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
+- [ ] `phase-12-documentation.md` の Task 1-6 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
 - [ ] Step 2 で domain spec を更新した場合、少なくとも 1 つの正本仕様書に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード`、またはそれと等価な lessons 参照が記録されている
 - [ ] 既存未タスクを参照する場合、リンク先が **未実施なら** `docs/30-workflows/unassigned-task/`、**完了済みなら** `docs/30-workflows/completed-tasks/**/unassigned-task/` になっていることを確認した
 - [ ] `unassigned-task-detection.md` に既存未タスクを流用した理由と、物理配置確認結果（`ls docs/30-workflows/unassigned-task/`）を記録した

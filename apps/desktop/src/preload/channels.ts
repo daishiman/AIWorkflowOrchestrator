@@ -363,6 +363,9 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_GET_VERIFY_DETAIL: "skill-creator:get-verify-detail",
   SKILL_CREATOR_REVERIFY_WORKFLOW: "skill-creator:reverify-workflow",
 
+  // TASK-SW-CANCEL-002: スキル生成キャンセルチャンネル
+  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
+
   // SDK Message 正規化 (TASK-RT-06)
   SKILL_CREATOR_NORMALIZE_SDK_MESSAGES: "skill-creator:normalize-sdk-messages",
 
@@ -709,6 +712,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_DEBUG,
   IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
   IPC_CHANNELS.SKILL_CREATOR_STATS,
+  // Skill Creator cancel channel (TASK-SC-CANCEL-001: 将来実装予定)
+  IPC_CHANNELS.SKILL_CREATOR_CANCEL,
   // Skill file operations (TASK-9A-B)
   IPC_CHANNELS.SKILL_READ_FILE,
   IPC_CHANNELS.SKILL_WRITE_FILE,

@@ -39,7 +39,10 @@ vi.mock("electron", () => ({
 // Import after mocks are set up
 import { ipcMain } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
-import { registerStoreHandlers } from "./storeHandlers";
+import {
+  registerStoreHandlers,
+  registerUserSettingsHandlers,
+} from "./storeHandlers";
 
 describe("storeHandlers", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -238,5 +241,187 @@ describe("storeHandlers", () => {
         error: "Secure store error",
       });
     });
+  });
+});
+
+describe("registerUserSettingsHandlers", () => {
+  let settingsHandlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    settingsHandlers = new Map();
+
+    (ipcMain.handle as ReturnType<typeof vi.fn>).mockImplementation(
+      (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
+        settingsHandlers.set(channel, handler);
+      },
+    );
+
+    registerUserSettingsHandlers();
+  });
+
+  // TC-01: ネストオブジェクトの部分更新でフィールドが保持される
+  it("TC-01: ネストオブジェクトの部分更新で同一親キー配下のフィールドが保持される", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ theme: { color: "dark", size: "medium" } });
+
+    await handler({}, { theme: { color: "light" } });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      theme: { color: "light", size: "medium" },
+    });
+  });
+
+  // TC-02: トップレベルフィールドの上書きが従来通り動作する
+  it("TC-02: トップレベルフィールドの上書きが従来通り動作する", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ language: "ja", theme: { color: "dark" } });
+
+    await handler({}, { language: "en" });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      language: "en",
+      theme: { color: "dark" },
+    });
+  });
+
+  // TC-03: 配列フィールドは上書き動作になる（マージしない）
+  it("TC-03: 配列フィールドは上書き動作になる（マージしない）", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ providers: ["a", "b"] });
+
+    await handler({}, { providers: ["c"] });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      providers: ["c"],
+    });
+  });
+
+  // TC-04: null ペイロードは上書き扱い
+  it("TC-04: null ペイロードは上書き扱いになる", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ theme: { color: "dark" } });
+
+    await handler({}, { theme: null });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", { theme: null });
+  });
+
+  // TC-05: 存在しない子キーが追加される
+  it("TC-05: 存在しない子キーが追加される", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ theme: { color: "dark" } });
+
+    await handler({}, { theme: { size: "large" } });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      theme: { color: "dark", size: "large" },
+    });
+  });
+
+  // TC-06: 3 階層以上のネストオブジェクトのマージ
+  it("TC-06: 3 階層以上のネストオブジェクトのマージ", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ a: { b: { c: "old", d: "keep" } } });
+
+    await handler({}, { a: { b: { c: "new" } } });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      a: { b: { c: "new", d: "keep" } },
+    });
+  });
+
+  // TC-07: 空オブジェクトを patch した場合
+  it("TC-07: 空オブジェクトを patch した場合は変化なし", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ theme: { color: "dark" } });
+
+    await handler({}, {});
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      theme: { color: "dark" },
+    });
+  });
+
+  // TC-08: patch が空オブジェクトの子を持つ場合
+  it("TC-08: patch に空オブジェクトの子を持つ場合は変化なし", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ theme: { color: "dark" } });
+
+    await handler({}, { theme: {} });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {
+      theme: { color: "dark" },
+    });
+  });
+
+  // TC-09: undefined 値のキーは省略される
+  it("TC-09: undefined 値のキーは省略され基底値が維持される", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    mockGet.mockReturnValue({ language: "ja" });
+
+    await handler({}, { language: undefined });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", { language: "ja" });
+  });
+
+  it("TC-10: update 後に get で同じ値が返る", async () => {
+    expect(settingsHandlers.has(IPC_CHANNELS.USER_SETTINGS_UPDATE)).toBe(true);
+    expect(settingsHandlers.has(IPC_CHANNELS.USER_SETTINGS_GET)).toBe(true);
+
+    const updateHandler = settingsHandlers.get(
+      IPC_CHANNELS.USER_SETTINGS_UPDATE,
+    )!;
+    const getHandler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_GET)!;
+    const mergedSettings = {
+      theme: { color: "light", size: "medium" },
+      language: "ja",
+    };
+
+    mockGet.mockReturnValue({
+      theme: { color: "dark", size: "medium" },
+      language: "ja",
+    });
+
+    await updateHandler({}, { theme: { color: "light" } });
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", mergedSettings);
+
+    mockGet.mockReturnValueOnce(mergedSettings);
+    const getResult = await getHandler({});
+
+    expect(getResult).toEqual({
+      success: true,
+      data: mergedSettings,
+    });
+  });
+
+  it("TC-11: 非 plain object の payload は validation error を返す", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+
+    const result = await handler({}, []);
+
+    expect(result).toEqual({
+      success: false,
+      error: "Validation error: settings:update payload must be a plain object",
+    });
+    expect(mockSet).not.toHaveBeenCalled();
+  });
+
+  it("TC-12: 危険キーを無視し prototype pollution を防ぐ", async () => {
+    const handler = settingsHandlers.get(IPC_CHANNELS.USER_SETTINGS_UPDATE)!;
+    const maliciousPayload = JSON.parse(
+      '{"__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}},"prototype":{"polluted":true}}',
+    ) as Record<string, unknown>;
+
+    mockGet.mockReturnValue({});
+
+    await handler({}, maliciousPayload);
+
+    expect(mockSet).toHaveBeenCalledWith("user-settings", {});
+
+    const savedValue = mockSet.mock.calls.at(-1)?.[1];
+    expect(savedValue).toEqual({});
+    expect(Object.getPrototypeOf(savedValue as object)).toBe(Object.prototype);
   });
 });

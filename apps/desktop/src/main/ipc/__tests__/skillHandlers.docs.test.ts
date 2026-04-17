@@ -597,6 +597,34 @@ describe("registerSkillDocsHandlers", () => {
       });
     });
 
+    it("generate は docError が付いた例外をその文言で返す", async () => {
+      const error = new Error("LLM query failed") as Error & {
+        docError?: {
+          message: string;
+          code: number;
+          category: string;
+          retryable: boolean;
+        };
+      };
+      error.docError = {
+        message:
+          "APIキーが設定されていません。設定画面でAPIキーを入力してください。",
+        code: 2001,
+        category: "BUSINESS",
+        retryable: false,
+      };
+      mockSkillDocGenerator.generate.mockRejectedValueOnce(error);
+
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_DOCS_GENERATE)!;
+      const result = await handler(event, validGenerateRequest);
+
+      expect(result).toEqual({
+        success: false,
+        error:
+          "APIキーが設定されていません。設定画面でAPIキーを入力してください。",
+      });
+    });
+
     it("preview はスキル未発見時にエラーを返す", async () => {
       mockSkillDocGenerator.preview.mockRejectedValueOnce(
         new Error("Skill not found: unknown"),

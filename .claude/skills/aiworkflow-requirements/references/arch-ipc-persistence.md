@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.3.0     | 2026-04-17 | UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 完了: `settings:get` / `settings:update` の deepMerge パターン、plain-object validation、prototype pollution 防止を追記 |
 | v1.2.0     | 2026-02-12 | TASK-9B-H-SKILL-CREATOR-IPC完了: registerAllIpcHandlersにSkillCreatorService追加記録。registerSkillCreatorHandlers呼び出し（Pattern 3準拠） |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（準拠化） |
 | v1.0.0     | -          | 初版                                         |
@@ -90,6 +91,49 @@ IPCハンドラーの登録には3つのパターンがある:
 ### 関連タスク
 
 - **SKILL-IPC-001**: `registerSkillHandlers` が `registerAllIpcHandlers` から呼び出されていなかったバグを修正（2026-01-16完了）
+
+---
+
+## User Settings 永続化パターン（Desktop Main Process）
+
+### 概要
+
+ユーザー設定の永続化は `apps/desktop/src/main/ipc/storeHandlers.ts` の `registerUserSettingsHandlers` が担う。
+`settings:get` は `user-settings` キーから現在値を取得し、`settings:update` は plain object の patch を `deepMerge` で部分更新する。
+
+### 実装場所
+
+| 対象 | パス |
+| ---- | ---- |
+| IPC ハンドラー | `apps/desktop/src/main/ipc/storeHandlers.ts` |
+| テスト | `apps/desktop/src/main/ipc/storeHandlers.test.ts` |
+
+### ハンドラー入出力
+
+| ハンドラー | 入力 | 出力 |
+| ---------- | ---- | ---- |
+| `settings:get` | なし | `success: true` + 現在の設定値 |
+| `settings:update` | `Record<string, unknown>` の plain object のみ | `success: true` または validation error |
+
+### マージルール
+
+| 値の種類 | 動作 |
+| -------- | ---- |
+| plain object 同士 | 再帰マージ |
+| 配列 | 上書き |
+| `null` | 上書き |
+| プリミティブ | 上書き |
+| `undefined` | 省略（基底値維持） |
+
+### 安全要件
+
+- `settings:update` の payload は plain object 以外を拒否する
+- `__proto__` / `constructor` / `prototype` は無視する
+- 既存値が plain object でない場合は `{}` として扱う
+
+### 関連タスク
+
+- **UT-FIX-STORE-SETTINGS-DEEP-MERGE-001**: `settings:update` ハンドラーの deepMerge 化と安全化
 
 ---
 

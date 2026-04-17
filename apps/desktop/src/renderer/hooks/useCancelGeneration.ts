@@ -26,7 +26,14 @@ export function useCancelGeneration(): UseCancelGenerationReturn {
     abortControllerRef.current = null;
     setStage("cancelled");
 
-    // AbortController.abort() で Main Process 側の処理も中断される
+    // Main Process 側のキャンセルをIPCで通知
+    (
+      window as Window & {
+        skillCreatorAPI?: { cancelGeneration: () => Promise<unknown> };
+      }
+    ).skillCreatorAPI
+      ?.cancelGeneration()
+      .catch(() => {});
   }, [setStage]);
 
   return { cancelGeneration, startGeneration };

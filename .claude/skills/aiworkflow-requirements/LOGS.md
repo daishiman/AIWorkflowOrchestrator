@@ -4,6 +4,126 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
+## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
+- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
+- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
+
+---
+
+## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
+- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
+
+### 背景
+
+TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
+
+## 2026-04-17 TASK-SW-STRUCT-002 Phase-12 close-out sync
+
+### 変更内容
+
+- `references/lessons-learned-current-2026-04.md` に L-STRUCT-002-001〜003 を追加
+- `references/task-workflow-completed.md` に TASK-SW-STRUCT-002 完了記録を追加
+- `SKILL.md` 変更履歴に TASK-SW-STRUCT-002 Phase-12 完了記録を追加
+- `indexes/resource-map.md` に TASK-SW-STRUCT-002 クイックルックアップ行を追加
+
+### 背景
+
+TASK-SW-STRUCT-002（`void structurePlan` 削除・`generateSkillMd` 接続）の Phase-12 完了。
+`structurePlan !== null` 型ガード・3段階フォールバック・`anchors ?? []` null 安全パターンを skill current facts として固定した。
+
+---
+
+## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
+- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
+- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
+
+---
+
+## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
+- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
+
+### 背景
+
+TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
+
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
+
+## 2026-04-17 TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION
+
+### 変更内容
+
+- interfaces-agent-sdk-skill-reference-share-debug-analytics.md にLLM統合型定義を追記
+  - ILLMClient, LLMQueryResult, DocErrorCode 型定義
+  - DocErrorCode → DocError コードマッピングテーブル
+  - ILLMDocQueryAdapter インターフェース
+  - LLMQueryFn 型（SkillDocGenerator DI注入用）
+- api-ipc-agent-details.md に skill:generate-docs IPC チャネルを追記（未記載だったため追加）
+
+### 苦戦箇所（Lessons Learned）
+
+1. **エラーサニタイゼーション**: sanitizeErrorMessage()でElectron main processからrendererへのエラー情報漏洩を防止。スタックトレース・パス・IPアドレス・機密情報をパターンマッチングで除去
+2. **非同期APIキー解決**: ApiKeyResolver = () => string | null | Promise<string | null> パターンで同期/非同期両方に対応。authKeyService.getKey()をクロージャで渡す
+3. **タイムアウト実装**: Promise.race() + setTimeout() パターン。finallyブロックでのタイムアウトIDクリーンアップが重要
+4. **Stub検出パターン**: "Generated content for:" という監視文字列でstubと実装を区別。テスト時と実装時の境界を明確化
+
+---
+
+## 2026-04-17 - UT-9I-001 current reference sync
+
+### 変更内容
+
+- `references/task-workflow.md` / `task-workflow-completed.md` / `task-workflow-backlog.md` を `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` の current reference に同期
+- `references/api-ipc-agent-details.md` の `stubQueryFn` 表記を `LLMDocQueryAdapter` / `AnthropicProvider` / `DocErrorCode` の current path に置換
+- `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` に UT-9I-001 current reference セクションを追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を current reference の追加に合わせて更新
+
+### 背景
+
+UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/` に移行したため、completed / backlog / API / interface / index を同波で current facts に揃えた。
+
+---
+
+## 2026-04-16 - TASK-SW-STREAM-001 Phase-12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 完了記録を追加
+- `references/lessons-learned-test-cleanup-describe-skip-2026-04.md` を新規作成（削除済みファイル早期検出パターン / 選択肢A/B 判断基準 / 安全な存在確認パターン）
+- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
+
+### 背景
+
+`UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` は `SkillCreateWizard.llm-generation.test.tsx` 削除済み確認タスク。テストファイルのみの変更で外部 contract 変更なしのため system spec 更新は不要。削除済みファイルへの安全な操作パターン・describe.skip クリーンアップ判断フロー・CI 参照検出ルールを lessons-learned として固定し、同種タスクの将来コスト削減につなげた。
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
 
 ### 変更内容
@@ -31,6 +151,7 @@
 UT-W2-03A は current worktree で対象ファイルが既に削除済みだった cleanup。`spec_created` 前提の古い残存参照がないことを確認し、index 再生成と parity 記録まで同 wave で閉じる必要があった。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
+
 ## 2026-04-16 - UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -54,6 +175,21 @@ UT-W2-03A は current worktree で対象ファイルが既に削除済みだっ�
 TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cancel チャンネル追加が完了した。UT-SDK-07（3チャンネル正本化）の後続として CANCEL-001 が4番目を追加した系譜を正本に記録する。
 
 ---
+
+## 2026-04-16 — impl-spec-to-skill-sync (skill-create-flow-gaps CANCEL/STREAM/STRUCT 実装反映)
+
+### 変更内容
+
+- `references/task-workflow.md`: 重複テーブル（省略形式 3件）を削除し完全形式に統一。`task-workflow-completed-recent-2026-04g.md` エントリを追加
+- `references/task-workflow-completed-recent-2026-04g.md`: 重複ヘッダー（7行 → 1行）を修正
+- `references/lessons-learned.md`: `lessons-learned-current-2026-04*`（5件）と `lessons-learned-skill-cancel-abortsignal.md`（1件）のインデックスエントリを追加
+- `references/lessons-learned-skill-cancel-abortsignal.md`: 新規作成（147行）— AbortSignal伝播・プロセスkill・settled フラグ・半完成ディレクトリ削除・IPC 4層キャンセル設計の知見を記録
+- `indexes/topic-map.md` / `indexes/keywords.json`: `generate-index.js` 再生成（464ファイル / 3042キーワード）
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+skill-create-flow-gaps（CANCEL-001〜004 / STREAM-001 / STRUCT-001）の実装完了後、システム仕様書・スキル・lessons-learned への反映が未完了だった。Phase-12準拠度 85% → 100% を目標に同波更新を実施。AbortSignal を ScriptExecutor / ResourceLoader まで伝播するキャンセル実装の知見を `lessons-learned-skill-cancel-abortsignal.md` として体系化した。
 
 ## 2026-04-15 - TASK-CI-FUTURE-003 current facts sync
 
@@ -2485,6 +2621,19 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `.github/actions/pnpm-install-retry/action.yml`（キャッシュヒット率確認ステップ追加） |
 | 結果     | 3状態判定・Summary 出力・アノテーション出力 実装完了。全 AC/FR 100% 網羅              |
 | 検証     | 静的コードレビュー PASS / Phase 10 最終レビューゲート PASS                            |
+
+## 2026-04-17 — UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 completed
+
+- `arch-ipc-persistence.md` v1.3.0 更新: deepMerge パターン（plain-object validation・prototype pollution 防止・マージルール）と User Settings 永続化パターンを追記
+- `storeHandlers.ts` に `isPlainObject` / `cloneSafePlainObject` / `deepMergePlainObjects` / `deepMerge<T>` / `registerUserSettingsHandlers` 実装完了
+- `storeHandlers.test.ts` 全テスト PASS
+
+| 項目     | 内容                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / IPC handler / security hardening                                                                                           |
+| 変更対象 | `apps/desktop/src/main/ipc/storeHandlers.ts`、`storeHandlers.test.ts`、`arch-ipc-persistence.md`（v1.3.0 更新）                            |
+| 結果     | settings:update を deepMerge 化。plain object 以外を拒否し、`__proto__` / `constructor` / `prototype` を無視してprototype pollution を防止 |
+| 検証     | vitest PASS / typecheck PASS / lint PASS                                                                                                   |
 
 ## 2026-04-15 — TASK-CI-FUTURE-005 completed (spec_created)
 
