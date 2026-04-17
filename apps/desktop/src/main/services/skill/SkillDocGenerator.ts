@@ -18,6 +18,14 @@ import type { SkillFileManager } from "./SkillFileManager";
 /** LLM query 関数の型（DI用） */
 export type LLMQueryFn = (prompt: string) => Promise<{ content: string }>;
 
+export interface SkillDocGeneratorOptions {
+  /**
+   * セクション生成 1 回あたりのタイムアウト。
+   * 未指定の場合はタイムアウトをかけない。
+   */
+  queryTimeoutMs?: number;
+}
+
 /** デフォルトテンプレート（FR-09）— 7セクション構成 */
 export const DEFAULT_DOC_TEMPLATE: DocTemplate = {
   id: "default",
@@ -77,15 +85,20 @@ export const DEFAULT_DOC_TEMPLATE: DocTemplate = {
 };
 
 const VALID_OUTPUT_FORMATS = ["markdown", "html"] as const;
-const LLM_TIMEOUT_MS = 30_000;
 
 export class SkillDocGenerator {
   private readonly queryFn: LLMQueryFn;
   private readonly skillFileManager: SkillFileManager;
+  private readonly queryTimeoutMs?: number;
 
-  constructor(queryFn: LLMQueryFn, skillFileManager: SkillFileManager) {
+  constructor(
+    queryFn: LLMQueryFn,
+    skillFileManager: SkillFileManager,
+    options: SkillDocGeneratorOptions = {},
+  ) {
     this.queryFn = queryFn;
     this.skillFileManager = skillFileManager;
+    this.queryTimeoutMs = options.queryTimeoutMs;
   }
 
   async generate(request: DocGenerationRequest): Promise<GeneratedDoc> {
@@ -244,16 +257,7 @@ export class SkillDocGenerator {
 
     const prompt = `${langInstruction}\n\nスキル情報:\n${skillStructure}\n\n指示: ${sectionConfig.prompt}`;
 
-    // LLM query with timeout
-    const result = await Promise.race([
-      this.queryFn(prompt),
-      new Promise<never>((_, reject) =>
-        setTimeout(
-          () => reject(new Error("LLM query timeout")),
-          LLM_TIMEOUT_MS,
-        ),
-      ),
-    ]);
+    const result = await this.querySection(prompt);
 
     return {
       id: sectionConfig.id,
@@ -279,6 +283,33 @@ export class SkillDocGenerator {
     const resolved = path.resolve(outputPath);
     if (resolved.includes("..") || outputPath.includes("..")) {
       throw new Error("Invalid output path: path traversal detected");
+    }
+  }
+
+  private async querySection(prompt: string): Promise<{ content: string }> {
+    if (
+      this.queryTimeoutMs === undefined ||
+      this.queryTimeoutMs === null ||
+      this.queryTimeoutMs <= 0
+    ) {
+      return this.queryFn(prompt);
+    }
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      return await Promise.race([
+        this.queryFn(prompt),
+        new Promise<{ content: string }>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error("LLM query timeout"));
+          }, this.queryTimeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
     }
   }
 }
