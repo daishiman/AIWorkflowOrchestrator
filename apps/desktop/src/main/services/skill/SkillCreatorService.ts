@@ -302,7 +302,7 @@ export class SkillCreatorService {
 
       this.throwIfAborted(operationSignal);
       // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
-      if (structurePlan) {
+      if (structurePlan !== null) {
         await this.generateSkillMd(skillDir, structurePlan, operationSignal);
       } else if (options.mode === "create") {
         this.logger.warn(
@@ -835,7 +835,7 @@ export class SkillCreatorService {
       skillName: structurePlan.skillName,
       workflow: {
         summary: structurePlan.description,
-        anchors: structurePlan.anchors || [],
+        anchors: structurePlan.anchors ?? [],
         trigger: {
           description: triggerDescription,
           keywords: triggerKeywords,

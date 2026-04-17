@@ -51,8 +51,8 @@ LLM 統合（実際のAI生成処理との接続）は別タスクへ分離し�
 
 ```typescript
 // 現状のコード（実装済み）
-if (structurePlan) {
-  await this.generateSkillMd(skillDir, structurePlan);
+if (structurePlan !== null) {
+  await this.generateSkillMd(skillDir, structurePlan, operationSignal);
 } else if (options.mode === "create") {
   this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...);
   await this.ensureSkillMdExists(skillDir, options.name, options.description);
@@ -64,8 +64,8 @@ if (structurePlan) {
 つまり AC-1（`void structurePlan` 削除）・AC-2（create モードで generateSkillMd 呼び出し）・
 AC-3（create 以外はフォールバック）・AC-4（null 時フォールバック）は **コードレベルでは実装済み**。
 
-ただし `runCreateWorkflow()` が返す `structurePlan.purpose` にはまだエージェントプロンプト本文が
-入っており（TASK-SW-STRUCT-001 未完了）、SKILL.md の生成内容は意味的に正しくない状態である。
+ただし current branch では `runCreateWorkflow()` が返す `structurePlan.purpose` は
+`options.description` ベースに更新済みであり、TASK-SW-STRUCT-001 の前提を満たしている。
 
 本タスクでは、この current state を Phase 1 で固定し、以降の Phase では
 差分の有無に応じて再実装か回帰確認かを選べるようにする。
@@ -218,7 +218,7 @@ graph TD
 ```bash
 # Phase完了処理
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \
-  --workflow docs/30-workflows/skill-create-flow-gaps/TASK-SW-STRUCT-002 \
+  --workflow docs/30-workflows/p02-par-STRUCT-002 \
   --phase {{N}} \
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 ```

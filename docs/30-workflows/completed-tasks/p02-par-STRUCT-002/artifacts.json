@@ -1,7 +1,7 @@
 {
   "taskId": "TASK-SW-STRUCT-002",
   "taskName": "struct-002-connect-structure-plan-to-skill-md",
-  "featureName": "skill-create-flow-gaps/TASK-SW-STRUCT-002",
+  "featureName": "p02-par-STRUCT-002/TASK-SW-STRUCT-002",
   "status": "completed",
   "createdAt": "2026-04-15",
   "completedAt": "2026-04-16",
@@ -18,8 +18,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "requirements.md",
-          "path": "outputs/phase-1/requirements.md",
+          "name": "TASK-SW-STRUCT-002-requirements.md",
+          "path": "outputs/phase-1/TASK-SW-STRUCT-002-requirements.md",
           "description": "要件定義書・受入条件・問題背景"
         }
       ]
@@ -30,8 +30,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "design.md",
-          "path": "outputs/phase-2/design.md",
+          "name": "TASK-SW-STRUCT-002-design.md",
+          "path": "outputs/phase-2/TASK-SW-STRUCT-002-design.md",
           "description": "structurePlan接続配線の詳細設計・plan分岐設計"
         }
       ]
@@ -42,8 +42,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "review.md",
-          "path": "outputs/phase-3/review.md",
+          "name": "TASK-SW-STRUCT-002-review.md",
+          "path": "outputs/phase-3/TASK-SW-STRUCT-002-review.md",
           "description": "設計レビュー結果・リスク評価・ゲート判定"
         }
       ]
@@ -54,8 +54,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "test-design.md",
-          "path": "outputs/phase-4/test-design.md",
+          "name": "TASK-SW-STRUCT-002-test-design.md",
+          "path": "outputs/phase-4/TASK-SW-STRUCT-002-test-design.md",
           "description": "TDD Redフェーズテストケース・回帰テスト計画"
         }
       ]
@@ -66,8 +66,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "implementation-plan.md",
-          "path": "outputs/phase-5/implementation-plan.md",
+          "name": "TASK-SW-STRUCT-002-implementation-plan.md",
+          "path": "outputs/phase-5/TASK-SW-STRUCT-002-implementation-plan.md",
           "description": "実装ステップ詳細・void structurePlan削除・接続配線記録"
         }
       ]
@@ -78,8 +78,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "extended-test-record.md",
-          "path": "outputs/phase-6/extended-test-record.md",
+          "name": "TASK-SW-STRUCT-002-extended-test-record.md",
+          "path": "outputs/phase-6/TASK-SW-STRUCT-002-extended-test-record.md",
           "description": "境界条件・nullフォールバック回帰の追加記録"
         }
       ]
@@ -90,8 +90,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "coverage-report.md",
-          "path": "outputs/phase-7/coverage-report.md",
+          "name": "TASK-SW-STRUCT-002-coverage-report.md",
+          "path": "outputs/phase-7/TASK-SW-STRUCT-002-coverage-report.md",
           "description": "AC対応表・branch coverage確認"
         }
       ]
@@ -102,8 +102,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "refactoring-record.md",
-          "path": "outputs/phase-8/refactoring-record.md",
+          "name": "TASK-SW-STRUCT-002-refactoring-record.md",
+          "path": "outputs/phase-8/TASK-SW-STRUCT-002-refactoring-record.md",
           "description": "最小複雑性・命名整理の記録"
         }
       ]
@@ -114,8 +114,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "quality-report.md",
-          "path": "outputs/phase-9/quality-report.md",
+          "name": "TASK-SW-STRUCT-002-quality-report.md",
+          "path": "outputs/phase-9/TASK-SW-STRUCT-002-quality-report.md",
           "description": "lint / typecheck / test の品質ゲート結果"
         }
       ]
@@ -126,8 +126,8 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "final-review-result.md",
-          "path": "outputs/phase-10/final-review-result.md",
+          "name": "TASK-SW-STRUCT-002-final-review-result.md",
+          "path": "outputs/phase-10/TASK-SW-STRUCT-002-final-review-result.md",
           "description": "AC・依存関係・4条件の最終判定"
         }
       ]
@@ -138,13 +138,13 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "manual-test-checklist.md",
-          "path": "outputs/phase-11/manual-test-checklist.md",
+          "name": "TASK-SW-STRUCT-002-manual-test-checklist.md",
+          "path": "outputs/phase-11/TASK-SW-STRUCT-002-manual-test-checklist.md",
           "description": "手動テストチェックリスト（createモード実フロー・SKILL.md生成内容確認）"
         },
         {
-          "name": "manual-test-result.md",
-          "path": "outputs/phase-11/manual-test-result.md",
+          "name": "TASK-SW-STRUCT-002-manual-test-result.md",
+          "path": "outputs/phase-11/TASK-SW-STRUCT-002-manual-test-result.md",
           "description": "手動テスト結果（PASS / FAIL / BLOCKED）"
         }
       ]
@@ -155,23 +155,23 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "implementation-guide.md",
-          "path": "outputs/phase-12/implementation-guide.md",
+          "name": "TASK-SW-STRUCT-002-implementation-guide.md",
+          "path": "outputs/phase-12/TASK-SW-STRUCT-002-implementation-guide.md",
           "description": "中学生レベル / 技術者レベルの実装ガイド"
         },
         {
-          "name": "system-spec-update-summary.md",
-          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "name": "TASK-SW-STRUCT-002-system-spec-update-summary.md",
+          "path": "outputs/phase-12/TASK-SW-STRUCT-002-system-spec-update-summary.md",
           "description": "system spec 反映結果と current facts"
         },
         {
-          "name": "documentation-changelog.md",
-          "path": "outputs/phase-12/documentation-changelog.md",
+          "name": "TASK-SW-STRUCT-002-documentation-changelog.md",
+          "path": "outputs/phase-12/TASK-SW-STRUCT-002-documentation-changelog.md",
           "description": "変更履歴と current/baseline 区別"
         },
         {
-          "name": "unassigned-task-detection.md",
-          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "name": "TASK-SW-STRUCT-002-unassigned-task-detection.md",
+          "path": "outputs/phase-12/TASK-SW-STRUCT-002-unassigned-task-detection.md",
           "description": "未タスク検出結果"
         }
       ]
@@ -182,13 +182,13 @@
       "status": "completed",
       "artifacts": [
         {
-          "name": "change-summary.md",
-          "path": "outputs/phase-13/change-summary.md",
+          "name": "TASK-SW-STRUCT-002-change-summary.md",
+          "path": "outputs/phase-13/TASK-SW-STRUCT-002-change-summary.md",
           "description": "PR説明用の変更要約（PR #2209 として完了）"
         },
         {
-          "name": "local-check-result.md",
-          "path": "outputs/phase-13/local-check-result.md",
+          "name": "TASK-SW-STRUCT-002-local-check-result.md",
+          "path": "outputs/phase-13/TASK-SW-STRUCT-002-local-check-result.md",
           "description": "ローカルチェック結果"
         }
       ]

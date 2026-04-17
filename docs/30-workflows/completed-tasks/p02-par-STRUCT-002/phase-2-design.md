@@ -29,7 +29,7 @@
 
 | 資料名                 | パス                                                                                    | 用途                 |
 | ---------------------- | --------------------------------------------------------------------------------------- | -------------------- |
-| Phase 1 成果物         | `outputs/phase-1/requirements.md`                                                       | 要件・AC 参照        |
+| Phase 1 成果物         | `outputs/phase-1/TASK-SW-STRUCT-002-requirements.md`                                    | 要件・AC 参照        |
 | phase-2-solution.md    | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 解決アプローチB 参照 |
 | SkillCreatorService.ts | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                           | 修正対象コード確認   |
 
@@ -129,15 +129,58 @@ grep -n "anchors\|StructurePlanJson" apps/desktop/src/main/services/skill/SkillC
 | 型チェック                 | `pnpm --filter @repo/desktop typecheck`                                |
 | lint                       | `pnpm --filter @repo/desktop lint`                                     |
 
+## generateSkillMd メソッド設計（p08版より補完）
+
+**新規メソッドシグネチャ**:
+
+```typescript
+private async generateSkillMd(
+  skillDir: string,
+  structurePlan: StructurePlanJson,
+  signal?: AbortSignal,
+): Promise<void>
+```
+
+**StructurePlanJson → plan 変換仕様**:
+
+| StructurePlanJson フィールド | plan への変換                                                |
+| ---------------------------- | ------------------------------------------------------------ |
+| `skillName`                  | `plan.skillName`                                             |
+| `description`                | `plan.workflow.summary`                                      |
+| `purpose`                    | `trigger.description` の生成に使用                           |
+| `triggers`                   | `plan.workflow.trigger.keywords`（未指定時は `[skillName]`） |
+| `anchors`                    | `plan.workflow.anchors`（未指定時は `[]`）                   |
+
+**trigger.description の生成ロジック**:
+
+```typescript
+const normalizedPurpose =
+  typeof structurePlan.purpose === "string"
+    ? structurePlan.purpose.replace(/\s+/g, " ").trim()
+    : "";
+const triggerDescription = normalizedPurpose
+  ? `Use when ${structurePlan.skillName} is requested. Purpose: ${normalizedPurpose}`
+  : `Use when ${structurePlan.skillName} is requested`;
+```
+
+**generateSkillMd 内部フォールバック（3段階）**:
+
+1. `generate_skill_md.js` 実行失敗時 → `ensureSkillMdExists` へフォールバック
+2. SKILL.md ファイルが生成されていない場合 → `ensureSkillMdExists` へフォールバック
+3. 例外発生時 → `ensureSkillMdExists` へフォールバック
+
+`generateSkillMd` 側では例外を捕捉して `ensureSkillMdExists` にフォールバックする。
+ただし `ensureSkillMdExists` 自体の I/O 失敗は別途例外になり得る。
+
 ## 統合テスト連携【必須】
 
 `structurePlan` 接続配線の設計と `plan` 分岐設計を反映済み。
 
-| 判定項目                | 基準     | 結果    |
-| ----------------------- | -------- | ------- |
-| 分岐設計の整合性        | 確認済み | pending |
-| null フォールバック設計 | 確認済み | pending |
-| 後方互換性設計          | 確認済み | pending |
+| 判定項目                | 基準     | 結果     |
+| ----------------------- | -------- | -------- |
+| 分岐設計の整合性        | 確認済み | **完了** |
+| null フォールバック設計 | 確認済み | **完了** |
+| 後方互換性設計          | 確認済み | **完了** |
 
 ## 多角的チェック観点
 
@@ -150,19 +193,19 @@ grep -n "anchors\|StructurePlanJson" apps/desktop/src/main/services/skill/SkillC
 
 ## 成果物
 
-| 成果物 | パス                        | 説明                                              |
-| ------ | --------------------------- | ------------------------------------------------- |
-| 設計書 | `outputs/phase-2/design.md` | `structurePlan` 接続配線の詳細設計・plan 分岐設計 |
+| 成果物 | パス                                           | 説明                                              |
+| ------ | ---------------------------------------------- | ------------------------------------------------- |
+| 設計書 | `outputs/phase-2/TASK-SW-STRUCT-002-design.md` | `structurePlan` 接続配線の詳細設計・plan 分岐設計 |
 
 ## 完了条件
 
-- [ ] `void structurePlan` 削除の設計が確定済み
-- [ ] `structurePlan` → `plan` オブジェクト接続の分岐設計が確定済み
-- [ ] null フォールバック設計が確定済み
-- [ ] `StructurePlanJson` インターフェース確認が完了済み
-- [ ] 既存テストへの影響範囲が設計済み
-- [ ] 検証マトリクスが定義済み
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] `void structurePlan` 削除の設計が確定済み
+- [x] `structurePlan` → `plan` オブジェクト接続の分岐設計が確定済み
+- [x] null フォールバック設計が確定済み
+- [x] `StructurePlanJson` インターフェース確認が完了済み
+- [x] 既存テストへの影響範囲が設計済み
+- [x] 検証マトリクスが定義済み
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -176,10 +219,10 @@ grep -n "anchors\|StructurePlanJson" apps/desktop/src/main/services/skill/SkillC
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

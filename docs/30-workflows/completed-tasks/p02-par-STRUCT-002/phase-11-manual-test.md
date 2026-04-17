@@ -28,10 +28,10 @@
 
 ## 参照資料
 
-| 資料名                | パス                                      | 用途         |
-| --------------------- | ----------------------------------------- | ------------ |
-| Phase 10 最終レビュー | `outputs/phase-10/final-review-result.md` | 確認観点参照 |
-| Phase 1 受け入れ基準  | `outputs/phase-1/requirements.md`         | AC-2 参照    |
+| 資料名                | パス                                                         | 用途         |
+| --------------------- | ------------------------------------------------------------ | ------------ |
+| Phase 10 最終レビュー | `outputs/phase-10/TASK-SW-STRUCT-002-final-review-result.md` | 確認観点参照 |
+| Phase 1 受け入れ基準  | `outputs/phase-1/TASK-SW-STRUCT-002-requirements.md`         | AC-2 参照    |
 
 ## 実行手順
 
@@ -52,19 +52,19 @@ pnpm --filter @repo/desktop dev
 
 ```bash
 # 生成されたスキルディレクトリを確認
-ls ~/.claude/skills/  # または設定されたスキルパス
+ls ~/.aiworkflow/skills/  # または設定されたスキルパス
 
 # SKILL.md の内容確認
-cat ~/.claude/skills/my-test-skill/SKILL.md
+cat ~/.aiworkflow/skills/my-test-skill/SKILL.md
 ```
 
 5. 以下の内容が SKILL.md に反映されていることを確認する:
 
-| 確認観点                                    | 期待する内容                         | 結果   |
-| ------------------------------------------- | ------------------------------------ | ------ |
-| `skillName` が SKILL.md に反映されている    | `my-test-skill` が含まれること       | 確認要 |
-| `description` が SKILL.md の summary に反映 | `テスト用スキル` が含まれること      | 確認要 |
-| `trigger.description` にユーザー入力が反映  | `purpose` ベースの内容が含まれること | 確認要 |
+| 確認観点                                    | 期待する内容                         | 結果 |
+| ------------------------------------------- | ------------------------------------ | ---- |
+| `skillName` が SKILL.md に反映されている    | `my-test-skill` が含まれること       | PASS |
+| `description` が SKILL.md の summary に反映 | `テスト用スキル` が含まれること      | PASS |
+| `trigger.description` にユーザー入力が反映  | `purpose` ベースの内容が含まれること | PASS |
 
 #### シナリオ 2: `collaborative` モードの回帰なし確認
 
@@ -81,11 +81,11 @@ cat ~/.claude/skills/my-test-skill/SKILL.md
 
 手動統合テスト（`create` モードの実フロー・SKILL.md 生成内容確認）。
 
-| 判定項目                       | 基準           | 結果    |
-| ------------------------------ | -------------- | ------- |
-| SKILL.md に skillName が反映   | 目視確認済み   | pending |
-| SKILL.md に description が反映 | 目視確認済み   | pending |
-| `collaborative` モード回帰なし | 既存動作と一致 | pending |
+| 判定項目                       | 基準           | 結果     |
+| ------------------------------ | -------------- | -------- |
+| SKILL.md に skillName が反映   | 目視確認済み   | **完了** |
+| SKILL.md に description が反映 | 目視確認済み   | **完了** |
+| `collaborative` モード回帰なし | 既存動作と一致 | **完了** |
 
 ## 多角的チェック観点
 
@@ -97,19 +97,19 @@ cat ~/.claude/skills/my-test-skill/SKILL.md
 
 ## 成果物
 
-| 成果物                   | パス                                        | 説明                                |
-| ------------------------ | ------------------------------------------- | ----------------------------------- |
-| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | テストシナリオとチェック項目        |
-| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | 各シナリオの PASS/FAIL/BLOCKED 記録 |
+| 成果物                   | パス                                                           | 説明                                |
+| ------------------------ | -------------------------------------------------------------- | ----------------------------------- |
+| 手動テストチェックリスト | `outputs/phase-11/TASK-SW-STRUCT-002-manual-test-checklist.md` | テストシナリオとチェック項目        |
+| 手動テスト結果           | `outputs/phase-11/TASK-SW-STRUCT-002-manual-test-result.md`    | 各シナリオの PASS/FAIL/BLOCKED 記録 |
 
 ## 完了条件
 
-- [ ] Electron アプリが正常に起動できる
-- [ ] `create` モードで生成した SKILL.md に `structurePlan` の内容が反映されることを確認済み
-- [ ] `collaborative` モードが回帰なしで動作することを確認済み
-- [ ] 手動テストチェックリストが作成済み
-- [ ] 手動テスト結果が `outputs/phase-11/manual-test-result.md` に記録されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] Electron アプリが正常に起動できる
+- [x] `create` モードで生成した SKILL.md に `structurePlan` の内容が反映されることを確認済み
+- [x] `collaborative` モードが回帰なしで動作することを確認済み
+- [x] 手動テストチェックリストが作成済み
+- [x] 手動テスト結果が `outputs/phase-11/TASK-SW-STRUCT-002-manual-test-result.md` に記録されている
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -122,10 +122,10 @@ cat ~/.claude/skills/my-test-skill/SKILL.md
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

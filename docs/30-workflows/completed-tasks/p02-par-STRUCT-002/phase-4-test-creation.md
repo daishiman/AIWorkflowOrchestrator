@@ -19,7 +19,7 @@ Phase 5 の実装でこれらが Green になることを目標とする。
 
 ## 実行タスク
 
-- テスト設計書の作成: `outputs/phase-4/test-design.md`
+- テスト設計書の作成: `outputs/phase-4/TASK-SW-STRUCT-002-test-design.md`
 - 正常系テストケースの設計（TC-01〜TC-04）
 - 異常系テストケースの設計（TC-05〜TC-06）
 - 回帰テストの設計（TC-07）
@@ -29,8 +29,8 @@ Phase 5 の実装でこれらが Green になることを目標とする。
 
 | 資料名                 | パス                                                                         | 用途               |
 | ---------------------- | ---------------------------------------------------------------------------- | ------------------ |
-| Phase 2 設計書         | `outputs/phase-2/design.md`                                                  | テスト設計の根拠   |
-| Phase 1 受け入れ基準   | `outputs/phase-1/requirements.md`                                            | AC 参照            |
+| Phase 2 設計書         | `outputs/phase-2/TASK-SW-STRUCT-002-design.md`                               | テスト設計の根拠   |
+| Phase 1 受け入れ基準   | `outputs/phase-1/TASK-SW-STRUCT-002-requirements.md`                         | AC 参照            |
 | SkillCreatorService.ts | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                | テスト対象ファイル |
 | 既存テスト             | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` | 回帰テスト参照     |
 
@@ -47,16 +47,19 @@ Phase 5 の実装でこれらが Green になることを目標とする。
 
 ### 異常系テストケース
 
-| TC ID | テスト名                                                           | 検証内容                                                                     | AC   |
-| ----- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------- | ---- |
-| TC-05 | `structurePlan` が `null` の場合はフォールバック `plan` を使用する | `structurePlan` が null のとき `options.name` ベースの `plan` が使われること | AC-4 |
-| TC-06 | `structurePlan.anchors` が未定義の場合は `[]` を使用する           | `anchors` が undefined のとき `[]` にフォールバックされること                | AC-2 |
+| TC ID            | テスト名                                                                         | 検証内容                                                                     | AC          |
+| ---------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------- |
+| TC-05            | `structurePlan` が `null` の場合はフォールバック `plan` を使用する               | `structurePlan` が null のとき `options.name` ベースの `plan` が使われること | AC-4 (AC-3) |
+| TC-06            | `structurePlan.anchors` が未定義の場合は `[]` を使用する                         | `anchors` が undefined のとき `[]` にフォールバックされること                | AC-2        |
+| TC-07（p08補完） | `generate_skill_md.js` が失敗した場合 `ensureSkillMdExists` にフォールバックする | `createSkill()` が例外をスローしない                                         | AC-3        |
 
 ### 回帰テストケース
 
-| TC ID | テスト名                                           | 検証内容                                                                  | AC         |
-| ----- | -------------------------------------------------- | ------------------------------------------------------------------------- | ---------- |
-| TC-07 | `collaborative` モードの既存テストが全て PASS する | `collaborative` モードのテストが `structurePlan` 変更の影響を受けないこと | AC-3, AC-5 |
+| TC ID  | テスト名                                                      | 検証内容                                                                  | AC         |
+| ------ | ------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------- |
+| TC-R01 | `collaborative` モードの既存テストが全て PASS する            | `collaborative` モードのテストが `structurePlan` 変更の影響を受けないこと | AC-3, AC-5 |
+| TC-R02 | `collaborative` モード: `runCollaborativeWorkflow` が正常動作 | `collaborative` の既存ワークフローが破壊されていないこと                  | AC-4       |
+| TC-R03 | `orchestrate` モード: `runOrchestrateWorkflow` が正常動作     | `orchestrate` の既存ワークフローが破壊されていないこと                    | AC-4       |
 
 ## 実行手順
 
@@ -69,7 +72,7 @@ pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/
 
 ### 1. テスト設計書の作成
 
-`outputs/phase-4/test-design.md` にテストケース一覧・テスト方針・回帰テスト計画を記述する。
+`outputs/phase-4/TASK-SW-STRUCT-002-test-design.md` にテストケース一覧・テスト方針・回帰テスト計画を記述する。
 
 ### 2. テストコードの実装
 
@@ -110,11 +113,11 @@ pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/
 
 TDD Red フェーズテストケースと回帰テスト計画を作成。
 
-| 判定項目                | 基準          | 結果    |
-| ----------------------- | ------------- | ------- |
-| TC-01〜TC-07 の設計完了 | 全TC設計済み  | pending |
-| TDD Red 確認            | FAIL 確認済み | pending |
-| 既存テスト PASS 確認    | 回帰なし      | pending |
+| 判定項目                | 基準          | 結果     |
+| ----------------------- | ------------- | -------- |
+| TC-01〜TC-07 の設計完了 | 全TC設計済み  | **完了** |
+| TDD Red 確認            | FAIL 確認済み | **完了** |
+| 既存テスト PASS 確認    | 回帰なし      | **完了** |
 
 ## 多角的チェック観点
 
@@ -127,36 +130,36 @@ TDD Red フェーズテストケースと回帰テスト計画を作成。
 
 ## 成果物
 
-| 成果物       | パス                             | 説明                               |
-| ------------ | -------------------------------- | ---------------------------------- |
-| テスト設計書 | `outputs/phase-4/test-design.md` | TDD Red フェーズのテストケース設計 |
+| 成果物       | パス                                                | 説明                               |
+| ------------ | --------------------------------------------------- | ---------------------------------- |
+| テスト設計書 | `outputs/phase-4/TASK-SW-STRUCT-002-test-design.md` | TDD Red フェーズのテストケース設計 |
 
 ## 完了条件
 
-- [ ] テスト設計書（`outputs/phase-4/test-design.md`）が作成済み
-- [ ] TC-01〜TC-04 の正常系テストケースが設計済み
-- [ ] TC-05〜TC-06 の異常系テストケースが設計済み
-- [ ] TC-07 の回帰テストが設計済み
-- [ ] TDD Red 確認済み
-- [ ] 既存テストが PASS していること（baseline 確認）
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] テスト設計書（`outputs/phase-4/TASK-SW-STRUCT-002-test-design.md`）が作成済み
+- [x] TC-01〜TC-04 の正常系テストケースが設計済み
+- [x] TC-05〜TC-07 の異常系テストケースが設計済み（p08版 TC-07 を補完追加）
+- [x] TC-R01〜TC-R03 の回帰テストが設計済み
+- [x] TDD Red 確認済み
+- [x] 既存テストが PASS していること（baseline 確認）
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
 1. baseline 確認（既存テスト PASS）
-2. テスト設計書作成（`outputs/phase-4/test-design.md`）
+2. テスト設計書作成（`outputs/phase-4/TASK-SW-STRUCT-002-test-design.md`）
 3. TC-01〜TC-04 正常系テスト設計
-4. TC-05〜TC-06 異常系テスト設計
-5. TC-07 回帰テスト設計
+4. TC-05〜TC-07 異常系テスト設計
+5. TC-R01〜TC-R03 回帰テスト設計
 6. TDD Red 確認（FAIL を確認）
 7. 成果物確認
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 
