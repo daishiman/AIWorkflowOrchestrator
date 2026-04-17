@@ -30,14 +30,14 @@
 
 ## 参照資料
 
-| 資料名                  | パス                                                                                    | 用途                      |
-| ----------------------- | --------------------------------------------------------------------------------------- | ------------------------- |
-| Phase 1 成果物          | `outputs/phase-1/requirements-definition.md`                                            | 要件・AC 参照             |
-| phase-2-solution.md     | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 解決策設計（アプローチB） |
-| phase-3-review.md       | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md`   | 3.5節・4層整合確認        |
-| skillCreatorHandlers.ts | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                                     | 変更対象                  |
-| SkillCreatorService.ts  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                           | STREAM-001 成果物確認     |
-| SkillCreateWizard.tsx   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                      | props 接続確認            |
+| 資料名                  | パス                                                               | 用途                      |
+| ----------------------- | ------------------------------------------------------------------ | ------------------------- |
+| Phase 1 成果物          | `outputs/phase-1/requirements-definition.md`                       | 要件・AC 参照             |
+| phase-2-solution.md     | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`   | 解決策設計（アプローチB） |
+| phase-3-review.md       | `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`     | 3.5節・4層整合確認        |
+| skillCreatorHandlers.ts | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                | 変更対象                  |
+| SkillCreatorService.ts  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`      | STREAM-001 成果物確認     |
+| SkillCreateWizard.tsx   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` | props 接続確認            |
 
 ## 実行手順
 

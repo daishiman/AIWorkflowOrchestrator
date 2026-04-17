@@ -715,4 +715,8 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     callback: (payload: ApprovalRequestPayload) => void,
   ): (() => void) =>
     safeOn<ApprovalRequestPayload>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
+
+  // TASK-SW-CANCEL-002: スキル生成キャンセル
+  cancelGeneration: (): Promise<IpcResult<void>> =>
+    safeInvoke<IpcResult<void>>(IPC_CHANNELS.SKILL_CREATOR_CANCEL),
 };

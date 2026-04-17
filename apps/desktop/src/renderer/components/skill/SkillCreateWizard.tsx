@@ -499,6 +499,12 @@ export const SkillCreateWizard = React.forwardRef<
 
       goToStep(3);
     } catch (err) {
+      if (requestId !== generationRequestIdRef.current) {
+        return;
+      }
+      if (isAbortLikeError(err)) {
+        return;
+      }
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
       );

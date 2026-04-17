@@ -19,6 +19,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import os from "os";
+import path from "path";
 import * as fsPromises from "fs/promises";
 import { SkillCreatorService } from "../SkillCreatorService";
 import { ScriptExecutor } from "../ScriptExecutor";
@@ -73,6 +74,7 @@ describe("SkillCreatorService", () => {
     vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
     vi.mocked(fsPromises.writeFile).mockResolvedValue();
     vi.mocked(fsPromises.unlink).mockResolvedValue();
+    vi.mocked(fsPromises.rm).mockResolvedValue(undefined);
     vi.mocked(fsPromises.readdir).mockResolvedValue([]);
     vi.mocked(fsPromises.readFile).mockResolvedValue(Buffer.from(""));
 
@@ -278,6 +280,106 @@ describe("SkillCreatorService", () => {
 
       // Act & Assert
       await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("SC-CANCEL-001: should cancel createSkill when cancelCurrentOperation is called", async () => {
+      // Arrange
+      const options: CreateSkillOptions = {
+        name: "cancel-skill",
+        description: "Cancelable skill",
+        mode: "create",
+      };
+      const expectedSkillDir = path.join(
+        os.homedir(),
+        ".aiworkflow",
+        "skills",
+        options.name,
+      );
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      mockScriptExecutor.execute.mockImplementation(
+        (
+          _scriptName: string,
+          _args: string[],
+          options?: { signal?: AbortSignal },
+        ) =>
+          new Promise((_resolve, reject) => {
+            const abortError = new DOMException("Aborted", "AbortError");
+            const handleAbort = () => reject(abortError);
+
+            if (options?.signal?.aborted) {
+              handleAbort();
+              return;
+            }
+
+            options?.signal?.addEventListener("abort", handleAbort, {
+              once: true,
+            });
+          }),
+      );
+
+      // Act
+      const createPromise = service.createSkill(options);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(mockScriptExecutor.execute).toHaveBeenCalled();
+      service.cancelCurrentOperation();
+
+      // Assert
+      await expect(createPromise).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "init_skill.js",
+        expect.any(Array),
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
+      );
+      expect(vi.mocked(fsPromises.rm)).toHaveBeenCalledWith(expectedSkillDir, {
+        recursive: true,
+        force: true,
+      });
+    });
+
+    it("SC-CANCEL-002: should not remove an existing skill dir when canceling", async () => {
+      // Arrange
+      const options: CreateSkillOptions = {
+        name: "existing-skill",
+        description: "Cancelable skill with existing dir",
+        mode: "create",
+      };
+      mockResourceLoader.loadAgent.mockResolvedValue("mock-agent-content");
+      vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+      mockScriptExecutor.execute.mockImplementation(
+        (
+          _scriptName: string,
+          _args: string[],
+          options?: { signal?: AbortSignal },
+        ) =>
+          new Promise((_resolve, reject) => {
+            const abortError = new DOMException("Aborted", "AbortError");
+            const handleAbort = () => reject(abortError);
+
+            if (options?.signal?.aborted) {
+              handleAbort();
+              return;
+            }
+
+            options?.signal?.addEventListener("abort", handleAbort, {
+              once: true,
+            });
+          }),
+      );
+
+      // Act
+      const createPromise = service.createSkill(options);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      service.cancelCurrentOperation();
+
+      // Assert
+      await expect(createPromise).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(vi.mocked(fsPromises.rm)).not.toHaveBeenCalled();
     });
   });
 

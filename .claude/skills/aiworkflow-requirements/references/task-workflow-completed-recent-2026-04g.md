@@ -1,10 +1,4 @@
 # 完了タスク台帳 — 2026-04 (g)
-# 完了タスク記録 — 2026-04-15
-# 完了タスク記録 — 2026-04-15
-# 完了タスク記録 — 2026-04-15
-# 完了タスク台帳 — 2026-04 (g)
-# 完了タスク記録 — 2026-04-15
-# 完了タスク記録 — 2026-04-14
 
 ## TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）
 
@@ -74,6 +68,8 @@
 - `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`purpose = options.description` / `agents = ["extract-purpose", "plan-structure"]` / `features = []` の current facts を返すようにした
 - `createSkill()` では `structurePlan` を local variable として受け取り、hidden property を使わない handoff に整理した
 - `SkillCreatorService.test.ts` の `TC-04` を更新し、`runCreateWorkflow` の戻り値に `description` が入ることを直接検証するようにした
+- `outputs/phase-12/` の 6 成果物を current facts として固定し、`outputs/artifacts.json` を追加して root と parity を揃えた
+- 2026-04-16 追補として `SkillService.cancelCurrentSkillCreation()` を追加し、`skill:create` のキャンセルを `skill-creator:cancel` に橋渡しした。`SkillCreatorService` / `ScriptExecutor` / `ResourceLoader` へ `AbortSignal` を伝播し、child process 中断と file read 中断まで含めてキャンセルを実処理に接続した
 - `docs/30-workflows/p01-par-STRUCT-001/artifacts.json` を canonical manifest として current facts に固定し、`outputs/artifacts.json` は別 workflow の ledger として扱うようにした
 
 #### Phase 11/12 成果物

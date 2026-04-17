@@ -130,6 +130,7 @@ export function registerSkillCreatorHandlers(
   skillCreatorService: SkillCreatorService,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
   outputHandler?: SkillCreatorOutputHandler,
+  onCancelCurrentSkillCreation?: () => void,
 ): void {
   // skill-creator:detect-mode - リクエストからモードを判定
   ipcMain.handle(
@@ -682,19 +683,24 @@ export function registerSkillCreatorHandlers(
     },
   );
 
-  // skill-creator:cancel - キャンセル（TASK-SC-CANCEL-001: 将来実装予定）
+  // skill-creator:cancel - キャンセル処理
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-    async (event: IpcMainInvokeEvent): Promise<IpcResult<null>> => {
+    async (event: IpcMainInvokeEvent): Promise<IpcResult<void>> => {
       const validation = validateIpcSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-        { getAllowedWindows: () => [mainWindow] },
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
       );
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      return { success: false, error: "not-implemented" };
+
+      skillCreatorService.cancelCurrentOperation();
+      onCancelCurrentSkillCreation?.();
+      return { success: true };
     },
   );
 
