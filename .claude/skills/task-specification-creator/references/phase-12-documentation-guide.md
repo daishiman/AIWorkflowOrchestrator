@@ -2,18 +2,20 @@
 
 ## Task 12-1: 実装ガイド作成【必須・2パート構成】
 
-| パート | 対象読者 | 内容 |
-| ------ | -------- | ---- |
-| **Part 1** | **初学者・中学生レベル** | **概念的説明（日常の例え話、専門用語なし）** |
-| Part 2 | 開発者・技術者 | 技術的詳細（型、シグネチャ、使用例、エラー、エッジケース、設定） |
+| パート     | 対象読者                 | 内容                                                             |
+| ---------- | ------------------------ | ---------------------------------------------------------------- |
+| **Part 1** | **初学者・中学生レベル** | **概念的説明（日常の例え話、専門用語なし）**                     |
+| Part 2     | 開発者・技術者           | 技術的詳細（型、シグネチャ、使用例、エラー、エッジケース、設定） |
 
 **Part 1 記述ルール**:
+
 - 日常生活での例え話を**必ず**含め、`たとえば` を最低1回明示する
 - 専門用語は使わない（使う場合は即座に説明）
 - 「なぜ必要か」を先に説明してから「何をするか」を説明
 - 作成後に `references/phase12-checklist-definition.md` と `validate-phase12-implementation-guide.js` で内容要件を確認する
 
 **Part 2 追補ルール**:
+
 - `spec_created` workflow では「実装済み」と書かず、`current contract` と `target delta` を分けて書く
 - API シグネチャだけで閉じず、型定義、使用例、エラーハンドリング、エッジケース、設定可能パラメータ/定数一覧を省略しない
 - 実装先行の task では Before/After が同じでもよい。その場合は `Before = current implementation`、`After = same / no-op` と明記し、差分を捏造しない
@@ -30,6 +32,7 @@
    - 完全整合が残る場合の follow-up 未タスク ID
 
 **Part 1 テンプレート**:
+
 ```markdown
 ### X.X [機能名]とは何か
 
@@ -41,8 +44,8 @@
 
 #### この機能でできること
 
-| 機能 | 説明 | 例 |
-|------|------|-----|
+| 機能  | 説明       | 例     |
+| ----- | ---------- | ------ |
 | 機能A | 簡単な説明 | 具体例 |
 ```
 
@@ -76,6 +79,7 @@
 「設計タスク範囲外」として実更新を保留してはならない。
 
 具体的に必須な更新:
+
 - LOGS.md 2ファイル更新（aiworkflow-requirements + task-specification-creator）
 - SKILL.md 2ファイルの変更履歴更新
 - topic-map.md の再生成（`generate-index.js` 実行）
@@ -98,6 +102,7 @@
 - Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を canonical path で列挙する
 - `skill-creator` を改善した場合は、`skill-creator/SKILL.md` / `LOGS.md` / 変更した template or reference も同じ changelog に列挙する
 - `更新予定` / `計画済み` / `PR マージ後に実施` のような future wording を残さない
+- **テストファイルの追加・修正も必ず記録する**（専用テストファイル新規追加 + 既存テスト修正の両方。shared定数変更はテスト差分が本体だから）（L-CANCEL-004 由来）
 
 ## Task 12-4: unassigned detection
 
@@ -144,10 +149,12 @@ rg -n "計画|予定|TODO|will be|を予定|仕様策定のみ|保留として�
 ## non-visual task（非UIタスク）でのPhase 12処理
 
 ### Phase 11（手動テスト）
+
 - スクリーンショット: N/A（UIを持たない純TS実装の場合）
 - 代替エビデンス: `pnpm test`の実行ログ / テスト件数・合格率
 
 ### Phase 12-2（システム仕様書更新）
+
 - 公開APIシグネチャ変更なし + 内部実装追加のみ = N/A判定
 - 判定根拠を`system-spec-update-summary.md`に明記すること
 
