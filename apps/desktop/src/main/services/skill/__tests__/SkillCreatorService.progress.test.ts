@@ -231,7 +231,6 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
     });
 
     it("TC-12: create モード以外（collaborative）では progress が呼ばれないこと", async () => {
-      allowSuccessfulCreate();
       const collaborativeOptions: CreateSkillOptions = {
         name: "collab-skill",
         description: "Collaborative skill",
