@@ -3553,6 +3553,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-UI-02: Skill Creator IPC ハンドラー責務分離 | L6 |
 
+### references/lessons-learned-skill-creator-tmpdir-fallback.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-SW-STRUCT-001: runCreateWorkflow出力仕様修正 教訓（2026-04-17） | L9 |
+| TASK-SW-STRUCT-002: generateSkillMd接続・多段フォールバック 教訓（2026-04-17） | L34 |
+
 ### references/lessons-learned-skill-execute-hook-migration.md
 
 | セクション | 行 |
@@ -4877,7 +4884,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L336 |
+| 続き | L335 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4990,7 +4997,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 完了タスク | L4 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L221 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
 
 ### references/task-workflow-completed-recent-2026-04c-part-1.md
 
@@ -5169,6 +5176,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L350 |
 | 完了タスク（機能別アーカイブ） | L358 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L459 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L258 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L278 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L280 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L292 |
+| 完了タスク（2026-03後半） | L320 |
+| 完了タスク（機能別アーカイブ） | L328 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L429 |
 
 ### references/task-workflow-history.md
 
@@ -5205,6 +5219,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L30 |
 | 利用順序 | L253 |
 | 関連ドキュメント | L258 |
+| 仕様書インデックス | L25 |
+| 利用順序 | L138 |
+| 関連ドキュメント | L144 |
 
 ### references/testing-accessibility.md
 

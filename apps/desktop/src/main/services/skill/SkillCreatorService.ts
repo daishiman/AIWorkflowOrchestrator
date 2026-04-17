@@ -834,7 +834,7 @@ export class SkillCreatorService {
     const plan = {
       skillName: structurePlan.skillName,
       workflow: {
-        summary: structurePlan.description,
+        summary: normalizedPurpose || structurePlan.description,
         anchors: structurePlan.anchors || [],
         trigger: {
           description: triggerDescription,
