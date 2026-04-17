@@ -619,6 +619,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 - **[Feedback STATE-DETAIL-01]** UI state machine でエラー・キャンセル・正常完了の 3 経路すべてでロック変数（ref）を解放できていないと、2 回目以降の操作が無応答になる。Phase 2 設計で「ロック変数の解放経路テーブル（正常/エラー/キャンセル）」を必須セクションとして設ける。
 - **[Feedback STATE-DETAIL-02]** template recovery（「最初からやり直す」）と通常エラーリトライ（「再試行」）は意味が異なる。Phase 2 設計でボタンのラベル・遷移先・state リセット範囲を明確に分けて記載する。`retry` は formData 保持 + answers リセット、`start over` は全 state クリアが標準パターン。
 - **[Feedback STATE-DETAIL-03]** マルチステップウィザードで子コンポーネントが local state を持つ場合、親の state が変わっても子の local state が古いままになる（stale）。`useEffect(() => { setInternal(prop) }, [prop])` で親から子への再同期ポイントを明示する必要がある。Phase 4 テスト仕様に「props 変更 → internal state 再同期」のテストケースを必須化する。
+- **[Feedback IPC-MERGE-001]** IPC ハンドラーでオブジェクト（`Record<string, unknown>` 等）を扱う場合、Phase 2 設計でシャロー/ディープマージ戦略を明示すること。配列・`null`・`undefined` の扱いもマージルールとして設計書に記載する。IPC 経由の設定更新は plain object のみに制限し、`__proto__` / `constructor` / `prototype` を無視して prototype pollution を防ぐ。発見元: UT-FIX-STORE-SETTINGS-DEEP-MERGE-001
 
 ### 避けるべきこと
 
