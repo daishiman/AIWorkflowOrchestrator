@@ -27,12 +27,12 @@
 
 ## 参照資料
 
-| 資料名                    | パス                                                                                    | 用途                           |
-| ------------------------- | --------------------------------------------------------------------------------------- | ------------------------------ |
-| ConversationRoundStep.tsx | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`           | TODOコメント確認               |
-| SkillCreateWizard.tsx     | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                      | resolveExternalIntegration確認 |
-| Phase 1 分析書            | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` | 問題4の現状分析                |
-| docs/30-workflows/        | `docs/30-workflows/` 配下を検索                                                         | 対象タスクの完了状況確認       |
+| 資料名                    | パス                                                                          | 用途                           |
+| ------------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
+| ConversationRoundStep.tsx | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | TODOコメント確認               |
+| SkillCreateWizard.tsx     | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | resolveExternalIntegration確認 |
+| Phase 1 分析書            | `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md`              | 問題4の現状分析                |
+| docs/30-workflows/        | `docs/30-workflows/` 配下を検索                                               | 対象タスクの完了状況確認       |
 
 ## 実行手順
 

@@ -3556,6 +3556,15 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12） | L6 |
 
+### references/lessons-learned-skill-cancel-abortsignal.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L3 |
+| 主要知見 | L15 |
+| 苦戦箇所と解決策 | L125 |
+| 今後の標準ルール | L137 |
+
 ### references/lessons-learned-skill-contrast-guard-lifecycle-followup.md
 
 | セクション | 行 |
@@ -3862,8 +3871,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L45 |
-| 関連ドキュメント | L50 |
+| 利用順序 | L51 |
+| 関連ドキュメント | L56 |
 
 ### references/llm-embedding.md
 
@@ -5113,6 +5122,7 @@ node scripts/list-specs.js --topics
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L9 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5321,6 +5331,9 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L25 |
 | 利用順序 | L137 |
 | 関連ドキュメント | L143 |
+| 仕様書インデックス | L22 |
+| 利用順序 | L51 |
+| 関連ドキュメント | L56 |
 
 ### references/testing-accessibility.md
 

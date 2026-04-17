@@ -8,7 +8,7 @@ Phase 1 の現状分析を踏まえ、各問題の解決アプローチ・タス
 
 ### 現状の欠陥
 
-`sendSkillCreatorProgress()` は `apps/desktop/src/main/ipc/skillCreatorHandlers.ts:692` にエクスポートされているが、呼び出し元が存在しない。`SKILL_CREATOR_CREATE` ハンドラー（:172-284）は `skillCreatorService.createSkill()` を呼ぶだけで進捗通知を送らない。
+`sendSkillCreatorProgress()` は `apps/desktop/src/main/ipc/skillCreatorHandlers.ts:692-703` にエクスポートされているが、呼び出し元が存在しない。`SKILL_CREATOR_CREATE` ハンドラー（:276）は `skillCreatorService.createSkill()` を呼ぶだけで進捗通知を送らない。
 
 ### 解決アプローチ
 
@@ -147,15 +147,21 @@ const cancelGeneration = useCallback(async () => {
 
 TASK-SW-CANCEL-001 → TASK-SW-CANCEL-002 → TASK-SW-CANCEL-003 → TASK-SW-CANCEL-004 の順（直列）。`TASK-SW-CANCEL-001` / `TASK-SW-CANCEL-002` は `SkillCreatorService.ts` / `skillCreatorHandlers.ts` に触れないため問題1・3の共有書き込み面と独立して並列候補にできるが、`TASK-SW-CANCEL-003` は `SkillCreatorService.ts` と `skillCreatorHandlers.ts` の両方を共有するため `TASK-SW-STREAM-001` / `TASK-SW-STREAM-002` / `TASK-SW-STRUCT-001` / `TASK-SW-STRUCT-002` と直列化が必要。
 
+### スコープ補足
+
+- `TASK-SW-CANCEL-003` には `unregisterSkillCreatorHandlers()` の `SKILL_CREATOR_CANCEL` `removeHandler` 追加を含める。
+- `TASK-SW-CANCEL-003` 着手前に `useCancelGeneration.startGeneration()` の戻り値 `AbortSignal` がどこで消費されているかを確認し、必要なら `TASK-SW-CANCEL-004` の責務境界を調整する。
+- 上記は新しいタスクIDを増やすためではなく、CANCEL-003 の実装前確認として固定する。
+
 ---
 
 ## 問題3 解決策: structurePlan を generate_skill_md.js に統合する
 
 ### 現状の欠陥
 
-`apps/desktop/src/main/services/skill/SkillCreatorService.ts:126` の `void structurePlan` でcreateモードの計画結果を破棄している。SKILL.md生成（:173-218）は `structurePlan` と無関係な固定の `plan` オブジェクトを使用している。
+`apps/desktop/src/main/services/skill/SkillCreatorService.ts:112-123` の `structurePlan` 分岐で create モードの計画結果を破棄している。SKILL.md生成（:178-183）は `structurePlan` と無関係な固定の `plan` オブジェクトを使用している。
 
-加えて `runCreateWorkflow()`:639-645 の実装に問題がある:
+加えて `runCreateWorkflow()`:613-630 の実装に問題がある:
 
 - `structurePlan.purpose` に `extractPurposeAgent`（エージェントプロンプト文字列）を代入しているため、意味的に誤り
 - `structurePlan.features` が空配列
@@ -168,7 +174,7 @@ TASK-SW-CANCEL-001 → TASK-SW-CANCEL-002 → TASK-SW-CANCEL-003 → TASK-SW-CAN
 `StructurePlanJson` インターフェース（:35-43）の意図に合わせて `runCreateWorkflow` を修正する:
 
 ```typescript
-// 現状（:639-645）
+// 現状（:613-630）
 const structurePlan: StructurePlanJson = {
   skillName: options.name,
   description: options.description,
@@ -186,11 +192,11 @@ const structurePlan: StructurePlanJson = {
 
 **B. `void structurePlan` をSKILL.md生成に接続する**
 
-`apps/desktop/src/main/services/skill/SkillCreatorService.ts:126` の `void structurePlan` を削除し、SKILL.md 生成の `plan` オブジェクト（:180-194）を `structurePlan` の内容で置き換える:
+`apps/desktop/src/main/services/skill/SkillCreatorService.ts:112-123` の `structurePlan` 分岐を削除し、SKILL.md 生成の `plan` オブジェクト（:178-183）を `structurePlan` の内容で置き換える:
 
 ```typescript
-// :126 を削除
-// :180-194 の plan を structurePlan ベースに変更
+// :112-123 の structurePlan 分岐を削除
+// :178-183 の plan を structurePlan ベースに変更
 const plan = structurePlan
   ? {
       skillName: structurePlan.skillName,
@@ -240,7 +246,7 @@ TASK-SW-STRUCT-001 → TASK-SW-STRUCT-002 の順（直列）。ただし両タ�
 
 ### 現状の欠陥
 
-`apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx:456` の TODO は `resolveExternalIntegration` の主ツール参照ロジック変更後にバッジを削除する意図。現在 `resolveExternalIntegration`（`SkillCreateWizard.tsx:177-218`）は `selectedOptions[0]` を主ツールとして参照しており、バッジロジックと一致している。
+`apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx:456-457` の TODO は `resolveExternalIntegration` の主ツール参照ロジック変更後にバッジを削除する意図。現在 `resolveExternalIntegration`（`SkillCreateWizard.tsx:177-218`）は `selectedOptions[0]` を主ツールとして参照しており、バッジロジックと一致している。
 
 ### 解決アプローチ
 
