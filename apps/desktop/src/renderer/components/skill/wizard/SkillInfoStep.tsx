@@ -44,6 +44,8 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
   },
 ];
 
+const MAX_CATEGORY_COUNT = 3;
+
 export interface SkillInfoStepProps {
   /** スキル名・目的・カテゴリをまとめたフォーム全体の入力値。 */
   formData: SkillInfoFormData;
@@ -75,6 +77,7 @@ export function SkillInfoStep({
   onNext,
 }: SkillInfoStepProps) {
   const [purposeTouched, setPurposeTouched] = useState(false);
+  const isAtLimit = formData.category.length >= MAX_CATEGORY_COUNT;
 
   // Step 0 の完了条件: purpose(10文字以上) + category(1件以上選択)
   const isNextEnabled =
@@ -84,10 +87,21 @@ export function SkillInfoStep({
 
   // 既選択の場合は除去（トグル解除）、未選択の場合は追加
   const handleCategoryClick = (value: SkillCategory) => {
-    const next = formData.category.includes(value)
-      ? formData.category.filter((c) => c !== value)
-      : [...formData.category, value];
-    onFormDataChange({ ...formData, category: next });
+    const isSelected = formData.category.includes(value);
+    if (isSelected) {
+      const next = formData.category.filter((c) => c !== value);
+      onFormDataChange({ ...formData, category: next });
+      return;
+    }
+
+    if (isAtLimit) {
+      return;
+    }
+
+    onFormDataChange({
+      ...formData,
+      category: [...formData.category, value],
+    });
   };
 
   return (
@@ -108,7 +122,7 @@ export function SkillInfoStep({
           onChange={(e) =>
             onFormDataChange({ ...formData, skillName: e.target.value })
           }
-          className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-[var(--status-primary)] focus:outline-none"
           placeholder="例: メール自動返信スキル"
         />
       </div>
@@ -135,7 +149,7 @@ export function SkillInfoStep({
           className={`rounded border px-3 py-2 text-sm focus:outline-none ${
             showPurposeError
               ? "border-red-500 focus:border-red-500"
-              : "border-gray-300 focus:border-blue-500"
+              : "border-gray-300 focus:border-[var(--status-primary)]"
           }`}
           placeholder="このスキルで何を実現したいか、背景や目的を入力してください"
         />
@@ -167,10 +181,11 @@ export function SkillInfoStep({
                 aria-label={label}
                 title={description}
                 onClick={() => handleCategoryClick(value)}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
+                disabled={isAtLimit && !isSelected}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-all duration-200 ease-in-out ${
                   isSelected
-                    ? "border-blue-500 bg-blue-100 text-blue-700"
-                    : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+                    ? "border-[var(--status-primary)] bg-[var(--status-primary)] text-[var(--text-inverse)]"
+                    : "border-gray-300 bg-white text-gray-600 hover:border-gray-400 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                 }`}
               >
                 <span aria-hidden="true">{icon}</span>

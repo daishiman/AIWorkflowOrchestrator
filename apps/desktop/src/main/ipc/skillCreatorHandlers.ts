@@ -273,7 +273,13 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        const skillDir = await skillCreatorService.createSkill(validatedArgs);
+        // TASK-SW-STREAM-002: onProgress コールバックを sendSkillCreatorProgress に接続
+        const skillDir = await skillCreatorService.createSkill(
+          validatedArgs,
+          (progress) => {
+            sendSkillCreatorProgress(mainWindow, progress);
+          },
+        );
         return { success: true, data: skillDir };
       } catch (error) {
         return {
@@ -677,6 +683,12 @@ export function registerSkillCreatorHandlers(
     },
   );
 
+  // TASK-SW-CANCEL-003: スキル生成キャンセルハンドラー
+  ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_CANCEL, async () => {
+    skillCreatorService.cancelCurrentOperation();
+    return { success: true };
+  });
+
   registerRuntimeSkillCreatorHandlers(
     mainWindow,
     runtimeSkillCreatorService,
@@ -711,6 +723,8 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
+  // TASK-SW-CANCEL-003: キャンセルハンドラーの解除
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   // Phase 5 extended handlers
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);
@@ -719,5 +733,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   unregisterRuntimeSkillCreatorHandlers();
 }

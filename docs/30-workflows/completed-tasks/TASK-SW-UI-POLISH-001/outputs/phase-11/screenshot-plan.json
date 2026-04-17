@@ -1,0 +1,30 @@
+{
+  "taskId": "TASK-SW-UI-POLISH-001",
+  "route": "/advanced/skill-create-wizard?skipAuth=true",
+  "captures": [
+    {
+      "tcId": "TC-01",
+      "state": "カテゴリ上限到達時のライトテーマ画面",
+      "theme": "light",
+      "file": "screenshots/TASK-SW-UI-POLISH-001-category-limit-light.png"
+    },
+    {
+      "tcId": "TC-02",
+      "state": "カテゴリ上限到達時のダークテーマ画面",
+      "theme": "dark",
+      "file": "screenshots/TASK-SW-UI-POLISH-001-category-limit-dark.png"
+    },
+    {
+      "tcId": "TC-03",
+      "state": "ProgressBar 更新後のライトテーマ画面",
+      "theme": "light",
+      "file": "screenshots/TASK-SW-UI-POLISH-001-progressbar-light.png"
+    },
+    {
+      "tcId": "TC-04",
+      "state": "ProgressBar 更新後のダークテーマ画面",
+      "theme": "dark",
+      "file": "screenshots/TASK-SW-UI-POLISH-001-progressbar-dark.png"
+    }
+  ]
+}
