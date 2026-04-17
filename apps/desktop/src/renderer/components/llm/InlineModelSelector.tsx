@@ -269,35 +269,50 @@ function SelectorDropdown({
               モデルがありません
             </div>
           ) : (
-            models.map((model) => (
-              <button
-                key={model.id}
-                type="button"
-                role="option"
-                aria-selected={model.id === selectedModelId}
-                onClick={() => onModelSelect(model.id)}
-                className={cn(
-                  dropdownStyles.option,
-                  model.id === selectedModelId
-                    ? dropdownStyles.optionSelected
-                    : dropdownStyles.optionDefault,
-                )}
-              >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    {model.id === selectedModelId && (
-                      <span aria-hidden="true">&#10003;</span>
-                    )}
-                    {model.name}
-                  </div>
-                  {model.contextWindow && (
-                    <div className="text-xs text-[var(--text-tertiary)]">
-                      {Math.round(model.contextWindow / 1000)}K context
-                    </div>
+            models.map((model) => {
+              const hasDescription =
+                typeof model.description === "string" &&
+                model.description.trim().length > 0;
+              const descriptionId = hasDescription
+                ? `inline-model-${model.id}-desc`
+                : undefined;
+              return (
+                <button
+                  key={model.id}
+                  type="button"
+                  role="option"
+                  aria-selected={model.id === selectedModelId}
+                  aria-describedby={descriptionId}
+                  title={hasDescription ? model.description : undefined}
+                  onClick={() => onModelSelect(model.id)}
+                  className={cn(
+                    dropdownStyles.option,
+                    model.id === selectedModelId
+                      ? dropdownStyles.optionSelected
+                      : dropdownStyles.optionDefault,
                   )}
-                </div>
-              </button>
-            ))
+                >
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      {model.id === selectedModelId && (
+                        <span aria-hidden="true">&#10003;</span>
+                      )}
+                      {model.name}
+                    </div>
+                    {model.contextWindow && (
+                      <div className="text-xs text-[var(--text-tertiary)]">
+                        {Math.round(model.contextWindow / 1000)}K context
+                      </div>
+                    )}
+                    {hasDescription && (
+                      <span id={descriptionId} className="sr-only">
+                        {model.description}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })
           )}
         </div>
       )}

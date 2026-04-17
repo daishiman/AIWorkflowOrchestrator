@@ -73,19 +73,19 @@ Adapter Layer (adapters/llm/)
 
 ### 関連ファイル一覧
 
-| ファイル                                                                            | 責務                                    | 修正状態     |
-| ----------------------------------------------------------------------------------- | --------------------------------------- | ------------ |
-| `packages/shared/src/types/llm/schemas/provider.ts`                                 | LLMProviderIdSchema ("openrouter" 追加) | **実装済み** |
-| `apps/desktop/src/main/adapters/llm/OpenAICompatibleAdapter.ts`                     | OpenAI互換統一アダプター                | **実装済み** |
-| `apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts`                           | 設定駆動ファクトリ                      | **実装済み** |
-| `apps/desktop/src/main/handlers/llm.ts`                                             | PROVIDER_CONFIGS + inferProviderId      | **実装済み** |
-| `apps/desktop/src/main/services/secureStorage.ts`                                   | ALL_PROVIDERS                           | **実装済み** |
-| `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`                  | isAvailable フィルタリング              | **実装済み** |
-| `apps/desktop/src/main/ipc/aiHandlers.ts`                                           | LLMProviderId 型統一                    | **実装済み** |
-| `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | LLMProviderId 型統一                    | **実装済み** |
-| `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`                            | ヘルスチェックモデル更新                | **未着手**   |
-| `apps/desktop/src/main/adapters/llm/GoogleAdapter.ts`                               | system_instruction 対応                 | **未着手**   |
-| `apps/desktop/src/main/adapters/llm/__tests__/*.test.ts`                            | テスト更新                              | **未着手**   |
+| ファイル                                                                            | 責務                                          | 修正状態     |
+| ----------------------------------------------------------------------------------- | --------------------------------------------- | ------------ |
+| `packages/shared/src/types/llm/schemas/provider.ts`                                 | LLMProviderIdSchema ("openrouter" 追加)       | **実装済み** |
+| `apps/desktop/src/main/adapters/llm/OpenAICompatibleAdapter.ts`                     | OpenAI互換統一アダプター                      | **実装済み** |
+| `apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts`                           | 設定駆動ファクトリ                            | **実装済み** |
+| `apps/desktop/src/main/handlers/llm.ts`                                             | PROVIDER_CONFIGS + inferProviderId            | **実装済み** |
+| `apps/desktop/src/main/services/secureStorage.ts`                                   | ALL_PROVIDERS                                 | **実装済み** |
+| `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`                  | isAvailable フィルタリング + description 表示 | **実装済み** |
+| `apps/desktop/src/main/ipc/aiHandlers.ts`                                           | LLMProviderId 型統一                          | **実装済み** |
+| `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | LLMProviderId 型統一                          | **実装済み** |
+| `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`                            | ヘルスチェックモデル更新                      | **未着手**   |
+| `apps/desktop/src/main/adapters/llm/GoogleAdapter.ts`                               | system_instruction 対応                       | **未着手**   |
+| `apps/desktop/src/main/adapters/llm/__tests__/*.test.ts`                            | テスト更新                                    | **未着手**   |
 
 ## Lane 分離
 

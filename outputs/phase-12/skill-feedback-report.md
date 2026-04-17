@@ -1,21 +1,31 @@
 # Phase 12 成果物: スキルフィードバックレポート
 
-## タスクID: TASK-SW-FIX-MODE-MGMT-001
+## タスクID: TASK-SW-CANCEL-001
 
-## 仕様書品質フィードバック
+## フィードバックサマリー
 
-### 残すべきパターン
+- `task-specification-creator` の Phase 分割は、小さい shared 変更でも「どこまでが今回か」を切り分けやすかった
+- shared constant の追加は、コードより先に「下流でどう使うか」を明記すると漏れが少ない
+- UI/UX 変更がないタスクでは、Phase 11 スクリーンショットを追わせない明記が必要
+- 専用 regression test ファイルを 1 つ増やすだけでも、後続タスクの安心感が大きい
 
-- Phase 1 での grep 全件確認（影響範囲分析）は効果的だった
-- Wave A/B/C への分割実施により実装が適切に段階化された
-- TC-06 の「静的残骸ゼロ確認」テストパターンは他の廃止系タスクにも再利用できる
+## 良かった点
 
-### 改善余地
+1. `SKILL_CREATOR_CANCEL` を shared 正本に寄せる判断が明確だった
+2. `IPC_CHANNELS` の spread で型伝播が自然に閉じた
+3. `channels.test.ts` と `channels-cancel.test.ts` の 2 層テストで、件数と値の両方を押さえられた
+4. non-visual task のため screenshot を追わない運用を明記できた
 
-- state 廃止のタスクでは、public export や barrel export の監査を Phase 1 に含めると漏れを減らせる
-- スクリーンショット計画は tcId と file 名を 1:1 に寄せると追跡しやすい
+## 改善提案
 
-### 後続 Wave への再利用知見
+| 提案                                                                          | 理由                                         |
+| ----------------------------------------------------------------------------- | -------------------------------------------- |
+| Phase 12 テンプレートに `UI/UX変更なしのため screenshot N/A` の定型句を入れる | 無駄なスクリーンショット探索を防ぐため       |
+| 変更履歴テンプレートに test file の追加も必ず記録する                         | shared constant 変更はテスト差分が本体だから |
+| 小粒度 task では `専用テスト + 既存テスト修正` の 2 ファイル構成を推奨する    | 回帰範囲が読みやすくなるため                 |
+| close-out 記録に `LOGS.md` ×2 と `topic-map.md` の更新要否確認を必須化する    | Phase 12 の close-out 漏れを防ぐため         |
 
-- `generationMode` 廃止のパターン（state 削除→UI 削除→props 削除→テスト更新）は今後の state 廃止タスクの標準手順として参照可能
-- `step-2-generating.png` / `step-3-complete.png` の分割 capture は end-to-end flow の説明に有効
+## 再利用メモ
+
+- 共有定数を 1 つ追加する task では、「正本」「伝播」「回帰テスト」の 3 点セットが最小単位
+- allowlist / handler / renderer を別 task に分けると、横断変更でも責務ごとの回帰を追いやすい

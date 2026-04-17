@@ -502,7 +502,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L456 |
+| 続き | L484 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1042,6 +1042,7 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L280 |
 | Electron IPC API設計 | L316 |
 | 分割ファイル一覧 | L461 |
+| SkillCreatorService progressコールバック IPC 仕様（TASK-SW-STREAM-001） | L470 |
 
 ### references/api-ipc-system-details.md
 
@@ -2376,6 +2377,43 @@ node scripts/list-specs.js --topics
 
 **関連キーワード**: デプロイ, Railway, 環境変数, Discord, プラグイン
 
+### references/LOGS.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L3 |
+| 2026-04-15 - TASK-CI-FUTURE-003 current facts sync | L7 |
+| 2026-04-15 — impl-spec-to-skill-sync (TASK-SW-FIX-FEEDBACK-008 task-workflow + lessons-learned sync) | L20 |
+| 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync | L36 |
+| 2026-04-15 — impl-spec-to-skill-sync (TASK-SC-FIX-GENERATE-SKILL-MD-001) | L50 |
+| 2026-04-15 - TASK-CI-FUTURE-002 phase 12 close-out sync | L64 |
+| 2026-04-15 - TASK-SW-FIX-FEEDBACK-008 current facts sync | L77 |
+| 2026-04-15 - TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync | L91 |
+| 2026-04-14 — impl-spec-to-skill-sync (UT-SKILL-NAME-PATTERN-001) | L103 |
+| 2026-04-14 - TASK-CI-OPT-001 phase 12 close-out sync | L110 |
+| 2026-04-15 - TASK-CRON-CUSTOM-VALIDATION-001 Phase 12 close-out / system spec N/A 確認 | L123 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 backlog 登録 / WC-par-03b-fix-ui Phase 3/4 完了同期 | L135 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L147 |
+| 2026-04-14 - TASK-SW-FIX-FEEDBACK-001 / TASK-SW-FIX-DATAFLOW-001 impl-spec-to-skill-sync（resource-map エントリ追加 / .agents ミラー同期 / SKILL.md Trigger 補完） | L162 |
+| 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新） | L175 |
+| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 impl-spec-to-skill-sync（lessons-learned / resource-map / SKILL.md Trigger 補完） | L188 |
+| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 completed ledger sync（backlog→completed / issue 2007 alignment） | L200 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 impl-spec-to-skill-sync（UI整合性修正 / Phase 11 screenshot 9枚 / artifacts parity） | L214 |
+| 2026-04-13 - UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 impl-spec-to-skill-sync（lessons-learned 新規作成 / completed-recent 台帳追加 / ui-ux 仕様更新） | L227 |
+| 2026-04-13 - TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001 impl-spec-to-skill-sync（lessons-learned / resource-map / SKILL.md Trigger 補完） | L240 |
+
+### references/SKILL.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L14 |
+| 変更履歴 | L19 |
+| クイックスタート | L29 |
+| ワークフロー | L53 |
+| Task仕様ナビ | L67 |
+| リソース参照 | L79 |
+| ベストプラクティス | L181 |
+
 ### references/arch-claude-cli.md
 
 | セクション | 行 |
@@ -3252,6 +3290,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
+| 分割ファイル一覧 | L152 |
+| クイックリファレンス: カテゴリ別検索ガイド | L172 |
+| 分割ファイル一覧 | L176 |
 | 分割ファイル一覧 | L151 |
 | クイックリファレンス: カテゴリ別検索ガイド | L171 |
 | 分割ファイル一覧 | L175 |
@@ -3693,6 +3734,17 @@ node scripts/list-specs.js --topics
 | 関連ファイル | L425 |
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
+
+### references/lessons-learned-stream-001-progress-callback.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| L-STREAM-001: optional callback パターンの設計判断 | L14 |
+| L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
+| L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
+| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
+| 後続タスク・未タスク | L100 |
 
 ### references/lessons-learned-templates.md
 
@@ -4570,6 +4622,72 @@ node scripts/list-specs.js --topics
 | 完了タスク | L14 |
 | 変更履歴 | L375 |
 
+### references/quick-reference-search-patterns-code.md
+
+| セクション | 行 |
+|------------|----|
+| 機能・タスク別のキーワード | L9 |
+| コードパターン早見 | L20 |
+
+### references/quick-reference-search-patterns-ipc-infra.md
+
+| セクション | 行 |
+|------------|----|
+| Permission Fallback（abort/skip/retry/timeout）を探すとき | L9 |
+| SafetyGate / Permission Fallback 実装（UT-06-003 / UT-06-005）を探すとき | L29 |
+| Preload safeInvoke timeout を探すとき | L51 |
+| ChatView silent failure / エラー表示を探すとき | L66 |
+| LLM選択 state persistence / runtime sync を探すとき | L86 |
+| Workspace Chat stream error UX を探すとき | L106 |
+| Light Theme contrast regression guard を探すとき | L126 |
+| Workspace parent reference sweep guard を探すとき | L147 |
+| Workspace preview/search resilience guard を探すとき | L167 |
+| Main Chat / Settings runtime 同期（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）を探すとき | L190 |
+| AI Chat / Workspace LLM integration fix を探すとき | L213 |
+| AI runtime/auth-mode unification を探すとき | L234 |
+| Skill/Agent runtime routing integration closure を探すとき | L253 |
+| Workspace Chat Edit AI Runtime（RuntimeResolver / handoff）を探すとき | L273 |
+| Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき | L285 |
+
+### references/quick-reference-search-patterns-skill-lifecycle.md
+
+| セクション | 行 |
+|------------|----|
+| 仕様検索の分割ルール | L10 |
+| スキルライフサイクル一次導線 / 画面責務再編を探すとき | L16 |
+| ViewType/renderView 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）を探すとき | L47 |
+| AgentView→SkillAnalysis 改善導線（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001）を探すとき | L68 |
+| Skill Lifecycle 評価・採点ゲート（TASK-SKILL-LIFECYCLE-04）を探すとき | L93 |
+| 作成済みスキル利用導線（TASK-SKILL-LIFECYCLE-05）を探すとき | L115 |
+| 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06）を探すとき | L138 |
+| ライフサイクル履歴・フィードバック統合（TASK-SKILL-LIFECYCLE-07）を探すとき | L162 |
+| SkillCreateWizard LLM接続（TASK-SC-07）を探すとき | L185 |
+
+### references/quick-reference-search-patterns.md
+
+| セクション | 行 |
+|------------|----|
+| 仕様検索の分割ルール | L8 |
+| 分割ファイル一覧 | L14 |
+
+### references/quick-reference.md
+
+| セクション | 行 |
+|------------|----|
+| よく使うパターン | L8 |
+| 型定義クイックアクセス | L440 |
+| docs-only status sync | L484 |
+| IPCチャンネル早見表 | L496 |
+| ディレクトリ構成早見表 | L612 |
+| エラーコード早見表 | L638 |
+| テスト基準早見表 | L651 |
+| セキュリティチェックリスト | L663 |
+| 新機能追加フロー | L675 |
+| 仕様書テンプレート選択 | L689 |
+| 関連ドキュメント | L712 |
+| Cron Validation（scheduleConfigValidator） | L770 |
+| SkillCreatorService progressコールバック実装（TASK-SW-STREAM-001 / 2026-04-16完了） | L787 |
+
 ### references/rag-desktop-state.md
 
 | セクション | 行 |
@@ -4732,6 +4850,17 @@ node scripts/list-specs.js --topics
 | VectorSearchStrategy（セマンティック検索） | L151 |
 | 関連ドキュメント | L221 |
 
+### references/resource-map.md
+
+| セクション | 行 |
+|------------|----|
+| クイックルックアップ | L12 |
+| カテゴリ別リソースガイド | L1079 |
+| 読み込み判断フローチャート | L1326 |
+| 関連ドキュメント | L1361 |
+| タスク別リソースマップ | L1372 |
+| 変更履歴 | L1488 |
+
 ### references/skill-executor-type-migration.md
 
 | セクション | 行 |
@@ -4817,7 +4946,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L335 |
+| 続き | L336 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4930,7 +5059,22 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 完了タスク | L4 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L221 |
+
+### references/task-workflow-completed-recent-2026-04c-part-1.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04c-part-2.md
+
+| セクション | 行 |
+|------------|----|
+
+### references/task-workflow-completed-recent-2026-04c-part-3.md
+
+| セクション | 行 |
+|------------|----|
 
 ### references/task-workflow-completed-recent-2026-04c-part-1.md
 
@@ -4963,6 +5107,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L358 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L375 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L397 |
+| TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L358 |
+| UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L375 |
+| TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L397 |
 | TASK-UI-SCHEDULE-CRON-WEEKDAYS-GUARD-001 | L333 |
 | UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001 | L350 |
 | TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 | L372 |
@@ -4979,6 +5129,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L9 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L13 |
 
@@ -5106,6 +5258,27 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L280 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L300 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L302 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L314 |
+| 完了タスク（2026-03後半） | L342 |
+| 完了タスク（機能別アーカイブ） | L350 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L451 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L205 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L225 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L227 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L239 |
+| 完了タスク（2026-03後半） | L267 |
+| 完了タスク（機能別アーカイブ） | L275 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L376 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L205 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L225 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L227 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L239 |
+| 完了タスク（2026-03後半） | L267 |
+| 完了タスク（機能別アーカイブ） | L275 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L376 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L149 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L169 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L171 |
@@ -5153,6 +5326,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L30 |
+| 利用順序 | L252 |
+| 関連ドキュメント | L257 |
+| 仕様書インデックス | L25 |
+| 利用順序 | L137 |
+| 関連ドキュメント | L143 |
+| 仕様書インデックス | L26 |
+| 利用順序 | L138 |
+| 関連ドキュメント | L144 |
 | 仕様書インデックス | L21 |
 | 利用順序 | L132 |
 | 関連ドキュメント | L137 |
@@ -5274,6 +5456,23 @@ node scripts/list-specs.js --topics
 | CI/CD統合 | L287 |
 | デバッグパターン | L339 |
 | 関連ドキュメント | L361 |
+
+### references/topic-map.md
+
+| セクション | 行 |
+|------------|----|
+| 検索方法 | L11 |
+| 概要・品質 | L26 |
+| アーキテクチャ | L84 |
+| インターフェース | L357 |
+| API設計 | L850 |
+| データベース | L1089 |
+| UI/UX | L1170 |
+| セキュリティ | L1660 |
+| 技術スタック | L1851 |
+| Claude Code | L1950 |
+| ワークフロー | L2085 |
+| その他 | L2375 |
 
 ### references/ui-history-components.md
 
