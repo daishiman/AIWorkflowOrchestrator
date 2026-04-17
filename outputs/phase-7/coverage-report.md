@@ -1,32 +1,39 @@
 # Phase 7: カバレッジ確認
 
-## タスクID: TASK-SW-FIX-FEEDBACK-001
+## タスクID: TASK-SW-STREAM-001
 
-## テスト実行結果サマリー
+## 対象
 
-| テストファイル                            | 合格   | スキップ | 失敗  |
-| ----------------------------------------- | ------ | -------- | ----- |
-| CompleteStep.test.tsx                     | 53     | 0        | 0     |
-| SkillCreateWizard.test.tsx                | 30     | 0        | 0     |
-| SkillCreateWizard.llm-generation.test.tsx | 2      | 30       | 0     |
-| **合計**                                  | **85** | **30**   | **0** |
+`apps/desktop/src/main/services/skill/SkillCreatorService.ts`
 
-## カバレッジ対象パス
+## 実行コマンド
 
-### SkillCreateWizard.tsx - handleExecutePlan
+```bash
+pnpm --filter @repo/desktop exec vitest run --coverage --coverage.include=src/main/services/skill/SkillCreatorService.ts src/main/services/skill/__tests__/SkillCreatorService.test.ts src/main/services/skill/__tests__/SkillCreatorService.integration.test.ts src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts
+```
 
-| パス                              | テスト                  |
-| --------------------------------- | ----------------------- |
-| 成功パス（fetchSkills呼び出し）   | TC-FEEDBACK-001         |
-| 失敗パス（fetchSkills非呼び出し） | TC-FEEDBACK-002         |
-| fetchSkills 例外（遷移継続）      | 設計で保証（try/catch） |
+## 実行結果
 
-### CompleteStep.tsx - nullガード
+- `PASS`
+- Test Files: 3 passed
+- Tests: 103 passed
+- Coverage: v8
 
-| パス                                     | テスト                     |
-| ---------------------------------------- | -------------------------- |
-| skillPath === null（エラーUI表示）       | TC-FEEDBACK-004, 011, 011b |
-| skillPath === null（成功ヘッダー非表示） | TC-FEEDBACK-005            |
-| skillPath = string（成功UI）             | TC-FEEDBACK-006, 007, 013  |
-| skillPath = ""（成功UIフォールスルー）   | TC-FEEDBACK-009            |
-| onRetry クリック                         | TC-FEEDBACK-011c           |
+## カバレッジ実測値
+
+| 指標       | 値     |
+| ---------- | ------ |
+| lines      | 91.16% |
+| branches   | 90.40% |
+| functions  | 96.77% |
+| statements | 91.16% |
+
+## 確認ポイント
+
+- `SkillCreatorService.progress.test.ts` で `planning` / `generating-skill` / `generating-agents` / `validating` / `done` の 5 段階通知を確認
+- `onProgress` の例外は握りつぶさず、そのまま呼び出し元へ伝播することを確認
+- 進捗通知の未指定ケースも含めて、対象サービスの挙動は回帰なし
+
+## 判定
+
+**PASS**

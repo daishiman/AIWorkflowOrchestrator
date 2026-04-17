@@ -1,34 +1,34 @@
-# リファクタリングログ - TASK-UI-SCHEDULE-CRON-SEMANTIC-001
+# Phase 8: リファクタリング記録
 
-## 変更内容の記録
+## タスクID: TASK-SW-STREAM-001
 
-| 対象                                   | Before                                                 | After                                                                                       | 理由                                  |
-| -------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------- |
-| JSDoc コメント（ファイルヘッダー）     | 「semantic validation（next-run 計算など）は行わない」 | 「options.semantic が true の場合のみ next-run 計算による意味論的バリデーションを実行する」 | 実装との整合                          |
-| JSDoc コメント（関数）                 | 「semantic validation（next-run 計算など）は行わない」 | `@param options.semantic` の説明を追加、フロー説明を更新                                    | AC-5 対応                             |
-| `validateCronExpression` の早期 return | `return allValid ? null : "エラー"`                    | `if (!allValid) { return ... }` + semantic ブロック + `return null`                         | semantic ブロック挿入のため構造を分離 |
+## 対象
 
-## リファクタリング不要と判断した箇所
+`apps/desktop/src/main/services/skill/SkillCreatorService.ts`
 
-- `CronExpressionParser.parse()` の呼び出し箇所: 1箇所のみ（重複なし）
-- `interval.next()` の呼び出し箇所: 1箇所のみ（重複なし）
-- semantic チェックロジック: 9行の単純な try-catch。独立した private 関数への分離は不要（Phase 8 判断基準: 20行以上かつ独立テストが有効な場合のみ）
-- 変数名: `interval`（意図明確）、`trimmed`（既存踏襲）
+## リファクタリング判定
 
-## インターフェース変更なし確認
+**変更なし**
 
-- `validateCronExpression` シグネチャ: `(value: string, options?: ValidateCronOptions): string | null` — Phase 2 確定済み設計に準拠
-- `ValidateCronOptions` 型定義: 変更なし
-- `ScheduleConfigValidationResult` 型定義: 変更なし
-- `validateTimezone` 関数: 変更なし
-- `validateSkillWizardScheduleConfig` 関数: 変更なし
+## 確認結果
 
-## リファクタリング後テスト確認
+- `onProgress?.(progress)` の直接呼び出しを維持
+- progress callback の例外は `try/catch` で吸収せず、そのまま伝播
+- `createSkill()` のシグネチャ以外に責務分割や補助関数の追加はなし
+- 進捗通知ロジックは 5 箇所の単純な呼び出しのまま維持
 
-```
-Tests  42 passed (42)
-- scheduleConfigValidator.edge.test.ts: 25 tests passed
-- scheduleConfigValidator.test.ts: 17 tests passed
-```
+## リファクタリング不要と判断した理由
 
-**カバレッジ維持**: Line 100% / Branch 86.84%（Phase 7目標値 90%/85% を維持）
+- 進捗通知は局所的で、抽象化すると可読性が落ちる
+- 例外伝播を変えると `TC-11` の意図が崩れる
+- 既存の実装構造で十分に責務が分離されている
+
+## 影響範囲
+
+- コード変更なし
+- インターフェース変更なし
+- 既存呼び出し元の修正なし
+
+## 判定
+
+**PASS**

@@ -56,6 +56,12 @@ describe("SKILL_CREATOR_RUNTIME_CHANNELS", () => {
     );
   });
 
+  it('SKILL_CREATOR_CANCEL は "skill-creator:cancel"', () => {
+    expect(SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_CANCEL).toBe(
+      "skill-creator:cancel",
+    );
+  });
+
   it('SKILL_CREATOR_WORKFLOW_STATE_CHANGED は "skill-creator:workflow-state-changed"', () => {
     expect(
       SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
@@ -68,8 +74,8 @@ describe("SKILL_CREATOR_RUNTIME_CHANNELS", () => {
     ).toBe("skill-creator:adapter-status-changed");
   });
 
-  it("プロパティ数が 3 である", () => {
-    expect(Object.keys(SKILL_CREATOR_RUNTIME_CHANNELS)).toHaveLength(3);
+  it("プロパティ数が 4 である", () => {
+    expect(Object.keys(SKILL_CREATOR_RUNTIME_CHANNELS)).toHaveLength(4);
   });
 });
 
@@ -129,6 +135,9 @@ describe("IPC_CHANNELS 統合オブジェクト", () => {
   it("SKILL_CREATOR_RUNTIME_CHANNELS が IPC_CHANNELS に含まれる", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_PROGRESS).toBe(
       SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_PROGRESS,
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_CANCEL).toBe(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_CANCEL,
     );
     expect(IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED).toBe(
       SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
