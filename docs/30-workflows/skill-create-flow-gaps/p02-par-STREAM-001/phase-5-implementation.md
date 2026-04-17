@@ -9,7 +9,7 @@
 | 対象機能   | TASK-SW-STREAM-001  |
 | 前提Phase  | Phase 4: テスト作成 |
 | 次Phase    | Phase 6: テスト拡充 |
-| ステータス | 未実施              |
+| ステータス | 完了                |
 | 作成日     | 2026-04-16          |
 
 ## 目的
@@ -19,6 +19,14 @@ Phase 4 で設計したテストが Red になることを確認した後、`cre
 テストを Green にする。
 
 ## 実行タスク
+
+1. TDD Red の失敗を確認する。
+2. `SkillCreatorProgress` 型を追加する。
+3. `createSkill()` に `onProgress?` を追加する。
+4. 5 箇所で `onProgress?.(...)` を呼ぶ。
+5. TDD Green を確認する。
+6. typecheck を確認する。
+7. lint を確認する。
 
 ### Task 1: TDD Red フェーズ確認
 
@@ -155,26 +163,26 @@ pnpm --filter @repo/desktop lint
 
 ## 完了条件
 
-- [ ] TC-01〜TC-06 が Red であることを確認した（実装前）
-- [ ] `SkillCreatorProgress` 型定義が追加されている
-- [ ] `createSkill()` シグネチャに `onProgress?` が追加されている
-- [ ] 5箇所のコールバック呼び出しが実装されている
-- [ ] TC-01〜TC-06 が Green になっている（実装後）
-- [ ] TC-R01〜TC-R02（回帰テスト）が Green を維持している
-- [ ] `pnpm --filter @repo/desktop typecheck` が 0 エラー
-- [ ] `pnpm --filter @repo/desktop lint` が 0 エラー
+- [x] TC-01〜TC-06 が Red であることを確認した（実装前）
+- [x] `SkillCreatorProgress` 型定義が追加されている
+- [x] `createSkill()` シグネチャに `onProgress?` が追加されている
+- [x] 5箇所のコールバック呼び出しが実装されている
+- [x] TC-01〜TC-06 が Green になっている（実装後）
+- [x] TC-R01〜TC-R02（回帰テスト）が Green を維持している
+- [x] `pnpm --filter @repo/desktop typecheck` が 0 エラー
+- [x] `pnpm --filter @repo/desktop lint` が 0 エラー
 
 ## タスク100%実行確認【必須】
 
-- [ ] Task 1（TDD Red フェーズ確認）を100%実行した
-- [ ] Task 2（SkillCreatorProgress 型定義の追加）を100%実行した
-- [ ] Task 3（createSkill シグネチャ変更）を100%実行した
-- [ ] Task 4（コールバック呼び出し実装）を100%実行した
-- [ ] Task 5（TDD Green フェーズ確認）を100%実行した
-- [ ] Task 6（型チェック確認）を100%実行した
-- [ ] Task 7（lint 確認）を100%実行した
-- [ ] 成果物（TASK-SW-STREAM-001-implementation-plan.md）が生成されている
-- [ ] artifacts.json が更新されている
+- [x] Task 1（TDD Red フェーズ確認）を100%実行した
+- [x] Task 2（SkillCreatorProgress 型定義の追加）を100%実行した
+- [x] Task 3（createSkill シグネチャ変更）を100%実行した
+- [x] Task 4（コールバック呼び出し実装）を100%実行した
+- [x] Task 5（TDD Green フェーズ確認）を100%実行した
+- [x] Task 6（型チェック確認）を100%実行した
+- [x] Task 7（lint 確認）を100%実行した
+- [x] 成果物（TASK-SW-STREAM-001-implementation-plan.md）が生成されている
+- [x] artifacts.json が更新されている
 
 ## 次 Phase
 
