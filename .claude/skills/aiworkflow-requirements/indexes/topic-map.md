@@ -496,6 +496,8 @@ node scripts/list-specs.js --topics
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L229 |
 | スキル分析 型定義（TASK-9J） | L315 |
 | assertNoSilentFallback ガード（P62 対策） | L364 |
+| LLM統合型定義（TASK-UT-9I-001） | L384 |
+| UT-9I-001 current reference（LLM provider integration） | L455 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -5162,13 +5164,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L288 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L308 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L310 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L322 |
-| 完了タスク（2026-03後半） | L350 |
-| 完了タスク（機能別アーカイブ） | L358 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L459 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L289 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L309 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L311 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L323 |
+| 完了タスク（2026-03後半） | L351 |
+| 完了タスク（機能別アーカイブ） | L359 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L460 |
 
 ### references/task-workflow-history.md
 
