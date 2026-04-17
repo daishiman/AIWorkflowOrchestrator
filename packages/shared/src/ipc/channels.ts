@@ -197,7 +197,6 @@ export const SKILL_CREATOR_RUNTIME_CHANNELS = {
   SKILL_CREATOR_CANCEL: "skill-creator:cancel",
   SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
   SKILL_CREATOR_ADAPTER_STATUS_CHANGED: "skill-creator:adapter-status-changed",
-  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
 } as const;
 
 /**
