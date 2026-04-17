@@ -172,6 +172,19 @@ CI 設定変更タスクの Phase 11 証跡で「CLI 実行確認」と「YAML �
 
 ---
 
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に `SkillCreateWizard.llm-generation.test.tsx` 削除済み、`describe.skip` / `TODO(W2-seq-03a)` 0 件、`generate-index.js` 実行、`artifacts.json` parity を current facts として追加
+- `references/task-workflow-completed.md` に同タスクの完了記録を追加
+- `generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
+
+### 背景
+
+UT-W2-03A は current worktree で対象ファイルが既に削除済みだった cleanup。`spec_created` 前提の古い残存参照がないことを確認し、index 再生成と parity 記録まで同 wave で閉じる必要があった。
+
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
 
 ## 2026-04-16 - UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001 impl-spec-to-skill-sync
