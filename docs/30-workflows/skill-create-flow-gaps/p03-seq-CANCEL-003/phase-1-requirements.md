@@ -35,13 +35,13 @@ TASK-SW-CANCEL-002 で Preload 層の `cancelGeneration` が確立された。�
 
 ## 参照資料
 
-| 資料名               | パス                                                                                    | 用途                              |
-| -------------------- | --------------------------------------------------------------------------------------- | --------------------------------- |
-| SkillCreatorService  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                           | クラス構造・プロパティの確認      |
-| skillCreatorHandlers | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                                     | ハンドラー登録・unregister の確認 |
-| useCancelGeneration  | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts`                                | AbortSignal 利用箇所の確認        |
-| 解決策設計書         | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 問題2解決アプローチC参照          |
-| 設計レビュー書       | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md`   | 3.2・3.3節の追加スコープ          |
+| 資料名               | パス                                                             | 用途                              |
+| -------------------- | ---------------------------------------------------------------- | --------------------------------- |
+| SkillCreatorService  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`    | クラス構造・プロパティの確認      |
+| skillCreatorHandlers | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`              | ハンドラー登録・unregister の確認 |
+| useCancelGeneration  | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts`         | AbortSignal 利用箇所の確認        |
+| 解決策設計書         | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` | 問題2解決アプローチC参照          |
+| 設計レビュー書       | `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`   | 3.2・3.3節の追加スコープ          |
 
 ## 実行手順
 

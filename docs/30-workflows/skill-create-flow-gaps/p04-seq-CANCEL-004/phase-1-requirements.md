@@ -29,11 +29,11 @@
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                    | 用途                     |
-| ---------------------- | --------------------------------------------------------------------------------------- | ------------------------ |
-| useCancelGeneration.ts | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts`                                | 現行コードの確認         |
-| 解決策設計書           | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 問題2解決アプローチD参照 |
-| 問題分析書             | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` | 問題2の詳細分析          |
+| 資料名                 | パス                                                             | 用途                     |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------ |
+| useCancelGeneration.ts | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts`         | 現行コードの確認         |
+| 解決策設計書           | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` | 問題2解決アプローチD参照 |
+| 問題分析書             | `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md` | 問題2の詳細分析          |
 
 ## 実行手順
 

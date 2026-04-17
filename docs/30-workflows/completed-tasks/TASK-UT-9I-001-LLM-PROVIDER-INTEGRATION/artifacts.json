@@ -1,0 +1,76 @@
+{
+  "taskId": "UT-9I-001",
+  "featureName": "TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION",
+  "createdAt": "2026-04-17T00:00:00Z",
+  "updatedAt": "2026-04-17T01:14:42Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/error-classification-table.md"
+      ]
+    },
+    "2": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ipc-contract-extension.md",
+        "outputs/phase-2/module-structure.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  }
+}

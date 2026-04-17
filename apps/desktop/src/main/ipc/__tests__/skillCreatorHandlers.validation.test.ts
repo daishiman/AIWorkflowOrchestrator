@@ -46,7 +46,10 @@ const mockSkillCreatorService = {
   debugSkill: vi.fn(),
   generateDocs: vi.fn(),
   getStats: vi.fn(),
+  cancelCurrentOperation: vi.fn(),
 };
+
+const mockCancelCurrentSkillCreation = vi.fn();
 
 vi.mock("../../services/skill/SkillCreatorService", () => ({
   SkillCreatorService: vi.fn(() => mockSkillCreatorService),
@@ -111,6 +114,9 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
     registerSkillCreatorHandlers(
       mockMainWindow as unknown as BrowserWindowType,
       mockSkillCreatorService as unknown as any,
+      undefined,
+      undefined,
+      mockCancelCurrentSkillCreation,
     );
 
     // Default mock responses
@@ -390,6 +396,22 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
 
       // Assert - handlerMapからすべて削除されている
       expect(handlerMap.size).toBe(0);
+    });
+
+    it("IPC-EX-006: skill-creator:cancel ハンドラが登録され cancelCurrentOperation を呼ぶ", async () => {
+      // Arrange
+      const handler = getHandler("skill-creator:cancel");
+      expect(handler).toBeDefined();
+
+      // Act
+      const result = await handler!(createMockEvent());
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(
+        mockSkillCreatorService.cancelCurrentOperation,
+      ).toHaveBeenCalledTimes(1);
+      expect(mockCancelCurrentSkillCreation).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -699,7 +721,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
   });
 
   describe("Allowlist 包含確認", () => {
-    it("IPC-AL-001: 全15 invoke チャネルが ALLOWED_INVOKE_CHANNELS に含まれること", () => {
+    it("IPC-AL-001: 全16 invoke チャネルが ALLOWED_INVOKE_CHANNELS に含まれること", () => {
       const skillCreatorInvokeChannels = [
         CHANNELS_CONST.SKILL_CREATOR_DETECT_MODE,
         CHANNELS_CONST.SKILL_CREATOR_CREATE,
@@ -716,6 +738,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
         CHANNELS_CONST.SKILL_CREATOR_PLAN,
         CHANNELS_CONST.SKILL_CREATOR_EXECUTE_PLAN,
         CHANNELS_CONST.SKILL_CREATOR_IMPROVE_SKILL,
+        CHANNELS_CONST.SKILL_CREATOR_CANCEL,
       ];
 
       for (const channel of skillCreatorInvokeChannels) {

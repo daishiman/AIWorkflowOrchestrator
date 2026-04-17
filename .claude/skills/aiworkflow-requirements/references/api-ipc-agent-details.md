@@ -388,7 +388,32 @@ ScheduledSkill, SkillSchedule, NotificationSettings, ScheduledRunResult
 | 4001 | INFRASTRUCTURE | IPC通信エラー | true |
 | 5001 | INTERNAL | 内部エラー | false |
 
-**queryFn DI 経路**: ipc/index.ts L784-794 の stubQueryFn → LLMDocQueryAdapter.query() bind
+**queryFn DI 経路**: ipc/index.ts で `new LLMDocQueryAdapter(() => authKeyService.getKey(), "anthropic")` を `SkillDocGenerator` に注入し、`LLMDocQueryAdapter.query()` が `AnthropicProvider` / `DocErrorCode` を経由する current path
+
+### skill:generate-docs（TASK-UT-9I-001）
+
+LLMプロバイダー統合後の実装チャネル。`SkillDocGenerator` にDI注入された `LLMDocQueryAdapter` 経由でAnthropicへ接続する。
+
+| 項目 | 値 |
+|------|-----|
+| チャネル名 | `skill:generate-docs` |
+| 方向 | Renderer → Main |
+| リクエスト型 | `DocGenerationRequest` |
+| レスポンス型 | `DocOperationResult<GeneratedDoc>` |
+| 実装ファイル | `apps/desktop/src/main/ipc/skillHandlers.ts` |
+
+**呼び出しチェーン**:
+
+```
+skillHandlers.ts（skill:generate-docs）
+  → SkillDocGenerator.generate()
+  → LLMDocQueryAdapter.query()
+  → LLMClient.query()
+  → AnthropicProvider
+```
+
+**変更点（TASK-UT-9I-001）**:
+- `skillHandlers.ts`: `sanitizeErrorMessage` 追加、`skill:generate-docs` ハンドラ登録
+- `ipc/index.ts`: `LLMDocQueryAdapter` wiring 追加（`new LLMDocQueryAdapter(() => authKeyService.getKey(), "anthropic")`）
 
 ---
-

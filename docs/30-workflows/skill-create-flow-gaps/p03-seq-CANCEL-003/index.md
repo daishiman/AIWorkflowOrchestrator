@@ -151,5 +151,5 @@ graph TD
 
 - 前提タスク: `docs/30-workflows/skill-create-flow-gaps/p02-seq-CANCEL-002/index.md`
 - 後続タスク: `docs/30-workflows/skill-create-flow-gaps/p04-seq-CANCEL-004/index.md`
-- 設計根拠: `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md`
-- 設計レビュー: `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md`（3.2・3.3節）
+- 設計根拠: `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`
+- 設計レビュー: `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`（3.2・3.3節）
