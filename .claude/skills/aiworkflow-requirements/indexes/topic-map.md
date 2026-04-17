@@ -504,7 +504,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
-| 続き | L484 |
+| 続き | L456 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1044,7 +1044,6 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L280 |
 | Electron IPC API設計 | L316 |
 | 分割ファイル一覧 | L461 |
-| SkillCreatorService progressコールバック IPC 仕様（TASK-SW-STREAM-001） | L470 |
 
 ### references/api-ipc-system-details.md
 
@@ -1076,7 +1075,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L4 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L5 |
 
 ### references/api-ipc-system.md
 
@@ -3199,17 +3198,17 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L6 |
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L28 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L68 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L99 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L122 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L147 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L178 |
-| TASK-RT-06 教訓（2026-03-29） | L209 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L231 |
-| TASK-P0-04 教訓（2026-03-30） | L262 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L298 |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L7 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L29 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L69 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L100 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L123 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L148 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L179 |
+| TASK-RT-06 教訓（2026-03-29） | L210 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L232 |
+| TASK-P0-04 教訓（2026-03-30） | L263 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L299 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L393 |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L447 |
 | TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L487 |
@@ -3217,8 +3216,8 @@ node scripts/list-specs.js --topics
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L558 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L570 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L602 |
-| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L636 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L601 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L635 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3236,9 +3235,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L152 |
-| クイックリファレンス: カテゴリ別検索ガイド | L172 |
-| 分割ファイル一覧 | L176 |
+| 分割ファイル一覧 | L151 |
+| クイックリファレンス: カテゴリ別検索ガイド | L171 |
+| 分割ファイル一覧 | L175 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3558,6 +3557,16 @@ node scripts/list-specs.js --topics
 | L-MSO-004: スクリーンショット取得ハーネスは終了処理をテンプレート化する | L88 |
 | L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L101 |
 
+### references/lessons-learned-skill-creator-cancel-chain.md
+
+| セクション | 行 |
+|------------|----|
+| L-CANCEL-001: IPC cancel chain は shared→preload→main→renderer の4層縦断が最小単位 | L6 |
+| L-CANCEL-002: abort-like error は UI failure として見せない | L15 |
+| L-CANCEL-003: non-visual task は Phase 11 で screenshot N/A を明記する | L24 |
+| L-CANCEL-004: 小粒度タスクのテスト構成は「専用ファイル + 既存ファイル修正」の2点セット | L33 |
+| 変更履歴 | L44 |
+
 ### references/lessons-learned-skill-creator-ipc-handler-scope.md
 
 | セクション | 行 |
@@ -3687,6 +3696,17 @@ node scripts/list-specs.js --topics
 | 関連ファイル | L425 |
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
+
+### references/lessons-learned-stream-001-progress-callback.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| L-STREAM-001: optional callback パターンの設計判断 | L14 |
+| L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
+| L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
+| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
+| 後続タスク・未タスク | L100 |
 
 ### references/lessons-learned-templates.md
 
@@ -4887,7 +4907,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L338 |
+| 続き | L655 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5046,7 +5066,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L3 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L15 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5221,6 +5241,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L351 |
 | 完了タスク（機能別アーカイブ） | L359 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L460 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L196 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L216 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L218 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L230 |
+| 完了タスク（2026-03後半） | L258 |
+| 完了タスク（機能別アーカイブ） | L266 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L367 |
 
 ### references/task-workflow-history.md
 
@@ -5255,39 +5282,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L22 |
-| 利用順序 | L133 |
-| 関連ドキュメント | L138 |
-| 仕様書インデックス | L23 |
-| 利用順序 | L52 |
-| 関連ドキュメント | L57 |
-| 仕様書インデックス | L18 |
-| 利用順序 | L129 |
-| 関連ドキュメント | L134 |
-| 仕様書インデックス | L19 |
-| 利用順序 | L130 |
-| 関連ドキュメント | L135 |
-| 仕様書インデックス | L21 |
-| 利用順序 | L132 |
-| 関連ドキュメント | L137 |
-| 仕様書インデックス | L22 |
-| 利用順序 | L133 |
-| 関連ドキュメント | L138 |
-| 仕様書インデックス | L19 |
-| 利用順序 | L130 |
-| 関連ドキュメント | L135 |
-| 仕様書インデックス | L21 |
-| 仕様書インデックス | L25 |
-| 利用順序 | L137 |
-| 関連ドキュメント | L143 |
-| 仕様書インデックス | L26 |
-| 利用順序 | L138 |
-| 関連ドキュメント | L144 |
-| 仕様書インデックス | L22 |
-| 利用順序 | L133 |
-| 関連ドキュメント | L138 |
-| 仕様書インデックス | L30 |
-| 利用順序 | L253 |
-| 関連ドキュメント | L258 |
+| 利用順序 | L51 |
+| 関連ドキュメント | L56 |
 
 ### references/testing-accessibility.md
 

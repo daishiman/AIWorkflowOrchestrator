@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+SCRIPT=".claude/skills/aiworkflow-requirements/scripts/generate-index.js"
+
+# indexes/*.json を merge=ours で保護後、スクリプトで再生成して最新化
+if command -v node > /dev/null 2>&1 && [ -f "$SCRIPT" ]; then
+  echo "[post-merge] indexes/*.json を再生成中..."
+  if node "$SCRIPT" --quiet 2>&1; then
+    echo "[post-merge] ✓ 再生成成功"
+  else
+    echo "[post-merge] ✗ 再生成失敗。手動で実行してください:"
+    echo "  node $SCRIPT"
+    exit 1
+  fi
+
+  # .agents/skills/ ミラーに同期（indexes ディレクトリのみ）
+  AGENTS_DIR=".agents/skills/aiworkflow-requirements/indexes"
+  CLAUDE_DIR=".claude/skills/aiworkflow-requirements/indexes"
+  if [ -d "$CLAUDE_DIR" ] && [ -d "$AGENTS_DIR" ]; then
+    cp -f "$CLAUDE_DIR"/*.json "$AGENTS_DIR"/ 2>/dev/null || true
+    echo "[post-merge] ✓ .agents/ ミラー同期完了"
+  fi
+fi
+
+# settings.local.json の JSON 構文検証
+SETTINGS=".claude/settings.local.json"
+if [ -f "$SETTINGS" ] && command -v node > /dev/null 2>&1; then
+  if node -e "JSON.parse(require('fs').readFileSync('$SETTINGS', 'utf-8'))" 2>/dev/null; then
+    :
+  else
+    echo "[post-merge] ✗ $SETTINGS が破損しています。手動修正が必要です"
+    exit 1
+  fi
+fi

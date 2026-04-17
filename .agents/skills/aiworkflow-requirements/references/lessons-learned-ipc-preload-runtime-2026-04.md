@@ -227,3 +227,25 @@
 
 - Phase 2 設計時点で再エクスポート層（`claude-cli/constants.ts`）まで明示すると後続の漏れが減る
 - テスト追加時はパストラバーサル対策（バックスラッシュ）・境界値（64/65文字）を初期から含める
+
+---
+
+## UT-FIX-STORE-SETTINGS-DEEP-MERGE-001（2026-04-17）
+
+### L-IPC-DEEP-MERGE-001: IPC ハンドラーのオブジェクトマージ戦略は Phase 2 設計で決定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `settings:update` ハンドラーでシャローマージを実装してしまい、ネストされた設定オブジェクトが上書き消去された。`Record<string, unknown>` 型を使う際、配列・`null`・`undefined` の扱いを設計段階で決めていなかった |
+| 解決策     | `deepMergePlainObjects` を実装し、plain object 同士のみ再帰マージ・配列/null/プリミティブは上書き・`undefined` は省略（基底値維持）というルールを設計書（arch-ipc-persistence.md）に明記した |
+| 標準ルール | IPC ハンドラーでオブジェクト型の patch を受け取る場合、Phase 2 設計時点でシャロー/ディープマージ戦略と配列/null/undefinedの扱いを設計書に必須記載する |
+| 発見元     | UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 |
+
+### L-IPC-DEEP-MERGE-002: IPC 経由の設定更新は plain object のみを受け付け prototype pollution を防ぐ
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | `ipcMain.handle` 経由で受け取ったオブジェクトをそのままマージすると、`{ "__proto__": { "isAdmin": true } }` のような payload で Object.prototype が汚染される（prototype pollution）恐れがある |
+| 解決策     | `isPlainObject()`（`Object.getPrototypeOf(v) === Object.prototype \|\| Object.getPrototypeOf(v) === null`）で plain object 判定し、`cloneSafePlainObject()` で `__proto__` / `constructor` / `prototype` キーを除外してからマージする |
+| 標準ルール | IPC 経由で `Record<string, unknown>` を受け取るハンドラーでは、(1) payload が plain object であることを検証し拒否、(2) 危険キーを除外したコピーでマージする 2 段構えを必須とする |
+| 発見元     | UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 |

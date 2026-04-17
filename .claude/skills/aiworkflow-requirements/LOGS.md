@@ -5,6 +5,22 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
+## 2026-04-17 TASK-SW-STRUCT-002 Phase-12 close-out sync
+
+### 変更内容
+
+- `references/lessons-learned-current-2026-04.md` に L-STRUCT-002-001〜003 を追加
+- `references/task-workflow-completed.md` に TASK-SW-STRUCT-002 完了記録を追加
+- `SKILL.md` 変更履歴に TASK-SW-STRUCT-002 Phase-12 完了記録を追加
+- `indexes/resource-map.md` に TASK-SW-STRUCT-002 クイックルックアップ行を追加
+
+### 背景
+
+TASK-SW-STRUCT-002（`void structurePlan` 削除・`generateSkillMd` 接続）の Phase-12 完了。
+`structurePlan !== null` 型ガード・3段階フォールバック・`anchors ?? []` null 安全パターンを skill current facts として固定した。
+
+---
+
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
 ### 変更内容
@@ -33,9 +49,11 @@ TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメ�
 TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
 
 ## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
+
 ## 2026-04-17 TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION
 
 ### 変更内容
+
 - interfaces-agent-sdk-skill-reference-share-debug-analytics.md にLLM統合型定義を追記
   - ILLMClient, LLMQueryResult, DocErrorCode 型定義
   - DocErrorCode → DocError コードマッピングテーブル
@@ -44,6 +62,7 @@ TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook
 - api-ipc-agent-details.md に skill:generate-docs IPC チャネルを追記（未記載だったため追加）
 
 ### 苦戦箇所（Lessons Learned）
+
 1. **エラーサニタイゼーション**: sanitizeErrorMessage()でElectron main processからrendererへのエラー情報漏洩を防止。スタックトレース・パス・IPアドレス・機密情報をパターンマッチングで除去
 2. **非同期APIキー解決**: ApiKeyResolver = () => string | null | Promise<string | null> パターンで同期/非同期両方に対応。authKeyService.getKey()をクロージャで渡す
 3. **タイムアウト実装**: Promise.race() + setTimeout() パターン。finallyブロックでのタイムアウトIDクリーンアップが重要
@@ -2569,12 +2588,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - `storeHandlers.ts` に `isPlainObject` / `cloneSafePlainObject` / `deepMergePlainObjects` / `deepMerge<T>` / `registerUserSettingsHandlers` 実装完了
 - `storeHandlers.test.ts` 全テスト PASS
 
-| 項目     | 内容                                                                                                              |
-| -------- | ----------------------------------------------------------------------------------------------------------------- |
-| 種別     | bug-fix / TDD / IPC handler / security hardening                                                                  |
-| 変更対象 | `apps/desktop/src/main/ipc/storeHandlers.ts`、`storeHandlers.test.ts`、`arch-ipc-persistence.md`（v1.3.0 更新） |
+| 項目     | 内容                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / TDD / IPC handler / security hardening                                                                                           |
+| 変更対象 | `apps/desktop/src/main/ipc/storeHandlers.ts`、`storeHandlers.test.ts`、`arch-ipc-persistence.md`（v1.3.0 更新）                            |
 | 結果     | settings:update を deepMerge 化。plain object 以外を拒否し、`__proto__` / `constructor` / `prototype` を無視してprototype pollution を防止 |
-| 検証     | vitest PASS / typecheck PASS / lint PASS                                                                          |
+| 検証     | vitest PASS / typecheck PASS / lint PASS                                                                                                   |
 
 ## 2026-04-15 — TASK-CI-FUTURE-005 completed (spec_created)
 
