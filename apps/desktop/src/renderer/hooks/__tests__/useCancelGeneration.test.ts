@@ -11,12 +11,14 @@ import { renderHook, act } from "@testing-library/react";
 import { useCancelGeneration } from "../useCancelGeneration";
 import { useAppStore } from "../../store";
 
+const mockCancelGeneration = vi.fn().mockResolvedValue({ success: true });
+
 beforeEach(() => {
   vi.clearAllMocks();
   useAppStore.getState().resetStreamingProgress();
 
   Object.defineProperty(window, "skillCreatorAPI", {
-    value: undefined,
+    value: { cancelGeneration: mockCancelGeneration },
     writable: true,
     configurable: true,
   });
@@ -48,6 +50,7 @@ describe("useCancelGeneration", () => {
     });
 
     expect(signal!.aborted).toBe(true);
+    expect(mockCancelGeneration).toHaveBeenCalledTimes(1);
   });
 
   it("cancelGeneration がストアを cancelled に更新する", async () => {

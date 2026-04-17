@@ -724,5 +724,5 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   // TASK-SW-CANCEL-002: スキル生成キャンセル
   cancelGeneration: (): Promise<IpcResult<void>> =>
-    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL),
+    safeInvoke<IpcResult<void>>(IPC_CHANNELS.SKILL_CREATOR_CANCEL),
 };

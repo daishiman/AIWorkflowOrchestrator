@@ -13,11 +13,13 @@ const {
   mockFsMkdir,
   mockFsWriteFile,
   mockSkillCreatorCreateSkill,
+  mockSkillCreatorCancelCurrentOperation,
 } = vi.hoisted(() => ({
   mockFsAccess: vi.fn(),
   mockFsMkdir: vi.fn(),
   mockFsWriteFile: vi.fn(),
   mockSkillCreatorCreateSkill: vi.fn(),
+  mockSkillCreatorCancelCurrentOperation: vi.fn(),
 }));
 
 vi.mock("fs/promises", () => ({
@@ -31,6 +33,7 @@ vi.mock("fs/promises", () => ({
 vi.mock("../SkillCreatorService", () => ({
   SkillCreatorService: class MockSkillCreatorService {
     createSkill = mockSkillCreatorCreateSkill;
+    cancelCurrentOperation = mockSkillCreatorCancelCurrentOperation;
     constructor(_skillsDir?: string, _workflowsDir?: string) {}
   },
 }));
@@ -130,6 +133,7 @@ describe("SkillService", () => {
     mockFsMkdir.mockReset();
     mockFsWriteFile.mockReset();
     mockSkillCreatorCreateSkill.mockReset();
+    mockSkillCreatorCancelCurrentOperation.mockReset();
 
     // Create mocks
     mockScanner = {
@@ -720,6 +724,27 @@ describe("SkillService", () => {
         }),
       );
       expect(result.path).toBe("/test/skills/new-skill-2");
+    });
+  });
+
+  describe("cancelCurrentSkillCreation", () => {
+    it("SS-CANCEL-01: createSkillFromWizard 経由で生成中の SkillCreatorService をキャンセルできる", async () => {
+      mockFsAccess.mockImplementation(async (candidatePath: string) => {
+        if (candidatePath.endsWith("/new-skill")) {
+          return undefined;
+        }
+        throw new Error("ENOENT");
+      });
+
+      await service.createSkillFromWizard("マイスキル", {
+        generateTasks: false,
+        addAgents: false,
+        addReferences: false,
+      });
+
+      service.cancelCurrentSkillCreation();
+
+      expect(mockSkillCreatorCancelCurrentOperation).toHaveBeenCalledTimes(1);
     });
   });
 });
