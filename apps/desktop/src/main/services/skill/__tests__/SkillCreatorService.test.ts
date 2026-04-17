@@ -1671,6 +1671,7 @@ describe("SkillCreatorService", () => {
           expect.any(String),
           "test-skill",
           "テスト用スキル",
+          expect.any(AbortSignal),
         );
         warnSpy.mockRestore();
       });
@@ -1747,6 +1748,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });
@@ -1885,6 +1887,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });

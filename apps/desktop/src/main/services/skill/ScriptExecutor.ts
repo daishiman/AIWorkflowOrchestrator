@@ -64,6 +64,15 @@ export class ScriptExecutor {
       let stdout = "";
       let stderr = "";
 
+      const onAbort = () => {
+        proc.kill();
+        reject(new DOMException("Aborted", "AbortError"));
+      };
+
+      if (options.signal) {
+        options.signal.addEventListener("abort", onAbort, { once: true });
+      }
+
       proc.stdout.on("data", (data: Buffer) => {
         stdout += data.toString();
       });
@@ -73,12 +82,14 @@ export class ScriptExecutor {
       });
 
       proc.on("error", (error: Error) => {
+        options.signal?.removeEventListener("abort", onAbort);
         reject(
           new Error(`Failed to execute script ${scriptName}: ${error.message}`),
         );
       });
 
       proc.on("close", (exitCode: number | null) => {
+        options.signal?.removeEventListener("abort", onAbort);
         resolve({
           success: exitCode === 0,
           stdout: stdout.trim(),
