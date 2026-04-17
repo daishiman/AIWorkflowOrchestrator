@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-15: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate](./task-workflow-completed-recent-2026-04g.md)
@@ -88,13 +89,13 @@
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
-| 完了日     | 2026-04-15                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
-| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                                                       |
+| ---------- | ------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                        |
+| 完了日     | 2026-04-15                                                               |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination） |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089) |
+| Phase 13   | blocked（ユーザー承認待ち）                                              |
 
 #### 実施内容
 
@@ -106,16 +107,16 @@
 
 #### Phase 11/12 成果物
 
-| 成果物                                  | パス                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------- |
-| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
-| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
-| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
-| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
-| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
-| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
-| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
-| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+| 成果物                       | パス                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                 |
+| 手動テストレポート           | `outputs/phase-11/manual-test-report.md`                 |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 #### 検証証跡
 

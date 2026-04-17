@@ -67,10 +67,10 @@ TASK-SW-STREAM-001 で `SkillCreatorService.createSkill()` に `onProgress?` コ
 
 本仕様書のコマンド選定は以下を参照：
 
-- `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md` - 現状分析
-- `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
-- `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー（3.5節参照）
-- `docs/30-workflows/skill-create-flow-gaps/TASK-SW-STREAM-001/` - 前提タスク仕様書
+- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` - 現状分析
+- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
+- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー（3.5節参照）
+- `docs/30-workflows/skill-create-flow-gaps/p01-par-STREAM-001/` - 前提タスク仕様書
 - `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` - 修正対象ファイル
 - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` - 確認・修正対象ファイル
 - `apps/desktop/src/renderer/hooks/useStreamingProgress.ts` - フロント側接続確認用

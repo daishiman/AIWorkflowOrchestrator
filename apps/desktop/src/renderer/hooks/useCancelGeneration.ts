@@ -25,7 +25,12 @@ export function useCancelGeneration(): UseCancelGenerationReturn {
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setStage("cancelled");
-    await window.skillCreatorAPI?.cancelGeneration?.();
+    // TASK-SW-CANCEL-004: IPC 経由でメインプロセスにキャンセルを通知
+    try {
+      await window.skillCreatorAPI?.cancelGeneration?.();
+    } catch (error) {
+      console.warn("[useCancelGeneration] cancelGeneration IPC failed", error);
+    }
   }, [setStage]);
 
   return { cancelGeneration, startGeneration };

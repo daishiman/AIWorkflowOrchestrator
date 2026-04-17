@@ -52,6 +52,26 @@
 - `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス`
 - `screenshots/*.png`
 
+## スクリーンショット命名規則（UI task 共通）
+
+**[FB-LLM-MOD-05-001]** Phase 11 の screenshot ファイル名は、以下の 4 か所で同じ canonical 値を共有する:
+
+1. `phase-11-manual-test.md`（テストケース表の screenshot 列）
+2. capture script（`screenshots/` に書き込む際のファイル名定数）
+3. `phase11-capture-metadata.json`（`file` / `output` フィールド）
+4. `outputs/phase-12/implementation-guide.md`（Phase 11 スクリーンショット参照）
+
+**命名方針**:
+
+- ユーザー向け参照名は `<component>-<state>.png` のセマンティック形式にする（例: `inline-model-selector-description-hidden.png`）
+- 内部テストケース番号（`TC-11-01` 等）は `phase11-capture-metadata.json` の `tc` フィールドにのみ残し、ファイル名には使わない
+- canonical 名は Phase 1 または Phase 4 で先に確定させ、Phase 11 実装時に drift しないようにする
+
+**違反パターン**（避けること）:
+
+- capture script で `TC-11-01-component-state.png` として出力し、implementation-guide では別名で参照する
+- Phase 11 spec と Phase 12 implementation-guide で異なるファイル名を記載する
+
 ## CI ツールタスク（GitHub Actions）
 
 スクリーンショット取得が不可能な CI ツール変更タスクの場合、以下を標準証跡形式とする。

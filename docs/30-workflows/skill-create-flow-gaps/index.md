@@ -5,7 +5,8 @@
 `skill-create-flow-gaps` で特定した変更差分を、30種の思考法で分解し、実装レーンを `STREAM` / `CANCEL` / `STRUCT` / `TODO` の4グループ9タスクに整理した親 index。
 
 - 目的: 依存関係、並列可否、ファイル衝突ドメインを一目で判断できるようにする
-- 現在の状態: 仕様書作成済み / 実装未着手 / PR作成禁止
+- 現在の状態: 仕様書作成済み / 一部実装完了（CANCEL-001〜004, STRUCT-002, TODO-001）/ PR作成禁止
+- 更新日: 2026-04-16
 - 分析詳細: 30種の思考法そのものの展開は設計ドキュメント側に集約する
 
 ## 設計根拠
@@ -16,17 +17,17 @@
 
 ## 実行レーン
 
-| レーン | 目的                                        | タスクID   | 仕様書                                              |
-| ------ | ------------------------------------------- | ---------- | --------------------------------------------------- |
-| STREAM | 進捗通知の送信経路を接続する                | STREAM-001 | [p01-par-STREAM-001](./p01-par-STREAM-001/index.md) |
-| STREAM | 進捗通知を IPC 送信へ配線する               | STREAM-002 | [p02-par-STREAM-002](./p02-par-STREAM-002/index.md) |
-| CANCEL | キャンセル IPC チャンネルを追加する         | CANCEL-001 | [p01-seq-CANCEL-001](./p01-seq-CANCEL-001/index.md) |
-| CANCEL | preload / shared の cancel API を成立させる | CANCEL-002 | [p02-seq-CANCEL-002](./p02-seq-CANCEL-002/index.md) |
-| CANCEL | main process 側の cancel 実体を接続する     | CANCEL-003 | [p03-seq-CANCEL-003](./p03-seq-CANCEL-003/index.md) |
-| CANCEL | renderer hook から cancel を送信する        | CANCEL-004 | [p04-seq-CANCEL-004](./p04-seq-CANCEL-004/index.md) |
-| STRUCT | `runCreateWorkflow()` の構造出力を正す      | STRUCT-001 | [p01-par-STRUCT-001](./p01-par-STRUCT-001/index.md) |
-| STRUCT | `structurePlan` を SKILL.md 生成へ接続する  | STRUCT-002 | [p02-par-STRUCT-002](./p02-par-STRUCT-002/index.md) |
-| TODO   | 残置 TODO の cleanup を行う                 | TODO-001   | [p05-opt-TODO-001](./p05-opt-TODO-001/index.md)     |
+| レーン | 目的                                        | タスクID   | ステータス                   | 仕様書                                                                                            |
+| ------ | ------------------------------------------- | ---------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| STREAM | 進捗通知の送信経路を接続する                | STREAM-001 | ⏳ in-progress（別ブランチ） | [p01-par-STREAM-001](./p01-par-STREAM-001/index.md)                                               |
+| STREAM | 進捗通知を IPC 送信へ配線する               | STREAM-002 | ⏸ pending（STREAM-001待ち）  | [p02-par-STREAM-002](./p02-par-STREAM-002/index.md)                                               |
+| CANCEL | キャンセル IPC チャンネルを追加する         | CANCEL-001 | ✅ completed                 | [completed-tasks/p01-seq-CANCEL-001](../../completed-tasks/p01-seq-CANCEL-001/index.md) ※移動済み |
+| CANCEL | preload / shared の cancel API を成立させる | CANCEL-002 | ✅ completed（移動済み）     | [completed-tasks/p02-seq-CANCEL-002](../../completed-tasks/p02-seq-CANCEL-002/index.md) ※移動済み |
+| CANCEL | main process 側の cancel 実体を接続する     | CANCEL-003 | ✅ completed（移動済み）     | [completed-tasks/p03-seq-CANCEL-003](../../completed-tasks/p03-seq-CANCEL-003/index.md) ※移動済み |
+| CANCEL | renderer hook から cancel を送信する        | CANCEL-004 | ✅ completed（移動済み）     | [completed-tasks/p04-seq-CANCEL-004](../../completed-tasks/p04-seq-CANCEL-004/index.md) ※移動済み |
+| STRUCT | `runCreateWorkflow()` の構造出力を正す      | STRUCT-001 | ⏳ pending                   | [p01-par-STRUCT-001](./p01-par-STRUCT-001/index.md)                                               |
+| STRUCT | `structurePlan` を SKILL.md 生成へ接続する  | STRUCT-002 | ✅ completed（PR #2209）     | [p02-par-STRUCT-002](./p02-par-STRUCT-002/index.md)                                               |
+| TODO   | 残置 TODO の cleanup を行う                 | TODO-001   | ✅ completed（PR #2199）     | [p05-opt-TODO-001](./p05-opt-TODO-001/index.md)                                                   |
 
 ## カノニカルな位置づけ
 
@@ -55,22 +56,22 @@
 推奨オーケストレーション:
 
 ```text
-Wave 1 並列
-  STREAM-001
-  CANCEL-001
-  STRUCT-001
-  TODO-001
+Wave 1 並列（完了済み含む）
+  STREAM-001  [⏳ in-progress: feat/skill-creator-progress-callback-stream-001]
+  CANCEL-001  [✅ completed]
+  STRUCT-001  [⏳ pending]
+  TODO-001    [✅ completed: PR #2199]
 
-Wave 2 条件付き並列
-  STREAM-002   <- STREAM-001 完了後
-  CANCEL-002   <- CANCEL-001 完了後
-  STRUCT-002   <- STRUCT-001 完了後
+Wave 2 条件付き並列（一部完了）
+  STREAM-002  [⏸ pending: STREAM-001待ち]
+  CANCEL-002  [✅ completed: current worktree]
+  STRUCT-002  [✅ completed: PR #2209]
 
 Wave 3 直列
-  CANCEL-003   <- CANCEL-002 完了後
+  CANCEL-003   [✅ completed: current worktree]
 
 Wave 4 直列
-  CANCEL-004   <- CANCEL-003 完了後
+  CANCEL-004   [✅ completed: current worktree]
 ```
 
 ## 依存グラフ

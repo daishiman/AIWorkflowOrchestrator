@@ -1567,7 +1567,7 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 症状       | `StructurePlanJson.description` を `string \| undefined` にすると型契約と衝突し、後続の `generate_skill_md.js` 引数生成で undefined 混入リスクが生まれた                |
 | 原因       | interviewResult の optional フィールドをそのまま構造計画 JSON に引き渡す設計のため、型の穴が生じた                                                                      |
 | 解決策     | `description` を型上必須の `string` として宣言し、`undefined` は `createSkill()` バリデーション段階で「入力破損」として弾く設計に整理した                                |
-| 標準ルール | 構造計画 JSON（`StructurePlanJson`）の各フィールドは必須 `string` を基本とし、optional は `triggers?` / `anchors?` のような補助フィールドのみに限定する                  |
+| 標準ルール | 構造計画 JSON（`StructurePlanJson`）は `skillName` / `description` / `purpose` を `string`、`features` / `agents` を `string[]`、`triggers?` / `anchors?` を optional として持たせる。create モードでは `purpose = options.description` / `features = []` / `agents = ["extract-purpose", "plan-structure"]` を current facts として固定する |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
 
 ### L-SC-IMP-002: create モードの「構造計画生成」と「`generate_skill_md.js` 接続」は別タスクとして仕様書を分離する
@@ -1576,17 +1576,17 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状       | `runCreateWorkflow` の実装スコープに `generate_skill_md.js` 接続を含めようとしたため、「完了」と「接続待ち」が同じ文脈に混在し、Phase 12 の成果物判断が難しくなった                       |
 | 原因       | create モードの2段階（構造計画生成 → SKILL.md 生成スクリプト呼び出し）を1つのタスクで完結しようとした設計判断                                                                           |
-| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、スクリプト接続は別タスク（`void structurePlan` コメントで依存先を明示）とした                              |
-| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、タスク分離が可能な場合は別タスクとして仕様書を分ける                                                                     |
+| 解決策     | `runCreateWorkflow` の責務を「`StructurePlanJson` の組み立てと返却」に限定し、`createSkill()` 側で `init_skill.js` 後に `generateSkillMd()` を呼ぶ順序を明示した。中継は `structurePlan` の local variable handoff で行い、未接続表現は使わない |
+| 標準ルール | Phase 12 で「できたこと」と「依存待ち」を同じファイルに書かず、`createSkill()` の current facts は `runCreateWorkflow()` → `init_skill.js` → `generateSkillMd()` の順序で記述する。中継の未接続表現は使わない |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                                           |
 
 ### L-SC-IMP-003: private method の観測可能性は TC に mock spy 引数 assertion で組み込む
 
 | 項目       | 内容                                                                                                                                                                     |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` 等が検証できず、実装の意図が TC に反映されない                                                    |
-| 解決策     | `TC-04` を `createSkill()` 経由で実行し、`mockResourceLoader.loadAgent` への呼び出しと引数を `expect` で直接検証することで private method の動作を間接観測した           |
-| 標準ルール | private method の観測可能性は、public API 経由 + mock spy 引数 assertion の組み合わせで担保する。中間値 handoff は mock spy で検証可能                                   |
+| 課題       | `runCreateWorkflow` が private だと統合テストでは戻り値の `description` / `purpose` / `agents` 等を直接 pin しづらく、実装の意図が TC に反映されない                                            |
+| 解決策     | `TC-04` を `runCreateWorkflow()` 直叩きで pin し、`mockResourceLoader.loadAgent` の呼び出しではなく戻り値の `description` / `purpose` / `agents` を直接検証することで private method の動作を観測した |
+| 標準ルール | private method の観測可能性は、public API 経由の振る舞い確認と、必要に応じた private method 直叩き assertion の組み合わせで担保する。中間値 handoff は return value で検証可能                                   |
 | 関連タスク | TASK-SC-IMP-CREATE-WORKFLOW-001                                                                                                                                           |
 
 ---
@@ -1625,6 +1625,36 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | 「NON_VISUAL = コード変更のみ / DOM 変化なし」の場合は画像証跡不要。テキスト証跡（manual-test-result.md）と metadata（phase11-capture-metadata.json）で Phase 11 を閉じる               |
 | 適用条件   | SkillLifecyclePanel のような内部ロジック修正タスクで UI レイアウトに変化がない場合全般                                                                                                  |
 | 関連タスク | TASK-SW-FIX-FEEDBACK-008                                                                                                                                                                |
+
+---
+
+## TASK-SW-STREAM-001 skill-creator-service-progress-callback（2026-04-16）
+
+> 詳細教訓: `references/lessons-learned-stream-001-progress-callback.md`
+
+### L-STREAM-001: オプショナルコールバックによる後方互換性の確保
+
+| 項目       | 内容                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| 課題       | 既存の createSkill 呼び出し元を壊さずに進捗通知を追加する必要があった                             |
+| 解決策     | `onProgress?` をオプショナルパラメータとして追加。未指定時は no-op                                |
+| 標準ルール | IPC 処理にコールバックを追加する場合は必ずオプショナルにして既存呼び出し元を保護する              |
+
+### L-STREAM-002: コールバック例外の伝播方針
+
+| 項目       | 内容                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| 課題       | コールバック内で throw された例外をどう扱うか                                                     |
+| 解決策     | 握りつぶさず呼び出し元に伝播させる（TC-11 で確認済み）                                           |
+| 標準ルール | main process API 内のコールバック例外は原則透過させ、呼び出し元が制御できるようにする             |
+
+### L-STREAM-003: 進捗段階の固定化メリット
+
+| 項目       | 内容                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| 課題       | 進捗段階の数・割合をどう設計するか                                                                |
+| 解決策     | 5段階固定（10/40/70/90/100）とし、テストの期待値との対応を 1:1 に保つ                             |
+| 標準ルール | 進捗段階は実装初期に固定化し、magic string/number はフォローアップタスクで定数化する              |
 
 ---
 

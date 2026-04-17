@@ -377,6 +377,9 @@ export const IPC_CHANNELS = {
   // Governance / Permission / Hooks (TASK-P0-09)
   SKILL_CREATOR_GET_GOVERNANCE_STATE: "skill-creator:get-governance-state",
 
+  // Skill Creator cancel (TASK-SW-CANCEL-002: shared チャネル定義との整合)
+  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
+
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
   SKILL_CREATOR_FORK: "skill-creator:fork",
@@ -675,6 +678,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
+  // TASK-SW-CANCEL-002: キャンセルチャンネルをホワイトリストに追加
+  IPC_CHANNELS.SKILL_CREATOR_CANCEL,
   IPC_CHANNELS.SKILL_CREATOR_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
