@@ -556,3 +556,32 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの
 > SKILL.mdを読み込んで公開インターフェースを特定する際のパターンそのもの。
+
+---
+
+## progressコールバックパターン（onProgress実装）
+
+Electron main processのサービス層にコールバックを追加する場合のベストプラクティス:
+
+1. **オプショナルパラメータ設計**: 既存呼び出し元への影響ゼロ
+   ```typescript
+   async createSkill(options: Options, onProgress?: ProgressCallback): Promise<string>
+   ```
+
+2. **emitProgress ヘルパー**: コールバック呼び出しを1箇所に集約
+   ```typescript
+   const emitProgress = (progress: ProgressData): void => {
+     onProgress?.(progress);
+   };
+   ```
+
+3. **例外透過**: コールバック内のthrowはそのまま伝播させる（no try/catch）
+
+4. **IPC配線**: mainWindow.isDestroyed() チェック必須
+   ```typescript
+   if (!mainWindow.isDestroyed()) {
+     mainWindow.webContents.send(IPC_CHANNELS.SKILL_CREATOR_PROGRESS, progress);
+   }
+   ```
+
+参照: TASK-SW-STREAM-001実装 (apps/desktop/src/main/services/skill/SkillCreatorService.ts)

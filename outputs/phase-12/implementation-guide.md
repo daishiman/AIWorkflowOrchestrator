@@ -1,51 +1,156 @@
 # Phase 12 成果物: 実装ガイド
 
-## タスクID: TASK-SW-FIX-MODE-MGMT-001
+## タスクID: TASK-SW-CANCEL-001
 
 ## 1. 変更概要
 
-スキルウィザードを LLM 専用に一本化し、Step 0 のラジオボタンと `generationMode` / `hasActivatedLlmMode` の二重管理を廃止した。
-Step 0→1→2→3 の正規フローに統一し、Phase 11 のスクリーンショットも current task として再取得した。
+`packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_RUNTIME_CHANNELS` に `SKILL_CREATOR_CANCEL` を追加し、`IPC_CHANNELS` に自動伝播させた。
+これで、後続の Preload / Main / Renderer が同じ定数名を参照できる土台ができた。
+追記: current worktree では `TASK-SW-CANCEL-002`〜`TASK-SW-CANCEL-004` も実装済みで、cancel chain は end-to-end で接続されている。
 
-## 2. 変更内容
+UI/UX 変更はないため、Phase 11 のスクリーンショット更新は対象外。
 
-### 2.1 `SkillCreateWizard.tsx`
+---
 
-- `generationMode` / `hasActivatedLlmMode` state を削除
-- `handleStep0Next` は `goNext()` のみに統一
-- `handleGenerate` は Step 1 を経由して Step 2 / Step 3 に進行
-- `buildSkillContext()` を用いて LLM 生成コンテキストを組み立てる
+## Part 1
 
-### 2.2 `SkillInfoStep.tsx`
+### なぜ必要か
 
-- 仕様外ラジオボタンを削除
-- `generationMode` / `onGenerationModeChange` props を削除
+キャンセルの合図が人によって違うと、同じボタンを押しても別の名前で呼ばれてしまい、途中で止めたい処理が見つからなくなる。
+今回はその合図を 1 つの場所に置いて、みんなが同じ言葉を使えるようにした。
 
-### 2.3 `GenerateStep.tsx` / `wizard/index.ts`
+たとえば:
 
-- `GenerationMode` の public export を削除
-- barrel 経由の旧 API を廃止
+- 先生に「手を止めて」と言う人と「ストップ」と言う人が混ざると、指示が伝わりにくい
+- 先に「止める合図はこれ」と決めておくと、あとから参加する人も迷わない
 
-### 2.4 テスト
+### 何をするか
 
-- `wizard-exports.test.ts` で `GenerationMode` 未公開を確認
-- `SkillCreateWizard.test.tsx` に TC-06 を追加
-- `SkillCreateWizard.store-integration.test.tsx` を復帰し `createSkill(..., context)` を確認
+このタスクでは、共有の辞書に `skill-creator:cancel` という名前を登録した。
+登録した名前は、下流のコードでも同じ定数として使える。
 
-## 3. Phase 11 スクリーンショット
+### 日常の例え
 
-| ファイル                                               | 確認内容                            |
-| ------------------------------------------------------ | ----------------------------------- |
-| `outputs/phase-11/screenshots/step-0-no-radio.png`     | Step 0 でラジオボタンが表示されない |
-| `outputs/phase-11/screenshots/step-1-conversation.png` | Step 0→1 の正規遷移                 |
-| `outputs/phase-11/screenshots/step-1-questions.png`    | Q1〜Q6 の表示                       |
-| `outputs/phase-11/screenshots/step-2-generating.png`   | 生成中状態                          |
-| `outputs/phase-11/screenshots/step-3-complete.png`     | 完了状態                            |
+たとえば:
 
-補助メタデータ: `outputs/phase-11/phase11-capture-metadata.json`
-スクリーンショット計画: `outputs/phase-11/screenshot-plan.json`
+```
+クラスで「黒板の消し方」を 1 つに決める場面を想像してください。
+「左から消す」「右から消す」「上から消す」が混ざると、みんなの動きが揃いません。
+最初に 1 つのやり方を決めると、誰がやっても同じ結果になります。
+```
 
-## 4. 検証結果
+今回も同じで、`skill-creator:cancel` を共通のやり方として決めた。
 
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/wizard-exports.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` は PASS
-- `SkillCreateWizard.store-integration.test.tsx` では `createSkill(formData.purpose, options, context)` の第三引数も確認済み
+### 今回作ったもの
+
+| 日本語                     | 英語 / 定数                      | 役割                              |
+| -------------------------- | -------------------------------- | --------------------------------- |
+| スキルクリエイター停止合図 | `SKILL_CREATOR_CANCEL`           | 生成を止める共有チャンネル名      |
+| 共有 runtime 辞書          | `SKILL_CREATOR_RUNTIME_CHANNELS` | runtime 用チャンネルの正本        |
+| 統合 IPC 定数群            | `IPC_CHANNELS`                   | shared 正本をまとめて参照する入口 |
+
+---
+
+## Part 2
+
+### 型定義
+
+```typescript
+export const SKILL_CREATOR_RUNTIME_CHANNELS = {
+  SKILL_CREATOR_PROGRESS: "skill-creator:progress",
+  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
+  SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
+  SKILL_CREATOR_ADAPTER_STATUS_CHANGED: "skill-creator:adapter-status-changed",
+} as const;
+
+export const IPC_CHANNELS = {
+  ...SKILL_CREATOR_RUNTIME_CHANNELS,
+  // 他の shared / feature チャンネル群
+} as const;
+
+export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
+```
+
+### APIシグネチャ
+
+今回の追加は関数 API ではなく、共有定数の追加。
+外から見えるシグネチャは次の形になる。
+
+```typescript
+const cancelChannel: typeof IPC_CHANNELS.SKILL_CREATOR_CANCEL =
+  IPC_CHANNELS.SKILL_CREATOR_CANCEL;
+```
+
+### Consumer Contract & IPC Compatibility
+
+| 項目                        | Before                      | After                                       | 補足                                                       |
+| --------------------------- | --------------------------- | ------------------------------------------- | ---------------------------------------------------------- |
+| 共有チャンネル名            | `skill-creator:cancel` なし | `skill-creator:cancel` を shared 正本へ追加 | 既存契約の破壊なし                                         |
+| payload / 戻り値            | 変更なし                    | 変更なし                                    | このタスクは定数追加のみ                                   |
+| type guard / optional field | N/A                         | N/A                                         | payload 変更がないため不要                                 |
+| follow-up 実装状況          | 実装済み                    | `TASK-SW-CANCEL-002`〜`TASK-SW-CANCEL-004`  | current worktree で Preload / Main / Renderer まで接続済み |
+| fire-and-forget / timeout   | 対象外                      | current worktree で接続済み                 | `cancelGeneration` の公開も含めて branch 内で完了          |
+
+### 使用例
+
+```typescript
+import { IPC_CHANNELS } from "@repo/shared/src/ipc/channels";
+
+expect(IPC_CHANNELS.SKILL_CREATOR_CANCEL).toBe("skill-creator:cancel");
+```
+
+```typescript
+const values = Object.values(IPC_CHANNELS);
+const hasCancelChannel = values.includes("skill-creator:cancel");
+```
+
+### エラーハンドリング
+
+| ケース             | 起きること                         | 対応                                     |
+| ------------------ | ---------------------------------- | ---------------------------------------- |
+| 文字列を直書きした | タイポで壊れやすい                 | 定数参照に統一する                       |
+| 下流タスクが未実装 | 定数はあるが invoke はつながらない | current worktree では消化済み            |
+| 既存値と重複した   | テストで重複検知できる             | `channels-cancel.test.ts` で回帰防止する |
+
+### エッジケース
+
+| ケース                                                        | 懸念                          | 現在の扱い                                |
+| ------------------------------------------------------------- | ----------------------------- | ----------------------------------------- |
+| `SKILL_CREATOR_CANCEL` を追加したのに `IPC_CHANNELS` へ出ない | 型伝播の漏れ                  | spread で自動伝播する設計なので漏れにくい |
+| `ALLOWED_INVOKE_CHANNELS` だけ先に触る                        | shared 正本より下流が先行する | このタスクではやらない                    |
+| UI 変更があると誤解される                                     | screenshot を探しに行く       | UI 変更なしのため N/A と明記する          |
+
+### 設定項目と定数一覧
+
+| 定数                                   | 値                                     | 役割                     |
+| -------------------------------------- | -------------------------------------- | ------------------------ |
+| `SKILL_CREATOR_CANCEL`                 | `skill-creator:cancel`                 | 生成中断の共有チャンネル |
+| `SKILL_CREATOR_PROGRESS`               | `skill-creator:progress`               | 進捗通知                 |
+| `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` | `skill-creator:workflow-state-changed` | 状態変化通知             |
+| `SKILL_CREATOR_ADAPTER_STATUS_CHANGED` | `skill-creator:adapter-status-changed` | アダプタ状態通知         |
+
+### テスト構成
+
+| ファイル                                                    | 内容                                             |
+| ----------------------------------------------------------- | ------------------------------------------------ |
+| `packages/shared/src/ipc/__tests__/channels.test.ts`        | runtime チャンネル数と `IPC_CHANNELS` 伝播を確認 |
+| `packages/shared/src/ipc/__tests__/channels-cancel.test.ts` | cancel 定数の値・重複・型を確認                  |
+
+### 検証結果
+
+- `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` は PASS
+- `pnpm --filter @repo/shared build` は PASS
+- `pnpm typecheck` は PASS
+
+## 視覚証跡
+
+- UI/UX 変更なしのため、Phase 11 スクリーンショットは不要
+- `outputs/phase-11/screenshots/` の追加・更新は行っていない
+
+---
+
+## 実装状況メモ
+
+- `TASK-SW-CANCEL-002`〜`TASK-SW-CANCEL-004` は current worktree で実装済み
+- この guide の「後続」は履歴上の区分として残している
+- UI/UX 変更なしのため、Phase 11 スクリーンショット参照は引き続き N/A
