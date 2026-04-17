@@ -7,8 +7,8 @@ SkillCreatorService.createSkill() にオプショナルなコールバック引�
 処理の各段階で進捗を通知できるようにする。
 sendSkillCreatorProgress() は export されているが呼び出し元が存在しない問題を解消するため、
 createSkill() 内部の処理節目でコールバックを呼び出す仕組みを実装する。
-コールバックの接続（skillCreatorHandlers.ts 側）は別タスク（TASK-SW-STREAM-002）へ分離し、
-本タスクは createSkill() へのコールバック引数追加と呼び出しのみを対象とする。
+コールバックの接続（skillCreatorHandlers.ts 側）は既存実装として用意済みで、
+本タスクは createSkill() へのコールバック引数追加と呼び出しを中心に整理する。
 ```
 
 ## メタ情報
@@ -18,10 +18,11 @@ createSkill() 内部の処理節目でコールバックを呼び出す仕組み
 | タスクID     | TASK-SW-STREAM-001                                                 |
 | タスク名     | stream-001-add-progress-callback-to-create-skill                   |
 | 分類         | 機能追加                                                           |
+| タスク種別   | NON_VISUAL                                                         |
 | 対象機能     | SkillCreatorService - createSkill にコールバック引数追加・進捗通知 |
 | 優先度       | High                                                               |
 | 見積もり規模 | 小規模                                                             |
-| ステータス   | 未着手                                                             |
+| ステータス   | Phase13 pending（PR作成待ち）                                      |
 | 作成日       | 2026-04-16                                                         |
 | depends_on   | なし                                                               |
 
@@ -48,8 +49,8 @@ createSkill() 内部の処理節目でコールバックを呼び出す仕組み
 フロント・Preload・メインの3層は接続設計として正しく定義されているが、
 メインプロセス側からの実際の `send()` 呼び出しが欠落している状態である。
 
-後続の `TASK-SW-STREAM-002` で `skillCreatorHandlers.ts` 側のコールバック接続を行うため、
-本タスクで `createSkill()` のシグネチャに `onProgress` を追加し、処理節目での呼び出しを実装することが前提条件となる。
+既存の `skillCreatorHandlers.ts` 側の progress 接続を前提に、
+本タスクで `createSkill()` のシグネチャに `onProgress` を追加し、処理節目での呼び出しを整える。
 
 ### 最終ゴール
 
@@ -65,19 +66,19 @@ createSkill() 内部の処理節目でコールバックを呼び出す仕組み
 
 ### 成果物一覧
 
-| 種別         | 成果物                           | 配置先                                                                       |
-| ------------ | -------------------------------- | ---------------------------------------------------------------------------- |
-| 機能         | createSkill コールバック引数追加 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                |
-| テスト       | コールバック呼び出し検証テスト   | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` |
-| ドキュメント | Phase 1-13 仕様・実行成果物      | `outputs/phase-1/ 〜 phase-13/`                                              |
+| 種別         | 成果物                           | 配置先                                                                                |
+| ------------ | -------------------------------- | ------------------------------------------------------------------------------------- |
+| 機能         | createSkill コールバック引数追加 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                         |
+| テスト       | progress 検証テスト              | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts` |
+| ドキュメント | Phase 1-13 仕様・実行成果物      | `outputs/phase-1/ 〜 phase-13/`                                                       |
 
 ---
 
 ## 参照ファイル
 
 - `apps/desktop/src/main/services/skill/SkillCreatorService.ts` - 実装対象
-- `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts` - テスト追加対象
-- `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` - 後続タスク TASK-SW-STREAM-002 の対象（参照のみ）
+- `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts` - progress 専用テスト
+- `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` - 既存の progress 接続確認対象
 - `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` - 問題1の現状分析
 - `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計（問題1 解決アプローチA）
 - `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` - タスク粒度確認
@@ -156,18 +157,18 @@ graph TD
 
 | Phase | 名称               | 仕様書                                                       | ステータス |
 | ----- | ------------------ | ------------------------------------------------------------ | ---------- |
-| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | pending    |
-| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | pending    |
-| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | pending    |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | pending    |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | pending    |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | pending    |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | pending    |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | pending    |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | pending    |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | pending    |
-| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | pending    |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | pending    |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | completed  |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | completed  |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | completed  |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | completed  |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | completed  |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | completed  |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | completed  |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | completed  |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | completed  |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | completed  |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | completed  |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | completed  |
 | 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | pending    |
 
 ---
@@ -195,7 +196,7 @@ graph TD
 ## 依存関係
 
 - **depends_on**: なし（本タスクは独立して実施可能）
-- **後続タスク**: TASK-SW-STREAM-002（本タスク完了後に着手 — `skillCreatorHandlers.ts` 側でコールバックを接続する）
+- **後続タスク**: 追加の接続タスクはなし（既存接続を利用）
 
 ---
 

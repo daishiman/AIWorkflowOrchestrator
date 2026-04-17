@@ -274,7 +274,7 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        // TASK-SW-STREAM-002: onProgress コールバックを sendSkillCreatorProgress に接続
+        // progress 通知を renderer に送る
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {

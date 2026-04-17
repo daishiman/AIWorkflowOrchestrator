@@ -13,8 +13,8 @@
  * TC-09: onProgress の percentage 値が正確に 10/40/70/90/100 であること
  * TC-10: onProgress の message 内容が正確な日本語文字列であること
  * TC-11: onProgress がエラーを投げた場合にそのエラーが伝播すること
- * TC-12: create モード以外（collaborative）でも planning フェーズが呼ばれること
- * TC-13: createSkill がエラーで終了した場合 done フェーズが呼ばれないこと
+ * TC-12: create モード以外（collaborative）では progress が呼ばれないこと
+ * TC-13: createSkill がエラーで終了した場合 progress が呼ばれないこと
  * TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること
  */
 
@@ -256,7 +256,7 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
       expect(throwingCallback).toHaveBeenCalledTimes(1);
     });
 
-    it("TC-12: create モード以外（collaborative）でも planning フェーズが呼ばれること", async () => {
+    it("TC-12: create モード以外（collaborative）では progress が呼ばれないこと", async () => {
       allowSuccessfulCreate();
       const collaborativeOptions: CreateSkillOptions = {
         name: "collab-skill",
@@ -280,12 +280,10 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
 
       await service.createSkill(collaborativeOptions, onProgress);
 
-      expect(onProgress).toHaveBeenCalledWith(
-        expect.objectContaining({ phase: "planning" }),
-      );
+      expect(onProgress).not.toHaveBeenCalled();
     });
 
-    it("TC-13: createSkill がバリデーションエラーで終了した場合 done フェーズが呼ばれないこと", async () => {
+    it("TC-13: createSkill がバリデーションエラーで終了した場合 progress が呼ばれないこと", async () => {
       const invalidOptions: CreateSkillOptions = {
         name: "",
         description: "Test",
@@ -295,9 +293,7 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
       await expect(
         service.createSkill(invalidOptions, onProgress),
       ).rejects.toThrow();
-      expect(onProgress).not.toHaveBeenCalledWith(
-        expect.objectContaining({ phase: "done" }),
-      );
+      expect(onProgress).not.toHaveBeenCalled();
     });
 
     it("TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること", async () => {

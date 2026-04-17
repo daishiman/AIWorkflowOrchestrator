@@ -238,6 +238,7 @@ export class SkillCreatorService {
     const emitProgress = (progress: SkillCreatorProgressData): void => {
       onProgress?.(progress);
     };
+    const shouldEmitCreateProgress = options.mode === "create";
 
     const skillDir = path.join(this.skillsDir, options.name);
     const skillDirExistedBefore = await this.pathExists(skillDir);
@@ -248,12 +249,14 @@ export class SkillCreatorService {
       // モード別ワークフロー実行
       let structurePlan: StructurePlanJson | null = null;
 
-      // 段階1: planning（モード別ワークフロー開始直前）
-      emitProgress({
-        phase: "planning",
-        percentage: 10,
-        message: "構造を計画しています",
-      });
+      // 段階1: planning（create モード専用のワークフロー開始直前）
+      if (shouldEmitCreateProgress) {
+        emitProgress({
+          phase: "planning",
+          percentage: 10,
+          message: "構造を計画しています",
+        });
+      }
 
       switch (options.mode) {
         case "collaborative":
@@ -291,12 +294,14 @@ export class SkillCreatorService {
 
       this.throwIfAborted(operationSignal);
 
-      // 段階2: generating-skill（SKILL.md 生成開始直前）
-      emitProgress({
-        phase: "generating-skill",
-        percentage: 40,
-        message: "SKILL.md を生成しています",
-      });
+      // 段階2: generating-skill（create モード専用）
+      if (shouldEmitCreateProgress) {
+        emitProgress({
+          phase: "generating-skill",
+          percentage: 40,
+          message: "SKILL.md を生成しています",
+        });
+      }
 
       // スキル初期化
       const initResult = await this.executeScript(
@@ -382,12 +387,14 @@ export class SkillCreatorService {
       }
 
       this.throwIfAborted(operationSignal);
-      // 段階3: generating-agents（エージェント定義・タスク仕様書生成開始直前）
-      emitProgress({
-        phase: "generating-agents",
-        percentage: 70,
-        message: "エージェント定義を生成しています",
-      });
+      // 段階3: generating-agents（create モード専用）
+      if (shouldEmitCreateProgress) {
+        emitProgress({
+          phase: "generating-agents",
+          percentage: 70,
+          message: "エージェント定義を生成しています",
+        });
+      }
 
       // タスク仕様書生成（オプション）
       if (options.generateTasks) {
@@ -399,12 +406,14 @@ export class SkillCreatorService {
       }
 
       this.throwIfAborted(operationSignal);
-      // 段階4: validating（スキル検証開始直前）
-      emitProgress({
-        phase: "validating",
-        percentage: 90,
-        message: "スキルを検証しています",
-      });
+      // 段階4: validating（create モード専用）
+      if (shouldEmitCreateProgress) {
+        emitProgress({
+          phase: "validating",
+          percentage: 90,
+          message: "スキルを検証しています",
+        });
+      }
 
       // スキル検証
       const isValid = await this.validateSkill(skillDir, operationSignal);
@@ -412,8 +421,14 @@ export class SkillCreatorService {
         throw new Error("Skill validation failed");
       }
 
-      // 段階5: done（完了）
-      emitProgress({ phase: "done", percentage: 100, message: "完了しました" });
+      // 段階5: done（create モード専用の完了通知）
+      if (shouldEmitCreateProgress) {
+        emitProgress({
+          phase: "done",
+          percentage: 100,
+          message: "完了しました",
+        });
+      }
 
       return skillDir;
     } catch (error) {

@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3082,
+  "totalKeywords": 3086,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1365,6 +1365,7 @@
       "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
+      "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-skill-wizard-redesign.md",
       "quick-reference-search-patterns-ipc-infra.md",
@@ -1387,6 +1388,7 @@
       "api-ipc-system-skill-creator.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
       "security-electron-ipc-examples.md",
       "task-workflow-completed-skill-create-ui-integration.md"
@@ -7072,6 +7074,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
+      "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-create-multi-select-kind.md",
@@ -7155,6 +7158,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
+      "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-create-multi-select-kind.md",
@@ -9590,6 +9594,30 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "ui-ux-feature-components-theme-chat.md"
     ],
+    "Cancel": [
+      "lessons-learned-skill-cancel-abortsignal.md"
+    ],
+    "AbortSignal": [
+      "lessons-learned-skill-cancel-abortsignal.md"
+    ],
+    "タスク概要": [
+      "lessons-learned-skill-cancel-abortsignal.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "主要知見": [
+      "lessons-learned-skill-cancel-abortsignal.md"
+    ],
+    "苦戦箇所と解決策": [
+      "lessons-learned-skill-cancel-abortsignal.md",
+      "lessons-learned-verify-contract-consolidation.md",
+      "ui-ux-atoms-patterns-core.md"
+    ],
+    "今後の標準ルール": [
+      "lessons-learned-skill-cancel-abortsignal.md"
+    ],
     "スキルライフサイクル": [
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -9947,12 +9975,6 @@
     ],
     "Connection": [
       "lessons-learned-skill-wizard-llm-connection.md"
-    ],
-    "タスク概要": [
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mso-main-tool-badge.md",
-      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
-      "lessons-learned-skill-wizard-redesign.md"
     ],
     "generationMode": [
       "lessons-learned-skill-wizard-llm-connection.md"
@@ -10434,10 +10456,6 @@
     "正本・履歴分離と責務分離の実装パターン": [
       "lessons-learned-verify-contract-consolidation.md"
     ],
-    "苦戦箇所と解決策": [
-      "lessons-learned-verify-contract-consolidation.md",
-      "ui-ux-atoms-patterns-core.md"
-    ],
     "コンフリクトマーカーを全成果物ファイルで検索": [
       "lessons-learned-verify-contract-consolidation.md"
     ],
@@ -10915,8 +10933,7 @@
       "task-workflow-completed-recent-2026-04c.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
-      "task-workflow-completed-recent-2026-04f.md",
-      "task-workflow-completed-recent-2026-04g.md"
+      "task-workflow-completed-recent-2026-04f.md"
     ],
     "FileService": [
       "llm-workspace-chat-edit.md"

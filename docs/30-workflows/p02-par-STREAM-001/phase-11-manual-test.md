@@ -9,7 +9,7 @@
 | 対象機能   | TASK-SW-STREAM-001           |
 | 前提Phase  | Phase 10: 最終レビューゲート |
 | 次Phase    | Phase 12: ドキュメント更新   |
-| ステータス | 未実施                       |
+| ステータス | 完了                         |
 | 作成日     | 2026-04-16                   |
 
 ## 目的
@@ -17,6 +17,8 @@
 `create` モードで実際にスキル生成を実行し、`onProgress` コールバックが
 処理の各節目で正しく呼び出されることをログ・デバッグ出力で確認する。
 自動テストでは検証できない実際の動作フロー（処理タイミング・呼び出し順序）を確認する。
+NON_VISUAL のため、画面キャプチャは取得せず、コンソールログ・実行結果・`discovered-issues.md` を証跡として残す。
+発見事項は `discovered-issues.md` に記録し、0 件でもファイルを作成する。
 
 ## 実行タスク
 
@@ -69,7 +71,7 @@ await skillCreatorService.createSkill(
 ## 統合テスト連携
 
 - 手動テストで `createSkill()` の実フロー（IPC 経由含む）を確認する
-- TASK-SW-STREAM-002 の前提条件として `onProgress` コールバックが正しく発火することを確認する
+- 既存の handler/preload 接続に対して `onProgress` コールバックが正しく流れることを確認する
 
 ## 成果物
 
@@ -77,20 +79,21 @@ await skillCreatorService.createSkill(
 | ------------------------------------------- | -------------------------------------------------------------- |
 | TASK-SW-STREAM-001-manual-test-checklist.md | `outputs/phase-11/TASK-SW-STREAM-001-manual-test-checklist.md` |
 | TASK-SW-STREAM-001-manual-test-result.md    | `outputs/phase-11/TASK-SW-STREAM-001-manual-test-result.md`    |
+| discovered-issues.md                        | `outputs/phase-11/discovered-issues.md`                        |
 
 ## 完了条件
 
-- [ ] 手動テストシナリオ（MT-01〜MT-04）が全て実行されている
-- [ ] 手動テスト結果が記録されている
-- [ ] PASS / FAIL / BLOCKED の判定が全件埋まっている
+- [x] 手動テストシナリオ（MT-01〜MT-04）が全て実行されている
+- [x] 手動テスト結果が記録されている
+- [x] PASS / FAIL / BLOCKED の判定が全件埋まっている
 
 ## タスク100%実行確認【必須】
 
-- [ ] Task 1（手動テストシナリオ定義）を100%実行した
-- [ ] Task 2（テスト実行手順）を100%実行した
-- [ ] Task 3（手動テスト結果記録）を100%実行した
-- [ ] 成果物（TASK-SW-STREAM-001-manual-test-checklist.md / TASK-SW-STREAM-001-manual-test-result.md）が生成されている
-- [ ] artifacts.json が更新されている
+- [x] Task 1（手動テストシナリオ定義）を100%実行した
+- [x] Task 2（テスト実行手順）を100%実行した
+- [x] Task 3（手動テスト結果記録）を100%実行した
+- [x] 成果物（TASK-SW-STREAM-001-manual-test-checklist.md / TASK-SW-STREAM-001-manual-test-result.md / discovered-issues.md）が生成されている
+- [x] artifacts.json が更新されている
 
 ## 次 Phase
 
