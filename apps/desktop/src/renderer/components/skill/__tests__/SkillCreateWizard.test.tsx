@@ -36,6 +36,9 @@ vi.mock("../../../store", () => ({
   useFetchSkills: () => mockFetchSkills,
   useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => mockUseWorkflowSnapshot(),
+  useAppStore: {
+    getState: () => ({ streamingStage: "idle" }),
+  },
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,

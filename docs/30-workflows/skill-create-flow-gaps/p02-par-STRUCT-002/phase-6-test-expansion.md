@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 5                                       |
 | 後続Phase  | Phase 7                                       |
 | 作成日     | 2026-04-15                                    |
-| ステータス | pending                                       |
+| ステータス | completed                                     |
 
 ## 目的
 

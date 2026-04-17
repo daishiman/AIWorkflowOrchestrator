@@ -105,6 +105,31 @@ function formatErrorMessage(prefix: string, error: unknown): string {
   return `${prefix}: ${message}`;
 }
 
+function isAbortLikeError(error: unknown): boolean {
+  if (error instanceof Error) {
+    return (
+      error.name === "AbortError" ||
+      /abort|cancel|中断|キャンセル/i.test(error.message)
+    );
+  }
+
+  if (error && typeof error === "object") {
+    const candidate = error as {
+      name?: unknown;
+      message?: unknown;
+      code?: unknown;
+    };
+    if (candidate.name === "AbortError" || candidate.code === "ABORT_ERR") {
+      return true;
+    }
+    if (typeof candidate.message === "string") {
+      return /abort|cancel|中断|キャンセル/i.test(candidate.message);
+    }
+  }
+
+  return false;
+}
+
 /**
  * executionIdを生成（UUID v4形式）
  * race condition対策: IPC呼び出し前にexecutionIdを事前生成
@@ -1225,6 +1250,9 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
         await get().fetchSkills();
         return result.path;
       } catch (error) {
+        if (isAbortLikeError(error)) {
+          return "";
+        }
         set({
           skillError: formatErrorMessage("スキル作成に失敗", error),
         });
