@@ -2,6 +2,59 @@
 
 ## 役割
 
+## 2026-04-16 - TASK-SW-CANCEL-001〜004 cancel chain impl-spec-to-skill-sync（残フィードバック反映）
+
+### 変更内容
+
+- `references/patterns-phase12-sync.md` 再利用チェックリストに3項目追加:
+  - `LOGS.md` 2ファイル更新済み確認（aiworkflow-requirements + task-specification-creator）
+  - `topic-map.md` 更新要否確認
+  - テストファイルの追加・修正を `documentation-changelog.md` に記録
+- `references/phase-12-documentation-guide.md` Task 12-3 にテストファイル記録ルール追加（専用ファイル + 既存ファイル修正の2点セット）
+
+### 背景
+
+TASK-SW-CANCEL-001 スキルフィードバックレポートに記録された改善提案のうち、前回未反映だった3件（テストファイル変更履歴記録・LOGS.md ×2 必須化・topic-map 確認）を今回反映した。
+
+## 2026-04-17 TASK-UT-9I-001 Phase-12 完了確認
+
+### 実施内容
+- Phase-12成果物 全6ファイルの存在・内容を検証
+- docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/outputs/phase-12/ に全ファイル確認
+- Phase-12コンプライアンスチェック: 全87項目PASS
+
+### 検証結果
+| 成果物 | 状態 | 確認内容 |
+|--------|------|---------|
+| implementation-guide.md | ✅ | Part 1（中学生レベル）+ Part 2（技術詳細）完備 |
+| system-spec-update-summary.md | ✅ | Step 1-A〜1-G の記録存在 |
+| documentation-changelog.md | ✅ | SKILL.md / LOGS.md 更新記録あり |
+| unassigned-task-detection.md | ✅ | 0件検出・report 形式で記録 |
+| skill-feedback-report.md | ✅ | 改善点なし形式で出力 |
+| phase12-task-spec-compliance-check.md | ✅ | Phase 12 タスク充足状況記録 |
+
+### 知見・苦戦箇所
+- TASK-UT-9I-001はPhase 11（Anthropic API実機テスト）がAPI_KEY未設定でBLOCKED → NON_VISUALとして記録
+- Phase 12ドキュメントはPhase 11のBLOCK状態でも作成可能（非依存）
+- 実装ガイドPart 1の例え話（図書館の例え話）がvalidator準拠
+
+---
+
+## 2026-04-17 - UT-9I-001 current reference sync
+
+### 変更内容
+
+- `references/phase-12-guide.md` / `phase-12-tasks-guide.md` / `phase12-checklist-definition.md` / `phase-12-completion-checklist.md` を 6タスク / 6成果物 / current filename へ同期
+- `SKILL.md` の `phase-12-docs.md` 旧表記を `phase-12-documentation.md` へ是正し、変更履歴に v10.09.54 を追加
+- `outputs/phase-12/phase12-task-spec-compliance-check.md` と `system-spec-update-summary.md` の current naming を統一
+- aiworkflow-requirements 側の current reference sync と同波で LOGS / index 更新を記録
+
+### 背景
+
+Phase 12 close-out の正本は 6タスク / 6成果物で揃える必要があり、Task 12-6 と compliance check の current name を同時に固定しないと downstream の checklist / logs / index が stale になる。
+
+---
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY impl-spec-to-skill-sync（スキルフィードバック反映）
 
 ### 変更内容
@@ -67,18 +120,6 @@ TASK-CI-FUTURE-003 の Phase 12 スキルフィードバックレポートに記
 ### 背景
 
 Phase 12 の close-out では、仕様書・索引・ミラー・準拠証跡を同波で同期しないと current facts が stale になる。旧いフォールバックキー前提ではなく `node_modules` 存在確認を正本として固定した。
-
-## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
-
-### 変更内容
-
-- `outputs/phase-12/*.md` の 6 成果物を確認し、Phase 12 の同波 close-out を記録
-- Phase 2 で `Result<T,E>` の `success` / `data` 判別子、`@repo/shared/services/llm/types` alias、旧 TC-04 影響を先に明記する改善点を feedback 化
-- `.claude/skills/task-specification-creator/SKILL.md` の変更履歴を同波で更新
-
-### 背景
-
-LLM purpose wire のように出力形状が変わるタスクでは、Phase 2 で結果型・依存 alias・既存テスト影響を先出ししないと、Phase 5 以降で型ズレが再発しやすい。
 
 ## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
 

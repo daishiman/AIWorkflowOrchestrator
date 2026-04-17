@@ -390,8 +390,8 @@ export interface SkillCreatorAPI {
   ) => () => void;
 
   /**
-   * TASK-SW-CANCEL-002: スキル生成をキャンセルする
-   * Main プロセスの cancelCurrentOperation() を IPC 経由で呼び出す
+   * 現在実行中のスキル生成をキャンセルする
+   * @returns キャンセル結果
    */
   cancelGeneration: () => Promise<IpcResult<void>>;
 }
@@ -724,5 +724,5 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   // TASK-SW-CANCEL-002: スキル生成キャンセル
   cancelGeneration: (): Promise<IpcResult<void>> =>
-    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL),
+    safeInvoke<IpcResult<void>>(IPC_CHANNELS.SKILL_CREATOR_CANCEL),
 };

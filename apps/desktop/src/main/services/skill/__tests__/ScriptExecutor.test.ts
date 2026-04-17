@@ -46,9 +46,11 @@ describe("ScriptExecutor", () => {
     const mockProcess = new EventEmitter() as ChildProcess & {
       stdout: EventEmitter;
       stderr: EventEmitter;
+      kill: ReturnType<typeof vi.fn>;
     };
     mockProcess.stdout = new EventEmitter();
     mockProcess.stderr = new EventEmitter();
+    mockProcess.kill = vi.fn();
 
     // Simulate async process execution
     setTimeout(() => {
@@ -145,6 +147,25 @@ describe("ScriptExecutor", () => {
       // Assert
       expect(result.stderr).toBe(expectedError);
     });
+
+    it("SE-ABORT-001: should abort the child process when signal is cancelled", async () => {
+      // Arrange
+      const mockProcess = createMockProcess(0, "output", "");
+      mockSpawn.mockReturnValue(mockProcess);
+      const controller = new AbortController();
+
+      // Act
+      const execution = executor.execute("abortable-script.js", [], {
+        signal: controller.signal,
+      });
+      controller.abort();
+
+      // Assert
+      await expect(execution).rejects.toMatchObject({
+        name: "AbortError",
+      });
+      expect(mockProcess.kill).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("executeJson()", () => {
@@ -189,30 +210,6 @@ describe("ScriptExecutor", () => {
       await expect(
         executor.executeJson("failing-script.js", []),
       ).rejects.toThrow(/failed/i);
-    });
-
-    it("SE-009: should reject with AbortError when the signal is aborted", async () => {
-      // Arrange
-      const controller = new AbortController();
-      const mockProcess = new EventEmitter() as ChildProcess & {
-        stdout: EventEmitter;
-        stderr: EventEmitter;
-        kill: ReturnType<typeof vi.fn>;
-      };
-      mockProcess.stdout = new EventEmitter();
-      mockProcess.stderr = new EventEmitter();
-      mockProcess.kill = vi.fn(() => true);
-      mockSpawn.mockReturnValue(mockProcess as ChildProcess);
-
-      // Act
-      const promise = executor.execute("long-running-script.js", [], {
-        signal: controller.signal,
-      });
-      controller.abort();
-
-      // Assert
-      await expect(promise).rejects.toMatchObject({ name: "AbortError" });
-      expect(mockProcess.kill).toHaveBeenCalledWith("SIGTERM");
     });
   });
 

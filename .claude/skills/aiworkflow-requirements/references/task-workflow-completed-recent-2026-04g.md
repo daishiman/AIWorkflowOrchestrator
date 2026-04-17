@@ -1,94 +1,69 @@
 # 完了タスク台帳 — 2026-04 (g)
+
 # 完了タスク記録 — 2026-04-15
+
 # 完了タスク記録 — 2026-04-15
+
 # 完了タスク記録 — 2026-04-15
+
 # 完了タスク台帳 — 2026-04 (g)
+
 # 完了タスク記録 — 2026-04-15
+
 # 完了タスク記録 — 2026-04-14
 
 ## TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）
 
-| 項目       | 内容                                                                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-SW-FIX-UI-001                                                                                                          |
-| ステータス | **完了（docs-only / Phase 12 close-out）**                                                                                  |
-| タイプ     | bug-fix / UI整合性 / type-migration                                                                                         |
-| 優先度     | 中                                                                                                                          |
-| 完了日     | 2026-04-14                                                                                                                  |
-| Wave       | C（WC-par-03b-fix-ui）                                                                                                      |
+| 項目       | 内容                                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-FIX-UI-001                                                                                                                      |
+| ステータス | **完了（docs-only / Phase 12 close-out）**                                                                                              |
+| タイプ     | bug-fix / UI整合性 / type-migration                                                                                                     |
+| 優先度     | 中                                                                                                                                      |
+| 完了日     | 2026-04-14                                                                                                                              |
+| Wave       | C（WC-par-03b-fix-ui）                                                                                                                  |
 | 対象       | `packages/shared/src/types/skillCreator.ts` / `wizard/SkillInfoStep.tsx` / `wizard/ConversationRoundStep.tsx` / `SkillCreateWizard.tsx` |
-| 成果物     | `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/outputs/phase-12/`                                            |
+| 成果物     | `docs/30-workflows/skill-wizard-bugfix-wave/WC-par-03b-fix-ui/outputs/phase-12/`                                                        |
 
 ### 修正問題
+
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
+
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
-### タスク: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 runCreateWorkflow戻り値をgenerateSkillMdへ接続（2026-04-16）
-
-| 項目       | 値                                                        |
-| ---------- | --------------------------------------------------------- |
-| タスクID   | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                |
-| 完了日     | 2026-04-16                                                |
-| タスク種別 | implementation（NON_VISUAL / skill-creator service）      |
-| 関連Issue  | -                                                         |
-| Phase 13   | blocked（ユーザー承認待ち）                               |
-
-#### 実施内容
-
-- `SkillCreatorService.ts` に `generateSkillMd()` プライベートメソッドを追加し、`runCreateWorkflow()` が返す `StructurePlanJson` を `generate_skill_md.js --plan` に渡してSKILL.mdを生成するようにした
-- `createSkill()` で `structurePlan` を local variable として受け取り、`init_skill.js` 完了後に `generateSkillMd()` を呼ぶ順序を確立した
-- `structurePlan` が null の場合は `ensureSkillMdExists` にフォールバックするレジリエンスパターンを実装した
-- `SkillCreatorService.test.ts` に 12 件のテストを追加し合計82件全PASS
-
-#### 検証証跡
-
-- `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillCreatorService.test.ts`: PASS（82 tests）
-- `pnpm --filter @repo/desktop typecheck`: PASS
-- Phase 12 PASS（system spec no-op）
-
-#### 苦戦箇所
-
-| #   | 苦戦箇所                                          | 解決策                                                        |
-| --- | ------------------------------------------------- | ------------------------------------------------------------- |
-| 1   | tmp file パスとSKILL.md生成パスの2段階検証        | `fs.access(skillMdPath)` で生成確認、失敗時フォールバック     |
-| 2   | `StructurePlanJson` → workflow形式への変換が必要  | `plan.workflow.trigger.description` にpurposeを組み込む変換層 |
-
-#### lessons-learned
-
-- `generate_skill_md.js` は直接 `StructurePlanJson` を受け取らず `workflow` 形式に変換が必要
-- tmp file cleanup は finally + `.catch(() => {})` パターンでnon-fatalにする
-
----
 
 ### タスク: TASK-SC-IMP-CREATE-WORKFLOW-001 createモード構造計画生成（2026-04-15）
 
-| 項目       | 値                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-SC-IMP-CREATE-WORKFLOW-001                                                             |
-| 完了日     | 2026-04-15                                                                                  |
-| タスク種別 | implementation（NON_VISUAL / skill-creator workflow）                                      |
-| 関連Issue  | -                                                                                           |
-| Phase 13   | blocked（ユーザー承認待ち）                                                                |
+| 項目       | 値                                                    |
+| ---------- | ----------------------------------------------------- |
+| タスクID   | TASK-SC-IMP-CREATE-WORKFLOW-001                       |
+| 完了日     | 2026-04-15                                            |
+| タスク種別 | implementation（NON_VISUAL / skill-creator workflow） |
+| 関連Issue  | -                                                     |
+| Phase 13   | blocked（ユーザー承認待ち）                           |
 
 #### 実施内容
 
-- `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`purpose = options.description` / `agents = ["extract-purpose", "plan-structure"]` / `features = []` の current facts を返すようにした
+- `SkillCreatorService.ts` の `runCreateWorkflow` を `Promise<StructurePlanJson | null>` に変更し、`extract-purpose` / `plan-structure` を読み込んで構造計画を組み立てるようにした
 - `createSkill()` では `structurePlan` を local variable として受け取り、hidden property を使わない handoff に整理した
 - `SkillCreatorService.test.ts` の `TC-04` を更新し、`runCreateWorkflow` の戻り値に `description` が入ることを直接検証するようにした
+- `outputs/phase-12/` の 6 成果物を current facts として固定し、`outputs/artifacts.json` を追加して root と parity を揃えた
+- `outputs/phase-12/` の 6 成果物を current facts として固定し、`outputs/artifacts.json` を追加して root と parity を揃えた
+- 2026-04-16 追補として `SkillService.cancelCurrentSkillCreation()` を追加し、`skill:create` のキャンセルを `skill-creator:cancel` に橋渡しした。`SkillCreatorService` / `ScriptExecutor` / `ResourceLoader` へ `AbortSignal` を伝播し、child process 中断と file read 中断まで含めてキャンセルを実処理に接続した
 - `docs/30-workflows/p01-par-STRUCT-001/artifacts.json` を canonical manifest として current facts に固定し、`outputs/artifacts.json` は別 workflow の ledger として扱うようにした
 
 #### Phase 11/12 成果物
 
-| 成果物                         | パス                                                              |
-| ------------------------------ | ----------------------------------------------------------------- |
-| 手動テスト結果                 | `outputs/phase-11/manual-test-result.md`                          |
-| 手動テストチェックリスト       | `outputs/phase-11/manual-test-checklist.md`                       |
-| 実装ガイド                     | `outputs/phase-12/implementation-guide.md`                        |
-| システム仕様書更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`                  |
-| 変更履歴                       | `outputs/phase-12/documentation-changelog.md`                     |
-| 未タスク検出レポート           | `outputs/phase-12/unassigned-task-detection.md`                   |
-| スキルフィードバックレポート   | `outputs/phase-12/skill-feedback-report.md`                       |
-| Phase 12 準拠チェック          | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
-| parity copy                    | `outputs/artifacts.json`                                          |
+| 成果物                       | パス                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                 |
+| 手動テストチェックリスト     | `outputs/phase-11/manual-test-checklist.md`              |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様書更新サマリー   | `outputs/phase-12/system-spec-update-summary.md`         |
+| 変更履歴                     | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| parity copy                  | `outputs/artifacts.json`                                 |
 
 #### 検証証跡
 
@@ -99,10 +74,10 @@
 
 #### 苦戦箇所
 
-| # | 苦戦箇所 | 解決策 |
-| --- | --- | --- |
-| 1 | `description` の edge case が型契約と衝突しやすい | 型上必須の `string` として整理し、`undefined` は入力破損として切り分けた |
-| 2 | 接続待ちと完了を同じ文脈で書くと誤読されやすい | `generate_skill_md.js` 接続はタスクA、構造計画生成は本タスクと分離した |
+| #   | 苦戦箇所                                          | 解決策                                                                   |
+| --- | ------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1   | `description` の edge case が型契約と衝突しやすい | 型上必須の `string` として整理し、`undefined` は入力破損として切り分けた |
+| 2   | 接続待ちと完了を同じ文脈で書くと誤読されやすい    | `generate_skill_md.js` 接続はタスクA、構造計画生成は本タスクと分離した   |
 
 #### lessons-learned
 
@@ -111,8 +86,11 @@
 - screenshot N/A は UI 変更なしのときだけでなく、根拠を `manual-test-result.md` に固定しておくと運用しやすい
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
+
 ### 修正問題
+
 ### タスク: TASK-SW-FIX-FEEDBACK-008 fetchSkills() 非ブロッキング化（follow-up）（2026-04-15）
+
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
 | 項目       | 値                                                                                                                             |
@@ -127,13 +105,13 @@
 | 成果物     | `docs/30-workflows/TASK-SW-FIX-FEEDBACK-008/outputs/phase-12/`                                                                 |
 | Issue      | #2176（CLOSED）                                                                                                                |
 | PR         | #2179（マージ済み）/ Phase 13 blocked（仕様書状態）                                                                            |
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
-| 完了日     | 2026-04-15                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
-| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------                                     |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                                                              |
+| 完了日     | 2026-04-15                                                                                                                     |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                                                       |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                                                       |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                                                    |
 
 #### 実施内容
 
@@ -148,26 +126,28 @@
 - `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/*.md` を current facts に合わせて作成・更新した
 
 #### 検証証跡
+
 #### Phase 11/12 成果物
 
-| コマンド                                                                                      | 結果                                     |
-| --------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `pnpm --filter @repo/desktop typecheck`                                                       | PASS（エラー 0）                         |
-| `pnpm --filter @repo/desktop lint`                                                            | PASS（エラー 0、warnings 8件は既存箇所） |
-| `pnpm --filter @repo/desktop exec vitest run .../SkillLifecyclePanel.llm-generation.test.tsx` | PASS（42 tests \| 13 skipped）           |
-| `outputs/phase-11/manual-test-result.md`                                                      | NON_VISUAL PASS（手動テスト + metadata） |
-| 成果物                                  | パス                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------- |
-| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
-| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
-| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
-| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
-| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
-| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
-| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
-| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+| コマンド                                                                                      | 結果                                                                 |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `pnpm --filter @repo/desktop typecheck`                                                       | PASS（エラー 0）                                                     |
+| `pnpm --filter @repo/desktop lint`                                                            | PASS（エラー 0、warnings 8件は既存箇所）                             |
+| `pnpm --filter @repo/desktop exec vitest run .../SkillLifecyclePanel.llm-generation.test.tsx` | PASS（42 tests \| 13 skipped）                                       |
+| `outputs/phase-11/manual-test-result.md`                                                      | NON_VISUAL PASS（手動テスト + metadata）                             |
+| 成果物                                                                                        | パス                                                                 |
+| ---------------------------------------                                                       | -------------------------------------------------------------------- |
+| 手動テスト結果                                                                                | `outputs/phase-11/manual-test-result.md`                             |
+| 手動テストレポート                                                                            | `outputs/phase-11/manual-test-report.md`                             |
+| 実装ガイド                                                                                    | `outputs/phase-12/implementation-guide.md`                           |
+| システム仕様更新サマリー                                                                      | `outputs/phase-12/system-spec-update-summary.md`                     |
+| ドキュメント更新履歴                                                                          | `outputs/phase-12/documentation-changelog.md`                        |
+| 未タスク検出レポート                                                                          | `outputs/phase-12/unassigned-task-detection.md`                      |
+| スキルフィードバックレポート                                                                  | `outputs/phase-12/skill-feedback-report.md`                          |
+| Phase 12 準拠チェック                                                                         | `outputs/phase-12/phase12-task-spec-compliance-check.md`             |
 
 #### 苦戦箇所
+
 #### 検証証跡
 
 | 苦戦箇所                                                          | 解決策                                                                                                         |
@@ -176,6 +156,7 @@
 | `handleExecutePlan` の outer catch と non-blocking 化の干渉       | `refreshSkillsInBackground` で内部 catch するため outer catch への再伝播は起きない                             |
 | `workflowSnapshot` 遅延再処理と `processWorkflowOutcome` の冪等性 | `processedWorkflowOutcomePlanIdRef.current === workflowSnapshot.planId` ガードで二重処理を防止した             |
 | Phase 11 が NON_VISUAL で証跡をどう閉じるか                       | `manual-test-result.md` + `phase11-capture-metadata.json` を正本証跡として扱う方針を事前確立した               |
+
 - `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-wizard-label-map.test.ts`: PASS（16 tests）
 - `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --maxWorkers 1`: PASS（93 tests）
 - `pnpm --filter @repo/shared typecheck`: PASS
@@ -185,6 +166,7 @@
 - `grep -n "normalizedKey.*notion\\|notion.*その他\\|特別ケース" apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: 出力なし
 
 #### lessons-learned
+
 #### 苦戦箇所
 
 - `fetchSkills` のような補助的な非同期処理は `fire-and-forget + console.warn` パターンで主処理と切り離す
@@ -202,13 +184,13 @@
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
 
-| 問題番号 | 内容 | 修正ファイル |
-| -------- | ---- | ------------ |
-| 問題2    | カテゴリ複数選択不可 | `skillCreator.ts`（`SkillCategory\|null` → `SkillCategory[]`） |
-| 問題3    | ボタンスタイル不統一 | `SkillInfoStep.tsx` / `SkillCreateWizard.tsx`（`bg-blue-600` → CSS変数） |
-| 問題11   | ProgressBar固定値   | `ConversationRoundStep.tsx`（動的計算 `Math.max(1, answeredCount)`） |
-| 問題15   | カテゴリ解除不可    | `SkillInfoStep.tsx`（`handleCategoryClick` トグル実装） |
-| 問題16   | ProgressBarカウント不正 | `ConversationRoundStep.tsx`（`isQuestionAnswered` 利用） |
+| 問題番号 | 内容                    | 修正ファイル                                                             |
+| -------- | ----------------------- | ------------------------------------------------------------------------ |
+| 問題2    | カテゴリ複数選択不可    | `skillCreator.ts`（`SkillCategory\|null` → `SkillCategory[]`）           |
+| 問題3    | ボタンスタイル不統一    | `SkillInfoStep.tsx` / `SkillCreateWizard.tsx`（`bg-blue-600` → CSS変数） |
+| 問題11   | ProgressBar固定値       | `ConversationRoundStep.tsx`（動的計算 `Math.max(1, answeredCount)`）     |
+| 問題15   | カテゴリ解除不可        | `SkillInfoStep.tsx`（`handleCategoryClick` トグル実装）                  |
+| 問題16   | ProgressBarカウント不正 | `ConversationRoundStep.tsx`（`isQuestionAnswered` 利用）                 |
 
 ### 実施内容
 
@@ -220,22 +202,22 @@
 
 ### 検証証跡
 
-| 項目 | 結果 |
-| ---- | ---- |
-| typecheck | PASS |
-| lint | PASS |
-| vitest | PASS |
-| Phase-11 手動テスト | 目視確認済み |
-| phase12-task-spec-compliance-check.md | **PASS** |
+| 項目                                  | 結果         |
+| ------------------------------------- | ------------ |
+| typecheck                             | PASS         |
+| lint                                  | PASS         |
+| vitest                                | PASS         |
+| Phase-11 手動テスト                   | 目視確認済み |
+| phase12-task-spec-compliance-check.md | **PASS**     |
 
 ### 苦戦箇所
 
-| 苦戦箇所 | 解決策 |
-| -------- | ------ |
+| 苦戦箇所                                                       | 解決策                                                                           |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `category` 型変更の影響範囲（subpath export スコープ内に限定） | ルート barrel に変更を波及させず `@repo/shared/skill-creator` に閉じる方針を明示 |
-| `handleCategoryClick` の境界値（空配列への遷移） | `includes/filter` パターンで条件分岐なし・空配列移行を自動的に処理 |
-| `currentQuestion` の Page 2 遷移直後の表示（3/6 になる場合） | 「回答済み数の反映」として仕様書に明記し、テストで期待値として定義 |
-| `hover:bg-blue-700` の除去による hover 体験の維持 | CSS変数側でホバー状態を定義し、opacity での代替を採用 |
+| `handleCategoryClick` の境界値（空配列への遷移）               | `includes/filter` パターンで条件分岐なし・空配列移行を自動的に処理               |
+| `currentQuestion` の Page 2 遷移直後の表示（3/6 になる場合）   | 「回答済み数の反映」として仕様書に明記し、テストで期待値として定義               |
+| `hover:bg-blue-700` の除去による hover 体験の維持              | CSS変数側でホバー状態を定義し、opacity での代替を採用                            |
 
 ### lessons-learned
 
@@ -244,11 +226,11 @@
 - ProgressBar の初期値は `Math.max(1, count)` で最小表示を保証する（L-UI-003）
 - CSS変数統一は subpath export に閉じ、ルート barrel への影響を最小化する（L-UI-004）
 - 詳細: `lessons-learned-current-2026-04.md`（L-UI-001〜004）
-| #   | 苦戦箇所                                               | 解決策                                                                 |
-| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
-| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
-| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
+  | # | 苦戦箇所 | 解決策 |
+  | --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
+  | 1 | キャンセル後の遅延 reject が error 表示を復活させる | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした |
+  | 2 | template 失敗時の復帰導線が曖昧になりやすい | `mode="template"` のときだけ `最初からやり直す` を出すように固定した |
+  | 3 | `answers` の local state が親 state とずれる | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
 
 #### lessons-learned
 
@@ -260,11 +242,11 @@
 - ProgressBar の初期値は `Math.max(1, count)` で最小表示を保証する（L-UI-003）
 - CSS変数統一は subpath export に閉じ、ルート barrel への影響を最小化する（L-UI-004）
 - 詳細: `lessons-learned-current-2026-04.md`（L-UI-001〜004）
-| #   | 苦戦箇所                                               | 解決策                                                                 |
-| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
-| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
-| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
+  | # | 苦戦箇所 | 解決策 |
+  | --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
+  | 1 | キャンセル後の遅延 reject が error 表示を復活させる | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした |
+  | 2 | template 失敗時の復帰導線が曖昧になりやすい | `mode="template"` のときだけ `最初からやり直す` を出すように固定した |
+  | 3 | `answers` の local state が親 state とずれる | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
 
 #### lessons-learned
 
@@ -276,14 +258,14 @@
 
 ### タスク: TASK-CI-FUTURE-002 test-web シャード化（2026-04-15）
 
-| 項目       | 値                                                                    |
-| ---------- | --------------------------------------------------------------------- |
-| タスクID   | TASK-CI-FUTURE-002                                                    |
-| 完了日     | 2026-04-15                                                            |
-| タスク種別 | docs-only（CI 設定変更 + 仕様書整備）                                 |
-| 関連Issue  | #2168                                                                 |
-| Phase 13   | blocked（ユーザー承認待ち）                                           |
-| 親タスク   | TASK-CI-OPT-001（#2174）                                              |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-002                    |
+| 完了日     | 2026-04-15                            |
+| タスク種別 | docs-only（CI 設定変更 + 仕様書整備） |
+| 関連Issue  | #2168                                 |
+| Phase 13   | blocked（ユーザー承認待ち）           |
+| 親タスク   | TASK-CI-OPT-001（#2174）              |
 
 #### 実施内容
 
@@ -295,15 +277,15 @@
 
 #### Phase 11/12 成果物
 
-| 成果物                             | パス                                                                          |
-| ---------------------------------- | ----------------------------------------------------------------------------- |
-| 実装ガイド（中学生向け + 技術者向け） | `outputs/phase-12/implementation-guide.md`                                 |
-| システム仕様書更新サマリー         | `outputs/phase-12/system-spec-update-summary.md`                              |
-| ドキュメント更新履歴               | `outputs/phase-12/documentation-changelog.md`                                 |
-| 未タスク検出レポート               | `outputs/phase-12/unassigned-task-detection.md`                               |
-| スキルフィードバックレポート       | `outputs/phase-12/skill-feedback-report.md`                                   |
-| Phase 12 準拠チェック              | `outputs/phase-12/phase12-task-spec-compliance-check.md`                      |
-| 手動テスト結果                     | `outputs/phase-11/manual-test-result.md`                                      |
+| 成果物                                | パス                                                     |
+| ------------------------------------- | -------------------------------------------------------- |
+| 実装ガイド（中学生向け + 技術者向け） | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様書更新サマリー            | `outputs/phase-12/system-spec-update-summary.md`         |
+| ドキュメント更新履歴                  | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート                  | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート          | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック                 | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| 手動テスト結果                        | `outputs/phase-11/manual-test-result.md`                 |
 
 #### 検証証跡
 
@@ -314,11 +296,11 @@
 
 #### 苦戦箇所
 
-| #   | 苦戦箇所                                                               | 解決策                                                                     |
-| --- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| 1   | `apps/web` と `apps/backend` のパッケージ名乖離（仕様書と実体の差）   | Phase 1 P50 チェックで `apps/backend` が実体であると確認し設計を修正       |
-| 2   | GitHub Free Tier 並列上限 20 内での最適シャード数算出                  | `既存ジョブ並列数（18）+ 追加分（2）= 20` で計算根拠をコメントに明記      |
-| 3   | test-desktop 削減（17 → 15）と test-web 追加（+2）のバランス調整       | desktop-shard-impact.md で影響評価後、削減幅 2 がリスク最小と判断          |
+| #   | 苦戦箇所                                                            | 解決策                                                               |
+| --- | ------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 1   | `apps/web` と `apps/backend` のパッケージ名乖離（仕様書と実体の差） | Phase 1 P50 チェックで `apps/backend` が実体であると確認し設計を修正 |
+| 2   | GitHub Free Tier 並列上限 20 内での最適シャード数算出               | `既存ジョブ並列数（18）+ 追加分（2）= 20` で計算根拠をコメントに明記 |
+| 3   | test-desktop 削減（17 → 15）と test-web 追加（+2）のバランス調整    | desktop-shard-impact.md で影響評価後、削減幅 2 がリスク最小と判断    |
 
 #### lessons-learned
 
@@ -336,6 +318,15 @@
 | タスク種別 | implementation（NON_VISUAL / skill-creator service）                                    |
 | 仕様書パス | `docs/30-workflows/completed-tasks/p01-par-STRUCT-001/`                                 |
 | Phase 13   | blocked（ユーザー承認待ち）                                                             |
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-SC-LLM-PURPOSE-WIRE-001                                                       |
+| ステータス | **spec_created（タスク仕様書登録済み・実装未着手）**                               |
+| タイプ     | docs-only（タスク仕様書作成）                                                      |
+| 優先度     | 中                                                                                 |
+| 完了日     | 2026-04-16                                                                         |
+| 関連Issue  | [#2181](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2181)（CLOSED） |
+| Phase 13   | blocked（ユーザー承認待ち）                                                        |
 
 #### 実施内容
 
@@ -397,3 +388,73 @@
 - purpose の whitespace 正規化は変換層の責務として必ず実装する
 - 詳細: `lessons-learned-skill-creator-tmpdir-fallback.md`（L-STRUCT-002-001〜004）
 - CI 設定変更は API / IPC 契約に触れないため、system spec 更新は N/A 確認のみでよい
+`SkillCreatorService.runCreateWorkflow` 内で `extract-purpose` エージェント定義を LLM に渡し、purpose 文字列を取得する処理が未実装。`StructurePlanJson.purpose` にエージェント定義の raw 文字列が入ってしまっている問題への対応タスク。Issue #2181 は Closed 済み。
+
+---
+
+### タスク: TASK-SW-UI-POLISH-001 スキルウィザード UI仕上げ（CSS変数監査・カテゴリ選択上限・アニメーション追加）（2026-04-16）
+
+| 項目       | 値                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-UI-POLISH-001                                                                                                                |
+| ステータス | **完了（実装 + Phase 12 仕様同期 / Phase 13 blocked）**                                                                              |
+| タイプ     | VISUAL / UI Polish                                                                                                                   |
+| 優先度     | 低                                                                                                                                   |
+| 完了日     | 2026-04-16                                                                                                                           |
+| 対象       | `wizard/SkillInfoStep.tsx` / `wizard/InterviewProgressBar.tsx` / テスト 3 ファイル / `scripts/capture-task-sw-ui-polish-phase11.mjs` |
+| 成果物     | `docs/30-workflows/TASK-SW-UI-POLISH-001/outputs/phase-12/`                                                                          |
+| Issue      | #2157                                                                                                                                |
+| Phase 13   | blocked（コミット・PR はユーザー指示待ち）                                                                                           |
+
+#### 実施内容
+
+- `SkillInfoStep.tsx` に `MAX_CATEGORY_COUNT = 3` を定義し、`isAtLimit` フラグで上限制御を実装（未選択ボタンのみ `disabled`、選択済みは常に解除可能）
+- `InterviewProgressBar.tsx` に `totalQuestions > 0` ガードと `transition-all duration-300 ease-in-out` アニメーションを追加
+- 両コンポーネントの CSS を `--status-primary` / `--text-inverse` / `--bg-secondary` CSS 変数に統一（ハードコード `bg-blue-*` 排除）
+- `InterviewProgressBar.tsx` に `aria-valuemin` / `aria-valuemax` / `aria-valuenow` を追加しアクセシビリティ対応
+- `SkillCreateWizard.test.tsx` に TC-01a/01b（`bg-blue-*` 静的 CSS 監査テスト）を追加
+- `SkillInfoStep.test.tsx` にカテゴリ上限・disabled 分岐・transition クラス保持テストを追加
+- `InterviewProgressBar.test.tsx` に TC-07〜09（アニメーション）・TC-14〜16（エッジケース）を追加
+- `scripts/capture-task-sw-ui-polish-phase11.mjs` を新規作成（Playwright による Phase 11 visual evidence 自動取得スクリプト）
+- Phase 11 スクリーンショット 4 枚（ライト/ダーク × カテゴリ上限/ProgressBar）を取得し `outputs/phase-11/` に配置
+
+#### Phase 11/12 成果物
+
+| 成果物                       | パス                                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| スクリーンショット TC-01     | `outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-category-limit-light.png` |
+| スクリーンショット TC-02     | `outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-category-limit-dark.png`  |
+| スクリーンショット TC-03     | `outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-progressbar-light.png`    |
+| スクリーンショット TC-04     | `outputs/phase-11/screenshots/TASK-SW-UI-POLISH-001-progressbar-dark.png`     |
+| Capture Metadata             | `outputs/phase-11/phase11-capture-metadata.json`                              |
+| Evidence Index               | `outputs/phase-11/evidence-index.md`                                          |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                                      |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`                                    |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`                              |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`                                 |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`                               |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                                   |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md`                      |
+
+#### 検証証跡
+
+- `SkillInfoStep.test.tsx`（カテゴリ上限・disabled 分岐・transition クラス）: PASS
+- `InterviewProgressBar.test.tsx`（TC-07〜09 アニメーション、TC-14〜16 エッジケース）: PASS
+- `SkillCreateWizard.test.tsx`（TC-01a/b CSS 監査）: PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- Phase 11 スクリーンショット 4 枚取得済み（`phase11-capture-metadata.json` に記録）
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                                  | 解決策                                                                         |
+| --- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | カテゴリ上限で「全ボタン disabled」にすると選択済み項目も解除できなくなる | `disabled={isAtLimit && !isSelected}` で選択済み判定と上限判定を分離           |
+| 2   | CSS 監査テストでファイルパスをハードコードすると壊れやすい                | `path.resolve(__dirname, '../wizard/SkillInfoStep.tsx')` の相対パス解決を使用  |
+| 3   | transition クラスはユニットテストで視覚確認できない                       | ユニットテスト（クラス存在確認）+ Phase 11 スクリーンショットの 2 段構えで担保 |
+
+#### lessons-learned
+
+- カテゴリ上限制御は「追加禁止 / 解除許可」を明示的に分離する（L-POLISH-001）
+- CSS 変数化の遵守は静的監査テスト（`fs.readFileSync` + 正規表現）で自動化できる（L-POLISH-002）
+- アニメーション仕様はクラス検証 + visual evidence の 2 段構えで担保する（L-POLISH-003）
+- 詳細: `lessons-learned-skill-wizard-redesign.md` §TASK-SW-UI-POLISH-001 教訓

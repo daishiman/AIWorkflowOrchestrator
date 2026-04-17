@@ -305,6 +305,10 @@ export class SkillService {
     return { path: skillPath };
   }
 
+  cancelCurrentSkillCreation(): void {
+    this.skillCreatorService?.cancelCurrentOperation();
+  }
+
   private getSkillCreatorService(): SkillCreatorService {
     if (!this.skillCreatorService) {
       this.skillCreatorService = new SkillCreatorService(
