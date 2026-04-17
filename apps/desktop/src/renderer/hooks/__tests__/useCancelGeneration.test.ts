@@ -15,8 +15,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   useAppStore.getState().resetStreamingProgress();
 
-  Object.defineProperty(window, "electronAPI", {
-    value: { skillCreator: {} },
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: undefined,
     writable: true,
     configurable: true,
   });
@@ -35,7 +35,7 @@ describe("useCancelGeneration", () => {
     expect(signal!.aborted).toBe(false);
   });
 
-  it("cancelGeneration が AbortSignal を abort する", () => {
+  it("cancelGeneration が AbortSignal を abort する", async () => {
     const { result } = renderHook(() => useCancelGeneration());
 
     let signal: AbortSignal;
@@ -43,32 +43,32 @@ describe("useCancelGeneration", () => {
       signal = result.current.startGeneration();
     });
 
-    act(() => {
-      result.current.cancelGeneration();
+    await act(async () => {
+      await result.current.cancelGeneration();
     });
 
     expect(signal!.aborted).toBe(true);
   });
 
-  it("cancelGeneration がストアを cancelled に更新する", () => {
+  it("cancelGeneration がストアを cancelled に更新する", async () => {
     const { result } = renderHook(() => useCancelGeneration());
 
     act(() => {
       result.current.startGeneration();
     });
 
-    act(() => {
-      result.current.cancelGeneration();
+    await act(async () => {
+      await result.current.cancelGeneration();
     });
 
     expect(useAppStore.getState().streamingStage).toBe("cancelled");
   });
 
-  it("startGeneration を呼ばずに cancelGeneration を呼んでもクラッシュしない", () => {
+  it("startGeneration を呼ばずに cancelGeneration を呼んでもクラッシュしない", async () => {
     const { result } = renderHook(() => useCancelGeneration());
 
-    act(() => {
-      result.current.cancelGeneration();
+    await act(async () => {
+      await result.current.cancelGeneration();
     });
 
     expect(useAppStore.getState().streamingStage).toBe("cancelled");
