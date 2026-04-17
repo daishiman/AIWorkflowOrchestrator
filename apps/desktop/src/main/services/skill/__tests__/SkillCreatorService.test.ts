@@ -2020,6 +2020,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });
