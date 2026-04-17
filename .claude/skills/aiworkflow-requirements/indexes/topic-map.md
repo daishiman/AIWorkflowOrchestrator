@@ -3688,17 +3688,6 @@ node scripts/list-specs.js --topics
 | UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L437 |
 | TASK-SC-07 LLM生成フロー接続 教訓（2026-04-09） | L462 |
 
-### references/lessons-learned-stream-001-progress-callback.md
-
-| セクション | 行 |
-|------------|----|
-| メタ情報 | L3 |
-| L-STREAM-001: optional callback パターンの設計判断 | L14 |
-| L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
-| L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
-| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
-| 後続タスク・未タスク | L100 |
-
 ### references/lessons-learned-templates.md
 
 | セクション | 行 |
@@ -3706,6 +3695,16 @@ node scripts/list-specs.js --topics
 | 目次 | L6 |
 | 関連ドキュメント | L203 |
 | テンプレート（新規教訓追加用） | L213 |
+
+### references/lessons-learned-test-cleanup-describe-skip-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| L-W2-03A-001: 削除済みテストファイルの早期検出 | L9 |
+| L-W2-03A-002: 削除済みファイルへの安全な操作パターン | L26 |
+| L-W2-03A-003: 選択肢A（削除）/ 選択肢B（移植）の判断基準 | L49 |
+| L-W2-03A-004: 削除済み時の残存参照整理チェックリスト | L71 |
+| L-W2-03A-005: CI での削除済みテストファイル参照検出ルール（提案） | L82 |
 
 ### references/lessons-learned-test-typesafety.md
 
@@ -4888,7 +4887,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L336 |
+| 続き | L338 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5173,6 +5172,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L194 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L214 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L216 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L228 |
+| 完了タスク（2026-03後半） | L256 |
+| 完了タスク（機能別アーカイブ） | L264 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L365 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L288 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L308 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L310 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L322 |
+| 完了タスク（2026-03後半） | L350 |
+| 完了タスク（機能別アーカイブ） | L358 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L459 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L289 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L309 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L311 |
@@ -5213,6 +5226,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
+| 仕様書インデックス | L22 |
+| 利用順序 | L133 |
+| 関連ドキュメント | L138 |
 | 仕様書インデックス | L23 |
 | 利用順序 | L52 |
 | 関連ドキュメント | L57 |
