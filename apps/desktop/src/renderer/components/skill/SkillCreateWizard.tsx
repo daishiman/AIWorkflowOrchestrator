@@ -154,6 +154,19 @@ function resolveStage(
   return "idle";
 }
 
+function isAbortLikeError(error: unknown): boolean {
+  if (!error) return false;
+  if (error instanceof Error) {
+    return (
+      error.name === "AbortError" ||
+      error.message === "AbortError" ||
+      error.message.includes("aborted") ||
+      error.message.includes("cancelled")
+    );
+  }
+  return false;
+}
+
 function bridgeLocalError(error: Error | null): GenerationError | null {
   if (!error) return null;
   return {

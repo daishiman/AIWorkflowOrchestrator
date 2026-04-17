@@ -388,6 +388,12 @@ export interface SkillCreatorAPI {
   onApprovalRequest: (
     callback: (payload: ApprovalRequestPayload) => void,
   ) => () => void;
+
+  /**
+   * 現在実行中のスキル生成をキャンセルする
+   * @returns キャンセル結果
+   */
+  cancelGeneration: () => Promise<IpcResult<void>>;
 }
 
 /**
