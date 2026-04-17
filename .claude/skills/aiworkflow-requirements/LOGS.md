@@ -2486,6 +2486,19 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果     | 3状態判定・Summary 出力・アノテーション出力 実装完了。全 AC/FR 100% 網羅              |
 | 検証     | 静的コードレビュー PASS / Phase 10 最終レビューゲート PASS                            |
 
+## 2026-04-17 — UT-FIX-STORE-SETTINGS-DEEP-MERGE-001 completed
+
+- `arch-ipc-persistence.md` v1.3.0 更新: deepMerge パターン（plain-object validation・prototype pollution 防止・マージルール）と User Settings 永続化パターンを追記
+- `storeHandlers.ts` に `isPlainObject` / `cloneSafePlainObject` / `deepMergePlainObjects` / `deepMerge<T>` / `registerUserSettingsHandlers` 実装完了
+- `storeHandlers.test.ts` 全テスト PASS
+
+| 項目     | 内容                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
+| 種別     | bug-fix / TDD / IPC handler / security hardening                                                                  |
+| 変更対象 | `apps/desktop/src/main/ipc/storeHandlers.ts`、`storeHandlers.test.ts`、`arch-ipc-persistence.md`（v1.3.0 更新） |
+| 結果     | settings:update を deepMerge 化。plain object 以外を拒否し、`__proto__` / `constructor` / `prototype` を無視してprototype pollution を防止 |
+| 検証     | vitest PASS / typecheck PASS / lint PASS                                                                          |
+
 ## 2026-04-15 — TASK-CI-FUTURE-005 completed (spec_created)
 
 - TASK-CI-FUTURE-005: CI-M-01 実測確認（キューイング時間1分超判定）完了

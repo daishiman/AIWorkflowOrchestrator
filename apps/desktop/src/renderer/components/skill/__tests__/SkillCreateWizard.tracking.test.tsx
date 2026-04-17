@@ -108,6 +108,9 @@ const mockCreateSkill = vi.fn();
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
   useFetchSkills: () => vi.fn().mockResolvedValue(undefined),
+  useAppStore: {
+    getState: () => ({ streamingStage: "idle" }),
+  },
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,
