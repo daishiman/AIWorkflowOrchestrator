@@ -4,7 +4,6 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
-## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 impl-spec-to-skill-sync
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
 ### 変更内容
