@@ -26,29 +26,29 @@ AC-1〜AC-5 の最終充足確認・依存タスク整合・品質保証結果�
 
 ## 参照資料
 
-| 資料名               | パス                                | 用途             |
-| -------------------- | ----------------------------------- | ---------------- |
-| Phase 1 受け入れ基準 | `outputs/phase-1/requirements.md`   | AC 参照          |
-| Phase 9 品質レポート | `outputs/phase-9/quality-report.md` | 品質確認         |
-| Phase 3 ゲート判定   | `outputs/phase-3/review.md`         | 設計レビュー確認 |
+| 資料名               | パス                                                   | 用途             |
+| -------------------- | ------------------------------------------------------ | ---------------- |
+| Phase 1 受け入れ基準 | `outputs/phase-1/TASK-SW-STRUCT-002-requirements.md`   | AC 参照          |
+| Phase 9 品質レポート | `outputs/phase-9/TASK-SW-STRUCT-002-quality-report.md` | 品質確認         |
+| Phase 3 ゲート判定   | `outputs/phase-3/TASK-SW-STRUCT-002-review.md`         | 設計レビュー確認 |
 
 ## 実行手順
 
 ### 1. AC 最終充足確認
 
-| AC   | 確認内容                                                                                                    | 状態   |
-| ---- | ----------------------------------------------------------------------------------------------------------- | ------ |
-| AC-1 | 行 126 の `void structurePlan` が削除されている                                                             | 確認要 |
-| AC-2 | `create` モードで `structurePlan` の内容（`skillName`・`purpose`・`description`）が `plan` に反映されている | 確認要 |
-| AC-3 | `collaborative` / `orchestrate` 等で `structurePlan === null` によってフォールバック `plan` が使われている  | 確認要 |
-| AC-4 | `structurePlan` が `null` の場合にフォールバック `plan` が使われている                                      | 確認要 |
-| AC-5 | `collaborative` モードの既存テストが全て PASS している                                                      | 確認要 |
+| AC   | 確認内容                                                                                                    | 状態         |
+| ---- | ----------------------------------------------------------------------------------------------------------- | ------------ |
+| AC-1 | 行 126 の `void structurePlan` が削除されている                                                             | **充足済み** |
+| AC-2 | `create` モードで `structurePlan` の内容（`skillName`・`purpose`・`description`）が `plan` に反映されている | **充足済み** |
+| AC-3 | `collaborative` / `orchestrate` 等で `structurePlan === null` によってフォールバック `plan` が使われている  | **充足済み** |
+| AC-4 | `structurePlan` が `null` の場合にフォールバック `plan` が使われている                                      | **充足済み** |
+| AC-5 | `collaborative` モードの既存テストが全て PASS している                                                      | **充足済み** |
 
 ### 2. TASK-SW-STRUCT-001 依存整合の最終確認
 
 ```bash
 # STRUCT-001 完了確認（purpose フィールドの値）
-grep -n "purpose" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+rg -n "purpose:\s*options\.description" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 ```
 
 `structurePlan.purpose` が `options.description` ベースであることを確認する。
@@ -71,11 +71,11 @@ grep -n "purpose" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
 最終レビューで統合テスト結果を確認（AC・依存関係・4条件の最終判定）。
 
-| 判定項目            | 基準       | 結果    |
-| ------------------- | ---------- | ------- |
-| AC-1〜AC-5 充足     | 全 AC 充足 | pending |
-| STRUCT-001 依存整合 | 確認済み   | pending |
-| Phase 9 品質 PASS   | 全 PASS    | pending |
+| 判定項目            | 基準       | 結果     |
+| ------------------- | ---------- | -------- |
+| AC-1〜AC-5 充足     | 全 AC 充足 | **完了** |
+| STRUCT-001 依存整合 | 確認済み   | **完了** |
+| Phase 9 品質 PASS   | 全 PASS    | **完了** |
 
 ## 多角的チェック観点
 
@@ -88,18 +88,18 @@ grep -n "purpose" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
 ## 成果物
 
-| 成果物           | パス                                      | 説明                              |
-| ---------------- | ----------------------------------------- | --------------------------------- |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | ゲート判定・AC 確認・依存整合記録 |
+| 成果物           | パス                                                         | 説明                              |
+| ---------------- | ------------------------------------------------------------ | --------------------------------- |
+| 最終レビュー結果 | `outputs/phase-10/TASK-SW-STRUCT-002-final-review-result.md` | ゲート判定・AC 確認・依存整合記録 |
 
 ## 完了条件
 
-- [ ] AC-1〜AC-5 の最終充足確認が完了
-- [ ] TASK-SW-STRUCT-001 依存整合が確認済み
-- [ ] Phase 9 品質レポートの全項目 PASS を確認済み
-- [ ] ゲート判定が PASS
-- [ ] 最終レビュー結果が `outputs/phase-10/final-review-result.md` に記録されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] AC-1〜AC-5 の最終充足確認が完了
+- [x] TASK-SW-STRUCT-001 依存整合が確認済み
+- [x] Phase 9 品質レポートの全項目 PASS を確認済み
+- [x] ゲート判定が PASS
+- [x] 最終レビュー結果が `outputs/phase-10/TASK-SW-STRUCT-002-final-review-result.md` に記録されている
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -111,10 +111,10 @@ grep -n "purpose" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

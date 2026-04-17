@@ -40,6 +40,12 @@ pnpm --filter @repo/desktop typecheck
 # 期待: 0 error
 ```
 
+特に確認した型チェック項目（p08版より）:
+
+- `generateSkillMd(skillDir: string, structurePlan: StructurePlanJson, signal?: AbortSignal): Promise<void>` のシグネチャ
+- `structurePlan.anchors ?? []` の null 安全性が `plan.workflow.anchors` に正しく反映されているか
+- `logger` フィールドの型推論が正しいか
+
 ### 3. 全テストの実行
 
 ```bash
@@ -65,25 +71,25 @@ pnpm --filter @repo/desktop build
 
 ### 5. 品質ゲート判定
 
-| チェック項目       | 基準                 | 結果    |
-| ------------------ | -------------------- | ------- |
-| lint               | 0 error              | pending |
-| typecheck          | 0 error              | pending |
-| テスト（本タスク） | TC-01〜TC-11 全 PASS | pending |
-| テスト（全体）     | 回帰なし             | pending |
-| ビルド             | 成功                 | pending |
+| チェック項目       | 基準                 | 結果 |
+| ------------------ | -------------------- | ---- |
+| lint               | 0 error              | PASS |
+| typecheck          | 0 error              | PASS |
+| テスト（本タスク） | TC-01〜TC-11 全 PASS | PASS |
+| テスト（全体）     | 回帰なし             | PASS |
+| ビルド             | 成功                 | PASS |
 
-**全項目 PASS の場合のみ Phase 10 へ進む。**
+**全項目 PASS → Phase 10 へ進む。**
 
 ## 統合テスト連携【必須】
 
-品質保証で統合テスト結果を確認。
+品質保証で統合テスト結果を確認。**完了**
 
-| 判定項目        | 基準       | 結果    |
-| --------------- | ---------- | ------- |
-| 統合テスト PASS | 全件 PASS  | pending |
-| 型チェック PASS | 0 error    | pending |
-| ビルド PASS     | ビルド成功 | pending |
+| 判定項目        | 基準       | 結果 |
+| --------------- | ---------- | ---- |
+| 統合テスト PASS | 全件 PASS  | PASS |
+| 型チェック PASS | 0 error    | PASS |
+| ビルド PASS     | ビルド成功 | PASS |
 
 ## 多角的チェック観点
 
@@ -95,19 +101,19 @@ pnpm --filter @repo/desktop build
 
 ## 成果物
 
-| 成果物           | パス                                | 説明                                      |
-| ---------------- | ----------------------------------- | ----------------------------------------- |
-| 品質保証レポート | `outputs/phase-9/quality-report.md` | lint・typecheck・テスト・ビルドの結果記録 |
+| 成果物           | パス                                                   | 説明                                      |
+| ---------------- | ------------------------------------------------------ | ----------------------------------------- |
+| 品質保証レポート | `outputs/phase-9/TASK-SW-STRUCT-002-quality-report.md` | lint・typecheck・テスト・ビルドの結果記録 |
 
 ## 完了条件
 
-- [ ] `pnpm lint` が 0 error
-- [ ] `pnpm typecheck` が 0 error
-- [ ] 本タスクのテスト（TC-01〜TC-11）が全 PASS
-- [ ] 全テストが回帰なしで PASS
-- [ ] `pnpm build` が成功
-- [ ] 品質レポートが `outputs/phase-9/quality-report.md` に記録されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] `pnpm lint` が 0 error
+- [x] `pnpm typecheck` が 0 error
+- [x] 本タスクのテスト（TC-01〜TC-11）が全 PASS
+- [x] 全テストが回帰なしで PASS
+- [x] `pnpm build` が成功
+- [x] 品質レポートが `outputs/phase-9/TASK-SW-STRUCT-002-quality-report.md` に記録されている
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -121,10 +127,10 @@ pnpm --filter @repo/desktop build
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

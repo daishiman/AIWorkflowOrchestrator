@@ -24,7 +24,7 @@
 - 既存コードの命名規則の記録（camelCase / kebab-case / IPC チャンネル名）
 - 前タスクとの差分棚卸し（TASK-SW-STRUCT-001 から増えた/変わった点）
 - TASK-SW-STRUCT-001 完了確認基準の定義
-- `plan` オブジェクト生成ロジック（:711-725）の現状確認
+- `generateSkillMd` 内の plan 変換ロジック（purpose 正規化 / anchors フォールバック / trigger 生成）の現状確認
 - 4条件レビュー: 矛盾なし・漏れなし・整合性あり・依存関係整合を確認
 - 受け入れ基準定義: AC-1〜AC-5 を検証可能な形で固定
 - タスク分類宣言
@@ -50,23 +50,23 @@
 git log --oneline -10 -- apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
 # void structurePlan が削除済みか確認（結果0件が期待値）
-grep -n "void structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+rg -n "void structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 
-# generateSkillMd の呼び出し箇所確認（structurePlan を引数に呼んでいるか）
-grep -n "generateSkillMd\|structurePlan" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+# generateSkillMd の呼び出し箇所確認（structurePlan と operationSignal を渡しているか）
+rg -n "generateSkillMd|structurePlan|operationSignal" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 ```
 
 ### 1. 現状コードの確認
 
 **2026-04-16 時点での確認結果（コミット 26891ab1c）:**
 
-| 確認項目                         | 期待する確認内容                                                                     | 状態         |
-| -------------------------------- | ------------------------------------------------------------------------------------ | ------------ |
-| `void structurePlan` の存在      | 削除済み（0件）                                                                      | **確認済み** |
-| `generateSkillMd` との接続       | `if (structurePlan) { await this.generateSkillMd(skillDir, structurePlan); }` が存在 | **確認済み** |
-| null フォールバック              | `else if (mode === "create") { logger.warn(...); ensureSkillMdExists(...) }` が存在  | **確認済み** |
-| 非 create モードのフォールバック | `else { ensureSkillMdExists(...) }` が存在                                           | **確認済み** |
-| `runCreateWorkflow` の `purpose` | まだ `extractPurposeAgent` 文字列（TASK-SW-STRUCT-001 未完了）                       | **未修正**   |
+| 確認項目                         | 期待する確認内容                                                                                               | 状態         |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------ |
+| `void structurePlan` の存在      | 削除済み（0件）                                                                                                | **確認済み** |
+| `generateSkillMd` との接続       | `if (structurePlan !== null) { await this.generateSkillMd(skillDir, structurePlan, operationSignal); }` が存在 | **確認済み** |
+| null フォールバック              | `else if (mode === "create") { logger.warn(...); ensureSkillMdExists(...) }` が存在                            | **確認済み** |
+| 非 create モードのフォールバック | `else { ensureSkillMdExists(...) }` が存在                                                                     | **確認済み** |
+| `runCreateWorkflow` の `purpose` | `options.description` ベース（TASK-SW-STRUCT-001 完了済み）                                                    | **確認済み** |
 
 現時点では AC-1〜AC-4 が current branch で確認済みのため、Phase 5 以降は
 差分が残る場合のみ実装し、差分がなければ回帰確認を主とする。
@@ -79,7 +79,7 @@ grep -n "generateSkillMd\|structurePlan" apps/desktop/src/main/services/skill/Sk
 
 ```bash
 # runCreateWorkflow の purpose フィールドが options.description ベースになっているか確認
-grep -n "purpose\|extractPurposeAgent" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+rg -n 'purpose:\s*options\.description' apps/desktop/src/main/services/skill/SkillCreatorService.ts
 ```
 
 TASK-SW-STRUCT-001 完了後の期待状態:
@@ -92,7 +92,7 @@ TASK-SW-STRUCT-001 完了後の期待状態:
 
 | ID   | 受け入れ基準                                                                                               | 検証方法                                                                   |
 | ---- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| AC-1 | 行 126 の `void structurePlan` が削除されている                                                            | コードレビュー（`grep -n "void structurePlan"` の結果が0件）               |
+| AC-1 | 行 126 の `void structurePlan` が削除されている                                                            | コードレビュー（`rg -n "void structurePlan"` の結果が0件）                 |
 | AC-2 | `create` モード時は `structurePlan` の内容を `plan` オブジェクトに反映して `generate_skill_md.js` に渡す   | テスト: `create` モードで生成した SKILL.md が `structurePlan` の内容を含む |
 | AC-3 | `create` 以外のモード（`collaborative` / `orchestrate` 等）は既存の固定値 `plan` でフォールバックする      | テスト: `collaborative` モードの既存テストが全て PASS する                 |
 | AC-4 | `structurePlan` が `null` の場合（`runCreateWorkflow` フォールバック時）もフォールバック `plan` を使用する | テスト: `structurePlan` が null の場合にフォールバック `plan` が使われる   |
@@ -115,13 +115,50 @@ TASK-SW-STRUCT-001 完了後の期待状態:
 - LLM 統合（実際のAI生成処理との接続）— 別タスクへ分離済み
 - `generate_skill_md.js` スクリプト自体の変更（スコープ外）
 
+## 問題の根本原因（p08版より）
+
+`SkillCreatorService.ts:126` に以下のプレースホルダーが存在していた。
+
+```typescript
+void structurePlan; // 将来 generateSkillMd へ渡す（タスクA完了後に接続）
+```
+
+このプレースホルダーによって、`runCreateWorkflow` が返す `StructurePlanJson` のうち、
+`agents` は現時点でも SKILL.md に直接反映されていなかった。一方で `purpose` / `triggers` / `anchors`
+は `generateSkillMd` 側で SKILL.md 生成に反映されるようになっている。接続前は SKILL.md 生成処理が
+以下の固定 `plan` オブジェクトを使用していた。
+
+```typescript
+const plan = {
+  skillName: options.name,
+  workflow: {
+    summary: options.description,
+    anchors: [],
+    trigger: {
+      description: `Use when ${options.name} is requested`,
+      keywords: [options.name],
+    },
+    phases: [],
+    tasks: [],
+  },
+  directories: {},
+  files: [],
+};
+```
+
+`structurePlan` のうち `agents` と `features` は現状の実装でも直接反映されていないが、
+`purpose` / `triggers` / `anchors` は `generateSkillMd` で SKILL.md に反映される。
+
+TASK-SW-STRUCT-001 が完了し、`structurePlan` の各フィールドが意味的に正しい値を持つことが保証されたため、
+本タスクで接続を実現した（PR #2209 にて完了）。
+
 ## 統合テスト連携【必須】
 
-| 判定項目                      | 基準     | 結果    |
-| ----------------------------- | -------- | ------- |
-| `void structurePlan` 存在確認 | 確認済み | pending |
-| `plan` 生成ロジックの確認     | 確認済み | pending |
-| TASK-SW-STRUCT-001 依存確認   | 確認済み | pending |
+| 判定項目                      | 基準     | 結果     |
+| ----------------------------- | -------- | -------- |
+| `void structurePlan` 存在確認 | 確認済み | **完了** |
+| `plan` 生成ロジックの確認     | 確認済み | **完了** |
+| TASK-SW-STRUCT-001 依存確認   | 確認済み | **完了** |
 
 ## 多角的チェック観点
 
@@ -134,19 +171,19 @@ TASK-SW-STRUCT-001 完了後の期待状態:
 
 ## 成果物
 
-| 成果物     | パス                              | 説明                          |
-| ---------- | --------------------------------- | ----------------------------- |
-| 要件定義書 | `outputs/phase-1/requirements.md` | 機能要件・非機能要件・AC 一覧 |
+| 成果物     | パス                                                 | 説明                          |
+| ---------- | ---------------------------------------------------- | ----------------------------- |
+| 要件定義書 | `outputs/phase-1/TASK-SW-STRUCT-002-requirements.md` | 機能要件・非機能要件・AC 一覧 |
 
 ## 完了条件
 
-- [ ] P50チェック実施済み（`void structurePlan` が削除済み・`generateSkillMd` 接続が実装済みを確認）
-- [ ] 実装済み分岐（structurePlan あり/null/非 create モード）の動作確認
-- [ ] TASK-SW-STRUCT-001 完了確認基準が定義済み（purpose フィールドの修正確認コマンド）
-- [ ] AC-1〜AC-5 が検証可能な形で定義されている（AC-1〜AC-4 は current branch の確認結果をドキュメント化）
-- [ ] タスク分類を宣言済み
-- [ ] スコープ外（LLM 統合・STRUCT-001）との境界が明確
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] P50チェック実施済み（`void structurePlan` が削除済み・`generateSkillMd` 接続が実装済みを確認）
+- [x] 実装済み分岐（structurePlan あり/null/非 create モード）の動作確認
+- [x] TASK-SW-STRUCT-001 完了確認基準が定義済み（purpose フィールドの修正確認コマンド）
+- [x] AC-1〜AC-5 が検証可能な形で定義されている（AC-1〜AC-4 は current branch の確認結果をドキュメント化）
+- [x] タスク分類を宣言済み
+- [x] スコープ外（LLM 統合・STRUCT-001）との境界が明確
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -160,10 +197,10 @@ TASK-SW-STRUCT-001 完了後の期待状態:
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 

@@ -22,7 +22,7 @@ TASK-SW-STRUCT-001 の完了を確認してから実装を開始する。
 
 ```bash
 # TASK-SW-STRUCT-001 の完了確認（purpose フィールドが options.description ベースか確認）
-grep -n "purpose\|extractPurposeAgent" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+rg -n "purpose:\s*options\.description" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 # 期待: purpose に options.description が設定されていること（extractPurposeAgent の直接代入ではない）
 ```
 
@@ -41,8 +41,8 @@ grep -n "purpose\|extractPurposeAgent" apps/desktop/src/main/services/skill/Skil
 
 | 資料名                 | パス                                                          | 用途             |
 | ---------------------- | ------------------------------------------------------------- | ---------------- |
-| Phase 4 テスト設計書   | `outputs/phase-4/test-design.md`                              | テストケース参照 |
-| Phase 2 設計書         | `outputs/phase-2/design.md`                                   | 実装設計参照     |
+| Phase 4 テスト設計書   | `outputs/phase-4/TASK-SW-STRUCT-002-test-design.md`           | テストケース参照 |
+| Phase 2 設計書         | `outputs/phase-2/TASK-SW-STRUCT-002-design.md`                | 実装設計参照     |
 | SkillCreatorService.ts | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` | 修正対象ファイル |
 
 ## 実行手順
@@ -57,7 +57,7 @@ pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/
 ### 1. TASK-SW-STRUCT-001 完了確認
 
 ```bash
-grep -n "structurePlan\|purpose\|runCreateWorkflow" apps/desktop/src/main/services/skill/SkillCreatorService.ts
+rg -n "structurePlan|purpose|runCreateWorkflow" apps/desktop/src/main/services/skill/SkillCreatorService.ts
 ```
 
 `structurePlan.purpose` に `options.description` が設定されていることを確認してから実装に進む。
@@ -138,12 +138,12 @@ pnpm --filter @repo/desktop lint
 
 `void structurePlan` 削除・接続配線の実装とテスト支援コード整備。
 
-| 判定項目            | 基準                             | 結果    |
-| ------------------- | -------------------------------- | ------- |
-| STRUCT-001 完了確認 | purpose が正しい値であること     | pending |
-| Green 確認          | Phase 4 テストが全 PASS すること | pending |
-| 既存テスト回帰      | collaborative モード回帰なし     | pending |
-| 型チェック          | `pnpm typecheck` が 0 error      | pending |
+| 判定項目            | 基準                             | 結果     |
+| ------------------- | -------------------------------- | -------- |
+| STRUCT-001 完了確認 | purpose が正しい値であること     | **完了** |
+| Green 確認          | Phase 4 テストが全 PASS すること | **完了** |
+| 既存テスト回帰      | collaborative モード回帰なし     | **完了** |
+| 型チェック          | `pnpm typecheck` が 0 error      | **完了** |
 
 ## 多角的チェック観点
 
@@ -159,19 +159,49 @@ pnpm --filter @repo/desktop lint
 | 成果物           | パス                                                          | 説明                                     |
 | ---------------- | ------------------------------------------------------------- | ---------------------------------------- |
 | 実装ファイル     | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` | `void structurePlan` 削除・plan 接続配線 |
-| 実装ステップ記録 | `outputs/phase-5/implementation-plan.md`                      | 実装手順・変更内容・テスト結果の記録     |
+| 実装ステップ記録 | `outputs/phase-5/TASK-SW-STRUCT-002-implementation-plan.md`   | 実装手順・変更内容・テスト結果の記録     |
+
+## 実装完了サマリ
+
+PR #2209（commit c21cc553c）にて以下の実装が完了した。
+
+### 実装内容
+
+1. **`void structurePlan;` の削除** (`SkillCreatorService.ts` :126)
+   - プレースホルダー行を削除し、`structurePlan` 変数を後続コードから参照可能にした
+
+2. **`generateSkillMd` プライベートメソッドの新規実装**
+   - `structurePlan` を基に `plan` JSON を組み立て、tmp ファイル経由で `generate_skill_md.js` を呼び出す
+   - `purpose` の正規化（空白圧縮・trim）後 `triggerDescription` を生成
+   - `triggers` が空配列の場合 `[skillName]` にフォールバック
+   - `anchors` が未定義の場合 `[]` にフォールバック（`anchors ?? []`）
+   - 失敗時は `ensureSkillMdExists` へ3段階フォールバック
+
+3. **SKILL.md 生成フローの分岐変更**
+   - `structurePlan` が非 null のとき `generateSkillMd` を呼び出す
+   - `structurePlan` が null かつ create モードのとき `ensureSkillMdExists` へフォールバック（warn ログ付き）
+   - その他モードは従来どおり `ensureSkillMdExists`
+
+4. **`logger` フィールド追加**（console.error/warn ベースの最小実装）
+
+### テスト結果
+
+- TC-01〜TC-07: 全 PASS（Green）
+- TC-R01〜TC-R03（回帰）: 全 PASS
+- `pnpm typecheck`: 0 error
+- `pnpm lint`: 0 error
 
 ## 完了条件
 
-- [ ] TASK-SW-STRUCT-001 完了確認済み
-- [ ] 既存テスト回帰確認（baseline）が完了
-- [ ] `void structurePlan` が削除されている
-- [ ] `plan` オブジェクト生成ロジックが分岐実装済み
-- [ ] Phase 4 テスト（TC-01〜TC-07）が全 PASS している（Green）
-- [ ] 既存テストが回帰なしで PASS している
-- [ ] `pnpm typecheck` が 0 error
-- [ ] `pnpm lint` が 0 error
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] TASK-SW-STRUCT-001 完了確認済み
+- [x] 既存テスト回帰確認（baseline）が完了
+- [x] `void structurePlan` が削除されている
+- [x] `plan` オブジェクト生成ロジックが分岐実装済み（`generateSkillMd` メソッド）
+- [x] Phase 4 テスト（TC-01〜TC-07）が全 PASS している（Green）
+- [x] 既存テストが回帰なしで PASS している
+- [x] `pnpm typecheck` が 0 error
+- [x] `pnpm lint` が 0 error
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
@@ -186,10 +216,10 @@ pnpm --filter @repo/desktop lint
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 成果物テーブル記載のファイルを全件生成
+- [x] 矛盾なし・漏れなし・整合あり・依存整合を確認
+- [x] 実行記録を残した
 
 ## 次Phase
 
