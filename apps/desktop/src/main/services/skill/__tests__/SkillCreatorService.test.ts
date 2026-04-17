@@ -1293,15 +1293,21 @@ describe("SkillCreatorService", () => {
       });
     });
 
-    // TC-01: AC-1 — runCreateWorkflow が実行され createSkill が成功する
+    // TC-01: STRUCT-001 AC-2 — runCreateWorkflow が structurePlan を返す
     // NOTE: loadAgent は新実装では呼ばれない（options.description を purpose に直接使用）
-    it("TC-01: create モードで createSkill() を呼ぶと runCreateWorkflow が実行される", async () => {
+    it("TC-01: create モードで createSkill() を呼ぶと runCreateWorkflow が structurePlan を返す", async () => {
+      const spy = vi.spyOn(service as any, "runCreateWorkflow");
+
       const result = await service.createSkill({
         name: "test-skill",
         description: "テスト用スキル",
         mode: "create",
       });
 
+      expect(spy).toHaveBeenCalled();
+      const structurePlan = await spy.mock.results[0].value;
+      expect(structurePlan).not.toBeNull();
+      expect(structurePlan.skillName).toBe("test-skill");
       expect(result).toContain("test-skill");
       // loadAgent は呼ばれない（options.description を直接 purpose に使用する新実装）
       expect(mockResourceLoader.loadAgent).not.toHaveBeenCalled();
@@ -1334,9 +1340,9 @@ describe("SkillCreatorService", () => {
       ).resolves.not.toThrow();
     });
 
-    // TC-04: AC-4 — options.description が purpose に直接使用される
+    // TC-04: STRUCT-001 AC-1/AC-2 — purpose=description, agents=hardcoded list
     // NOTE: 新実装では loadAgent を呼ばず description を purpose に設定する
-    it("TC-04: runCreateWorkflow は options.description を purpose として使用する", async () => {
+    it("TC-04: runCreateWorkflow は options.description を purpose に、エージェント名リストを agents に設定する", async () => {
       const description = "詳細な説明テキスト";
 
       const structurePlan = await (service as any).runCreateWorkflow({
@@ -1348,44 +1354,46 @@ describe("SkillCreatorService", () => {
       expect(structurePlan).toMatchObject({
         skillName: "test-skill",
         description,
-        purpose: description, // description がそのまま purpose に（LLM抽出は別タスク）
-        agents: ["extract-purpose", "plan-structure"], // エージェント名リスト（コンテンツではない）
+        purpose: description, // STRUCT-001 AC-1: options.description を使用（LLM抽出は別タスク）
+        agents: ["extract-purpose", "plan-structure"], // STRUCT-001 AC-2: エージェント名リスト（コンテンツではない）
       });
     });
 
-    // TC-05: AC-1 詳細 — structurePlan.purpose に description が設定される
+    // TC-05: STRUCT-001 AC-2 — structurePlan.agents に "extract-purpose" が含まれる
     // NOTE: 新実装では loadAgent を呼ばず description を purpose に直接設定する
-    it("TC-05: runCreateWorkflow が返す structurePlan.purpose は options.description と一致する", async () => {
+    it("TC-05: runCreateWorkflow が返す structurePlan.agents に extract-purpose が含まれる", async () => {
       const description = "テスト用スキル";
-      const plan = await (service as any).runCreateWorkflow({
+      const structurePlan = await (service as any).runCreateWorkflow({
         name: "test-skill",
         description,
         mode: "create",
       });
 
-      expect(plan).not.toBeNull();
-      expect(plan?.purpose).toBe(description);
+      expect(structurePlan).not.toBeNull();
+      expect(structurePlan?.purpose).toBe(description);
+      expect(structurePlan.agents).toContain("extract-purpose");
       expect(mockResourceLoader.loadAgent).not.toHaveBeenCalled();
     });
 
-    // TC-B01: Phase 6 Task 1 — structurePlan.agents にエージェント名リストが含まれる
+    // TC-B01: STRUCT-001 AC-2 — structurePlan.agents に2エージェント名が含まれる
     // NOTE: 新実装では loadAgent を呼ばず、エージェント名をリストとして設定する
-    it("TC-B01: runCreateWorkflow が返す structurePlan.agents に extract-purpose と plan-structure が含まれる", async () => {
-      const plan = await (service as any).runCreateWorkflow({
+    it("TC-B01: runCreateWorkflow の agents に extract-purpose と plan-structure の2エージェントが含まれる", async () => {
+      const structurePlan = await (service as any).runCreateWorkflow({
         name: "test-skill",
         description: "テスト用スキル",
         mode: "create",
       });
 
-      expect(plan).not.toBeNull();
-      expect(plan?.agents).toContain("extract-purpose");
-      expect(plan?.agents).toContain("plan-structure");
+      expect(structurePlan).not.toBeNull();
+      expect(structurePlan.agents).toContain("extract-purpose");
+      expect(structurePlan.agents).toContain("plan-structure");
+      expect(structurePlan.agents).toHaveLength(2);
       expect(mockResourceLoader.loadAgent).not.toHaveBeenCalled();
     });
 
-    // TC-B02: Phase 6 Task 2 — options.name が createSkill() 戻り値に反映される
+    // TC-B02: options.name が createSkill() に反映される
     // NOTE: 新実装では loadAgent を呼ばないため、loadAgent 確認は削除
-    it("TC-B02: options.name が異なる場合でも createSkill() が成功し結果にスキル名が含まれる", async () => {
+    it("TC-B02: options.name が異なる場合でも createSkill() が成功しスキルパスを返す", async () => {
       const result = await service.createSkill({
         name: "my-custom-skill",
         description: "カスタムスキル説明",
@@ -1459,11 +1467,8 @@ describe("SkillCreatorService", () => {
 
     // TC-B06: create モードのみが runCreateWorkflow を経由する分岐確認
     // NOTE: 新実装では loadAgent を呼ばず、structurePlan.agents にエージェント名を設定する
-    it("TC-B06: create モードでのみ structurePlan.agents に plan-structure が含まれる", async () => {
-      const runCreateWorkflowSpy = vi.spyOn(
-        service as any,
-        "runCreateWorkflow",
-      );
+    it("TC-B06: create モードでのみ runCreateWorkflow が呼ばれ plan-structure がエージェントリストに含まれる", async () => {
+      const spy = vi.spyOn(service as any, "runCreateWorkflow");
 
       await service.createSkill({
         name: "test-skill",
@@ -1472,9 +1477,9 @@ describe("SkillCreatorService", () => {
       });
 
       // create モードでは runCreateWorkflow が呼ばれ plan-structure が agents に含まれる
-      expect(runCreateWorkflowSpy).toHaveBeenCalledTimes(1);
-      const plan = await runCreateWorkflowSpy.mock.results[0]?.value;
-      expect(plan?.agents).toContain("plan-structure");
+      expect(spy).toHaveBeenCalledTimes(1);
+      const structurePlan = await spy.mock.results[0]?.value;
+      expect(structurePlan?.agents).toContain("plan-structure");
     });
   });
 
@@ -1524,8 +1529,8 @@ describe("SkillCreatorService", () => {
 
     describe("TC-CONNECT-2: structurePlan が null の場合", () => {
       it("ensureSkillMdExists にフォールバックし、generateSkillMd は呼ばれないこと", async () => {
-        // Arrange: runCreateWorkflow を直接スパイして null を返すよう設定
-        // NOTE: 新実装では loadAgent を呼ばないため、loadAgent の reject では null にならない
+        // Arrange: runCreateWorkflow を直接 null を返すようにモック
+        // NOTE: 新実装では loadAgent を呼ばないため、loadAgent の reject では null にならない（STRUCT-001: loadAgent は呼ばれない）
         vi.spyOn(service as any, "runCreateWorkflow").mockResolvedValue(null);
         mockScriptExecutor.execute.mockResolvedValue({
           success: true,
@@ -1569,6 +1574,7 @@ describe("SkillCreatorService", () => {
           expect.any(String),
           "test-skill",
           "テスト用スキル",
+          expect.any(Object),
         );
         warnSpy.mockRestore();
       });
@@ -1645,6 +1651,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });
@@ -1783,6 +1790,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });
@@ -1915,6 +1923,7 @@ describe("SkillCreatorService", () => {
           "/path/to/skillDir",
           "test-skill",
           "テスト用スキル",
+          undefined,
         );
       });
     });

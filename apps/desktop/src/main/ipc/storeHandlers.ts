@@ -175,6 +175,66 @@ export function registerStoreHandlers(): void {
 // User Settings handlers (settings:get / settings:update)
 // UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 Rule-2 fix
 const USER_SETTINGS_STORE_KEY = "user-settings";
+type PlainObject = Record<string, unknown>;
+const DISALLOWED_MERGE_KEYS = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+
+/**
+ * ディープマージ関数
+ * - 配列は上書き（マージしない）
+ * - null は上書き扱い
+ * - undefined は省略（基底値を維持）
+ * - プレーンオブジェクト同士は再帰的にマージ
+ * - prototype pollution を防ぐため危険キーは無視
+ */
+function isPlainObject(value: unknown): value is PlainObject {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function cloneSafePlainObject(source: PlainObject): PlainObject {
+  const result: PlainObject = {};
+
+  for (const [key, value] of Object.entries(source)) {
+    if (DISALLOWED_MERGE_KEYS.has(key)) continue;
+    result[key] = value;
+  }
+
+  return result;
+}
+
+function deepMergePlainObjects(
+  base: PlainObject,
+  override: PlainObject,
+): PlainObject {
+  const result = cloneSafePlainObject(base);
+
+  for (const [key, overrideVal] of Object.entries(override)) {
+    if (DISALLOWED_MERGE_KEYS.has(key)) continue;
+    if (overrideVal === undefined) continue;
+
+    const baseVal = base[key];
+    if (isPlainObject(baseVal) && isPlainObject(overrideVal)) {
+      result[key] = deepMergePlainObjects(baseVal, overrideVal);
+      continue;
+    }
+
+    result[key] = overrideVal;
+  }
+
+  return result;
+}
+
+function deepMerge<T extends PlainObject>(base: T, override: Partial<T>): T {
+  return deepMergePlainObjects(base, override as PlainObject) as T;
+}
 
 export function registerUserSettingsHandlers(): void {
   ipcMain.handle(
@@ -200,14 +260,21 @@ export function registerUserSettingsHandlers(): void {
     IPC_CHANNELS.USER_SETTINGS_UPDATE,
     async (
       _event,
-      updates: Record<string, unknown>,
+      updates: unknown,
     ): Promise<{ success: boolean; error?: string }> => {
       try {
-        const current = getStore().get(USER_SETTINGS_STORE_KEY, {}) as Record<
-          string,
-          unknown
-        >;
-        getStore().set(USER_SETTINGS_STORE_KEY, { ...current, ...updates });
+        if (!isPlainObject(updates)) {
+          return createValidationErrorResponse(
+            "settings:update payload must be a plain object",
+          );
+        }
+
+        const current = getStore().get(USER_SETTINGS_STORE_KEY, {});
+        const currentSettings = isPlainObject(current) ? current : {};
+        getStore().set(
+          USER_SETTINGS_STORE_KEY,
+          deepMerge(currentSettings, updates),
+        );
         return { success: true };
       } catch (error) {
         return {
