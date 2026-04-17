@@ -89,7 +89,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 
 Phase 12 は「成果物ファイルが存在する」だけでは完了扱いにしない。以下3点を同時に満たすこと:
 
-1. `outputs/phase-12/` の必須5成果物が実在する
+1. `outputs/phase-12/` の必須6成果物が実在する
 2. `artifacts.json` の `phases.12.status` が `completed` である
 3. `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが実体証跡と同期している
 
@@ -153,7 +153,7 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 
 #### Task 6: phase12-task-spec-compliance-check【必須・最終確認】
 
-Phase 12 の Task 1〜5 と Step 1-A〜1-G / Step 2 を 1 ファイルへ集約した root evidence。
+Phase 12 の Task 1〜6 と Step 1-A〜1-G / Step 2 を 1 ファイルへ集約した root evidence。
 
 **出力**: `outputs/phase-12/phase12-task-spec-compliance-check.md`
 

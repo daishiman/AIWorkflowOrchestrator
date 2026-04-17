@@ -7,6 +7,8 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
+- 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
+- 2026-04-17: `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` SkillDocGenerator LLM プロバイダ連携実装（LLMClient / AnthropicProvider / stub→本番置換 / Phase 12 close-out / NON_VISUAL / Issue #2245）
 - 2026-04-16: `UT-FIX-CI-IPC-CONTINUE-ON-ERROR-001` ci-ipc-continue-on-error-removal（Phase 12 close-out / NON_VISUAL）
 - [2026-04-16: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 init_skill.js 後の generateSkillMd 接続 / StructurePlanJson current facts sync](./task-workflow-completed-recent-2026-04e.md)
 - [2026-04-16: TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY InlineModelSelector description 表示 / Phase 11 screenshot canonical 化](./task-workflow-completed-recent-2026-04b.md)
@@ -77,13 +79,13 @@
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
-| 完了日     | 2026-04-15                                                                                 |
-| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
-| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
-| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                                                       |
+| ---------- | ------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                        |
+| 完了日     | 2026-04-15                                                               |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination） |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089) |
+| Phase 13   | blocked（ユーザー承認待ち）                                              |
 
 #### 実施内容
 
@@ -95,16 +97,16 @@
 
 #### Phase 11/12 成果物
 
-| 成果物                                  | パス                                                                 |
-| --------------------------------------- | -------------------------------------------------------------------- |
-| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
-| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
-| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
-| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
-| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
-| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
-| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
-| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
+| 成果物                       | パス                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                 |
+| 手動テストレポート           | `outputs/phase-11/manual-test-report.md`                 |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 #### 検証証跡
 
@@ -1821,7 +1823,8 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 
 #### 実施内容
 
-- `LLMDocQueryAdapter` を実装し、SkillDocGenerator の stubQueryFn を差し替えた
+- `LLMDocQueryAdapter` を実装し、SkillDocGenerator の queryFn DI を差し替えた
+- `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` の 2026-04-17 current reference は `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/` であり、`UT-9I-001` の runtime path は `LLMDocQueryAdapter` / `AnthropicProvider` / `DocErrorCode` に同期済み
 - `SkillDocsCapabilityResolver` で integrated-api / guidance-only / terminal-handoff の3パス判定を実装
 - `DocOperationResult<T>` 型を追加し、エラーハンドリングを統一
 - 実装完了時点の証跡として 97テスト ALL PASS、カバレッジ基準充足（LLMDocQueryAdapter 98.58%、CapabilityResolver 100%）を保持
