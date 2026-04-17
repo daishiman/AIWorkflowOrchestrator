@@ -1,31 +1,28 @@
 # Phase 9: 品質保証レポート
 
-## タスクID: TASK-SW-STREAM-001
+## タスクID: TASK-SW-FIX-FEEDBACK-001
 
-## 静的解析・検証
+## 静的解析
 
-| 項目      | 結果 | 備考                                                                                                                                                                                                                                                                                                                                      |
-| --------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| lint      | PASS | `pnpm --filter @repo/desktop lint`                                                                                                                                                                                                                                                                                                        |
-| typecheck | PASS | `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                   |
-| test      | PASS | `pnpm --filter @repo/desktop exec vitest run --coverage --coverage.include=src/main/services/skill/SkillCreatorService.ts src/main/services/skill/__tests__/SkillCreatorService.test.ts src/main/services/skill/__tests__/SkillCreatorService.integration.test.ts src/main/services/skill/__tests__/SkillCreatorService.progress.test.ts` |
-| coverage  | PASS | `SkillCreatorService.ts` の実測値は lines 91.16% / branches 90.40% / functions 96.77% / statements 91.16%                                                                                                                                                                                                                                 |
+- TypeScript: `useFetchSkills` は `store/index.ts:664` で型付きエクスポート済み
+- `fetchSkills` の戻り値は `Promise<void>` であり `await` で正しく扱われる
+- `skillPath === null` は `string | null | undefined` 型に対する厳密等値チェック
 
 ## リスク評価
 
-| リスク                                   | 影響 | 対策                                                                         |
-| ---------------------------------------- | ---- | ---------------------------------------------------------------------------- |
-| progress callback の例外が握りつぶされる | HIGH | `onProgress?.(progress)` の直接呼び出しを維持し、例外は伝播させる            |
-| 既存呼び出し元の破壊                     | LOW  | `onProgress` をオプショナル引数のまま維持                                    |
-| カバレッジ低下                           | LOW  | `SkillCreatorService.progress.test.ts` で 5 段階通知、未指定、例外伝播を検証 |
+| リスク               | 影響 | 対策                                                              |
+| -------------------- | ---- | ----------------------------------------------------------------- |
+| fetchSkills 例外     | LOW  | try/catch で吸収・遷移継続                                        |
+| null ガードの誤検知  | NONE | `=== null` で undefined を区別                                    |
+| 既存テスト破壊       | NONE | 既存テスト全件 GREEN 確認済み                                     |
+| スナップショット変化 | LOW  | undefined で表示するスナップショットは不変（null guard は別パス） |
 
 ## 品質ゲート判定
 
-- lint: PASS
-- typecheck: PASS
-- test: PASS
-- coverage: PASS
-
-## 判定
-
-**PASS**
+| 項目               | 判定                             |
+| ------------------ | -------------------------------- |
+| 全テスト GREEN     | ✓ PASS                           |
+| 型エラーなし       | ✓ PASS (useFetchSkills は型付き) |
+| 新規 any 型なし    | ✓ PASS                           |
+| 既存動作の回帰なし | ✓ PASS                           |
+| 最小変更原則       | ✓ PASS (2ファイル・33行以下)     |

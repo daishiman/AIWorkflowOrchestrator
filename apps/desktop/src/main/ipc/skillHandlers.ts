@@ -28,6 +28,7 @@ import type {
   SkillOptimizeEvaluateRequest,
   ScheduledSkill,
   SkillForkOptions,
+  DocError,
 } from "@repo/shared";
 import type { SkillScheduler } from "../services/skill/SkillScheduler";
 import type { ScheduleStore } from "../services/skill/ScheduleStore";
@@ -87,6 +88,27 @@ function sanitizeErrorMessage(error: unknown): string {
   message = message.replace(SENSITIVE_DATA_PATTERN, "$1=***");
 
   return message || DEFAULT_ERROR_MESSAGE;
+}
+
+interface DocGenerationError extends Error {
+  docError?: DocError;
+}
+
+function normalizeDocGenerationError(error: unknown): string {
+  if (error instanceof Error) {
+    const typedError = error as DocGenerationError;
+    if (typedError.docError?.message) {
+      return typedError.docError.message;
+    }
+    if (error.message.startsWith("Skill not found")) {
+      return error.message;
+    }
+    if (error.message.includes("Document generation failed")) {
+      return "Document generation failed";
+    }
+  }
+
+  return "Internal error";
 }
 
 /**
@@ -1233,19 +1255,7 @@ export function registerSkillDocsHandlers(
         const doc = await skillDocGenerator.generate(generateRequest);
         return { success: true, data: doc };
       } catch (error) {
-        if (
-          error instanceof Error &&
-          error.message.startsWith("Skill not found")
-        ) {
-          return { success: false, error: error.message };
-        }
-        if (
-          error instanceof Error &&
-          error.message.includes("Document generation failed")
-        ) {
-          return { success: false, error: "Document generation failed" };
-        }
-        return { success: false, error: "Internal error" };
+        return { success: false, error: normalizeDocGenerationError(error) };
       }
     },
   );

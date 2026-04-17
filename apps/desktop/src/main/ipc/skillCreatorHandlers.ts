@@ -739,8 +739,6 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
-  // TASK-SW-CANCEL-003: キャンセルハンドラーの解除
-  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
   // Phase 5 extended handlers
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);
