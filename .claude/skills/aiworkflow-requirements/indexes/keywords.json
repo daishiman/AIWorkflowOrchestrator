@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3082,
+  "totalKeywords": 3083,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4009,6 +4009,7 @@
     "LLM": [
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-llm.md",
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
@@ -4294,6 +4295,7 @@
       "arch-state-management-skill-creator.md",
       "arch-ui-components-core.md",
       "architecture-rag.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-current-2026-03-early.md",
       "lessons-learned-current-2026-03-late.md",
       "lessons-learned-current-2026-03-mid.md",
@@ -4614,6 +4616,7 @@
     ],
     "integration": [
       "architecture-file-conversion.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "quick-reference-search-patterns-ipc-infra.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
@@ -6267,6 +6270,13 @@
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "security-electron-ipc-advanced.md"
+    ],
+    "統合型定義": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
+    ],
+    "provider": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-test-typesafety.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
@@ -10242,9 +10252,6 @@
       "lessons-learned-test-typesafety.md"
     ],
     "MOD": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "provider": [
       "lessons-learned-test-typesafety.md"
     ],
     "registry": [

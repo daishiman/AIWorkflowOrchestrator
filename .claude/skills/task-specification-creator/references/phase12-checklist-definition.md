@@ -1,10 +1,10 @@
-# Phase 12 Task 1/3/4/5 実体確認チェックリスト定義
+# Phase 12 Task 1/3/4/5/6 実体確認チェックリスト定義
 
 ## 概要
 
-Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件を検証するためのチェックリスト。
+Phase 12 の必須成果物（Task 1/3/4/5/6）の物理的存在と最低要件を検証するためのチェックリスト。
 
-## チェック項目一覧（20項目）
+## チェック項目一覧（22項目）
 
 | #   | Task ID | チェック項目                                                                 | 確認対象ファイル                                                                       | 検証方法                                                                                  |
 | --- | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -29,6 +29,7 @@ Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件�
 | 19  | Task 2/5 | completed workflow の `phase-12-documentation.md` と `outputs/phase-12/*.md` に `仕様策定のみ` / `実行予定` などの planned wording が残っていない | `phase-12-documentation.md`, `outputs/phase-12/*.md` | `rg -n "仕様策定のみ|実行予定|保留として記録|計画|予定|TODO|will be|を予定" <workflow>/phase-12-documentation.md <workflow>/outputs/phase-12/*.md` で 0件確認 |
 | 20  | Task 2/5 | `artifacts.json` と `outputs/artifacts.json` の title / type / status / phase artifact 名が一致している | `<workflow>/artifacts.json`, `<workflow>/outputs/artifacts.json` | JSON 実体を比較し、片側だけ `spec_created` / `completed` などにずれていないことを確認 |
 | 21  | Task 2/5 | ledger / lane / artifacts 5点（task-workflow.md / task-workflow-completed.md / lane index / artifacts.json / outputs/artifacts.json）がsame-waveで同期されている | 上記5ファイル全て | 各ファイルのタスク状態・ステータスが一致していることを確認 |
+| 22  | Task 6  | phase12-task-spec-compliance-check.md が存在し、Task 1〜6 の最終根拠を集約している | outputs/phase-12/phase12-task-spec-compliance-check.md | ファイル実在 + Task 1〜6 / Step 1-A〜1-G / Step 2 / root parity / artifacts 同期 / planned wording 0 件の集約 |
 
 ## 機械検証コマンド
 
