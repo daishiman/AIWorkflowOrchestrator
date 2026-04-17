@@ -50,7 +50,7 @@ vi.mock("../../services/skill/SkillCreatorService", () => ({
   SkillCreatorService: vi.fn(() => mockSkillCreatorService),
 }));
 
-import { ipcMain } from "electron";
+import { ipcMain, BrowserWindow } from "electron";
 import {
   registerSkillCreatorHandlers,
   unregisterSkillCreatorHandlers,
@@ -70,6 +70,16 @@ function createMockWindow() {
   } as unknown as import("electron").BrowserWindow;
 }
 
+function createMockEvent(): import("electron").IpcMainInvokeEvent {
+  return {
+    sender: {
+      id: 1,
+      getType: () => "window",
+      isDevToolsOpened: () => false,
+    },
+  } as unknown as import("electron").IpcMainInvokeEvent;
+}
+
 describe("SkillCreator IPC - キャンセルハンドラー (TASK-SW-CANCEL-003)", () => {
   let mainWindow: ReturnType<typeof createMockWindow>;
 
@@ -77,6 +87,9 @@ describe("SkillCreator IPC - キャンセルハンドラー (TASK-SW-CANCEL-003)
     vi.clearAllMocks();
     handlerMap.clear();
     mainWindow = createMockWindow();
+    (BrowserWindow.fromWebContents as ReturnType<typeof vi.fn>).mockReturnValue(
+      mainWindow,
+    );
   });
 
   afterEach(() => {
@@ -97,7 +110,7 @@ describe("SkillCreator IPC - キャンセルハンドラー (TASK-SW-CANCEL-003)
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
 
     // Act
-    const result = await handler!();
+    const result = await handler!(createMockEvent());
 
     // Assert
     expect(
