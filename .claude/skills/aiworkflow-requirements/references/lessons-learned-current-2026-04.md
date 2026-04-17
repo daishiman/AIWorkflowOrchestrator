@@ -1628,30 +1628,37 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
-## TASK-SW-STREAM-001 skill-creator-service-progress-callback（2026-04-16）
+## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001: structurePlan → generate_skill_md.js 接続 教訓（2026-04-16）
 
-> 詳細教訓: `references/lessons-learned-stream-001-progress-callback.md`
+### L-SC-CONNECT-001: private method の多層フォールバックはシナリオ別に段階を明示して設計する
 
-### L-STREAM-001: オプショナルコールバックによる後方互換性の確保
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | スクリプト実行成功でもファイルが生成されない edge case があり、`generateResult.success === true` だけでは完了を保証できなかった                                             |
+| 原因       | スクリプトの終了コード（exitCode=0）とファイル生成の有無は独立した事象。成功判定をプロセスの終了コードのみに依存していた                                                   |
+| 解決策     | フォールバック判定を2段階化: ① `!generateResult.success` → フォールバック、② `fs.access` 失敗 → フォールバック。この2段階で「プロセス失敗」と「ファイル未生成」の両方に対応 |
+| 設計原則   | スクリプト実行結果の検証は「プロセス終了コード」と「出力物の存在確認」の2段階で行う。特に生成系スクリプトは `fs.access` による出力ファイル確認が必須                        |
+| 適用条件   | `generate_skill_md.js` のような外部スクリプト呼び出しで出力ファイルを生成するパターン全般                                                                                  |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
 
-| 項目       | 内容                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| 課題       | 既存の createSkill 呼び出し元を壊さずに進捗通知を追加する必要があった                             |
-| 解決策     | `onProgress?` をオプショナルパラメータとして追加。未指定時は no-op                                |
-| 標準ルール | IPC 処理にコールバックを追加する場合は必ずオプショナルにして既存呼び出し元を保護する              |
+### L-SC-CONNECT-002: StructurePlanJson → workflow 変換は purpose を trigger.description に埋め込む設計にする
 
-### L-STREAM-002: コールバック例外の伝播方針
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `generate_skill_md.js` が期待する `workflow.trigger.description` と `StructurePlanJson.purpose` がそのまま対応しないため、変換ロジックが必要だった                        |
+| 原因       | 2つのスキーマが独立して設計され、フィールド名と構造が異なる（`purpose` vs `trigger.description`）                                                                          |
+| 解決策     | purpose を `Use when {name} is requested. Purpose: {purpose}` 形式に正規化して `trigger.description` に埋め込む。`triggers` は空配列なら `[skillName]` にフォールバック   |
+| 設計原則   | 異なるスキーマを橋渡しする変換層では「空値・undefined のフォールバック」と「文字列正規化（trim/collapse）」を必ずペアで実装する                                              |
+| 適用条件   | `StructurePlanJson` を引数に受け取り `workflow` 形式の JSON を組み立てる変換処理全般                                                                                      |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                               |
 
-| 項目       | 内容                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| 課題       | コールバック内で throw された例外をどう扱うか                                                     |
-| 解決策     | 握りつぶさず呼び出し元に伝播させる（TC-11 で確認済み）                                           |
-| 標準ルール | main process API 内のコールバック例外は原則透過させ、呼び出し元が制御できるようにする             |
+### L-SC-CONNECT-003: create モードの structurePlan null 時は warn ログで理由を記録し silent fallback を避ける
 
-### L-STREAM-003: 進捗段階の固定化メリット
-
-| 項目       | 内容                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| 課題       | 進捗段階の数・割合をどう設計するか                                                                |
-| 解決策     | 5段階固定（10/40/70/90/100）とし、テストの期待値との対応を 1:1 に保つ                             |
-| 標準ルール | 進捗段階は実装初期に固定化し、magic string/number はフォローアップタスクで定数化する              |
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `structurePlan` が null の場合、暗黙に `ensureSkillMdExists` が呼ばれ、なぜ create モードで構造計画が使われなかったのかが追跡できなかった                           |
+| 原因       | null チェックのみで fallback を呼び出し、ログ出力がなかった                                                                                                        |
+| 解決策     | `this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...)` を追加し、create モードで null になった事実を必ずログに残す                  |
+| 設計原則   | create モードで期待される出力（structurePlan）が null になることは「正常系ではない」ため、warn ログで記録する。silent fallback はデバッグを著しく困難にする          |
+| 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                            |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                       |

@@ -121,18 +121,6 @@ TASK-CI-FUTURE-003 の Phase 12 スキルフィードバックレポートに記
 
 Phase 12 の close-out では、仕様書・索引・ミラー・準拠証跡を同波で同期しないと current facts が stale になる。旧いフォールバックキー前提ではなく `node_modules` 存在確認を正本として固定した。
 
-## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
-
-### 変更内容
-
-- `outputs/phase-12/*.md` の 6 成果物を確認し、Phase 12 の同波 close-out を記録
-- Phase 2 で `Result<T,E>` の `success` / `data` 判別子、`@repo/shared/services/llm/types` alias、旧 TC-04 影響を先に明記する改善点を feedback 化
-- `.claude/skills/task-specification-creator/SKILL.md` の変更履歴を同波で更新
-
-### 背景
-
-LLM purpose wire のように出力形状が変わるタスクでは、Phase 2 で結果型・依存 alias・既存テスト影響を先出ししないと、Phase 5 以降で型ズレが再発しやすい。
-
 ## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
 
 ### 変更内容

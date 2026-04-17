@@ -1,89 +1,36 @@
-# TASK-SW-STREAM-001 要件定義書
+# Phase 1: 要件定義書
 
-## メタ情報
+## タスクID: TASK-SW-FIX-FEEDBACK-001
 
-| 項目       | 内容                                    |
-| ---------- | --------------------------------------- |
-| タスクID   | TASK-SW-STREAM-001                      |
-| 機能名     | skill-creator-service-progress-callback |
-| 作成日     | 2026-04-16                              |
-| ステータス | 完了                                    |
+## 機能要件 (FR)
 
-## P50チェック: 既実装状態の確認結果
+| 要件ID | 問題番号 | 要件内容                                                                        |
+| ------ | -------- | ------------------------------------------------------------------------------- |
+| FR-001 | 問題6/8  | LLMモード（handleExecutePlan）成功時にスキル一覧をリフレッシュする              |
+| FR-002 | 問題14   | skillPath === null のままStep 3到達時にエラーメッセージを表示する               |
+| FR-003 | 問題20   | skillPath === null の場合「✓ スキルの骨格を生成しました」ヘッダーを非表示にする |
+| FR-004 | 問題14   | skillPath === null の場合「もう一度試す」ボタンでリトライ誘導する               |
 
-### `createSkill()` シグネチャ確認
+## 非機能要件 (NFR)
 
-```
-apps/desktop/src/main/services/skill/SkillCreatorService.ts:79
-async createSkill(options: CreateSkillOptions): Promise<string>
-```
+| 要件ID  | 要件内容                                   |
+| ------- | ------------------------------------------ |
+| NFR-001 | templateモードの既存動作を破壊しない       |
+| NFR-002 | fetchSkills失敗時もステップ遷移を妨げない  |
+| NFR-003 | コミット・PR作成はユーザー指示あるまで禁止 |
 
-**確認結果**: `onProgress` 引数なし ✅（未実装を確認）
+## 調査結果
 
-### `sendSkillCreatorProgress` 呼び出し元確認
+### fetchSkillsの現状
 
-```
-grep -rn "sendSkillCreatorProgress" apps/ packages/
-→ 定義箇所: skillCreatorHandlers.ts:692
-→ 呼び出し元: なし（テストファイルのみ）
-```
+- `useFetchSkills` フックが `../../store` から提供済み (`store/index.ts:664`)
+- `createSkill` (agentSlice.ts:1125) は内部で `get().fetchSkills()` を自動実行
+- templateモードは `createSkill` 経由のため自動リフレッシュ済み
+- LLMモードは `api.executePlan()` 直接呼び出しのため fetchSkills が欠落
 
-**確認結果**: 呼び出し元が存在しないことを確認 ✅
+### skillPath state の現状
 
-### フロント側接続確認
-
-`useStreamingProgress.ts` の `onProgress` は以下の型で正しく実装済み:
-
-```typescript
-onProgress?: (
-  callback: (progress: {
-    phase: string;
-    percentage: number;
-    message: string;
-  }) => void,
-```
-
-**確認結果**: フロント・Preload 側は変更不要 ✅
-
-## 機能要件
-
-| 要件ID | 内容                                                                                             |
-| ------ | ------------------------------------------------------------------------------------------------ |
-| FR-01  | `createSkill()` が第2引数 `onProgress?: (progress: SkillCreatorProgressData) => void` を受け取る |
-| FR-02  | `runCreateWorkflow` 開始直前に `planning` フェーズで呼び出す（percentage: 10）                   |
-| FR-03  | SKILL.md 生成開始直前に `generating-skill` フェーズで呼び出す（percentage: 40）                  |
-| FR-04  | タスク仕様書生成直前に `generating-agents` フェーズで呼び出す（percentage: 70）                  |
-| FR-05  | 検証開始直前に `validating` フェーズで呼び出す（percentage: 90）                                 |
-| FR-06  | 処理完了直前に `done` フェーズで呼び出す（percentage: 100）                                      |
-| FR-07  | `onProgress` が未指定の場合でも正常動作する（オプショナル）                                      |
-
-## 非機能要件
-
-| 要件ID | 内容                                                            |
-| ------ | --------------------------------------------------------------- |
-| NFR-01 | 既存の呼び出し元（skillCreatorHandlers.ts）に破壊的変更をしない |
-| NFR-02 | TypeScript 型チェックが 0 error                                 |
-| NFR-03 | 既存テストが回帰なしで PASS する                                |
-
-## 断絶箇所の特定
-
-| 断絶箇所                                    | 確認内容                                | 結果     |
-| ------------------------------------------- | --------------------------------------- | -------- |
-| `sendSkillCreatorProgress` の呼び出し元なし | テストファイルのみで呼び出し元なし      | 確認済み |
-| `createSkill` にコールバック引数なし        | シグネチャに `onProgress` が存在しない  | 確認済み |
-| 処理の節目でコールバック呼び出しなし        | SkillCreatorService.ts 内に進捗通知なし | 確認済み |
-
-## タスク分類
-
-| 分類項目   | 値                                       |
-| ---------- | ---------------------------------------- |
-| タスク種別 | バグ修正タスク                           |
-| UIタスク   | 非UIタスク（UIの見た目変更なし）         |
-| 可視性     | NON_VISUAL（メインプロセス内部変更のみ） |
-| テスト種別 | ユニットテスト（メインプロセス層）       |
-
-## スコープ外
-
-- `skillCreatorHandlers.ts` でのコールバック接続（TASK-SW-STREAM-002）
-- フロント・Preload 側の変更（変更不要）
-- キャンセル処理の IPC 接続（TASK-SW-CANCEL-001〜004）
+- `SkillCreateWizard.tsx`: `useState<string | null>(null)` で初期値 null
+- `handleGenerate` (template): `if (!path)` で空文字・null をガード
+- `handleExecutePlan` (LLM): `persistedSkillPath` が取得できない場合 null のまま遷移
+- `CompleteStep.tsx`: `skillPath` は `string | null | undefined` 型、null 時のエラー表示なし

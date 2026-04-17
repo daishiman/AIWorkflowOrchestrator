@@ -368,30 +368,3 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | 実装成果物一覧                | `references/implementation-artifacts.md`                                             | タスク別の成果物・実装ファイル      |
 
 タスク別の成果物・実装ファイル詳細は [references/implementation-artifacts.md](references/implementation-artifacts.md) を参照。
-
----
-
-## Electron IPC 進捗通知パターン
-
-main processから renderer側へ進捗を通知する標準パターン:
-
-```typescript
-// main process側（handler）
-await service.longRunningTask(args, (progress) => {
-  if (!mainWindow.isDestroyed()) {
-    mainWindow.webContents.send(IPC_CHANNELS.TASK_PROGRESS, progress);
-  }
-});
-
-// renderer側（preload経由でlisten）
-ipcRenderer.on(IPC_CHANNELS.TASK_PROGRESS, (_, progress) => {
-  // store.updateProgress(progress)
-});
-```
-
-注意点:
-- `mainWindow.isDestroyed()` チェックは必須（ウィンドウ破棄後のIPC送信防止）
-- コールバックはオプショナルにして既存呼び出し元を保護する
-- コールバック内例外は透過させる（握りつぶさない）
-
-参照: TASK-SW-STREAM-001 (SkillCreatorService + skillCreatorHandlers)
