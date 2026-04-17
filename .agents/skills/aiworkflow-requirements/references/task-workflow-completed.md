@@ -77,13 +77,13 @@
 
 ### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
 
-| 項目       | 値                                                                       |
-| ---------- | ------------------------------------------------------------------------ |
-| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                        |
-| 完了日     | 2026-04-15                                                               |
-| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination） |
-| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089) |
-| Phase 13   | blocked（ユーザー承認待ち）                                              |
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                                          |
+| 完了日     | 2026-04-15                                                                                 |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination）                   |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089)                  |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
 
 #### 実施内容
 
@@ -105,6 +105,38 @@
 | 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
 | スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
 | Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-wizard-label-map.test.ts`: PASS（16 tests）
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --maxWorkers 1`: PASS（93 tests）
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared build`: PASS
+- `pnpm --filter @repo/desktop build`: PASS
+- `grep -n "normalizedKey.*notion\\|notion.*その他\\|特別ケース" apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: 出力なし
+
+#### 苦戦箇所
+
+- raw 値を正規化した後の fallback で小文字化してしまうと、`Jira` / `Markdown` / `JSON` の元表記が壊れる
+- `resolveLabelEntry()` を shared に寄せたあとも、renderer 側の special case を残してしまうと source of truth が二重化する
+
+#### lessons-learned
+
+- `SemanticLabelEntry` のような union で「表示ラベル + 補足情報」を同時に持たせると、special case を shared に閉じやすい
+- raw 値の fallback は原表記を優先し、正規化は lookup のためだけに使う
+- 互換 wrapper を残すと、既存契約を壊さずに内部実装だけを改善できる
+
+| 成果物                                  | パス                                                                 |
+| --------------------------------------- | -------------------------------------------------------------------- |
+| 手動テスト結果                          | `outputs/phase-11/manual-test-result.md`                             |
+| 手動テストレポート                      | `outputs/phase-11/manual-test-report.md`                             |
+| 実装ガイド                              | `outputs/phase-12/implementation-guide.md`                           |
+| システム仕様更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                     |
+| ドキュメント更新履歴                    | `outputs/phase-12/documentation-changelog.md`                        |
+| 未タスク検出レポート                    | `outputs/phase-12/unassigned-task-detection.md`                     |
+| スキルフィードバックレポート            | `outputs/phase-12/skill-feedback-report.md`                         |
+| Phase 12 準拠チェック                   | `outputs/phase-12/phase12-task-spec-compliance-check.md`            |
 
 #### 検証証跡
 

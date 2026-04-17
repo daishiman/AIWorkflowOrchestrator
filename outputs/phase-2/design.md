@@ -1,90 +1,68 @@
-# TASK-SW-STREAM-001 設計書
+# Phase 2: 設計書 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001
 
-## メタ情報
+## 配置場所の決定
 
-| 項目     | 内容               |
-| -------- | ------------------ |
-| タスクID | TASK-SW-STREAM-001 |
-| 作成日   | 2026-04-16         |
+**方針**: `packages/shared/src/types/skillCreator.ts` の末尾に追加する。
 
-## 1. 進捗データ型定義
+**理由**:
 
-```typescript
-// 進捗コールバック用の型定義（SkillCreatorService.ts 内に定義）
-type SkillCreatorProgressData = {
-  phase: string; // "planning" | "generating-skill" | "generating-agents" | "validating" | "done"
-  percentage: number; // 10 | 40 | 70 | 90 | 100
-  message: string; // 日本語の進捗メッセージ
-};
+- `SkillCategory` 型と同一ファイルに配置することで、型変更時に定数更新の漏れを防ぐ
+- 新規ファイル作成は不要（small スケールタスク）
+- `@repo/shared/types/skillCreator` subpath export に閉じる（root barrel 触らない）
 
-type SkillCreatorProgressCallback = (
-  progress: SkillCreatorProgressData,
-) => void;
-```
+## インターフェース設計
 
-**型配置方針**: `SkillCreatorService.ts` 内に定義（単一ファイル使用）。
-将来 TASK-SW-STREAM-002 と共有が必要になった場合は `packages/shared/` へ移動する（未タスク）。
-
-## 2. `createSkill()` シグネチャ変更設計
+### 定数設計
 
 ```typescript
-// 変更前
-async createSkill(options: CreateSkillOptions): Promise<string>
-
-// 変更後
-async createSkill(
-  options: CreateSkillOptions,
-  onProgress?: SkillCreatorProgressCallback,
-): Promise<string>
+/**
+ * SkillCategory の UI表示用日本語ラベルマッピング。
+ * Record<SkillCategory, string> 型により、SkillCategory に新値が追加された場合に
+ * TypeScript の型チェックで未定義ラベルを検出できる（AC-3）。
+ */
+export const SKILL_CATEGORY_LABELS: Record<SkillCategory, string> = {
+  automation: "自動化",
+  "external-integration": "外部連携",
+  "data-analysis": "データ分析",
+  "code-support": "コードサポート",
+  other: "その他",
+} as const;
 ```
 
-**設計ポイント**: `onProgress` はオプショナル（`?:`）のため、既存呼び出し元への破壊的変更なし。
-
-## 3. 処理の節目での呼び出しポイント設計（5段階）
-
-| 段階 | 呼び出しタイミング                                         | phase                 | percentage | message                              |
-| ---- | ---------------------------------------------------------- | --------------------- | ---------- | ------------------------------------ |
-| 1    | switch ブロック直前（ワークフロー開始前）                  | `"planning"`          | 10         | `"構造を計画しています"`             |
-| 2    | SKILL.md 生成開始直前（`generate_skill_md.js` 呼び出し前） | `"generating-skill"`  | 40         | `"SKILL.md を生成しています"`        |
-| 3    | タスク仕様書生成前（`generateTaskSpecs` 呼び出し前に相当） | `"generating-agents"` | 70         | `"エージェント定義を生成しています"` |
-| 4    | 検証開始直前（`validateSkill` 呼び出し前）                 | `"validating"`        | 90         | `"スキルを検証しています"`           |
-| 5    | 処理完了直前（`return skillDir` 直前）                     | `"done"`              | 100        | `"完了しました"`                     |
-
-**ガード付き呼び出しパターン**:
+### 関数設計
 
 ```typescript
-onProgress?.({
-  phase: "planning",
-  percentage: 10,
-  message: "構造を計画しています",
-});
+/**
+ * SkillCategory に対応する日本語表示ラベルを返す。
+ * @param category - SkillCategory 型の値
+ * @returns 日本語ラベル文字列
+ */
+export function getSkillCategoryLabel(category: SkillCategory): string {
+  return SKILL_CATEGORY_LABELS[category];
+}
 ```
 
-## 4. 既存テストへの影響範囲
+## 型安全性設計
 
-| テストファイル                            | 影響内容                       | 対応方針                       |
-| ----------------------------------------- | ------------------------------ | ------------------------------ |
-| `skillCreatorHandlers.validation.test.ts` | `createSkill` モックシグネチャ | オプショナル引数のため変更不要 |
-| `skillCreatorIpc.integration.test.ts`     | 同上                           | 変更不要                       |
-| `SkillCreatorService.test.ts`             | `createSkill` 呼び出し         | 変更不要                       |
+| 観点         | 設計方針                                                           |
+| ------------ | ------------------------------------------------------------------ |
+| 型網羅性     | `Record<SkillCategory, string>` により全値のラベルが必須（AC-3）   |
+| immutability | `as const` アサーションで定数値の変更を防ぐ                        |
+| エクスポート | Named export（`export const` / `export function`）で外部参照を明示 |
 
-## 5. TASK-SW-STREAM-002 との接続インターフェース
+## 設計判断記録
 
-```typescript
-// TASK-SW-STREAM-002 での使用イメージ（本タスクのスコープ外）
-const skillDir = await skillCreatorService.createSkill(
-  validatedArgs,
-  (progress) => {
-    sendSkillCreatorProgress(mainWindow, progress);
-  },
-);
-```
+| 判断事項                 | 採用方針                    | 理由                                          |
+| ------------------------ | --------------------------- | --------------------------------------------- |
+| 配置ファイル             | 既存 `skillCreator.ts` 末尾 | SkillCategory型と同居・管理コスト最小         |
+| 関数 vs 定数直接参照     | 両方提供                    | 関数はAPI抽象化・定数は型安全な網羅チェック用 |
+| `as const` アサーション  | 使用する                    | ラベル文字列の誤変更防止                      |
+| ハイフン含む値のキー記法 | `"external-integration"`    | TypeScriptのquoted key記法で対応              |
 
-## 6. 検証マトリクス
+## 検証マトリクス
 
-| テスト対象                 | コマンド                                                               |
-| -------------------------- | ---------------------------------------------------------------------- |
-| SkillCreatorService テスト | `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/` |
-| 型チェック                 | `pnpm --filter @repo/desktop typecheck`                                |
-| lint                       | `pnpm --filter @repo/desktop lint`                                     |
-| 既存統合テスト             | `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/`  |
+| テスト対象     | テストコマンド                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| ユニットテスト | `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts` |
+| 型チェック     | `pnpm --filter @repo/shared typecheck`                                                       |
+| lint           | `pnpm --filter @repo/shared lint`                                                            |

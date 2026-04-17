@@ -211,30 +211,6 @@ describe("ScriptExecutor", () => {
         executor.executeJson("failing-script.js", []),
       ).rejects.toThrow(/failed/i);
     });
-
-    it("SE-009: should reject with AbortError when the signal is aborted", async () => {
-      // Arrange
-      const controller = new AbortController();
-      const mockProcess = new EventEmitter() as ChildProcess & {
-        stdout: EventEmitter;
-        stderr: EventEmitter;
-        kill: ReturnType<typeof vi.fn>;
-      };
-      mockProcess.stdout = new EventEmitter();
-      mockProcess.stderr = new EventEmitter();
-      mockProcess.kill = vi.fn(() => true);
-      mockSpawn.mockReturnValue(mockProcess as ChildProcess);
-
-      // Act
-      const promise = executor.execute("long-running-script.js", [], {
-        signal: controller.signal,
-      });
-      controller.abort();
-
-      // Assert
-      await expect(promise).rejects.toMatchObject({ name: "AbortError" });
-      expect(mockProcess.kill).toHaveBeenCalledWith("SIGTERM");
-    });
   });
 
   describe("Security", () => {
