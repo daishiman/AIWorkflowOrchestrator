@@ -11,12 +11,14 @@ import { renderHook, act } from "@testing-library/react";
 import { useCancelGeneration } from "../useCancelGeneration";
 import { useAppStore } from "../../store";
 
+const mockCancelGeneration = vi.fn().mockResolvedValue({ success: true });
+
 beforeEach(() => {
   vi.clearAllMocks();
   useAppStore.getState().resetStreamingProgress();
 
   Object.defineProperty(window, "skillCreatorAPI", {
-    value: undefined,
+    value: { cancelGeneration: mockCancelGeneration },
     writable: true,
     configurable: true,
   });
@@ -35,7 +37,7 @@ describe("useCancelGeneration", () => {
     expect(signal!.aborted).toBe(false);
   });
 
-  it("cancelGeneration が AbortSignal を abort する", async () => {
+  it("cancelGeneration が AbortSignal を abort する", () => {
     const { result } = renderHook(() => useCancelGeneration());
 
     let signal: AbortSignal;
@@ -43,32 +45,33 @@ describe("useCancelGeneration", () => {
       signal = result.current.startGeneration();
     });
 
-    await act(async () => {
-      await result.current.cancelGeneration();
+    act(() => {
+      result.current.cancelGeneration();
     });
 
     expect(signal!.aborted).toBe(true);
+    expect(mockCancelGeneration).toHaveBeenCalledTimes(1);
   });
 
-  it("cancelGeneration がストアを cancelled に更新する", async () => {
+  it("cancelGeneration がストアを cancelled に更新する", () => {
     const { result } = renderHook(() => useCancelGeneration());
 
     act(() => {
       result.current.startGeneration();
     });
 
-    await act(async () => {
-      await result.current.cancelGeneration();
+    act(() => {
+      result.current.cancelGeneration();
     });
 
     expect(useAppStore.getState().streamingStage).toBe("cancelled");
   });
 
-  it("startGeneration を呼ばずに cancelGeneration を呼んでもクラッシュしない", async () => {
+  it("startGeneration を呼ばずに cancelGeneration を呼んでもクラッシュしない", () => {
     const { result } = renderHook(() => useCancelGeneration());
 
-    await act(async () => {
-      await result.current.cancelGeneration();
+    act(() => {
+      result.current.cancelGeneration();
     });
 
     expect(useAppStore.getState().streamingStage).toBe("cancelled");

@@ -10,10 +10,8 @@
 | 対象機能     | スキルウィザード ConversationRoundStep TODOコメント整理 |
 | 優先度       | Low                                                     |
 | 見積もり規模 | 小規模                                                  |
-| ステータス   | 完了                                                    |
+| ステータス   | 未実施                                                  |
 | 作成日       | 2026-04-15                                              |
-| 完了日       | 2026-04-16                                              |
-| 完了PR       | #2199 (commit `2fcca99de`)                              |
 
 ---
 
@@ -25,7 +23,7 @@
 
 ### 背景
 
-スキル作成フロー連動調査（`docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/`）の Phase 1 分析により、`ConversationRoundStep.tsx:456` に以下の TODO コメントが存在することが判明した。
+スキル作成フロー連動調査（`docs/30-workflows/00-task-spec-design-docs/`）の Phase 1 分析により、`ConversationRoundStep.tsx:456` に以下の TODO コメントが存在することが判明した。
 
 ```typescript
 // TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001): 主ツールバッジ - resolveExternalIntegration の主ツール参照ロジック変更後に削除
@@ -36,16 +34,7 @@ const isMainTool = shouldShowMainToolBadge({
 });
 ```
 
-この TODO は「`resolveExternalIntegration` の主ツール参照ロジック変更後に削除」と述べていた。PR #2199（コミット `2fcca99de`）により、`resolveExternalIntegration` が `selectedOptions[0]` 単一ツール参照から `string[]` を受け取り `Promise.all` で複数ツールを並列統合する形に変更された。これにより TODO のトリガー条件が満たされ、以下のコードが全て削除された：
-
-- `MAIN_TOOL_BADGE_ENABLED` フラグ
-- `shouldShowMainToolBadge()` 関数および `MainToolBadgeProps` インターフェース
-- `isMainTool` 変数
-- 主ツールバッジJSX（`<span>主ツール</span>`）
-- `aria-describedby={isMainTool ? mainToolBadgeId : undefined}` 属性
-- `TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001)` コメント本体
-
-タスクは PR #2199 により完全に解消済みである。
+この TODO は「`resolveExternalIntegration` の主ツール参照ロジック変更後に削除」と述べているが、現時点で `resolveExternalIntegration`（`SkillCreateWizard.tsx:177-218`）は `selectedOptions[0]` を主ツールとして参照しており、バッジロジックと一致している。対象タスク `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` の完了状況が不明なため、確認と整理が必要な状態である。
 
 ### 最終ゴール
 
@@ -74,9 +63,9 @@ const isMainTool = shouldShowMainToolBadge({
 
 本仕様書のコマンド選定は以下を参照：
 
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` - 問題4の現状分析
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー
+- `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md` - 問題4の現状分析
+- `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
+- `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー
 - `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` - 修正対象ファイル
 - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` - resolveExternalIntegration 実装
 
@@ -137,21 +126,21 @@ graph TD
 
 ## Phase一覧
 
-| Phase | 名称               | 仕様書                                                       | ステータス                    |
-| ----- | ------------------ | ------------------------------------------------------------ | ----------------------------- |
-| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 完了（PR #2199 にて解消済み） |
-| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 完了（PR #2199 にて解消済み） |
-| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 完了（PR #2199 にて解消済み） |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了（PR #2199 にて解消済み） |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 完了（PR #2199 にて解消済み） |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了（PR #2199 にて解消済み） |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了（PR #2199 にて解消済み） |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了（PR #2199 にて解消済み） |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了（PR #2199 にて解消済み） |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 完了（PR #2199 にて解消済み） |
-| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了（PR #2199 にて解消済み） |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 完了（本ファイル更新済み）    |
-| 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 完了（PR #2199 マージ済み）   |
+| Phase | 名称               | 仕様書                                                       | ステータス |
+| ----- | ------------------ | ------------------------------------------------------------ | ---------- |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 未実施     |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 未実施     |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 未実施     |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 未実施     |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 未実施     |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 未実施     |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 未実施     |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 未実施     |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 未実施     |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 未実施     |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 未実施     |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 未実施     |
+| 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | blocked    |
 
 ---
 

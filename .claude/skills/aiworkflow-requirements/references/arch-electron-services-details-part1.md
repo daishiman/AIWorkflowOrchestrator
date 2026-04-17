@@ -251,13 +251,11 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | ------------- | ---------- | ---- | -------------------------------------- |
 | `skillName`   | `string`   | ○    | スキル名                               |
 | `description` | `string`   | ○    | スキル説明（undefined は入力破損扱い） |
-| `purpose`     | `string`   | ○    | `options.description` をそのまま保持（create モードの橋渡し値） |
-| `features`    | `string[]` | ○    | 機能一覧（create モードでは空配列）     |
-| `agents`      | `string[]` | ○    | 使用エージェント名一覧（create モードでは `["extract-purpose", "plan-structure"]`） |
+| `purpose`     | `string`   | ○    | `extract-purpose` エージェント出力     |
+| `features`    | `string[]` | ○    | 機能一覧                               |
+| `agents`      | `string[]` | ○    | 使用エージェント一覧                   |
 | `triggers`    | `string[]` | -    | トリガー（optional）                   |
-| `anchors`     | `Anchor[]` | -    | アンカー（optional）                   |
-
-`create` モードの current facts では、`purpose` は `options.description`、`features` は空配列、`agents` は固定の 2 名リストとして扱う。
+| `anchors`     | `string[]` | -    | アンカー（optional）                   |
 
 `createSkill()` 内で `let structurePlan: StructurePlanJson | null = null` として受け取り、`void structurePlan`（将来 `generateSkillMd` へ渡す）としてハンドオフする。
 
