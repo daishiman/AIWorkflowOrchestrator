@@ -16,19 +16,17 @@ LLM統合（実際のAI生成処理との接続）は別タスクへ分離し、
 
 ## メタ情報
 
-| 項目         | 内容                                                                       |
-| ------------ | -------------------------------------------------------------------------- |
-| タスクID     | TASK-SW-STRUCT-002                                                         |
-| タスク名     | struct-002-connect-structure-plan-to-skill-md                              |
-| 分類         | バグ修正                                                                   |
-| 対象機能     | SkillCreatorService - structurePlan を generate_skill_md.js に接続         |
-| 優先度       | High                                                                       |
-| 見積もり規模 | 小規模                                                                     |
-| ステータス   | completed                                                                  |
-| 作成日       | 2026-04-15                                                                 |
-| 完了日       | 2026-04-16                                                                 |
-| depends_on   | **TASK-SW-STRUCT-001**（必須）                                             |
-| 実装参照     | PR #2209 / TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 (commit `c21cc553c`) |
+| 項目         | 内容                                                               |
+| ------------ | ------------------------------------------------------------------ |
+| タスクID     | TASK-SW-STRUCT-002                                                 |
+| タスク名     | struct-002-connect-structure-plan-to-skill-md                      |
+| 分類         | バグ修正                                                           |
+| 対象機能     | SkillCreatorService - structurePlan を generate_skill_md.js に接続 |
+| 優先度       | High                                                               |
+| 見積もり規模 | 小規模                                                             |
+| ステータス   | 未実施                                                             |
+| 作成日       | 2026-04-15                                                         |
+| depends_on   | **TASK-SW-STRUCT-001**（必須）                                     |
 
 ---
 
@@ -170,19 +168,19 @@ graph TD
 
 | Phase | 名称               | 仕様書                                                       | ステータス |
 | ----- | ------------------ | ------------------------------------------------------------ | ---------- |
-| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | completed  |
-| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | completed  |
-| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | completed  |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | completed  |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | completed  |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | completed  |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | completed  |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | completed  |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | completed  |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | completed  |
-| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | completed  |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | completed  |
-| 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | completed  |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 未実施     |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 未実施     |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 未実施     |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 未実施     |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 未実施     |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 未実施     |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 未実施     |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 未実施     |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 未実施     |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 未実施     |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 未実施     |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 未実施     |
+| 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | blocked    |
 
 ---
 

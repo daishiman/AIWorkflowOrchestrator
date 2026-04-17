@@ -1,0 +1,197 @@
+{
+  "taskId": "TASK-SW-CANCEL-001",
+  "featureName": "skill-creator-cancel-channel-constant",
+  "createdDate": "2026-04-15",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "completed"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "チャンネル定数テスト",
+          "path": "packages/shared/src/ipc/__tests__/channels-cancel.test.ts",
+          "status": "completed",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "channels.ts 定数追加",
+          "path": "packages/shared/src/ipc/channels.ts",
+          "status": "completed",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "型安全性・命名規則テスト追加",
+          "path": "packages/shared/src/ipc/__tests__/channels-cancel.test.ts",
+          "status": "completed",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "blocked"
+        }
+      ]
+    }
+  ]
+}

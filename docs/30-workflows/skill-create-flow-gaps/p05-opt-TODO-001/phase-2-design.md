@@ -26,12 +26,12 @@ Phase 1 で確認した `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` の完了状�
 
 ## 参照資料
 
-| 資料名                    | パス                                                                                    | 用途                           |
-| ------------------------- | --------------------------------------------------------------------------------------- | ------------------------------ |
-| Phase 1 成果物            | `outputs/phase-1/requirements-definition.md`                                            | 採用パターン・AC参照           |
-| ConversationRoundStep.tsx | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`           | 変更対象コード確認             |
-| SkillCreateWizard.tsx     | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                      | resolveExternalIntegration確認 |
-| Phase 2 解決策設計書      | `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` | 問題4の解決策参照              |
+| 資料名                    | パス                                                                          | 用途                           |
+| ------------------------- | ----------------------------------------------------------------------------- | ------------------------------ |
+| Phase 1 成果物            | `outputs/phase-1/requirements-definition.md`                                  | 採用パターン・AC参照           |
+| ConversationRoundStep.tsx | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` | 変更対象コード確認             |
+| SkillCreateWizard.tsx     | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`            | resolveExternalIntegration確認 |
+| Phase 2 解決策設計書      | `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`              | 問題4の解決策参照              |
 
 ## 実行手順
 

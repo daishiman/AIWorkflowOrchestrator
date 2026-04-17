@@ -1,26 +1,21 @@
 /**
- * SkillCreator IPC Handlers - 進捗通知テスト
- * TASK-SW-STREAM-002: onProgress → sendSkillCreatorProgress IPC 接続
+ * SkillCreator IPC Handlers - onProgress Callback Wiring Tests
+ * TASK-SW-STREAM-002
+ * TC-01 ~ TC-06
  *
- * TC-01: createSkill が onProgress コールバック付きで呼ばれること
- * TC-02: onProgress が呼ばれると SKILL_CREATOR_PROGRESS チャンネルで webContents.send が呼ばれること
- * TC-03: 進捗データ（phase/percentage/message）が正しく渡されること
- * TC-04: ウィンドウが destroyed の場合は send が呼ばれないこと
- * TC-05: sendSkillCreatorProgress 関数が export されていること
- * TC-06: sendSkillCreatorProgress がウィンドウ未 destroyed 時に send を呼ぶこと
- * TC-07: sendSkillCreatorProgress がウィンドウ destroyed 時に send を呼ばないこと
- * TC-08: createSkill の onProgress コールバックが sendSkillCreatorProgress に接続されていること
+ * TDD Red フェーズ: 実装前に作成（Phase 4）
+ * Green フェーズ: Phase 5 の実装後に PASS することを確認
  */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type {
   IpcMainInvokeEvent,
   BrowserWindow as BrowserWindowType,
 } from "electron";
 
-// handlerMap: テストから登録済みハンドラーを呼び出すためのマップ
+// ハンドラーマップ（テスト内からハンドラーを呼び出すため）
 const handlerMap = new Map<string, (...args: unknown[]) => unknown>();
 
+// Mock electron
 vi.mock("electron", () => ({
   ipcMain: {
     handle: vi.fn(
@@ -38,14 +33,13 @@ vi.mock("electron", () => ({
   },
 }));
 
-// SkillCreatorService のモック
+// SkillCreatorService モック
 const mockSkillCreatorService = {
   detectMode: vi.fn(),
   createSkill: vi.fn(),
   executeTasks: vi.fn(),
   validateSkill: vi.fn(),
   validateWithSchema: vi.fn(),
-  cancelCurrentOperation: vi.fn(),
   improveSkill: vi.fn(),
   forkSkill: vi.fn(),
   shareSkill: vi.fn(),
@@ -59,28 +53,29 @@ vi.mock("../../services/skill/SkillCreatorService", () => ({
   SkillCreatorService: vi.fn(() => mockSkillCreatorService),
 }));
 
+// Import after mocks
 import { BrowserWindow } from "electron";
 import {
   registerSkillCreatorHandlers,
   unregisterSkillCreatorHandlers,
-  sendSkillCreatorProgress,
 } from "../skillCreatorHandlers";
 import { IPC_CHANNELS } from "../../../preload/channels";
 
-// テスト用ウィンドウファクトリ
-function createMockWindow(isDestroyed = false) {
+// ヘルパー: モック mainWindow 作成
+function createMockMainWindow(isDestroyed = false) {
   return {
     id: 1,
-    isDestroyed: vi.fn(() => isDestroyed),
     webContents: {
       id: 1,
       getType: () => "window",
       isDevToolsOpened: () => false,
       send: vi.fn(),
     },
-  } as unknown as import("electron").BrowserWindow;
+    isDestroyed: vi.fn().mockReturnValue(isDestroyed),
+  };
 }
 
+// ヘルパー: モック IpcMainInvokeEvent 作成
 function createMockEvent(webContentsId = 1): IpcMainInvokeEvent {
   return {
     sender: {
@@ -103,212 +98,14 @@ const validCreateArgs = {
   mode: "collaborative",
 };
 
-describe("SkillCreator IPC - 進捗通知 (TASK-SW-STREAM-002)", () => {
-  let mainWindow: ReturnType<typeof createMockWindow>;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    handlerMap.clear();
-    mainWindow = createMockWindow();
-    // validateIpcSender が BrowserWindow.fromWebContents でウィンドウを特定するためにモック必須
-    vi.mocked(BrowserWindow.fromWebContents).mockReturnValue(
-      mainWindow as unknown as import("electron").BrowserWindow,
-    );
-    registerSkillCreatorHandlers(
-      mainWindow as unknown as BrowserWindowType,
-      mockSkillCreatorService as unknown as Parameters<
-        typeof registerSkillCreatorHandlers
-      >[1],
-    );
-    // デフォルトモック: createSkill は "/valid/skill/path" を返す
-    mockSkillCreatorService.createSkill.mockResolvedValue("/valid/skill/path");
-  });
-
-  afterEach(() => {
-    unregisterSkillCreatorHandlers();
-  });
-
-  it("TC-01: createSkill が onProgress コールバック付きで呼ばれること", async () => {
-    // Arrange
-    mockSkillCreatorService.createSkill.mockResolvedValue(
-      "/path/to/test-skill",
-    );
-    const handler = getCreateHandler();
-    const event = createMockEvent();
-
-    // Act
-    await handler!(event, {
-      name: "test-skill",
-      description: "テスト",
-      mode: "create",
-    });
-
-    // Assert: createSkill が呼ばれ、第2引数が関数（onProgress コールバック）であること
-    expect(mockSkillCreatorService.createSkill).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "test-skill" }),
-      expect.any(Function),
-    );
-  });
-
-  it("TC-02: onProgress が呼ばれると SKILL_CREATOR_PROGRESS チャンネルで webContents.send が呼ばれること", async () => {
-    // Arrange
-    let capturedCallback: ((progress: unknown) => void) | undefined;
-    mockSkillCreatorService.createSkill.mockImplementation(
-      async (_opts: unknown, onProgress: (p: unknown) => void) => {
-        capturedCallback = onProgress;
-        return "/path/to/skill";
-      },
-    );
-    const handler = getCreateHandler();
-    const event = createMockEvent();
-
-    // Act
-    await handler!(event, {
-      name: "test-skill",
-      description: "テスト",
-      mode: "create",
-    });
-
-    // capturedCallback を手動で呼び出す
-    const progressData = {
-      phase: "planning",
-      percentage: 10,
-      message: "構造を計画しています",
-    };
-    capturedCallback?.(progressData);
-
-    // Assert
-    expect(mainWindow.webContents.send).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-      progressData,
-    );
-  });
-
-  it("TC-03: 進捗データ（phase/percentage/message）が正しく渡されること", async () => {
-    // Arrange
-    let capturedCallback: ((progress: unknown) => void) | undefined;
-    mockSkillCreatorService.createSkill.mockImplementation(
-      async (_opts: unknown, onProgress: (p: unknown) => void) => {
-        capturedCallback = onProgress;
-        return "/path/to/skill";
-      },
-    );
-    const handler = getCreateHandler();
-    const event = createMockEvent();
-    await handler!(event, {
-      name: "test-skill",
-      description: "テスト",
-      mode: "create",
-    });
-
-    const progressData = {
-      phase: "generating-skill",
-      percentage: 40,
-      message: "SKILL.md を生成しています",
-    };
-    capturedCallback?.(progressData);
-
-    // Assert: 渡されたデータがそのまま送られること
-    expect(mainWindow.webContents.send).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-      expect.objectContaining({
-        phase: "generating-skill",
-        percentage: 40,
-        message: "SKILL.md を生成しています",
-      }),
-    );
-  });
-
-  it("TC-04: ウィンドウが destroyed の場合は send が呼ばれないこと", () => {
-    // Arrange: destroyed なウィンドウ
-    const destroyedWindow = createMockWindow(true);
-    const progressData = {
-      phase: "planning",
-      percentage: 10,
-      message: "テスト",
-    };
-
-    // Act
-    sendSkillCreatorProgress(destroyedWindow, progressData);
-
-    // Assert
-    expect(destroyedWindow.webContents.send).not.toHaveBeenCalled();
-  });
-
-  it("TC-05: sendSkillCreatorProgress 関数が export されていること", () => {
-    expect(typeof sendSkillCreatorProgress).toBe("function");
-  });
-
-  it("TC-06: sendSkillCreatorProgress がウィンドウ未 destroyed 時に send を呼ぶこと", () => {
-    // Arrange
-    const progressData = {
-      phase: "done",
-      percentage: 100,
-      message: "完了しました",
-    };
-
-    // Act
-    sendSkillCreatorProgress(mainWindow, progressData);
-
-    // Assert
-    expect(mainWindow.webContents.send).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-      progressData,
-    );
-  });
-
-  it("TC-07: sendSkillCreatorProgress がウィンドウ destroyed 時に send を呼ばないこと", () => {
-    const destroyedWindow = createMockWindow(true);
-    sendSkillCreatorProgress(destroyedWindow, {
-      phase: "done",
-      percentage: 100,
-      message: "完了",
-    });
-    expect(destroyedWindow.webContents.send).not.toHaveBeenCalled();
-  });
-
-  it("TC-08: SKILL_CREATOR_CREATE ハンドラーの onProgress が sendSkillCreatorProgress に接続されていること", async () => {
-    // Arrange: 複数回 onProgress が呼ばれるモック
-    mockSkillCreatorService.createSkill.mockImplementation(
-      async (_opts: unknown, onProgress: (p: unknown) => void) => {
-        onProgress({ phase: "planning", percentage: 10, message: "計画中" });
-        onProgress({ phase: "done", percentage: 100, message: "完了" });
-        return "/path/to/skill";
-      },
-    );
-    const handler = getCreateHandler();
-    const event = createMockEvent();
-
-    // Act
-    await handler!(event, {
-      name: "test-skill",
-      description: "テスト",
-      mode: "create",
-    });
-
-    // Assert: 2 回 send が呼ばれること
-    expect(mainWindow.webContents.send).toHaveBeenCalledTimes(2);
-    expect(mainWindow.webContents.send).toHaveBeenNthCalledWith(
-      1,
-      IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-      { phase: "planning", percentage: 10, message: "計画中" },
-    );
-    expect(mainWindow.webContents.send).toHaveBeenNthCalledWith(
-      2,
-      IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-      { phase: "done", percentage: 100, message: "完了" },
-    );
-  });
-});
-
 describe("SKILL_CREATOR_CREATE ハンドラー - onProgress コールバック配線", () => {
-  let mockMainWindow: ReturnType<typeof createMockWindow>;
+  let mockMainWindow: ReturnType<typeof createMockMainWindow>;
 
   beforeEach(() => {
     vi.clearAllMocks();
     handlerMap.clear();
 
-    mockMainWindow = createMockWindow();
+    mockMainWindow = createMockMainWindow();
     (BrowserWindow.fromWebContents as ReturnType<typeof vi.fn>).mockReturnValue(
       mockMainWindow,
     );
@@ -541,7 +338,7 @@ describe("SKILL_CREATOR_CREATE ハンドラー - onProgress コールバック�
       vi.clearAllMocks();
       handlerMap.clear();
 
-      const destroyedWindow = createMockWindow(true); // isDestroyed = true
+      const destroyedWindow = createMockMainWindow(true); // isDestroyed = true
       (
         BrowserWindow.fromWebContents as ReturnType<typeof vi.fn>
       ).mockReturnValue(destroyedWindow);

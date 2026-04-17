@@ -215,6 +215,7 @@ describe("SkillDocGenerator", () => {
         const gen = new SkillDocGenerator(
           neverResolve,
           mockSkillFileManager as never,
+          { queryTimeoutMs: 30_000 },
         );
         const assertion = expect(gen.generate(validRequest)).rejects.toThrow(
           "LLM query timeout",
