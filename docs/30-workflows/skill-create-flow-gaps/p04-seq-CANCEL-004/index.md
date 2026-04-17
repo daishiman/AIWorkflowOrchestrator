@@ -12,13 +12,11 @@
 | 依存タスク | TASK-SW-CANCEL-003                          |
 | 後続タスク | なし（キャンセル処理 IPC 連動の最終タスク） |
 | 作成日     | 2026-04-15                                  |
-| ステータス | completed（current worktree で実装済み）    |
+| ステータス | pending                                     |
 
 ## 概要
 
 `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` を修正し、`cancelGeneration()` 内で `window.skillCreatorAPI?.cancelGeneration?.()` を呼び出すことで、IPC 経由でメインプロセスにキャンセル通知を送る。これにより TASK-SW-CANCEL-001〜003 で構築した IPC 4層が完全に接続される。
-
-> **追記（2026-04-16）**: current worktree ではこの要件も実装済み。以下は当時の task spec を記録として残している。
 
 ## 背景
 

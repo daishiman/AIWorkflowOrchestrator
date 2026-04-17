@@ -2,23 +2,21 @@
 
 ## メタ情報
 
-| 項目       | 内容                                     |
-| ---------- | ---------------------------------------- |
-| タスクID   | TASK-SW-CANCEL-002                       |
-| タスク名   | skill-creator-cancel-preload-api         |
-| 種別       | バグ修正                                 |
-| 優先度     | High                                     |
-| スケール   | 小規模                                   |
-| 依存タスク | TASK-SW-CANCEL-001                       |
-| 後続タスク | TASK-SW-CANCEL-003                       |
-| 作成日     | 2026-04-15                               |
-| ステータス | completed（current worktree で実装済み） |
+| 項目       | 内容                             |
+| ---------- | -------------------------------- |
+| タスクID   | TASK-SW-CANCEL-002               |
+| タスク名   | skill-creator-cancel-preload-api |
+| 種別       | バグ修正                         |
+| 優先度     | High                             |
+| スケール   | 小規模                           |
+| 依存タスク | TASK-SW-CANCEL-001               |
+| 後続タスク | TASK-SW-CANCEL-003               |
+| 作成日     | 2026-04-15                       |
+| ステータス | pending                          |
 
 ## 概要
 
 `apps/desktop/src/preload/skill-creator-api.ts` の `SkillCreatorAPI` インターフェースに `cancelGeneration: () => Promise<IpcResult<void>>` を追加し、`safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL)` で実装する。さらに `apps/desktop/src/preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` に `SKILL_CREATOR_CANCEL` を追加する。これにより IPC 4層のうち層2（ホワイトリスト）と層4（Preload API）が完成する。
-
-> **追記（2026-04-16）**: current worktree ではこの要件は実装済み。以下は当時のタスク仕様を記録として残している。
 
 ## 背景
 
@@ -146,17 +144,17 @@ graph TD
 
 ## IPC 4層完全接続における本タスクの役割
 
-| 層  | 担当                               | タスク             | 本タスク                                 |
-| --- | ---------------------------------- | ------------------ | ---------------------------------------- |
-| 1   | 定数定義（shared channels.ts）     | TASK-SW-CANCEL-001 | 実装済み（ワークツリー変更・未コミット） |
-| 2   | ホワイトリスト（preload channels） | TASK-SW-CANCEL-002 | **本タスク**                             |
-| 3   | ハンドラー登録（main ipcMain）     | TASK-SW-CANCEL-003 | -                                        |
-| 4   | Preload API（contextBridge）       | TASK-SW-CANCEL-002 | **本タスク**                             |
-| 5   | Renderer 呼び出し（フック修正）    | TASK-SW-CANCEL-004 | -                                        |
+| 層  | 担当                               | タスク             | 本タスク     |
+| --- | ---------------------------------- | ------------------ | ------------ |
+| 1   | 定数定義（shared channels.ts）     | TASK-SW-CANCEL-001 | 完了         |
+| 2   | ホワイトリスト（preload channels） | TASK-SW-CANCEL-002 | **本タスク** |
+| 3   | ハンドラー登録（main ipcMain）     | TASK-SW-CANCEL-003 | -            |
+| 4   | Preload API（contextBridge）       | TASK-SW-CANCEL-002 | **本タスク** |
+| 5   | Renderer 呼び出し（フック修正）    | TASK-SW-CANCEL-004 | -            |
 
 ## 関連
 
-- 前提タスク: `docs/30-workflows/completed-tasks/p01-seq-CANCEL-001/index.md`
+- 前提タスク: `docs/30-workflows/skill-create-flow-gaps/p01-seq-CANCEL-001/index.md`
 - 後続タスク: `docs/30-workflows/skill-create-flow-gaps/p03-seq-CANCEL-003/index.md`
 - 設計根拠: `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`（問題2 解決策B）
 - 設計レビュー: `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md`（3.4節）

@@ -2,21 +2,19 @@
 
 ## メタ情報
 
-| 項目       | 内容                                     |
-| ---------- | ---------------------------------------- |
-| Phase      | 1                                        |
-| タスクID   | TASK-SW-CANCEL-002                       |
-| 機能名     | skill-creator-cancel-preload-api         |
-| 前提Phase  | -                                        |
-| 後続Phase  | Phase 2                                  |
-| 作成日     | 2026-04-15                               |
-| ステータス | completed（current worktree で実装済み） |
+| 項目       | 内容                             |
+| ---------- | -------------------------------- |
+| Phase      | 1                                |
+| タスクID   | TASK-SW-CANCEL-002               |
+| 機能名     | skill-creator-cancel-preload-api |
+| 前提Phase  | -                                |
+| 後続Phase  | Phase 2                          |
+| 作成日     | 2026-04-15                       |
+| ステータス | pending                          |
 
 ## 目的
 
 `apps/desktop/src/preload/skill-creator-api.ts` と `apps/desktop/src/preload/channels.ts` の現状を確認し、`cancelGeneration` メソッド追加と `ALLOWED_INVOKE_CHANNELS` 登録の要件・受け入れ基準を固定する。
-
-> **追記（2026-04-16）**: この要件は current worktree で実装済み。以下は当時の要件定義として保持している。
 
 ## 対象ファイルの現状確認
 
@@ -33,15 +31,13 @@
 
 ### 現状の問題
 
-TASK-SW-CANCEL-001 で `IPC_CHANNELS.SKILL_CREATOR_CANCEL` が追加された時点では、以下が未実装だった:
+TASK-SW-CANCEL-001 で `IPC_CHANNELS.SKILL_CREATOR_CANCEL` が追加されたが、以下が未実装:
 
 1. `SkillCreatorAPI` インターフェースに `cancelGeneration` メソッドが存在しない
 2. `safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL)` を呼び出す実装が存在しない
 3. `ALLOWED_INVOKE_CHANNELS` に `SKILL_CREATOR_CANCEL` が未登録
 
 `safeInvoke` は `invokeWithTimeout` → ホワイトリスト検証を行うため、`ALLOWED_INVOKE_CHANNELS` への登録なしに invoke は動作しない。
-
-> **実装状態メモ（2026-04-16時点）**: current worktree では `SkillCreatorAPI.cancelGeneration()` と `ALLOWED_INVOKE_CHANNELS` の登録が実装済み。`IPC_CHANNELS.SKILL_CREATOR_CANCEL` は shared 正本から preload へ伝播し、Renderer から `safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL)` を呼べる状態になっている。
 
 ## 要件
 

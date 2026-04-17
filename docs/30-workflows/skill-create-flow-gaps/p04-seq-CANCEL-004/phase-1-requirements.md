@@ -2,27 +2,23 @@
 
 ## メタ情報
 
-| 項目       | 内容                                     |
-| ---------- | ---------------------------------------- |
-| Phase      | 1                                        |
-| タスクID   | TASK-SW-CANCEL-004                       |
-| 機能名     | skill-creator-cancel-renderer-hook       |
-| 前提Phase  | -（TASK-SW-CANCEL-003 完了が前提）       |
-| 後続Phase  | Phase 2                                  |
-| 作成日     | 2026-04-15                               |
-| ステータス | completed（current worktree で実装済み） |
+| 項目       | 内容                               |
+| ---------- | ---------------------------------- |
+| Phase      | 1                                  |
+| タスクID   | TASK-SW-CANCEL-004                 |
+| 機能名     | skill-creator-cancel-renderer-hook |
+| 前提Phase  | -（TASK-SW-CANCEL-003 完了が前提） |
+| 後続Phase  | Phase 2                            |
+| 作成日     | 2026-04-15                         |
+| ステータス | pending                            |
 
 ## 目的
 
 `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` の現状を確認し、`cancelGeneration()` への IPC 呼び出し追加の要件と受け入れ基準を固定する。
 
-> **追記（2026-04-16）**: current worktree では `cancelGeneration()` の async 化と IPC 呼び出し、ならびに cancel-like error の抑制まで実装済み。以下は当時の要件定義として保持している。
-
 ## 背景
 
 `useCancelGeneration.ts` の `cancelGeneration()` は現在 Renderer 内の `AbortController.abort()` と `setStage("cancelled")` を呼び出すのみ。IPC 経由でメインプロセスに通知する仕組みがなく、バックグラウンド処理が継続する問題がある。TASK-SW-CANCEL-001〜003 により IPC 4層の基盤が整備されたため、本タスクで Renderer 側の呼び出しを追加することで問題が解消される。
-
-> **実装状態メモ（2026-04-16時点）**: current worktree では `cancelGeneration` の async 化、`await window.skillCreatorAPI?.cancelGeneration?.()`、IPC 失敗の swallow まで実装済み。`SkillCreateWizard` と store 側の cancel-like error 分岐も含めて、Renderer からの cancel 動作は current facts に追従している。
 
 ## 実行タスク
 

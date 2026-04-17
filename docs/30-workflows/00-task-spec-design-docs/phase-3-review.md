@@ -329,11 +329,3 @@ Phase 2 で明示した以下の2点を `TASK-SW-CANCEL-003` の固定 scope と
 確定: 下記 9 件を Phase 4 以降の基準タスク ID として固定する。
 
 Phase 1・2・3 の設計書3ファイルにより、実装タスク仕様書（Phase 4 以降）の作成に必要な情報が揃った状態である。
-
----
-
-## 実装反映メモ（2026-04-16）
-
-- `TASK-SW-CANCEL-001`〜`TASK-SW-CANCEL-004` は current worktree で実装済み
-- `SkillCreatorService` の abort 伝播、Preload whitelist/API、Main handler、Renderer hook まで cancel chain は接続済み
-- `pnpm typecheck` と対象 vitest は PASS しており、設計で確認した 4 層の整合性は実装後も維持されている

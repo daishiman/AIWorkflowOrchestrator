@@ -2,27 +2,23 @@
 
 ## メタ情報
 
-| 項目       | 内容                                     |
-| ---------- | ---------------------------------------- |
-| Phase      | 1                                        |
-| タスクID   | TASK-SW-CANCEL-003                       |
-| 機能名     | skill-creator-cancel-main-handler        |
-| 前提Phase  | -（TASK-SW-CANCEL-002 完了が前提）       |
-| 後続Phase  | Phase 2                                  |
-| 作成日     | 2026-04-15                               |
-| ステータス | completed（current worktree で実装済み） |
+| 項目       | 内容                               |
+| ---------- | ---------------------------------- |
+| Phase      | 1                                  |
+| タスクID   | TASK-SW-CANCEL-003                 |
+| 機能名     | skill-creator-cancel-main-handler  |
+| 前提Phase  | -（TASK-SW-CANCEL-002 完了が前提） |
+| 後続Phase  | Phase 2                            |
+| 作成日     | 2026-04-15                         |
+| ステータス | pending                            |
 
 ## 目的
 
 `SkillCreatorService.ts` および `skillCreatorHandlers.ts` の現状を確認し、キャンセル処理実装の要件と受け入れ基準を固定する。特に `useCancelGeneration.startGeneration()` の `AbortSignal` 戻り値の利用箇所を調査し、接続ロジックへの影響を評価する。
 
-> **追記（2026-04-16）**: current worktree では `SkillCreatorService` と `skillCreatorHandlers` の cancel 接続が実装済み。以下は当時の要件定義として保持している。
-
 ## 背景
 
 TASK-SW-CANCEL-002 で Preload 層の `cancelGeneration` が確立された。メインプロセス側では `SKILL_CREATOR_CANCEL` チャンネルのハンドラーが存在しないため、キャンセル invoke がメインに届いても何も処理されない。本タスクでハンドラーを実装することで IPC 4層の層3が完成する。
-
-> **実装状態メモ（2026-04-16時点）**: current worktree では `currentAbortController` プロパティ・`cancelCurrentOperation()` メソッド・`SKILL_CREATOR_CANCEL` ハンドラー・`unregisterSkillCreatorHandlers()` の `removeHandler` まで実装済み。`useCancelGeneration.startGeneration()` の `AbortSignal` 利用箇所も確認済みで、Renderer からの cancel 通知が main へ届く状態になっている。
 
 設計レビュー（phase-3-review.md 3.2・3.3節）により、以下の2点がスコープに追加されている:
 

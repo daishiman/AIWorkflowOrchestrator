@@ -15,7 +15,6 @@
 ## 目的
 
 ビルド確認・型チェックを実施し、定数追加が shared パッケージ全体に正しく伝播していることを確認する。
-UI/UX変更はないため、スクリーンショット取得は対象外とする。
 
 ## 実行手順
 
@@ -45,10 +44,6 @@ grep -rn "SKILL_CREATOR_CANCEL" packages/shared/
 grep -rn "SKILL_CREATOR_CANCEL" apps/desktop/src/preload/
 # → この時点では存在しないことを確認（CANCEL-002 実施前）
 ```
-
-### 5. 視覚検証の扱い
-
-UI/UX 変更がないため、`outputs/phase-11/screenshots/` の追加・更新は不要。
 
 ## 統合テスト連携【必須】
 
