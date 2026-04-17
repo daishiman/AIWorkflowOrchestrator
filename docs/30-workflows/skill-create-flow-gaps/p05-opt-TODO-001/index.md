@@ -25,7 +25,7 @@
 
 ### 背景
 
-スキル作成フロー連動調査（`docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/`）の Phase 1 分析により、`ConversationRoundStep.tsx:456` に以下の TODO コメントが存在することが判明した。
+スキル作成フロー連動調査（`docs/30-workflows/00-task-spec-design-docs/`）の Phase 1 分析により、`ConversationRoundStep.tsx:456` に以下の TODO コメントが存在することが判明した。
 
 ```typescript
 // TODO(UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001): 主ツールバッジ - resolveExternalIntegration の主ツール参照ロジック変更後に削除
@@ -74,9 +74,9 @@ const isMainTool = shouldShowMainToolBadge({
 
 本仕様書のコマンド選定は以下を参照：
 
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-1-analysis.md` - 問題4の現状分析
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
-- `docs/30-workflows/skill-create-flow-gaps/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー
+- `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md` - 問題4の現状分析
+- `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md` - 解決策設計
+- `docs/30-workflows/00-task-spec-design-docs/phase-3-review.md` - 設計レビュー
 - `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` - 修正対象ファイル
 - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` - resolveExternalIntegration 実装
 

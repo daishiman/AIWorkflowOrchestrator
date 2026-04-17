@@ -1109,6 +1109,7 @@ export function registerAllIpcHandlers(
       skillCreatorService,
       runtimeSkillCreatorService,
       outputHandler,
+      () => skillService.cancelCurrentSkillCreation(),
     );
   });
 
