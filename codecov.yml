@@ -46,3 +46,7 @@ flags:
     paths:
       - apps/desktop/
     carryforward: true
+  backend:
+    paths:
+      - apps/backend/
+    carryforward: true

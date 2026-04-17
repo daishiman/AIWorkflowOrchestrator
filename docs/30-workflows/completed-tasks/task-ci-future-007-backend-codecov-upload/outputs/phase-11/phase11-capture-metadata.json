@@ -1,0 +1,8 @@
+{
+  "taskId": "TASK-CI-FUTURE-007",
+  "phase": 11,
+  "captureMode": "NON_VISUAL",
+  "reason": "GitHub Actions CI と Codecov の設定変更検証であり、UI/UX の画面差分が発生しないため。CI 実運用ログは未取得なので workflow 条件は静的確認で代替する。",
+  "evidenceTypes": ["cli", "workflow-static-check", "coverage-report"],
+  "createdAt": "2026-04-16"
+}
