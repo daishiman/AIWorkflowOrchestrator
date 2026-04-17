@@ -31,6 +31,39 @@ TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメ�
 
 TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
 
+## 2026-04-17 TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION
+
+### 変更内容
+- interfaces-agent-sdk-skill-reference-share-debug-analytics.md にLLM統合型定義を追記
+  - ILLMClient, LLMQueryResult, DocErrorCode 型定義
+  - DocErrorCode → DocError コードマッピングテーブル
+  - ILLMDocQueryAdapter インターフェース
+  - LLMQueryFn 型（SkillDocGenerator DI注入用）
+- api-ipc-agent-details.md に skill:generate-docs IPC チャネルを追記（未記載だったため追加）
+
+### 苦戦箇所（Lessons Learned）
+1. **エラーサニタイゼーション**: sanitizeErrorMessage()でElectron main processからrendererへのエラー情報漏洩を防止。スタックトレース・パス・IPアドレス・機密情報をパターンマッチングで除去
+2. **非同期APIキー解決**: ApiKeyResolver = () => string | null | Promise<string | null> パターンで同期/非同期両方に対応。authKeyService.getKey()をクロージャで渡す
+3. **タイムアウト実装**: Promise.race() + setTimeout() パターン。finallyブロックでのタイムアウトIDクリーンアップが重要
+4. **Stub検出パターン**: "Generated content for:" という監視文字列でstubと実装を区別。テスト時と実装時の境界を明確化
+
+---
+
+## 2026-04-17 - UT-9I-001 current reference sync
+
+### 変更内容
+
+- `references/task-workflow.md` / `task-workflow-completed.md` / `task-workflow-backlog.md` を `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` の current reference に同期
+- `references/api-ipc-agent-details.md` の `stubQueryFn` 表記を `LLMDocQueryAdapter` / `AnthropicProvider` / `DocErrorCode` の current path に置換
+- `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` に UT-9I-001 current reference セクションを追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を current reference の追加に合わせて更新
+
+### 背景
+
+UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/` に移行したため、completed / backlog / API / interface / index を同波で current facts に揃えた。
+
+---
+
 ## 2026-04-16 - TASK-SW-STREAM-001 Phase-12 close-out sync
 
 ### 変更内容
