@@ -3,23 +3,6 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-
-## 2026-04-16 - TASK-SC-IMP-CREATE-WORKFLOW-001 runCreateWorkflow create モード実装の知見を SKILL.md へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: impl-spec-to-skill-sync
-- **Result**: success
-- **Notes**:
-  - `runCreateWorkflow` の空実装を `resourceLoader.loadAgent('analyze-request').catch(() => null)` パターンで実装。create モードの入口で Markdown prompt string を読み込む current contract を確立
-  - `ResourceLoader.loadAgent()` は Agent オブジェクトではなく `Promise<string>` を返すという非自明な制約を SKILL.md に明示
-  - フォールバック設計: `loadAgent` 失敗時は `null` にして `createSkill` 後続処理を継続（壊さない設計）
-  - `options.description` は downstream の `init_skill.js --description` にそのまま維持する（system spec 変更なし）
-  - 苦戦箇所: 旧 Agent オブジェクト呼び出し前提（`run()` 等）を完全に廃止し、string prompt 扱いに統一するのが判断の核心
-  - system spec 更新は no-op（public interface / IPC / state contract に変更なし）
-  - `SKILL.md` に `create モードの入口実装（TASK-SC-IMP-CREATE-WORKFLOW-001）` セクションを追加
-
----
-
 ## 2026-04-14 - TASK-SW-FIX-UI-001 SkillCreateWizard UI整合性修正の実装知見を反映
 
 - **Agent**: skill-creator (update)
@@ -34,7 +17,6 @@
   - resource-map.md / task-workflow-completed-recent-2026-04f.md / LOGS.md を同波で更新
 
 ---
-
 ## 2026-04-03 - UT-UIUX-VISUAL-BASELINE-DRIFT-001 の dark-mode baseline drift 再利用知見を SKILL / template へ反映
 
 - **Agent**: skill-creator (update)
@@ -47,7 +29,6 @@
   - `SKILL.md` の Phase 12 再監査ショートカットに `theme lock → screenshot evidence → docs/spec sync` を追加し、`SCREENSHOT + outputs` 優先の順序を明示
 
 ---
-
 ## 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ実装の SKILL.md 反映
 
 - **Agent**: skill-creator (update)
@@ -61,7 +42,6 @@
   - Phase 12 compliance check PASS、typecheck PASS、diff -qr mirror PASS
 
 ---
-
 ## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
 
 - **Agent**: skill-creator (update)
@@ -73,7 +53,6 @@
   - completed workflow path migration と同 wave で skill feedback / LOGS / mirror parity を閉じる current pattern を補強
 
 ---
-
 ## 2026-03-27 - UT-EXEC-01 の docs-only close-out guard を pattern/update-process へ反映
 
 - **Agent**: skill-creator (update)
@@ -84,7 +63,6 @@
   - `references/update-process.md` に、docs-only close-out でも blocker/backlog dedup の前段で anchor path 確認と current/baseline 分離を行う lane を追加
 
 ---
-
 ## 2026-03-27 - UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期を Phase 12 template へ反映
 
 - **Agent**: skill-creator (update)
@@ -96,7 +74,6 @@
   - Phase 12 retrospective で `open set` と `done set` を混在記述する場合は status を明示し、false green な「全件 new」表記を避ける
 
 ---
-
 ## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
 
 - **Agent**: skill-creator (update)
@@ -108,7 +85,6 @@
   - `assets/phase12-system-spec-retrospective-template.md` に internal hardening 判定行を追加し、Task 12-2 の誤判定をテンプレート入口で防止
 
 ---
-
 ## 2026-03-27 - TASK-SDK-04 の Phase 12 evidence reclassification を template へ反映
 
 - **Agent**: skill-creator (update)
@@ -119,7 +95,6 @@
   - docs-heavy walkthrough と representative screenshot follow-up を分離して記録する運用を標準化した
 
 ---
-
 ## 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の shallow PASS 防止を template へ反映
 
 - **Agent**: skill-creator (update)
@@ -131,7 +106,6 @@
   - spec_created close-out でも review board fallback と implementation guide Part 2 の薄い記述を false green にしない template 入口を整備
 
 ---
-
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の close-out パターンを template/pattern へ反映
 
 - **Agent**: skill-creator (update)
@@ -143,7 +117,6 @@
   - `.claude` completed ledger / lessons / quick-reference / resource-map 更新後に mirror sync と `diff -qr` まで閉じる運用を再確認
 
 ---
-
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 運用知見を template へ反映
 
 - **Agent**: skill-creator (update)
@@ -156,7 +129,6 @@
   - LOGS.md + SKILL.md 同時更新
 
 ---
-
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 stale-fact cleanup ルールを反映
 
 - **Agent**: skill-creator (update)
@@ -168,7 +140,6 @@
   - failure lifecycle 系の Phase 12 で起きた shallow compliance / future sync target 放置を再発防止パターンとして昇格した
 
 ---
-
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 close-out drift を template へ反映
 
 - **Agent**: skill-creator (update)
@@ -180,7 +151,6 @@
   - source unassigned task の status と completed workflow root を同一ターンで整合させる close-out 観点をテンプレートへ昇格
 
 ---
-
 ## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
 
 - **Agent**: skill-creator (update)
@@ -193,7 +163,6 @@
   - LOGS.md + SKILL.md 同時更新
 
 ---
-
 ## 2026-03-26 - TASK-SDK-01 hardening sync を skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -205,7 +174,6 @@
   - `SKILL.md` の変更履歴を更新し、Phase 12 再利用時の入口から辿れるようにした
 
 ---
-
 ## 2026-03-26 - TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を template へ反映
 
 - **Agent**: skill-creator (update)
@@ -218,7 +186,6 @@
   - LOGS.md + SKILL.md 同時更新
 
 ---
-
 ## 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI スキルフィードバック反映
 
 - **Agent**: skill-creator (update)
@@ -244,7 +211,6 @@
   - docs-heavy / completed / spec_created の再監査で「同期してから検証する」手順を明文化した
 
 ---
-
 ## 2026-03-19 - UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映
 
 - **Agent**: skill-creator (update)
@@ -257,7 +223,6 @@
   - `SKILL.md` の変更履歴を更新し、再利用時の入口から辿れるようにした
 
 ---
-
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期ドリフト防止パターンを追加
 
 - **Agent**: skill-creator (update)
@@ -269,7 +234,6 @@
   - planned wording（`実行予定` / `後続タスクで実施`）を残したまま完了判定しない失敗パターンを明示
 
 ---
-
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 same-wave system spec 同期パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -281,7 +245,6 @@
   - `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` の最終検証チェーンを明示し、docs-heavy 再監査の手戻りを減らす
 
 ---
-
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク root 配置ガードを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -293,7 +256,6 @@
   - task-spec 由来の `3.5 実装課題と解決策` 継承を含め、同種タスクの再利用性を強化
 
 ---
-
 ## 2026-03-14 - Phase12 再確認での「既存未タスク再参照 + target監査」パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -305,7 +267,6 @@
   - 実運用で検出した `task-fix-worktree-native-binary-guard-001.md` の9見出し是正事例を再利用可能なテンプレート改善知見として記録
 
 ---
-
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
 
 - **Agent**: skill-creator (update)
@@ -317,7 +278,6 @@
   - `SKILL.md` 変更履歴を `10.37.42` に更新し、差分の追跡可能性を確保
 
 ---
-
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD onboarding template profile を skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -329,7 +289,6 @@
   - `references/resource-map.md` の asset 説明も onboarding profile に追従させ、template 入口から capability を辿れるようにした
 
 ---
-
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up contract drift パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -341,7 +300,6 @@
   - 必要時は `audit-unassigned-tasks --json --diff-from HEAD --target-file <task-file>` を個別品質ゲートとして使う方針を cross-skill pattern に還元した
 
 ---
-
 ## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認知見を skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -354,7 +312,6 @@
   - `references/resource-map.md` と `SKILL.md` を同期し、template capability を入口から辿れるようにした
 
 ---
-
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
 
 - **Agent**: skill-creator
@@ -366,7 +323,6 @@
   - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow sweep profile を同期し、入口から template capability を辿れるようにした
 
 ---
-
 ## 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 の Phase 12 root evidence パターンを skill-creator へ反映
 
 - **Agent**: skill-creator
@@ -378,7 +334,6 @@
   - `verify-unassigned-links` は親 `task-workflow.md` 指定時に sibling `task-workflow*.md` をまとめて監査する、という template 前提を固定
 
 ---
-
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator
@@ -390,7 +345,6 @@
   - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
 
 ---
-
 ## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -403,7 +357,6 @@
   - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
 
 ---
-
 ## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
 
 - **Agent**: skill-creator
@@ -415,7 +368,6 @@
   - `references/resource-map.md` のテンプレート説明も更新し、PreviewPanel / QuickFileSearch 系タスクで読むべき template capability を入口から辿れるようにした
 
 ---
-
 ## 2026-03-11 - TASK-UI-04C の Phase 12 本文 stale 防止パターンを skill-creator へ反映
 
 - **Agent**: skill-creator
@@ -427,7 +379,6 @@
   - task-specification-creator 側 checklist / patterns と整合する meta-skill の再利用知見として固定
 
 ---
-
 ## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 validator厳密化パターン反映
 
 - **Agent**: skill-creator (update)
@@ -439,7 +390,6 @@
   - `assets/phase12-task-spec-recheck-template.md` へ同条件（Part 1 キーワード明示 + H2見出し固定）を反映し、再監査の取りこぼしを削減
 
 ---
-
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
 
 - **Agent**: skill-creator (update)
@@ -451,7 +401,6 @@
   - `assets/phase12-spec-sync-subagent-template.md` に Light Mode 専用 `SubAgent-L1..L4` を追加し、design-system / components / task-workflow / lessons の関心分離をテンプレート化した
 
 ---
-
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog ルール反映
 
 - **Agent**: skill-creator (update)
@@ -463,7 +412,6 @@
   - 親 workflow を `completed-tasks/` へ移した後も、child backlog の参照先が root `unassigned-task/` と混線しない完了条件へ整理
 
 ---
-
 ## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 パターン/テンプレート同期
 
 - **Agent**: skill-creator (update)
@@ -476,7 +424,6 @@
   - `SKILL.md` 変更履歴を APIKEY 系で同期
 
 ---
-
 ## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 再確認パターン追補
 
 - **Agent**: skill-creator (update)
@@ -488,7 +435,6 @@
   - 再確認時の誤判定（baselineを今回差分FAILと誤認）を防ぐ導線を強化
 
 ---
-
 ## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成ルールを skill-creator へ追補
 
 - **Agent**: skill-creator (update)
@@ -500,7 +446,6 @@
   - system spec 単体でも短手順で再利用できる file formation を UI task の標準形として明文化した
 
 ---
-
 ## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 backlog 分離報告を skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -512,7 +457,6 @@
   - `baselineViolations>0` 時は `unassigned-task-detection.md` に既存 remediation task 参照を残す完了条件を明文化し、Phase 12 の過剰な楽観報告を防ぐ
 
 ---
-
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW UI domain spec テンプレート最適化
 
 - **Agent**: skill-creator (update)
@@ -524,7 +468,6 @@
   - `references/patterns.md` に TASK-UI-06 由来の「UI domain spec は主目的 + 状態契約 + 画面証跡を先に固定する」パターンを追加
 
 ---
-
 ## 2026-03-11 - TASK-UI-07 を踏まえた Phase 12 UIテンプレート最適化
 
 - **Agent**: skill-creator
@@ -536,7 +479,6 @@
   - UI current workflow では `ui-ux-components.md` にも実装内容と苦戦箇所サマリーを残すルールを追加
 
 ---
-
 ## 2026-03-11 - TASK-UI-07 Phase 12 再監査で dual skill-root mirror sync パターンを追加
 
 - **Agent**: skill-creator
@@ -547,7 +489,6 @@
   - `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に canonical root と mirror sync の両方を残すルールを固定
 
 ---
-
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW の canonical root パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -559,7 +500,6 @@
   - task-specification-creator 側の Phase 12 guide 改善と合わせて、cross-skill 参照の root drift を再発防止パターンへ昇格
 
 ---
-
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 パターン反映
 
 - **Agent**: skill-creator
@@ -571,7 +511,6 @@
   - クイックナビゲーション IPC ドメインを更新
 
 ---
-
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12 再監査テンプレート追補
 
 - **Agent**: skill-creator
@@ -583,7 +522,6 @@
   - `verify-unassigned-links` を `missing=0` まで閉じ、exact counts を outputs/task-workflow へ同値転記する運用を再強化
 
 ---
-
 ## [2026-03-10 - TASK-UI-03 の system spec 反映先マトリクスを skill-creator へ追加]
 
 - **Agent**: skill-creator (update)
@@ -595,7 +533,6 @@
   - `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-design-system.md` を含む UI 反映先マトリクスを追加し、1仕様書=1関心の分担を明示した
 
 ---
-
 ## [2026-03-10 - TASK-UI-03 再監査で skill-creator の Phase 12 template drift を是正]
 
 - **Agent**: skill-creator (update)
@@ -607,7 +544,6 @@
   - UI再監査で見つかった light theme 所見を design system 未タスクへ formalize する導線を再利用可能な形で残した
 
 ---
-
 ## [2026-03-10 - TASK-UI-04A Workspace UI 再監査パターンを skill-creator へ反映]
 
 - **Agent**: skill-creator (update)
@@ -620,7 +556,6 @@
   - `SKILL.md` 変更履歴を `10.37.22` として同期
 
 ---
-
 ## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]
 
 - **Agent**: skill-creator (update)
@@ -745,16 +680,13 @@
   - `SKILL.md` 変更履歴を `10.37.13` として同期
 
 ---
-
 ## [2026-03-07 - TASK-10A-F Store駆動スキルライフサイクルUI統合の仕様同期]
-
 - **Phase**: cross-skill-improvement
   - `arch-state-management.md` に TASK-10A-F セクション追加（Case B方式、状態分類テーブル、isMountedRef廃止）
   - `lessons-learned.md` に苦戦箇所5件と簡潔解決カードを追加
   - `architecture-implementation-patterns.md` に S19（直接IPC→Store移行パターン）を追加
   - `task-workflow.md` に完了記録を追加
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
-
 ## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
 
 - **Agent**: skill-creator (update)
@@ -2530,7 +2462,6 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - Phase 12 の same-wave sync では outputs 生成だけでなく、report と unassigned-task の記述ドリフト除去まで同一ターンで閉じる運用を標準化
 
 ---
-
 ## 2026-03-29 - TASK-RT-06 Phase 12 close-out drift 是正パターンを適用
 
 - **Agent**: skill-creator (update)
@@ -2539,14 +2470,4 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - RT-06 で発生した Phase 12 ドリフト（Part 1/Part 2 欠落、Phase 11 N/A 証跡不足、判定矛盾）を same-wave で修正
   - `implementation-guide` は Part 1/Part 2 の2層必須要件で再構成し、Phase 11 は `N/A + checklist/issues` の補助証跡を必須化
-
-## TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 実装知見反映 (2026-04-16)
-
-**反映内容**: `generate_skill_md.js` の呼び出しパターンと create モードの current facts をLOGSに記録
-
-**知見**:
-- `generate_skill_md.js --plan` に渡すJSONは `workflow` 形式: `{ skillName, workflow: { summary, anchors, trigger, phases, tasks } }`
-- `StructurePlanJson` から `workflow` 形式への変換は `SkillCreatorService.generateSkillMd()` が担当
-- create モードの `purpose` は `options.description` を使用（LLM推論は別タスク `TASK-SC-LLM-PURPOSE-WIRE-001` で対応予定）
-- tmp file cleanup: `fs.unlink().catch(() => {})` でnon-fatal化
   - 環境 blocker（esbuild mismatch）は PASS 扱いせず未タスクへ formalize する運用を再確認

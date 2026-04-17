@@ -363,6 +363,9 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_GET_VERIFY_DETAIL: "skill-creator:get-verify-detail",
   SKILL_CREATOR_REVERIFY_WORKFLOW: "skill-creator:reverify-workflow",
 
+  // TASK-SW-CANCEL-002: スキル生成キャンセルチャンネル
+  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
+
   // SDK Message 正規化 (TASK-RT-06)
   SKILL_CREATOR_NORMALIZE_SDK_MESSAGES: "skill-creator:normalize-sdk-messages",
 
@@ -376,9 +379,6 @@ export const IPC_CHANNELS = {
 
   // Governance / Permission / Hooks (TASK-P0-09)
   SKILL_CREATOR_GET_GOVERNANCE_STATE: "skill-creator:get-governance-state",
-
-  // Skill Creator cancel (TASK-SW-CANCEL-002: shared チャネル定義との整合)
-  SKILL_CREATOR_CANCEL: "skill-creator:cancel",
 
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
@@ -678,8 +678,6 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
-  // TASK-SW-CANCEL-002: キャンセルチャンネルをホワイトリストに追加
-  IPC_CHANNELS.SKILL_CREATOR_CANCEL,
   IPC_CHANNELS.SKILL_CREATOR_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
@@ -714,6 +712,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_DEBUG,
   IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
   IPC_CHANNELS.SKILL_CREATOR_STATS,
+  // Skill Creator cancel channel (TASK-SC-CANCEL-001: 将来実装予定)
+  IPC_CHANNELS.SKILL_CREATOR_CANCEL,
   // Skill file operations (TASK-9A-B)
   IPC_CHANNELS.SKILL_READ_FILE,
   IPC_CHANNELS.SKILL_WRITE_FILE,
