@@ -122,6 +122,9 @@ Phase 12 で列挙する成果物は、6 つの task outputs と Wave C 引き�
 - [ ] 並列 SubAgent を使った場合は documentation-changelog と unassigned-task-detection の件数を照合した（P59 対策）
 - [ ] `outputs/artifacts.json` とルート `artifacts.json` の同期を確認した（パターン10）
 - [ ] canonical task outputs 6 件と Wave C 引き継ぎサマリー 1 件がそれぞれ命名規約に従っていることを確認した（パターン11）
+- [ ] `LOGS.md` 2ファイル更新済み（`aiworkflow-requirements/LOGS.md` + `task-specification-creator/LOGS.md`）（L-CANCEL-004 由来）
+- [ ] `topic-map.md` 更新要否を確認し、必要な場合は `generate-index.js` を実行した
+- [ ] テストファイルの追加・修正があれば `documentation-changelog.md` に記録した（専用ファイル + 既存ファイル修正の2点セット）
 
 ## パターン12: shared constant 追加タスク（non-visual）の最小単位
 
