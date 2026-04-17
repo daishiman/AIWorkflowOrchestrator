@@ -9,7 +9,7 @@
 | 対象機能   | TASK-SW-STREAM-001           |
 | 前提Phase  | Phase 8: リファクタリング    |
 | 次Phase    | Phase 10: 最終レビューゲート |
-| ステータス | 未実施                       |
+| ステータス | 完了                         |
 | 作成日     | 2026-04-16                   |
 
 ## 目的
@@ -59,6 +59,11 @@ pnpm --filter @repo/desktop test -- --testPathPattern="SkillCreatorService"
 全ゲートが通過した場合のみ Phase 10 へ進む。
 いずれかが失敗した場合は該当 Phase へ戻り修正する。
 
+## 参照資料
+
+- `outputs/phase-8/TASK-SW-STREAM-001-refactoring-record.md` — リファクタリング記録
+- `outputs/phase-7/TASK-SW-STREAM-001-coverage-report.md` — カバレッジ確認結果
+
 ## 統合テスト連携
 
 - ユニットテストの全件実行結果を品質ゲートとして記録する
@@ -72,19 +77,19 @@ pnpm --filter @repo/desktop test -- --testPathPattern="SkillCreatorService"
 
 ## 完了条件
 
-- [ ] lint が 0 エラーで通過している
-- [ ] typecheck が 0 エラーで通過している
-- [ ] 全テストが Green である
-- [ ] 品質ゲート判定テーブルが埋まっている
+- [x] lint が 0 エラーで通過している
+- [x] typecheck が 0 エラーで通過している
+- [x] 全テストが Green である
+- [x] 品質ゲート判定テーブルが埋まっている
 
 ## タスク100%実行確認【必須】
 
-- [ ] Task 1（lint 実行）を100%実行した
-- [ ] Task 2（typecheck 実行）を100%実行した
-- [ ] Task 3（テスト全件実行）を100%実行した
-- [ ] Task 4（品質ゲート判定）を100%実行した
-- [ ] 成果物（TASK-SW-STREAM-001-quality-report.md）が生成されている
-- [ ] artifacts.json が更新されている
+- [x] Task 1（lint 実行）を100%実行した
+- [x] Task 2（typecheck 実行）を100%実行した
+- [x] Task 3（テスト全件実行）を100%実行した
+- [x] Task 4（品質ゲート判定）を100%実行した
+- [x] 成果物（TASK-SW-STREAM-001-quality-report.md）が生成されている
+- [x] artifacts.json が更新されている
 
 ## 次 Phase
 
