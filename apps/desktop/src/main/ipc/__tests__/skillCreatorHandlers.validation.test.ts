@@ -345,7 +345,7 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
       // 12 (skillCreatorHandlers) + 16 (runtimeCreatorHandlers incl. 4 session mgmt + 1 cleanup + 1 governance + 1 adapter-status)
       // + 2 (TASK-UI-02移管: configure-api / output-overwrite-approved)
       // + 1 (TASK-SC-13: verify)
-      // + 1 (TASK-SW-CANCEL-003: cancel)
+      // + 1 (TASK-SW-CANCEL-002: cancel)
       const expectedChannels = [
         "skill-creator:detect-mode",
         "skill-creator:create",
