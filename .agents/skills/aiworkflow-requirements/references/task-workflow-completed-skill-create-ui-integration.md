@@ -314,7 +314,7 @@
 | タスクID | 概要 |
 | --- | --- |
 | ~~TASK-SC-07~~ | ~~SkillCreateWizard への LLM 生成フロー接続~~ → **完了**（2026-03-25） |
-| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 |
+| ~~TASK-SC-08~~ | ~~onProgress コールバックによるリアルタイムプログレス更新~~ → **完了**（2026-04-16） |
 | TASK-SC-09 | detectMode "improve" モードハンドリング実装 |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 |
@@ -353,7 +353,7 @@
 
 | タスクID | 概要 | 優先度 |
 | --- | --- | --- |
-| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装 | 高 |
+| ~~TASK-SC-07-IPC-CANCEL~~ | ~~skill-creator:cancel IPC送信の実装~~ → **完了**（2026-04-16） | 高 |
 | TASK-SC-07-DEBOUNCE | デバウンス100ms実装 | 中 |
 | TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装 | 中 |
 | TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化 | 中 |

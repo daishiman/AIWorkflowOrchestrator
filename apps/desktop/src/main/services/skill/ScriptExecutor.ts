@@ -9,6 +9,10 @@ import { spawn } from "child_process";
 import path from "path";
 import type { ScriptResult } from "@repo/shared/types";
 
+interface ExecuteOptions {
+  signal?: AbortSignal;
+}
+
 export class ScriptExecutor {
   private readonly scriptsDir: string;
 
@@ -53,10 +57,14 @@ export class ScriptExecutor {
   async execute(
     scriptName: string,
     args: string[],
-    options: { signal?: AbortSignal } = {},
+    options: ExecuteOptions = {},
   ): Promise<ScriptResult> {
     this.validateScriptName(scriptName);
     const scriptPath = path.join(this.scriptsDir, scriptName);
+
+    if (options.signal?.aborted) {
+      return Promise.reject(new DOMException("Aborted", "AbortError"));
+    }
 
     return new Promise((resolve, reject) => {
       if (options.signal?.aborted) {
@@ -139,7 +147,7 @@ export class ScriptExecutor {
   async executeJson<T>(
     scriptName: string,
     args: string[],
-    options: { signal?: AbortSignal } = {},
+    options: ExecuteOptions = {},
   ): Promise<T> {
     const result = await this.execute(scriptName, args, options);
 
