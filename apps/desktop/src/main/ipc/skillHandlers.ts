@@ -94,21 +94,55 @@ interface DocGenerationError extends Error {
   docError?: DocError;
 }
 
-function normalizeDocGenerationError(error: unknown): string {
+interface NormalizedDocGenerationError {
+  error: string;
+  errorCode?: string;
+  retryable?: boolean;
+}
+
+function mapDocErrorCode(docError: DocError): string {
+  switch (docError.code) {
+    case 1001:
+      return "VALIDATION_ERROR";
+    case 2001:
+      return "API_KEY_MISSING";
+    case 2002:
+      return "API_KEY_INVALID";
+    case 3001:
+      return "TIMEOUT";
+    case 3002:
+      return "RATE_LIMIT";
+    case 3003:
+      return "SERVER_ERROR";
+    case 3004:
+      return "NETWORK_ERROR";
+    case 5001:
+    default:
+      return "INTERNAL_ERROR";
+  }
+}
+
+function normalizeDocGenerationError(
+  error: unknown,
+): NormalizedDocGenerationError {
   if (error instanceof Error) {
     const typedError = error as DocGenerationError;
     if (typedError.docError?.message) {
-      return typedError.docError.message;
+      return {
+        error: typedError.docError.message,
+        errorCode: mapDocErrorCode(typedError.docError),
+        retryable: typedError.docError.retryable,
+      };
     }
     if (error.message.startsWith("Skill not found")) {
-      return error.message;
+      return { error: error.message };
     }
     if (error.message.includes("Document generation failed")) {
-      return "Document generation failed";
+      return { error: "Document generation failed" };
     }
   }
 
-  return "Internal error";
+  return { error: "Internal error", errorCode: "INTERNAL_ERROR" };
 }
 
 /**
@@ -1255,7 +1289,7 @@ export function registerSkillDocsHandlers(
         const doc = await skillDocGenerator.generate(generateRequest);
         return { success: true, data: doc };
       } catch (error) {
-        return { success: false, error: normalizeDocGenerationError(error) };
+        return { success: false, ...normalizeDocGenerationError(error) };
       }
     },
   );

@@ -407,13 +407,14 @@ export interface SkillAPI {
  *
  * skillHandlers.ts のハンドラは以下の形式でレスポンスを返す:
  * - 成功: { success: true, data: T }
- * - 失敗: { success: false, error: string }
+ * - 失敗: { success: false, error: string, errorCode?: string, retryable?: boolean }
  */
 interface IpcResult<T> {
   success: boolean;
   data?: T;
   error?: string;
   errorCode?: string;
+  retryable?: boolean;
 }
 
 /**
@@ -444,6 +445,9 @@ async function safeInvokeUnwrap<T>(
     const error = new Error(result.error || `IPC call failed: ${channel}`);
     if (typeof result.errorCode === "string") {
       (error as Error & { code?: string }).code = result.errorCode;
+    }
+    if (typeof result.retryable === "boolean") {
+      (error as Error & { retryable?: boolean }).retryable = result.retryable;
     }
     throw error;
   }

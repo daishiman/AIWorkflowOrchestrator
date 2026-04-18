@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3136,
+  "totalKeywords": 3142,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2494,6 +2494,7 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-feature-components-core.md",
@@ -2632,7 +2633,8 @@
       "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-plan-exec-hardening.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md"
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "PROVIDER": [
       "api-ipc-system-core.md",
@@ -2993,6 +2995,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-verify-contract-consolidation.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "CHANNEL": [
@@ -3764,7 +3767,8 @@
       "arch-state-management-reference-selectors.md",
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "HISTORY": [
       "arch-state-management-core.md",
@@ -5088,7 +5092,8 @@
     ],
     "snapshot": [
       "architecture-rag.md",
-      "lessons-learned-skill-wizard-llm-connection.md"
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "アーキテクチャ概要図": [
       "architecture-rag.md"
@@ -7270,7 +7275,8 @@
       "lessons-learned-current-2026-04-runtime-sdk.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ui-adapter-status-retry.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md"
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "差し替え": [
       "lessons-learned-2026-04-early-part-1.md",
@@ -7737,7 +7743,8 @@
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-line-budget-workflow-consolidation.md"
+      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "INTERFACE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -7972,7 +7979,8 @@
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "sandbox": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -9171,6 +9179,7 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-viewtype-electron-ui.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-agent-execution-core.md",
@@ -9221,7 +9230,8 @@
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-lifecycle-early-b.md"
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "エラー伝搬パス": [
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -9267,12 +9277,14 @@
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md"
     ],
     "out": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-wizard-redesign.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "task-workflow-phases.md"
     ],
@@ -9494,10 +9506,12 @@
     "error": [
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-creator-cancel-chain.md",
-      "quick-reference-search-patterns-ipc-infra.md"
+      "quick-reference-search-patterns-ipc-infra.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "notification": [
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "false": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -9952,13 +9966,15 @@
       "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "AND": [
-      "lessons-learned-skill-plan-exec-hardening.md"
+      "lessons-learned-skill-plan-exec-hardening.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "LOOP": [
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-2026-02-console-migration-patterns.md"
+      "logs-archive-2026-02-console-migration-patterns.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "REMOVE": [
       "lessons-learned-skill-remove-contract.md",
@@ -13882,6 +13898,24 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "カバレッジアップロード対応": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "verifyAndImproveLoop": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ASYNC": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "SNAPSHOT": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "PROPAGATION": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "propagation": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "verification": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "カテゴリ複数選択・ボタン統一・": [

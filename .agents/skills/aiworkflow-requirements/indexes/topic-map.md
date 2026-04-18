@@ -1403,10 +1403,10 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L266 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L281 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L330 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L359 |
+| UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L267 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L282 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L331 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L360 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3237,9 +3237,6 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L153 |
-| クイックリファレンス: カテゴリ別検索ガイド | L173 |
-| 分割ファイル一覧 | L177 |
 | 分割ファイル一覧 | L154 |
 | クイックリファレンス: カテゴリ別検索ガイド | L174 |
 | 分割ファイル一覧 | L178 |
@@ -5081,13 +5078,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L3 |
 | TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L39 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L71 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L15 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L47 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L15 |
-| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001: verifyAndImproveLoop adapter error notification（2026-04-18） | L47 |
-| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001: executeAsync snapshot error propagation verification close-out（2026-04-18） | L79 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L111 |
+| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001: verifyAndImproveLoop adapter error notification（2026-04-18） | L71 |
+| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001: executeAsync snapshot error propagation verification close-out（2026-04-18） | L103 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L135 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5213,27 +5206,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L398 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L418 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L420 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L432 |
-| 完了タスク（2026-03後半） | L460 |
-| 完了タスク（機能別アーカイブ） | L468 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L569 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L371 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L391 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L393 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L405 |
-| 完了タスク（2026-03後半） | L433 |
-| 完了タスク（機能別アーカイブ） | L441 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L542 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L293 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L313 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L315 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L327 |
-| 完了タスク（2026-03後半） | L355 |
-| 完了タスク（機能別アーカイブ） | L363 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L464 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L400 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L420 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L422 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L434 |
+| 完了タスク（2026-03後半） | L462 |
+| 完了タスク（機能別アーカイブ） | L470 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L571 |
 
 ### references/task-workflow-history.md
 
