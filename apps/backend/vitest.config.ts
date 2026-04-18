@@ -9,7 +9,9 @@ export default defineConfig({
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reporter: ["json", "lcov"],
+      reportsDirectory: "./coverage",
+      enabled: !!process.env.VITEST_SHARDED_COVERAGE,
       exclude: ["node_modules/", ".next/", "**/*.config.*"],
     },
   },
