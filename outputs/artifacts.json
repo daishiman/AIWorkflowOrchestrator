@@ -1,180 +1,260 @@
 {
-  "taskId": "TASK-SW-FIX-MODE-MGMT-001",
-  "taskName": "スキルウィザード generationModeラジオボタン廃止・LLM専用化・Step 1スキップ修正",
-  "featureName": "TASK-SW-FIX-MODE-MGMT-001",
-  "created": "2026-04-14T00:00:00Z",
-  "lastUpdated": "2026-04-14T00:00:00Z",
+  "taskId": "TASK-SC-SHARED-TYPE-PROMOTE-001",
+  "featureName": "shared-type-promote",
+  "createdDate": "2026-04-16",
+  "metadata": {
+    "taskId": "TASK-SC-SHARED-TYPE-PROMOTE-001",
+    "taskType": "NON_VISUAL",
+    "issueNumber": 2182,
+    "issueState": "closed",
+    "priority": "LOW",
+    "scale": "小規模",
+    "category": "リファクタリング",
+    "dependencies": ["TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001"]
+  },
   "status": "completed",
+  "completedDate": "2026-04-16",
+  "closureReason": "参照箇所が1ファイルのみ（SkillCreatorService.ts）のため昇格不要・ローカル定義維持でクローズ",
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
       "status": "completed",
-      "specFile": "phase-1-requirements.md",
-      "outputDir": "outputs/phase-1",
+      "completedDate": "2026-04-16",
       "artifacts": [
-        "outputs/phase-1/TASK-SW-FIX-MODE-MGMT-001-requirements.md",
-        "outputs/phase-1/TASK-SW-FIX-MODE-MGMT-001-acceptance-criteria.md",
-        "outputs/phase-1/TASK-SW-FIX-MODE-MGMT-001-impact-analysis.md"
+        {
+          "name": "参照箇所棚卸し結果・昇格判断記録",
+          "path": "outputs/phase-1/reference-inventory.md",
+          "status": "completed"
+        },
+        {
+          "name": "受け入れ基準（AC-1〜AC-5）",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        }
       ]
     },
     {
       "phase": 2,
       "name": "設計",
-      "status": "completed",
-      "specFile": "phase-2-design.md",
-      "outputDir": "outputs/phase-2",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-2/TASK-SW-FIX-MODE-MGMT-001-architecture.md",
-        "outputs/phase-2/TASK-SW-FIX-MODE-MGMT-001-flow-comparison.md",
-        "outputs/phase-2/TASK-SW-FIX-MODE-MGMT-001-test-strategy.md"
+        {
+          "name": "型昇格設計書（条件付き）",
+          "path": "outputs/phase-2/design.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 3,
       "name": "設計レビュー",
-      "status": "completed",
-      "specFile": "phase-3-design-review.md",
-      "outputDir": "outputs/phase-3",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-3/TASK-SW-FIX-MODE-MGMT-001-design-review.md",
-        "outputs/phase-3/TASK-SW-FIX-MODE-MGMT-001-gate-decision.md"
+        {
+          "name": "設計レビュー結果（ゲート判定）",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "completed",
-      "specFile": "phase-4-test-creation.md",
-      "outputDir": "outputs/phase-4",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-4/TASK-SW-FIX-MODE-MGMT-001-test-specification.md",
-        "outputs/phase-4/TASK-SW-FIX-MODE-MGMT-001-red-state-report.md"
+        {
+          "name": "StructurePlanJson compile-time contract test（条件付き・昇格実施の場合）",
+          "path": "packages/shared/src/types/__tests__/skillCreator.contract-parity.test.ts",
+          "status": "skipped",
+          "type": "code",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 5,
       "name": "実装",
-      "status": "completed",
-      "specFile": "phase-5-implementation.md",
-      "outputDir": "outputs/phase-5",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-5/TASK-SW-FIX-MODE-MGMT-001-green-state-report.md",
-        "outputs/phase-5/TASK-SW-FIX-MODE-MGMT-001-implementation-summary.md"
+        {
+          "name": "shared型定義ファイル（条件付き）",
+          "path": "packages/shared/src/types/skillCreator.ts",
+          "status": "skipped",
+          "type": "code",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        },
+        {
+          "name": "shared types barrel re-export（条件付き）",
+          "path": "packages/shared/src/types/index.ts",
+          "status": "skipped",
+          "type": "code",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        },
+        {
+          "name": "SkillCreatorService.ts import修正（条件付き）",
+          "path": "apps/desktop/src/main/services/skill/SkillCreatorService.ts",
+          "status": "skipped",
+          "type": "code",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "completed",
-      "specFile": "phase-6-test-enhancement.md",
-      "outputDir": "outputs/phase-6",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-6/TASK-SW-FIX-MODE-MGMT-001-extended-test-specification.md",
-        "outputs/phase-6/TASK-SW-FIX-MODE-MGMT-001-regression-report.md"
+        {
+          "name": "テスト拡充（エッジケース追加）",
+          "path": "packages/shared/src/types/__tests__/skillCreator.contract-parity.test.ts",
+          "status": "skipped",
+          "type": "code",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "completed",
-      "specFile": "phase-7-coverage.md",
-      "outputDir": "outputs/phase-7",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-7/TASK-SW-FIX-MODE-MGMT-001-coverage-report.md",
-        "outputs/phase-7/TASK-SW-FIX-MODE-MGMT-001-uncovered-analysis.md"
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "completed",
-      "specFile": "phase-8-refactoring.md",
-      "outputDir": "outputs/phase-8",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-8/TASK-SW-FIX-MODE-MGMT-001-refactoring-summary.md"
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "completed",
-      "specFile": "phase-9-quality-assurance.md",
-      "outputDir": "outputs/phase-9",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-9/TASK-SW-FIX-MODE-MGMT-001-quality-assurance-report.md",
-        "outputs/phase-9/TASK-SW-FIX-MODE-MGMT-001-risk-assessment.md"
+        {
+          "name": "品質保証記録（typecheck/lint/test結果）",
+          "path": "outputs/phase-9/qa-results.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 10,
       "name": "最終レビュー",
-      "status": "completed",
-      "specFile": "phase-10-final-review.md",
-      "outputDir": "outputs/phase-10",
+      "status": "skipped",
+      "skipReason": "Phase 1 判断: 参照箇所1ファイルのみ → 昇格不要",
       "artifacts": [
-        "outputs/phase-10/TASK-SW-FIX-MODE-MGMT-001-final-review.md"
+        {
+          "name": "最終レビュー結果（AC-1〜AC-5充足・blocker判定）",
+          "path": "outputs/phase-10/final-review.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "completed",
-      "specFile": "phase-11-manual-testing.md",
-      "outputDir": "outputs/phase-11",
-      "visualType": "VISUAL",
+      "status": "skipped",
+      "skipReason": "NON_VISUAL タスク・昇格不要のため N/A",
       "artifacts": [
-        "outputs/phase-11/manual-test-checklist.md",
-        "outputs/phase-11/manual-test-result.md",
-        "outputs/phase-11/discovered-issues.md",
-        "outputs/phase-11/phase11-capture-metadata.json",
-        "outputs/phase-11/screenshot-plan.json",
-        "outputs/phase-11/screenshots/step-0-no-radio.png",
-        "outputs/phase-11/screenshots/step-1-conversation.png",
-        "outputs/phase-11/screenshots/step-1-questions.png",
-        "outputs/phase-11/screenshots/step-2-generating.png",
-        "outputs/phase-11/screenshots/step-3-complete.png"
+        {
+          "name": "手動テスト結果記録（型チェック・ビルド確認）",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
       ]
     },
     {
       "phase": 12,
       "name": "ドキュメント更新",
       "status": "completed",
-      "specFile": "phase-12-documentation.md",
-      "outputDir": "outputs/phase-12",
+      "completedDate": "2026-04-16",
       "artifacts": [
-        "outputs/phase-12/implementation-guide.md",
-        "outputs/phase-12/system-spec-update-summary.md",
-        "outputs/phase-12/documentation-changelog.md",
-        "outputs/phase-12/handover-summary-wave-c.md",
-        "outputs/phase-12/unassigned-task-detection.md",
-        "outputs/phase-12/skill-feedback-report.md",
-        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+        {
+          "name": "実装ガイド（中学生レベル＋技術者レベル）",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "システム仕様書更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
       ]
     },
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "blocked",
-      "specFile": "phase-13-pr-creation.md",
-      "outputDir": "outputs/phase-13",
-      "artifacts": []
-    }
-  ],
-  "acceptanceCriteria": [
-    "AC-1: Step 0 からラジオボタンが削除されている",
-    "AC-2: generationMode state が SkillCreateWizard.tsx から完全に削除されている",
-    "AC-3: hasActivatedLlmMode state が SkillCreateWizard.tsx から完全に削除されている",
-    "AC-4: Step 0 の「次へ」が常に Step 1（ConversationRoundStep）へ遷移する",
-    "AC-5: Step 1（Q1〜Q6）が LLM モードでもスキップされない",
-    "AC-6: 既存テンプレートモードのテストが全件 PASS または LLM 専用化に伴い適切に更新されている"
-  ],
-  "dependencies": [
-    {
-      "type": "prerequisite",
-      "taskId": "TASK-SW-FIX-DATAFLOW-001",
-      "status": "completed",
-      "description": "Wave A 完了済み。context bridge が先に入っていること"
+      "status": "skipped",
+      "skipReason": "昇格不要・実装コード変更なし → PR不要",
+      "artifacts": [
+        {
+          "name": "PR情報（タイトル案・本文テンプレート）",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "skipped",
+          "conditional": true,
+          "condition": "昇格実施の場合のみ"
+        }
+      ]
     }
   ]
 }

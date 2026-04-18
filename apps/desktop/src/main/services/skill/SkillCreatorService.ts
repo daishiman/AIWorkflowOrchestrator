@@ -57,6 +57,100 @@ type SkillCreatorProgressCallback = (
   progress: SkillCreatorProgressData,
 ) => void;
 
+/**
+ * モード別進捗フロー定義（単一集約）
+ * TASK-SW-STREAM-FUP-03: progress emission contract の所有権を createSkill() に集約
+ */
+const PROGRESS_FLOWS: Record<
+  SkillCreatorMode,
+  readonly SkillCreatorProgressData[]
+> = {
+  create: [
+    { phase: "planning", percentage: 10, message: "構造を計画しています" },
+    {
+      phase: "generating-skill",
+      percentage: 40,
+      message: "SKILL.md を生成しています",
+    },
+    {
+      phase: "generating-agents",
+      percentage: 70,
+      message: "エージェント定義を生成しています",
+    },
+    { phase: "validating", percentage: 90, message: "スキルを検証しています" },
+    { phase: "done", percentage: 100, message: "完了しました" },
+  ],
+  collaborative: [
+    {
+      phase: "interview",
+      percentage: 10,
+      message: "インタビューを実施しています",
+    },
+    { phase: "consensus", percentage: 35, message: "合意形成を行っています" },
+    {
+      phase: "generating-skill",
+      percentage: 60,
+      message: "SKILL.md を生成しています",
+    },
+    {
+      phase: "generating-agents",
+      percentage: 80,
+      message: "エージェント定義を生成しています",
+    },
+    { phase: "validating", percentage: 90, message: "スキルを検証しています" },
+    { phase: "done", percentage: 100, message: "完了しました" },
+  ],
+  orchestrate: [
+    {
+      phase: "engine-selection",
+      percentage: 15,
+      message: "実行エンジンを選択しています",
+    },
+    {
+      phase: "generating-skill",
+      percentage: 45,
+      message: "SKILL.md を生成しています",
+    },
+    {
+      phase: "generating-agents",
+      percentage: 75,
+      message: "エージェント定義を生成しています",
+    },
+    { phase: "validating", percentage: 90, message: "スキルを検証しています" },
+    { phase: "done", percentage: 100, message: "完了しました" },
+  ],
+  update: [
+    {
+      phase: "loading-skill",
+      percentage: 10,
+      message: "スキルを読み込んでいます",
+    },
+    { phase: "analyzing", percentage: 30, message: "分析しています" },
+    {
+      phase: "generating-skill",
+      percentage: 60,
+      message: "SKILL.md を生成しています",
+    },
+    { phase: "validating", percentage: 90, message: "スキルを検証しています" },
+    { phase: "done", percentage: 100, message: "完了しました" },
+  ],
+  "improve-prompt": [
+    {
+      phase: "loading-skill",
+      percentage: 10,
+      message: "スキルを読み込んでいます",
+    },
+    { phase: "analyzing", percentage: 30, message: "分析しています" },
+    {
+      phase: "improving",
+      percentage: 65,
+      message: "プロンプトを改善しています",
+    },
+    { phase: "validating", percentage: 90, message: "スキルを検証しています" },
+    { phase: "done", percentage: 100, message: "完了しました" },
+  ],
+};
+
 export class SkillCreatorService {
   private readonly skillsDir: string;
   private readonly workflowsDir: string;
@@ -235,10 +329,14 @@ export class SkillCreatorService {
     this.currentAbortController = abortController;
     const operationSignal = abortController.signal;
 
-    const emitProgress = (progress: SkillCreatorProgressData): void => {
-      onProgress?.(progress);
+    // TASK-SW-STREAM-FUP-03: progress emission を PROGRESS_FLOWS から解決
+    const flow = PROGRESS_FLOWS[options.mode];
+    const emitProgress = (phase: string): void => {
+      const step = flow.find((s) => s.phase === phase);
+      if (step) {
+        onProgress?.({ ...step });
+      }
     };
-    const shouldEmitCreateProgress = options.mode === "create";
 
     const skillDir = path.join(this.skillsDir, options.name);
     const skillDirExistedBefore = await this.pathExists(skillDir);
@@ -246,26 +344,22 @@ export class SkillCreatorService {
     try {
       this.throwIfAborted(operationSignal);
 
-      // モード別ワークフロー実行
+      // モード別ワークフロー実行（各モードの先頭フェーズを emit してから業務ロジックを呼ぶ）
       let structurePlan: StructurePlanJson | null = null;
-
-      // 段階1: planning（create モード専用のワークフロー開始直前）
-      if (shouldEmitCreateProgress) {
-        emitProgress({
-          phase: "planning",
-          percentage: 10,
-          message: "構造を計画しています",
-        });
-      }
 
       switch (options.mode) {
         case "collaborative":
+          emitProgress("interview");
           await this.runCollaborativeWorkflow(options, operationSignal);
+          emitProgress("consensus");
           break;
         case "orchestrate":
+          emitProgress("engine-selection");
           await this.runOrchestrateWorkflow(options, operationSignal);
           break;
         case "create":
+          // 段階1: planning（create モード固有）
+          emitProgress("planning");
           try {
             structurePlan = await this.runCreateWorkflow(
               options,
@@ -285,23 +379,20 @@ export class SkillCreatorService {
           // AC-2: runCreateWorkflow 完了後、後続処理が正常に続く
           break;
         case "update":
-          // Update workflow
+          emitProgress("loading-skill");
+          emitProgress("analyzing");
           break;
         case "improve-prompt":
-          // Improve prompt workflow
+          emitProgress("loading-skill");
+          emitProgress("analyzing");
+          emitProgress("improving");
           break;
       }
 
       this.throwIfAborted(operationSignal);
 
-      // 段階2: generating-skill（create モード専用）
-      if (shouldEmitCreateProgress) {
-        emitProgress({
-          phase: "generating-skill",
-          percentage: 40,
-          message: "SKILL.md を生成しています",
-        });
-      }
+      // 段階: generating-skill（SKILL.md 生成開始直前・モード別 percentage は PROGRESS_FLOWS で定義）
+      emitProgress("generating-skill");
 
       // スキル初期化
       const initResult = await this.executeScript(
@@ -387,14 +478,8 @@ export class SkillCreatorService {
       }
 
       this.throwIfAborted(operationSignal);
-      // 段階3: generating-agents（create モード専用）
-      if (shouldEmitCreateProgress) {
-        emitProgress({
-          phase: "generating-agents",
-          percentage: 70,
-          message: "エージェント定義を生成しています",
-        });
-      }
+      // 段階: generating-agents（update/improve-prompt では flow に含まれないため no-op）
+      emitProgress("generating-agents");
 
       // タスク仕様書生成（オプション）
       if (options.generateTasks) {
@@ -406,14 +491,8 @@ export class SkillCreatorService {
       }
 
       this.throwIfAborted(operationSignal);
-      // 段階4: validating（create モード専用）
-      if (shouldEmitCreateProgress) {
-        emitProgress({
-          phase: "validating",
-          percentage: 90,
-          message: "スキルを検証しています",
-        });
-      }
+      // 段階: validating（スキル検証開始直前）
+      emitProgress("validating");
 
       // スキル検証
       const isValid = await this.validateSkill(skillDir, operationSignal);
@@ -421,14 +500,8 @@ export class SkillCreatorService {
         throw new Error("Skill validation failed");
       }
 
-      // 段階5: done（create モード専用の完了通知）
-      if (shouldEmitCreateProgress) {
-        emitProgress({
-          phase: "done",
-          percentage: 100,
-          message: "完了しました",
-        });
-      }
+      // 段階: done（完了・全モード共通終端）
+      emitProgress("done");
 
       return skillDir;
     } catch (error) {

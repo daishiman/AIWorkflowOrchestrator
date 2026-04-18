@@ -20,6 +20,22 @@
 - `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、deterministic regenerate 後の索引を current facts へ同期
 - Phase 12 close-out で canonical / mirror を「部分 sync 済み / full sync 未完」に分離して扱う文書へ補正
 
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の変更履歴テーブルに 2026-04-18 エントリを追加（Step 1-D 三区分テンプレート・NON_VISUAL task 固有パスガイド）
+- `SKILL.md` の「ベストプラクティス → すべきこと」に Step 1-D 三区分（未更新 / 再生成のみ / 内容変更あり）と NON_VISUAL 証跡 task 固有パス記録ルールを追記
+
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | skill-feedback 反映                                                                                                      |
+| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
+| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
+| 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
 ## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
 
 ### 変更内容
@@ -38,6 +54,31 @@
 Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
 
 ---
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（lessons-learned 更新）
+
+### 変更内容
+
+- `references/lessons-learned-stream-001-progress-callback.md` に L-STREAM-FUP-03 を追加:
+  - PROGRESS_FLOWS 単一集約パターンの設計知見を記録
+  - 後続タスクテーブルの FUP-03 を「完了（2026-04-18）」に更新し FUP-04（renderer phase mapping）を追加
+- `references/lessons-learned.md` インデックスに `lessons-learned-stream-001-progress-callback.md` を追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の実装知見（PROGRESS_FLOWS SSOT / emitProgress by-name 解決）を lessons-learned に固定。将来モード追加時の参照先として機能させる。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に `TASK-SW-STREAM-FUP-03` の Phase 12 close-out を追加し、`current facts` に昇格
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を台帳へ反映
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` の mode 別 onProgress 詳細化は完了済みだったが、completion ledger と索引が stale だと current facts が欠けるため、台帳・索引・current facts を同波で閉じた。
 
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
@@ -158,6 +199,23 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 
 `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` は `SkillCreateWizard.llm-generation.test.tsx` 削除済み確認タスク。テストファイルのみの変更で外部 contract 変更なしのため system spec 更新は不要。削除済みファイルへの安全な操作パターン・describe.skip クリーンアップ判断フロー・CI 参照検出ルールを lessons-learned として固定し、同種タスクの将来コスト削減につなげた。
 
+## 2026-04-16 - TASK-SC-SHARED-TYPE-PROMOTE-001 完了記録（ローカル定義維持・クローズ）
+
+### 変更内容
+
+- `StructurePlanJson` インタフェースの参照箇所棚卸しを実施
+- 参照箇所は `SkillCreatorService.ts` の 1 ファイルのみ（定義 1 + 利用 5, 合計 6 hits）と確認
+- Phase 1 判断基準「1箇所のみ → ローカル定義維持・即クローズ」に従いタスクをクローズ
+- Phase 2〜13 はすべてスキップ（昇格不要のため）
+- `artifacts.json` のステータスを `completed` に更新
+- Phase 1 / Phase 12 の全成果物を `outputs/` 配下に生成
+
+### 背景
+
+TASK-SC-07 苦戦箇所 C-4（PlanResult 型の二重定義によるシャドウイング）の再発防止として、
+`StructurePlanJson` の所有権を先行して確認する予防的タスク。
+調査の結果、問題なし（1ファイル限定）と確認でき、コード変更なしでクローズとなった。
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
 
 ### 変更内容
@@ -170,6 +228,36 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 ### 背景
 
 `InlineModelSelector` の description 表示は実装済みでも、Phase 11 screenshot 名と completed ledger が stale のままだと current facts にならない。今回の same-wave sync で、complete 化・証跡 canonical 化・索引再生成をまとめて閉じた。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に TASK-CI-FUTURE-007 スキルフィードバック反映エントリを追加
+- `references/lessons-learned-ci-measurement-template-2026-04.md` に L-CI-007-001/002 を追加
+  - L-CI-007-001: CI 設定追加タスクでの `workflow-static-check` カテゴリ記録（CLI 実行 vs YAML 静的確認の分離）
+  - L-CI-007-002: backend flag のような設定追加項目での変更対象・参照対象分離の方針
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートで記録された aiworkflow-requirements 側の 2 件の改善提案を反映した。
+CI 設定変更タスクの Phase 11 証跡で「CLI 実行確認」と「YAML 静的確認」が混在すると信頼性が曖昧になる問題を、lessons-learned として明文化した。
+
+---
+
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に `SkillCreateWizard.llm-generation.test.tsx` 削除済み、`describe.skip` / `TODO(W2-seq-03a)` 0 件、`generate-index.js` 実行、`artifacts.json` parity を current facts として追加
+- `references/task-workflow-completed.md` に同タスクの完了記録を追加
+- `generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
+
+### 背景
+
+UT-W2-03A は current worktree で対象ファイルが既に削除済みだった cleanup。`spec_created` 前提の古い残存参照がないことを確認し、index 再生成と parity 記録まで同 wave で閉じる必要があった。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
 
@@ -194,6 +282,18 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 ### 背景
 
 TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cancel チャンネル追加が完了した。UT-SDK-07（3チャンネル正本化）の後続として CANCEL-001 が4番目を追加した系譜を正本に記録する。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` current facts に TASK-CI-FUTURE-007 を追加し、phase12_completed / phase 11 non-visual / backend codecov flag / artifacts parity / outputs/artifacts.json sync を反映
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、`.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 は backend coverage upload の close-out を completed ledger / recent bundle / topic-map / keywords まで同波で閉じる必要があった。NON_VISUAL かつ phase 11 が画面を持たないため、CLI / CI / coverage / ledger を同一文脈で固定した。
 
 ---
 
@@ -2685,3 +2785,28 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | 4カテゴリ分類で merge policy 設計完了。custom driver bootstrap + session warning + deterministic generate の3層防衛実装 |
 | 検証 | Phase 9/10/11 docs-only validation PASS |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
+
+- `UT-IPC-HANDLER-CI-001` の close-out で、IPC 契約変更なしの `no-op` 判定を維持しつつ、branch current state に合わせて `indexes/topic-map.md` / `indexes/keywords.json` を再生成対象として整理
+- workflow root の `artifacts.json` を `phase12_completed / NON_VISUAL / Phase 13 blocked` へ同期し、`outputs/artifacts.json` parity を追加
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を追加し、`register*Handlers()` への snapshot guard 横展開を大粒度 backlog として formalize
+
+| 項目     | 内容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                            |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
+| 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
+| 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
+
+## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
+
+- `lessons-learned-current-2026-04.md`: L-CRON-SEM-001/002 セクション内の重複 CLM 行（18行）を除去
+- `ui-ux-feature-components-skill-analysis.md`: shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記
+- Phase-12 全タスク（12-1〜12-6）PASS 確認済み。未タスク 0件。system spec 追加更新不要（public contract 追加なし）
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / impl-spec-to-skill-sync                                                         |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
+| 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
+| 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |

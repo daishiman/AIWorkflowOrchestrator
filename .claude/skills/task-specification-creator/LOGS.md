@@ -20,6 +20,39 @@
 - ステータス: success
 - 完了日時: 2026-04-18
 
+## 2026-04-17 - TASK-SC-SHARED-TYPE-PROMOTE-001 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `SKILL.md` の「Phase 12 実行時によくある漏れ」テーブルに **[FB-SC-TYPE-001]**（no-op close タスクで参照ファイル数棚卸し証跡を残さず Phase 12 を閉じる）・**[FB-SC-TYPE-002]**（条件付きタスクの skip Phase を `artifacts.json` で `skipped` 明示しないと phase table が不完全に見える）を追記
+- `SKILL.md` バージョンを v10.09.53 → v10.09.54 に更新
+- 参照: `outputs/phase-12/skill-feedback-report.md` の改善提案 4 件から抽出
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `references/phase-12-documentation-guide.md` に3項目追加（FUP-03 skill-feedback-report 由来）:
+  - `non-visual task` セクションに NON_VISUAL 固定フレーズ（「UI/UX変更なしのため Phase 11 スクリーンショット不要」）を標準化
+  - Phase 11 エビデンスファイル名の canonical 形式（`outputs/phase-11/{TASK-ID}-manual-test-report.md`）を明示化
+  - Phase 12 canonical output 名 6ファイルの単一ソース管理ルールを追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の skill-feedback-report から「NON_VISUAL 文言の固定化」「Phase 11 エビデンス名明示化」「canonical output 名の単一ソース化」の3改善提案を受け、phase-12-documentation-guide へ反映した。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SW-STREAM-FUP-03/phase-12-documentation.md` の close-out を current facts に追加
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を固定
+- `SkillCreatorService.createSkill()` の mode 別 onProgress 詳細化が Phase 12 の正本であることを明記
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` は mode 別 progress flow の close-out が完了済みのため、task-specification-creator 側でも current facts を再同期して、後続の Phase 12 参照が stale にならないようにした。
+
 ## 2026-04-16 - TASK-SW-CANCEL-001〜004 cancel chain impl-spec-to-skill-sync（残フィードバック反映）
 
 ### 変更内容
@@ -102,6 +135,26 @@ TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY の skill-feedback-report（Phase 12 成�
 VISUAL タスクの close-out は、画像ファイル名・metadata・manual-test・implementation guide・completed ledger を同一 wave で揃えないと stale reference が残る。今回の同期で old `TC-11-01` / `TC-11-02` 命名を canonical 名に寄せ、後続の仕様更新で参照先がぶれない状態へ閉じた。
 
 ## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
+## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
+
+### 変更内容
+
+- `references/phase-template-phase12-detail.md` の完了条件に以下を追加
+  - 「`artifacts.json` と `outputs/artifacts.json` の status が一致（parity）している【必須・TASK-CI-FUTURE-007 FB反映】」
+  - 「`NON_VISUAL` タスクでは `## 視覚証跡` セクションを `implementation-guide.md` に追加し代替証跡を明記【必須・TASK-CI-FUTURE-007 FB反映】」
+- `references/patterns-testing.md` に `workflow-static-check` 証跡分類パターンを追加
+  - CLI 実行確認 vs YAML 静的確認の 2 カテゴリ分離方式
+  - backend flag のような設定追加項目での変更対象・参照対象分離の注意事項
+- `SKILL.md` 変更履歴に v10.09.52 エントリを追加
+- `.agents/skills/task-specification-creator/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートに記録された 3 件の改善提案を反映した。
+CI 設定変更タスク（NON_VISUAL）で `## 視覚証跡` セクション・parity チェック・`workflow-static-check` 記録形式が不明確なまま残る再発を防ぐため、テンプレートとパターン集に明文化した。
+
+---
+
 ## 2026-04-16 - TASK-SW-CANCEL-001 スキルフィードバック反映
 
 ### 変更内容
@@ -112,6 +165,18 @@ VISUAL タスクの close-out は、画像ファイル名・metadata・manual-te
 ### 背景
 
 TASK-SW-CANCEL-001（`SKILL_CREATOR_CANCEL` を `SKILL_CREATOR_RUNTIME_CHANNELS` に追加）の Phase 12 スキルフィードバックレポートに記録された改善提案を反映した。non-visual な小粒度タスクで screenshot を探す無駄を防ぐため、定型句とパターンを明文化した。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に TASK-CI-FUTURE-007 の current facts を追加し、`phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync` を反映
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `aiworkflow-requirements/LOGS.md` / `indexes/topic-map.md` / `indexes/keywords.json` / `.agents/skills/task-specification-creator/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 は backend Codecov フラグと Phase 11 NON_VISUAL 証跡、台帳 parity を同波で閉じる必要があった。task-specification-creator 側も current facts を追従させ、次回の Phase 12 close-out で同じ漏れが再発しないようにした。
 
 ## 2026-04-15 - TASK-CI-FUTURE-003 スキルフィードバック反映（FB-001〜003）
 
@@ -3037,3 +3102,33 @@ IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/
 | 変更対象 | `SKILL.md`（Feedback IPC-MERGE-001 追加）、`LOGS.md`（本エントリ）、`aiworkflow-requirements/LOGS.md`、`topic-map.md`、`lessons-learned-ipc-preload-runtime-2026-04.md` |
 | 結果     | Phase 2 設計にマージ戦略の明示義務とprototype pollution 防止を標準化。deepMerge パターンと安全要件をスキル知見として記録  |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（UT-FIX-STORE-SETTINGS-DEEP-MERGE-001）                                           |                                                                                                                                                     |
+## 2026-04-18 - UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の「Phase 12 実行時によくある漏れ」テーブルに **[FB-IPC-SNAP-001]**（Electron ipcMain snapshot test で `vi.spyOn` 直接適用が不安定 → `vi.hoisted + vi.mock + mockImplementation` パターンを使う）を追記
+- `SKILL.md` の同テーブルに **[FB-IPC-SNAP-002]**（Phase 5 に `--updateSnapshot` 初回生成と既存 snapshot 比較確認を別ステップとして明示する）を追記
+- `SKILL.md` バージョンを v10.09.55 → v10.09.56 に更新
+
+| 項目     | 内容                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| 種別     | skill-feedback 反映 / Pitfall 追加                                                              |
+| 変更対象 | `SKILL.md`（FB-IPC-SNAP-001/002 追加・v10.09.56）、`LOGS.md`（本エントリ）                      |
+| 結果     | Electron IPC snapshot テストの mock 安定化パターンと --updateSnapshot 運用ルールをスキル知見化 |
+| 検証     | validate-phase-output.js PASS / mirror sync 確認済み                                           |
+
+## 2026-04-18 - UT-IPC-HANDLER-CI-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/` の Phase 1〜6 に `統合テスト連携` セクションを補完
+- `artifacts.json` を Phase 1〜12 `completed` / Phase 13 `blocked_awaiting_user_instruction` / `NON_VISUAL` へ同期
+- `phase-12-documentation.md` と Phase 12 outputs の close-out 文言を機械検証に通る表現へ修正
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を formalize
+
+| 項目     | 内容                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | test / CI guard / Phase 12 close-out / NON_VISUAL / workflow sync                                                         |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` |
+| 結果     | close-out の主問題を「コード」ではなく「台帳・仕様・成果物の不整合」と定義し、validator fail 項目と証跡参照の曖昧さを是正 |
+| 検証     | targeted vitest PASS / workflow validator 再実行予定                                                                        |
