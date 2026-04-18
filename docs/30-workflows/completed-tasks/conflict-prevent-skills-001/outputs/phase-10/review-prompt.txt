@@ -1,0 +1,16 @@
+Phase 12 に渡すレビュープロンプト
+==================================
+
+タスク: TASK-CONFLICT-PREVENT-001
+種別: NON_VISUAL / docs-only
+
+確認事項:
+1. outputs/phase-1 〜 outputs/phase-12 の全成果物が存在するか
+2. .gitattributes の indexes/*.md が merge=ours になっているか
+3. generate-index.js から日付ヘッダーが除去されているか
+4. session-init.sh に merge.ours.driver 未設定 warn が入っているか
+5. setup-merge-drivers.sh が存在し実行可能か
+6. Phase 13 が blocked のままか
+
+NON_VISUAL のため screenshot 不要。
+manual-test-result.md を evidence の正本として使用する。

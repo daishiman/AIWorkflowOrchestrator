@@ -381,23 +381,25 @@ node scripts/generate_skill_md.js --plan <plan-json-path> --output <skill-md-pat
 }
 ```
 
-### SkillCreatorService での呼び出しパターン（TASK-SC-FIX-GENERATE-SKILL-MD-001）
+### SkillCreatorService での呼び出しパターン
 
-```typescript
-// temp ファイルを経由して plan JSON を渡す（引数文字数制限を回避）
-const tmpPlanPath = path.join(os.tmpdir(), `skill-plan-${randomUUID()}.json`);
-try {
-  await fs.writeFile(tmpPlanPath, JSON.stringify(plan), "utf-8");
-  const result = await this.scriptExecutor.execute(
-    "generate_skill_md.js",
-    ["--plan", tmpPlanPath, "--output", skillMdPath],
-  );
-} finally {
-  await fs.unlink(tmpPlanPath).catch(() => {}); // non-fatal cleanup
-}
-```
+`create` モードでは `runCreateWorkflow` が返した `structurePlan` を `generateSkillMd` private method 経由でスクリプトに渡す。null 時は `ensureSkillMdExists` にフォールバック（`SkillCreatorService.ts:178`）。
 
-**フォールバック**: スクリプト失敗または出力ファイル不在の場合は `ensureSkillMdExists()` を呼び出す。
+**generateSkillMd の処理フロー**（多層フォールバック）:
+
+1. `StructurePlanJson` → workflow 形式へ変換（purpose → trigger.description, triggers → keywords, anchors → `[]` 補完）
+2. UUID 付き temp ファイルに JSON 書き込み → `generate_skill_md.js --plan <tmp> --output <skillMdPath>` 実行
+3. 成功でも `fs.access` でファイル存在確認（スクリプト成功・ファイル未生成 edge case 対応）
+4. 失敗・ファイル不在 → `ensureSkillMdExists` フォールバック + `finally` で非致命的 unlink
+
+**StructurePlanJson → workflow 変換マッピング**（`SkillCreatorService.ts:36`）:
+
+| StructurePlanJson | workflow 形式 | 変換ルール |
+| --- | --- | --- |
+| `description` | `workflow.summary` | そのまま |
+| `purpose` | `workflow.trigger.description` | `Use when {name} is requested. Purpose: {purpose}` |
+| `triggers \|\| [skillName]` | `workflow.trigger.keywords` | 空 → `[skillName]` |
+| `anchors \|\| []` | `workflow.anchors` | undefined → `[]` |
 
 ---
 

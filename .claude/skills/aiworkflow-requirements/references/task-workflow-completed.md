@@ -6,10 +6,9 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
 - 2026-04-18: `TASK-SW-STREAM-FUP-03` mode-specific-progress-flow-detail（SkillCreatorService の mode 別 onProgress 詳細化 / Phase 12 close-out / NON_VISUAL / Issue #2208 / current facts 追加）
-- 2026-04-18: `TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001` executeAsync snapshot error propagation verification close-out（NON_VISUAL / docs close-out / parity sync）
-- 2026-04-18: `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` verifyAndImproveLoop adapter error notification（Phase 12 close-out / NON_VISUAL / Issue #1959 / Phase 13 blocked）
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
 - 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
 - 2026-04-17: `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` SkillDocGenerator LLM プロバイダ連携実装（LLMClient / AnthropicProvider / stub→本番置換 / Phase 12 close-out / NON_VISUAL / Issue #2245）
@@ -67,6 +66,38 @@
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+
+### タスク: TASK-CONFLICT-PREVENT-001 conflict-prevent-skills-001（2026-04-18）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-CONFLICT-PREVENT-001 |
+| 完了日 | 2026-04-18 |
+| タスク種別 | docs-only / NON_VISUAL / spec_created close-out |
+| 関連Issue | なし |
+| Phase 13 | blocked（ユーザー承認待ち） |
+
+#### 実施内容
+
+- `.gitattributes` で generated index の `merge=union` を `merge=ours` へ是正した
+- `.claude/.agents` の `generate-index.js` から日付ヘッダーを除去し、deterministic regenerate を有効化した
+- `setup-merge-drivers.sh` から `install-git-hooks.sh` を呼ぶようにして、bootstrap と post-merge regenerate 導線を接続した
+- `phase-11/manual-test-result.md` を NON_VISUAL 正本テンプレートへ補正し、Phase 12 summary / compliance-check を same-wave sync へ是正した
+
+#### Phase 11/12 成果物
+
+| 成果物 | パス |
+| --- | --- |
+| 手動テスト結果 | `docs/30-workflows/conflict-prevent-skills-001/outputs/phase-11/manual-test-result.md` |
+| 実装ガイド | `docs/30-workflows/conflict-prevent-skills-001/outputs/phase-12/implementation-guide.md` |
+| system spec 更新要約 | `docs/30-workflows/conflict-prevent-skills-001/outputs/phase-12/system-spec-update-summary.md` |
+| Phase 12 準拠チェック | `docs/30-workflows/conflict-prevent-skills-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- `verify-all-specs.js`: PASS（errors 0 / warnings 33）
+- `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`: partial sync 確認
+- `NON_VISUAL` のため screenshot は N/A
 
 ### タスク: TASK-SW-STREAM-FUP-03 mode-specific-progress-flow-detail（2026-04-18）
 
@@ -714,10 +745,10 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                                     |
 | タイプ           | docs-improvement / runtime follow-up / notification                                                   |
 | 優先度           | 中                                                                                                    |
-| 完了日           | 2026-04-18                                                                                            |
+| 完了日           | 2026-04-06                                                                                            |
 | 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知                      |
-| GitHub Issue     | #1959                                                                                                 |
-| 成果物           | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`   |
+| GitHub Issue     | #1896                                                                                                 |
+| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`                   |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容
@@ -3114,6 +3145,29 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | TASK-SW-CANCEL-002 | `ALLOWED_INVOKE_CHANNELS` への登録・Preload API メソッド追加 |
 | TASK-SW-CANCEL-003 | Main ハンドラー追加                                          |
 | TASK-SW-CANCEL-004 | Renderer フック修正                                          |
+
+### タスク: TASK-SW-CANCEL-002 skill-creator-cancel-preload-api（2026-04-18 close-out audit sync）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-002 |
+| ステータス | **完了（close-out audit 再同期済み）** |
+| タイプ | preload / ipc / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-18 |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts` / `apps/desktop/src/preload/channels.ts` |
+| workflow | `docs/30-workflows/p02-seq-CANCEL-002/` |
+
+#### 実施内容
+
+- `SkillCreatorAPI.cancelGeneration(): Promise<IpcResult<void>>` を preload 公開契約として確認
+- `ALLOWED_INVOKE_CHANNELS` への `IPC_CHANNELS.SKILL_CREATOR_CANCEL` 登録を確認
+- close-out workflow 文書の validator FAIL を解消し、mirror inventory / Phase 11 補助成果物 / 30思考法監査を同期
+
+#### 補足
+
+- current repository facts では Main / Renderer 側も実装済み
+- ただし CANCEL-002 の受入判定は preload 差分の close-out として維持し、後続 workflow spec の stale 化は別問題として切り分ける
 
 #### 苦戦箇所
 
