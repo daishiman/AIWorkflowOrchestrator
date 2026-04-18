@@ -16,9 +16,10 @@
  * TC-09: onProgress の percentage 値が正確に 10/40/70/90/100 であること
  * TC-10: onProgress の message 内容が正確な日本語文字列であること
  * TC-11: onProgress がエラーを投げた場合にそのエラーが伝播すること
- * TC-12: create モード以外（collaborative）では progress が呼ばれないこと
- * TC-13: createSkill がエラーで終了した場合 progress が呼ばれないこと
+ * TC-12: create モード以外（collaborative）でも planning フェーズが呼ばれること
+ * TC-13: createSkill がエラーで終了した場合 done フェーズが呼ばれないこと
  * TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること
+ * TC-15: callback で変更した progress が次回呼び出しに漏れないこと
  */
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
@@ -230,7 +231,7 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
       expect(throwingCallback).toHaveBeenCalledTimes(1);
     });
 
-    it("TC-12: create モード以外（collaborative）では progress が呼ばれないこと", async () => {
+    it("TC-12: collaborative モードで interview フェーズが最初に通知される（FUP-03 挙動）", async () => {
       const collaborativeOptions: CreateSkillOptions = {
         name: "collab-skill",
         description: "Collaborative skill",
@@ -240,10 +241,16 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
 
       await service.createSkill(collaborativeOptions, onProgress);
 
-      expect(onProgress).not.toHaveBeenCalled();
+      expect(onProgress).toHaveBeenCalledWith(
+        expect.objectContaining({ phase: "interview" }),
+      );
+      // planning フェーズは collaborative モードでは通知されない
+      expect(onProgress).not.toHaveBeenCalledWith(
+        expect.objectContaining({ phase: "planning" }),
+      );
     });
 
-    it("TC-13: createSkill がバリデーションエラーで終了した場合 progress が呼ばれないこと", async () => {
+    it("TC-13: createSkill がバリデーションエラーで終了した場合 done フェーズが呼ばれないこと", async () => {
       const invalidOptions: CreateSkillOptions = {
         name: "",
         description: "Test",
@@ -253,7 +260,9 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
       await expect(
         service.createSkill(invalidOptions, onProgress),
       ).rejects.toThrow();
-      expect(onProgress).not.toHaveBeenCalled();
+      expect(onProgress).not.toHaveBeenCalledWith(
+        expect.objectContaining({ phase: "done" }),
+      );
     });
 
     it("TC-14: onProgress に渡されるオブジェクトが毎回新しいオブジェクトであること", async () => {
@@ -267,6 +276,349 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
           expect(objects[i]).not.toBe(objects[j]);
         }
       }
+    });
+
+    it("TC-15: callback で変更した progress が次回呼び出しに漏れないこと", async () => {
+      const firstRunProgresses: Array<{ phase: string }> = [];
+      const mutatingCallback = vi
+        .fn()
+        .mockImplementation((progress: { phase: string }) => {
+          firstRunProgresses.push(progress);
+          progress.phase = "mutated";
+        });
+
+      await service.createSkill(validCreateOptions, mutatingCallback);
+
+      const secondRunProgresses: Array<{ phase: string }> = [];
+      const recordingCallback = vi
+        .fn()
+        .mockImplementation((progress: { phase: string }) => {
+          secondRunProgresses.push(progress);
+        });
+
+      await service.createSkill(validCreateOptions, recordingCallback);
+
+      expect(firstRunProgresses[0].phase).toBe("mutated");
+      expect(secondRunProgresses[0].phase).toBe("planning");
+      expect(secondRunProgresses[0]).not.toBe(firstRunProgresses[0]);
+    });
+  });
+
+  // ===========================================================
+  // TASK-SW-STREAM-FUP-03: モード別進捗フロー詳細化
+  // ===========================================================
+
+  describe("TASK-SW-STREAM-FUP-03: collaborative モード進捗フロー", () => {
+    const collaborativeOptions: CreateSkillOptions = {
+      name: "collab-skill",
+      description: "Collaborative skill",
+      mode: "collaborative",
+      interviewResult: {
+        purpose: "Test skill purpose",
+        features: ["feature1", "feature2"],
+        inputs: ["input1"],
+        outputs: ["output1"],
+        toolsNeeded: ["Read", "Write"],
+        abstractionLevel: "L2",
+      },
+    };
+
+    it("TC-01: interview フェーズが最初に通知される", async () => {
+      await service.createSkill(collaborativeOptions, onProgress);
+      expect(onProgress.mock.calls[0][0].phase).toBe("interview");
+    });
+
+    it("TC-02: consensus フェーズが interview の後に通知される", async () => {
+      await service.createSkill(collaborativeOptions, onProgress);
+      const phases = onProgress.mock.calls.map(
+        (c: [{ phase: string }]) => c[0].phase,
+      );
+      const interviewIdx = phases.indexOf("interview");
+      const consensusIdx = phases.indexOf("consensus");
+      expect(interviewIdx).toBeGreaterThanOrEqual(0);
+      expect(consensusIdx).toBeGreaterThan(interviewIdx);
+    });
+
+    it("TC-03: collaborative モードの percentage が単調増加する", async () => {
+      await service.createSkill(collaborativeOptions, onProgress);
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      for (let i = 1; i < percentages.length; i++) {
+        expect(percentages[i]).toBeGreaterThanOrEqual(percentages[i - 1]);
+      }
+    });
+
+    it("TC-04: collaborative モードで done フェーズが最後に通知される", async () => {
+      await service.createSkill(collaborativeOptions, onProgress);
+      const lastCall =
+        onProgress.mock.calls[onProgress.mock.calls.length - 1][0];
+      expect(lastCall.phase).toBe("done");
+      expect(lastCall.percentage).toBe(100);
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: orchestrate モード進捗フロー", () => {
+    const orchestrateOptions: CreateSkillOptions = {
+      name: "orchestrate-skill",
+      description: "Orchestrate skill",
+      mode: "orchestrate",
+    };
+
+    it("TC-05: engine-selection フェーズが最初に通知される", async () => {
+      await service.createSkill(orchestrateOptions, onProgress);
+      expect(onProgress.mock.calls[0][0].phase).toBe("engine-selection");
+    });
+
+    it("TC-06: orchestrate モードの percentage が単調増加する", async () => {
+      await service.createSkill(orchestrateOptions, onProgress);
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      for (let i = 1; i < percentages.length; i++) {
+        expect(percentages[i]).toBeGreaterThanOrEqual(percentages[i - 1]);
+      }
+    });
+
+    it("TC-07: orchestrate モードで done フェーズが最後に通知される", async () => {
+      await service.createSkill(orchestrateOptions, onProgress);
+      const lastCall =
+        onProgress.mock.calls[onProgress.mock.calls.length - 1][0];
+      expect(lastCall.phase).toBe("done");
+      expect(lastCall.percentage).toBe(100);
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: update モード進捗フロー", () => {
+    const updateOptions: CreateSkillOptions = {
+      name: "update-skill",
+      description: "Update skill",
+      mode: "update",
+    };
+
+    it("TC-08: loading-skill フェーズが最初に通知される", async () => {
+      await service.createSkill(updateOptions, onProgress);
+      expect(onProgress.mock.calls[0][0].phase).toBe("loading-skill");
+    });
+
+    it("TC-09: analyzing フェーズが loading-skill の後に通知される", async () => {
+      await service.createSkill(updateOptions, onProgress);
+      const phases = onProgress.mock.calls.map(
+        (c: [{ phase: string }]) => c[0].phase,
+      );
+      const loadingIdx = phases.indexOf("loading-skill");
+      const analyzingIdx = phases.indexOf("analyzing");
+      expect(loadingIdx).toBeGreaterThanOrEqual(0);
+      expect(analyzingIdx).toBeGreaterThan(loadingIdx);
+    });
+
+    it("TC-10: update モードで done フェーズが最後に通知される", async () => {
+      await service.createSkill(updateOptions, onProgress);
+      const lastCall =
+        onProgress.mock.calls[onProgress.mock.calls.length - 1][0];
+      expect(lastCall.phase).toBe("done");
+      expect(lastCall.percentage).toBe(100);
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: improve-prompt モード進捗フロー", () => {
+    const improvePromptOptions: CreateSkillOptions = {
+      name: "improve-skill",
+      description: "Improve prompt skill",
+      mode: "improve-prompt",
+    };
+
+    it("TC-11: loading-skill フェーズが最初に通知される", async () => {
+      await service.createSkill(improvePromptOptions, onProgress);
+      expect(onProgress.mock.calls[0][0].phase).toBe("loading-skill");
+    });
+
+    it("TC-12: improving フェーズが analyzing の後に通知される", async () => {
+      await service.createSkill(improvePromptOptions, onProgress);
+      const phases = onProgress.mock.calls.map(
+        (c: [{ phase: string }]) => c[0].phase,
+      );
+      const analyzingIdx = phases.indexOf("analyzing");
+      const improvingIdx = phases.indexOf("improving");
+      expect(analyzingIdx).toBeGreaterThanOrEqual(0);
+      expect(improvingIdx).toBeGreaterThan(analyzingIdx);
+    });
+
+    it("TC-13: improve-prompt モードで done フェーズが最後に通知される", async () => {
+      await service.createSkill(improvePromptOptions, onProgress);
+      const lastCall =
+        onProgress.mock.calls[onProgress.mock.calls.length - 1][0];
+      expect(lastCall.phase).toBe("done");
+      expect(lastCall.percentage).toBe(100);
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: create モード回帰確認", () => {
+    it("TC-14: create モードの5段階フローが変わらない（planning → done）", async () => {
+      await service.createSkill(validCreateOptions, onProgress);
+      const phases = onProgress.mock.calls.map(
+        (c: [{ phase: string }]) => c[0].phase,
+      );
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      expect(phases).toEqual([
+        "planning",
+        "generating-skill",
+        "generating-agents",
+        "validating",
+        "done",
+      ]);
+      expect(percentages).toEqual([10, 40, 70, 90, 100]);
+      expect(onProgress).toHaveBeenCalledTimes(5);
+    });
+  });
+
+  // ===========================================================
+  // TASK-SW-STREAM-FUP-03 Phase 6: テスト拡充
+  // ===========================================================
+
+  describe("TASK-SW-STREAM-FUP-03: onProgress 未指定時の安全動作", () => {
+    it("TC-15: collaborative モードで onProgress 未指定でもエラーが発生しない", async () => {
+      const opts: CreateSkillOptions = {
+        name: "collab-no-cb",
+        description: "Test",
+        mode: "collaborative",
+        interviewResult: {
+          purpose: "Test",
+          features: ["f1"],
+          inputs: [],
+          outputs: [],
+          toolsNeeded: [],
+          abstractionLevel: "L2",
+        },
+      };
+      await expect(service.createSkill(opts)).resolves.not.toThrow();
+    });
+
+    it("TC-16: orchestrate モードで onProgress 未指定でもエラーが発生しない", async () => {
+      const opts: CreateSkillOptions = {
+        name: "orch-no-cb",
+        description: "Test",
+        mode: "orchestrate",
+      };
+      await expect(service.createSkill(opts)).resolves.not.toThrow();
+    });
+
+    it("TC-17: update モードで onProgress 未指定でもエラーが発生しない", async () => {
+      const opts: CreateSkillOptions = {
+        name: "update-no-cb",
+        description: "Test",
+        mode: "update",
+      };
+      await expect(service.createSkill(opts)).resolves.not.toThrow();
+    });
+
+    it("TC-18: improve-prompt モードで onProgress 未指定でもエラーが発生しない", async () => {
+      const opts: CreateSkillOptions = {
+        name: "improve-no-cb",
+        description: "Test",
+        mode: "improve-prompt",
+      };
+      await expect(service.createSkill(opts)).resolves.not.toThrow();
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: percentage 単調増加ガード", () => {
+    it("TC-19: orchestrate モードの percentage が単調増加する（engine-selection → done）", async () => {
+      await service.createSkill(
+        { name: "orch-mono", description: "Test", mode: "orchestrate" },
+        onProgress,
+      );
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      expect(percentages.every((p: number) => p >= 0 && p <= 100)).toBe(true);
+      for (let i = 1; i < percentages.length; i++) {
+        expect(percentages[i]).toBeGreaterThanOrEqual(percentages[i - 1]);
+      }
+    });
+
+    it("TC-20: update モードの percentage が単調増加する", async () => {
+      await service.createSkill(
+        { name: "update-mono", description: "Test", mode: "update" },
+        onProgress,
+      );
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      expect(percentages.every((p: number) => p >= 0 && p <= 100)).toBe(true);
+      for (let i = 1; i < percentages.length; i++) {
+        expect(percentages[i]).toBeGreaterThanOrEqual(percentages[i - 1]);
+      }
+    });
+
+    it("TC-21: improve-prompt モードの percentage が単調増加する", async () => {
+      await service.createSkill(
+        {
+          name: "improve-mono",
+          description: "Test",
+          mode: "improve-prompt",
+        },
+        onProgress,
+      );
+      const percentages = onProgress.mock.calls.map(
+        (c: [{ percentage: number }]) => c[0].percentage,
+      );
+      expect(percentages.every((p: number) => p >= 0 && p <= 100)).toBe(true);
+      for (let i = 1; i < percentages.length; i++) {
+        expect(percentages[i]).toBeGreaterThanOrEqual(percentages[i - 1]);
+      }
+    });
+  });
+
+  describe("TASK-SW-STREAM-FUP-03: 全モードで done が最後に通知される", () => {
+    const assertDoneLast = async (opts: CreateSkillOptions) => {
+      await service.createSkill(opts, onProgress);
+      const lastCall =
+        onProgress.mock.calls[onProgress.mock.calls.length - 1][0];
+      expect(lastCall.phase).toBe("done");
+      expect(lastCall.percentage).toBe(100);
+    };
+
+    it("TC-22: collaborative モードで最後のフェーズが done(100%) である", async () => {
+      await assertDoneLast({
+        name: "collab-done",
+        description: "Test",
+        mode: "collaborative",
+        interviewResult: {
+          purpose: "Test",
+          features: ["f1"],
+          inputs: [],
+          outputs: [],
+          toolsNeeded: [],
+          abstractionLevel: "L2",
+        },
+      });
+    });
+
+    it("TC-23: orchestrate モードで最後のフェーズが done(100%) である", async () => {
+      await assertDoneLast({
+        name: "orch-done",
+        description: "Test",
+        mode: "orchestrate",
+      });
+    });
+
+    it("TC-24: update モードで最後のフェーズが done(100%) である", async () => {
+      await assertDoneLast({
+        name: "update-done",
+        description: "Test",
+        mode: "update",
+      });
+    });
+
+    it("TC-25: improve-prompt モードで最後のフェーズが done(100%) である", async () => {
+      await assertDoneLast({
+        name: "improve-done",
+        description: "Test",
+        mode: "improve-prompt",
+      });
     });
   });
 });

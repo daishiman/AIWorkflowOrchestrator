@@ -10,6 +10,31 @@
 - `SKILL.md` バージョンを v10.09.53 → v10.09.54 に更新
 - 参照: `outputs/phase-12/skill-feedback-report.md` の改善提案 4 件から抽出
 
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `references/phase-12-documentation-guide.md` に3項目追加（FUP-03 skill-feedback-report 由来）:
+  - `non-visual task` セクションに NON_VISUAL 固定フレーズ（「UI/UX変更なしのため Phase 11 スクリーンショット不要」）を標準化
+  - Phase 11 エビデンスファイル名の canonical 形式（`outputs/phase-11/{TASK-ID}-manual-test-report.md`）を明示化
+  - Phase 12 canonical output 名 6ファイルの単一ソース管理ルールを追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の skill-feedback-report から「NON_VISUAL 文言の固定化」「Phase 11 エビデンス名明示化」「canonical output 名の単一ソース化」の3改善提案を受け、phase-12-documentation-guide へ反映した。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SW-STREAM-FUP-03/phase-12-documentation.md` の close-out を current facts に追加
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を固定
+- `SkillCreatorService.createSkill()` の mode 別 onProgress 詳細化が Phase 12 の正本であることを明記
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` は mode 別 progress flow の close-out が完了済みのため、task-specification-creator 側でも current facts を再同期して、後続の Phase 12 参照が stale にならないようにした。
+
 ## 2026-04-16 - TASK-SW-CANCEL-001〜004 cancel chain impl-spec-to-skill-sync（残フィードバック反映）
 
 ### 変更内容
@@ -160,18 +185,6 @@ TASK-CI-FUTURE-003 の Phase 12 スキルフィードバックレポートに記
 ### 背景
 
 Phase 12 の close-out では、仕様書・索引・ミラー・準拠証跡を同波で同期しないと current facts が stale になる。旧いフォールバックキー前提ではなく `node_modules` 存在確認を正本として固定した。
-
-## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
-
-### 変更内容
-
-- `outputs/phase-12/*.md` の 6 成果物を確認し、Phase 12 の同波 close-out を記録
-- Phase 2 で `Result<T,E>` の `success` / `data` 判別子、`@repo/shared/services/llm/types` alias、旧 TC-04 影響を先に明記する改善点を feedback 化
-- `.claude/skills/task-specification-creator/SKILL.md` の変更履歴を同波で更新
-
-### 背景
-
-LLM purpose wire のように出力形状が変わるタスクでは、Phase 2 で結果型・依存 alias・既存テスト影響を先出ししないと、Phase 5 以降で型ズレが再発しやすい。
 
 ## 2026-04-15 - UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 impl-spec-to-skill-sync
 
@@ -3071,3 +3084,33 @@ IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/
 | 変更対象 | `SKILL.md`（Feedback IPC-MERGE-001 追加）、`LOGS.md`（本エントリ）、`aiworkflow-requirements/LOGS.md`、`topic-map.md`、`lessons-learned-ipc-preload-runtime-2026-04.md` |
 | 結果     | Phase 2 設計にマージ戦略の明示義務とprototype pollution 防止を標準化。deepMerge パターンと安全要件をスキル知見として記録  |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（UT-FIX-STORE-SETTINGS-DEEP-MERGE-001）                                           |                                                                                                                                                     |
+## 2026-04-18 - UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の「Phase 12 実行時によくある漏れ」テーブルに **[FB-IPC-SNAP-001]**（Electron ipcMain snapshot test で `vi.spyOn` 直接適用が不安定 → `vi.hoisted + vi.mock + mockImplementation` パターンを使う）を追記
+- `SKILL.md` の同テーブルに **[FB-IPC-SNAP-002]**（Phase 5 に `--updateSnapshot` 初回生成と既存 snapshot 比較確認を別ステップとして明示する）を追記
+- `SKILL.md` バージョンを v10.09.55 → v10.09.56 に更新
+
+| 項目     | 内容                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| 種別     | skill-feedback 反映 / Pitfall 追加                                                              |
+| 変更対象 | `SKILL.md`（FB-IPC-SNAP-001/002 追加・v10.09.56）、`LOGS.md`（本エントリ）                      |
+| 結果     | Electron IPC snapshot テストの mock 安定化パターンと --updateSnapshot 運用ルールをスキル知見化 |
+| 検証     | validate-phase-output.js PASS / mirror sync 確認済み                                           |
+
+## 2026-04-18 - UT-IPC-HANDLER-CI-001 impl-spec-to-skill-sync
+
+### 変更内容
+
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/` の Phase 1〜6 に `統合テスト連携` セクションを補完
+- `artifacts.json` を Phase 1〜12 `completed` / Phase 13 `blocked_awaiting_user_instruction` / `NON_VISUAL` へ同期
+- `phase-12-documentation.md` と Phase 12 outputs の close-out 文言を機械検証に通る表現へ修正
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を formalize
+
+| 項目     | 内容                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | test / CI guard / Phase 12 close-out / NON_VISUAL / workflow sync                                                         |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` |
+| 結果     | close-out の主問題を「コード」ではなく「台帳・仕様・成果物の不整合」と定義し、validator fail 項目と証跡参照の曖昧さを是正 |
+| 検証     | targeted vitest PASS / workflow validator 再実行予定                                                                        |
