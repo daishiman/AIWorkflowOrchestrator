@@ -1,5 +1,29 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18）
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IPC-HANDLER-CI-001                                                                                                                  |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                                                         |
+| タイプ     | test / CI guard / close-out sync                                                                                                       |
+| 優先度     | 中                                                                                                                                     |
+| 完了日     | 2026-04-18                                                                                                                             |
+| 対象       | `apps/desktop/src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts` / `docs/30-workflows/UT-IPC-HANDLER-CI-001/`     |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json`                     |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の 19 チャンネル登録に対する snapshot test を追加した
+- workflow root の `artifacts.json` と `index.md` を current state へ同期し、Phase 13 は blocked として整理した
+- NON_VISUAL 証跡を task 固有パスで明記し、未タスク `task-ipc-handler-registration-snapshot-coverage.md` を formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-11/manual-test-result.md`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: current state 同期済み
+
 # 完了タスク記録 — 2026-04-15
 
 # 完了タスク記録 — 2026-04-15
