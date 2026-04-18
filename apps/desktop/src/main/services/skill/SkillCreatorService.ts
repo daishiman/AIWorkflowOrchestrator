@@ -30,6 +30,22 @@ import type {
 } from "@repo/shared/types";
 
 /**
+ * TASK-SC-LLM-PURPOSE-WIRE-001: purpose 抽出 LLM 統合
+ */
+interface LlmGenerateOptions {
+  system: string;
+  user: string;
+}
+
+interface LlmClient {
+  generate(options: LlmGenerateOptions): Promise<string>;
+}
+
+interface PurposeAgentResponse {
+  summary?: unknown;
+}
+
+/**
  * create モードで生成するスキル構造計画 JSON
  * TASK-SC-IMP-CREATE-WORKFLOW-001: generate_skill_md.js --plan 引数に渡す
  */
@@ -157,6 +173,7 @@ export class SkillCreatorService {
   private readonly skillCreatorPath: string;
   private readonly scriptExecutor: ScriptExecutor;
   private readonly resourceLoader: ResourceLoader;
+  private readonly llmClient?: LlmClient;
   /** TASK-SW-CANCEL-003: 実行中の操作を中断するための AbortController */
   private currentAbortController: AbortController | null = null;
   private readonly logger = {
@@ -166,12 +183,17 @@ export class SkillCreatorService {
       console.warn(`[SkillCreatorService] ${msg}`, meta),
   };
 
-  constructor(skillsDir?: string, workflowsDir?: string) {
+  constructor(
+    skillsDir?: string,
+    workflowsDir?: string,
+    llmClient?: LlmClient,
+  ) {
     this.skillsDir = skillsDir || DEFAULT_SKILLS_DIR;
     this.workflowsDir = workflowsDir || DEFAULT_WORKFLOWS_DIR;
     this.skillCreatorPath = DEFAULT_SKILL_CREATOR_PATH;
     this.scriptExecutor = new ScriptExecutor(this.skillCreatorPath);
     this.resourceLoader = new ResourceLoader(this.skillCreatorPath);
+    this.llmClient = llmClient;
   }
 
   private createAbortError(): Error {
@@ -311,6 +333,15 @@ export class SkillCreatorService {
     }
     if (options.name.includes("\0")) {
       throw new Error("Skill name must not contain null bytes");
+    }
+    if (
+      path.isAbsolute(options.name) ||
+      options.name.includes("../") ||
+      options.name.includes("..\\") ||
+      options.name.includes("/") ||
+      options.name.includes("\\")
+    ) {
+      throw new Error("Path traversal detected in skill name");
     }
 
     // collaborativeモードでinterviewResultが空の場合はエラー
@@ -634,6 +665,14 @@ export class SkillCreatorService {
 
     this.throwIfAborted(signal);
 
+    const shouldUseLegacyArgs = this.isMissingScriptError(
+      `${result.stderr}\n${result.stdout}`,
+    );
+
+    if (!shouldUseLegacyArgs) {
+      return false;
+    }
+
     const legacyResult = await this.executeScript(
       "validate_all.js",
       ["--path", skillDir],
@@ -644,6 +683,13 @@ export class SkillCreatorService {
     }
 
     this.throwIfAborted(signal);
+
+    const shouldUseFallback = this.isMissingScriptError(
+      `${legacyResult.stderr}\n${legacyResult.stdout}`,
+    );
+    if (!shouldUseFallback) {
+      return false;
+    }
 
     return this.validateSkillFallback(skillDir);
   }
@@ -927,30 +973,85 @@ export class SkillCreatorService {
 
   /**
    * createモードのワークフロー実行
-   * TASK-SW-STRUCT-001: runCreateWorkflow の出力仕様を修正
-   * AC-1: purpose に options.description を使用（エージェントプロンプト文字列でない）
-   * AC-2: agents にエージェント名リストを設定
-   * AC-3: features は空配列（LLM統合は別タスク）
-   * AC-4: エラー時は null を返しフォールバック
-   * NOTE: LLM による purpose 抽出・features 生成は別タスク（FUTURE-001/002）で実装する
+   * TASK-SC-LLM-PURPOSE-WIRE-001: extract-purpose エージェントで LLM purpose 抽出
+   * AC-1〜AC-4 を充足する実装
    */
   private async runCreateWorkflow(
     options: CreateSkillOptions,
-    _signal?: AbortSignal,
+    signal?: AbortSignal,
   ): Promise<StructurePlanJson | null> {
     try {
+      const purpose = await this.extractPurposeWithLlm(options, signal);
       const structurePlan: StructurePlanJson = {
         skillName: options.name,
         description: options.description,
-        purpose: options.description, // AC-1: LLM統合は別タスク、現時点は description を使用
-        features: [], // AC-3: LLM統合は別タスク
-        agents: ["extract-purpose", "plan-structure"], // AC-2: エージェント名リスト
+        purpose: purpose ?? options.description,
+        features: [],
+        agents: ["extract-purpose", "plan-structure"],
       };
       return structurePlan;
-    } catch {
-      // AC-4: 将来の処理追加に備えてフォールバックを維持
+    } catch (error) {
+      if (this.isAbortError(error)) throw error;
       return null;
     }
+  }
+
+  /**
+   * TASK-SC-LLM-PURPOSE-WIRE-001: extract-purpose エージェントを使い LLM で purpose を生成する
+   */
+  private async extractPurposeWithLlm(
+    options: CreateSkillOptions,
+    signal?: AbortSignal,
+  ): Promise<string | null> {
+    if (!this.llmClient) {
+      return null;
+    }
+    try {
+      const purposeAgentDef = await this.resourceLoader.loadAgent(
+        "extract-purpose",
+        { signal },
+      );
+      const skillInput = `スキル名: ${options.name}\n説明: ${options.description}`;
+      const purpose = await this.llmClient.generate({
+        system: purposeAgentDef,
+        user: skillInput,
+      });
+      return this.normalizePurposeResponse(purpose);
+    } catch (error) {
+      if (this.isAbortError(error)) throw error;
+      return null;
+    }
+  }
+
+  private normalizePurposeResponse(response: string): string {
+    const trimmedResponse = response.trim();
+
+    if (trimmedResponse === "") {
+      return "";
+    }
+
+    const summary = this.extractPurposeSummary(trimmedResponse);
+    return summary ?? trimmedResponse;
+  }
+
+  private extractPurposeSummary(response: string): string | null {
+    const candidateJson = this.unwrapJsonCodeFence(response);
+
+    try {
+      const parsed = JSON.parse(candidateJson) as PurposeAgentResponse;
+      if (typeof parsed.summary === "string") {
+        return parsed.summary.trim();
+      }
+    } catch {
+      return null;
+    }
+
+    return null;
+  }
+
+  private unwrapJsonCodeFence(response: string): string {
+    const match = response.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+    return match ? match[1].trim() : response;
   }
 
   /**
@@ -1174,6 +1275,11 @@ ${description}
     for (const task of tasks) {
       if (task.depends_on) {
         for (const depId of task.depends_on) {
+          if (!taskMap.has(depId)) {
+            throw new Error(
+              `Unknown dependency "${depId}" referenced by task "${task.id}"`,
+            );
+          }
           const current = inDegree.get(depId) || 0;
           inDegree.set(depId, current);
         }
@@ -1207,6 +1313,10 @@ ${description}
           }
         }
       }
+    }
+
+    if (result.length !== tasks.length) {
+      throw new Error("Failed to resolve task execution order");
     }
 
     return result;

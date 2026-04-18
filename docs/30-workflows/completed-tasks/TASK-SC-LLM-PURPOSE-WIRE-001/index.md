@@ -1,0 +1,223 @@
+# TASK-SC-LLM-PURPOSE-WIRE-001 - タスク実行仕様書
+
+## ユーザーからの元の指示
+
+```
+extract-purpose エージェントによる purpose フィールドの LLM 実結果への差し替え。
+runCreateWorkflow 内で loadAgent("extract-purpose") を呼び出してエージェント定義ファイルを読んでいるが、
+実際に LLM へ問い合わせて purpose を抽出するステップが未実装。
+purpose フィールドにはエージェント定義文字列そのものが入っており、LLM 推論結果ではない。
+extract-purpose エージェントを使って LLM にスキルの目的文を生成させ、
+その結果を StructurePlanJson.purpose に格納することで、正しい LLM 推論結果に差し替える。
+```
+
+## メタ情報
+
+| 項目         | 内容                                              |
+| ------------ | ------------------------------------------------- |
+| タスクID     | TASK-SC-LLM-PURPOSE-WIRE-001                      |
+| タスク名     | extract-purpose-agent-llm-wire                    |
+| 分類         | 改善                                              |
+| タスク種別   | NON_VISUAL                                        |
+| 対象機能     | SkillCreatorService / StructurePlan 生成          |
+| 優先度       | 中                                                |
+| 見積もり規模 | 中規模                                            |
+| ステータス   | 完了（Phase 12 close-out 済み・Phase 13 pending） |
+| 作成日       | 2026-04-18                                        |
+| depends_on   | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001        |
+| source_issue | #2181 (CLOSED)                                    |
+
+---
+
+## タスク概要
+
+### 目的
+
+`runCreateWorkflow` 内で `loadAgent("extract-purpose")` を呼び出してエージェント定義ファイルを読み込んでいるが、
+実際に LLM へ問い合わせて purpose を抽出するステップが未実装の状態を解消する。
+
+`extract-purpose` エージェントを使って LLM にスキルの目的文を生成させ、その結果を `StructurePlanJson.purpose` に格納することで、
+エージェント定義文字列ではなく正しい LLM 推論結果に差し替える。
+
+### 背景
+
+現状の `SkillCreatorService.ts` では `runCreateWorkflow()` 内で以下のように実装されている:
+
+```typescript
+const purposeAgentDef = await this.resourceLoader.loadAgent("extract-purpose");
+// purposeAgentDef を LLM に渡して purpose を抽出する実装が未実装
+// 現状はエージェント定義文字列が直接 structurePlan.purpose に入っている
+```
+
+- `StructurePlanJson.purpose` にエージェント定義の raw 文字列が入り続けるリスクがある
+- `extract-purpose` エージェントが LLM に対して何を問い合わせるかが未定義
+- LLM 呼び出し方式の選択（直接呼び出し vs エージェント経由）が未決定
+
+本タスクは `TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001` 完了後に着手する。
+
+### 最終ゴール
+
+- `extract-purpose` エージェント定義を system prompt として LLM に渡し、スキル入力から purpose を抽出する実装を完成させる
+- `StructurePlanJson.purpose` に LLM が生成した目的文が格納される
+- `SkillCreatorService` の既存 LLM 呼び出しパターン（`llmClient.generate`）に合わせた実装
+- 既存テストが全てパスし続ける
+
+期待される実装方向:
+
+```typescript
+const purposeAgentDef = await this.resourceLoader.loadAgent("extract-purpose");
+const purpose = await this.llmClient.generate({
+  system: purposeAgentDef,
+  user: skillInput,
+});
+structurePlan.purpose = purpose;
+```
+
+### 成果物一覧
+
+| 種別         | 成果物                      | 配置先                                                                               |
+| ------------ | --------------------------- | ------------------------------------------------------------------------------------ |
+| 機能         | purpose LLM 抽出実装        | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                        |
+| テスト       | purpose 抽出ユニットテスト  | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.purpose.test.ts` |
+| ドキュメント | Phase 1-13 仕様・実行成果物 | `outputs/phase-1/ 〜 phase-13/`                                                      |
+
+---
+
+## 参照ファイル
+
+- `apps/desktop/src/main/services/skill/SkillCreatorService.ts` - 実装対象
+- `.claude/skills/skill-creator/agents/extract-purpose.md` - extract-purpose エージェント定義
+- `docs/30-workflows/unassigned-task/TASK-SC-LLM-PURPOSE-WIRE-001.md` - 元の未タスク仕様書
+- `docs/00-requirements/master_system_design.md` - システム要件
+- `.claude/skills/aiworkflow-requirements/references/` - システム仕様
+
+---
+
+## 受入条件
+
+| ID   | 条件                                                                                           |
+| ---- | ---------------------------------------------------------------------------------------------- |
+| AC-1 | `loadAgent("extract-purpose")` の結果が LLM の system prompt として渡される                    |
+| AC-2 | `llmClient.generate({ system: purposeAgentDef, user: skillInput })` 相当の呼び出しが実装される |
+| AC-3 | `structurePlan.purpose` に LLM の生成結果が格納される（エージェント定義文字列でなく推論結果）  |
+| AC-4 | `SkillCreatorService` の既存 LLM 呼び出しパターンと整合する実装形式を採用する                  |
+| AC-5 | `extract-purpose` エージェント定義ファイルの期待する出力フォーマットが明確化・文書化される     |
+| AC-6 | 既存テスト（collaborative モード・orchestrate モード等）が全てパスし続ける                     |
+| AC-7 | purpose 抽出専用のユニットテストが作成され、LLM モックで検証可能                               |
+
+---
+
+## タスク分解サマリー
+
+| ID     | フェーズ | サブタスク名       | 責務                                                         | 依存 |
+| ------ | -------- | ------------------ | ------------------------------------------------------------ | ---- |
+| T-01-1 | Phase 1  | 要件定義           | 現状コード確認・extract-purpose 定義分析・受入条件策定       | -    |
+| T-02-1 | Phase 2  | 設計               | LLM 呼び出し方式・purpose 抽出フロー・エラーハンドリング設計 | T-01 |
+| T-03-1 | Phase 3  | 設計レビューゲート | 設計の整合性・リスク・4条件の検証                            | T-02 |
+| T-04-1 | Phase 4  | テスト作成         | TDD Red フェーズ用 purpose 抽出テストケース作成              | T-03 |
+| T-05-1 | Phase 5  | 実装               | extract-purpose → LLM → structurePlan.purpose 接続実装       | T-04 |
+| T-06-1 | Phase 6  | テスト拡充         | LLM エラー・エージェント定義不正・空文字等の境界条件補強     | T-05 |
+| T-07-1 | Phase 7  | カバレッジ確認     | purpose 抽出パスの concern/branch coverage 確認              | T-06 |
+| T-08-1 | Phase 8  | リファクタリング   | 実装の可読性・最小複雑性・パターン整合性の再調整             | T-07 |
+| T-09-1 | Phase 9  | 品質保証           | lint / typecheck / test の品質ゲート確認                     | T-08 |
+| T-10-1 | Phase 10 | 最終レビュー       | AC・依存関係・4条件の最終判定                                | T-09 |
+| T-11-1 | Phase 11 | 手動テスト         | createSkill 実フロー・purpose フィールド確認（NON_VISUAL）   | T-10 |
+| T-12-1 | Phase 12 | ドキュメント更新   | 実装ガイド・未タスク・skill feedback・準拠チェックの固定     | T-11 |
+| T-13-1 | Phase 13 | PR作成             | ユーザー承認後の変更要約と PR 作成                           | T-12 |
+
+**総サブタスク数**: 13個
+
+---
+
+## 実行フロー図
+
+```mermaid
+graph TD
+    START[タスク開始] --> T-01[Phase 1: 要件定義]
+    T-01 --> T-02[Phase 2: 設計]
+    T-02 --> T-03[Phase 3: 設計レビューゲート]
+    T-03 --> T-04[Phase 4: テスト作成]
+    T-04 --> T-05[Phase 5: 実装]
+    T-05 --> T-06[Phase 6: テスト拡充]
+    T-06 --> T-07[Phase 7: カバレッジ確認]
+    T-07 --> T-08[Phase 8: リファクタリング]
+    T-08 --> T-09[Phase 9: 品質保証]
+    T-09 --> T-10[Phase 10: 最終レビュー]
+    T-10 --> T-11[Phase 11: 手動テスト]
+    T-11 --> T-12[Phase 12: ドキュメント更新]
+    T-12 --> T-13[Phase 13: PR作成]
+    T-13 --> END[承認後に完了]
+
+    T-03 -->|MAJOR| T-02
+    T-03 -->|MAJOR: 要件| T-01
+    T-07 -->|未達| T-06
+    T-10 -->|MAJOR| T-08
+    T-10 -->|MAJOR: 実装| T-05
+    T-10 -->|MAJOR: テスト| T-04
+    T-10 -->|MAJOR: 設計| T-02
+    T-10 -->|CRITICAL| T-01
+```
+
+---
+
+## Phase一覧
+
+| Phase | 名称               | 仕様書                                                       | ステータス |
+| ----- | ------------------ | ------------------------------------------------------------ | ---------- |
+| 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 完了       |
+| 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 完了       |
+| 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 完了       |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了       |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 完了       |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了       |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了       |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了       |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了       |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
+| 13    | PR作成             | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 未実施     |
+
+---
+
+## テストカバレッジ目標
+
+### ユニットテスト
+
+| 指標              | 最低基準 | 推奨基準 |
+| ----------------- | -------- | -------- |
+| Line Coverage     | 80%      | 90%      |
+| Branch Coverage   | 60%      | 70%      |
+| Function Coverage | 80%      | 90%      |
+
+### 結合テスト
+
+| 指標                         | 目標 |
+| ---------------------------- | ---- |
+| モジュール間インターフェース | 100% |
+| 正常系シナリオ               | 100% |
+| 異常系シナリオ               | 80%+ |
+
+---
+
+## 依存関係
+
+- **depends_on**: TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001（完了後に着手）
+- **後続タスク**: なし（本タスクは purpose 抽出の LLM 接続完結）
+
+---
+
+## Phase完了時の必須アクション
+
+1. **タスク100%実行**: Phase内で指定された全タスクを完全に実行
+2. **成果物確認**: 全ての必須成果物が生成されていることを検証
+3. **artifacts.json更新**: Phase完了ステータスを更新
+4. **完了条件チェック**: 各タスクを完遂した旨を必ず明記
+
+```bash
+# Phase完了処理
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+  --workflow docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001 \
+  --phase {{N}} \
+  --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
+```
