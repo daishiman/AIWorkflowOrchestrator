@@ -1,0 +1,135 @@
+{
+  "taskId": "TASK-UT-RT-01-NOTIFY-HELPER-CONSOLIDATION-001",
+  "featureName": "task-ut-rt-01-notify-helper-consolidation-001",
+  "createdAt": "2026-04-18",
+  "completedAt": null,
+  "status": "open",
+  "relatedIssue": 1936,
+  "parentIssue": 1959,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "open",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "open",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "open",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "open",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts"
+      ],
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "open",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": [
+        "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts"
+      ],
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "open",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "open",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "open",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "open",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "open",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "open",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "testClassification": "NON_VISUAL",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "open",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "open",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "note": "ユーザー承認後に実行",
+      "artifacts": []
+    }
+  ],
+  "targetFiles": [
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts"
+  ],
+  "acceptanceCriteria": [
+    "AC-1: notifySkillCreationFailure(message) が定義され、3箇所のインライン重複が除去される",
+    "AC-2: 通知タイトル 'スキル作成失敗' と message 引数の動作が変更前と同等である",
+    "AC-3: notificationService が undefined の場合、例外なく安全にスキップする",
+    "AC-4: notificationService.notify() が例外を投げた場合、ヘルパーが例外を吸収する",
+    "AC-5: 既存テスト（T-VL-01〜07、T-REG-01）がリグレッションなし",
+    "AC-6: TypeScript 型チェックがエラーなしで通過する"
+  ]
+}

@@ -3,7 +3,7 @@
 ## ユーザーからの元の指示
 
 ```
-GitHub Issue #1896: verifyAndImproveLoop()でのimprove adapter error通知整理
+GitHub Issue #1959: verifyAndImproveLoop()でのimprove adapter error通知整理
 ```
 
 ## メタ情報
@@ -16,10 +16,10 @@ GitHub Issue #1896: verifyAndImproveLoop()でのimprove adapter error通知整�
 | 対象機能     | RuntimeSkillCreatorFacade.verifyAndImproveLoop()                      |
 | 優先度       | Medium                                                                |
 | 見積もり規模 | 小規模                                                                |
-| ステータス   | 未実施                                                                |
+| ステータス   | **完了（Phase 12 close-out / Phase 13 blocked）**                     |
 | 作成日       | 2026-04-06                                                            |
 | 親タスク     | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001（Phase 10 MINOR指摘） |
-| 関連Issue    | #1896                                                                 |
+| 関連Issue    | #1959                                                                 |
 
 ---
 

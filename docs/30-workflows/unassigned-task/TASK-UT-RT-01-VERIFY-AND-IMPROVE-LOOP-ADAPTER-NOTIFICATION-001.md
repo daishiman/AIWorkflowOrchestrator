@@ -50,11 +50,11 @@ issue_number: 1959
 
 ## 子タスク
 
-| タスクID                                               | Issue | 状態 | 説明                                          |
-| ------------------------------------------------------ | ----- | ---- | --------------------------------------------- |
-| TASK-UT-RT-01-NOTIFY-HELPER-CONSOLIDATION-001          | #1936 | open | notify helper 統合（3箇所インライン重複解消） |
-| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001      | #1937 | open | executeAsync snapshot error propagation       |
-| TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 | #1960 | open | executeAsync snapshot error message 形式統一  |
+| タスクID                                               | Issue | 状態      | 説明                                          |
+| ------------------------------------------------------ | ----- | --------- | --------------------------------------------- |
+| TASK-UT-RT-01-NOTIFY-HELPER-CONSOLIDATION-001          | #1936 | open      | notify helper 統合（3箇所インライン重複解消） |
+| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001      | #1937 | completed | executeAsync snapshot error propagation       |
+| TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 | #1960 | completed | executeAsync snapshot error message 形式統一  |
 
 ## 苦戦箇所（発見元コンテキスト）
 
