@@ -712,7 +712,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_DEBUG,
   IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
   IPC_CHANNELS.SKILL_CREATOR_STATS,
-  // Skill Creator cancel channel (TASK-SC-CANCEL-001: 将来実装予定)
+  // Skill Creator cancel channel (TASK-SW-CANCEL-002)
   IPC_CHANNELS.SKILL_CREATOR_CANCEL,
   // Skill file operations (TASK-9A-B)
   IPC_CHANNELS.SKILL_READ_FILE,

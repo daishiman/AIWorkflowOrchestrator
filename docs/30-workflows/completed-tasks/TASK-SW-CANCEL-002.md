@@ -5,7 +5,7 @@
 ```yaml
 issue_number: 2210
 task_id: TASK-SW-CANCEL-002
-status: open
+status: completed
 priority: high
 scale: small
 task_type: FEATURE
@@ -19,12 +19,12 @@ task_type: FEATURE
 | 対象機能     | Preload skillCreatorAPI - cancelGeneration メソッド追加 |
 | 優先度       | 高（`priority:high`）                                   |
 | 見積もり規模 | 小規模（`scale:small`）                                 |
-| ステータス   | 未実施（`status:open`）                                 |
+| ステータス   | 完了（`status:completed`）                              |
 | 依存タスク   | TASK-SW-CANCEL-001（`SKILL_CREATOR_CANCEL` 定数が前提） |
 | 発見元       | skill-create-flow-gaps 分析（2026-04-16）               |
 | 発見日       | 2026-04-16                                              |
 | タスク分類   | FEATURE タスク（Preload API 拡張）                      |
-| 仕様書       | docs/30-workflows/p05-par-CANCEL-002/                   |
+| 仕様書       | docs/30-workflows/p02-seq-CANCEL-002/                   |
 
 ---
 
