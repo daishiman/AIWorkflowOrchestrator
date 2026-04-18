@@ -151,7 +151,8 @@ describe("SkillCreatorService - cancelCurrentOperation (TASK-SW-CANCEL-003)", ()
 
     const createPromise = service.createSkill(options);
 
-    // pathExists (tick 1) → runCreateWorkflow (tick 2) → executeScript (tick 3) の順で非同期ステップを踏む
+    // pathExists (tick 1) → extractPurposeWithLlm (tick 2) → runCreateWorkflow return (tick 3) → executeScript (tick 4)
+    await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
     await Promise.resolve();
