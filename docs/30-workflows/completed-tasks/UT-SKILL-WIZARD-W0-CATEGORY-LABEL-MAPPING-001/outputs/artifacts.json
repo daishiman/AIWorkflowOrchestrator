@@ -1,0 +1,101 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001",
+  "taskName": "skill-wizard-category-display-label-mapping",
+  "created": "2026-04-18T00:00:00.000Z",
+  "status": "phase13_blocked",
+  "taskType": "docs-only non_visual",
+  "metadata": {
+    "taskType": "docs-only non_visual"
+  },
+  "dependencies": ["UT-SKILL-WIZARD-W0-seq-01"],
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "phase-1-requirements.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design.md", "phase-2-design.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/review.md", "phase-3-design-review.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-spec.md", "phase-4-test-creation.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation.md",
+        "phase-5-implementation.md",
+        "packages/shared/src/types/skillCreator.ts",
+        "packages/shared/src/types/__tests__/skillCreator-wizard.test.ts"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/integration.md",
+        "phase-6-test-expansion.md"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage.md", "phase-7-coverage-check.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring.md", "phase-8-refactoring.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality.md",
+        "phase-9-quality-assurance.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review.md",
+        "phase-10-final-review.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/test-report.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "phase-11-manual-test.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "phase-12-documentation.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "phase-13-pr-creation.md"
+      ]
+    }
+  }
+}
