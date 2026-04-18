@@ -2766,3 +2766,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
 | 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
 | 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
+
+## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
+
+- `lessons-learned-current-2026-04.md`: L-CRON-SEM-001/002 セクション内の重複 CLM 行（18行）を除去
+- `ui-ux-feature-components-skill-analysis.md`: shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記
+- Phase-12 全タスク（12-1〜12-6）PASS 確認済み。未タスク 0件。system spec 追加更新不要（public contract 追加なし）
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / impl-spec-to-skill-sync                                                         |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
+| 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
+| 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
