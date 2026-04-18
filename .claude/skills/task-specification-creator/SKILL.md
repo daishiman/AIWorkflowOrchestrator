@@ -184,7 +184,7 @@ upstream 実装済みタスクでは「差分確認 → 回帰確認」にシフ
 - エラーハンドリングとエッジケースを説明
 - 設定可能なパラメータと定数を一覧化
 - VISUAL タスクでは Phase 11 の screenshot references と capture metadata を `implementation-guide.md` へ必ず明記する
-- **NON_VISUAL タスク（UI/UX変更なし）** では `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記し、`screenshots/.gitkeep` を削除する
+- **NON_VISUAL タスク（UI/UX変更なし）** では `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記し、`screenshots/.gitkeep` を削除する。代替証跡として `phase-10/final-review-result.md` と `phase-11/manual-test-result.md`（Preload API / 型定義テスト結果を記録）を参照する
 
 ---
 
