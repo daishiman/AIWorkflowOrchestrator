@@ -10,6 +10,31 @@
 - `SKILL.md` バージョンを v10.09.53 → v10.09.54 に更新
 - 参照: `outputs/phase-12/skill-feedback-report.md` の改善提案 4 件から抽出
 
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（スキルフィードバック反映）
+
+### 変更内容
+
+- `references/phase-12-documentation-guide.md` に3項目追加（FUP-03 skill-feedback-report 由来）:
+  - `non-visual task` セクションに NON_VISUAL 固定フレーズ（「UI/UX変更なしのため Phase 11 スクリーンショット不要」）を標準化
+  - Phase 11 エビデンスファイル名の canonical 形式（`outputs/phase-11/{TASK-ID}-manual-test-report.md`）を明示化
+  - Phase 12 canonical output 名 6ファイルの単一ソース管理ルールを追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の skill-feedback-report から「NON_VISUAL 文言の固定化」「Phase 11 エビデンス名明示化」「canonical output 名の単一ソース化」の3改善提案を受け、phase-12-documentation-guide へ反映した。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SW-STREAM-FUP-03/phase-12-documentation.md` の close-out を current facts に追加
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を固定
+- `SkillCreatorService.createSkill()` の mode 別 onProgress 詳細化が Phase 12 の正本であることを明記
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` は mode 別 progress flow の close-out が完了済みのため、task-specification-creator 側でも current facts を再同期して、後続の Phase 12 参照が stale にならないようにした。
+
 ## 2026-04-16 - TASK-SW-CANCEL-001〜004 cancel chain impl-spec-to-skill-sync（残フィードバック反映）
 
 ### 変更内容

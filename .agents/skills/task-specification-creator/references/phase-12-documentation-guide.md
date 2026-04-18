@@ -148,6 +148,41 @@ rg -n "計画|予定|TODO|will be|を予定|仕様策定のみ|保留として�
 
 ## non-visual task（非UIタスク）でのPhase 12処理
 
+### NON_VISUAL 固定フレーズ（実装ガイド・システム仕様書に必ず記載）
+
+```
+UI/UX変更なしのため Phase 11 スクリーンショット不要
+```
+
+この文言を `implementation-guide.md` の `## 視覚証跡` セクションと `system-spec-update-summary.md` の Phase 11 参照欄に固定する。フレーズを変えると NON_VISUAL 判定の解釈ぶれが生じる（FUP-03 feedback: 提案 2 由来）。
+
+### Phase 11 エビデンスファイル名（NON_VISUAL タスク必須）
+
+Phase 11 の actual evidence file 名を Phase 12 の各成果物に明示する。canonical 形式:
+
+```
+outputs/phase-11/{TASK-ID}-manual-test-report.md
+```
+
+例: `outputs/phase-11/TASK-SW-STREAM-FUP-03-manual-test-report.md`
+
+- `phase-12-documentation.md` の Phase 11 参照欄に actual file 名を記載する
+- `artifacts.json` / `outputs/artifacts.json` の Phase 11 artifact 名も上記に統一する
+- `checklist.md` / `result.md` など旧来の補助名が残る場合はリネームまたは canonical 名で参照する（FUP-03 feedback: 提案 2 由来）
+
+### Phase 12 canonical output 名（単一ソース管理）
+
+以下 6 ファイルが Phase 12 の canonical output 名。この名前を `phase-12-documentation.md`・`artifacts.json`・`outputs/artifacts.json` が同一値で参照すること（FUP-03 feedback: 提案 1 由来）:
+
+| canonical 名 | 用途 |
+| --- | --- |
+| `implementation-guide.md` | Task 12-1 成果物 |
+| `system-spec-update-summary.md` | Task 12-2 成果物 |
+| `documentation-changelog.md` | Task 12-3 成果物 |
+| `unassigned-task-detection.md` | Task 12-4 成果物 |
+| `skill-feedback-report.md` | Task 12-5 成果物 |
+| `phase12-task-spec-compliance-check.md` | Task 12-6 成果物 |
+
 ### Phase 11（手動テスト）
 
 - スクリーンショット: N/A（UIを持たない純TS実装の場合）

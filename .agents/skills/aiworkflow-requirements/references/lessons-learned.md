@@ -47,6 +47,7 @@
 | [lessons-learned-current-2026-04-wizard-integration.md](lessons-learned-current-2026-04-wizard-integration.md) | 2026-04 Wizard / Integration 教訓 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION / TASK-P0-05 / TASK-P0-07 / TASK-SDK-04-U1-F1 / TASK-FIX-IPC-SKILL-NAME-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 / TASK-FIX-WORKTREE-CONFLICT-001 / UT-SKILL-WIZARD-W0〜W2 各種実装教訓 |
 | [lessons-learned-current-2026-04-schedule-feedback.md](lessons-learned-current-2026-04-schedule-feedback.md) | 2026-04 Schedule / Feedback 教訓 | TASK-UI-SCHEDULE-VISUAL-PICKER-001 / TASK-UI-SCHEDULE-CRON-SEMANTIC-001 / TASK-UI-SCHEDULE-CRON-UI-VALIDATION-001 / TASK-UI-SCHEDULE-CRON-MONTHLY-GUARD-001 / UT-SKILL-WIZARD-DESCRIBE-STEP-DELETION-001 / UT-W3-ANALYTICS-STORE-INTEGRATION-001 / TASK-SW-FIX-DATAFLOW-001 / TASK-SW-FIX-FEEDBACK-001 |
 | [lessons-learned-skill-cancel-abortsignal.md](lessons-learned-skill-cancel-abortsignal.md) | skill domain lessons (cancel / AbortSignal / process kill) | p01-p04-seq-CANCEL-001〜004 / AbortSignal伝播 / settled フラグ / 半完成ディレクトリ削除 |
+| [lessons-learned-stream-001-progress-callback.md](lessons-learned-stream-001-progress-callback.md) | skill domain lessons (progress callback / PROGRESS_FLOWS SSOT / mode-specific flow) | TASK-SW-STREAM-001: optional callback パターン / shared 移動低優先度判断 / 5段階設計 / FUP-03: PROGRESS_FLOWS 単一集約パターン（2026-04-18完了） |
 
 ## 利用順序
 - まずこの親仕様書で対象 child companion を選ぶ。
