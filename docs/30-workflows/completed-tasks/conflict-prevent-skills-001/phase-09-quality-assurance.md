@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 9 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 9                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -21,9 +21,9 @@ validator、grep、merge simulation、parity check を束ねて、仕様と実�
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| verify script | `.agents/skills/task-specification-creator/scripts/verify-all-specs.js` | workflow 検証 |
+| 資料名         | パス                                                                                   | 用途               |
+| -------------- | -------------------------------------------------------------------------------------- | ------------------ |
+| verify script  | `.agents/skills/task-specification-creator/scripts/verify-all-specs.js`                | workflow 検証      |
 | phase 12 guide | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | close-out 前提確認 |
 
 ## 実行手順
@@ -58,9 +58,9 @@ git config --get merge.keep-ours.driver
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-19 | validator / command suite | Lane C |
+| SubTask | 内容                      | 担当   |
+| ------- | ------------------------- | ------ |
+| ST-19   | validator / command suite | Lane C |
 
 ## 成果物
 

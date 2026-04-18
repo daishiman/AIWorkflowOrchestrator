@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 12 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 12                          |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -23,11 +23,11 @@ NON_VISUAL docs-only task として、implementation guide、system spec update 
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| phase 12 guide | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | 必須成果物と same-wave sync |
-| phase 11 result | `docs/30-workflows/conflict-prevent-skills-001/phase-11-manual-test.md` | 引継ぎ |
-| aiworkflow skill | `.agents/skills/aiworkflow-requirements/SKILL.md` | canonical root / mirror 方針 |
+| 資料名           | パス                                                                                   | 用途                         |
+| ---------------- | -------------------------------------------------------------------------------------- | ---------------------------- |
+| phase 12 guide   | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | 必須成果物と same-wave sync  |
+| phase 11 result  | `docs/30-workflows/conflict-prevent-skills-001/phase-11-manual-test.md`                | 引継ぎ                       |
+| aiworkflow skill | `.agents/skills/aiworkflow-requirements/SKILL.md`                                      | canonical root / mirror 方針 |
 
 ## 実行手順
 
@@ -70,11 +70,11 @@ NON_VISUAL docs-only task として、implementation guide、system spec update 
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-22 | implementation guide | Lane C |
-| ST-23 | spec / ledger sync summary | Lane C |
-| ST-24 | compliance-check | Lane C |
+| SubTask | 内容                       | 担当   |
+| ------- | -------------------------- | ------ |
+| ST-22   | implementation guide       | Lane C |
+| ST-23   | spec / ledger sync summary | Lane C |
+| ST-24   | compliance-check           | Lane C |
 
 ## 成果物
 

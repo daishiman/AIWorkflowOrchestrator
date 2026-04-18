@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 1 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 1                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -22,13 +22,13 @@
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| task-spec skill | `.agents/skills/task-specification-creator/SKILL.md` | phase 骨格、Phase 11/12/13 ルール |
-| aiworkflow skill | `.agents/skills/aiworkflow-requirements/SKILL.md` | canonical root、regenerate 原則 |
-| phase template core | `.agents/skills/task-specification-creator/references/phase-template-core.md` | Phase 1-3 の必須骨格 |
-| git attributes manual | `git help attributes` | `union` built-in / custom driver 前提の確認 |
-| 対象 root | `docs/30-workflows/conflict-prevent-skills-001/` | 改善対象 |
+| 資料名                | パス                                                                          | 用途                                        |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| task-spec skill       | `.agents/skills/task-specification-creator/SKILL.md`                          | phase 骨格、Phase 11/12/13 ルール           |
+| aiworkflow skill      | `.agents/skills/aiworkflow-requirements/SKILL.md`                             | canonical root、regenerate 原則             |
+| phase template core   | `.agents/skills/task-specification-creator/references/phase-template-core.md` | Phase 1-3 の必須骨格                        |
+| git attributes manual | `git help attributes`                                                         | `union` built-in / custom driver 前提の確認 |
+| 対象 root             | `docs/30-workflows/conflict-prevent-skills-001/`                              | 改善対象                                    |
 
 ## 実行手順
 
@@ -72,11 +72,11 @@ node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-1 | task-spec 骨格監査 | Lane A |
-| ST-2 | aiworkflow requirements 抽出 | Lane B |
-| ST-3 | acceptance criteria 再構成 | Lane C |
+| SubTask | 内容                         | 担当   |
+| ------- | ---------------------------- | ------ |
+| ST-1    | task-spec 骨格監査           | Lane A |
+| ST-2    | aiworkflow requirements 抽出 | Lane B |
+| ST-3    | acceptance criteria 再構成   | Lane C |
 
 ## 成果物
 

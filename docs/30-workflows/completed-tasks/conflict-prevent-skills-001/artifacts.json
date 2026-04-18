@@ -7,107 +7,271 @@
     "1": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-1/requirements-definition.md", "description": "要件定義" },
-        { "type": "document", "path": "outputs/phase-1/conflict-source-inventory.md", "description": "競合源棚卸し" },
-        { "type": "document", "path": "outputs/phase-1/spec-extraction-map.md", "description": "skill 抽出マップ" }
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/conflict-source-inventory.md",
+          "description": "競合源棚卸し"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/spec-extraction-map.md",
+          "description": "skill 抽出マップ"
+        }
       ]
     },
     "2": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-2/merge-policy-matrix.md", "description": "merge policy 行列" },
-        { "type": "document", "path": "outputs/phase-2/subagent-lane-plan.md", "description": "SubAgent レーン計画" },
-        { "type": "document", "path": "outputs/phase-2/validation-and-regenerate-plan.md", "description": "検証・再生成計画" }
+        {
+          "type": "document",
+          "path": "outputs/phase-2/merge-policy-matrix.md",
+          "description": "merge policy 行列"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/subagent-lane-plan.md",
+          "description": "SubAgent レーン計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validation-and-regenerate-plan.md",
+          "description": "検証・再生成計画"
+        }
       ]
     },
     "3": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-3/task-specification-creator-compliance-audit.md", "description": "task-spec 準拠監査" },
-        { "type": "document", "path": "outputs/phase-3/aiworkflow-requirements-extraction-audit.md", "description": "requirements 抽出監査" },
-        { "type": "document", "path": "outputs/phase-3/solution-elegance-review.md", "description": "エレガンス監査" }
+        {
+          "type": "document",
+          "path": "outputs/phase-3/task-specification-creator-compliance-audit.md",
+          "description": "task-spec 準拠監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/aiworkflow-requirements-extraction-audit.md",
+          "description": "requirements 抽出監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/solution-elegance-review.md",
+          "description": "エレガンス監査"
+        }
       ]
     },
     "4": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-4/test-scenarios.md", "description": "テストシナリオ" },
-        { "type": "document", "path": "outputs/phase-4/command-expectations.md", "description": "コマンド期待値" },
-        { "type": "document", "path": "outputs/phase-4/mirror-and-consumer-guard.md", "description": "mirror / consumer ガード" }
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-scenarios.md",
+          "description": "テストシナリオ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/command-expectations.md",
+          "description": "コマンド期待値"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/mirror-and-consumer-guard.md",
+          "description": "mirror / consumer ガード"
+        }
       ]
     },
     "5": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-5/implementation-log.md", "description": "実装ログ" },
-        { "type": "document", "path": "outputs/phase-5/changed-files-summary.md", "description": "変更ファイル要約" },
-        { "type": "document", "path": "outputs/phase-5/consumer-audit-decision.md", "description": "consumer 監査判定" }
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-log.md",
+          "description": "実装ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files-summary.md",
+          "description": "変更ファイル要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/consumer-audit-decision.md",
+          "description": "consumer 監査判定"
+        }
       ]
     },
     "6": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-6/expanded-test-matrix.md", "description": "拡張テスト行列" },
-        { "type": "document", "path": "outputs/phase-6/regression-checks.md", "description": "回帰確認" },
-        { "type": "document", "path": "outputs/phase-6/failure-mode-catalog.md", "description": "失敗モード一覧" }
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-matrix.md",
+          "description": "拡張テスト行列"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-checks.md",
+          "description": "回帰確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/failure-mode-catalog.md",
+          "description": "失敗モード一覧"
+        }
       ]
     },
     "7": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-7/coverage-matrix.md", "description": "カバレッジ行列" },
-        { "type": "document", "path": "outputs/phase-7/gap-list.md", "description": "gap 一覧" },
-        { "type": "document", "path": "outputs/phase-7/traceability-report.md", "description": "トレーサビリティ" }
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-matrix.md",
+          "description": "カバレッジ行列"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gap-list.md",
+          "description": "gap 一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/traceability-report.md",
+          "description": "トレーサビリティ"
+        }
       ]
     },
     "8": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-8/duplication-audit.md", "description": "重複監査" },
-        { "type": "document", "path": "outputs/phase-8/navigation-refactor-summary.md", "description": "文書圧縮サマリー" }
+        {
+          "type": "document",
+          "path": "outputs/phase-8/duplication-audit.md",
+          "description": "重複監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/navigation-refactor-summary.md",
+          "description": "文書圧縮サマリー"
+        }
       ]
     },
     "9": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-9/quality-report.md", "description": "品質レポート" },
-        { "type": "document", "path": "outputs/phase-9/command-log.md", "description": "コマンドログ" },
-        { "type": "document", "path": "outputs/phase-9/mirror-parity-summary.md", "description": "mirror parity 要約" }
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/command-log.md",
+          "description": "コマンドログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/mirror-parity-summary.md",
+          "description": "mirror parity 要約"
+        }
       ]
     },
     "10": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-10/final-review-result.md", "description": "最終レビュー結果" },
-        { "type": "document", "path": "outputs/phase-10/blocker-disposition.md", "description": "blocker 判定" },
-        { "type": "document", "path": "outputs/phase-10/review-prompt.txt", "description": "レビュー入力" }
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/blocker-disposition.md",
+          "description": "blocker 判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/review-prompt.txt",
+          "description": "レビュー入力"
+        }
       ]
     },
     "11": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-11/manual-test-result.md", "description": "手動テスト結果" },
-        { "type": "document", "path": "outputs/phase-11/manual-test-checklist.md", "description": "手動テスト補助チェック" },
-        { "type": "document", "path": "outputs/phase-11/discovered-issues.md", "description": "発見事項" }
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テスト補助チェック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項"
+        }
       ]
     },
     "12": {
       "status": "spec_created",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-12/implementation-guide.md", "description": "実装ガイド" },
-        { "type": "document", "path": "outputs/phase-12/system-spec-update-summary.md", "description": "system spec 更新要約" },
-        { "type": "document", "path": "outputs/phase-12/documentation-changelog.md", "description": "更新履歴" },
-        { "type": "document", "path": "outputs/phase-12/unassigned-task-detection.md", "description": "未タスク検出" },
-        { "type": "document", "path": "outputs/phase-12/skill-feedback-report.md", "description": "skill フィードバック" },
-        { "type": "document", "path": "outputs/phase-12/phase12-task-spec-compliance-check.md", "description": "Phase 12 準拠チェック" }
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "system spec 更新要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill フィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
       ]
     },
     "13": {
       "status": "blocked",
       "artifacts": [
-        { "type": "document", "path": "outputs/phase-13/local-check-result.md", "description": "ローカル確認結果" },
-        { "type": "document", "path": "outputs/phase-13/change-summary.md", "description": "変更要約" },
-        { "type": "document", "path": "outputs/phase-13/pr-info.md", "description": "PR 情報" }
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR 情報"
+        }
       ]
     }
   }

@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 4 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 4                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -22,23 +22,23 @@ merge policy、custom driver、generator、mirror parity、NON_VISUAL evidence �
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| phase execution template | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 4 骨格 |
-| git attributes manual | `git help attributes` | merge simulation の期待値 |
-| session init hook | `.claude/hooks/session-init.sh` | bootstrap warning 設計 |
+| 資料名                   | パス                                                                               | 用途                      |
+| ------------------------ | ---------------------------------------------------------------------------------- | ------------------------- |
+| phase execution template | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 4 骨格              |
+| git attributes manual    | `git help attributes`                                                              | merge simulation の期待値 |
+| session init hook        | `.claude/hooks/session-init.sh`                                                    | bootstrap warning 設計    |
 
 ## 実行手順
 
 ### ステップ1: テストスイートの定義
 
-| TC | 対象 | 期待値 |
-| --- | --- | --- |
-| TC-4-01 | custom `keep-ours` driver | current branch 側を残して conflict marker を出さない |
-| TC-4-02 | `union` on `LOGS.md` | 双方の追記が残る |
-| TC-4-03 | `generate-index.js` | `topic-map.md` に日付行がなく、行番号索引契約は維持される |
-| TC-4-04 | mirror parity | `.claude` と `.agents` の対象 file set 差分を検出できる |
-| TC-4-05 | EVALS schema guard | 本 task が `EVALS.json` の schema を変えていないことを確認する |
+| TC      | 対象                      | 期待値                                                         |
+| ------- | ------------------------- | -------------------------------------------------------------- |
+| TC-4-01 | custom `keep-ours` driver | current branch 側を残して conflict marker を出さない           |
+| TC-4-02 | `union` on `LOGS.md`      | 双方の追記が残る                                               |
+| TC-4-03 | `generate-index.js`       | `topic-map.md` に日付行がなく、行番号索引契約は維持される      |
+| TC-4-04 | mirror parity             | `.claude` と `.agents` の対象 file set 差分を検出できる        |
+| TC-4-05 | EVALS schema guard        | 本 task が `EVALS.json` の schema を変えていないことを確認する |
 
 ### ステップ2: テスト操作媒体の明示
 
@@ -60,11 +60,11 @@ merge policy、custom driver、generator、mirror parity、NON_VISUAL evidence �
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-10 | merge simulation case 作成 | Lane A |
-| ST-11 | generator regression case 作成 | Lane B |
-| ST-12 | consumer audit guard 作成 | Lane C |
+| SubTask | 内容                           | 担当   |
+| ------- | ------------------------------ | ------ |
+| ST-10   | merge simulation case 作成     | Lane A |
+| ST-11   | generator regression case 作成 | Lane B |
+| ST-12   | consumer audit guard 作成      | Lane C |
 
 ## 成果物
 

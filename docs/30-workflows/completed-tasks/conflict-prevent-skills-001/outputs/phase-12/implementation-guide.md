@@ -19,9 +19,24 @@ Git でチーム開発をすると、同じファイルを複数の人が同時�
 
 ```ts
 type ConflictManagedAsset =
-  | { kind: "generated-index"; pathGlob: string; merge: "ours"; recovery: "regenerate" }
-  | { kind: "append-only-log"; pathGlob: string; merge: "union"; recovery: "none" }
-  | { kind: "volatile-metadata"; pathGlob: string; merge: "ours"; recovery: "manual-audit" };
+  | {
+      kind: "generated-index";
+      pathGlob: string;
+      merge: "ours";
+      recovery: "regenerate";
+    }
+  | {
+      kind: "append-only-log";
+      pathGlob: string;
+      merge: "union";
+      recovery: "none";
+    }
+  | {
+      kind: "volatile-metadata";
+      pathGlob: string;
+      merge: "ours";
+      recovery: "manual-audit";
+    };
 
 type RegenerateCommand = {
   target: "aiworkflow-requirements";
@@ -30,11 +45,11 @@ type RegenerateCommand = {
 };
 ```
 
-| 種別 | 代表パス | merge 方針 | 復旧方法 |
-| --- | --- | --- | --- |
-| generated index | `.claude/skills/*/indexes/*.md`, `.json` | `merge=ours` | `generate-index.js` 再実行 |
-| append-only log | `.claude/skills/*/LOGS.md` | `merge=union` | 追記統合 |
-| volatile metadata | `.claude/skills/*/EVALS.json` | `merge=ours` | consumer 監査前提で手動確認 |
+| 種別              | 代表パス                                 | merge 方針    | 復旧方法                    |
+| ----------------- | ---------------------------------------- | ------------- | --------------------------- |
+| generated index   | `.claude/skills/*/indexes/*.md`, `.json` | `merge=ours`  | `generate-index.js` 再実行  |
+| append-only log   | `.claude/skills/*/LOGS.md`               | `merge=union` | 追記統合                    |
+| volatile metadata | `.claude/skills/*/EVALS.json`            | `merge=ours`  | consumer 監査前提で手動確認 |
 
 ### 2. `.gitattributes` の修正
 
@@ -101,29 +116,29 @@ node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
 
 ### 8. エラーハンドリング
 
-| ケース | 検知方法 | 対応 |
-| --- | --- | --- |
-| `merge.ours.driver` 未設定 | `session-init.sh` warning | `bash .claude/scripts/setup-merge-drivers.sh` |
-| post-merge hook 未導入 | `.git/hooks/post-merge` 不在 | `install-git-hooks.sh` を再実行 |
-| mirror drift 残存 | `diff -qr` | full sync は未タスクに切り出す |
-| EVALS consumer 未監査 | Phase 12 review | schema 変更を保留する |
+| ケース                     | 検知方法                     | 対応                                          |
+| -------------------------- | ---------------------------- | --------------------------------------------- |
+| `merge.ours.driver` 未設定 | `session-init.sh` warning    | `bash .claude/scripts/setup-merge-drivers.sh` |
+| post-merge hook 未導入     | `.git/hooks/post-merge` 不在 | `install-git-hooks.sh` を再実行               |
+| mirror drift 残存          | `diff -qr`                   | full sync は未タスクに切り出す                |
+| EVALS consumer 未監査      | Phase 12 review              | schema 変更を保留する                         |
 
 ### 9. エッジケース
 
-| ケース | 振る舞い |
-| --- | --- |
-| generated index が current branch 側に残る | merge 後 regenerate で正本に戻す |
-| `.claude` だけ更新され `.agents` が stale | partial sync と full sync を分離記録する |
+| ケース                                      | 振る舞い                                     |
+| ------------------------------------------- | -------------------------------------------- |
+| generated index が current branch 側に残る  | merge 後 regenerate で正本に戻す             |
+| `.claude` だけ更新され `.agents` が stale   | partial sync と full sync を分離記録する     |
 | structured docs へ `merge=union` を広く適用 | follow-up で再評価し、append-only と分離する |
 
 ### 10. 設定値・定数一覧
 
-| 項目 | 値 / パターン | 用途 |
-| --- | --- | --- |
-| merge driver 名 | `merge.ours.driver` | generated index 用 custom driver |
-| canonical root | `.claude/skills/` | 正本 |
-| mirror root | `.agents/skills/` | mirror |
-| generated index script | `*/scripts/generate-index.js` | index 再生成 |
+| 項目                   | 値 / パターン                 | 用途                             |
+| ---------------------- | ----------------------------- | -------------------------------- |
+| merge driver 名        | `merge.ours.driver`           | generated index 用 custom driver |
+| canonical root         | `.claude/skills/`             | 正本                             |
+| mirror root            | `.agents/skills/`             | mirror                           |
+| generated index script | `*/scripts/generate-index.js` | index 再生成                     |
 
 ### 11. EVALS.json の取り扱い
 

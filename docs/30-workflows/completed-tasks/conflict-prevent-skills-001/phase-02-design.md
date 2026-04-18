@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 2 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 2                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -22,24 +22,24 @@ generated file、mirror、log、volatile metadata の4分類に対し、最小�
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| phase template core | `.agents/skills/task-specification-creator/references/phase-template-core.md` | Phase 2 骨格 |
-| phase template execution | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 4-10 接続 |
-| phase 12 guide | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | close-out 同期 |
-| aiworkflow references | `.agents/skills/aiworkflow-requirements/indexes/resource-map.md` | regenerate / skill structure 起点 |
-| git attributes manual | `git help attributes` | merge driver 仕様 |
+| 資料名                   | パス                                                                                   | 用途                              |
+| ------------------------ | -------------------------------------------------------------------------------------- | --------------------------------- |
+| phase template core      | `.agents/skills/task-specification-creator/references/phase-template-core.md`          | Phase 2 骨格                      |
+| phase template execution | `.agents/skills/task-specification-creator/references/phase-template-execution.md`     | Phase 4-10 接続                   |
+| phase 12 guide           | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | close-out 同期                    |
+| aiworkflow references    | `.agents/skills/aiworkflow-requirements/indexes/resource-map.md`                       | regenerate / skill structure 起点 |
+| git attributes manual    | `git help attributes`                                                                  | merge driver 仕様                 |
 
 ## 実行手順
 
 ### ステップ1: file category ごとの方針決定
 
-| category | 対象例 | 方針 |
-| --- | --- | --- |
-| generated index | `indexes/*.md`, `indexes/*.json` | custom `keep-ours` + post-merge / explicit regenerate |
-| mirror tree | `.agents/skills/**` | custom `keep-ours`、canonical は `.claude` |
-| append-only log | `LOGS.md` | `merge=union` 候補、archive policy を併記 |
-| volatile metadata | `EVALS.json` | schema は不変、短期は JSON 向け `keep-ours` policy のみ |
+| category          | 対象例                           | 方針                                                    |
+| ----------------- | -------------------------------- | ------------------------------------------------------- |
+| generated index   | `indexes/*.md`, `indexes/*.json` | custom `keep-ours` + post-merge / explicit regenerate   |
+| mirror tree       | `.agents/skills/**`              | custom `keep-ours`、canonical は `.claude`              |
+| append-only log   | `LOGS.md`                        | `merge=union` 候補、archive policy を併記               |
+| volatile metadata | `EVALS.json`                     | schema は不変、短期は JSON 向け `keep-ours` policy のみ |
 
 ### ステップ2: elegant solution の確定
 
@@ -50,10 +50,10 @@ generated file、mirror、log、volatile metadata の4分類に対し、最小�
 
 ### ステップ3: レーン設計
 
-| lane | 担当 | 並列可否 |
-| --- | --- | --- |
-| Lane A | `.gitattributes`、custom merge driver、hook/check | 並列 |
-| Lane B | `generate-index.js`、topic-map deterministic 化 | 並列 |
+| lane   | 担当                                               | 並列可否     |
+| ------ | -------------------------------------------------- | ------------ |
+| Lane A | `.gitattributes`、custom merge driver、hook/check  | 並列         |
+| Lane B | `generate-index.js`、topic-map deterministic 化    | 並列         |
 | Lane C | LOGS / EVALS / Phase 12 close-out / follow-up 判定 | A/B 依存あり |
 
 ## 統合テスト連携
@@ -72,11 +72,11 @@ generated file、mirror、log、volatile metadata の4分類に対し、最小�
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-4 | merge policy table 作成 | Lane C |
-| ST-5 | validation matrix 作成 | Lane C |
-| ST-6 | close-out / follow-up 境界整理 | Lane C |
+| SubTask | 内容                           | 担当   |
+| ------- | ------------------------------ | ------ |
+| ST-4    | merge policy table 作成        | Lane C |
+| ST-5    | validation matrix 作成         | Lane C |
+| ST-6    | close-out / follow-up 境界整理 | Lane C |
 
 ## 成果物
 

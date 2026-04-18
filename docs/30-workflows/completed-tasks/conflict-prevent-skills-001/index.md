@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-CONFLICT-PREVENT-001 |
-| タスク種別 | NON_VISUAL / docs-only / spec_created |
-| 作成日 | 2026-04-18 |
-| ステータス | spec_created |
-| 依存タスク | なし |
-| 実装対象 | `.claude/skills/` と `.agents/skills/` の競合要因整理、merge policy、再生成運用、close-out 仕様 |
+| 項目       | 内容                                                                                            |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CONFLICT-PREVENT-001                                                                       |
+| タスク種別 | NON_VISUAL / docs-only / spec_created                                                           |
+| 作成日     | 2026-04-18                                                                                      |
+| ステータス | spec_created                                                                                    |
+| 依存タスク | なし                                                                                            |
+| 実装対象   | `.claude/skills/` と `.agents/skills/` の競合要因整理、merge policy、再生成運用、close-out 仕様 |
 
 ## ユーザー要求の要約
 
@@ -60,59 +60,59 @@
 
 ## 4条件の初期判定
 
-| 条件 | 現状 | 改善方針 |
-| --- | --- | --- |
-| 矛盾なし | NG | built-in merge driver 誤認、spec_created と実装済み記述の混在を解消する |
-| 漏れなし | NG | 全 phase の必須セクションと artifacts parity を補完する |
-| 整合性あり | NG | canonical root / mirror / close-out wording を統一する |
-| 依存関係整合 | NG | merge policy、generator、hooks、Phase 12 ledger sync を依存順に並べ直す |
+| 条件         | 現状 | 改善方針                                                                |
+| ------------ | ---- | ----------------------------------------------------------------------- |
+| 矛盾なし     | NG   | built-in merge driver 誤認、spec_created と実装済み記述の混在を解消する |
+| 漏れなし     | NG   | 全 phase の必須セクションと artifacts parity を補完する                 |
+| 整合性あり   | NG   | canonical root / mirror / close-out wording を統一する                  |
+| 依存関係整合 | NG   | merge policy、generator、hooks、Phase 12 ledger sync を依存順に並べ直す |
 
 ## 30種思考法の適用方針
 
-| グループ | 本タスクでの使い方 |
-| --- | --- |
-| 論理分析系 | Git 仕様、skill 仕様、現在の workflow 文面の矛盾検出 |
-| 構造分解系 | 競合源を generated / mirror / log / metadata に分解 |
-| メタ・抽象系 | 「競合防止」と「仕様汚染防止」を分離して再設計 |
+| グループ     | 本タスクでの使い方                                              |
+| ------------ | --------------------------------------------------------------- |
+| 論理分析系   | Git 仕様、skill 仕様、現在の workflow 文面の矛盾検出            |
+| 構造分解系   | 競合源を generated / mirror / log / metadata に分解             |
+| メタ・抽象系 | 「競合防止」と「仕様汚染防止」を分離して再設計                  |
 | 発想・拡張系 | keep-ours、deterministic regenerate、follow-up 分離の代替案比較 |
-| システム系 | Phase 5 実装、Phase 9 検証、Phase 12 close-out の波及確認 |
-| 戦略・価値系 | 即効性の高い対策と高リスク変更の切り分け |
-| 問題解決系 | why 分析、仮説、論点整理、KJ 法で優先順位づけ |
+| システム系   | Phase 5 実装、Phase 9 検証、Phase 12 close-out の波及確認       |
+| 戦略・価値系 | 即効性の高い対策と高リスク変更の切り分け                        |
+| 問題解決系   | why 分析、仮説、論点整理、KJ 法で優先順位づけ                   |
 
 ## 改善対象の再分類
 
-| 区分 | 対象 | 優先度 | 本 wave の方針 |
-| --- | --- | --- | --- |
-| G1 | generated index (`keywords.json`, `topic-map.md`, `resource-map.md`, `quick-reference.md`) | CRITICAL | merge policy と deterministic regenerate を設計する |
-| G2 | mirror tree (`.agents/skills/**`) | CRITICAL | canonical / mirror policy と custom keep-ours driver を設計する |
-| G3 | append-only log (`LOGS.md`, archive) | HIGH | `union` 適用条件と archive ルールを設計する |
-| G4 | volatile metadata (`EVALS.json`) | HIGH | schema 変更は follow-up、短期は JSON 向け merge policy に留める |
+| 区分 | 対象                                                                                       | 優先度   | 本 wave の方針                                                  |
+| ---- | ------------------------------------------------------------------------------------------ | -------- | --------------------------------------------------------------- |
+| G1   | generated index (`keywords.json`, `topic-map.md`, `resource-map.md`, `quick-reference.md`) | CRITICAL | merge policy と deterministic regenerate を設計する             |
+| G2   | mirror tree (`.agents/skills/**`)                                                          | CRITICAL | canonical / mirror policy と custom keep-ours driver を設計する |
+| G3   | append-only log (`LOGS.md`, archive)                                                       | HIGH     | `union` 適用条件と archive ルールを設計する                     |
+| G4   | volatile metadata (`EVALS.json`)                                                           | HIGH     | schema 変更は follow-up、短期は JSON 向け merge policy に留める |
 
 ## SubAgent レーン
 
-| レーン | 役割 | 並列可否 |
-| --- | --- | --- |
-| Lane A | task-specification-creator 準拠監査 | 並列 |
-| Lane B | aiworkflow-requirements 抽出監査 | 並列 |
+| レーン | 役割                                       | 並列可否   |
+| ------ | ------------------------------------------ | ---------- |
+| Lane A | task-specification-creator 準拠監査        | 並列       |
+| Lane B | aiworkflow-requirements 抽出監査           | 並列       |
 | Lane C | 実装計画の統合、30思考法レビュー、最終整形 | A/B 完了後 |
 
 ## Phase 一覧
 
-| Phase | 名称 | ステータス |
-| --- | --- | --- |
-| 1 | 要件定義 | spec_created |
-| 2 | 設計 | spec_created |
-| 3 | 設計レビュー | spec_created |
-| 4 | テスト作成 | spec_created |
-| 5 | 実装 | spec_created |
-| 6 | テスト拡充 | spec_created |
-| 7 | カバレッジ確認 | spec_created |
-| 8 | リファクタリング | spec_created |
-| 9 | 品質保証 | spec_created |
-| 10 | 最終レビュー | spec_created |
-| 11 | 手動テスト | spec_created |
-| 12 | ドキュメント更新 | spec_created |
-| 13 | PR 作成 | blocked |
+| Phase | 名称             | ステータス   |
+| ----- | ---------------- | ------------ |
+| 1     | 要件定義         | spec_created |
+| 2     | 設計             | spec_created |
+| 3     | 設計レビュー     | spec_created |
+| 4     | テスト作成       | spec_created |
+| 5     | 実装             | spec_created |
+| 6     | テスト拡充       | spec_created |
+| 7     | カバレッジ確認   | spec_created |
+| 8     | リファクタリング | spec_created |
+| 9     | 品質保証         | spec_created |
+| 10    | 最終レビュー     | spec_created |
+| 11    | 手動テスト       | spec_created |
+| 12    | ドキュメント更新 | spec_created |
+| 13    | PR 作成          | blocked      |
 
 ## 成果物ナビ
 

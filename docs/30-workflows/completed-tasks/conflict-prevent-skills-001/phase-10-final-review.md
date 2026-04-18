@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 10 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 10                          |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -20,24 +20,24 @@
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| requirements | `docs/30-workflows/conflict-prevent-skills-001/phase-01-requirements.md` | AC 参照 |
+| 資料名            | パス                                                                          | 用途         |
+| ----------------- | ----------------------------------------------------------------------------- | ------------ |
+| requirements      | `docs/30-workflows/conflict-prevent-skills-001/phase-01-requirements.md`      | AC 参照      |
 | quality assurance | `docs/30-workflows/conflict-prevent-skills-001/phase-09-quality-assurance.md` | 実測結果参照 |
 
 ## 実行手順
 
 ### ステップ1: AC 判定
 
-| AC | 観点 | 判定方式 |
-| --- | --- | --- |
-| AC-1 | 13 phase 骨格 | validator |
-| AC-2 | 4分類設計 | document review |
-| AC-3 | custom / built-in 整合 | git manual + spec review |
-| AC-4 | canonical / mirror 一貫性 | parity + Phase 12 設計 |
-| AC-5 | deterministic topic-map | grep + regenerate |
-| AC-6 | EVALS schema 不変 | merge policy review |
-| AC-7 | Phase 13 blocked | artifacts / phase-13 review |
+| AC   | 観点                      | 判定方式                    |
+| ---- | ------------------------- | --------------------------- |
+| AC-1 | 13 phase 骨格             | validator                   |
+| AC-2 | 4分類設計                 | document review             |
+| AC-3 | custom / built-in 整合    | git manual + spec review    |
+| AC-4 | canonical / mirror 一貫性 | parity + Phase 12 設計      |
+| AC-5 | deterministic topic-map   | grep + regenerate           |
+| AC-6 | EVALS schema 不変         | merge policy review         |
+| AC-7 | Phase 13 blocked          | artifacts / phase-13 review |
 
 ### ステップ2: レビュー判定
 
@@ -57,9 +57,9 @@
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-20 | AC final review | Lane C |
+| SubTask | 内容            | 担当   |
+| ------- | --------------- | ------ |
+| ST-20   | AC final review | Lane C |
 
 ## 成果物
 

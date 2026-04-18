@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 5 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 5                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -23,11 +23,11 @@
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| phase execution template | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 5 骨格 |
-| session init hook | `.claude/hooks/session-init.sh` | warning 導線 |
-| aiworkflow generator | `.agents/skills/aiworkflow-requirements/scripts/generate-index.js` | deterministic 化対象 |
+| 資料名                   | パス                                                                               | 用途                 |
+| ------------------------ | ---------------------------------------------------------------------------------- | -------------------- |
+| phase execution template | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 5 骨格         |
+| session init hook        | `.claude/hooks/session-init.sh`                                                    | warning 導線         |
+| aiworkflow generator     | `.agents/skills/aiworkflow-requirements/scripts/generate-index.js`                 | deterministic 化対象 |
 
 ## 実行手順
 
@@ -63,11 +63,11 @@
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-13 | `.gitattributes` と driver setup | Lane A |
-| ST-14 | generator deterministic 化 | Lane B |
-| ST-15 | LOGS / EVALS / warning flow | Lane C |
+| SubTask | 内容                             | 担当   |
+| ------- | -------------------------------- | ------ |
+| ST-13   | `.gitattributes` と driver setup | Lane A |
+| ST-14   | generator deterministic 化       | Lane B |
+| ST-15   | LOGS / EVALS / warning flow      | Lane C |
 
 ## 成果物
 

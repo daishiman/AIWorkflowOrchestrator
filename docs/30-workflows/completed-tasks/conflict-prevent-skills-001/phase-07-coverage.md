@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 7 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 7                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -20,20 +20,20 @@ acceptance criteria、競合分類、テストケースの対応を可視化し�
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| Phase 1 AC | `docs/30-workflows/conflict-prevent-skills-001/phase-01-requirements.md` | coverage 基準 |
-| Phase 4/6 spec | `docs/30-workflows/conflict-prevent-skills-001/phase-04-test-creation.md` | TC 参照 |
+| 資料名         | パス                                                                      | 用途          |
+| -------------- | ------------------------------------------------------------------------- | ------------- |
+| Phase 1 AC     | `docs/30-workflows/conflict-prevent-skills-001/phase-01-requirements.md`  | coverage 基準 |
+| Phase 4/6 spec | `docs/30-workflows/conflict-prevent-skills-001/phase-04-test-creation.md` | TC 参照       |
 
 ## 実行手順
 
 ### ステップ1: coverage matrix 作成
 
-| 軸 | 内容 |
-| --- | --- |
-| AC 軸 | AC-1〜AC-7 |
-| conflict class 軸 | generated / mirror / log / metadata |
-| command 軸 | verify / grep / merge simulation / regenerate |
+| 軸                | 内容                                          |
+| ----------------- | --------------------------------------------- |
+| AC 軸             | AC-1〜AC-7                                    |
+| conflict class 軸 | generated / mirror / log / metadata           |
+| command 軸        | verify / grep / merge simulation / regenerate |
 
 ### ステップ2: gap 判定
 
@@ -53,9 +53,9 @@ acceptance criteria、競合分類、テストケースの対応を可視化し�
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-17 | coverage matrix 作成 | Lane C |
+| SubTask | 内容                 | 担当   |
+| ------- | -------------------- | ------ |
+| ST-17   | coverage matrix 作成 | Lane C |
 
 ## 成果物
 

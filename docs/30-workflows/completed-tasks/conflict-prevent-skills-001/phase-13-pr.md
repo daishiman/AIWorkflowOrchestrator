@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 13 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 13                          |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -20,10 +20,10 @@ user approval 取得後にのみ PR 準備へ進めるよう、blocked 条件と
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
+| 資料名            | パス                                                                             | 用途           |
+| ----------------- | -------------------------------------------------------------------------------- | -------------- |
 | phase 13 template | `.agents/skills/task-specification-creator/references/phase-template-phase13.md` | blocked ルール |
-| phase 12 doc | `docs/30-workflows/conflict-prevent-skills-001/phase-12-documentation.md` | close-out 前提 |
+| phase 12 doc      | `docs/30-workflows/conflict-prevent-skills-001/phase-12-documentation.md`        | close-out 前提 |
 
 ## 実行手順
 
@@ -49,9 +49,9 @@ user approval 取得後にのみ PR 準備へ進めるよう、blocked 条件と
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-25 | blocked 理由の維持 | Lane C |
+| SubTask | 内容               | 担当   |
+| ------- | ------------------ | ------ |
+| ST-25   | blocked 理由の維持 | Lane C |
 
 ## 成果物
 

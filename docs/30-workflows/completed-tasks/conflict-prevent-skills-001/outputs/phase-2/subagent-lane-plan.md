@@ -34,12 +34,10 @@ merge policy を Git に正しく認識させる設定を整備する。
 ### 作業内容
 
 1. **`.gitattributes` の修正**
-
    - `indexes/*.md` を `merge=union` から `merge=ours` へ変更
    - 現状の記述と `merge-policy-matrix.md` の設計方針を照合し、差分を修正する
 
 2. **custom driver bootstrap の追加**
-
    - `git config merge.ours.driver true` の実行を `session-init.sh` に追記する
    - 設定が存在しない場合は警告を出力する check を追加する
 
@@ -68,12 +66,10 @@ merge policy を Git に正しく認識させる設定を整備する。
 ### 作業内容
 
 1. **日付ヘッダーの除去**
-
    - `topic-map.md` の先頭に出力される `> 自動生成: YYYY-MM-DD` 行を削除する
    - 対象箇所: `generate-index.js` 内の `> 自動生成: ${new Date().toISOString().split("T")[0]}` という記述
 
 2. **行番号索引の維持**
-
    - discoverability 契約として `topic-map.md` の行番号索引は削除しない
    - 日付のみを除去し、索引構造はそのまま維持する
 
@@ -103,12 +99,10 @@ append-only log と volatile metadata の運用方針を確定し、Phase 12 clo
 ### 作業内容
 
 1. **LOGS / SKILL-changelog.md の運用確認**
-
    - `merge=union` 設定が正しく機能することを確認する（built-in のため custom driver 不要）
    - archive policy を記述する：ログが 500 行を超えたら `LOGS-archive-YYYY.md` へ切り出す
 
 2. **EVALS.json の運用確認**
-
    - `merge=ours` 設定が正しく機能することを確認する（custom driver 必要）
    - schema は本 wave で変更しないことを Phase 12 成果物に明記する
 

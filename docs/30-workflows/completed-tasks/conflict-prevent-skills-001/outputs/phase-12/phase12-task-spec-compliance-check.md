@@ -17,20 +17,20 @@
 
 ## Task / Step 充足確認
 
-| 項目 | 判定 | 根拠 |
-| --- | --- | --- |
-| Task 12-1 implementation guide | PASS | Part 1/2、型、API、エラー系、定数一覧を記載 |
-| Task 12-2 system spec update | PASS | Step 1-A〜1-C を summary へ記録 |
-| Task 12-3 documentation changelog | PASS | 変更ファイルと validator 実測を記録 |
-| Task 12-4 unassigned detection | PASS | high-risk follow-up を既存未タスク群へ接続 |
-| Task 12-5 skill feedback | PASS | 改善不要 / 残課題を切り分けて記録 |
-| Task 12-6 compliance-check | PASS | 本ファイルで集約 |
+| 項目                              | 判定 | 根拠                                        |
+| --------------------------------- | ---- | ------------------------------------------- |
+| Task 12-1 implementation guide    | PASS | Part 1/2、型、API、エラー系、定数一覧を記載 |
+| Task 12-2 system spec update      | PASS | Step 1-A〜1-C を summary へ記録             |
+| Task 12-3 documentation changelog | PASS | 変更ファイルと validator 実測を記録         |
+| Task 12-4 unassigned detection    | PASS | high-risk follow-up を既存未タスク群へ接続  |
+| Task 12-5 skill feedback          | PASS | 改善不要 / 残課題を切り分けて記録           |
+| Task 12-6 compliance-check        | PASS | 本ファイルで集約                            |
 
-| Step | 判定 | 根拠 |
-| --- | --- | --- |
+| Step     | 判定 | 根拠                                       |
+| -------- | ---- | ------------------------------------------ |
 | Step 1-A | PASS | completed ledger、LOGS×2、topic-map 再生成 |
-| Step 1-B | PASS | root / outputs artifacts の状態整合 |
-| Step 1-C | PASS | follow-up を既存 task / issue に接続 |
+| Step 1-B | PASS | root / outputs artifacts の状態整合        |
+| Step 1-C | PASS | follow-up を既存 task / issue に接続       |
 
 ## Phase 13 blocked 維持確認
 

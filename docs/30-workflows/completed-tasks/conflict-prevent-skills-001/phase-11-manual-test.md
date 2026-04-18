@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 11 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 11                          |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -20,10 +20,10 @@
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
+| 資料名            | パス                                                                             | 用途             |
+| ----------------- | -------------------------------------------------------------------------------- | ---------------- |
 | phase 11 template | `.agents/skills/task-specification-creator/references/phase-template-phase11.md` | docs-only ルール |
-| final review | `docs/30-workflows/conflict-prevent-skills-001/phase-10-final-review.md` | 前提確認 |
+| final review      | `docs/30-workflows/conflict-prevent-skills-001/phase-10-final-review.md`         | 前提確認         |
 
 ## 実行手順
 
@@ -34,12 +34,12 @@
 
 ### ステップ2: ウォークスルー項目
 
-| 観点 | 確認内容 |
-| --- | --- |
-| 自己完結性 | 13 phase だけで実装者が着手できるか |
-| コマンド再現性 | validator、driver setup、regenerate の手順が矛盾しないか |
-| canonical / mirror | `.claude` 正本と `.agents` mirror の説明が一貫するか |
-| close-out | Phase 12 で更新すべき ledger / artifacts が明確か |
+| 観点               | 確認内容                                                 |
+| ------------------ | -------------------------------------------------------- |
+| 自己完結性         | 13 phase だけで実装者が着手できるか                      |
+| コマンド再現性     | validator、driver setup、regenerate の手順が矛盾しないか |
+| canonical / mirror | `.claude` 正本と `.agents` mirror の説明が一貫するか     |
+| close-out          | Phase 12 で更新すべき ledger / artifacts が明確か        |
 
 ## 統合テスト連携
 
@@ -53,9 +53,9 @@
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-21 | docs-only walkthrough | Lane C |
+| SubTask | 内容                  | 担当   |
+| ------- | --------------------- | ------ |
+| ST-21   | docs-only walkthrough | Lane C |
 
 ## 成果物
 

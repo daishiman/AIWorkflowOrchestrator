@@ -6,7 +6,6 @@
 issue_number: 2281
 ```
 
-
 ## メタ情報
 
 | 項目         | 内容                                                                    |
@@ -228,7 +227,6 @@ Git のマージとは、2つのブランチの変更を1つにまとめる作�
    ```
 
    修正方針の選択肢：
-
    - **選択肢A（推奨）**：ファイルパターンをより細かく分割する
 
      ```
@@ -294,7 +292,6 @@ Git のマージとは、2つのブランチの変更を1つにまとめる作�
    ```
 
    記録内容：
-
    - 変更前後の `.gitattributes` 差分
    - ファイルパターン分類表と判断理由
    - `merge=union` を外したファイルパターン一覧
@@ -403,7 +400,6 @@ grep -n 'merge=' .gitattributes
 TASK-CONFLICT-PREVENT-001 の実装中に以下の点で混乱・苦戦した：
 
 1. **`merge=ours` は Git built-in ではない**
-
    - Git には built-in の `ours` マージ**戦略**（`git merge -s ours`）は存在するが、
      `.gitattributes` で指定する `merge=ours` は**カスタムドライバー名**である
    - `git config merge.ours.driver true` を事前に実行しなければ `.gitattributes` の
@@ -411,7 +407,6 @@ TASK-CONFLICT-PREVENT-001 の実装中に以下の点で混乱・苦戦した：
    - この違いを認識せずに実装したため、後付けで `setup-merge-drivers.sh` を作成することになった
 
 2. **`merge=union` の適用範囲の設計ミス**
-
    - 当初は「append-only ファイル = `merge=union`」という単純なルールで設計したが、
      `references/` 配下には append-only ではない構造化ドキュメントも多数含まれている
    - `merge=union` は行レベルで「両方残す」ため、ATX 見出しや Markdown テーブルが

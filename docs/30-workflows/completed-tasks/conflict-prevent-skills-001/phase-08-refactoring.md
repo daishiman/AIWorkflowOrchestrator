@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 8 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 8                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -20,9 +20,9 @@
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| Phase 2 design | `docs/30-workflows/conflict-prevent-skills-001/phase-02-design.md` | 重複削減対象 |
+| 資料名                 | パス                                                                       | 用途             |
+| ---------------------- | -------------------------------------------------------------------------- | ---------------- |
+| Phase 2 design         | `docs/30-workflows/conflict-prevent-skills-001/phase-02-design.md`         | 重複削減対象     |
 | Phase 5 implementation | `docs/30-workflows/conflict-prevent-skills-001/phase-05-implementation.md` | wording 整理対象 |
 
 ## 実行手順
@@ -50,9 +50,9 @@
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-18 | wording / duplication 整理 | Lane C |
+| SubTask | 内容                       | 担当   |
+| ------- | -------------------------- | ------ |
+| ST-18   | wording / duplication 整理 | Lane C |
 
 ## 成果物
 

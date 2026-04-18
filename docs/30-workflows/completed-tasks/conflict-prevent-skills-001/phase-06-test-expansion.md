@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 6 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 6                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -21,10 +21,10 @@ Phase 4 / 5 で定義した merge、generator、parity、consumer audit に対�
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
+| 資料名                   | パス                                                                               | 用途         |
+| ------------------------ | ---------------------------------------------------------------------------------- | ------------ |
 | phase execution template | `.agents/skills/task-specification-creator/references/phase-template-execution.md` | Phase 6 骨格 |
-| Phase 4 spec | `docs/30-workflows/conflict-prevent-skills-001/phase-04-test-creation.md` | 追加対象 |
+| Phase 4 spec             | `docs/30-workflows/conflict-prevent-skills-001/phase-04-test-creation.md`          | 追加対象     |
 
 ## 実行手順
 
@@ -52,9 +52,9 @@ Phase 4 / 5 で定義した merge、generator、parity、consumer audit に対�
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-16 | edge case matrix 追加 | Lane C |
+| SubTask | 内容                  | 担当   |
+| ------- | --------------------- | ------ |
+| ST-16   | edge case matrix 追加 | Lane C |
 
 ## 成果物
 

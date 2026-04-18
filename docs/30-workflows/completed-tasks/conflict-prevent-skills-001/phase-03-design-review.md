@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-| --- | --- |
-| Phase | 3 |
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 3                           |
 | 機能名 | conflict-prevent-skills-001 |
-| 作成日 | 2026-04-18 |
+| 作成日 | 2026-04-18                  |
 
 ## 目的
 
@@ -22,12 +22,12 @@ Phase 2 設計が `skill 準拠` と `エレガントさ` を両立している�
 
 ## 参照資料
 
-| 資料名 | パス | 用途 |
-| --- | --- | --- |
-| task-spec skill | `.agents/skills/task-specification-creator/SKILL.md` | phase gate 根拠 |
-| aiworkflow skill | `.agents/skills/aiworkflow-requirements/SKILL.md` | canonical / mirror 根拠 |
-| phase 12 guide | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | close-out 先行確認 |
-| 監査成果物 | `outputs/phase-3/*.md` | 本 phase の証跡 |
+| 資料名           | パス                                                                                   | 用途                    |
+| ---------------- | -------------------------------------------------------------------------------------- | ----------------------- |
+| task-spec skill  | `.agents/skills/task-specification-creator/SKILL.md`                                   | phase gate 根拠         |
+| aiworkflow skill | `.agents/skills/aiworkflow-requirements/SKILL.md`                                      | canonical / mirror 根拠 |
+| phase 12 guide   | `.agents/skills/task-specification-creator/references/phase-12-documentation-guide.md` | close-out 先行確認      |
+| 監査成果物       | `outputs/phase-3/*.md`                                                                 | 本 phase の証跡         |
 
 ## 実行手順
 
@@ -40,23 +40,23 @@ Phase 2 設計が `skill 準拠` と `エレガントさ` を両立している�
 
 ### ステップ2: 30種思考法レビュー
 
-| カテゴリ | 主な結論 |
-| --- | --- |
-| 論理分析系 | Git 仕様誤認を是正しない限り設計全体が崩れる |
-| 構造分解系 | 4分類で整理すると EVALS を本 wave から外せる |
-| メタ・抽象系 | 問題は「競合」だけでなく「競合対策の副作用」でもある |
-| 発想・拡張系 | `all union` / `all keep-ours` より category 別設計が簡潔 |
-| システム系 | Phase 12 same-wave sync を先に設計しないと drift が残る |
+| カテゴリ     | 主な結論                                                                   |
+| ------------ | -------------------------------------------------------------------------- |
+| 論理分析系   | Git 仕様誤認を是正しない限り設計全体が崩れる                               |
+| 構造分解系   | 4分類で整理すると EVALS を本 wave から外せる                               |
+| メタ・抽象系 | 問題は「競合」だけでなく「競合対策の副作用」でもある                       |
+| 発想・拡張系 | `all union` / `all keep-ours` より category 別設計が簡潔                   |
+| システム系   | Phase 12 same-wave sync を先に設計しないと drift が残る                    |
 | 戦略・価値系 | generated / mirror を先に、consumer audit 必須変更を後に置くのが最小コスト |
-| 問題解決系 | 真因は「共有状態の混在」であり、症状ごとの場当たり対策ではない |
+| 問題解決系   | 真因は「共有状態の混在」であり、症状ごとの場当たり対策ではない             |
 
 ### ステップ3: ゲート判定
 
-| 判定 | 条件 | 戻り先 |
-| --- | --- | --- |
-| PASS | custom driver、regenerate、close-out 同期の3本柱が揃う | Phase 4 |
-| MINOR | wording や artifact 名の微修正だけが残る | Phase 3 内で修正 |
-| MAJOR | EVALS のような高リスク変更を無監査で本 wave に入れている | Phase 2 |
+| 判定  | 条件                                                     | 戻り先           |
+| ----- | -------------------------------------------------------- | ---------------- |
+| PASS  | custom driver、regenerate、close-out 同期の3本柱が揃う   | Phase 4          |
+| MINOR | wording や artifact 名の微修正だけが残る                 | Phase 3 内で修正 |
+| MAJOR | EVALS のような高リスク変更を無監査で本 wave に入れている | Phase 2          |
 
 ## 統合テスト連携
 
@@ -72,11 +72,11 @@ Phase 2 設計が `skill 準拠` と `エレガントさ` を両立している�
 
 ## サブタスク管理
 
-| SubTask | 内容 | 担当 |
-| --- | --- | --- |
-| ST-7 | compliance audit 反映 | Lane A |
-| ST-8 | requirements audit 反映 | Lane B |
-| ST-9 | elegance review 反映 | Lane C |
+| SubTask | 内容                    | 担当   |
+| ------- | ----------------------- | ------ |
+| ST-7    | compliance audit 反映   | Lane A |
+| ST-8    | requirements audit 反映 | Lane B |
+| ST-9    | elegance review 反映    | Lane C |
 
 ## 成果物
 
