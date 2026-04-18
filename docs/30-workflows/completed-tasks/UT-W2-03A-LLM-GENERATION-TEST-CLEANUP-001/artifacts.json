@@ -1,0 +1,230 @@
+{
+  "taskId": "UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001",
+  "featureName": "ut-w2-03a-llm-generation-test-cleanup",
+  "createdDate": "2026-04-16",
+  "metadata": {
+    "taskId": "UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001",
+    "taskType": "CLEANUP",
+    "visualType": "NON_VISUAL",
+    "githubIssue": 2102,
+    "issueState": "CLOSED"
+  },
+  "status": "pending",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "pending"
+        },
+        {
+          "name": "受け入れ基準（AC-1〜AC-5）",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計書（移植候補テスト選別・新フロー用テスト設計）",
+          "path": "outputs/phase-2/design.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果（ゲート判定）",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "削除済み確認と残存参照整理（選択肢A相当）",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx",
+          "status": "pending",
+          "type": "code",
+          "note": "current worktree で対象ファイルが削除済みなら N/A"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "describe.skip解除またはファイル削除（削除済み前提の確認）",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx",
+          "status": "pending",
+          "type": "code",
+          "note": "current worktree で対象ファイルが削除済みなら N/A"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト拡充記録",
+          "path": "outputs/phase-6/test-expansion-log.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート（変更前後比較）",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録（TODOコメント削除・不要インポート除去）",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質保証記録（typecheck/lint/test結果）",
+          "path": "outputs/phase-9/qa-results.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果（AC-1〜AC-5充足・blocker判定）",
+          "path": "outputs/phase-10/final-review.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "手動テスト結果記録（N/A: CLEANUPタスク・UI変更なし）",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装ガイド（Part1中学生レベル＋Part2技術者レベル）",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "pending"
+        },
+        {
+          "name": "システム仕様書更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "pending"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "pending"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "pending"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "pending"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-04-16T10:30:37.085Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001-phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    }
+  ],
+  "lastUpdated": "2026-04-16T10:30:37.089Z"
+}

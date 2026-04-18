@@ -142,6 +142,23 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 
 `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` は `SkillCreateWizard.llm-generation.test.tsx` 削除済み確認タスク。テストファイルのみの変更で外部 contract 変更なしのため system spec 更新は不要。削除済みファイルへの安全な操作パターン・describe.skip クリーンアップ判断フロー・CI 参照検出ルールを lessons-learned として固定し、同種タスクの将来コスト削減につなげた。
 
+## 2026-04-16 - TASK-SC-SHARED-TYPE-PROMOTE-001 完了記録（ローカル定義維持・クローズ）
+
+### 変更内容
+
+- `StructurePlanJson` インタフェースの参照箇所棚卸しを実施
+- 参照箇所は `SkillCreatorService.ts` の 1 ファイルのみ（定義 1 + 利用 5, 合計 6 hits）と確認
+- Phase 1 判断基準「1箇所のみ → ローカル定義維持・即クローズ」に従いタスクをクローズ
+- Phase 2〜13 はすべてスキップ（昇格不要のため）
+- `artifacts.json` のステータスを `completed` に更新
+- Phase 1 / Phase 12 の全成果物を `outputs/` 配下に生成
+
+### 背景
+
+TASK-SC-07 苦戦箇所 C-4（PlanResult 型の二重定義によるシャドウイング）の再発防止として、
+`StructurePlanJson` の所有権を先行して確認する予防的タスク。
+調査の結果、問題なし（1ファイル限定）と確認でき、コード変更なしでクローズとなった。
+
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
 
 ### 変更内容
@@ -154,6 +171,36 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 ### 背景
 
 `InlineModelSelector` の description 表示は実装済みでも、Phase 11 screenshot 名と completed ledger が stale のままだと current facts にならない。今回の same-wave sync で、complete 化・証跡 canonical 化・索引再生成をまとめて閉じた。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
+
+### 変更内容
+
+- `SKILL.md` 変更履歴に TASK-CI-FUTURE-007 スキルフィードバック反映エントリを追加
+- `references/lessons-learned-ci-measurement-template-2026-04.md` に L-CI-007-001/002 を追加
+  - L-CI-007-001: CI 設定追加タスクでの `workflow-static-check` カテゴリ記録（CLI 実行 vs YAML 静的確認の分離）
+  - L-CI-007-002: backend flag のような設定追加項目での変更対象・参照対象分離の方針
+- `.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートで記録された aiworkflow-requirements 側の 2 件の改善提案を反映した。
+CI 設定変更タスクの Phase 11 証跡で「CLI 実行確認」と「YAML 静的確認」が混在すると信頼性が曖昧になる問題を、lessons-learned として明文化した。
+
+---
+
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に `SkillCreateWizard.llm-generation.test.tsx` 削除済み、`describe.skip` / `TODO(W2-seq-03a)` 0 件、`generate-index.js` 実行、`artifacts.json` parity を current facts として追加
+- `references/task-workflow-completed.md` に同タスクの完了記録を追加
+- `generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
+
+### 背景
+
+UT-W2-03A は current worktree で対象ファイルが既に削除済みだった cleanup。`spec_created` 前提の古い残存参照がないことを確認し、index 再生成と parity 記録まで同 wave で閉じる必要があった。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
 
@@ -178,6 +225,18 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 ### 背景
 
 TASK-SW-CANCEL-001 の Phase 12 close-out で、shared IPC 定数層への cancel チャンネル追加が完了した。UT-SDK-07（3チャンネル正本化）の後続として CANCEL-001 が4番目を追加した系譜を正本に記録する。
+
+## 2026-04-16 - TASK-CI-FUTURE-007 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` current facts に TASK-CI-FUTURE-007 を追加し、phase12_completed / phase 11 non-visual / backend codecov flag / artifacts parity / outputs/artifacts.json sync を反映
+- `references/task-workflow-completed.md` / `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、`.agents/skills/aiworkflow-requirements/` mirror を同波で同期
+
+### 背景
+
+TASK-CI-FUTURE-007 は backend coverage upload の close-out を completed ledger / recent bundle / topic-map / keywords まで同波で閉じる必要があった。NON_VISUAL かつ phase 11 が画面を持たないため、CLI / CI / coverage / ledger を同一文脈で固定した。
 
 ---
 
