@@ -3237,9 +3237,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L153 |
-| クイックリファレンス: カテゴリ別検索ガイド | L173 |
-| 分割ファイル一覧 | L177 |
+| 分割ファイル一覧 | L154 |
+| クイックリファレンス: カテゴリ別検索ガイド | L174 |
+| 分割ファイル一覧 | L178 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 

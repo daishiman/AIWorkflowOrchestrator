@@ -8,7 +8,7 @@ import { useCallback, useRef } from "react";
 import { useSetStreamingStage } from "../store";
 
 export interface UseCancelGenerationReturn {
-  cancelGeneration: () => void;
+  cancelGeneration: () => Promise<void>;
   startGeneration: () => AbortSignal;
 }
 
@@ -21,19 +21,23 @@ export function useCancelGeneration(): UseCancelGenerationReturn {
     return abortControllerRef.current.signal;
   }, []);
 
-  const cancelGeneration = useCallback(() => {
+  const cancelGeneration = useCallback(async (): Promise<void> => {
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setStage("cancelled");
 
     // Main Process 側のキャンセルをIPCで通知
-    (
+    const skillCreatorAPI = (
       window as Window & {
-        skillCreatorAPI?: { cancelGeneration: () => Promise<unknown> };
+        skillCreatorAPI?: { cancelGeneration?: () => Promise<unknown> };
       }
-    ).skillCreatorAPI
-      ?.cancelGeneration()
-      .catch(() => {});
+    ).skillCreatorAPI;
+
+    try {
+      await skillCreatorAPI?.cancelGeneration?.();
+    } catch {
+      // local abort を優先し、IPC 側失敗は握りつぶす
+    }
   }, [setStage]);
 
   return { cancelGeneration, startGeneration };
