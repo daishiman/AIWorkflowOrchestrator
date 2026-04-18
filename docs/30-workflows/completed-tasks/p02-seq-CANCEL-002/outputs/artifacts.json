@@ -1,0 +1,117 @@
+{
+  "feature": "p02-seq-CANCEL-002",
+  "created": "2026-04-15T00:00:00.000Z",
+  "lastUpdated": "2026-04-18T00:00:00.000Z",
+  "status": "completed",
+  "sourceOfTruth": "../artifacts.json",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-1-requirements.md",
+        "phase-1/requirements-definition.md",
+        "phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["../phase-2-design.md", "phase-2/design.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["../phase-3-design-review.md", "phase-3/gate-decision.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["../phase-4-test-creation.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-5-implementation.md",
+        "../../apps/desktop/src/preload/skill-creator-api.ts",
+        "../../apps/desktop/src/preload/channels.ts"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["../phase-6-test-expansion.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-7-coverage-check.md",
+        "phase-7/coverage-report.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["../phase-8-refactoring.md", "phase-8/refactoring-log.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-9-quality-assurance.md",
+        "phase-9/quality-report.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-10-final-review.md",
+        "phase-10/final-review-result.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-11-manual-test.md",
+        "phase-11/manual-test-result.md",
+        "phase-11/manual-test-checklist.md",
+        "phase-11/discovered-issues.md",
+        "phase-11/screenshot-plan.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "../phase-12-documentation.md",
+        "phase-12/implementation-guide.md",
+        "phase-12/system-spec-update-summary.md",
+        "phase-12/documentation-changelog.md",
+        "phase-12/unassigned-task-detection.md",
+        "phase-12/skill-feedback-report.md",
+        "phase-12/phase12-task-spec-compliance-check.md",
+        "phase-12/recheck-multithinking-audit.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": ["../phase-13-pr-creation.md"]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "changeType": "bugfix",
+    "taskClass": "NON_VISUAL",
+    "taskId": "TASK-SW-CANCEL-002",
+    "dependsOnTasks": ["TASK-SW-CANCEL-001"],
+    "followUpTasks": ["TASK-SW-CANCEL-003", "TASK-SW-CANCEL-004"],
+    "root": "docs/30-workflows/p02-seq-CANCEL-002",
+    "mirrorOf": "../artifacts.json"
+  }
+}

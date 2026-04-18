@@ -3260,6 +3260,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L153 |
 | クイックリファレンス: カテゴリ別検索ガイド | L173 |
 | 分割ファイル一覧 | L177 |
+| 分割ファイル一覧 | L154 |
+| クイックリファレンス: カテゴリ別検索ガイド | L174 |
+| 分割ファイル一覧 | L178 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -5244,6 +5247,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L353 |
 | 完了タスク（機能別アーカイブ） | L361 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L462 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L371 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L391 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L393 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L405 |
+| 完了タスク（2026-03後半） | L433 |
+| 完了タスク（機能別アーカイブ） | L441 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L542 |
 | 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L293 |
 | 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L313 |
 | 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L315 |

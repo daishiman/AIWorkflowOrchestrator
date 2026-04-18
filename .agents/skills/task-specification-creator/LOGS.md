@@ -2,6 +2,12 @@
 
 ## 役割
 
+## 2026-04-18: CANCEL-002フィードバック反映
+
+- NON_VISUALタスク向け代替証跡方針を `references/phase-template-phase12-detail.md` に追記（`## NON_VISUALタスクの代替証跡方針` セクション新設）
+- `SKILL.md` 187行目のNON_VISUAL記述に代替証跡ファイル（`phase-10/final-review-result.md` + `phase-11/manual-test-result.md`）への参照を追記
+- `.agents/skills/task-specification-creator/` にミラー同期済み
+
 ## 2026-04-17 - TASK-SC-SHARED-TYPE-PROMOTE-001 impl-spec-to-skill-sync（スキルフィードバック反映）
 
 ### 変更内容

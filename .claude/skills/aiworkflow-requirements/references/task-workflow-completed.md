@@ -3115,6 +3115,29 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | TASK-SW-CANCEL-003 | Main ハンドラー追加                                          |
 | TASK-SW-CANCEL-004 | Renderer フック修正                                          |
 
+### タスク: TASK-SW-CANCEL-002 skill-creator-cancel-preload-api（2026-04-18 close-out audit sync）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-002 |
+| ステータス | **完了（close-out audit 再同期済み）** |
+| タイプ | preload / ipc / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-18 |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts` / `apps/desktop/src/preload/channels.ts` |
+| workflow | `docs/30-workflows/p02-seq-CANCEL-002/` |
+
+#### 実施内容
+
+- `SkillCreatorAPI.cancelGeneration(): Promise<IpcResult<void>>` を preload 公開契約として確認
+- `ALLOWED_INVOKE_CHANNELS` への `IPC_CHANNELS.SKILL_CREATOR_CANCEL` 登録を確認
+- close-out workflow 文書の validator FAIL を解消し、mirror inventory / Phase 11 補助成果物 / 30思考法監査を同期
+
+#### 補足
+
+- current repository facts では Main / Renderer 側も実装済み
+- ただし CANCEL-002 の受入判定は preload 差分の close-out として維持し、後続 workflow spec の stale 化は別問題として切り分ける
+
 #### 苦戦箇所
 
 | 苦戦箇所                         | 解決策概要                                                                                          |
