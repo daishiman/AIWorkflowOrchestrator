@@ -4,6 +4,22 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の変更履歴テーブルに 2026-04-18 エントリを追加（Step 1-D 三区分テンプレート・NON_VISUAL task 固有パスガイド）
+- `SKILL.md` の「ベストプラクティス → すべきこと」に Step 1-D 三区分（未更新 / 再生成のみ / 内容変更あり）と NON_VISUAL 証跡 task 固有パス記録ルールを追記
+
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | skill-feedback 反映                                                                                                      |
+| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
+| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
+| 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
 ## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
 
 ### 変更内容
@@ -22,6 +38,31 @@
 Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
 
 ---
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（lessons-learned 更新）
+
+### 変更内容
+
+- `references/lessons-learned-stream-001-progress-callback.md` に L-STREAM-FUP-03 を追加:
+  - PROGRESS_FLOWS 単一集約パターンの設計知見を記録
+  - 後続タスクテーブルの FUP-03 を「完了（2026-04-18）」に更新し FUP-04（renderer phase mapping）を追加
+- `references/lessons-learned.md` インデックスに `lessons-learned-stream-001-progress-callback.md` を追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の実装知見（PROGRESS_FLOWS SSOT / emitProgress by-name 解決）を lessons-learned に固定。将来モード追加時の参照先として機能させる。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に `TASK-SW-STREAM-FUP-03` の Phase 12 close-out を追加し、`current facts` に昇格
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を台帳へ反映
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` の mode 別 onProgress 詳細化は完了済みだったが、completion ledger と索引が stale だと current facts が欠けるため、台帳・索引・current facts を同波で閉じた。
 
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
@@ -2713,3 +2754,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物） |
 | 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録       |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
+
+- `UT-IPC-HANDLER-CI-001` の close-out で、IPC 契約変更なしの `no-op` 判定を維持しつつ、branch current state に合わせて `indexes/topic-map.md` / `indexes/keywords.json` を再生成対象として整理
+- workflow root の `artifacts.json` を `phase12_completed / NON_VISUAL / Phase 13 blocked` へ同期し、`outputs/artifacts.json` parity を追加
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を追加し、`register*Handlers()` への snapshot guard 横展開を大粒度 backlog として formalize
+
+| 項目     | 内容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                            |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
+| 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
+| 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
