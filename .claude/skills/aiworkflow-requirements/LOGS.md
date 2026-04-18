@@ -4,6 +4,22 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-CONFLICT-PREVENT-001 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow-completed.md`, `indexes/topic-map.md`, `indexes/keywords.json`, workflow Phase 11/12 outputs |
+| 結果 | success |
+| 備考 | generated index merge policy / bootstrap-hook 導線 / same-wave sync 判定を current facts に反映 |
+
+### 更新詳細
+
+- `references/task-workflow-completed.md` に本タスクの完了記録を追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、deterministic regenerate 後の索引を current facts へ同期
+- Phase 12 close-out で canonical / mirror を「部分 sync 済み / full sync 未完」に分離して扱う文書へ補正
+
 ## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
 
 ### 変更内容
@@ -2653,4 +2669,19 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 種別     | NON_VISUAL / docs-only / CI 計測                                                                 |
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物） |
 | 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録       |
+
+## 2026-04-18 — TASK-CONFLICT-PREVENT-001 completed
+
+- `.gitattributes` にカテゴリ別 merge policy（generated index: merge=ours、mirror tree: merge=ours、LOGS.md: merge=union、EVALS: merge=ours）を追加
+- `setup-merge-drivers.sh` で custom `keep-ours` driver bootstrap
+- `session-init.sh` に driver 未設定 warning
+- `generate-index.js` deterministic 化（日付ヘッダー除去）
+- `.agents/skills/aiworkflow-requirements/LOGS.md` にも同じエントリを追記
+
+| 項目 | 内容 |
+|------|------|
+| 種別 | NON_VISUAL / docs-only / spec redesign / conflict prevention |
+| 変更対象 | `.gitattributes`、`setup-merge-drivers.sh`（新規）、`session-init.sh`、`post-merge-index-regenerate.sh`、`generate-index.js`（deterministic 化） |
+| 結果 | 4カテゴリ分類で merge policy 設計完了。custom driver bootstrap + session warning + deterministic generate の3層防衛実装 |
+| 検証 | Phase 9/10/11 docs-only validation PASS |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
