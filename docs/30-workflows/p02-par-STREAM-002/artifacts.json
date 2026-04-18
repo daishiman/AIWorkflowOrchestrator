@@ -1,0 +1,238 @@
+{
+  "taskId": "TASK-SW-STREAM-002",
+  "featureName": "skill-creator-handlers-progress-wiring",
+  "createdDate": "2026-04-15",
+  "completedDate": "2026-04-18",
+  "metadata": {
+    "taskId": "TASK-SW-STREAM-002",
+    "taskType": "NON_VISUAL"
+  },
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "completed"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "gateDecision": "PASS",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/gate-decision.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "note": "実装済み確認: skillCreatorHandlers.progress.test.ts（TC-01〜TC-06）が既に存在",
+      "artifacts": [
+        {
+          "name": "テスト設計書",
+          "path": "outputs/phase-4/test-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "テストスイート（実装済み）",
+          "path": "apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.progress.test.ts",
+          "status": "completed",
+          "type": "code",
+          "note": "コード実装は対象外（既存実装確認済み）"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "note": "実装済み確認: onProgressコールバック接続・sendSkillCreatorProgress配線・GenerateStep props接続が全て実装済み",
+      "artifacts": [
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "実装（コールバック接続）",
+          "path": "apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+          "status": "completed",
+          "type": "code",
+          "note": "行278-283にonProgress接続実装済み（コード変更対象外）"
+        },
+        {
+          "name": "実装（GenerateStep props 接続確認）",
+          "path": "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+          "status": "completed",
+          "type": "code",
+          "note": "streaming.stage/percent/message/previewContent/isGeneratingが全て接続済み（変更不要）"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "note": "skillCreatorIpc.integration.test.tsのSCIT-PRG-01〜09がTC-09〜TC-12相当を検証済み",
+      "artifacts": [
+        {
+          "name": "テスト拡充記録",
+          "path": "outputs/phase-6/test-expansion-record.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "note": "リファクタリング不要と判断（インライン関数3行は抽出閾値未到達）",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "gateDecision": "PASS",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "note": "NON_VISUAL close-out として manual-test-result / manual-test-checklist / discovered-issues / phase11-capture-metadata で代替証跡を固定",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "note": "ユーザー承認後にcommit/push/PRを実行",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "blocked"
+        },
+        {
+          "name": "ローカル確認結果",
+          "path": "outputs/phase-13/local-check-result.md",
+          "status": "blocked"
+        },
+        {
+          "name": "変更サマリー",
+          "path": "outputs/phase-13/change-summary.md",
+          "status": "blocked"
+        }
+      ]
+    }
+  ]
+}

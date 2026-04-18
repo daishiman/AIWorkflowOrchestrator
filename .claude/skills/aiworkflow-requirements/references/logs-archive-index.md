@@ -7,6 +7,7 @@ LOGS.md から退避した archive 一覧。日付別の詳細 log はここか�
 ## archive list
 | ファイル | 役割 | 代表エントリ |
 | --- | --- | --- |
+| [lessons-learned-skill-creator-tmpdir-fallback.md](lessons-learned-skill-creator-tmpdir-fallback.md) | lessons（TASK-SW-STRUCT-001/002 / tmpdir接続・多段フォールバック） | L-STRUCT-001-001〜002: void→変数代入接続 / L-STRUCT-002-001〜004: tmpdir経由スクリプト接続・多段フォールバック検証コスト・whitespace正規化・null warnログ |
 | [logs-archive-2026-03-mid-lifecycle-governance-improve.md](logs-archive-2026-03-mid-lifecycle-governance-improve.md) | archive 2026-03-mid (lifecycle / governance / improve) | TASK-FIX-CONVERSATION-IPC / TASK-SKILL-LIFECYCLE-06 / UT-06-001〜005 / TASK-SC-05-IMPROVE-LLM / UT-SC-05-APPLY-IMPROVEMENT-UI / TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE / UT-SC-02-005 |
 | [logs-archive-legacy.md](logs-archive-legacy.md) | archive legacy (pre-index migration root) | TASK-AUTH-CALLBACK-001: OAuth認証コールバックPKCE移行 / TASK-FIX-4-2-SKILL-STORE-PERSISTENCE / 変更履歴アーカイブ |
 | [logs-archive-2026-03-line-budget-reform-formalize.md](logs-archive-2026-03-line-budget-reform-formalize.md) | archive 2026-03 (line-budget reform / formalize) | 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 system spec sync / 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize / 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補 |

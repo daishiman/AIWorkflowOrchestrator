@@ -1,0 +1,198 @@
+{
+  "taskId": "TASK-SW-STREAM-FUP-03",
+  "taskName": "mode-specific-progress-flow-detail",
+  "featureName": "TASK-SW-STREAM-FUP-03/モード別onProgress進捗フロー詳細化",
+  "status": "completed",
+  "createdAt": "2026-04-17",
+  "lastUpdated": "2026-04-18",
+  "issueNumber": 2208,
+  "taskType": "NON_VISUAL",
+  "dependsOn": ["TASK-SW-STREAM-001"],
+  "recommendedPrerequisite": ["FUP-02"],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-requirements.md",
+          "path": "outputs/phase-1/TASK-SW-STREAM-FUP-03-requirements.md",
+          "description": "要件定義書・受入条件・モード別フェーズ設計"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-design.md",
+          "path": "outputs/phase-2/TASK-SW-STREAM-FUP-03-design.md",
+          "description": "モード別進捗マップ設計・emitProgress呼び出し設計"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-review.md",
+          "path": "outputs/phase-3/TASK-SW-STREAM-FUP-03-review.md",
+          "description": "設計レビュー結果・4条件評価・ゲート判定"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-test-design.md",
+          "path": "outputs/phase-4/TASK-SW-STREAM-FUP-03-test-design.md",
+          "description": "TDD Redフェーズ・モード別テストケース設計"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-implementation-plan.md",
+          "path": "outputs/phase-5/TASK-SW-STREAM-FUP-03-implementation-plan.md",
+          "description": "実装ステップ詳細・モード別emitProgress挿入箇所"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-extended-test-record.md",
+          "path": "outputs/phase-6/TASK-SW-STREAM-FUP-03-extended-test-record.md",
+          "description": "境界条件・回帰ガード・エッジケーステスト追加記録"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-coverage-report.md",
+          "path": "outputs/phase-7/TASK-SW-STREAM-FUP-03-coverage-report.md",
+          "description": "AC対応表・モード別branch coverage確認"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-refactoring-record.md",
+          "path": "outputs/phase-8/TASK-SW-STREAM-FUP-03-refactoring-record.md",
+          "description": "モード別フロー重複除去・命名整理の記録"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-quality-report.md",
+          "path": "outputs/phase-9/TASK-SW-STREAM-FUP-03-quality-report.md",
+          "description": "lint / typecheck / test 品質ゲート結果"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-final-review-result.md",
+          "path": "outputs/phase-10/TASK-SW-STREAM-FUP-03-final-review-result.md",
+          "description": "AC・依存関係・4条件の最終判定"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "TASK-SW-STREAM-FUP-03-manual-test-report.md",
+          "path": "outputs/phase-11/TASK-SW-STREAM-FUP-03-manual-test-report.md",
+          "description": "NON_VISUAL の自動テスト代替証跡"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "implementation-guide.md",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "Part 1 / Part 2 の実装ガイド"
+        },
+        {
+          "name": "system-spec-update-summary.md",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "Step 1-A/B/C と Step 2 N/A の更新サマリー"
+        },
+        {
+          "name": "documentation-changelog.md",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "変更履歴と同期結果"
+        },
+        {
+          "name": "unassigned-task-detection.md",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出結果（0件）"
+        },
+        {
+          "name": "skill-feedback-report.md",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "workflow / skill への改善提案"
+        },
+        {
+          "name": "phase12-task-spec-compliance-check.md",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12準拠チェック（root evidence）"
+        }
+      ]
+    },
+    { "phase": 13, "name": "PR作成", "status": "blocked", "artifacts": [] }
+  ],
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

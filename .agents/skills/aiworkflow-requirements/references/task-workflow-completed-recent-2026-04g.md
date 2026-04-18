@@ -1,5 +1,29 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18）
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IPC-HANDLER-CI-001                                                                                                                  |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                                                         |
+| タイプ     | test / CI guard / close-out sync                                                                                                       |
+| 優先度     | 中                                                                                                                                     |
+| 完了日     | 2026-04-18                                                                                                                             |
+| 対象       | `apps/desktop/src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts` / `docs/30-workflows/UT-IPC-HANDLER-CI-001/`     |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json`                     |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の 19 チャンネル登録に対する snapshot test を追加した
+- workflow root の `artifacts.json` と `index.md` を current state へ同期し、Phase 13 は blocked として整理した
+- NON_VISUAL 証跡を task 固有パスで明記し、未タスク `task-ipc-handler-registration-snapshot-coverage.md` を formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-11/manual-test-result.md`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: current state 同期済み
+
 # 完了タスク記録 — 2026-04-15
 
 # 完了タスク記録 — 2026-04-15
@@ -338,10 +362,18 @@
 
 - `apps/web` というディレクトリ名でも実体パッケージが `@repo/backend` の場合がある。P50 チェックで必ず実体確認
 - GitHub Free Tier 上限に近いジョブ追加は「削減 + 追加」で合計を固定する方針が安全
-- CI 設定変更は API / IPC 契約に触れないため、system spec 更新は N/A 確認のみでよい
 
-### タスク: TASK-SC-LLM-PURPOSE-WIRE-001 extract-purpose エージェント LLM purpose wire（2026-04-16）
+---
 
+### タスク: TASK-SW-STRUCT-001 runCreateWorkflow出力仕様修正（2026-04-17）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-STRUCT-001                                                                      |
+| 完了日     | 2026-04-17                                                                              |
+| タスク種別 | implementation（NON_VISUAL / skill-creator service）                                    |
+| 仕様書パス | `docs/30-workflows/completed-tasks/p01-par-STRUCT-001/`                                 |
+| Phase 13   | blocked（ユーザー承認待ち）                                                             |
 | 項目       | 値                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------- |
 | タスクID   | TASK-SC-LLM-PURPOSE-WIRE-001                                                       |
@@ -354,12 +386,64 @@
 
 #### 実施内容
 
-- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/` に Phase 1〜13 全仕様書・artifacts.json・index.md を配置
-- LLM 呼び出し方式は `ILLMClient.complete()` 直接呼び出し（Option A）で確定
-- 実装は TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 完了後に着手する
+- `SkillCreatorService.ts` の `createSkill()` 内で `void this.runCreateWorkflow(options)` → `structurePlan = await this.runCreateWorkflow(options)` に変更（戻り値を変数に代入）
+- `runCreateWorkflow` の戻り型を `Promise<void>` → `Promise<StructurePlanJson | null>` に変更
+- `structurePlan` を switch 文外で `StructurePlanJson | null = null` として宣言し、全モード分岐で参照可能にした
+- `SkillCreatorService.test.ts` のテストを更新し Phase 12 完了
 
-#### 背景
+#### 検証証跡
 
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillCreatorService.test.ts`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- Phase 12 PASS
+
+#### lessons-learned
+
+- `void` で捨てていた非同期戻り値を変数代入に変えるだけで後続処理への接続が可能になる
+- 詳細: `lessons-learned-skill-creator-tmpdir-fallback.md`（L-STRUCT-001-001〜002）
+
+---
+
+### タスク: TASK-SW-STRUCT-002 generateSkillMd接続・多段フォールバック（2026-04-17）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-STRUCT-002                                                                      |
+| 完了日     | 2026-04-17                                                                              |
+| タスク種別 | implementation（NON_VISUAL / skill-creator service）                                    |
+| 仕様書パス | `docs/30-workflows/p02-par-STRUCT-002/`                                                 |
+| Phase 13   | blocked（ユーザー承認待ち）                                                             |
+
+#### 実施内容
+
+- `SkillCreatorService.ts` に `generateSkillMd(skillDir, structurePlan)` プライベートメソッドを追加
+- `generate_skill_md.js` へ `--plan <tmpPlanPath> --output <skillMdPath>` で接続。tmp ファイルは `os.tmpdir()` + `randomUUID()` で生成し `finally` でクリーンアップ
+- `create` モードで `structurePlan` 非 null の場合 → `generateSkillMd` を呼び出し（2段階フォールバック付き）
+- `create` モードで `structurePlan` null の場合 → warn ログ出力後 `ensureSkillMdExists` にフォールバック
+- `SkillCreatorService.test.ts` に TC-01〜TC-11 + 拡充テストを追加（合計 242 行のテストカバレッジ）
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillCreatorService.test.ts`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- Phase 12 PASS（system spec update summary 反映済み）
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                                  | 解決策                                                                         |
+| --- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | tmpファイル管理の複雑性（OS依存・UUID重複防止・non-fatal cleanup）        | `os.tmpdir()` + `randomUUID()` + `finally .catch(() => {})` の3点セット確立    |
+| 2   | StructurePlanJson → generate_skill_md.js 期待形式への変換                 | purpose を `trigger.description` に whitespace 正規化して埋め込む変換層を実装  |
+| 3   | フォールバック条件の複雑性（プロセス失敗 vs ファイル未生成の2段階）       | シナリオ別に分離し、テストケースを事前整理してから実装                         |
+| 4   | スクリプト互換性（legacy 形式への段階的フォールバック）                   | 複数 regex パターンで互換性を確保                                              |
+
+#### lessons-learned
+
+- tmpdir 経由スクリプト接続は OS依存パス・UUID重複防止・non-fatal cleanup の3点を確保する
+- 多段フォールバックは実装前にシナリオ表を整理することで、テスト膨張を防ぐ
+- purpose の whitespace 正規化は変換層の責務として必ず実装する
+- 詳細: `lessons-learned-skill-creator-tmpdir-fallback.md`（L-STRUCT-002-001〜004）
+- CI 設定変更は API / IPC 契約に触れないため、system spec 更新は N/A 確認のみでよい
 `SkillCreatorService.runCreateWorkflow` 内で `extract-purpose` エージェント定義を LLM に渡し、purpose 文字列を取得する処理が未実装。`StructurePlanJson.purpose` にエージェント定義の raw 文字列が入ってしまっている問題への対応タスク。Issue #2181 は Closed 済み。
 
 ---
