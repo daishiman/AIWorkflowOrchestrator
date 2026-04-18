@@ -20,9 +20,11 @@ apps/desktop/e2e/ui-ux/snapshots/*.png binary
 .agents/skills/*/SKILL-changelog.md  merge=union
 
 # auto-generated インデックスファイル: マージせず現ブランチを優先し、マージ後にスクリプトで再生成する
-# merge=union はJSONの構造を破壊するリスクがあるため merge=ours を使用
-# コンフリクト発生時は以下を実行: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+# merge=ours はカスタムドライバー名（built-in ではない）。事前に以下を実行すること:
+#   bash .claude/scripts/setup-merge-drivers.sh
+# または: git config merge.ours.driver true
+# マージ後の再生成: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 .claude/skills/*/indexes/*.json   merge=ours
-.claude/skills/*/indexes/*.md     merge=union
+.claude/skills/*/indexes/*.md     merge=ours
 .agents/skills/*/indexes/*.json   merge=ours
-.agents/skills/*/indexes/*.md     merge=union
+.agents/skills/*/indexes/*.md     merge=ours

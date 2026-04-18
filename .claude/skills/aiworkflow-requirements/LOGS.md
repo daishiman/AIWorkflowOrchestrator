@@ -4,6 +4,22 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-CONFLICT-PREVENT-001 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow-completed.md`, `indexes/topic-map.md`, `indexes/keywords.json`, workflow Phase 11/12 outputs |
+| 結果 | success |
+| 備考 | generated index merge policy / bootstrap-hook 導線 / same-wave sync 判定を current facts に反映 |
+
+### 更新詳細
+
+- `references/task-workflow-completed.md` に本タスクの完了記録を追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、deterministic regenerate 後の索引を current facts へ同期
+- Phase 12 close-out で canonical / mirror を「部分 sync 済み / full sync 未完」に分離して扱う文書へ補正
+
 ## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
 
 ### 変更内容
@@ -2802,6 +2818,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 種別     | NON_VISUAL / docs-only / CI 計測                                                                 |
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物） |
 | 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録       |
+
+## 2026-04-18 — TASK-CONFLICT-PREVENT-001 completed
+
+- `.gitattributes` にカテゴリ別 merge policy（generated index: merge=ours、mirror tree: merge=ours、LOGS.md: merge=union、EVALS: merge=ours）を追加
+- `setup-merge-drivers.sh` で custom `keep-ours` driver bootstrap
+- `session-init.sh` に driver 未設定 warning
+- `generate-index.js` deterministic 化（日付ヘッダー除去）
+- `.agents/skills/aiworkflow-requirements/LOGS.md` にも同じエントリを追記
+
+| 項目 | 内容 |
+|------|------|
+| 種別 | NON_VISUAL / docs-only / spec redesign / conflict prevention |
+| 変更対象 | `.gitattributes`、`setup-merge-drivers.sh`（新規）、`session-init.sh`、`post-merge-index-regenerate.sh`、`generate-index.js`（deterministic 化） |
+| 結果 | 4カテゴリ分類で merge policy 設計完了。custom driver bootstrap + session warning + deterministic generate の3層防衛実装 |
+| 検証 | Phase 9/10/11 docs-only validation PASS |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
 ## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
 
@@ -2828,32 +2859,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
-
-## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
-
-- `executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認
-- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一
-- `implementation-guide.md` を validator 要件に合わせて再構成
-- `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
-- completed index / recent bundle / stale unassigned-task を same-wave で同期
-
-| 項目     | 内容                                                                                                                    |
-| -------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
-| 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
-| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
-| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
-
-## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
-
-- `verifyAndImproveLoop()` 内 improve adapter error 時の `notificationService?.notify()` 追加を current facts として記録
-- T-VL-01〜07 / T-REG-01（17 tests / 224 regression）全 PASS を検証証跡として固定
-- completed ledger / recent bundle / topic-map を same-wave で同期
-- NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
-
-| 項目     | 内容                                                                                      |
-| -------- | ----------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
-| 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
-| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
-| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
