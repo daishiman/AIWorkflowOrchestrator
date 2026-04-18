@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3135,
+  "totalKeywords": 3136,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -741,6 +741,7 @@
       "security-skill-ipc.md",
       "task-workflow-completed-ipc-preload-foundation.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "technology-desktop.md",
       "technology-devops.md",
       "ui-history-data-types.md",
@@ -2126,6 +2127,7 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04d.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -4861,7 +4863,8 @@
       "architecture-implementation-patterns-reference-ipc-naming.md"
     ],
     "handle": [
-      "architecture-implementation-patterns-reference-ipc-naming.md"
+      "architecture-implementation-patterns-reference-ipc-naming.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "登録の重複式確認": [
       "architecture-implementation-patterns-reference-ipc-naming.md"
@@ -6818,7 +6821,8 @@
       "ipc-4-layer-pattern.md"
     ],
     "ipcMain": [
-      "ipc-4-layer-pattern.md"
+      "ipc-4-layer-pattern.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "ハンドラ": [
       "ipc-4-layer-pattern.md",
@@ -7818,7 +7822,8 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
-      "logs-archive-2026-03-skill-views-completed-move.md"
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "GRACEFUL": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -9050,7 +9055,8 @@
       "lessons-learned-ipc-channel-whitelist-sync.md"
     ],
     "自動検出": [
-      "lessons-learned-ipc-channel-whitelist-sync.md"
+      "lessons-learned-ipc-channel-whitelist-sync.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "定数定義済みだが": [
       "lessons-learned-ipc-channel-whitelist-sync.md"
@@ -13864,6 +13870,9 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "の重複・欠損": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "FUTURE": [

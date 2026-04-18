@@ -4,6 +4,41 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の変更履歴テーブルに 2026-04-18 エントリを追加（Step 1-D 三区分テンプレート・NON_VISUAL task 固有パスガイド）
+- `SKILL.md` の「ベストプラクティス → すべきこと」に Step 1-D 三区分（未更新 / 再生成のみ / 内容変更あり）と NON_VISUAL 証跡 task 固有パス記録ルールを追記
+
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | skill-feedback 反映                                                                                                      |
+| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
+| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
+| 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
+## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
+
+### 変更内容
+
+- `p02-par-STREAM-001/phase-5-implementation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `p02-par-STREAM-001/phase-6-test-expansion.md` 同上
+- `p02-par-STREAM-001/phase-9-quality-assurance.md` 同上
+- `p02-par-STREAM-001/phase-10-final-review.md` 同上
+- `p02-par-STREAM-001/phase-11-manual-test.md` 同上
+- `p02-par-STREAM-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `p02-par-STREAM-001/index.md` ステータス `未着手` → `Phase13 pending（PR作成待ち）`
+- `generate-index.js` 実行 → `indexes/keywords.json`（3078 keywords）/ `indexes/topic-map.md` 再生成
+
+### 背景
+
+Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
+
+---
+
 ## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（lessons-learned 更新）
 
 ### 変更内容
@@ -148,18 +183,22 @@ UT-9I-001 の task root が `docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEG
 
 `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` は `SkillCreateWizard.llm-generation.test.tsx` 削除済み確認タスク。テストファイルのみの変更で外部 contract 変更なしのため system spec 更新は不要。削除済みファイルへの安全な操作パターン・describe.skip クリーンアップ判断フロー・CI 参照検出ルールを lessons-learned として固定し、同種タスクの将来コスト削減につなげた。
 
-## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
+## 2026-04-16 - TASK-SC-SHARED-TYPE-PROMOTE-001 完了記録（ローカル定義維持・クローズ）
 
 ### 変更内容
 
-- `references/task-workflow-backlog.md` の `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` row を completed 化し、`task-workflow-completed.md` / `task-workflow-completed-recent-2026-04b.md` を同波で更新
-- `outputs/phase-11/screenshots/inline-model-selector-description-hidden.png` / `outputs/phase-11/screenshots/inline-model-selector-tooltip-visible.png` を canonical evidence として固定し、`phase11-capture-metadata.json` の旧命名依存を解消
-- `issue-1782.md` を `完了` 化し、`unassigned-task/task-llm-mod-05-renderer-desc-display.md` の status も completed へ更新
-- `node scripts/generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成（3041 keywords）
+- `StructurePlanJson` インタフェースの参照箇所棚卸しを実施
+- 参照箇所は `SkillCreatorService.ts` の 1 ファイルのみ（定義 1 + 利用 5, 合計 6 hits）と確認
+- Phase 1 判断基準「1箇所のみ → ローカル定義維持・即クローズ」に従いタスクをクローズ
+- Phase 2〜13 はすべてスキップ（昇格不要のため）
+- `artifacts.json` のステータスを `completed` に更新
+- Phase 1 / Phase 12 の全成果物を `outputs/` 配下に生成
 
 ### 背景
 
-`InlineModelSelector` の description 表示は実装済みでも、Phase 11 screenshot 名と completed ledger が stale のままだと current facts にならない。今回の same-wave sync で、complete 化・証跡 canonical 化・索引再生成をまとめて閉じた。
+TASK-SC-07 苦戦箇所 C-4（PlanResult 型の二重定義によるシャドウイング）の再発防止として、
+`StructurePlanJson` の所有権を先行して確認する予防的タスク。
+調査の結果、問題なし（1ファイル限定）と確認でき、コード変更なしでクローズとなった。
 
 ## 2026-04-16 - TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync
 
@@ -190,6 +229,19 @@ TASK-CI-FUTURE-007 の Phase 12 スキルフィードバックレポートで記
 CI 設定変更タスクの Phase 11 証跡で「CLI 実行確認」と「YAML 静的確認」が混在すると信頼性が曖昧になる問題を、lessons-learned として明文化した。
 
 ---
+
+## 2026-04-16 - UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 current facts sync
+
+### 変更内容
+
+- `references/task-workflow.md` に `SkillCreateWizard.llm-generation.test.tsx` 削除済み、`describe.skip` / `TODO(W2-seq-03a)` 0 件、`generate-index.js` 実行、`artifacts.json` parity を current facts として追加
+- `references/task-workflow-completed.md` に同タスクの完了記録を追加
+- `generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
+
+### 背景
+
+UT-W2-03A は current worktree で対象ファイルが既に削除済みだった cleanup。`spec_created` 前提の古い残存参照がないことを確認し、index 再生成と parity 記録まで同 wave で閉じる必要があった。
 
 ## 2026-04-16 - TASK-SW-CANCEL-001 完了記録反映
 
@@ -2702,3 +2754,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物） |
 | 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録       |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
+
+- `UT-IPC-HANDLER-CI-001` の close-out で、IPC 契約変更なしの `no-op` 判定を維持しつつ、branch current state に合わせて `indexes/topic-map.md` / `indexes/keywords.json` を再生成対象として整理
+- workflow root の `artifacts.json` を `phase12_completed / NON_VISUAL / Phase 13 blocked` へ同期し、`outputs/artifacts.json` parity を追加
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を追加し、`register*Handlers()` への snapshot guard 横展開を大粒度 backlog として formalize
+
+| 項目     | 内容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                            |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
+| 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
+| 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
