@@ -1,0 +1,6 @@
+{
+  "taskId": "TASK-SW-CANCEL-002",
+  "taskClass": "NON_VISUAL",
+  "screenshotsRequired": false,
+  "reason": "UI/UX変更なしのためスクリーンショット不要。manual-test-result.md を一次証跡とする。"
+}

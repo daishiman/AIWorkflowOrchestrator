@@ -36,6 +36,13 @@
 
 ---
 
+## 2026-04-18: impl-spec-to-skill-sync Phase2 - CANCEL-002スキル反映
+
+- api-ipc-system-skill-creator.md: Preload 3点セット手順追記（インターフェース定義・safeInvoke実装・ALLOWED_INVOKE_CHANNELSホワイトリスト登録を必ず同時修正すること）
+- lessons-learned-current.md: CANCEL-002知見追記（L-CANCEL-002-001: ALLOWED_INVOKE_CHANNELS 登録漏れによる contextBridge silent fail パターン）
+
+---
+
 ## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
 
 ### 変更内容
@@ -79,6 +86,20 @@ TASK-SW-STREAM-FUP-03 の実装知見（PROGRESS_FLOWS SSOT / emitProgress by-na
 ### 背景
 
 `TASK-SW-STREAM-FUP-03` の mode 別 onProgress 詳細化は完了済みだったが、completion ledger と索引が stale だと current facts が欠けるため、台帳・索引・current facts を同波で閉じた。
+
+## 2026-04-18 - TASK-SW-CANCEL-002 close-out audit sync
+
+### 変更内容
+
+- `docs/30-workflows/p02-seq-CANCEL-002/` の validator FAIL を解消するため、Phase 4〜13 の必須セクションを補完
+- `outputs/artifacts.json` を root `artifacts.json` と同粒度に同期し、Phase 11 補助成果物と Phase 12 の 30思考法監査を追加
+- `docs/30-workflows/completed-tasks/TASK-SW-CANCEL-002.md` を `status: completed` / 現行 workflow path へ同期
+
+### 背景
+
+CANCEL-002 の preload 実装そのものは既に完了していたが、close-out 文書が stale で validator FAIL・ledger mismatch・mirror parity 欠落を含んでいた。今回の wave では system spec current facts は no-op とし、workflow 監査文書と task ledger の整合回復を優先した。
+
+---
 
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 

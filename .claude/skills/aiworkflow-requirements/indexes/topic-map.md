@@ -1,5 +1,6 @@
 # トピックマップ
 
+> 自動生成: 2026-04-18
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1402,10 +1403,10 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillAnalysisView UI（TASK-10A-B / completed） | L5 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
-| UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L266 |
-| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L281 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L330 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L359 |
+| UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L267 |
+| ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L282 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L331 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L360 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3087,6 +3088,8 @@ node scripts/list-specs.js --topics
 | L-CI-MEASURE-004: 全シャード計測値の記録と統計サマリーの併記 | L42 |
 | L-CI-MEASURE-005: 前提条件（依存タスクマージ確認）の自動チェック | L54 |
 | L-CI-MEASURE-006: キューイング閾値の根拠を Phase 1 要件定義に組み込む | L65 |
+| L-CI-007-001: CI 設定変更タスクの Phase 11 証跡カテゴリ分離 | L77 |
+| L-CI-007-002: CI 設定追加項目での変更対象と参照対象の分離 | L90 |
 
 ### references/lessons-learned-conversation-db-robustness.md
 
@@ -3234,9 +3237,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L151 |
-| クイックリファレンス: カテゴリ別検索ガイド | L171 |
-| 分割ファイル一覧 | L175 |
+| 分割ファイル一覧 | L154 |
+| クイックリファレンス: カテゴリ別検索ガイド | L174 |
+| 分割ファイル一覧 | L178 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3572,6 +3575,13 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-UI-02: Skill Creator IPC ハンドラー責務分離 | L6 |
 
+### references/lessons-learned-skill-creator-tmpdir-fallback.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-SW-STRUCT-001: runCreateWorkflow出力仕様修正 教訓（2026-04-17） | L9 |
+| TASK-SW-STRUCT-002: generateSkillMd接続・多段フォールバック 教訓（2026-04-17） | L34 |
+
 ### references/lessons-learned-skill-execute-hook-migration.md
 
 | セクション | 行 |
@@ -3704,8 +3714,9 @@ node scripts/list-specs.js --topics
 | L-STREAM-001: optional callback パターンの設計判断 | L14 |
 | L-STREAM-002: SkillCreatorProgressData 型の shared 移動を低優先度にした理由 | L42 |
 | L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
-| 再利用メモ（skill-feedback-report.md より抽出） | L92 |
-| 後続タスク・未タスク | L100 |
+| L-STREAM-FUP-03: PROGRESS_FLOWS 単一集約パターン（TASK-SW-STREAM-FUP-03 / 2026-04-18） | L92 |
+| 再利用メモ（skill-feedback-report.md より抽出） | L126 |
+| 後続タスク・未タスク | L134 |
 
 ### references/lessons-learned-templates.md
 
@@ -3853,8 +3864,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L51 |
-| 関連ドキュメント | L56 |
+| 利用順序 | L52 |
+| 関連ドキュメント | L57 |
 
 ### references/llm-embedding.md
 
@@ -4906,7 +4917,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L655 |
+| 続き | L656 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5065,7 +5076,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L15 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L3 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L39 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L71 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L15 |
+| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001: verifyAndImproveLoop adapter error notification（2026-04-18） | L47 |
+| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001: executeAsync snapshot error propagation verification close-out（2026-04-18） | L79 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L111 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5191,13 +5208,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L229 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L249 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L251 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L263 |
-| 完了タスク（2026-03後半） | L291 |
-| 完了タスク（機能別アーカイブ） | L299 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L400 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L398 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L418 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L420 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L432 |
+| 完了タスク（2026-03後半） | L460 |
+| 完了タスク（機能別アーカイブ） | L468 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L569 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L293 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L313 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L315 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L327 |
+| 完了タスク（2026-03後半） | L355 |
+| 完了タスク（機能別アーカイブ） | L363 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L464 |
 
 ### references/task-workflow-history.md
 
@@ -5231,9 +5255,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L22 |
-| 利用順序 | L51 |
-| 関連ドキュメント | L56 |
+| 仕様書インデックス | L29 |
+| 利用順序 | L58 |
+| 関連ドキュメント | L63 |
 
 ### references/testing-accessibility.md
 

@@ -109,6 +109,18 @@
 - cancel 由来の AbortError は UI failure として表示しない（agentSlice / SkillCreateWizard で抑制）
 - UI/UX 変更なし（Phase 11 スクリーンショット N/A）
 
+#### Preload APIに新規チャネルを追加する際の必須手順（3点セット）
+
+TASK-SW-CANCEL-002 の実装で判明した苦戦箇所: Preload APIに新規チャネルを追加する場合、以下の **3点を必ず同時に修正** しないとランタイムエラーになる。
+
+| 順 | 修正箇所 | ファイル | 内容 |
+| -- | -------- | -------- | ---- |
+| ① | インターフェース定義 | `apps/desktop/src/preload/skill-creator-api.ts` | `SkillCreatorAPI` インターフェースにメソッドシグネチャを追加 |
+| ② | safeInvoke 実装 | `apps/desktop/src/preload/skill-creator-api.ts` | `createSkillCreatorAPI()` 内に `safeInvoke(IPC_CHANNELS.XXX)` 実装を追加 |
+| ③ | ALLOWED_INVOKE_CHANNELS ホワイトリスト登録 | `apps/desktop/src/preload/channels.ts` | `ALLOWED_INVOKE_CHANNELS` 配列に `IPC_CHANNELS.XXX` を追加 |
+
+③を忘れると `contextBridge` の security guard が invoke を拒否し、renderer からの呼び出しが silent fail する。①②だけでは不十分。
+
 ---
 
 ### execute-plan failure lifecycle 契約（UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001）
