@@ -196,7 +196,6 @@ async function generateTopicMap() {
 
   let md = `# トピックマップ
 
-> 自動生成: ${new Date().toISOString().split("T")[0]}
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
