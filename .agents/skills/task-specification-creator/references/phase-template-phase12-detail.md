@@ -251,6 +251,15 @@ node scripts/complete-phase.js \
 - [ ] **苦戦箇所セクションを記録した**
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## NON_VISUALタスクの代替証跡方針
+
+UI変更を含まないタスク（Preload API追加、型定義変更等）では：
+
+- スクリーンショット不要
+- 代替証跡: `phase-10/final-review-result.md` + `phase-11/manual-test-result.md`
+- `manual-test-result.md` には「UI変更なし・Preload APIテスト結果」を記録
+- `implementation-guide.md` の `## 視覚証跡` セクションに代替証跡ファイルへの参照を明記する
+
 ## フォールバック手順
 
 | スクリプト                            | 代替手順                                                                                                             |
