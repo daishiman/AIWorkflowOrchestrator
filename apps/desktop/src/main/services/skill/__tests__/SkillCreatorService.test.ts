@@ -506,6 +506,21 @@ describe("SkillCreatorService", () => {
       expect(result.tasks).toBeDefined();
       expect(result.estimatedTime).toBeDefined();
     });
+
+    it("SC-015b: should reject unknown dependency ids", async () => {
+      const options: ExecuteTasksOptions = {
+        tasksDir: "/path/to/tasks",
+      };
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        tasks: [
+          { id: "task-1", content: "Task 1", depends_on: ["missing-task"] },
+        ],
+      });
+
+      await expect(service.executeTasks(options)).rejects.toThrow(
+        /Unknown dependency/,
+      );
+    });
   });
 
   describe("validateSkill()", () => {
@@ -527,17 +542,45 @@ describe("SkillCreatorService", () => {
 
     it("SC-017: should return false for invalid skill directory", async () => {
       // Arrange
-      mockScriptExecutor.execute.mockResolvedValue({
-        success: false,
-        stdout: "",
-        stderr: "Validation failed",
-        exitCode: 1,
-      });
+      mockScriptExecutor.execute
+        .mockResolvedValueOnce({
+          success: false,
+          stdout: "",
+          stderr: "Validation failed",
+          exitCode: 1,
+        })
+        .mockResolvedValueOnce({
+          success: false,
+          stdout: "",
+          stderr: "Validation failed",
+          exitCode: 1,
+        });
 
       // Act
       const result = await service.validateSkill("/path/to/invalid-skill");
 
       // Assert
+      expect(result).toBe(false);
+    });
+
+    it("SC-017b: should not fallback to file existence when validator executed and failed", async () => {
+      mockScriptExecutor.execute
+        .mockResolvedValueOnce({
+          success: false,
+          stdout: "",
+          stderr: "Validation failed",
+          exitCode: 1,
+        })
+        .mockResolvedValueOnce({
+          success: false,
+          stdout: "",
+          stderr: "Validation failed",
+          exitCode: 1,
+        });
+      vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+
+      const result = await service.validateSkill("/path/to/invalid-skill");
+
       expect(result).toBe(false);
     });
   });
@@ -902,6 +945,28 @@ describe("SkillCreatorService", () => {
         mode: "create",
       };
       await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("BV-005b: should reject path traversal in skill name", async () => {
+      const options: CreateSkillOptions = {
+        name: "../escape",
+        description: "test",
+        mode: "create",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow(
+        /Path traversal detected in skill name/,
+      );
+    });
+
+    it("BV-005c: should reject path separators in skill name", async () => {
+      const options: CreateSkillOptions = {
+        name: "nested/skill",
+        description: "test",
+        mode: "create",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow(
+        /Path traversal detected in skill name/,
+      );
     });
 
     it("BV-006: should handle empty dependency list correctly", async () => {

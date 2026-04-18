@@ -4,6 +4,46 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18）
+
+### L-LLM-PURPOSE-001: extractPurposeWithLlm は llmClient 未注入時に null を返し options.description fallback で継続する
+
+| 項目       | 内容                                                                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `llmClient` が DI されていない環境（単体テストのデフォルト・古い呼び出し元）では `extractPurposeWithLlm()` が null を返すため、呼び出し元で必ず fallback を実装する必要があった                                 |
+| 解決策     | `runCreateWorkflow()` 内で `extractPurposeWithLlm()` の戻り値が null の場合は `options.description` を `structurePlan.purpose` に使うフォールバックパスを明示した。単体テストは llmClient 注入有無を両分岐で検証する |
+| 標準ルール | DI 注入が省略可能なクライアントは、null 返却 → description fallback の 2 分岐を必ずテストする                                                                                                                   |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                                   |
+
+### L-LLM-PURPOSE-002: normalizePurposeResponse は JSON summary 抽出 → プレーンテキストの 2 段階でフォールバックする
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | LLM が `{ "summary": "..." }` 形式の JSON を返す場合と、プレーンテキストを返す場合の両方に対応する必要があった。さらに ````json...``` コードフェンス付きで返ってくるケースも存在した                    |
+| 解決策     | `unwrapJsonCodeFence()` でコードフェンスを除去 → `extractPurposeSummary()` で JSON `summary` フィールドを抽出 → 失敗した場合はプレーンテキストをそのまま使う 2 段階 fallback を実装した                   |
+| 標準ルール | LLM 出力の正規化は「コードフェンス除去 → JSON 解析 → プレーンテキスト」の順に試みるパターンを標準とする                                                                                                 |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+### L-LLM-PURPOSE-003: Path traversal ガードと validateSkill 偽陽性は CI 段階で検出する
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `createSkill()` 入口で `/` や `../` を含むスキル名を拒否する Path traversal ガードと、`validateSkill()` が `validate_all.js` 未インストール時に `isMissingScriptError` で偽陽性（PASS 扱い）になる挙動を把握していなかった |
+| 解決策     | Path traversal ガードは入力バリデーションとして `createSkill()` の先頭に実装済み。validateSkill 偽陽性は `isMissingScriptError` フォールバックとして意図的な挙動であることを tests で明記した             |
+| 標準ルール | エージェント定義ファイルの存在確認（`resourceLoader.loadAgent('extract-purpose')`）は CI 段階で必ず行い、実行時の「ファイル不在 → null fallback」を防止する                                              |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+### L-LLM-PURPOSE-004: resourceLoader.loadAgent 失敗時も AbortError 以外は null 返却で継続する
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `resourceLoader.loadAgent('extract-purpose')` が失敗した場合（ファイル不在・権限エラー等）に例外が上位まで伝播してしまう可能性があった                                                                  |
+| 解決策     | `extractPurposeWithLlm()` 内で `AbortError` 系は rethrow し、それ以外のエラーは null を返すことで呼び出し元への例外伝播を防いだ。abort 系は必ず呼び出し元でキャッチして中断処理を行う                     |
+| 標準ルール | LLM 呼び出しパターンでは AbortError / 通常エラーを明確に分岐し、通常エラーは null 返却で graceful degradation・abort 系は即時 rethrow を原則とする                                                      |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+---
+
 ## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
 
 ### L-SC-FIX-001: generate_skill_md.js は `--path <dir>` ではなく `--plan <json> --output <path>` を要求する
