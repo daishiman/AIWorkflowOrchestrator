@@ -16,17 +16,17 @@
 
 ## 実行レーン
 
-| レーン | 目的                                        | タスクID   | 仕様書                                               |
-| ------ | ------------------------------------------- | ---------- | ---------------------------------------------------- |
-| STREAM | 進捗通知の送信経路を接続する                | STREAM-001 | [p01-par-STREAM-001](./p01-par-STREAM-001/index.md)  |
-| STREAM | 進捗通知を IPC 送信へ配線する               | STREAM-002 | [p02-par-STREAM-002](./p02-par-STREAM-002/index.md)  |
-| CANCEL | キャンセル IPC チャンネルを追加する         | CANCEL-001 | [p01-seq-CANCEL-001](./p01-seq-CANCEL-001/index.md)  |
-| CANCEL | preload / shared の cancel API を成立させる | CANCEL-002 | [p02-seq-CANCEL-002](../p02-seq-CANCEL-002/index.md) |
-| CANCEL | main process 側の cancel 実体を接続する     | CANCEL-003 | [p03-seq-CANCEL-003](./p03-seq-CANCEL-003/index.md)  |
-| CANCEL | renderer hook から cancel を送信する        | CANCEL-004 | [p04-seq-CANCEL-004](./p04-seq-CANCEL-004/index.md)  |
-| STRUCT | `runCreateWorkflow()` の構造出力を正す      | STRUCT-001 | [p01-par-STRUCT-001](./p01-par-STRUCT-001/index.md)  |
-| STRUCT | `structurePlan` を SKILL.md 生成へ接続する  | STRUCT-002 | [p02-par-STRUCT-002](./p02-par-STRUCT-002/index.md)  |
-| TODO   | 残置 TODO の cleanup を行う                 | TODO-001   | [p05-opt-TODO-001](./p05-opt-TODO-001/index.md)      |
+| レーン | 目的                                        | タスクID          | 仕様書                                                               |
+| ------ | ------------------------------------------- | ----------------- | -------------------------------------------------------------------- |
+| STREAM | 進捗通知の送信経路を接続する                | STREAM-001 ✅完了 | [p01-par-STREAM-001](../completed-tasks/p01-par-STREAM-001/index.md) |
+| STREAM | 進捗通知を IPC 送信へ配線する               | STREAM-002        | [p02-par-STREAM-002](./p02-par-STREAM-002/index.md)                  |
+| CANCEL | キャンセル IPC チャンネルを追加する         | CANCEL-001 ✅完了 | [p01-seq-CANCEL-001](../completed-tasks/p01-seq-CANCEL-001/index.md) |
+| CANCEL | preload / shared の cancel API を成立させる | CANCEL-002 ✅完了 | [p02-seq-CANCEL-002](../completed-tasks/p02-seq-CANCEL-002/index.md) |
+| CANCEL | main process 側の cancel 実体を接続する     | CANCEL-003        | [p03-seq-CANCEL-003](./p03-seq-CANCEL-003/index.md)                  |
+| CANCEL | renderer hook から cancel を送信する        | CANCEL-004        | [p04-seq-CANCEL-004](./p04-seq-CANCEL-004/index.md)                  |
+| STRUCT | `runCreateWorkflow()` の構造出力を正す      | STRUCT-001 ✅完了 | [p01-par-STRUCT-001](../completed-tasks/p01-par-STRUCT-001/index.md) |
+| STRUCT | `structurePlan` を SKILL.md 生成へ接続する  | STRUCT-002 ✅完了 | [p02-par-STRUCT-002](../completed-tasks/p02-par-STRUCT-002/index.md) |
+| TODO   | 残置 TODO の cleanup を行う                 | TODO-001          | [p05-opt-TODO-001](./p05-opt-TODO-001/index.md)                      |
 
 ## カノニカルな位置づけ
 
