@@ -36,6 +36,21 @@
 
 ---
 
+## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 impl-spec-to-skill-sync Phase-12 close-out
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/index.md` ステータス `進行中（実装あり・Phase 11/12 再監査中）` → `完了（Phase 12 close-out 済み・Phase 13 pending）`、Phase 1〜12 ステータス全 `完了` 更新
+- `references/task-workflow.md` の TASK-SC-LLM-PURPOSE-WIRE-001 エントリ重複解消と Phase 12 close-out 記録追記
+- `SKILL.md` 変更履歴テーブルに 2026-04-18 impl-spec-to-skill-sync 行を追加
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001（purpose 抽出 LLM 統合）は Phase 11/12 の成果物6件が全て揃っていたが、phase-12-documentation.md と index.md のステータスフィールドおよびPhase一覧テーブルが「未実施」のままだった。また task-workflow.md に同タスクの2026-04-18 エントリが重複していた。本セッションで impl-spec-to-skill-sync プロンプト（Phase 1 並列監査 → Phase 2 直列編集 → Phase 3 検証）を用いてこれらを修正した。
+
+---
+
 ## 2026-04-18: impl-spec-to-skill-sync Phase2 - CANCEL-002スキル反映
 
 - api-ipc-system-skill-creator.md: Preload 3点セット手順追記（インターフェース定義・safeInvoke実装・ALLOWED_INVOKE_CHANNELSホワイトリスト登録を必ず同時修正すること）
@@ -345,6 +360,19 @@ skill-create-flow-gaps（CANCEL-001〜004 / STREAM-001 / STRUCT-001）の実装�
 ### 背景
 
 TASK-CI-FUTURE-003 の close-out では、workflow 本体・skill current facts・索引・mirror・Phase 12 evidence を同 wave で閉じる必要があった。旧いフォールバックキー前提の文言を撤去し、`node_modules` 存在確認ベースの実装に合わせた。
+
+## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 re-audit sync
+
+### 変更内容
+
+- `SkillCreatorService` に JSON `summary` 正規化を追加し、`extract-purpose` の schema 期待値と実装を同期
+- `createSkill()` に skill name の path traversal guard を追加
+- `validateSkill()` の偽陽性フォールバックを是正し、unknown dependency を例外化
+- workflow root の Phase 11/12 成果物と artifacts を current state へ再同期
+
+### 背景
+
+- 2026-04-16 の close-out 記録が workflow root / implementation-guide / current facts と乖離していたため、再監査で是正した。
 
 ## 2026-04-16 - TASK-SC-LLM-PURPOSE-WIRE-001 phase 12 close-out sync
 
