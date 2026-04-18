@@ -47,6 +47,15 @@ if [[ -d "$PROJECT_DIR/.git" ]]; then
   echo "🌿 Git: ブランチ=${BRANCH}, 未コミット変更=${CHANGES}件"
 fi
 
+# custom merge driver (merge=ours) の登録チェック
+if git -C "$PROJECT_DIR" rev-parse --git-dir &>/dev/null; then
+  OURS_DRIVER="$(git -C "$PROJECT_DIR" config --get merge.ours.driver 2>/dev/null || true)"
+  if [ -z "$OURS_DRIVER" ]; then
+    echo "⚠️  [session-init] merge.ours.driver が未設定です。.gitattributes の merge=ours が機能しません。"
+    echo "   修正: bash .claude/scripts/setup-merge-drivers.sh"
+  fi
+fi
+
 # post-merge フックの自動インストールチェック
 HOOK_PATH="$(git -C "$PROJECT_DIR" rev-parse --git-path hooks/post-merge 2>/dev/null || true)"
 INSTALL_SCRIPT="$(git -C "$PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null || true)/.claude/scripts/install-git-hooks.sh"
