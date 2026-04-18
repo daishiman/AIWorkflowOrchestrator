@@ -7,6 +7,8 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-18: `TASK-SW-STREAM-FUP-03` mode-specific-progress-flow-detail（SkillCreatorService の mode 別 onProgress 詳細化 / Phase 12 close-out / NON_VISUAL / Issue #2208 / current facts 追加）
+- 2026-04-18: `TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001` executeAsync snapshot error propagation verification close-out（NON_VISUAL / docs close-out / parity sync）
+- 2026-04-18: `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` verifyAndImproveLoop adapter error notification（Phase 12 close-out / NON_VISUAL / Issue #1959 / Phase 13 blocked）
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
 - 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
 - 2026-04-17: `TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION` SkillDocGenerator LLM プロバイダ連携実装（LLMClient / AnthropicProvider / stub→本番置換 / Phase 12 close-out / NON_VISUAL / Issue #2245）
@@ -649,10 +651,10 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                                     |
 | タイプ           | docs-improvement / runtime follow-up / notification                                                   |
 | 優先度           | 中                                                                                                    |
-| 完了日           | 2026-04-06                                                                                            |
+| 完了日           | 2026-04-18                                                                                            |
 | 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知                      |
-| GitHub Issue     | #1896                                                                                                 |
-| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`                   |
+| GitHub Issue     | #1959                                                                                                 |
+| 成果物           | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`   |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容

@@ -4937,7 +4937,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L655 |
+| 続き | L656 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5101,6 +5101,10 @@ node scripts/list-specs.js --topics
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L71 |
 | TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L15 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L47 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L15 |
+| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001: verifyAndImproveLoop adapter error notification（2026-04-18） | L47 |
+| TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001: executeAsync snapshot error propagation verification close-out（2026-04-18） | L79 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L111 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5240,6 +5244,13 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L353 |
 | 完了タスク（機能別アーカイブ） | L361 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L462 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L293 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L313 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L315 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L327 |
+| 完了タスク（2026-03後半） | L355 |
+| 完了タスク（機能別アーカイブ） | L363 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L464 |
 
 ### references/task-workflow-history.md
 
