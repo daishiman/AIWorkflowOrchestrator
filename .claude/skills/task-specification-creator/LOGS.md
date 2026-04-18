@@ -3120,3 +3120,41 @@ IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/
 | 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` |
 | 結果     | close-out の主問題を「コード」ではなく「台帳・仕様・成果物の不整合」と定義し、validator fail 項目と証跡参照の曖昧さを是正 |
 | 検証     | targeted vitest PASS / workflow validator 再実行予定                                                                        |
+
+## 2026-04-18 - TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 close-out
+
+### 変更内容
+
+- `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/` の workflow / outputs / artifacts parity を current facts に同期
+- `implementation-guide.md` を Phase 12 validator 要件に合わせて再構成
+- `task-workflow-completed.md` 冒頭 index、recent bundle、stale unassigned-task / 親子タスク状態を same-wave で更新
+
+### 背景
+
+`executeAsync()` adapter error の `onWorkflowStateSnapshot` 伝搬はコード上すでに成立していたが、
+close-out 文書と completed 導線に不整合が残っていたため、verification task として再同期した。
+
+| 項目     | 内容                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / verification / docs close-out                                                                   |
+| 変更対象 | `outputs/`（Phase 1-12）、`task-workflow-completed.md`、recent bundle、stale task docs                      |
+| 結果     | 全 AC PASS。Phase 5 no-op。Phase 13 blocked 維持。型変更なし                                                 |
+| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                            |
+
+## 2026-04-18 - TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 close-out
+
+### 変更内容
+
+- `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/` の workflow / outputs / artifacts parity を current facts に同期
+- TASK-UT-RT-01-NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を未タスクとして新規作成し、backlog に登録
+
+### 背景
+
+`verifyAndImproveLoop()` の adapter error 通知整理が完了。3箇所のインライン重複から次の改善として notify ヘルパー統合タスクを形式化した。
+
+| 項目     | 内容                                                                                                                  |
+| -------- | --------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                                               |
+| 変更対象 | `outputs/`（Phase 1-12）、`task-workflow-completed.md`、recent bundle、backlog（NOTIFY-HELPER-CONSOLIDATION-001追加） |
+| 結果     | 全 AC PASS。Phase 13 blocked 維持。17 tests + 224 regression PASS                                                    |
+| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                                                      |
