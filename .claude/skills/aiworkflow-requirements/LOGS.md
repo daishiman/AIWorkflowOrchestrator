@@ -23,6 +23,31 @@ Phase-12 成果物5件（implementation-guide / documentation-changelog / unassi
 
 ---
 
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 impl-spec-to-skill-sync（lessons-learned 更新）
+
+### 変更内容
+
+- `references/lessons-learned-stream-001-progress-callback.md` に L-STREAM-FUP-03 を追加:
+  - PROGRESS_FLOWS 単一集約パターンの設計知見を記録
+  - 後続タスクテーブルの FUP-03 を「完了（2026-04-18）」に更新し FUP-04（renderer phase mapping）を追加
+- `references/lessons-learned.md` インデックスに `lessons-learned-stream-001-progress-callback.md` を追加
+
+### 背景
+
+TASK-SW-STREAM-FUP-03 の実装知見（PROGRESS_FLOWS SSOT / emitProgress by-name 解決）を lessons-learned に固定。将来モード追加時の参照先として機能させる。
+
+## 2026-04-18 - TASK-SW-STREAM-FUP-03 phase 12 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に `TASK-SW-STREAM-FUP-03` の Phase 12 close-out を追加し、`current facts` に昇格
+- `TASK-SW-STREAM-FUP-03` を current facts に追加し、`TASK-SW-STREAM-001` 依存 / `FUP-02` 推奨前提 / `NON_VISUAL` / `Phase 13 blocked` を台帳へ反映
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 背景
+
+`TASK-SW-STREAM-FUP-03` の mode 別 onProgress 詳細化は完了済みだったが、completion ledger と索引が stale だと current facts が欠けるため、台帳・索引・current facts を同波で閉じた。
+
 ## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
 
 ### 変更内容
