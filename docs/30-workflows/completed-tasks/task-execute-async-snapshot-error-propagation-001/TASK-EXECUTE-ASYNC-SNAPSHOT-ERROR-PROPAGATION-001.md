@@ -12,11 +12,17 @@ issue_number: 1937
 | ---------- | ------------------------------------------------------------------------------------- |
 | タスクID   | TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001                                     |
 | 機能名     | execute-async-snapshot-error-propagation-001                                          |
-| ステータス | open（未着手）                                                                        |
+| ステータス | completed（2026-04-18 close-out 完了）                                                |
 | 作成日     | 2026-04-06                                                                            |
 | 親タスク   | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001（Phase 12 MINOR 指摘） |
 | 優先度     | Low                                                                                   |
-| タスク種別 | feature / design（設計→実装タスク）                                                   |
+| タスク種別 | verification / docs close-out                                                         |
+
+## 完了メモ
+
+- 2026-04-18 時点で `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/` に Phase 1-12 成果物を出力済み
+- current facts の確認により `errorCode` / `errorMessage` の snapshot 本体拡張は不要と確定
+- コード変更は不要（Phase 5 no-op）、Phase 13 は blocked 維持
 
 ## 概要
 

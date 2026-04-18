@@ -2766,3 +2766,45 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
 | 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
 | 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
+
+## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
+
+- `lessons-learned-current-2026-04.md`: L-CRON-SEM-001/002 セクション内の重複 CLM 行（18行）を除去
+- `ui-ux-feature-components-skill-analysis.md`: shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記
+- Phase-12 全タスク（12-1〜12-6）PASS 確認済み。未タスク 0件。system spec 追加更新不要（public contract 追加なし）
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / impl-spec-to-skill-sync                                                         |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
+| 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
+| 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+
+## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
+
+- `executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認
+- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一
+- `implementation-guide.md` を validator 要件に合わせて再構成
+- `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
+- completed index / recent bundle / stale unassigned-task を same-wave で同期
+
+| 項目     | 内容                                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
+| 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
+| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
+| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
+
+## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
+
+- `verifyAndImproveLoop()` 内 improve adapter error 時の `notificationService?.notify()` 追加を current facts として記録
+- T-VL-01〜07 / T-REG-01（17 tests / 224 regression）全 PASS を検証証跡として固定
+- completed ledger / recent bundle / topic-map を same-wave で同期
+- NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
+
+| 項目     | 内容                                                                                      |
+| -------- | ----------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
+| 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
+| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
+| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
