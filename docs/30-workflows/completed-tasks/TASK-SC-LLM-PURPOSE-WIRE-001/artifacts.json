@@ -1,0 +1,48 @@
+{
+  "task_id": "TASK-SC-LLM-PURPOSE-WIRE-001",
+  "task_name": "extract-purpose-agent-llm-wire",
+  "taskType": "NON_VISUAL",
+  "created_at": "2026-04-18",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": { "status": "not_started", "artifacts": [] },
+    "phase-2": { "status": "not_started", "artifacts": [] },
+    "phase-3": { "status": "not_started", "artifacts": [] },
+    "phase-4": { "status": "not_started", "artifacts": [] },
+    "phase-5": { "status": "not_started", "artifacts": [] },
+    "phase-6": { "status": "not_started", "artifacts": [] },
+    "phase-7": { "status": "not_started", "artifacts": [] },
+    "phase-8": { "status": "not_started", "artifacts": [] },
+    "phase-9": { "status": "not_started", "artifacts": [] },
+    "phase-10": { "status": "not_started", "artifacts": [] },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/scenario-1-result.md",
+        "outputs/phase-11/scenario-2-result.md",
+        "outputs/phase-11/scenario-3-regression-result.md",
+        "outputs/phase-11/integration-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": { "status": "not_started", "artifacts": [] }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001"],
+    "dependents": []
+  },
+  "source_issue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/2181"
+}
