@@ -1,0 +1,87 @@
+TASK-CONFLICT-PREVENT-001 Phase 12 レビュープロンプト
+作成日: 2026-04-18
+
+---
+
+以下の情報を前提に Phase 12 の close-out ドキュメント一式を作成してください。
+
+## タスク概要
+
+タスクID: TASK-CONFLICT-PREVENT-001
+タスク種別: NON_VISUAL / docs-only
+目的: .claude/skills と .agents/skills の競合防止仕様の再設計
+
+## Phase 5 実装済み内容（事実）
+
+1. .gitattributes: indexes/*.md の merge=union を merge=ours に修正
+2. generate-index.js: topic-map.md から date ヘッダを除去（deterministic 化）
+3. session-init.sh: merge.ours.driver 未設定時の warn を追加
+4. .claude/scripts/setup-merge-drivers.sh: 新規作成（custom driver bootstrap）
+
+## Phase 9 実測結果（事実）
+
+- validator: errors:0, warnings:約10, passed:true
+- rg "自動生成:" topic-map.md → 0 件（date 除去済み）
+- rg "\| L[0-9]+" topic-map.md → 行番号索引あり（維持済み）
+- git config --get merge.ours.driver → "true"（bootstrap 後）
+- diff -qr .claude/skills .agents/skills → 差分あり（LOGS.md, keywords.json,
+  resource-map.md, topic-map.md, task-workflow-completed.md, skill-creator/SKILL.md）
+  ※ mirror full sync は follow-up
+
+## AC 最終判定
+
+- AC-1: PASS（validator）
+- AC-2: PASS（4 分類設計）
+- AC-3: PASS（custom driver 整合）
+- AC-4: PARTIAL（方針一貫・mirror sync は follow-up）
+- AC-5: PASS（deterministic topic-map）
+- AC-6: PASS（EVALS schema 不変）
+- AC-7: PASS（Phase 13 blocked 維持）
+
+## Phase 12 作成物の要件
+
+### implementation-guide.md
+
+- Part 1: 中学生向け（なぜコンフリクトが起きるか・なぜこの設計が必要か）
+- Part 2: 技術者向け（custom driver setup / .gitattributes / generate-index.js /
+  session-init.sh / schema 不変 EVALS）
+- NON_VISUAL のため「## 視覚証跡」セクションには「screenshot 不要（NON_VISUAL task）」と明記
+
+### system-spec-update-summary.md
+
+5 対象の同期結果を記録:
+- task-workflow.md: N/A（本 wave 未変更）
+- task-workflow-completed.md: 同期対象
+- lane/index.md: N/A
+- artifacts.json（root）: 同期対象
+- outputs/artifacts.json: 同期対象
+
+### documentation-changelog.md
+
+- 変更ファイル一覧
+- validator 実測結果（errors:0, warnings:約10, passed:true）
+
+### unassigned-task-detection.md
+
+follow-up タスク:
+1. mirror full sync（.agents を .claude に追従）
+2. consumer audit 完全版（EVALS 以外）
+3. LOGS archive policy 詳細
+
+### skill-feedback-report.md
+
+- task-specification-creator スキル: 改善点なし
+- aiworkflow-requirements スキル: canonical/mirror 方針が明確で有用
+
+### phase12-task-spec-compliance-check.md
+
+- planned wording がないことを確認
+- Phase 13 blocked 維持を確認
+- evidence として outputs/phase-11/manual-test-result.md を参照
+
+## 制約
+
+- Phase 13 は blocked のまま維持すること（ユーザー承認まで）
+- 「実装済み」の口調で記述すること（spec_created ではなく completed として）
+- NON_VISUAL のため screenshot は不要
+- 日付は 2026-04-18 を使用
