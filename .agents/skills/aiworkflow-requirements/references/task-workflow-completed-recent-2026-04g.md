@@ -1,5 +1,29 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18）
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IPC-HANDLER-CI-001                                                                                                                  |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                                                         |
+| タイプ     | test / CI guard / close-out sync                                                                                                       |
+| 優先度     | 中                                                                                                                                     |
+| 完了日     | 2026-04-18                                                                                                                             |
+| 対象       | `apps/desktop/src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts` / `docs/30-workflows/UT-IPC-HANDLER-CI-001/`     |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json`                     |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の 19 チャンネル登録に対する snapshot test を追加した
+- workflow root の `artifacts.json` と `index.md` を current state へ同期し、Phase 13 は blocked として整理した
+- NON_VISUAL 証跡を task 固有パスで明記し、未タスク `task-ipc-handler-registration-snapshot-coverage.md` を formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.registrationSnapshot.test.ts`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-11/manual-test-result.md`: PASS
+- `docs/30-workflows/UT-IPC-HANDLER-CI-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: current state 同期済み
+
 # 完了タスク記録 — 2026-04-15
 
 # 完了タスク記録 — 2026-04-15
@@ -43,6 +67,70 @@
 - ledger と index は task-workflow 本文と同波で更新すると、current facts の齟齬を早く潰せる
 - NON_VISUAL の CI タスクでも、phase 11 の証跡型と backend codecov flag のような確認観点を文言化すると再監査しやすい
 - `outputs/artifacts.json sync` を明記すると、root と outputs の parity をレビューで追いやすい
+
+## TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001: verifyAndImproveLoop adapter error notification（2026-04-18）
+
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001                                                             |
+| ステータス | **完了（Phase 12 close-out / NON_VISUAL / Phase 13 blocked）**                                                             |
+| タイプ     | runtime follow-up / notification / improvement                                                                              |
+| 優先度     | 中                                                                                                                          |
+| 完了日     | 2026-04-18                                                                                                                  |
+| 対象       | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知                                            |
+| GitHub Issue | #1959                                                                                                                    |
+| 成果物     | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`                        |
+
+#### 実施内容
+
+- `verifyAndImproveLoop()` 内で `improve()` が `success:false` を返した場合に `notificationService?.notify("スキル作成失敗", errorMessage)` を追加した
+- `recordImproveFailureSnapshot()` により `currentPhase: "improve"` を維持する（phase を巻き戻さない）
+- `RuntimeSkillCreatorFacade.notification.test.ts` に T-VL-01〜07 / T-REG-01 を追加し、17 tests / 224 regression 全 PASS を確認した
+
+#### 検証証跡
+
+- T-VL-01〜07 PASS（17 tests）
+- T-REG-01 PASS（regression 224/224）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop lint`: PASS
+
+#### lessons-learned
+
+- `verifyAndImproveLoop()` 内では `improve()` の戻り値を必ず確認し、adapter error 時はループを即終了してユーザーへ通知する
+- `recordImproveFailureSnapshot()` によるフェーズ保持により、リトライ時に不整合が起きない
+- 通知パターンが3箇所にインライン化されたので、次のステップとして `notifySkillCreationFailure()` ヘルパー統合が推奨される
+
+## TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001: executeAsync snapshot error propagation verification close-out（2026-04-18）
+
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001                                                                          |
+| ステータス | **完了（NON_VISUAL / verification / docs close-out / Phase 13 blocked）**                                                 |
+| タイプ     | verification / docs-only / parity-sync                                                                                     |
+| 優先度     | 低                                                                                                                          |
+| 完了日     | 2026-04-18                                                                                                                  |
+| 対象       | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/` / completed ledger / recent bundle / stale task docs |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/*.md` / `outputs/artifacts.json`                             |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認した
+- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一した
+- `implementation-guide.md` を Phase 12 validator 要件に合わせて再構成し、型定義・APIシグネチャ・使用例・エッジケース・設定一覧・テスト構成を追加した
+- `artifacts.json` / `outputs/artifacts.json` の parity を completed / blocked で同期した
+- `task-workflow-completed.md` 冒頭 index、recent bundle、stale unassigned-task / 親子タスク状態を current facts に合わせて更新した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/ipc/__tests__/creatorHandlers.fire-and-forget.test.ts`: PASS（19 tests）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop lint`: PASS
+- `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-execute-async-snapshot-error-propagation-001 --json`: PASS
+
+#### lessons-learned
+
+- close-out 専用タスクではコード差分より `artifacts.json` parity と completed / unassigned 導線の同期が監査上重要になる
+- NON_VISUAL タスクでも implementation guide validator を機械的に通さないと、説明不足を人手レビューで見落としやすい
 
 ## TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正）
 
@@ -350,6 +438,15 @@
 | タスク種別 | implementation（NON_VISUAL / skill-creator service）                                    |
 | 仕様書パス | `docs/30-workflows/completed-tasks/p01-par-STRUCT-001/`                                 |
 | Phase 13   | blocked（ユーザー承認待ち）                                                             |
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-SC-LLM-PURPOSE-WIRE-001                                                       |
+| ステータス | **spec_created（タスク仕様書登録済み・実装未着手）**                               |
+| タイプ     | docs-only（タスク仕様書作成）                                                      |
+| 優先度     | 中                                                                                 |
+| 完了日     | 2026-04-16                                                                         |
+| 関連Issue  | [#2181](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2181)（CLOSED） |
+| Phase 13   | blocked（ユーザー承認待ち）                                                        |
 
 #### 実施内容
 
@@ -411,27 +508,6 @@
 - purpose の whitespace 正規化は変換層の責務として必ず実装する
 - 詳細: `lessons-learned-skill-creator-tmpdir-fallback.md`（L-STRUCT-002-001〜004）
 - CI 設定変更は API / IPC 契約に触れないため、system spec 更新は N/A 確認のみでよい
-
-### タスク: TASK-SC-LLM-PURPOSE-WIRE-001 extract-purpose エージェント LLM purpose wire（2026-04-16）
-
-| 項目       | 値                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------- |
-| タスクID   | TASK-SC-LLM-PURPOSE-WIRE-001                                                       |
-| ステータス | **spec_created（タスク仕様書登録済み・実装未着手）**                               |
-| タイプ     | docs-only（タスク仕様書作成）                                                      |
-| 優先度     | 中                                                                                 |
-| 完了日     | 2026-04-16                                                                         |
-| 関連Issue  | [#2181](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2181)（CLOSED） |
-| Phase 13   | blocked（ユーザー承認待ち）                                                        |
-
-#### 実施内容
-
-- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/` に Phase 1〜13 全仕様書・artifacts.json・index.md を配置
-- LLM 呼び出し方式は `ILLMClient.complete()` 直接呼び出し（Option A）で確定
-- 実装は TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 完了後に着手する
-
-#### 背景
-
 `SkillCreatorService.runCreateWorkflow` 内で `extract-purpose` エージェント定義を LLM に渡し、purpose 文字列を取得する処理が未実装。`StructurePlanJson.purpose` にエージェント定義の raw 文字列が入ってしまっている問題への対応タスク。Issue #2181 は Closed 済み。
 
 ---

@@ -4,6 +4,22 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
+
+### 変更内容
+
+- `SKILL.md` の変更履歴テーブルに 2026-04-18 エントリを追加（Step 1-D 三区分テンプレート・NON_VISUAL task 固有パスガイド）
+- `SKILL.md` の「ベストプラクティス → すべきこと」に Step 1-D 三区分（未更新 / 再生成のみ / 内容変更あり）と NON_VISUAL 証跡 task 固有パス記録ルールを追記
+
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | skill-feedback 反映                                                                                                      |
+| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
+| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
+| 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
 ## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
 
 ### 変更内容
@@ -2738,3 +2754,57 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/task-ci-future-005-queuing-time-verification/outputs/`（Phase 1-12 全成果物） |
 | 結果     | 最大キューイング 59秒（閾値 60秒以内）。シャード数 17 継続確定。CI-M-01 解決済みとして記録       |
 | 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
+## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
+
+- `UT-IPC-HANDLER-CI-001` の close-out で、IPC 契約変更なしの `no-op` 判定を維持しつつ、branch current state に合わせて `indexes/topic-map.md` / `indexes/keywords.json` を再生成対象として整理
+- workflow root の `artifacts.json` を `phase12_completed / NON_VISUAL / Phase 13 blocked` へ同期し、`outputs/artifacts.json` parity を追加
+- `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を追加し、`register*Handlers()` への snapshot guard 横展開を大粒度 backlog として formalize
+
+| 項目     | 内容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                            |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
+| 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
+| 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
+
+## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
+
+- `lessons-learned-current-2026-04.md`: L-CRON-SEM-001/002 セクション内の重複 CLM 行（18行）を除去
+- `ui-ux-feature-components-skill-analysis.md`: shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記
+- Phase-12 全タスク（12-1〜12-6）PASS 確認済み。未タスク 0件。system spec 追加更新不要（public contract 追加なし）
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / impl-spec-to-skill-sync                                                         |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
+| 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
+| 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+
+## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
+
+- `executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認
+- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一
+- `implementation-guide.md` を validator 要件に合わせて再構成
+- `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
+- completed index / recent bundle / stale unassigned-task を same-wave で同期
+
+| 項目     | 内容                                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
+| 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
+| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
+| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
+
+## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
+
+- `verifyAndImproveLoop()` 内 improve adapter error 時の `notificationService?.notify()` 追加を current facts として記録
+- T-VL-01〜07 / T-REG-01（17 tests / 224 regression）全 PASS を検証証跡として固定
+- completed ledger / recent bundle / topic-map を same-wave で同期
+- NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
+
+| 項目     | 内容                                                                                      |
+| -------- | ----------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
+| 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
+| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
+| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
