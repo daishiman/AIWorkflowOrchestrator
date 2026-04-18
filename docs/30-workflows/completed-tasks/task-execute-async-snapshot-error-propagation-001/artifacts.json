@@ -1,0 +1,101 @@
+{
+  "taskId": "TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001",
+  "workflowName": "task-execute-async-snapshot-error-propagation-001",
+  "status": "completed",
+  "createdAt": "2026-04-18",
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "relatedIssue": 1937,
+    "parentIssue": 1959
+  },
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/code-investigation.md",
+        "outputs/phase-1/task-classification.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design-notes.md",
+        "outputs/phase-2/contract-decision-matrix.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-design.md"]
+    },
+    "phase-5": {
+      "name": "差分確認・最小修正",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-notes.md"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-notes.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts",
+    "apps/desktop/src/main/ipc/creatorHandlers.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts"
+  ]
+}
