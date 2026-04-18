@@ -4,6 +4,46 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18）
+
+### L-LLM-PURPOSE-001: extractPurposeWithLlm は llmClient 未注入時に null を返し options.description fallback で継続する
+
+| 項目       | 内容                                                                                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `llmClient` が DI されていない環境（単体テストのデフォルト・古い呼び出し元）では `extractPurposeWithLlm()` が null を返すため、呼び出し元で必ず fallback を実装する必要があった                                 |
+| 解決策     | `runCreateWorkflow()` 内で `extractPurposeWithLlm()` の戻り値が null の場合は `options.description` を `structurePlan.purpose` に使うフォールバックパスを明示した。単体テストは llmClient 注入有無を両分岐で検証する |
+| 標準ルール | DI 注入が省略可能なクライアントは、null 返却 → description fallback の 2 分岐を必ずテストする                                                                                                                   |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                                   |
+
+### L-LLM-PURPOSE-002: normalizePurposeResponse は JSON summary 抽出 → プレーンテキストの 2 段階でフォールバックする
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | LLM が `{ "summary": "..." }` 形式の JSON を返す場合と、プレーンテキストを返す場合の両方に対応する必要があった。さらに ````json...``` コードフェンス付きで返ってくるケースも存在した                    |
+| 解決策     | `unwrapJsonCodeFence()` でコードフェンスを除去 → `extractPurposeSummary()` で JSON `summary` フィールドを抽出 → 失敗した場合はプレーンテキストをそのまま使う 2 段階 fallback を実装した                   |
+| 標準ルール | LLM 出力の正規化は「コードフェンス除去 → JSON 解析 → プレーンテキスト」の順に試みるパターンを標準とする                                                                                                 |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+### L-LLM-PURPOSE-003: Path traversal ガードと validateSkill 偽陽性は CI 段階で検出する
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `createSkill()` 入口で `/` や `../` を含むスキル名を拒否する Path traversal ガードと、`validateSkill()` が `validate_all.js` 未インストール時に `isMissingScriptError` で偽陽性（PASS 扱い）になる挙動を把握していなかった |
+| 解決策     | Path traversal ガードは入力バリデーションとして `createSkill()` の先頭に実装済み。validateSkill 偽陽性は `isMissingScriptError` フォールバックとして意図的な挙動であることを tests で明記した             |
+| 標準ルール | エージェント定義ファイルの存在確認（`resourceLoader.loadAgent('extract-purpose')`）は CI 段階で必ず行い、実行時の「ファイル不在 → null fallback」を防止する                                              |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+### L-LLM-PURPOSE-004: resourceLoader.loadAgent 失敗時も AbortError 以外は null 返却で継続する
+
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `resourceLoader.loadAgent('extract-purpose')` が失敗した場合（ファイル不在・権限エラー等）に例外が上位まで伝播してしまう可能性があった                                                                  |
+| 解決策     | `extractPurposeWithLlm()` 内で `AbortError` 系は rethrow し、それ以外のエラーは null を返すことで呼び出し元への例外伝播を防いだ。abort 系は必ず呼び出し元でキャッチして中断処理を行う                     |
+| 標準ルール | LLM 呼び出しパターンでは AbortError / 通常エラーを明確に分岐し、通常エラーは null 返却で graceful degradation・abort 系は即時 rethrow を原則とする                                                      |
+| 関連タスク | TASK-SC-LLM-PURPOSE-WIRE-001                                                                                                                                                                            |
+
+---
+
 ## TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15）
 
 ### L-SC-FIX-001: generate_skill_md.js は `--path <dir>` ではなく `--plan <json> --output <path>` を要求する
@@ -1670,6 +1710,45 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                      |
 | 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                  |
 
+| 項目       | 内容                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| 課題       | 進捗段階の数・割合をどう設計するか                                                                |
+| 解決策     | 5段階固定（10/40/70/90/100）とし、テストの期待値との対応を 1:1 に保つ                             |
+| 標準ルール | 進捗段階は実装初期に固定化し、magic string/number はフォローアップタスクで定数化する              |
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | `structurePlan` が null の場合、暗黙に `ensureSkillMdExists` が呼ばれ、なぜ create モードで構造計画が使われなかったのかが追跡できなかった                           |
+| 原因       | null チェックのみで fallback を呼び出し、ログ出力がなかった                                                                                                        |
+| 解決策     | `this.logger.warn("structurePlan is null, falling back to ensureSkillMdExists", ...)` を追加し、create モードで null になった事実を必ずログに残す                  |
+| 設計原則   | create モードで期待される出力（structurePlan）が null になることは「正常系ではない」ため、warn ログで記録する。silent fallback はデバッグを著しく困難にする          |
+| 適用条件   | create モードの structurePlan null 判定全般。他モードは silent fallback を維持してよい                                                                            |
+
+---
+
+## TASK-SC-SHARED-TYPE-PROMOTE-001: StructurePlanJson の @repo/shared 昇格判断 教訓（2026-04-16）
+
+### L-SC-TYPE-PROMOTE-001: 型の shared 昇格判断は参照ファイル数の先行棚卸しで即決する
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | `StructurePlanJson` を shared に昇格すべきか否かの判断に迷い、実装コストをかける前に確認が必要だった                                                                      |
+| 原因       | 型の所有権判断をコード実装開始後に行う設計になっていた。事前に参照箇所を数えていなかった                                                                                   |
+| 解決策     | Phase 1 で `grep -r StructurePlanJson apps/ packages/` を実行し参照ファイル数を棚卸し。1 ファイルのみ → ローカル定義維持・即クローズ、2 ファイル以上 → shared 昇格という MECE 判定を適用した |
+| 設計原則   | 型の shared 昇格判断は「参照ファイル数の先行棚卸し」で行う。`apps/` / `packages/` の 2 ディレクトリに限定してカウントし、`docs/` / `.claude/` は補助情報として除外する    |
+| 適用条件   | 新規 interface / type の shared 昇格判断タスク全般。特に型定義が 1 ファイル内にとどまるか複数ファイルに跨るかが不明な場合                                                  |
+| 関連タスク | TASK-SC-SHARED-TYPE-PROMOTE-001 / TASK-SC-07 苦戦箇所 C-4（PlanResult 型の二重定義）                                                                                    |
+
+### L-SC-TYPE-PROMOTE-002: no-op close タスクは「証跡・理由・将来再判定条件」の三点を必ず記録する
+
+| 項目       | 内容                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | コード変更なしでクローズするタスクで、「なぜ変更しなかったか」が後から追えなくなるリスクがあった                                                                    |
+| 原因       | no-op close をドキュメントせずにクローズすると、将来同じ調査が繰り返される。変更がないとドキュメントの価値も低く見えがちで省略しやすい                              |
+| 解決策     | ① 棚卸し証跡（参照ファイル数 + grep 結果）、② ローカル定義維持の理由（1 ファイルのみ = オーバーエンジニアリング回避）、③ 将来再判定トリガー（参照箇所 2+ / API 化時など）を Phase 12 成果物として明文化した |
+| 設計原則   | no-op close の価値は「実施しなかった理由の明文化」にある。why 思考（なぜ変えないか）と if 思考（いつ再判断するか）の両方を記録する                                  |
+| 適用条件   | コード変更なしで完了するタスク全般（docs-only / NON_VISUAL / 調査クローズ）                                                                                        |
+| 関連タスク | TASK-SC-SHARED-TYPE-PROMOTE-001                                                                                                                                    |
+| 関連タスク | TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001                                                                                                                       |
 ---
 
 ## TASK-SW-STRUCT-002 structurePlan 接続配線 教訓（2026-04-17）
