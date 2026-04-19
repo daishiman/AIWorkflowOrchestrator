@@ -1,225 +1,247 @@
 {
+  "feature": "skill-creator-cancel-main-handler",
   "taskId": "TASK-SW-CANCEL-003",
   "taskType": "NON_VISUAL",
-  "featureName": "skill-creator-cancel-main-handler",
-  "createdDate": "2026-04-15",
-  "status": "completed",
-  "phases": [
-    {
-      "phase": 1,
-      "name": "要件定義",
+  "created": "2026-04-15T00:00:00Z",
+  "lastUpdated": "2026-04-18T22:39:56.257Z",
+  "status": "phase12_completed",
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "scopeMode": "existing_implementation_verification",
+    "implementationState": "already_present_on_branch"
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["1", "2", "3", "4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "phases": {
+    "1": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:38:16.389Z",
       "artifacts": [
         {
-          "name": "要件定義書",
+          "type": "document",
           "path": "outputs/phase-1/requirements-definition.md",
-          "status": "completed"
+          "description": "要件定義書"
         },
         {
-          "name": "受け入れ基準",
+          "type": "document",
           "path": "outputs/phase-1/acceptance-criteria.md",
-          "status": "completed"
+          "description": "受け入れ基準"
         },
         {
-          "name": "AbortSignal 利用調査レポート",
+          "type": "document",
           "path": "outputs/phase-1/abort-signal-usage-report.md",
-          "status": "completed"
+          "description": "AbortSignal利用調査レポート"
         }
       ]
     },
-    {
-      "phase": 2,
-      "name": "設計",
+    "2": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:38:29.530Z",
       "artifacts": [
         {
-          "name": "設計書",
+          "type": "document",
           "path": "outputs/phase-2/design.md",
-          "status": "completed"
+          "description": "差分確認設計"
         }
       ]
     },
-    {
-      "phase": 3,
-      "name": "設計レビュー",
+    "3": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:38:29.477Z",
       "artifacts": [
         {
-          "name": "設計レビュー結果",
+          "type": "document",
           "path": "outputs/phase-3/gate-decision.md",
-          "status": "completed"
+          "description": "設計レビュー結果"
         }
       ]
     },
-    {
-      "phase": 4,
-      "name": "テスト作成",
+    "4": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:38:43.783Z",
       "artifacts": [
         {
-          "name": "SkillCreatorService キャンセルテスト",
-          "path": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts",
-          "status": "completed",
-          "type": "code"
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計"
         },
         {
-          "name": "skillCreatorHandlers キャンセルハンドラーテスト",
+          "type": "document",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts",
+          "description": "SkillCreatorService回帰テスト"
+        },
+        {
+          "type": "document",
           "path": "apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts",
-          "status": "completed",
-          "type": "code"
+          "description": "skillCreatorHandlers回帰テスト"
         }
       ]
     },
-    {
-      "phase": 5,
-      "name": "実装",
+    "5": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:38:43.903Z",
       "artifacts": [
         {
-          "name": "SkillCreatorService キャンセル機能追加",
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "差分確認サマリー"
+        },
+        {
+          "type": "document",
           "path": "apps/desktop/src/main/services/skill/SkillCreatorService.ts",
-          "status": "completed",
-          "type": "code"
+          "description": "SkillCreatorService実装確認対象"
         },
         {
-          "name": "skillCreatorHandlers キャンセルハンドラー追加",
+          "type": "document",
           "path": "apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
-          "status": "completed",
-          "type": "code"
+          "description": "skillCreatorHandlers実装確認対象"
         }
       ]
     },
-    {
-      "phase": 6,
-      "name": "テスト拡充",
+    "6": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:24.409Z",
       "artifacts": [
         {
-          "name": "エッジケーステスト追加",
-          "path": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts",
-          "status": "completed",
-          "type": "code"
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-record.md",
+          "description": "テスト拡充記録"
         }
       ]
     },
-    {
-      "phase": 7,
-      "name": "カバレッジ確認",
+    "7": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:51.223Z",
       "artifacts": [
         {
-          "name": "カバレッジレポート",
+          "type": "document",
           "path": "outputs/phase-7/coverage-report.md",
-          "status": "completed"
+          "description": "カバレッジ確認レポート"
         }
       ]
     },
-    {
-      "phase": 8,
-      "name": "リファクタリング",
+    "8": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:51.687Z",
       "artifacts": [
         {
-          "name": "リファクタリング記録",
+          "type": "document",
           "path": "outputs/phase-8/refactoring-log.md",
-          "status": "completed"
+          "description": "リファクタリング記録"
         }
       ]
     },
-    {
-      "phase": 9,
-      "name": "品質保証",
+    "9": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:52.648Z",
       "artifacts": [
         {
-          "name": "品質保証レポート",
+          "type": "document",
           "path": "outputs/phase-9/quality-report.md",
-          "status": "completed"
+          "description": "品質保証レポート"
         }
       ]
     },
-    {
-      "phase": 10,
-      "name": "最終レビュー",
+    "10": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:53.985Z",
       "artifacts": [
         {
-          "name": "最終レビュー結果",
+          "type": "document",
           "path": "outputs/phase-10/final-review-result.md",
-          "status": "completed"
+          "description": "最終レビュー結果"
         }
       ]
     },
-    {
-      "phase": 11,
-      "name": "手動テスト",
+    "11": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:55.499Z",
       "artifacts": [
         {
-          "name": "手動テストチェックリスト",
+          "type": "document",
+          "path": "outputs/phase-11/TASK-SW-CANCEL-003-manual-test-report.md",
+          "description": "手動テスト報告書"
+        },
+        {
+          "type": "document",
           "path": "outputs/phase-11/manual-test-checklist.md",
-          "status": "completed"
+          "description": "手動テストチェックリスト"
         },
         {
-          "name": "手動テスト結果",
-          "path": "outputs/phase-11/manual-test-result.md",
-          "status": "completed"
-        },
-        {
-          "name": "発見課題一覧",
+          "type": "document",
           "path": "outputs/phase-11/discovered-issues.md",
-          "status": "completed"
+          "description": "発見事項一覧"
         }
       ]
     },
-    {
-      "phase": 12,
-      "name": "ドキュメント更新",
+    "12": {
       "status": "completed",
+      "completedAt": "2026-04-18T22:39:56.248Z",
       "artifacts": [
         {
-          "name": "実装ガイド",
+          "type": "document",
           "path": "outputs/phase-12/implementation-guide.md",
-          "status": "completed"
+          "description": "実装ガイド"
         },
         {
-          "name": "システム仕様更新サマリー",
+          "type": "document",
           "path": "outputs/phase-12/system-spec-update-summary.md",
-          "status": "completed"
+          "description": "システム仕様更新サマリー"
         },
         {
-          "name": "ドキュメント更新履歴",
+          "type": "document",
           "path": "outputs/phase-12/documentation-changelog.md",
-          "status": "completed"
+          "description": "ドキュメント更新履歴"
         },
         {
-          "name": "未タスク検出レポート",
+          "type": "document",
           "path": "outputs/phase-12/unassigned-task-detection.md",
-          "status": "completed"
+          "description": "未タスク検出レポート"
         },
         {
-          "name": "スキルフィードバックレポート",
+          "type": "document",
           "path": "outputs/phase-12/skill-feedback-report.md",
-          "status": "completed"
+          "description": "スキルフィードバックレポート"
         },
         {
-          "name": "Phase 12 準拠チェック",
+          "type": "document",
           "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
-          "status": "completed"
+          "description": "Phase12準拠チェック"
         }
       ]
     },
-    {
-      "phase": 13,
-      "name": "PR作成",
+    "13": {
       "status": "blocked",
       "artifacts": [
         {
-          "name": "PR情報",
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー"
+        },
+        {
+          "type": "document",
           "path": "outputs/phase-13/pr-info.md",
-          "status": "blocked"
+          "description": "PR情報"
         }
       ]
     }
-  ]
+  }
 }

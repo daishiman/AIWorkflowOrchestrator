@@ -122,6 +122,66 @@ Embedding Generation Pipelineは、ドキュメントを意味的に検索可能
 | 推奨並列度 | 2 |
 | スループット | 53,333 chunks/min（モック環境） |
 
+## Late Chunking パイプライン拡張
+
+**実装場所**: `packages/shared/src/services/embedding/late-chunking/`
+**タスクID**: UNASSIGNED-EMB-005
+**ステータス**: 実装完了（2026-04-19）
+
+Late Chunkingは、テキスト全体をエンコーダに通した後にチャンク境界に応じてhidden stateをpoolingすることで、チャンク間の文脈を保持したまま埋め込みを生成する手法。従来のチャンキング比で検索品質10-30%向上。
+
+### Late Chunking コンポーネント構成
+
+| コンポーネント | ファイル | 責務 |
+|---|---|---|
+| `LateChunkingService` | `late-chunking-service.ts` | Late Chunking処理のオーケストレーション |
+| `TokenBoundaryCalculator` | `token-boundary-calculator.ts` | チャンク境界をトークン範囲に変換 |
+| `HiddenStatePooler` | `hidden-state-pooler.ts` | hidden stateのpooling（mean/max/cls） |
+| `WindowSplitter` | `window-splitter.ts` | 長文テキストのウィンドウ分割 |
+
+### Late Chunking 型定義
+
+| 型 | 定義場所 | 説明 |
+|---|---|---|
+| `ChunkBoundary` | `late-chunking-types.ts` | チャンク文字境界（startChar/endChar/chunkId） |
+| `TokenRange` | `late-chunking-types.ts` | チャンクのトークン範囲（startToken/endToken/chunkId） |
+| `PoolingStrategy` | `late-chunking-types.ts` | "mean" / "max" / "cls" |
+| `LateChunkingConfig` | `late-chunking-types.ts` | Late Chunking設定（poolingStrategy/useFloat16/maxTokenLength/windowOverlapTokens） |
+| `IEncoder` | `late-chunking-types.ts` | エンコーダインターフェース（encode(text) → EncoderOutput） |
+| `EncoderOutput` | `late-chunking-types.ts` | エンコーダ出力（hiddenStates/offsetMapping） |
+| `ChunkEmbeddingResult` | `late-chunking-types.ts` | チャンク埋め込み結果（chunkId/embedding/tokenCount） |
+
+### Late Chunking インターフェース
+
+| インターフェース | 定義場所 | 説明 |
+|---|---|---|
+| `ITokenBoundaryCalculator` | `late-chunking-interfaces.ts` | トークン境界計算の抽象 |
+| `IHiddenStatePooler` | `late-chunking-interfaces.ts` | hidden state poolingの抽象 |
+| `IWindowSplitter` | `late-chunking-interfaces.ts` | ウィンドウ分割の抽象 |
+| `ILateChunkingService` | `late-chunking-interfaces.ts` | Late Chunkingサービスの公開インターフェース |
+
+### Late Chunking エラークラス
+
+| エラークラス | 親クラス | 説明 |
+|---|---|---|
+| `InvalidBoundaryError` | `EmbeddingError` | チャンク境界が不正な場合 |
+| `OutOfMemoryError` | `EmbeddingError` | メモリ不足の場合 |
+
+### EmbeddingService への統合
+
+`EmbeddingServiceConfig` に `lateChunkingService?: ILateChunkingService` が追加された（オプション）。
+
+`EmbeddingService.generateChunkEmbeddings()` メソッドが追加され、Late Chunkingサービスが設定されていない場合は `EmbeddingError` をスローする。
+
+### デフォルト設定（DEFAULT_LATE_CHUNKING_CONFIG）
+
+| 設定項目 | デフォルト値 | 説明 |
+|---|---|---|
+| `poolingStrategy` | `"mean"` | pooling戦略 |
+| `useFloat16` | `false` | Float16使用フラグ |
+| `maxTokenLength` | `512` | 最大トークン長 |
+| `windowOverlapTokens` | `16` | ウィンドウオーバーラップトークン数 |
+
 ## 品質メトリクス
 
 ### テストカバレッジ

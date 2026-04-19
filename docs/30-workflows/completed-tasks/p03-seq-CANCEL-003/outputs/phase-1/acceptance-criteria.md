@@ -1,33 +1,30 @@
-# Phase 1 成果物: 受け入れ基準
+# 受け入れ基準 - TASK-SW-CANCEL-003
 
-## タスク
+## メタ情報
 
-TASK-SW-CANCEL-003: skill-creator-cancel-main-handler
+| 項目     | 内容               |
+| -------- | ------------------ |
+| タスクID | TASK-SW-CANCEL-003 |
+| 作成日   | 2026-04-19         |
 
-## 受け入れ基準一覧（AC-1〜AC-6）
+## AC 一覧
 
-| ID   | 受け入れ基準                                                                                     | 検証方法                                      | 判定 | 根拠（ファイル:行）                                               |
-| ---- | ------------------------------------------------------------------------------------------------ | --------------------------------------------- | ---- | ----------------------------------------------------------------- |
-| AC-1 | `SkillCreatorService` に `private currentAbortController: AbortController \| null = null` がある | `grep -n currentAbortController`              | PASS | `apps/desktop/src/main/services/skill/SkillCreatorService.ts:178` |
-| AC-2 | `cancelCurrentOperation()` が `abort()` を呼びフラグをリセットする                               | コードレビュー（`?.abort()` と `= null`）     | PASS | `SkillCreatorService.ts:296-299`                                  |
-| AC-3 | `SKILL_CREATOR_CANCEL` の `ipcMain.handle()` が登録されている                                    | `grep -n SKILL_CREATOR_CANCEL`                | PASS | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts:688-706`       |
-| AC-4 | `unregisterSkillCreatorHandlers()` に `SKILL_CREATOR_CANCEL` の `removeHandler` が追加           | `grep -n removeHandler.*SKILL_CREATOR_CANCEL` | PASS | `skillCreatorHandlers.ts:750`                                     |
-| AC-5 | `startGeneration()` の `AbortSignal` 利用調査レポートが作成されている                            | `abort-signal-usage-report.md` 存在           | PASS | `outputs/phase-1/abort-signal-usage-report.md`                    |
-| AC-6 | `pnpm typecheck` が PASS する                                                                    | `pnpm --filter @repo/desktop typecheck`       | ⏳   | Phase 5・11 で検証                                                |
+| AC   | 観点                          | 基準                                                                                                     | 対応テスト     |
+| ---- | ----------------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
+| AC-1 | `currentAbortController` 保持 | `createSkill()` 呼び出し中に `currentAbortController` に `AbortController` が格納されること              | TC-04, TC-05   |
+| AC-2 | abort 実行                    | `cancelCurrentOperation()` 呼び出しで `AbortController.abort()` が発火し、スクリプト実行が中断されること | TC-02, TC-05   |
+| AC-3 | finally reset                 | `createSkill()` 完了後（正常・例外いずれも）`currentAbortController` が `null` にリセットされること      | TC-03, TC-04   |
+| AC-4 | null-safe                     | `currentAbortController` が `null` の状態で `cancelCurrentOperation()` を呼んでもクラッシュしないこと    | TC-02          |
+| AC-5 | handler 登録                  | `registerSkillCreatorHandlers()` 呼び出しで `SKILL_CREATOR_CANCEL` ハンドラーが登録されること            | TC-05(handler) |
+| AC-6 | handler 解除                  | `unregisterSkillCreatorHandlers()` 呼び出しで `SKILL_CREATOR_CANCEL` ハンドラーが解除されること          | TC-07(handler) |
 
-## 検証時期
+## 判定結果
 
-| Phase | 検証対象            | 備考                                   |
-| ----- | ------------------- | -------------------------------------- |
-| 4     | 初期状態の RED      | 既存テストはすでに PASS 状態を前提設計 |
-| 5     | 全 AC 実装完了      | 実装は既実装であり再検証               |
-| 6     | AC-1〜AC-2 追加検証 | TC-10 相当（連続 2 回）の明示化        |
-| 9     | AC-6 型チェック     | 品質保証フェーズで最終検証             |
-| 10    | 全 AC 統合検証      | 最終レビューゲート                     |
-| 11    | 手動テスト          | ビルド・型チェック・ハンドラー存在確認 |
-
-## 実施状況
-
-- P50 チェックで主要 AC（AC-1〜AC-4）は既実装と確認
-- AC-5 は本 Phase で調査レポートを作成
-- AC-6 は Phase 9・11 で再検証
+| AC   | 現実装                                                | 判定    |
+| ---- | ----------------------------------------------------- | ------- |
+| AC-1 | `SkillCreatorService.ts` L328-330                     | ✅ PASS |
+| AC-2 | `cancelCurrentOperation()` L274-277                   | ✅ PASS |
+| AC-3 | `finally` L517-519                                    | ✅ PASS |
+| AC-4 | `currentAbortController?.abort()` (optional chaining) | ✅ PASS |
+| AC-5 | `skillCreatorHandlers.ts` L688-706                    | ✅ PASS |
+| AC-6 | `unregisterSkillCreatorHandlers()` L750               | ✅ PASS |

@@ -1,160 +1,161 @@
-# Phase 12 成果物: 実装ガイド
+# 実装ガイド - TASK-SW-CANCEL-003
 
 ## メタ情報
 
-| 項目       | 内容                              |
-| ---------- | --------------------------------- |
-| Phase      | 12                                |
-| タスクID   | TASK-SW-CANCEL-003                |
-| 機能名     | skill-creator-cancel-main-handler |
-| タスク種別 | NON_VISUAL                        |
-| 作成日     | 2026-04-19                        |
-| 前提Phase  | Phase 11                          |
+| 項目     | 内容                              |
+| -------- | --------------------------------- |
+| タスクID | TASK-SW-CANCEL-003                |
+| 機能名   | skill-creator-cancel-main-handler |
+| 作成日   | 2026-04-19                        |
 
-## Part 1: 中学生レベルの概念説明
+---
+
+## Part 1: 中学生向け説明
 
 ### なぜ必要か
 
-スキル生成を途中で止めたいのに、画面から「止めて」と伝えても裏側の作業が動き続けると、使う人は「止まったと思ったのに止まっていない」という不安定な状態になります。先に必要なのは、画面の気持ちではなく、裏側の作業そのものを止めることです。
+スキル作成は数秒から数十秒かかることがあり、途中で「条件を変えたい」「別の案に切り替えたい」と思うことがあります。そのときに止める仕組みがないと、もう不要になった作業が最後まで走ってしまい、待ち時間や混乱が増えます。
 
-### たとえ話
+たとえば、電子レンジで温めを始めたあとに「やっぱり今はやめよう」と思ったら、停止ボタンを押して無駄な加熱を止めます。この task は、その停止ボタンを Main 側でちゃんと受け取って実際に止められるようにした確認作業です。
 
-これは学校の放送室に連絡する仕組みに近いです。教室で「授業を止めてください」と言っても、放送室まで声が届かなければ授業は続きます。今回の修正は、教室から受付を通って放送室へ確実に連絡し、放送室の担当者が本当にベルを止める仕組みを作ったものです。
+今回何をするかというと、画面から届いた「止めて」という合図を Main 側の処理に渡し、実行中の作業を安全に中断できることを確かめます。
+
+### cancel って何？
+
+スキル作成中に「やっぱりやめたい」と思ったとき、途中でやめられる仕組みのことです。
+
+たとえば、レンジでチンしているときに「取り消し」ボタンを押すと、加熱が止まりますよね。それと同じです。
+
+### どうやって止める？
+
+アプリには「Main（メイン）」と「Renderer（画面）」の 2 つの部分があります。
+
+1. 画面でキャンセルボタンを押すと、Main に「止めて！」というメッセージが飛びます
+2. Main は「わかった！」と言って、作業中のプログラムに「中断信号」を送ります
+3. プログラムはその信号を受け取ったら、作業をキャンセルして片付けをします
+
+### 大事な点
+
+- 途中でやめても、壊れかけのファイルが残らないようにちゃんと後片付けします
+- 「止めて！」と言われる前に作業が終わっていても、問題なく動きます（2 重に押しても大丈夫）
 
 ### 今回作ったもの
 
-- 受付役: `SKILL_CREATOR_CANCEL` ハンドラー
-- 停止役: `cancelCurrentOperation()`
-- 後始末役: `currentAbortController` のリセットと cleanup 経路
+- Main プロセスでキャンセル要求を受ける handler が正しく動くこと
+- 作業中の処理に中断信号を渡し、止めたあとに状態を片付けること
+- NON_VISUAL task として、画面の画像ではなくテスト結果と walkthrough で完了証跡を残すこと
 
-### 何をするか
+---
 
-画面や preload から届いた cancel 要求を main process で受け取り、実行中の `AbortController` を止めます。これで、`createSkill()` が抱えている処理を中断できるようになります。
-
-## Part 2: 開発者向け技術詳細
+## Part 2: 技術者向け説明
 
 ### TypeScript 型定義
 
 ```typescript
-type CancelSkillCreationResult = { success: true };
+type CancelResult = { success: true };
 
 interface SkillCreatorServiceLike {
   cancelCurrentOperation(): void;
-}
-
-interface SkillCreatorChannels {
-  SKILL_CREATOR_CANCEL: "skill-creator:cancel";
 }
 ```
 
 ### APIシグネチャ
 
 ```typescript
-public cancelCurrentOperation(): void;
-
 ipcMain.handle(
   IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-  async (event): Promise<CancelSkillCreationResult> => {
-    validateIpcSender(event, IPC_CHANNELS.SKILL_CREATOR_CANCEL, {
-      expectedSender: "renderer",
-    });
+  async (event): Promise<CancelResult> => {
+    validateIpcSender(event, IPC_CHANNELS.SKILL_CREATOR_CANCEL, mainWindowRef);
     skillCreatorService.cancelCurrentOperation();
+    onCancelCurrentSkillCreation?.();
     return { success: true };
   },
 );
 ```
 
-### 使用例
-
-```ts
-// main 側での登録
-registerSkillCreatorHandlers({
-  skillCreatorService,
-});
-
-// cancel 要求の処理
-skillCreatorService.cancelCurrentOperation();
-```
-
-### `cancelCurrentOperation()` の使用方法
+### AbortController の管理
 
 ```typescript
+// SkillCreatorService.ts
+private currentAbortController: AbortController | null = null;
+
+async createSkill(options, onProgress?) {
+  const abortController = new AbortController();
+  this.currentAbortController = abortController;       // 登録
+  const operationSignal = abortController.signal;
+
+  try {
+    // 各ステップで signal を渡す
+    await this.executeScript("init_skill.js", args, operationSignal);
+    // ...
+  } finally {
+    // 同一インスタンスか確認してからリセット（並行呼び出し対策）
+    if (this.currentAbortController === abortController) {
+      this.currentAbortController = null;
+    }
+  }
+}
+
 public cancelCurrentOperation(): void {
-  this.currentAbortController?.abort();
+  this.currentAbortController?.abort();   // optional chaining で null-safe
   this.currentAbortController = null;
 }
 ```
 
-| 使用条件                           | 挙動                           |
-| ---------------------------------- | ------------------------------ |
-| `currentAbortController` が非 null | `abort()` 実行後に null へ戻す |
-| `currentAbortController` が null   | 何もせず安全に終了する         |
-| 連続呼び出し                       | 2回目も例外なく終わる          |
+### IPC Handler 登録・解除
 
-### 動作フロー
+```typescript
+// skillCreatorHandlers.ts
+// 登録
+ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_CANCEL, async (event) => {
+  validateIpcSender(event, ...);
+  skillCreatorService.cancelCurrentOperation();
+  onCancelCurrentSkillCreation?.();
+  return { success: true };
+});
 
-```text
-Renderer / DevTools
-  -> preload cancelGeneration()
-  -> ipcRenderer.invoke(IPC_CHANNELS.SKILL_CREATOR_CANCEL)
-  -> ipcMain.handle(SKILL_CREATOR_CANCEL)
-  -> skillCreatorService.cancelCurrentOperation()
-  -> AbortController.abort()
-  -> createSkill() 側の abort 経路へ伝播
+// 解除
+ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);
 ```
 
-### `unregisterSkillCreatorHandlers()` への追加の重要性
+### 使用例
 
-- `ipcMain.handle()` で登録したチャンネルは `removeHandler()` と対で管理しないと、テストや再初期化で二重登録エラーを起こす
-- 本タスクでは `ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL)` を追加して対称性を維持した
-
-### IPC 4層（CANCEL-001〜003）の完成状態
-
-| 層                      | 担当タスク | 状態 | 実装箇所                                                        |
-| ----------------------- | ---------- | ---- | --------------------------------------------------------------- |
-| shared 定数             | CANCEL-001 | 完了 | `packages/shared/src/ipc/channels.ts`                           |
-| preload allowlist / API | CANCEL-002 | 完了 | `apps/desktop/src/preload/channels.ts` / `skill-creator-api.ts` |
-| main handler            | CANCEL-003 | 完了 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`             |
-| service cancel 実体     | CANCEL-003 | 完了 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`   |
-
-### エラーハンドリング
-
-- sender 検証に失敗した場合は `validateIpcSender` が例外を返し、不正な renderer からの呼び出しを遮断する
-- 実行中操作が無い場合は `?.abort()` により no-op で安全に終わる
-- abort 後は `finally` 側でも controller を片付け、状態リークを防ぐ
-
-### エッジケース
-
-- `cancelCurrentOperation()` を 2 回連続で呼んでも例外にしない
-- 処理完了済みの controller を誤って残さないよう、`finally` 側で同一性を見てリセットする
-- `unregisterSkillCreatorHandlers()` に cancel channel を追加し忘れるとテスト再登録が壊れる
-
-### 設定項目と定数一覧
-
-| 項目                                | 値 / 役割                               |
-| ----------------------------------- | --------------------------------------- |
-| `IPC_CHANNELS.SKILL_CREATOR_CANCEL` | `skill-creator:cancel`                  |
-| `currentAbortController`            | 実行中処理を保持する main 側 controller |
-| `{ success: true }`                 | cancel handler の正常戻り値             |
+```typescript
+await window.skillCreatorAPI.cancelGeneration();
+```
 
 ### テスト構成
 
-| ファイル                                                                            | 役割                                     |
-| ----------------------------------------------------------------------------------- | ---------------------------------------- |
-| `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | service 層の cancel / state reset 検証   |
-| `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | IPC handler の登録 / 呼び出し / 解除検証 |
-| `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.validation.test.ts`       | 既存 validation 契約との整合確認         |
+| テストファイル                        | TC 数 | カバー観点                        |
+| ------------------------------------- | ----- | --------------------------------- |
+| `SkillCreatorService-cancel.test.ts`  | 5     | abort/reset/null-safe/signal 伝播 |
+| `skillCreatorHandlers-cancel.test.ts` | 3     | register/delegate/unregister      |
+
+### エラーハンドリング
+
+- `validateIpcSender(...)` で無効な sender を弾き、Renderer 以外からの cancel 呼び出しを防ぐ
+- `cancelCurrentOperation()` は optional chaining により、実行中処理がない場合でも例外を投げない
+- `finally` で `currentAbortController` を同一インスタンス確認つきで `null` に戻し、古い操作が新しい操作を壊さないようにする
+
+### エッジケース
+
+| ケース                                    | 対処                                          |
+| ----------------------------------------- | --------------------------------------------- |
+| `cancelCurrentOperation()` を連続呼び出し | optional chaining で null-safe                |
+| `createSkill()` 完了後に cancel           | finally リセット済みのため abort は発火しない |
+| 複数の `createSkill()` が重なった場合     | 後勝ち（最後の AbortController が有効）       |
+
+### 設定項目と定数一覧
+
+| 項目                                | 値 / 役割                                  |
+| ----------------------------------- | ------------------------------------------ |
+| `IPC_CHANNELS.SKILL_CREATOR_CANCEL` | cancel invoke 用の canonical channel       |
+| `currentAbortController`            | 現在進行中の createSkill を指す controller |
+| `onCancelCurrentSkillCreation`      | Main 層で cancel 完了後に通知する callback |
+
+---
 
 ## 視覚証跡
 
-UI/UX変更なしのため Phase 11 スクリーンショット不要。
-
-代替証跡:
-
-- `outputs/phase-10/final-review-result.md`
-- `outputs/phase-11/manual-test-result.md`
-- `outputs/phase-11/manual-test-checklist.md`
-
-## 成果物
-
-- `outputs/phase-12/implementation-guide.md`（本ファイル）
+UI/UX変更なしのため Phase 11 スクリーンショット不要
+代替証跡: `outputs/phase-10/final-review-result.md`, `outputs/phase-11/TASK-SW-CANCEL-003-manual-test-report.md`

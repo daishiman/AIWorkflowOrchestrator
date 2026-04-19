@@ -1,76 +1,57 @@
-# Phase 12 成果物: Phase 12 準拠チェック
+# Phase 12 準拠チェック - TASK-SW-CANCEL-003
 
 ## メタ情報
 
-| 項目     | 内容                              |
-| -------- | --------------------------------- |
-| Phase    | 12                                |
-| タスクID | TASK-SW-CANCEL-003                |
-| 機能名   | skill-creator-cancel-main-handler |
-| 作成日   | 2026-04-19                        |
+| 項目     | 内容               |
+| -------- | ------------------ |
+| タスクID | TASK-SW-CANCEL-003 |
+| 作成日   | 2026-04-19         |
 
-## 成果物生成確認
+## canonical 6成果物の存在確認
 
-| 成果物                        | パス                                                     | 生成確認 |
-| ----------------------------- | -------------------------------------------------------- | -------- |
-| 実装ガイド                    | `outputs/phase-12/implementation-guide.md`               | ✅       |
-| システム仕様更新サマリー      | `outputs/phase-12/system-spec-update-summary.md`         | ✅       |
-| ドキュメント更新履歴          | `outputs/phase-12/documentation-changelog.md`            | ✅       |
-| 未タスク検出レポート          | `outputs/phase-12/unassigned-task-detection.md`          | ✅       |
-| スキルフィードバックレポート  | `outputs/phase-12/skill-feedback-report.md`              | ✅       |
-| Phase 12 準拠チェック（本件） | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅       |
+| #   | ファイル                                                 | 存在             |
+| --- | -------------------------------------------------------- | ---------------- |
+| 1   | `outputs/phase-12/implementation-guide.md`               | ✅               |
+| 2   | `outputs/phase-12/system-spec-update-summary.md`         | ✅               |
+| 3   | `outputs/phase-12/documentation-changelog.md`            | ✅               |
+| 4   | `outputs/phase-12/unassigned-task-detection.md`          | ✅               |
+| 5   | `outputs/phase-12/skill-feedback-report.md`              | ✅               |
+| 6   | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅（本ファイル） |
 
-→ **6 / 6 成果物が生成されている**
+## artifacts.json との parity 確認
 
-## 内容準拠チェック
+| 項目                                                             | 結果                                       |
+| ---------------------------------------------------------------- | ------------------------------------------ |
+| root `artifacts.json` と `outputs/artifacts.json` の JSON 同値性 | ✅ 一致                                    |
+| Phase status 一致                                                | ✅ Phase 1-12 completed / Phase 13 blocked |
+| artifact path 一致                                               | ✅ Phase 11 evidence を含め一致            |
+| artifact type / description 一致                                 | ✅ 一致                                    |
 
-| 準拠項目                                                             | 結果   | 証跡                                                                                     |
-| -------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
-| 全成果物（6 種）が作成されている                                     | **OK** | 上表参照                                                                                 |
-| 中学生レベルの概念説明が含まれている                                 | **OK** | `implementation-guide.md` の「概念説明（中学生レベル）」節で「工場の管理室」の比喩で記述 |
-| 未タスク検出が実施されている                                         | **OK** | `unassigned-task-detection.md` で 7 項目を棚卸し、全て起票不要の結論                     |
-| `cancelCurrentOperation()` の使用方法が含まれている                  | **OK** | `implementation-guide.md` 「`cancelCurrentOperation()` の使用方法」節                    |
-| `SKILL_CREATOR_CANCEL` ハンドラーの動作フローが含まれている          | **OK** | `implementation-guide.md` 「動作フロー」節（ASCII 図付き）                               |
-| `unregisterSkillCreatorHandlers()` への追加の重要性が含まれている    | **OK** | `implementation-guide.md` 「`unregisterSkillCreatorHandlers()` への追加の重要性」節      |
-| IPC 4層（CANCEL-001〜003）の完成状態説明が含まれている               | **OK** | `implementation-guide.md` / `system-spec-update-summary.md` の 4 層表                    |
-| `NON_VISUAL` 判定と視覚証跡不要の根拠が含まれている                  | **OK** | `implementation-guide.md` 「視覚証跡」節                                                 |
-| `SkillCreatorService` への追加記録が含まれている                     | **OK** | `system-spec-update-summary.md` の 1 節                                                  |
-| `skillCreatorHandlers.ts` への追加記録が含まれている                 | **OK** | `system-spec-update-summary.md` の 2 節                                                  |
-| `unregisterSkillCreatorHandlers()` 更新記録が含まれている            | **OK** | `system-spec-update-summary.md` の 2 節                                                  |
-| 変更日の記録がある（2026-04-19）                                     | **OK** | `documentation-changelog.md` 冒頭                                                        |
-| 影響ファイルの記録がある                                             | **OK** | `documentation-changelog.md`「影響ファイル」表                                           |
-| キャンセル後の半作成ディレクトリ残存クリーンアップ（実装済み）の記録 | **OK** | `unassigned-task-detection.md` 1 項                                                      |
-| CANCEL-004 は別タスクとして定義済みの記録                            | **OK** | `unassigned-task-detection.md` 2 項 / `implementation-guide.md` の引継ぎメモ             |
-| task-specification-creator スキルのフィードバックが含まれている      | **OK** | `skill-feedback-report.md`                                                               |
-| 代替証跡として Phase 10 / Phase 11 の参照が含まれている              | **OK** | `implementation-guide.md` 「視覚証跡」節                                                 |
+## validator 実行結果
 
-## 統合テスト連携
+| validator                               | 結果            |
+| --------------------------------------- | --------------- |
+| `pnpm vitest run` (cancel 2 files)      | ✅ 8 tests PASS |
+| `pnpm --filter @repo/desktop typecheck` | ✅ PASS         |
+| targeted `eslint`                       | ✅ PASS         |
+| `validate-phase12-implementation-guide` | ✅ PASS         |
 
-| 判定項目                         | 基準 | 結果         |
-| -------------------------------- | ---- | ------------ |
-| 6種の成果物が全て作成されている  | 完了 | **完了**     |
-| 中学生レベルの概念説明が含まれる | あり | **含まれる** |
+## taskType 確認
 
-## 多角的チェック観点
+| 項目                                         | 値                                                          | 判定 |
+| -------------------------------------------- | ----------------------------------------------------------- | ---- |
+| artifacts.json の taskType                   | NON_VISUAL                                                  | ✅   |
+| Phase 11 actual evidence file                | `outputs/phase-11/TASK-SW-CANCEL-003-manual-test-report.md` | ✅   |
+| Phase 11 の screenshot 不要明記              | NON_VISUAL 証跡方針として記載                               | ✅   |
+| implementation-guide.md の視覚証跡セクション | `UI/UX変更なしのため Phase 11 スクリーンショット不要` 明記  | ✅   |
 
-- [x] 「半作成ディレクトリ残存」が実装で解消されているか → 解消済み（`cleanupCancelledSkillDir`）
-- [x] CANCEL-004 の実装者に必要な情報が実装ガイドに含まれているか → 含まれている（「CANCEL-004 実装者への引継ぎメモ」節）
+## 未完了表現チェック
 
-## 完了条件
+全 outputs ファイルを確認し、未完了を示す表現が残っていないことを確認した。
 
-- [x] 6種の成果物が全て作成されている
-- [x] 中学生レベルの概念説明が含まれている
-- [x] 未タスク検出が実施されている
-- [x] 本 Phase のタスクを 100% 実行完了
+## 総合判定
 
-## 最終判定
+**Phase 12 準拠チェック: PASS**
 
-**PASS** — Phase 12 は準拠チェック全項目を満たし完了。
-
-## 次 Phase
-
-Phase 13: PR 作成（**blocked** — ユーザー明示の指示により実施しない）
-
-## 成果物
-
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`（本ファイル）
+canonical 6成果物が全て揃い、artifacts.json parity も確認済み。validator 結果も記録済み。
+TASK-SW-CANCEL-003 は Main 層 cancel として完了。

@@ -1,4 +1,4 @@
-# Lessons Learned — Skill Creator Cancel / AbortSignal（2026-04-16）
+# Lessons Learned — Skill Creator Cancel / AbortSignal（2026-04-16 / 2026-04-19）
 
 ## タスク概要
 
@@ -145,3 +145,40 @@ async load(category, name, options = {}) {
 4. **handleXxx / removeHandler の対称性を PR ルールとする**: `registerXxxHandlers()` で追加したチャンネル数と `unregisterXxxHandlers()` の `removeHandler` 数は常に一致させる。差分があれば CI が検出できるようスナップショットテストを用意する。
 
 5. **Renderer 側の `cancelGeneration()` は IPC 呼び出しを await する**: `window.api?.cancelXxx?.()` の optional chain を使いつつ `await` して、Main 側のキャンセル完了を待つ設計を標準とする。
+
+6. **private workflow の abort 入口保証を public contract と分離して検証する**: `createSkill()` が abort controller を保持していても、private workflow が入口で `signal` を確認しない限り契約は閉じない。public cancel test に加えて、private minimal test で `aborted signal` と `signal なし` の両方を固定する。
+
+---
+
+## TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 完了記録（2026-04-19）
+
+### タスク概要
+
+| タスクID | 内容 |
+| --- | --- |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 | `createSkill()` の AbortSignal 契約を実装事実に合わせて再監査し、private workflow 内の即時中断保証を統一 |
+
+### 実装内容
+
+| 対象メソッド | Before | After |
+| --- | --- | --- |
+| `runOrchestrateWorkflow(options, _signal?)` | `_signal` 未使用（入口 guard なし） | `signal` に改名 + 冒頭で `this.throwIfAborted(signal)` を呼ぶ |
+| `runCreateWorkflow(options, signal?)` | try ブロック直前に guard なし | try ブロック前に `this.throwIfAborted(signal)` を追加 |
+
+### テスト追加
+
+`SkillCreatorService-cancel.test.ts` に private minimal test 4 件を追加（`describe: private workflow abort 入口保証`）:
+
+| テストID | 検証内容 |
+| --- | --- |
+| TC-PM-01 | `runOrchestrateWorkflow()` が abort 済み signal を受け取ると AbortError をスローすること |
+| TC-PM-02 | `runOrchestrateWorkflow()` が signal なしで正常終了すること |
+| TC-PM-03 | `runCreateWorkflow()` が abort 済み signal を受け取ると AbortError をスローすること |
+| TC-PM-04 | `runCreateWorkflow()` が signal なしで正常終了すること |
+
+### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 |
+| --- | --- | --- |
+| 1 | `TASK-SC-LLM-PURPOSE-WIRE-001` のマージ後、本タスクの `throwIfAborted` 追加が上書きされており実装ログと乖離が発生 | docs ブランチで改めて追加し、テスト9件全 PASS を確認 |
+| 2 | private method のテストで `StructurePlanJson` が `@repo/shared/types` に未公開 | テストファイル内にローカル型 `type StructurePlanJson = {...}` を定義して対応 |

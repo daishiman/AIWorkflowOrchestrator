@@ -10,143 +10,90 @@
 | 前提Phase  | Phase 1                           |
 | 後続Phase  | Phase 3                           |
 | 作成日     | 2026-04-15                        |
-| ステータス | completed                         |
+| ステータス | pending                           |
 
 ## 目的
 
-`SkillCreatorService` へのキャンセルフラグ追加・`cancelCurrentOperation()` 実装・`skillCreatorHandlers.ts` のハンドラー追加・`unregisterSkillCreatorHandlers()` 更新の設計を確定する。
+既実装差分確認を前提に、Main service / IPC handler / Renderer 調査の責務境界、検証順序、補修条件を設計する。
 
-## 設計内容
+## 背景
 
-### 1. SkillCreatorService へのキャンセルフラグ追加
-
-```typescript
-// apps/desktop/src/main/services/skill/SkillCreatorService.ts
-export class SkillCreatorService {
-  // 既存プロパティ...
-
-  private currentAbortController: AbortController | null = null;
-
-  cancelCurrentOperation(): void {
-    this.currentAbortController?.abort();
-    this.currentAbortController = null;
-  }
-
-  async createSkill(options: CreateSkillOptions, ...): Promise<string> {
-    // createSkill 開始時に AbortController を生成
-    this.currentAbortController = new AbortController();
-    try {
-      // 既存の処理...
-    } finally {
-      // 完了時（正常・キャンセル・エラー問わず）フラグをリセット
-      this.currentAbortController = null;
-    }
-  }
-}
-```
-
-### 2. skillCreatorHandlers.ts へのハンドラー追加
-
-```typescript
-// apps/desktop/src/main/ipc/skillCreatorHandlers.ts
-// registerSkillCreatorHandlers() 内に追加
-ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_CANCEL, async () => {
-  skillCreatorService.cancelCurrentOperation();
-  return { success: true };
-});
-```
-
-### 3. unregisterSkillCreatorHandlers() への追加
-
-```typescript
-// apps/desktop/src/main/ipc/skillCreatorHandlers.ts
-export function unregisterSkillCreatorHandlers(): void {
-  // 既存の removeHandler...
-  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL); // 追加
-}
-```
-
-### 4. IPC 4層整合性チェック表（最終状態）
-
-| 層                | 確認内容                                                | 対応タスク         | ステータス |
-| ----------------- | ------------------------------------------------------- | ------------------ | ---------- |
-| 1. 定数定義       | `IPC_CHANNELS.SKILL_CREATOR_CANCEL` が定義済み          | TASK-SW-CANCEL-001 | 完了       |
-| 2. ホワイトリスト | `ALLOWED_INVOKE_CHANNELS` に登録済み                    | TASK-SW-CANCEL-002 | 完了       |
-| 3. ハンドラ登録   | `ipcMain.handle()` が `SKILL_CREATOR_CANCEL` を処理する | TASK-SW-CANCEL-003 | 本タスク   |
-| 4. Preload API    | `cancelGeneration` として公開済み                       | TASK-SW-CANCEL-002 | 完了       |
-
-本タスク（CANCEL-003）は層3を担当する。
-
-### 5. AbortSignal 利用調査結果の反映
-
-Phase 1 の調査結果に基づき、`startGeneration()` の `AbortSignal` が `skillCreatorAPI.createSkill()` に渡されているかどうかを確認する。渡されていない場合、`currentAbortController` の `signal` を `createSkill` の引数として渡す設計変更を検討する。
-
-### 6. キャンセル中の状態整合性（リスク対応）
-
-| リスク                                   | 対応方針                                                         |
-| ---------------------------------------- | ---------------------------------------------------------------- |
-| ~~キャンセル後の半作成ディレクトリ残存~~ | ~~実装済み（`SkillCreatorService` の abort 時 cleanup で解消）~~ |
-| `currentAbortController` の競合状態      | `createSkill` の `finally` ブロックでリセットし、単一操作を保証  |
+この task は `SkillCreatorService.ts` と `skillCreatorHandlers.ts` という共有書き込み面を持つため、本来は直列実行が前提である。一方、現ブランチでは既実装が存在するため、実装作業より「仕様との差分確認」と「不足テストの設計」を主目的に再構成する必要がある。
 
 ## 実行タスク
 
-- [ ] `currentAbortController` と `cancelCurrentOperation()` の責務境界を確定する
-- [ ] `SKILL_CREATOR_CANCEL` ハンドラーと `removeHandler` の対称性を設計に落とす
-- [ ] IPC 4層整合性チェック表を更新する
-- [ ] `AbortSignal` 利用調査結果を本 Phase の設計へ反映する
+### タスク0: 責務境界の設計
+
+**目的**: CANCEL-003 単体完了と CANCEL-004 依存事項を分離する。
+
+**実行手順**:
+
+1. Main 層の責務を `AbortController` 管理と IPC handler 登録に限定する。
+2. Renderer からの発火完了は CANCEL-004 依存として別扱いにする。
+3. 「層別完了」と「E2E完了」を別の判定として定義する。
+
+**期待される成果物**:
+
+- `outputs/phase-2/design.md`
+
+### タスク1: 差分確認フローの設計
+
+**目的**: 実装の有無ではなく、仕様準拠と回帰確認を中心に据える。
+
+**実行手順**:
+
+1. Phase 4 は targeted test 設計に置き換える。
+2. Phase 5 は新規実装ではなく差分確認・最小補修に置き換える。
+3. mismatch が見つかった場合だけ補修へ遷移する条件を明記する。
+
+**期待される成果物**:
+
+- `outputs/phase-2/design.md`
+
+### タスク2: Phase 11/12 の NON_VISUAL 設計
+
+**目的**: screenshot 前提の drift を防ぐ。
+
+**実行手順**:
+
+1. Phase 11 の primary evidence を `TASK-SW-CANCEL-003-manual-test-report.md` に集約する。
+2. `manual-test-checklist.md` と `discovered-issues.md` を補助成果物として定義する。
+3. Phase 12 では canonical 6成果物と spec update judgment を必須化する。
+
+**期待される成果物**:
+
+- `outputs/phase-2/design.md`
 
 ## 参照資料
 
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-1/abort-signal-usage-report.md`
-- `apps/desktop/src/main/services/skill/SkillCreatorService.ts`
-- `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
-- `docs/30-workflows/skill-create-flow-gaps/index.md`
-
-## 統合テスト連携【必須】
-
-| 判定項目                    | 基準 | 結果    |
-| --------------------------- | ---- | ------- |
-| キャンセルフラグ設計完了    | 完了 | pending |
-| ハンドラー設計完了          | 完了 | pending |
-| unregister 設計完了         | 完了 | pending |
-| IPC 4層整合性チェック表完成 | 完了 | pending |
-
-## 多角的チェック観点（AIが判断）
-
-- [ ] `cancelCurrentOperation()` が `createSkill()` 実行中でない場合（`null` の状態）に安全に動作するか
-- [ ] `finally` ブロックでのリセットがキャンセル後の再呼び出しに対応できるか
-- [ ] `ipcMain.removeHandler` の呼び出しが登録前に実行されても安全か
-
-## サブタスク管理
-
-1. キャンセルフラグ・メソッド設計
-2. ハンドラー設計
-3. unregister 更新設計
-4. IPC 4層整合性チェック表の最終化
-5. AbortSignal 調査結果の反映
-6. 成果物の出力
+| 参照資料                    | パス                                                                                  | 内容                          |
+| --------------------------- | ------------------------------------------------------------------------------------- | ----------------------------- |
+| Phase 11 テンプレート       | `.claude/skills/task-specification-creator/references/phase-template-phase11.md`      | NON_VISUAL 設計               |
+| Phase 12 テンプレート       | `.claude/skills/task-specification-creator/references/phase-template-phase12.md`      | 6成果物と validation          |
+| Phase 13 テンプレート       | `.claude/skills/task-specification-creator/references/phase-template-phase13.md`      | blocked Phase 骨格            |
+| artifact 命名規則           | `.claude/skills/task-specification-creator/references/artifact-naming-conventions.md` | outputs 命名と artifacts.json |
+| system spec 正本            | `.claude/skills/aiworkflow-requirements/SKILL.md`                                     | Step 2 更新判断               |
+| 要件定義書                  | `outputs/phase-1/requirements-definition.md`                                          | Phase 1 成果物                |
+| 受け入れ基準                | `outputs/phase-1/acceptance-criteria.md`                                              | Phase 1 成果物                |
+| AbortSignal利用調査レポート | `outputs/phase-1/abort-signal-usage-report.md`                                        | Phase 1 成果物                |
 
 ## 成果物
 
-| 成果物 | パス                        | 説明                                        |
-| ------ | --------------------------- | ------------------------------------------- |
-| 設計書 | `outputs/phase-2/design.md` | キャンセルフラグ・ハンドラー・IPC 4層設計書 |
+| 成果物       | パス                        | 内容                                             |
+| ------------ | --------------------------- | ------------------------------------------------ |
+| 差分確認設計 | `outputs/phase-2/design.md` | 責務境界、判定フロー、補修条件、Phase 11/12 方針 |
+
+## 統合テスト連携【必須】
+
+| 判定項目                                         | 基準 | 結果    |
+| ------------------------------------------------ | ---- | ------- |
+| Main 層完了と E2E 完了が分離されている           | 完了 | pending |
+| 既実装差分確認モードへの切替条件が定義されている | 完了 | pending |
+| Phase 11/12 の NON_VISUAL 方針が定義されている   | 完了 | pending |
 
 ## 完了条件
 
-- [ ] `currentAbortController` と `cancelCurrentOperation()` の設計が完了している
-- [ ] `SKILL_CREATOR_CANCEL` ハンドラーの設計が完了している
-- [ ] `unregisterSkillCreatorHandlers()` の更新設計が完了している
-- [ ] IPC 4層整合性チェック表が最終化されている
-- [ ] 本 Phase 内の全タスクを100%実行完了
-
-## タスク100%実行確認【必須】
-
-- [ ] 本 Phase 内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-## 次のPhase
-
-Phase 3: 設計レビューゲート
+- [ ] 責務境界を設計している
+- [ ] 差分確認フローと補修条件を設計している
+- [ ] Phase 11/12 の NON_VISUAL 方針を設計している
+- [ ] outputs に設計結果を記録している

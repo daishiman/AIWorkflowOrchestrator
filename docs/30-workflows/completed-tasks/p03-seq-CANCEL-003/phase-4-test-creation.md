@@ -10,176 +10,95 @@
 | 前提Phase  | Phase 3                           |
 | 後続Phase  | Phase 5                           |
 | 作成日     | 2026-04-15                        |
-| ステータス | completed                         |
+| ステータス | pending                           |
 
 ## 目的
 
-`cancelCurrentOperation()` と `SKILL_CREATOR_CANCEL` ハンドラーを検証するテストを TDD RED 段階で作成する。2つのテストファイルを作成する。
+既実装差分確認を固定するための targeted test と command suite を設計し、不足テストが見つかった場合は追加対象を明示する。
 
-## テストケース一覧
+## 背景
 
-### SkillCreatorService テスト
-
-| ID    | テストケース名                                                                 | 期待結果                           |
-| ----- | ------------------------------------------------------------------------------ | ---------------------------------- |
-| TC-01 | cancelCurrentOperation が存在する                                              | メソッドが定義されている           |
-| TC-02 | cancelCurrentOperation が currentAbortController.abort() を呼び出す            | abort() が呼ばれる                 |
-| TC-03 | cancelCurrentOperation が currentAbortController を null にリセットする        | 呼び出し後に内部状態が null になる |
-| TC-04 | currentAbortController が null の場合、cancelCurrentOperation が安全に動作する | 例外が発生しない                   |
-
-### skillCreatorHandlers テスト
-
-| ID    | テストケース名                                                      | 期待結果                                              |
-| ----- | ------------------------------------------------------------------- | ----------------------------------------------------- |
-| TC-05 | SKILL_CREATOR_CANCEL ハンドラーが登録されている                     | `ipcMain.handle` が `SKILL_CREATOR_CANCEL` で呼ばれる |
-| TC-06 | SKILL_CREATOR_CANCEL ハンドラーが cancelCurrentOperation を呼び出す | サービスの cancelCurrentOperation が実行される        |
-| TC-07 | unregisterSkillCreatorHandlers が SKILL_CREATOR_CANCEL を解除する   | `ipcMain.removeHandler` が呼ばれる                    |
-
-## 実行手順
-
-### 1. SkillCreatorService テストファイル
-
-**パス**: `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts`
-
-```typescript
-import { SkillCreatorService } from "../SkillCreatorService";
-
-describe("SkillCreatorService キャンセル機能", () => {
-  let service: SkillCreatorService;
-
-  beforeEach(() => {
-    service = new SkillCreatorService(/* 必要な依存関係をモック */);
-  });
-
-  it("TC-01: cancelCurrentOperation メソッドが存在する", () => {
-    expect(typeof service.cancelCurrentOperation).toBe("function");
-  });
-
-  it("TC-02: cancelCurrentOperation が abort() を呼び出す", () => {
-    const abortSpy = vi.fn();
-    // currentAbortController を設定するために createSkill を開始するか、
-    // テスト用にプロパティを直接設定する
-    (service as any).currentAbortController = { abort: abortSpy };
-    service.cancelCurrentOperation();
-    expect(abortSpy).toHaveBeenCalledOnce();
-  });
-
-  it("TC-03: cancelCurrentOperation 後に currentAbortController が null になる", () => {
-    (service as any).currentAbortController = new AbortController();
-    service.cancelCurrentOperation();
-    expect((service as any).currentAbortController).toBeNull();
-  });
-
-  it("TC-04: currentAbortController が null の場合に安全に動作する", () => {
-    expect(() => service.cancelCurrentOperation()).not.toThrow();
-  });
-});
-```
-
-### 2. skillCreatorHandlers テストファイル
-
-**パス**: `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`
-
-```typescript
-import { ipcMain } from "electron";
-import { IPC_CHANNELS } from "@repo/shared/ipc/channels";
-import {
-  registerSkillCreatorHandlers,
-  unregisterSkillCreatorHandlers,
-} from "../skillCreatorHandlers";
-
-vi.mock("electron", () => ({
-  ipcMain: {
-    handle: vi.fn(),
-    removeHandler: vi.fn(),
-  },
-}));
-
-describe("SKILL_CREATOR_CANCEL ハンドラー", () => {
-  it("TC-05: SKILL_CREATOR_CANCEL ハンドラーが登録される", () => {
-    registerSkillCreatorHandlers(/* 必要な引数 */);
-    expect(ipcMain.handle).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-      expect.any(Function),
-    );
-  });
-
-  it("TC-06: ハンドラーが cancelCurrentOperation を呼び出す", async () => {
-    // cancelCurrentOperation のモック確認
-  });
-
-  it("TC-07: unregisterSkillCreatorHandlers が SKILL_CREATOR_CANCEL を解除する", () => {
-    unregisterSkillCreatorHandlers();
-    expect(ipcMain.removeHandler).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-    );
-  });
-});
-```
-
-### 3. RED 確認
-
-```bash
-pnpm --filter @repo/desktop exec vitest run \
-  src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts \
-  src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts
-# 期待: TC-01〜TC-07 が全て FAIL
-```
+この task は既実装が存在する前提で進むため、純粋な RED 作成フェーズではない。Phase 4 では「既存実装が仕様を満たしているか」を確認するための最小テストセットを定義し、実装 drift があれば Phase 5 で補修する。
 
 ## 実行タスク
 
-- [ ] `SkillCreatorService-cancel.test.ts` に TC-01〜TC-04 を定義する
-- [ ] `skillCreatorHandlers-cancel.test.ts` に TC-05〜TC-07 を定義する
-- [ ] RED 実行結果を確認して記録する
-- [ ] 既存テストパターンとの整合を確認する
+### タスク0: 依存関係 sanity check
+
+**目的**: テスト以前に build/test 基盤のズレを除外する。
+
+**実行手順**:
+
+1. `pnpm install` 済みであることを確認する。
+2. `@repo/shared` のビルド成果物が未生成なら `pnpm --filter @repo/shared build` を実行する。
+3. desktop package で targeted vitest が実行可能か確認する。
+
+**期待される成果物**:
+
+- `outputs/phase-4/test-design.md`
+
+### タスク1: targeted test matrix 設計
+
+**目的**: AC-1〜AC-6 をテストケースへ落とし込む。
+
+**実行手順**:
+
+1. `SkillCreatorService-cancel.test.ts` に abort/reset/null-safe の観点を割り当てる。
+2. `skillCreatorHandlers-cancel.test.ts` に register/unregister/delegation の観点を割り当てる。
+3. private state を確認する場合は `(facade as unknown as FacadePrivate)` または同等の private access 方針を明記する。
+4. `startGeneration()` の `AbortSignal` consumer はコードテストではなく調査記録として分離する。
+
+**期待される成果物**:
+
+- `outputs/phase-4/test-design.md`
+
+### タスク2: command suite 固定
+
+**目的**: RED/GREEN ではなく targeted regression の判定手順を固定する。
+
+**実行手順**:
+
+1. service test、handler test、`typecheck` の3系統コマンドを定義する。
+2. `lint` と関連既存テストを command suite に含める。
+3. PASS 基準と mismatch 時の Phase 5 補修条件を明記する。
+
+**期待される成果物**:
+
+- `outputs/phase-4/test-design.md`
 
 ## 参照資料
 
-- `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts`
-- `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`
-- `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.validation.test.ts`
-- `docs/30-workflows/p03-seq-CANCEL-003/phase-3-design-review.md`
-
-## 統合テスト連携【必須】
-
-| 判定項目              | 基準 | 結果    |
-| --------------------- | ---- | ------- |
-| TC-01〜TC-07 作成完了 | 完了 | pending |
-| RED 確認実施済み      | FAIL | pending |
-
-## 多角的チェック観点（AIが判断）
-
-- [ ] `SkillCreatorService` の依存関係（コンストラクタ引数）が確認されているか
-- [ ] `ipcMain` のモック方法が既存テストのパターンと一致しているか
-- [ ] `cancelCurrentOperation` が `public` メソッドとして設計されているか（テストから直接呼べるか）
-
-## サブタスク管理
-
-1. SkillCreatorService テストファイル作成（TC-01〜TC-04）
-2. skillCreatorHandlers テストファイル作成（TC-05〜TC-07）
-3. RED 確認実施
-4. 完了条件の判定
+| 参照資料                    | パス                                                           | 内容               |
+| --------------------------- | -------------------------------------------------------------- | ------------------ |
+| Phase 1 仕様                | `docs/30-workflows/p03-seq-CANCEL-003/phase-1-requirements.md` | AC と taskType     |
+| Phase 2 仕様                | `docs/30-workflows/p03-seq-CANCEL-003/phase-2-design.md`       | 差分確認設計       |
+| service 実装                | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`  | テスト対象         |
+| handler 実装                | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`            | テスト対象         |
+| existing test pattern       | `apps/desktop/src/main/ipc/__tests__/`                         | モックパターン確認 |
+| 要件定義書                  | `outputs/phase-1/requirements-definition.md`                   | Phase 1 成果物     |
+| 受け入れ基準                | `outputs/phase-1/acceptance-criteria.md`                       | Phase 1 成果物     |
+| AbortSignal利用調査レポート | `outputs/phase-1/abort-signal-usage-report.md`                 | Phase 1 成果物     |
+| 設計レビュー結果            | `outputs/phase-3/gate-decision.md`                             | Phase 3 成果物     |
+| 差分確認設計                | `outputs/phase-2/design.md`                                    | Phase 2 成果物     |
 
 ## 成果物
 
-| 成果物                      | パス                                                                                | 説明                |
-| --------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
-| SkillCreatorService テスト  | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | TC-01〜TC-04（RED） |
-| skillCreatorHandlers テスト | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | TC-05〜TC-07（RED） |
+| 成果物                          | パス                                                                                | 内容                       |
+| ------------------------------- | ----------------------------------------------------------------------------------- | -------------------------- |
+| テスト設計                      | `outputs/phase-4/test-design.md`                                                    | TC一覧、コマンド、判定基準 |
+| SkillCreatorService 回帰テスト  | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | targeted test              |
+| skillCreatorHandlers 回帰テスト | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | targeted test              |
+
+## 統合テスト連携【必須】
+
+| 判定項目                                                       | 基準 | 結果    |
+| -------------------------------------------------------------- | ---- | ------- |
+| AC-1〜AC-6 に対応する test matrix がある                       | 完了 | pending |
+| targeted command suite が定義されている                        | 完了 | pending |
+| private access 方針と dependency sanity check が明記されている | 完了 | pending |
 
 ## 完了条件
 
-- [ ] TC-01〜TC-07 が作成されている
-- [ ] 実装前に全テストが FAIL（RED）することを確認済み
-- [ ] 本 Phase 内の全タスクを100%実行完了
-
-## タスク100%実行確認【必須】
-
-- [ ] 本 Phase 内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-## 次のPhase
-
-Phase 5: 実装
+- [ ] dependency sanity check 手順を定義している
+- [ ] test matrix を定義している
+- [ ] targeted command suite を定義している
+- [ ] mismatch 時の補修条件を明記している

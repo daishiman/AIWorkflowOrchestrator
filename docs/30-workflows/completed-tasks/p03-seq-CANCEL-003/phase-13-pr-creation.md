@@ -12,78 +12,86 @@
 | 作成日     | 2026-04-15                        |
 | ステータス | blocked                           |
 
-## ステータス: blocked
-
-**このPhaseは実行禁止です。**
-
-PR の作成は TASK-SW-CANCEL-001〜004 の全実装が完了し、レビュー承認が得られた後に実施します。
-
 ## 目的
 
-ユーザーの明示指示があるまで PR を作成しないことを明示し、将来の PR 作成時に必要な情報だけを保持する。
+ユーザーの明示承認がある場合にだけ、ローカル確認結果と変更サマリーを整理し、PR 情報を作成できる状態にする。
 
-## blocked 理由
+## 背景
 
-- TASK-SW-CANCEL-004 が未完了
-- `useCancelGeneration.ts` が修正されていないため、キャンセルボタンを押しても IPC が発火しない
-- Renderer・Preload・Main の全層が揃わなければ E2E 動作確認ができない
-
-## PR 作成時の参考情報（将来用）
-
-### PR タイトル案
-
-```
-fix(main): add SKILL_CREATOR_CANCEL handler and cancelCurrentOperation to SkillCreatorService
-```
-
-### PR 説明案
-
-```markdown
-## 概要
-
-スキル生成キャンセル処理の IPC 連動実装の第3ステップとして、
-メインプロセス側のキャンセルハンドラーを実装。
-
-## 変更内容
-
-- `SkillCreatorService` に `currentAbortController` プロパティを追加
-- `SkillCreatorService.cancelCurrentOperation()` を実装
-- `skillCreatorHandlers.ts` に `SKILL_CREATOR_CANCEL` ハンドラーを追加
-- `unregisterSkillCreatorHandlers()` に `SKILL_CREATOR_CANCEL` の removeHandler を追加
-
-## 関連タスク
-
-- TASK-SW-CANCEL-001（完了: チャンネル定数追加）
-- TASK-SW-CANCEL-002（完了: Preload API 追加）
-- TASK-SW-CANCEL-003（本PR）
-- TASK-SW-CANCEL-004（後続: useCancelGeneration 修正）
-```
-
-## 完了条件
-
-- [ ] blocked 条件を確認した
-- [ ] PR を作成していない
-- [ ] 将来参照用の情報のみ保持している
+この workflow では commit / push / PR 作成はユーザー指示があるまで禁止である。したがって Phase 13 は骨格だけを保持し、通常は blocked のまま閉じる。
 
 ## 実行タスク
 
-- [ ] blocked 条件を確認する
-- [ ] PR / commit / push を実行しない
-- [ ] 将来の PR 参考情報だけを維持する
+### タスク0: blocked 条件の確認
+
+**目的**: PR 作成が実行対象外であることを明示する。
+
+**実行手順**:
+
+1. ユーザー承認がないことを確認する。
+2. commit / push / PR を実行していないことを確認する。
+3. Phase 12 までの完了状況だけを記録する。
+
+**期待される成果物**:
+
+- `outputs/phase-13/local-check-result.md`
+- `outputs/phase-13/change-summary.md`
+
+### タスク1: 将来の PR 情報整理
+
+**目的**: 承認後に必要になる情報だけを整える。
+
+**実行手順**:
+
+1. ローカル確認結果を `local-check-result.md` に整理する。
+2. 変更要旨を `change-summary.md` に整理する。
+3. 承認後にのみ `pr-info.md` を作成対象とする。
+
+**期待される成果物**:
+
+- `outputs/phase-13/pr-info.md`
 
 ## 参照資料
 
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-12/implementation-guide.md`
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-12/system-spec-update-summary.md`
-- `docs/30-workflows/skill-create-flow-gaps/p04-seq-CANCEL-004/index.md`
+| 参照資料                     | パス                                                                             | 内容                |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------------- |
+| Phase 13 テンプレート        | `.claude/skills/task-specification-creator/references/phase-template-phase13.md` | blocked Phase 骨格  |
+| Phase 2 差分確認設計         | `outputs/phase-2/design.md`                                                      | PR 対象の責務境界   |
+| Phase 5 差分確認             | `outputs/phase-5/implementation-summary.md`                                      | 変更対象要約        |
+| Phase 6 テスト拡充記録       | `outputs/phase-6/test-expansion-record.md`                                       | 追加テスト観点      |
+| Phase 7 カバレッジ           | `outputs/phase-7/coverage-report.md`                                             | coverage 要約       |
+| Phase 8 リファクタリング記録 | `outputs/phase-8/refactoring-log.md`                                             | 変更点ログ          |
+| Phase 9 品質保証             | `outputs/phase-9/quality-report.md`                                              | local check の前提  |
+| Phase 11 手動テスト結果      | `outputs/phase-11/TASK-SW-CANCEL-003-manual-test-report.md`                      | NON_VISUAL evidence |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md`                         | close-out 根拠      |
+| Phase 10 レビュー結果        | `outputs/phase-10/final-review-result.md`                                        | PR 前提の判定根拠   |
+| 手動テストチェックリスト     | `outputs/phase-11/manual-test-checklist.md`                                      | Phase 11 成果物     |
+| 発見事項一覧                 | `outputs/phase-11/discovered-issues.md`                                          | Phase 11 成果物     |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`                                       | Phase 12 成果物     |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`                                 | Phase 12 成果物     |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`                                    | Phase 12 成果物     |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`                                  | Phase 12 成果物     |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`                                      | Phase 12 成果物     |
 
 ## 成果物
 
-| 成果物 | パス                          | 説明                                                  |
-| ------ | ----------------------------- | ----------------------------------------------------- |
-| PR情報 | `outputs/phase-13/pr-info.md` | 将来の PR 作成時に使う参考メモ（本 Phase では未生成） |
+| 成果物           | パス                                     | 内容                              |
+| ---------------- | ---------------------------------------- | --------------------------------- |
+| ローカル確認結果 | `outputs/phase-13/local-check-result.md` | 承認後に転用する local check 要約 |
+| 変更サマリー     | `outputs/phase-13/change-summary.md`     | 変更点要約                        |
+| PR情報           | `outputs/phase-13/pr-info.md`            | 承認後のみ作成する PR 下書き情報  |
 
-## タスク100%実行確認【必須】
+## 統合テスト連携【必須】
 
-- [ ] blocked ステータスを確認した
-- [ ] PR を作成していないことを確認した
+| 判定項目                                | 基準 | 結果    |
+| --------------------------------------- | ---- | ------- |
+| blocked 条件が明記されている            | 完了 | pending |
+| commit / push / PR 未実行を確認している | 完了 | pending |
+| 将来成果物が整理されている              | 完了 | pending |
+
+## 完了条件
+
+- [ ] ユーザー承認待ちであることを明記している
+- [ ] commit / push / PR を実行していない
+- [ ] `local-check-result.md` と `change-summary.md` の扱いを定義している
+- [ ] `pr-info.md` は承認後のみ作成と明記している

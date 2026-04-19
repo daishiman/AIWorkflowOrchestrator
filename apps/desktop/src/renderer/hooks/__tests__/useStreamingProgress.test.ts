@@ -240,7 +240,7 @@ describe("useStreamingProgress", () => {
   });
 
   // ==========================================================
-  // TASK-SC-08: モード別phaseマッピングテスト（TC-01〜TC-09）
+  // TASK-SC-08: モード別phaseマッピングテスト（TC-00〜TC-09）
   // ==========================================================
   describe("モード別phaseマッピング（TC-01〜TC-09）", () => {
     it("TC-00: collaborative mode - interview が planning にマッピングされる", () => {

@@ -1,4 +1,4 @@
-# Phase 10: 最終レビューゲート
+# Phase 10: 最終レビュー
 
 ## メタ情報
 
@@ -10,96 +10,80 @@
 | 前提Phase  | Phase 9                           |
 | 後続Phase  | Phase 11                          |
 | 作成日     | 2026-04-15                        |
-| ステータス | completed                         |
+| ステータス | pending                           |
 
 ## 目的
 
-Phase 1〜9 の全成果物を統合レビューし、AC-1〜AC-6 を満たしているかを最終確認する。
+Phase 1〜9 の結果を統合し、CANCEL-003 が Main 層として完了可能か、または補修/未タスク化が必要かを判定する。
 
-## レビューチェックリスト
+## 背景
 
-### AC 最終検証
-
-- [ ] AC-1: `SkillCreatorService` に `private currentAbortController: AbortController | null = null` が存在する
-- [ ] AC-2: `cancelCurrentOperation()` が `abort()` を呼び出しフラグをリセットする
-- [ ] AC-3: `SKILL_CREATOR_CANCEL` の `ipcMain.handle()` が登録されている
-- [ ] AC-4: `unregisterSkillCreatorHandlers()` に `SKILL_CREATOR_CANCEL` の `removeHandler` が追加されている
-- [ ] AC-5: `startGeneration()` の `AbortSignal` 利用調査レポートが作成されている
-- [ ] AC-6: `pnpm typecheck` が PASS する
-
-### Phase 1〜9 成果物確認
-
-- [ ] Phase 1: 要件定義書・受け入れ基準・AbortSignal 調査レポートが作成されている
-- [ ] Phase 2: 設計書（IPC 4層整合性チェック表含む）が作成されている
-- [ ] Phase 3: 設計レビュー結果が PASS / MINOR である
-- [ ] Phase 4: TC-01〜TC-07 が作成されている（2ファイル）
-- [ ] Phase 5: 全実装が完了し TC-01〜TC-07 が全 PASS
-- [ ] Phase 6: TC-08〜TC-11 が追加されている
-- [ ] Phase 7: カバレッジが目標基準を満たしている
-- [ ] Phase 8: リファクタリング記録が作成されている
-- [ ] Phase 9: 品質保証レポートが作成されている
-
-### 判定基準
-
-| 判定  | 条件                                         | 対応              |
-| ----- | -------------------------------------------- | ----------------- |
-| PASS  | 全 AC 満足・全成果物確認済み・品質基準クリア | Phase 11 へ       |
-| MAJOR | AC 未達・品質基準未達                        | 該当 Phase へ戻る |
+本 task は E2E 完了ではなく Main 層完了をレビュー対象とする。したがって最終レビューでは、「Main 層完了」と「CANCEL-004 依存の残課題」を矛盾なく同時に記録する必要がある。
 
 ## 実行タスク
 
-- [ ] AC-1〜AC-6 を最終確認する
-- [ ] Phase 1〜9 の成果物有無を確認する
-- [ ] 4条件の観点でレビュー結果を整理する
-- [ ] PASS / MAJOR を判定して成果物へ反映する
+### タスク0: 4条件の最終評価
+
+**目的**: 4条件で最終判定する。
+
+**実行手順**:
+
+1. 矛盾なし: Phase 間で既実装差分確認モードが崩れていないか確認する。
+2. 漏れなし: AC、test、quality、manual-test 入力が揃っているか確認する。
+3. 整合性あり: taskType、artifact 名、status 表現が一致しているか確認する。
+4. 依存関係整合: CANCEL-002/003/004 の境界が正しく残っているか確認する。
+
+**期待される成果物**:
+
+- `outputs/phase-10/final-review-result.md`
+
+### タスク1: gate 判定
+
+**目的**: Phase 11/12 へ進めるかを確定する。
+
+**実行手順**:
+
+1. PASS なら Phase 11 へ進む。
+2. MINOR は Phase 12 で補足可能なものに限定する。
+3. MAJOR は Phase 5 または Phase 8 へ戻す。
+
+**期待される成果物**:
+
+- `outputs/phase-10/final-review-result.md`
 
 ## 参照資料
 
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-1/acceptance-criteria.md`
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-1/abort-signal-usage-report.md`
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-9/quality-report.md`
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-7/coverage-report.md`
-
-## 統合テスト連携【必須】
-
-| 判定項目              | 基準     | 結果    |
-| --------------------- | -------- | ------- |
-| AC-1〜AC-6 全て満足   | 満足     | pending |
-| 全成果物確認完了      | 完了     | pending |
-| PASS / MAJOR 判定完了 | 判定済み | pending |
-
-## 多角的チェック観点（AIが判断）
-
-- [ ] IPC 4層（CANCEL-001〜003 担当分）が全て完成していることが確認できているか
-- [ ] 後続タスク（TASK-SW-CANCEL-004）が依存できる状態になっているか
-
-## サブタスク管理
-
-1. AC-1〜AC-6 最終検証
-2. Phase 1〜9 成果物確認
-3. PASS / MAJOR 判定
-4. 成果物の出力
+| 参照資料                         | パス                                                          | 内容               |
+| -------------------------------- | ------------------------------------------------------------- | ------------------ |
+| Phase 3 gate                     | `outputs/phase-3/gate-decision.md`                            | 初回 gate 判定     |
+| Phase 2 差分確認設計             | `outputs/phase-2/design.md`                                   | 責務境界と完了定義 |
+| Phase 7 coverage                 | `outputs/phase-7/coverage-report.md`                          | coverage 観点      |
+| Phase 9 quality                  | `outputs/phase-9/quality-report.md`                           | 品質と残存リスク   |
+| 要件定義書                       | `outputs/phase-1/requirements-definition.md`                  | Phase 1 成果物     |
+| 受け入れ基準                     | `outputs/phase-1/acceptance-criteria.md`                      | Phase 1 成果物     |
+| AbortSignal利用調査レポート      | `outputs/phase-1/abort-signal-usage-report.md`                | Phase 1 成果物     |
+| 差分確認サマリー                 | `outputs/phase-5/implementation-summary.md`                   | Phase 5 成果物     |
+| SkillCreatorService実装確認対象  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` | Phase 5 成果物     |
+| skillCreatorHandlers実装確認対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`           | Phase 5 成果物     |
+| リファクタリング記録             | `outputs/phase-8/refactoring-log.md`                          | Phase 8 成果物     |
 
 ## 成果物
 
-| 成果物           | パス                                      | 説明                  |
-| ---------------- | ----------------------------------------- | --------------------- |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | 判定結果・AC 検証記録 |
+| 成果物           | パス                                      | 内容                                               |
+| ---------------- | ----------------------------------------- | -------------------------------------------------- |
+| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | 4条件評価、PASS/MINOR/MAJOR、戻り先、Phase 12 入力 |
+
+## 統合テスト連携【必須】
+
+| 判定項目                         | 基準 | 結果    |
+| -------------------------------- | ---- | ------- |
+| 4条件最終評価がある              | 完了 | pending |
+| gate 判定がある                  | 完了 | pending |
+| Phase 11/12 への入力が揃っている | 完了 | pending |
 
 ## 完了条件
 
-- [ ] AC-1〜AC-6 が全て満足されている
-- [ ] Phase 1〜9 の全成果物が確認されている
-- [ ] PASS が判定されている
-- [ ] 本 Phase 内の全タスクを100%実行完了
-
-## タスク100%実行確認【必須】
-
-- [ ] 本 Phase 内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-## 次のPhase
-
-Phase 11: 手動テスト
+- [ ] 4条件の最終評価を記録している
+- [ ] gate 判定を記録している
+- [ ] 戻り先または進行条件を明記している
+- [ ] Phase 11/12 へ渡す入力を整理している

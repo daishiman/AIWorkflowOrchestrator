@@ -1,73 +1,64 @@
-# Phase 12 成果物: システム仕様更新サマリー
+# システム仕様更新サマリー - TASK-SW-CANCEL-003
 
 ## メタ情報
 
-| 項目     | 内容                              |
-| -------- | --------------------------------- |
-| Phase    | 12                                |
-| タスクID | TASK-SW-CANCEL-003                |
-| 機能名   | skill-creator-cancel-main-handler |
-| 作成日   | 2026-04-19                        |
+| 項目     | 内容               |
+| -------- | ------------------ |
+| タスクID | TASK-SW-CANCEL-003 |
+| 作成日   | 2026-04-19         |
 
-## 仕様変更サマリー
+## Step 1: 現状確認
 
-### 1. `SkillCreatorService` への追加
+### Step 1-A: 実装内容の確認
 
-| 追加項目                                | 実装                                                                                                           |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `currentAbortController` プロパティ     | `private currentAbortController: AbortController \| null = null;`（`SkillCreatorService.ts:178`）              |
-| `cancelCurrentOperation()` メソッド     | `public cancelCurrentOperation(): void` — `abort()` 実行と `null` リセット（`SkillCreatorService.ts:292-299`） |
-| `createSkill` 内の AbortController 生成 | `this.currentAbortController = abortController;`（`SkillCreatorService.ts:358-361`）                           |
-| `finally` 同一性チェック付きリセット    | `if (this.currentAbortController === abortController) { this.currentAbortController = null; }`（`:546-551`）   |
-| `signal` の全ヘルパー伝播               | `executeScript(scriptName, args, signal)` 等で `operationSignal` を引き渡し                                    |
+| 確認項目                                                 | 結果              |
+| -------------------------------------------------------- | ----------------- |
+| `SkillCreatorService.cancelCurrentOperation()`           | 実装済み・AC 充足 |
+| `skillCreatorHandlers` の `SKILL_CREATOR_CANCEL` handler | 実装済み・AC 充足 |
+| targeted test（8 tests）                                 | 全 PASS           |
+| typecheck                                                | PASS              |
 
-### 2. `skillCreatorHandlers.ts` への追加
+### Step 1-B: 仕様書との照合
 
-| 追加項目                                      | 実装                                                                                                             |
-| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `SKILL_CREATOR_CANCEL` IPC ハンドラー         | `ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_CANCEL, async (event) => {...})`（`skillCreatorHandlers.ts:687-706`） |
-| ハンドラー内のsender検証                      | `validateIpcSender(event, IPC_CHANNELS.SKILL_CREATOR_CANCEL, {...})`                                             |
-| `cancelCurrentOperation()` の呼び出し         | `skillCreatorService.cancelCurrentOperation();`                                                                  |
-| 登録者コールバック（optional chaining）       | `onCancelCurrentSkillCreation?.();`                                                                              |
-| `unregisterSkillCreatorHandlers()` への行追加 | `ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CANCEL);`（`skillCreatorHandlers.ts:750`）                     |
+| 仕様                                               | 実装状態                        |
+| -------------------------------------------------- | ------------------------------- |
+| `IPC_CHANNELS.SKILL_CREATOR_CANCEL` チャンネル定義 | `channels.ts` に存在            |
+| Preload API `cancelGeneration`                     | CANCEL-002 で追加済み           |
+| Main handler                                       | CANCEL-003（本 task）で確認完了 |
 
-### 3. `ipc/index.ts` と `SkillService` bridge
+### Step 1-C: validator 実行
 
-| 追加項目                | 実装                                                                                                                         |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| cancel bridge 登録      | `apps/desktop/src/main/ipc/index.ts` で `onCancelCurrentSkillCreation` を `skillService.cancelCurrentSkillCreation()` に接続 |
-| active create flow 停止 | `apps/desktop/src/main/services/skill/SkillService.ts` から `skillCreatorService?.cancelCurrentOperation()` を呼び出し       |
-| 役割                    | handler 単体ではなく、現在走っている create flow まで cancel を伝播させる                                                    |
+| validator          | 結果         |
+| ------------------ | ------------ |
+| vitest（targeted） | 8 tests PASS |
+| typecheck          | PASS         |
+| eslint（targeted） | PASS         |
 
-### 4. テストファイル（既存）の仕様カバー
+### Step 1-D: close-out 同期結果
 
-| ファイル                                                               | TC 件数 | カバー                       |
-| ---------------------------------------------------------------------- | ------- | ---------------------------- |
-| `src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | 5       | TC-01 〜 TC-05（サービス層） |
-| `src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | 3       | TC-05 〜 TC-07（IPC層）      |
+| 対象                            | 結果       | メモ                                              |
+| ------------------------------- | ---------- | ------------------------------------------------- |
+| canonical root `artifacts.json` | 更新あり   | status を `phase12_completed` に同期              |
+| mirror `outputs/artifacts.json` | 更新あり   | root と内容一致を確認                             |
+| `index.md`                      | 再生成済み | Phase 1-12 完了、Phase 13 blocked を反映          |
+| Phase 11 evidence 名            | 更新あり   | `TASK-SW-CANCEL-003-manual-test-report.md` に統一 |
+| NON_VISUAL 固定句               | 更新あり   | 実装ガイドと本ファイルに反映                      |
 
-## IPC 4層（CANCEL-001〜003）の完成状況
+### Phase 11 参照
 
-| 層              | 担当タスク                 | 状態     |
-| --------------- | -------------------------- | -------- |
-| 定数定義        | CANCEL-001                 | **完了** |
-| Whitelist       | CANCEL-002                 | **完了** |
-| Main ハンドラー | **CANCEL-003（本タスク）** | **完了** |
-| Preload API     | CANCEL-002                 | **完了** |
+UI/UX変更なしのため Phase 11 スクリーンショット不要
 
-本タスクで Main 側が完成し、IPC 4層全てが揃った状態。
+- 代替証跡: `outputs/phase-10/final-review-result.md`
+- actual evidence file: `outputs/phase-11/TASK-SW-CANCEL-003-manual-test-report.md`
 
-## 後続タスクへの影響
+## Step 2: aiworkflow-requirements 更新判断
 
-| タスク ID          | 影響・依存状況                                              |
-| ------------------ | ----------------------------------------------------------- |
-| TASK-SW-CANCEL-004 | 本タスク完了で依存解消。Renderer 統合・E2E テストを実施可能 |
-| その他             | 影響なし（既存挙動の変更なし・新規追加のみ）                |
+**更新不要。**
 
-## 破壊的変更
+### 不要理由
 
-**なし**。`cancelCurrentOperation` / `SKILL_CREATOR_CANCEL` ハンドラーは新規追加のみで、既存 API・挙動を変更していない。
-
-## 成果物
-
-- `outputs/phase-12/system-spec-update-summary.md`（本ファイル）
+1. CANCEL-003 は「既存実装の確認」task であり、新機能追加ではない
+2. `SKILL_CREATOR_CANCEL` IPC チャンネルは CANCEL-002 完了時点で仕様書に反映済みの可能性が高い
+3. Renderer 側の E2E 接続は CANCEL-004 で行われるため、CANCEL-003 単体での spec 更新は時期尚早
+4. CANCEL-004 完了後に cancel chain 全体の仕様更新を一括で行うことが望ましい
+5. 今回の close-out は workflow 配下の成果物整合修正が中心で、public contract 自体の追加変更はない

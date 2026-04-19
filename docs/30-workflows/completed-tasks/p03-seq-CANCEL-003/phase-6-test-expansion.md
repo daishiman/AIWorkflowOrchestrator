@@ -10,126 +10,87 @@
 | 前提Phase  | Phase 5                           |
 | 後続Phase  | Phase 7                           |
 | 作成日     | 2026-04-15                        |
-| ステータス | completed                         |
+| ステータス | pending                           |
 
 ## 目的
 
-Phase 4 で作成した TC-01〜TC-07 に加え、状態整合性・エッジケースに関するテストを追加してカバレッジを向上させる。
+基本回帰確認の後に、null-safe、register/unregister の対、`AbortSignal` 調査結果に関わる補助テスト観点を追加する。
 
-## 追加テストケース
+## 背景
 
-| ID    | テストケース名                                                        | 期待結果                                      |
-| ----- | --------------------------------------------------------------------- | --------------------------------------------- |
-| TC-08 | createSkill 実行中に cancelCurrentOperation を呼ぶと abort が発火する | AbortController.signal.aborted が true になる |
-| TC-09 | createSkill 完了後に currentAbortController が null にリセットされる  | 完了後は null である                          |
-| TC-10 | cancelCurrentOperation を連続2回呼び出しても例外が発生しない          | 2回目の呼び出しで例外なし                     |
-| TC-11 | SKILL_CREATOR_CANCEL ハンドラーが { success: true } を返す            | 戻り値が正しい形式である                      |
-
-## 実行手順
-
-### 1. SkillCreatorService テストへの追加
-
-```typescript
-// SkillCreatorService-cancel.test.ts に追記
-
-describe("SkillCreatorService キャンセル状態整合性", () => {
-  it("TC-08: createSkill 実行中に cancelCurrentOperation を呼ぶと abort が発火する", async () => {
-    // createSkill を開始して中断する
-    const controller = new AbortController();
-    (service as any).currentAbortController = controller;
-    service.cancelCurrentOperation();
-    expect(controller.signal.aborted).toBe(true);
-  });
-
-  it("TC-09: cancelCurrentOperation 後に currentAbortController が null になる", () => {
-    (service as any).currentAbortController = new AbortController();
-    service.cancelCurrentOperation();
-    expect((service as any).currentAbortController).toBeNull();
-  });
-
-  it("TC-10: cancelCurrentOperation を連続2回呼び出しても例外が発生しない", () => {
-    service.cancelCurrentOperation();
-    expect(() => service.cancelCurrentOperation()).not.toThrow();
-  });
-});
-```
-
-### 2. skillCreatorHandlers テストへの追加
-
-```typescript
-// skillCreatorHandlers-cancel.test.ts に追記
-
-it("TC-11: SKILL_CREATOR_CANCEL ハンドラーが { success: true } を返す", async () => {
-  registerSkillCreatorHandlers(/* 必要な引数 */);
-  const handlerCall = (ipcMain.handle as vi.Mock).mock.calls.find(
-    ([channel]) => channel === IPC_CHANNELS.SKILL_CREATOR_CANCEL,
-  );
-  const handler = handlerCall?.[1];
-  const result = await handler?.();
-  expect(result).toEqual({ success: true });
-});
-```
-
-### 3. 全テスト PASS 確認
-
-```bash
-pnpm --filter @repo/desktop exec vitest run \
-  src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts \
-  src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts
-# 期待: TC-01〜TC-11 全て PASS
-```
+cancel 系は happy path よりも fail-safe と state reset が重要である。Phase 6 では、新規機能追加ではなく、「将来 drift しやすい点」を押さえるための補助テストを追加する。
 
 ## 実行タスク
 
-- [ ] TC-08〜TC-10 を `SkillCreatorService` テストへ追加する
-- [ ] TC-11 を IPC ハンドラーテストへ追加する
-- [ ] TC-01〜TC-11 の通し実行結果を確認する
-- [ ] 状態整合性の不足がないか確認する
+### タスク0: edge case 追加
+
+**目的**: null-safe と reset を固定する。
+
+**実行手順**:
+
+1. `currentAbortController` が `null` の場合の安全性を確認する。
+2. abort 後に controller が再利用されないことを確認する。
+3. `finally` reset の観点を補助テストへ追加する。
+
+**期待される成果物**:
+
+- `outputs/phase-6/test-expansion-record.md`
+
+### タスク1: handler 対称性確認
+
+**目的**: register/unregister の対を固定する。
+
+**実行手順**:
+
+1. `ipcMain.handle` と `ipcMain.removeHandler` の channel 対称性を確認する。
+2. `SKILL_CREATOR_CANCEL` が既存 handler 群の naming と整合しているか確認する。
+
+**期待される成果物**:
+
+- `outputs/phase-6/test-expansion-record.md`
+
+### タスク2: 調査結果の反映
+
+**目的**: `AbortSignal` consumer 調査を後続 task に引き継げる形で残す。
+
+**実行手順**:
+
+1. Renderer 側で signal がどう扱われるかを要約する。
+2. CANCEL-004 側へ引き継ぐ点を整理する。
+
+**期待される成果物**:
+
+- `outputs/phase-6/test-expansion-record.md`
 
 ## 参照資料
 
-- `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts`
-- `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`
-- `docs/30-workflows/p03-seq-CANCEL-003/outputs/phase-5/implementation-log.md`
-
-## 統合テスト連携【必須】
-
-| 判定項目              | 基準 | 結果    |
-| --------------------- | ---- | ------- |
-| TC-08〜TC-11 作成完了 | 完了 | pending |
-| TC-01〜TC-11 全 PASS  | PASS | pending |
-
-## 多角的チェック観点（AIが判断）
-
-- [ ] TC-08 で `createSkill` のモックが既存パターンと矛盾なく設定されているか
-- [ ] TC-10 が `null` の `abort()` 呼び出しを正しく検証しているか
-
-## サブタスク管理
-
-1. TC-08〜TC-10 作成（SkillCreatorService テスト）
-2. TC-11 作成（skillCreatorHandlers テスト）
-3. 全テスト PASS 確認
+| 参照資料                         | パス                                                                                | 内容           |
+| -------------------------------- | ----------------------------------------------------------------------------------- | -------------- |
+| Phase 1 調査レポート             | `outputs/phase-1/abort-signal-usage-report.md`                                      | consumer 調査  |
+| Phase 4 テスト設計               | `outputs/phase-4/test-design.md`                                                    | test matrix    |
+| Phase 5 差分確認                 | `outputs/phase-5/implementation-summary.md`                                         | 補修要否       |
+| SkillCreatorService回帰テスト    | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | Phase 4 成果物 |
+| skillCreatorHandlers回帰テスト   | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | Phase 4 成果物 |
+| SkillCreatorService実装確認対象  | `apps/desktop/src/main/services/skill/SkillCreatorService.ts`                       | Phase 5 成果物 |
+| skillCreatorHandlers実装確認対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`                                 | Phase 5 成果物 |
 
 ## 成果物
 
-| 成果物     | パス                                                                                | 説明                  |
-| ---------- | ----------------------------------------------------------------------------------- | --------------------- |
-| テスト拡充 | `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` | TC-08〜TC-10 追加済み |
-| テスト拡充 | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers-cancel.test.ts`           | TC-11 追加済み        |
+| 成果物         | パス                                       | 内容                            |
+| -------------- | ------------------------------------------ | ------------------------------- |
+| テスト拡充記録 | `outputs/phase-6/test-expansion-record.md` | edge case、対称性、引き継ぎ事項 |
+
+## 統合テスト連携【必須】
+
+| 判定項目                                  | 基準 | 結果    |
+| ----------------------------------------- | ---- | ------- |
+| edge case が整理されている                | 完了 | pending |
+| register/unregister 対称性を確認している  | 完了 | pending |
+| CANCEL-004 への引き継ぎ事項を記録している | 完了 | pending |
 
 ## 完了条件
 
-- [ ] TC-08〜TC-11 が追加されている
-- [ ] TC-01〜TC-11 が全て PASS
-- [ ] 本 Phase 内の全タスクを100%実行完了
-
-## タスク100%実行確認【必須】
-
-- [ ] 本 Phase 内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-## 次のPhase
-
-Phase 7: カバレッジ確認
+- [ ] edge case を整理している
+- [ ] handler 対称性を確認している
+- [ ] 後続 task への引き継ぎ事項を記録している
+- [ ] outputs に記録を残している

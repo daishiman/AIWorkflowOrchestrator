@@ -1,82 +1,57 @@
-# Phase 1 成果物: AbortSignal 利用調査レポート
+# AbortSignal 利用調査レポート - TASK-SW-CANCEL-003
 
-## 調査対象
+## メタ情報
 
-`apps/desktop/src/renderer/hooks/useCancelGeneration.ts` の `startGeneration()` が返す `AbortSignal` の利用箇所。
+| 項目     | 内容               |
+| -------- | ------------------ |
+| タスクID | TASK-SW-CANCEL-003 |
+| 作成日   | 2026-04-19         |
 
-## 調査方法
+## Main 層での AbortSignal 利用
 
-```bash
-grep -rn "startGeneration\|AbortSignal\|abortSignal" apps/desktop/src/renderer/ | grep -v ".test."
+### SkillCreatorService.ts
+
+| 箇所                                     | 用途                                                                               |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| L328-330                                 | `createSkill()` で AbortController を生成し signal を `operationSignal` として保持 |
+| L345, L392, L411, L429, L452, L480, L493 | `throwIfAborted(operationSignal)` で各ステップ前にキャンセル確認                   |
+| L260-268                                 | `executeScript()` に signal を渡し、ScriptExecutor 経由で子プロセスに伝播          |
+| L517-519                                 | `finally` で `currentAbortController === abortController` を確認してリセット       |
+
+### ScriptExecutor での伝播
+
+`executeScript()` は signal を `ScriptExecutor.execute()` に渡す。`ScriptExecutor` は Electron の子プロセス実行を担い、signal abort 時に子プロセスを終了させる設計。
+
+## Renderer 層での AbortSignal 利用
+
+### useCancelGeneration.ts
+
+| 箇所                 | 用途                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `abortControllerRef` | Renderer 側でも独立した AbortController を保持                                            |
+| `startGeneration()`  | 新しい AbortController を生成し signal を返す                                             |
+| `cancelGeneration()` | `abortControllerRef.current?.abort()` で Renderer 側を abort、その後 IPC で Main 側に通知 |
+
+### Renderer → Main IPC の流れ
+
+```
+cancelGeneration()
+  └─ abortControllerRef.current?.abort()  // Renderer local abort
+  └─ skillCreatorAPI?.cancelGeneration?.()  // IPC 呼び出し (CANCEL-004 で完全接続)
+       └─ SKILL_CREATOR_CANCEL handler
+            └─ skillCreatorService.cancelCurrentOperation()
+                 └─ currentAbortController?.abort()  // Main abort
 ```
 
-## 調査結果
+## CANCEL-003 / CANCEL-004 境界
 
-### 1. `useCancelGeneration` の実装（現状）
+| 責務                                        | task                  |
+| ------------------------------------------- | --------------------- |
+| Main 層 AbortController 管理と IPC handler  | CANCEL-003（本 task） |
+| Renderer からの IPC 呼び出し接続と E2E 完了 | CANCEL-004            |
 
-```typescript
-// apps/desktop/src/renderer/hooks/useCancelGeneration.ts
-const startGeneration = useCallback((): AbortSignal => {
-  abortControllerRef.current = new AbortController();
-  return abortControllerRef.current.signal;
-}, []);
+## まとめ
 
-const cancelGeneration = useCallback(async (): Promise<void> => {
-  abortControllerRef.current?.abort();
-  abortControllerRef.current = null;
-  setStage("cancelled");
-  const skillCreatorAPI = (window as ...).skillCreatorAPI;
-  try {
-    await skillCreatorAPI?.cancelGeneration?.();
-  } catch {}
-}, [setStage]);
-```
-
-### 2. `startGeneration()` / `AbortSignal` の消費箇所
-
-| ファイル                                                           | 呼び出し内容                                                                                                      | 戻り値 `AbortSignal` の利用 |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` | `useCancelGeneration()` から `cancelGeneration` のみ destructure（324行目）。`startGeneration()` は呼ばれていない | **未利用**（dead return）   |
-
-具体的には以下のように `cancelGeneration` のみを取り出している:
-
-```typescript
-const { cancelGeneration } = useCancelGeneration(); // 324行目
-```
-
-そして `handleCancelGeneration`（553-556行目）で `cancelGeneration()` のみ呼ばれている。
-
-### 3. `AbortSignal` が `skillCreatorAPI.createSkill()` に渡されているか
-
-- Renderer 側の Preload API は `skillCreatorAPI.createSkill(options)` 形式で、`AbortSignal` を引数として受け取っていない（IPC invoke が `AbortSignal` を serialize できないため、そもそも渡せない）。
-- 代わりに、キャンセル指示は別チャンネル（`SKILL_CREATOR_CANCEL`）として送信され、メインプロセス側で `SkillCreatorService.currentAbortController` を介して `abort()` される。
-
-## 評価
-
-### 影響評価
-
-| 項目                                                                             | 評価         | 備考                                                                                        |
-| -------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------- |
-| TASK-SW-CANCEL-003 実装への影響                                                  | **なし**     | Renderer の `AbortSignal` はメインプロセスに渡らない設計。TASK-003 は独立に動作する         |
-| `startGeneration()` の戻り値 `AbortSignal` が未利用                              | **中**       | dead code に相当する。将来の Renderer 側 fetch/stream 中断用に残されていると推測される      |
-| IPC チャンネル経由のキャンセル経路（Renderer → Preload → Main）                  | **確立済み** | `cancelGeneration()` → `skillCreatorAPI.cancelGeneration()` → `SKILL_CREATOR_CANCEL` invoke |
-| メインプロセス側の内部 `AbortController`（TASK-003 の `currentAbortController`） | **独立**     | Renderer の `AbortSignal` とは別のインスタンス。メイン内で `ScriptExecutor` まで伝播する    |
-
-### アーキテクチャ上の論点
-
-- Electron IPC は `AbortSignal` を serialize できないため、Renderer から直接メインプロセスへ `signal` を渡す経路は存在しない。
-- したがって、TASK-SW-CANCEL-003 のメイン側 `AbortController` と Renderer 側 `startGeneration()` の `AbortSignal` は **論理的に対応する別々のインスタンス** であり、IPC チャンネル経由で `abort()` を同期する構造となる。
-- 本設計は **Renderer-Main 二重 AbortController** パターンで、IPC 境界をまたぐキャンセル処理の標準的な実装である。
-
-### 推奨事項
-
-| 推奨                                                                                                                                          | 対応タスク         | 優先度 |
-| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------ |
-| `startGeneration()` の戻り値 `AbortSignal` の利用目的が不明な場合、TASK-SW-CANCEL-004 で `SkillCreateWizard` 側に接続するか、API から除去する | TASK-SW-CANCEL-004 | 中     |
-| 現状の IPC ベースキャンセル経路は十分動作するため、TASK-003 のスコープ内では追加対応不要                                                      | -                  | -      |
-
-## 結論
-
-- TASK-SW-CANCEL-003 の実装スコープには **影響しない**
-- `startGeneration()` の戻り値 `AbortSignal` は現時点で `SkillCreateWizard` では利用されていない（dead return）
-- TASK-SW-CANCEL-004（`useCancelGeneration.ts` 修正）で Renderer-Main 間のキャンセル動線を仕上げる際に、この dead return を活用するか削除するかを再検討する
+- Main 層の signal 利用は完全に実装済み
+- Renderer の `useCancelGeneration.ts` は IPC 経由で Main に委譲する設計になっているが、`skillCreatorAPI?.cancelGeneration?.()` の optional chaining により CANCEL-004 未完了でも Renderer 側が abort される
+- E2E 完了（IPC 呼び出しが Main 層まで届くこと）は CANCEL-004 で確認する

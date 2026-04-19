@@ -1,84 +1,56 @@
-# Phase 3 成果物: 設計レビューゲート判定
+# 設計レビュー結果 - TASK-SW-CANCEL-003
 
 ## メタ情報
 
-| 項目      | 内容               |
-| --------- | ------------------ |
-| Phase     | 3                  |
-| タスクID  | TASK-SW-CANCEL-003 |
-| 作成日    | 2026-04-19         |
-| 前提Phase | Phase 2            |
+| 項目     | 内容               |
+| -------- | ------------------ |
+| タスクID | TASK-SW-CANCEL-003 |
+| 作成日   | 2026-04-19         |
 
-## 判定結果
+## 4条件レビュー
 
-**判定: PASS**
+### 1. 矛盾なし
 
-Phase 2 設計は全チェックリスト項目を満たし、AC-1〜AC-5 との整合も確認済み。Phase 4 以降に進行可。
+| 確認項目                                                | 結果                                                    |
+| ------------------------------------------------------- | ------------------------------------------------------- |
+| 既実装差分確認モードと各 Phase の記述が衝突していないか | ✅ Phase 4/5 を「差分確認」モードに再定義済みで衝突なし |
+| Phase 11/12 が NON_VISUAL 前提になっているか            | ✅ Phase 2 設計で明記済み                               |
 
-## チェックリスト結果
+### 2. 漏れなし
 
-### SkillCreatorService 設計
+| 確認項目                                     | 結果                                             |
+| -------------------------------------------- | ------------------------------------------------ |
+| AC-1〜AC-6 が定義されているか                | ✅ outputs/phase-1/acceptance-criteria.md に記録 |
+| targeted test が設計されているか             | ✅ 既存テストファイルが AC をカバーしている      |
+| NON_VISUAL 証跡方針が定義されているか        | ✅ outputs/phase-2/design.md に記録              |
+| Phase 12 canonical 6成果物が定義されているか | ✅ phase-12-documentation.md に列挙              |
 
-| 項目                                                                                   | 結果 | 根拠                                                                                                |
-| -------------------------------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------------- |
-| `private currentAbortController` の初期値が `null` で型が `AbortController \| null` か | PASS | `SkillCreatorService.ts:178` `private currentAbortController: AbortController \| null = null;`      |
-| `cancelCurrentOperation()` が `null` の場合に安全（`?.abort()` でガードされているか）  | PASS | `SkillCreatorService.ts:297` `this.currentAbortController?.abort();`                                |
-| `createSkill()` の `finally` ブロックでリセットされる設計か                            | PASS | `SkillCreatorService.ts:547-551` `finally` 内で同一性チェック付きリセット                           |
-| `currentAbortController` が複数同時生成されない（単一操作の保証）か                    | PASS | `finally` 内の `=== abortController` 同一性チェックにより、後続呼び出しの controller を誤消去しない |
+### 3. 整合性あり
 
-### skillCreatorHandlers 設計
+| 確認項目                                   | 結果                                       |
+| ------------------------------------------ | ------------------------------------------ |
+| taskType が統一されているか                | ✅ artifacts.json / 全 Phase で NON_VISUAL |
+| 成果物名が artifacts.json と一致しているか | ✅ 一致確認済み                            |
+| status 表現が統一されているか              | ✅ pending で統一                          |
 
-| 項目                                                                                       | 結果 | 根拠                                                                  |
-| ------------------------------------------------------------------------------------------ | ---- | --------------------------------------------------------------------- |
-| `ipcMain.handle` の戻り値が `{ success: true }` 形式か                                     | PASS | `skillCreatorHandlers.ts:704` `return { success: true };`             |
-| `skillCreatorService.cancelCurrentOperation()` への参照が正しいか                          | PASS | `skillCreatorHandlers.ts:702` クロージャキャプチャで service 参照済み |
-| `unregisterSkillCreatorHandlers()` に `SKILL_CREATOR_CANCEL` の `removeHandler` が含まれる | PASS | `skillCreatorHandlers.ts:750`                                         |
+### 4. 依存関係整合
 
-### IPC 4 層整合性
+| 確認項目                          | 結果                                                             |
+| --------------------------------- | ---------------------------------------------------------------- |
+| CANCEL-002 → 003 の境界が正しいか | ✅ CANCEL-002 で Preload API 追加済み、CANCEL-003 は Main 層完了 |
+| CANCEL-003 → 004 の境界が正しいか | ✅ E2E 完了は CANCEL-004 として明記                              |
 
-| 項目                                                                                    | 結果 | 根拠                                                               |
-| --------------------------------------------------------------------------------------- | ---- | ------------------------------------------------------------------ |
-| 層 1〜4 が全て完了または本タスクで対応                                                  | PASS | 層 1 (CANCEL-001 完了)・層 2・4 (CANCEL-002 完了)・層 3 (本タスク) |
-| consumer 契約 `cancelGeneration → SKILL_CREATOR_CANCEL → cancelCurrentOperation` が一貫 | PASS | Preload → IPC channel → Handler → Service メソッドの連鎖を確認     |
+## gate 判定
 
-### 状態整合性
+| 判定     | 根拠                              |
+| -------- | --------------------------------- |
+| **PASS** | 4条件すべて充足。MAJOR 指摘なし。 |
 
-| 項目                                                         | 結果 | 根拠                                                               |
-| ------------------------------------------------------------ | ---- | ------------------------------------------------------------------ |
-| キャンセル後の半作成ディレクトリ残存リスクは実装で解消済みか | PASS | `cleanupCancelledSkillDir()` が `catch` ブロックで呼ばれる         |
-| `currentAbortController` 競合状態への対処方針が設計書に記録  | PASS | `design.md` 「5. 状態整合性リスク」で `finally` 同一性チェック記載 |
+## 戻り先
 
-### Simpler Alternative 検討
+- MAJOR 指摘なし → 戻りなし
+- Phase 4 へ進む
 
-- `AbortController` をサービスレベルで持つ設計は、シンプルかつ既存パターン（例: `@repo/desktop/main/services/*` 他）に沿う
-- 代案「フラグをハンドラー側で持つ」は、ハンドラーが状態を抱えてしまい責務が不明確になるため棄却
-- 代案「Renderer AbortSignal を IPC で渡す」は `AbortSignal` が serializable でないため不可
+## Phase 4 へ進める条件
 
-## MINOR 追跡テーブル
-
-| MINOR ID | 指摘内容 | 解決予定 Phase | 解決確認 Phase | 備考 |
-| -------- | -------- | -------------- | -------------- | ---- |
-| （なし） | -        | -              | -              | -    |
-
-## Phase 4 開始条件
-
-- [x] PASS 判定完了
-- [x] チェックリスト全項目クリア
-- [x] MINOR 追跡テーブルに未解決項目なし
-
-Phase 4 へ進行可能。
-
-## 多角的チェック観点
-
-| 観点                                                                                            | 判定   | 備考                                                    |
-| ----------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------- |
-| Phase 4 開始条件（PASS または MINOR）が満たされているか                                         | 満たす | PASS                                                    |
-| `unregisterSkillCreatorHandlers()` への追加が他の既存チャンネルと同じパターンで記述されているか | 満たす | 13 行の `ipcMain.removeHandler(...)` が統一フォーマット |
-
-## 成果物ファイル
-
-- `outputs/phase-3/gate-decision.md`（本ファイル）
-
-## 次 Phase
-
-Phase 4: テスト作成
+✅ 4条件 PASS。既実装差分確認モードで Phase 4 のテスト設計に進む。

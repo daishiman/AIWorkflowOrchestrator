@@ -47,6 +47,26 @@
 
 ---
 
+## 2026-04-19: UNASSIGNED-EMB-005 Late Chunking impl-spec-to-skill-sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EMB-005 |
+| 操作 | update-spec / create-spec |
+| 対象ファイル | `references/architecture-embedding-pipeline.md`, `references/llm-embedding.md`, `references/api-internal-embedding.md`, `references/lessons-learned-late-chunking-esbuild-worktree.md`（新規）, `indexes/resource-map.md` |
+| 結果 | success |
+| 備考 | Late Chunking（検索品質10-30%向上）実装内容をsystem specに反映。苦戦箇所（esbuildバイナリバージョン不一致・IEncoderモック雛型設計）をlessons-learnedに記録。 |
+
+### 更新詳細
+
+- `references/architecture-embedding-pipeline.md`: Late Chunkingパイプライン拡張セクションを追加（コンポーネント構成・型定義・インターフェース・エラークラス・EmbeddingService統合・デフォルト設定）
+- `references/llm-embedding.md`: Late Chunking型定義セクションを追加（LateChunkingConfig / ChunkBoundary / TokenRange / EncoderOutput / ChunkEmbeddingResult / IEncoder / ILateChunkingService / エラークラス）
+- `references/api-internal-embedding.md`: `EmbeddingService.generateChunkEmbeddings()` APIドキュメントを追加（シグネチャ・入力・出力・エラーケース・設定例）
+- `references/lessons-learned-late-chunking-esbuild-worktree.md`: 新規作成（L-LC-01: esbuildバ���ナリバージョン不一致 / L-LC-02: IEncoderモック雛型をPhase 2設計書に含める）
+- `indexes/resource-map.md`: Late Chunking / Embedding タスク種別エントリを追加（HybridRAGFactory wiring 行の後）
+
+---
+
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
 | 項目 | 内容 |
@@ -63,6 +83,13 @@
 - `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、deterministic regenerate 後の索引を current facts へ同期
 - Phase 12 close-out で canonical / mirror を「部分 sync 済み / full sync 未完」に分離して扱う文書へ補正
 
+## 2026-04-19: TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 close-out sync
+
+- `runOrchestrateWorkflow()` / `runCreateWorkflow()` の private abort 入口保証を current facts に同期
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04g.md` に完了記録を追加
+- `lessons-learned-skill-cancel-abortsignal.md` に private minimal test の標準ルールを追加
+- workflow 側の Phase 11 / 12 / 13 outputs と `artifacts.json` parity を close-out した
+
 ## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
 
 ### 変更内容
@@ -76,6 +103,28 @@
 | 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
 | 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
 | 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
+## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 impl-spec-to-skill-sync Phase-12 close-out
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/index.md` ステータス `進行中（実装あり・Phase 11/12 再監査中）` → `完了（Phase 12 close-out 済み・Phase 13 pending）`、Phase 1〜12 ステータス全 `完了` 更新
+- `references/task-workflow.md` の TASK-SC-LLM-PURPOSE-WIRE-001 エントリ重複解消と Phase 12 close-out 記録追記
+- `SKILL.md` 変更履歴テーブルに 2026-04-18 impl-spec-to-skill-sync 行を追加
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001（purpose 抽出 LLM 統合）は Phase 11/12 の成果物6件が全て揃っていたが、phase-12-documentation.md と index.md のステータスフィールドおよびPhase一覧テーブルが「未実施」のままだった。また task-workflow.md に同タスクの2026-04-18 エントリが重複していた。本セッションで impl-spec-to-skill-sync プロンプト（Phase 1 並列監査 → Phase 2 直列編集 → Phase 3 検証）を用いてこれらを修正した。
+
+---
+
+## 2026-04-18: impl-spec-to-skill-sync Phase2 - CANCEL-002スキル反映
+
+- api-ipc-system-skill-creator.md: Preload 3点セット手順追記（インターフェース定義・safeInvoke実装・ALLOWED_INVOKE_CHANNELSホワイトリスト登録を必ず同時修正すること）
+- lessons-learned-current.md: CANCEL-002知見追記（L-CANCEL-002-001: ALLOWED_INVOKE_CHANNELS 登録漏れによる contextBridge silent fail パターン）
 
 ---
 
@@ -2913,3 +2962,60 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 ### 背景
 
 TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台帳・legacy path・close-out 記述にドリフトが残っていた。same-wave sync を行い、後続 CANCEL-004 が正本導線から依存できる状態へ修正した。
+
+## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
+
+- `executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認
+- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一
+- `implementation-guide.md` を validator 要件に合わせて再構成
+- `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
+- completed index / recent bundle / stale unassigned-task を same-wave で同期
+
+| 項目     | 内容                                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
+| 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
+| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
+| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
+
+## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
+
+- `verifyAndImproveLoop()` 内 improve adapter error 時の `notificationService?.notify()` 追加を current facts として記録
+- T-VL-01〜07 / T-REG-01（17 tests / 224 regression）全 PASS を検証証跡として固定
+- completed ledger / recent bundle / topic-map を same-wave で同期
+- NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
+
+| 項目     | 内容                                                                                      |
+| -------- | ----------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
+| 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
+| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
+| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
+
+## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
+
+- `lessons-learned-current-2026-04.md`: L-CRON-SEM-001/002 セクション内の重複 CLM 行（18行）を除去
+- `ui-ux-feature-components-skill-analysis.md`: shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記
+- Phase-12 全タスク（12-1〜12-6）PASS 確認済み。未タスク 0件。system spec 追加更新不要（public contract 追加なし）
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / impl-spec-to-skill-sync                                                         |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
+| 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
+| 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+
+## 2026-04-19 — TASK-SW-CANCEL-003 知見を lessons-learned に追記
+
+- `TASK-SW-CANCEL-003`（skill-creator-cancel-main-handler）Phase 12 完了に伴い、`lessons-learned-current-2026-04.md` に3件の教訓を追記
+- L-CANCEL-003-001: `implementation_mode` 明確化による既実装との混線防止
+- L-CANCEL-003-002: chain task の scope に「chain 位置と完了定義」を明記する
+- L-CANCEL-003-003: NON_VISUAL task の証跡を `{TASK-ID}-manual-test-report.md` に統一
+- `task-workflow-completed.md` に TASK-SW-CANCEL-003 Phase 12 完了 close-out を追記
+
+| 項目     | 内容                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-only / lessons-learned-sync                                              |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md`   |
+| 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                              |
+| 検証     | docs-only / 記録のみ                                                                       |
