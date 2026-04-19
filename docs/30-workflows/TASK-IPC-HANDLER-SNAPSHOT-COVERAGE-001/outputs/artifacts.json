@@ -1,0 +1,56 @@
+{
+  "task_id": "TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001",
+  "task_name": "IPC handler registration snapshot coverage 拡張",
+  "status": "pending",
+  "created_date": "2026-04-19",
+  "phases": {
+    "phase_1": {
+      "status": "pending",
+      "outputs": ["handler-inventory.md", "existing-test-map.md"]
+    },
+    "phase_2": {
+      "status": "pending",
+      "outputs": [
+        "priority-matrix.md",
+        "test-pattern-design.md",
+        "wave-plan.md"
+      ]
+    },
+    "phase_3": {
+      "status": "pending",
+      "outputs": ["review-result.md", "gate-decision.md"]
+    },
+    "phase_4": { "status": "pending", "outputs": ["red-test-result.md"] },
+    "phase_5": {
+      "status": "pending",
+      "outputs": ["green-test-result.md", "wave1-channel-counts.md"]
+    },
+    "phase_6": { "status": "pending", "outputs": ["wave2-test-plan.md"] },
+    "phase_7": { "status": "pending", "outputs": ["coverage-report.md"] },
+    "phase_8": { "status": "pending", "outputs": ["refactoring-log.md"] },
+    "phase_9": { "status": "pending", "outputs": ["quality-check-result.md"] },
+    "phase_10": { "status": "pending", "outputs": ["final-review-result.md"] },
+    "phase_11": { "status": "pending", "outputs": ["manual-test-result.md"] },
+    "phase_12": {
+      "status": "pending",
+      "outputs": [
+        "implementation-guide.md",
+        "system-spec-update-summary.md",
+        "documentation-changelog.md",
+        "unassigned-task-detection.md",
+        "skill-feedback-report.md",
+        "phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase_13": {
+      "status": "blocked",
+      "reason": "user approval required",
+      "outputs": [
+        "local-check-result.md",
+        "change-summary.md",
+        "pr-info.md",
+        "pr-creation-result.md"
+      ]
+    }
+  }
+}

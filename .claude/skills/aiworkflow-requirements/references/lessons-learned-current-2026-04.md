@@ -1829,3 +1829,34 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | NON_VISUAL task の証跡は「実行コマンド + 結果（PASS/FAIL）+ 判定理由」の三点セットを manual-test-report に記録し、Phase 12 審査の一貫性を保つ       |
 | 適用条件   | IPC handler / preload API / ユーティリティ関数など、UI レンダリングを伴わない NON_VISUAL task 全般                                                  |
 | 関連タスク | TASK-SW-CANCEL-003                                                                                                                                  |
+
+---
+
+## TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 IPC スナップショットカバレッジ 教訓（2026-04-19）
+
+### L-IPC-SNAP-001: IPC ハンドラ母集団は `registerAllIpcHandlers()` から自動抽出すべき
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | 棚卸しを手更新にしたため `registerChatExportHandlers()` のような母集団漏れが発生した |
+| 解決策     | `registerAllIpcHandlers()` の呼び出し一覧を grep/AST で自動抽出し、`existing-test-map.md` と照合する仕組みを設ける |
+| 標準ルール | IPC 登録テストの母集団は手書きではなく `registerAllIpcHandlers()` から自動収集する |
+| 関連タスク | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 |
+
+### L-IPC-SNAP-002: esbuild host/binary mismatch 発生時は `ESBUILD_BINARY_PATH` を明示指定する
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | esbuild host/binary mismatch により `pnpm --dir apps/desktop exec vitest run` が失敗し Phase 4〜11 の検証が全停止した |
+| 解決策     | `ESBUILD_BINARY_PATH=/path/to/.pnpm/@esbuild+darwin-arm64/...esbuild pnpm --dir apps/desktop exec vitest run ...` で binary を明示する |
+| 標準ルール | esbuild mismatch が出た場合はプロジェクト内 `.pnpm` ディレクトリから binary を探して `ESBUILD_BINARY_PATH` に指定する |
+| 関連タスク | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 |
+
+### L-IPC-SNAP-003: REG-SNAP / REG-DEDUP / REG-COUNT の3点セットが IPC 登録契約の最小検証セット
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| 課題       | 個別ハンドラ呼び出しテストだけでは「チャンネル追加忘れ」「重複登録」「数の変化」を見落とす |
+| 解決策     | `REG-SNAP`（snapshot 一致）・`REG-DEDUP`（重複なし）・`REG-COUNT`（総数一致）の3点を必ずセットで実装する |
+| 標準ルール | IPC 登録テストは REG-SNAP / REG-DEDUP / REG-COUNT の3点セットを registration unit ごとに用意する |
+| 関連タスク | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 |

@@ -101,6 +101,20 @@ describe("SkillCreatorService", () => {
     });
   };
 
+  const allowExistingSkillFiles = (skillDirOrName: string) => {
+    const skillDir = path.isAbsolute(skillDirOrName)
+      ? skillDirOrName
+      : path.join(os.homedir(), ".aiworkflow", "skills", skillDirOrName);
+    const skillMdPath = path.join(skillDir, "SKILL.md");
+    vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+      const resolvedPath = String(target);
+      if (resolvedPath === skillDir || resolvedPath === skillMdPath) {
+        return;
+      }
+      throw new Error("ENOENT");
+    });
+  };
+
   describe("detectMode()", () => {
     it("SC-001: should detect collaborative mode for ambiguous requests", async () => {
       // Arrange
@@ -328,7 +342,7 @@ describe("SkillCreatorService", () => {
         name: "AbortError",
       });
       expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
-        "init_skill.js",
+        "generate_features.js",
         expect.any(Array),
         expect.objectContaining({
           signal: expect.any(AbortSignal),
@@ -674,6 +688,7 @@ describe("SkillCreatorService", () => {
 
   describe("createSkill() - Extended Modes", () => {
     it("SC-020: should execute update workflow for mode=update", async () => {
+      allowExistingSkillFiles("/path/to/existing");
       const options: CreateSkillOptions = {
         name: "existing-skill",
         description: "Update existing",
@@ -691,6 +706,7 @@ describe("SkillCreatorService", () => {
     });
 
     it("SC-021: should execute improve-prompt workflow for mode=improve-prompt", async () => {
+      allowExistingSkillFiles("prompt-skill");
       const options: CreateSkillOptions = {
         name: "prompt-skill",
         description: "Improve prompt",
@@ -704,6 +720,141 @@ describe("SkillCreatorService", () => {
       });
       const result = await service.createSkill(options);
       expect(result).toContain("prompt-skill");
+    });
+  });
+
+  describe("update/improve-prompt モード dispatch テスト", () => {
+    it("SC-UPD-001: update モードで runUpdateWorkflow が1回呼ばれること", async () => {
+      const spy = vi
+        .spyOn(service as any, "runUpdateWorkflow")
+        .mockResolvedValue(undefined);
+      const options: CreateSkillOptions = {
+        name: "dispatch-test-skill",
+        description: "test dispatch",
+        mode: "update",
+      };
+      await service.createSkill(options);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it("SC-UPD-005: update モードで既存スキルディレクトリが存在しない場合は失敗すること", async () => {
+      const options: CreateSkillOptions = {
+        name: "missing-skill",
+        description: "missing",
+        mode: "update",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow(
+        "Skill directory not found",
+      );
+    });
+
+    it("SC-IMP-003: improve-prompt モードで SKILL.md が存在しない場合は失敗すること", async () => {
+      const skillDir = path.join(
+        os.homedir(),
+        ".aiworkflow",
+        "skills",
+        "broken-skill",
+      );
+      vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+        if (String(target) === skillDir) {
+          return;
+        }
+        throw new Error("ENOENT");
+      });
+      const options: CreateSkillOptions = {
+        name: "broken-skill",
+        description: "broken",
+        mode: "improve-prompt",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow(
+        "SKILL.md not found",
+      );
+    });
+
+    it("SC-UPD-002: update モードで init_skill.js が呼ばれないこと", async () => {
+      vi.spyOn(service as any, "runUpdateWorkflow").mockResolvedValue(
+        undefined,
+      );
+      const options: CreateSkillOptions = {
+        name: "dispatch-test-skill",
+        description: "test dispatch",
+        mode: "update",
+      };
+      await service.createSkill(options);
+      const initCalls = mockScriptExecutor.execute.mock.calls.filter(
+        (call: unknown[]) => call[0] === "init_skill.js",
+      );
+      expect(initCalls).toHaveLength(0);
+    });
+
+    it("SC-IMP-001: improve-prompt モードで runImprovePromptWorkflow が1回呼ばれること", async () => {
+      const spy = vi
+        .spyOn(service as any, "runImprovePromptWorkflow")
+        .mockResolvedValue(undefined);
+      const options: CreateSkillOptions = {
+        name: "dispatch-test-skill",
+        description: "test dispatch",
+        mode: "improve-prompt",
+      };
+      await service.createSkill(options);
+      expect(spy).toHaveBeenCalledOnce();
+    });
+
+    it("SC-IMP-002: improve-prompt モードで init_skill.js が呼ばれないこと", async () => {
+      vi.spyOn(service as any, "runImprovePromptWorkflow").mockResolvedValue(
+        undefined,
+      );
+      const options: CreateSkillOptions = {
+        name: "dispatch-test-skill",
+        description: "test dispatch",
+        mode: "improve-prompt",
+      };
+      await service.createSkill(options);
+      const initCalls = mockScriptExecutor.execute.mock.calls.filter(
+        (call: unknown[]) => call[0] === "init_skill.js",
+      );
+      expect(initCalls).toHaveLength(0);
+    });
+
+    it("SC-UPD-003: update モードで runUpdateWorkflow がエラーをスローした場合に処理が中断されること", async () => {
+      vi.spyOn(service as any, "runUpdateWorkflow").mockRejectedValue(
+        new Error("update workflow error"),
+      );
+      const options: CreateSkillOptions = {
+        name: "abort-test-skill",
+        description: "test abort",
+        mode: "update",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow(
+        "update workflow error",
+      );
+    });
+
+    it("SC-UPD-004: create モードで runUpdateWorkflow が呼ばれないこと（回帰）", async () => {
+      const updateSpy = vi
+        .spyOn(service as any, "runUpdateWorkflow")
+        .mockResolvedValue(undefined);
+      const improveSpy = vi
+        .spyOn(service as any, "runImprovePromptWorkflow")
+        .mockResolvedValue(undefined);
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      vi.mocked(fsPromises.access).mockImplementation(async (target) => {
+        if (/create-skill[\\/\\\\]SKILL\.md$/.test(String(target))) return;
+        throw new Error("ENOENT");
+      });
+      const options: CreateSkillOptions = {
+        name: "create-skill",
+        description: "test create regression",
+        mode: "create",
+      };
+      await service.createSkill(options);
+      expect(updateSpy).not.toHaveBeenCalled();
+      expect(improveSpy).not.toHaveBeenCalled();
     });
   });
 

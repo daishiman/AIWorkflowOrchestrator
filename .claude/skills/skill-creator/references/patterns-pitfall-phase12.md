@@ -39,6 +39,18 @@
 
 
 
+### [SkillCreator] switch case スタブの fall-through 誤動作（TASK-SC-LLM-PURPOSE-WIRE-001 教訓）
+
+- **状況**: `SkillCreatorMode` switch 文の `update`/`improve-prompt` case がコメントのみで放置され、新規作成フローが誤動作した
+- **アプローチ**:
+  - 問題: case が空（`// Update workflow` のみ）で fall-through → `init_skill.js`（新規作成フロー）が `update`/`improve-prompt` でも呼ばれる
+  - 解決: 各 case に最低限のスタブ実装（`runUpdateWorkflow()` / `runImprovePromptWorkflow()`）を追加し、`init_skill.js` が呼ばれないよう早期 return
+  - 再発防止: switch 全 case に実装 or 明示的な `throw new Error("not implemented")` を入れ、コメントのみの状態でマージしない
+- **結果**: `update`/`improve-prompt` で新規作成フローが誤動作する問題を解消
+- **適用条件**: `SkillCreatorMode` など多モード switch 文の追加・拡張時
+- **発見日**: 2026-04-18
+- **関連タスク**: TASK-SC-LLM-PURPOSE-WIRE-001, UT-TASK-SC-LLM-PURPOSE-WIRE-001-UPDATE-MODE
+
 ### [Phase12] branch横断 Phase 12 一括監査（workflow複数同時検証）
 
 - **状況**: 1つのworkflowをPASS化しても、同じブランチで更新された他workflowに未準拠が残る
