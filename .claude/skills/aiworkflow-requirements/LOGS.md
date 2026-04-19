@@ -4,6 +4,16 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID | UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001                                                                                                               |
+| 操作     | spec-reflection / lessons-learned 追記                                                                                                                             |
+| 変更対象 | `references/lessons-learned-test-cleanup-describe-skip-2026-04.md`（L-W2-03A-006/007追加）、`references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`（auth:login 500ms timeout 節追加）、`indexes/resource-map.md`（テストクリーンアップ行追加） |
+| 結果     | describe.skip 0件達成・5テスト PASS・typecheck PASS・lint PASS。知識系 3ファイル + ミラー同期完了                                                                  |
+| 検証     | vitest 5 passed (5) / `pnpm typecheck` exit 0 / `eslint` exit 0                                                                                                   |
+
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
 | 項目 | 内容 |
