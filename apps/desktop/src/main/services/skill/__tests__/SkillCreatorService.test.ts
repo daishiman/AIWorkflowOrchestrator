@@ -328,7 +328,7 @@ describe("SkillCreatorService", () => {
         name: "AbortError",
       });
       expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
-        "init_skill.js",
+        "generate_features.js",
         expect.any(Array),
         expect.objectContaining({
           signal: expect.any(AbortSignal),
