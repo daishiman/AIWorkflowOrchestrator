@@ -186,6 +186,8 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow.md .agents/skills/aiworkflow-requirements/references/task-workflow.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md .agents/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md)",
+      "Bash(cp .agents/skills/aiworkflow-requirements/LOGS.md .claude/skills/aiworkflow-requirements/LOGS.md)",
+      "Bash(cp .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/skill-creator/LOGS.md .agents/skills/skill-creator/LOGS.md)",
       "Bash(cp .claude/skills/skill-creator/SKILL.md .agents/skills/skill-creator/SKILL.md)",
       "Bash(cp .claude/skills/skill-creator/scripts/generate_features.js .agents/skills/skill-creator/scripts/generate_features.js)",
