@@ -1,0 +1,148 @@
+{
+  "taskId": "UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001",
+  "taskName": "SkillLifecyclePanel auth回帰テスト describe.skip クリーンアップ",
+  "issueNumber": 2237,
+  "createdAt": "2026-04-18T00:00:00.000Z",
+  "updatedAt": "2026-04-18T21:00:00.000Z",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "name": "要件定義",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "name": "設計",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "name": "設計レビューゲート",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "name": "テスト作成",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-4/test-results-red.md",
+        "outputs/phase-4/failure-analysis.md"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "name": "実装",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-files.md"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "name": "テスト拡充",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": ["outputs/phase-6/test-results-green.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "name": "テストカバレッジ確認",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/traceability-matrix.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "name": "リファクタリング",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/responsibility-boundary-map.md"
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "name": "品質保証",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/causal-loop-check.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "name": "最終レビューゲート",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/corrective-action-plan.md",
+        "outputs/phase-10/release-readiness-checklist.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "name": "手動テスト検証",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/evidence-index.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "name": "ドキュメント更新",
+      "completedAt": "2026-04-18T21:00:00.000Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "name": "PR作成",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "phase-2": ["phase-1"],
+    "phase-3": ["phase-2"],
+    "phase-4": ["phase-3"],
+    "phase-5": ["phase-4"],
+    "phase-6": ["phase-5"],
+    "phase-7": ["phase-6"],
+    "phase-8": ["phase-7"],
+    "phase-9": ["phase-8"],
+    "phase-10": ["phase-9"],
+    "phase-11": ["phase-10"],
+    "phase-12": ["phase-11"],
+    "phase-13": ["phase-12"]
+  },
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "workType": "cleanup",
+    "category": "CLEANUPタスク",
+    "priority": "中",
+    "scale": "小規模",
+    "visualType": "NON_VISUAL",
+    "targetFile": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.auth-regression.test.tsx",
+    "testScope": "auth:login IPC回帰テスト",
+    "securityRelevant": true,
+    "estimatedPhases": 13,
+    "actualPhases": 12
+  }
+}

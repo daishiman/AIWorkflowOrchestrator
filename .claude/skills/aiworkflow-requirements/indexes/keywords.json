@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3139,
+  "totalKeywords": 3144,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1704,6 +1704,7 @@
       "error-handling-details.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -2682,6 +2683,7 @@
       "interfaces-rag-community-summarization.md",
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "ui-history-design.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
@@ -7616,6 +7618,7 @@
     "PANEL": [
       "lessons-learned-2026-04-early-part-3.md",
       "lessons-learned-2026-04-early.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
@@ -7696,6 +7699,7 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-test-cleanup-describe-skip-2026-04.md",
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -7863,6 +7867,7 @@
     ],
     "REGRESSION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
@@ -8016,6 +8021,7 @@
     ],
     "timeout": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-test-typesafety.md",
       "quick-reference-search-patterns-ipc-infra.md",
       "security-electron-ipc-advanced.md",
@@ -8266,6 +8272,28 @@
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-adapter-status-retry.md"
     ],
+    "SKIP": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "CLEANUP": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "login": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-test-typesafety.md"
+    ],
+    "ms": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "fire": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "forget": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
     ],
@@ -8393,10 +8421,6 @@
     ],
     "アーキテクチャ不一致によるテスト": [
       "lessons-learned-conversation-db-robustness.md"
-    ],
-    "SKIP": [
-      "lessons-learned-conversation-db-robustness.md",
-      "lessons-learned-skill-wizard-redesign.md"
     ],
     "問題パターン": [
       "lessons-learned-conversation-db-robustness.md"
@@ -9892,7 +9916,8 @@
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "点セット": [
-      "lessons-learned-skill-creator-cancel-chain.md"
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "lessons-learned-test-cleanup-describe-skip-2026-04.md"
     ],
     "ハンドラー責務分離": [
       "lessons-learned-skill-creator-ipc-handler-scope.md"
@@ -10304,9 +10329,6 @@
     "より": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
-    "CLEANUP": [
-      "lessons-learned-skill-wizard-redesign.md"
-    ],
     "ICON": [
       "lessons-learned-skill-wizard-redesign.md"
     ],
@@ -10460,6 +10482,16 @@
     "ステップ候補": [
       "lessons-learned-test-cleanup-describe-skip-2026-04.md"
     ],
+    "props": [
+      "lessons-learned-test-cleanup-describe-skip-2026-04.md",
+      "ui-result-panel-pattern.md"
+    ],
+    "廃止後のテスト修正パターン": [
+      "lessons-learned-test-cleanup-describe-skip-2026-04.md"
+    ],
+    "回帰テストのモック": [
+      "lessons-learned-test-cleanup-describe-skip-2026-04.md"
+    ],
     "テスト": [
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
@@ -10523,9 +10555,6 @@
       "lessons-learned-test-typesafety.md"
     ],
     "スキル生成": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "login": [
       "lessons-learned-test-typesafety.md"
     ],
     "リグレッション調査": [
@@ -14450,9 +14479,6 @@
       "ui-result-panel-pattern.md"
     ],
     "責務別": [
-      "ui-result-panel-pattern.md"
-    ],
-    "props": [
       "ui-result-panel-pattern.md"
     ],
     "分離パターン": [
