@@ -202,7 +202,10 @@
       "Bash(mv /tmp/.claude-skills.bak .claude/skills)",
       "Bash(mv .agents/skills /tmp/.agents-skills.bak)",
       "Bash(mv /tmp/.agents-skills.bak .agents/skills)",
-      "Bash(pnpm --version)"
+      "Bash(pnpm --version)",
+      "Bash(cp .claude/scripts/setup-merge-drivers.sh docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/setup-merge-drivers.sh.before)",
+      "Bash(git check-attr *)",
+      "Bash(tee docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/check-attr.before.txt)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,114 @@
+diff --git a/.claude/scripts/setup-merge-drivers.sh b/.claude/scripts/setup-merge-drivers.sh
+index 9ec90b176..2d991bd85 100755
+--- a/.claude/scripts/setup-merge-drivers.sh
++++ b/.claude/scripts/setup-merge-drivers.sh
+@@ -1,11 +1,33 @@
+ #!/bin/bash
+-# カスタム merge ドライバーの登録
++# ── カスタム merge ドライバー登録スクリプト ──
+ #
+-# .gitattributes の merge=ours は built-in ではなくカスタムドライバー名。
+-# このスクリプトを実行してから git merge を行うこと。
+-# 再実行しても安全（idempotent）。
++# このスクリプトは、リポジトリの .gitattributes で参照される
++# `merge=ours` カスタムドライバーをローカル Git 設定に登録します。
++#
++# === 登録されるドライバー ===
++# merge.ours.driver = true
++#   用途: .gitattributes の `merge=ours` 指定を解決し、
++#         マージ時に現ブランチ（統合先）側を採用する。
++#   適用ファイル例: indexes/*.json, indexes/*.md, EVALS.json
++#
++# === 未登録時の挙動 ===
++# Git は `merge=ours` 指定を解決できず、以下のいずれかが発生する:
++#   - warning: failed to resolve 'ours'
++#     → デフォルト 3-way マージにフォールバック（conflict 発生の可能性）
++#   - 環境によってはマージ失敗
++# マージ後に自動生成インデックスを再生成する場合:
++#   node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
++#
++# === 実行タイミング（必須） ===
++# - 初回 clone 直後（.git/config はリポジトリ内に含まれないため毎回必要）
++# - macOS / Linux 両対応、idempotent（何度実行しても安全）
++# - SessionStart hook が `(unset)` を検出した際の修復手段
+ #
+ # 使い方: bash .claude/scripts/setup-merge-drivers.sh
++#
++# 関連:
++#   - .gitattributes（merge=ours 適用ファイル定義）
++#   - docs/30-workflows/gitattributes-merge-union-reeval-001/（判断ガイドライン）
+ 
+ set -euo pipefail
+ 
+diff --git a/.gitattributes b/.gitattributes
+index 988575ae3..45e600fcc 100644
+--- a/.gitattributes
++++ b/.gitattributes
+@@ -3,28 +3,46 @@
+ apps/desktop/e2e/ui-ux/*.spec.ts-snapshots/*.png binary
+ apps/desktop/e2e/ui-ux/snapshots/*.png binary
+ 
+-# ── マージ戦略 ──────────────────────────────────────────────────────────────
+-# 追記型ログ・評価記録: 並列ブランチからの追記を自動統合（コンフリクトマーカー不要）
+-# 並列PR開発でコンフリクトが発生しないよう全スキル共通で適用
+-.claude/skills/*/LOGS.md          merge=union
+-.agents/skills/*/LOGS.md          merge=union
+-.claude/skills/*/EVALS.json       merge=ours
+-.agents/skills/*/EVALS.json       merge=ours
++# === 関連リソース ===
++# - merge ドライバー登録: bash .claude/scripts/setup-merge-drivers.sh
++# - 判断ガイドライン: docs/30-workflows/gitattributes-merge-union-reeval-001/
++# - 元タスク Issue: https://github.com/daishiman/AIWorkflowOrchestrator/issues/2281
+ 
+-# リファレンス・記録ファイル（append-only）
+-.claude/skills/*/references/*.md  merge=union
+-.agents/skills/*/references/*.md  merge=union
++# ── [C-1] [append-only] スキル直下の時系列追記ファイル: merge=union で並列追記を自動統合 ──
++# 新規ファイル追加判断: 末尾追記が支配的で行順序が意味を持たない場合に append-only 扱い
++.claude/skills/*/LOGS.md                                   merge=union
++.agents/skills/*/LOGS.md                                   merge=union
++.claude/skills/*/SKILL-changelog.md                        merge=union
++.agents/skills/*/SKILL-changelog.md                        merge=union
+ 
+-# SKILL-changelog.md: 変更履歴は追記型のため merge=union で両ブランチの追記を統合
+-.claude/skills/*/SKILL-changelog.md  merge=union
+-.agents/skills/*/SKILL-changelog.md  merge=union
++# ── [C-2] [append-only] references/ 配下の追記型ファイル: merge=union で統合 ──
++# 新規ファイル追加判断: task-workflow-completed*/lessons-learned-* 等、末尾追記が支配的かで判定
++# 注意: references/task-workflow.md や references/lessons-learned.md（root）は構造化のため
++#       本グループに含めない（デフォルト 3-way マージで人手解決）
++.claude/skills/*/references/LOGS.md                        merge=union
++.agents/skills/*/references/LOGS.md                        merge=union
++.claude/skills/*/references/SKILL-changelog.md             merge=union
++.agents/skills/*/references/SKILL-changelog.md             merge=union
++.claude/skills/*/references/task-workflow-completed*.md    merge=union
++.agents/skills/*/references/task-workflow-completed*.md    merge=union
++.claude/skills/*/references/lessons-learned-*.md           merge=union
++.agents/skills/*/references/lessons-learned-*.md           merge=union
+ 
+-# auto-generated インデックスファイル: マージせず現ブランチを優先し、マージ後にスクリプトで再生成する
+-# merge=ours はカスタムドライバー名（built-in ではない）。事前に以下を実行すること:
+-#   bash .claude/scripts/setup-merge-drivers.sh
+-# または: git config merge.ours.driver true
++# ── [C-3] [auto-generated] インデックス・評価結果: merge=ours でマージ後に再生成 ──
++# 新規ファイル追加判断: スクリプトで再生成可能かつ自ブランチ側を正としたい場合
++# 注意: merge=ours はカスタムドライバー（Git 組み込みではない）
++#       初回 clone 後に必ず: bash .claude/scripts/setup-merge-drivers.sh
+ # マージ後の再生成: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+-.claude/skills/*/indexes/*.json   merge=ours
+-.claude/skills/*/indexes/*.md     merge=ours
+-.agents/skills/*/indexes/*.json   merge=ours
+-.agents/skills/*/indexes/*.md     merge=ours
++.claude/skills/*/EVALS.json                                merge=ours
++.agents/skills/*/EVALS.json                                merge=ours
++.claude/skills/*/indexes/*.json                            merge=ours
++.agents/skills/*/indexes/*.json                            merge=ours
++.claude/skills/*/indexes/*.md                              merge=ours
++.agents/skills/*/indexes/*.md                              merge=ours
++
++# ── [structured] 構造化ドキュメント（デフォルト 3-way マージ） ──
++# 新規ファイル追加判断: 見出し・表・節構造があり、衝突は人手解決すべき場合
++# 明示指定なし（default）: references/task-workflow.md / task-workflow-rules.md / task-workflow-phases.md
++# / task-workflow-active.md / task-workflow-backlog*.md / references/lessons-learned.md (root)
++# / api-*.md / arch-*.md / quick-reference*.md / resource-map*.md / topic-map*.md
++# / phase-template-*.md / unassigned-task-*.md
