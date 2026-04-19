@@ -85,8 +85,9 @@ PARITY_SCRIPT="$(git rev-parse --show-toplevel)/.claude/scripts/verify-skills-pa
 if [ -f "$PARITY_SCRIPT" ]; then
   bash "$PARITY_SCRIPT" || {
     echo ""
-    echo "[pre-push] parity NG のため push を中止します。"
+    echo "[pre-push] parity NG: .claude/skills と .agents/skills に差分があります（docs-only push でもこのチェックは必須）"
     echo "  修正: bash .claude/scripts/sync-skills-mirror.sh"
+    echo "  push 中止"
     exit 1
   }
 fi

@@ -17,12 +17,16 @@ if [ ! -d "$CANONICAL" ] && [ ! -d "$MIRROR" ]; then
   exit 0
 fi
 
-mkdir -p "$MIRROR"
-
 if [ "$CHECK_ONLY" = "--check-only" ]; then
+  if [ ! -d "$CANONICAL" ] || [ ! -d "$MIRROR" ]; then
+    echo "[mirror-sync] SKIP (check-only): canonical または mirror が未配置です"
+    exit 0
+  fi
   diff -qr "$CANONICAL" "$MIRROR" 2>/dev/null
   exit $?
 fi
+
+mkdir -p "$MIRROR"
 
 MIRROR_ONLY=$(diff -qr "$CANONICAL" "$MIRROR" 2>/dev/null \
   | grep "^Only in $MIRROR" || true)
