@@ -330,3 +330,34 @@ Claude Code SDK の `SDKMessage` を `SkillCreatorSdkEvent` へ変換する norm
 - **IPC境界**: `skill-creator:normalize-sdk-messages` チャネルを新設し、renderer側からの変換リクエストを受け付ける設計
 
 ---
+
+## UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001: auth:login 500ms timeout / fire-and-forget 設計（2026-04-19）
+
+### auth:login IPC 現行コントラクト
+
+| 項目 | 値 |
+| ---- | -- |
+| チャネル | `auth:login` |
+| preload 実装 | `safeInvoke` 500ms timeout |
+| main handler 戻り値 | `{ success: true }` |
+| renderer 呼び出し元 | `authSlice.login()` thunk |
+
+### fire-and-forget 設計の教訓
+
+**auth:login は fire-and-forget**:
+- renderer 側は結果を待たない（Promise は捨てる）
+- 500ms timeout は preload レベルで自動キャンセル
+- テストでの非呼び出しアサーションは `await` 不要（即時確認）
+
+```typescript
+// fire-and-forget のため await なしでアサーション可能
+expect(mockAuthLogin).not.toHaveBeenCalled();
+```
+
+### describe.skip 誤用パターンとの関係
+
+`auth:login が呼ばれるはず` という仮定でタイムアウトをモックしたテスト（TC-03/05/06/07）は、
+`auth:login が呼ばれない` 設計に変わった時点でゾンビ化する。
+fire-and-forget + 非呼び出し設計を理解していれば `not.toHaveBeenCalled()` で即時テスト可能。
+
+---

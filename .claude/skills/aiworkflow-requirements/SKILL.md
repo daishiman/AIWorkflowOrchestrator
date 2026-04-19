@@ -20,6 +20,7 @@ AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 
 | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-19 | TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE Phase-12 close-out sync: `useStreamingProgress.ts` の `PHASE_TO_STAGE` マップ 6 mode-specific phase（`interview`/`consensus`/`loading-skill`/`analyzing`/`engine-selection`/`improving`）追加・`api.onProgress()` コールバック接続・エラーハンドリング・`resetProgress()` cleanup を current facts に追加。`system-spec-update-summary.md` の「実施した同期 / 未実施同期」テンプレート分離提案を `ベストプラクティス` に追記。`task-workflow.md` / `task-workflow-completed.md` / `LOGS.md` / `lessons-learned-current-2026-04.md` を同波更新。未タスク U-01（本番配線統合テスト）・U-02（planId 付与）を `unassigned-task/` に登録済み。 |
 | 2026-04-18 | TASK-SW-STREAM-002 close-out current facts sync: workflow を「既存実装確認 + NON_VISUAL close-out」へ是正し、`task-workflow.md` / `task-workflow-completed-recent-2026-04g.md` / `lessons-learned-stream-001-progress-callback.md` / `LOGS.md` / indexes を同波更新。`TASK-SW-STREAM-001` の後続 separate task 表記を close し、残課題を `TASK-SW-STREAM-FUP-01` 系へ整理。 |
 | 2026-04-18 | UT-IPC-HANDLER-CI-001 close-out sync: Step 1-D テンプレートに「未更新 / 再生成のみ / 内容変更あり」三区分を追加。NON_VISUAL task の証跡参照を task 固有パスで出力するガイドを `ベストプラクティス` に追記。`LOGS.md` 同波更新。 |
 | 2026-04-18 | UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync: `lessons-learned-current-2026-04.md` の L-CRON-SEM-001/002 セクション内重複 CLM 行（18行）を除去。`ui-ux-feature-components-skill-analysis.md` の shared contracts に `SKILL_CATEGORY_LABELS` / `getSkillCategoryLabel` を追記。`LOGS.md` 同波更新。generate-index.js / validate-structure.js / mirror sync / diff -qr 全 PASS。           |
@@ -197,6 +198,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - 500行超過時は classification-first で parent / child / history / archive / discovery を同一 wave で分割
 - Step 1-D（topic-map / keywords 再生成）は `未更新 / 再生成のみ / 内容変更あり` の3区分で記録する（UT-IPC-HANDLER-CI-001 feedback）
 - NON_VISUAL task の証跡参照は branch ルートではなく task 固有パス（例: `docs/30-workflows/TASK-ID/outputs/phase-11/`）で記録する
+- `system-spec-update-summary.md` の Step 1 は「実施した同期（Step 1-A）」と「実施しなかった同期・理由（Step 1-B）」を必ず両方記載する（L-SC08-003 feedback: local workflow 修正のみの場合に全て同期済みと誤解される問題を防ぐ）
 
 ### 避けるべきこと
 

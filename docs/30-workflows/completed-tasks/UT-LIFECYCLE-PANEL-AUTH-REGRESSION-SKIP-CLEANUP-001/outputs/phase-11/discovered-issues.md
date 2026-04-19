@@ -1,0 +1,5 @@
+# Phase 11: 発見事項
+
+- 今回ターンの新規発見事項は Phase 12 で follow-up 2件へ formalize 済み
+- `UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001`
+- `UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001`

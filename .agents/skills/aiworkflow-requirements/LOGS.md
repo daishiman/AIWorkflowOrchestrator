@@ -4,6 +4,38 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID | UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001                                                                                                               |
+| 操作     | spec-reflection / lessons-learned 追記                                                                                                                             |
+| 変更対象 | `references/lessons-learned-test-cleanup-describe-skip-2026-04.md`（L-W2-03A-006/007追加）、`references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`（auth:login 500ms timeout 節追加）、`indexes/resource-map.md`（テストクリーンアップ行追加） |
+| 結果     | describe.skip 0件達成・5テスト PASS・typecheck PASS・lint PASS。知識系 3ファイル + ミラー同期完了                                                                  |
+| 検証     | vitest 5 passed (5) / `pnpm typecheck` exit 0 / `eslint` exit 0                                                                                                   |
+
+## 2026-04-19: TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE Phase 12 close-out
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow.md`, `references/task-workflow-completed.md`, `indexes/topic-map.md`, `references/lessons-learned-current-2026-04.md`, workflow `index.md` / `phase-12-documentation.md`, `unassigned-task/` 2件 |
+| 結果 | success |
+| 備考 | impl-spec-to-skill-sync プロンプト実行。Phase 1-12 完了ステータス反映・skill-feedback（実施した同期/未実施同期テンプレート分離提案）反映 |
+
+### 更新詳細
+
+- `references/task-workflow.md` に 2026-04-19 TASK-SC-08 close-out 記録を追記
+- `references/task-workflow-completed.md` に TASK-SC-08 完了記録を先頭追記
+- workflow `index.md` の全 Phase ステータスを `pending` → `完了` に更新
+- workflow `phase-12-documentation.md` のステータスと完了条件チェックボックスを更新
+- `unassigned-task/` に U-01（本番配線統合テスト）・U-02（planId 付与）の個別ファイルを作成
+- `references/lessons-learned-current-2026-04.md` に本タスクの苦戦箇所を追記
+- `SKILL.md` 変更履歴に 2026-04-19 エントリを追加
+
+---
+
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
 | 項目 | 内容 |
@@ -20,52 +52,6 @@
 - `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、deterministic regenerate 後の索引を current facts へ同期
 - Phase 12 close-out で canonical / mirror を「部分 sync 済み / full sync 未完」に分離して扱う文書へ補正
 
-## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
-
-### 変更内容
-
-- `p02-par-STREAM-001/phase-5-implementation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/phase-6-test-expansion.md` 同上
-- `p02-par-STREAM-001/phase-9-quality-assurance.md` 同上
-- `p02-par-STREAM-001/phase-10-final-review.md` 同上
-- `p02-par-STREAM-001/phase-11-manual-test.md` 同上
-- `p02-par-STREAM-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/index.md` ステータス `未着手` → `Phase13 pending（PR作成待ち）`
-- `generate-index.js` 実行 → `indexes/keywords.json`（3078 keywords）/ `indexes/topic-map.md` 再生成
-
-### 背景
-
-Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
-
----
-
-## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
-- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
-- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
-
-### 背景
-
-TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
-
----
-
-## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
-- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
-
-### 背景
-
-TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
-
 ## 2026-04-18 — UT-IPC-HANDLER-CI-001 skill-feedback 反映
 
 ### 変更内容
@@ -79,6 +65,21 @@ TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook
 | 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
 | 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
 | 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
+## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 impl-spec-to-skill-sync Phase-12 close-out
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/index.md` ステータス `進行中（実装あり・Phase 11/12 再監査中）` → `完了（Phase 12 close-out 済み・Phase 13 pending）`、Phase 1〜12 ステータス全 `完了` 更新
+- `references/task-workflow.md` の TASK-SC-LLM-PURPOSE-WIRE-001 エントリ重複解消と Phase 12 close-out 記録追記
+- `SKILL.md` 変更履歴テーブルに 2026-04-18 impl-spec-to-skill-sync 行を追加
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001（purpose 抽出 LLM 統合）は Phase 11/12 の成果物6件が全て揃っていたが、phase-12-documentation.md と index.md のステータスフィールドおよびPhase一覧テーブルが「未実施」のままだった。また task-workflow.md に同タスクの2026-04-18 エントリが重複していた。本セッションで impl-spec-to-skill-sync プロンプト（Phase 1 並列監査 → Phase 2 直列編集 → Phase 3 検証）を用いてこれらを修正した。
 
 ---
 
@@ -132,120 +133,6 @@ TASK-SW-STREAM-FUP-03 の実装知見（PROGRESS_FLOWS SSOT / emitProgress by-na
 ### 背景
 
 `TASK-SW-STREAM-FUP-03` の mode 別 onProgress 詳細化は完了済みだったが、completion ledger と索引が stale だと current facts が欠けるため、台帳・索引・current facts を同波で閉じた。
-
-## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
-- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
-- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
-
-### 背景
-
-TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
-
----
-
-## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
-- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
-
-### 背景
-
-TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
-
-## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 impl-spec-to-skill-sync Phase-12 close-out
-
-### 変更内容
-
-- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/index.md` ステータス `進行中（実装あり・Phase 11/12 再監査中）` → `完了（Phase 12 close-out 済み・Phase 13 pending）`、Phase 1〜12 ステータス全 `完了` 更新
-- `references/task-workflow.md` の TASK-SC-LLM-PURPOSE-WIRE-001 エントリ重複解消と Phase 12 close-out 記録追記
-- `SKILL.md` 変更履歴テーブルに 2026-04-18 impl-spec-to-skill-sync 行を追加
-
-### 背景
-
-TASK-SC-LLM-PURPOSE-WIRE-001（purpose 抽出 LLM 統合）は Phase 11/12 の成果物6件が全て揃っていたが、phase-12-documentation.md と index.md のステータスフィールドおよびPhase一覧テーブルが「未実施」のままだった。また task-workflow.md に同タスクの2026-04-18 エントリが重複していた。本セッションで impl-spec-to-skill-sync プロンプト（Phase 1 並列監査 → Phase 2 直列編集 → Phase 3 検証）を用いてこれらを修正した。
-
----
-
-## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
-
-### 変更内容
-
-- `p02-par-STREAM-001/phase-5-implementation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/phase-6-test-expansion.md` 同上
-- `p02-par-STREAM-001/phase-9-quality-assurance.md` 同上
-- `p02-par-STREAM-001/phase-10-final-review.md` 同上
-- `p02-par-STREAM-001/phase-11-manual-test.md` 同上
-- `p02-par-STREAM-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/index.md` ステータス `未着手` → `Phase13 pending（PR作成待ち）`
-- `generate-index.js` 実行 → `indexes/keywords.json`（3078 keywords）/ `indexes/topic-map.md` 再生成
-
-### 背景
-
-Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
-
----
-
-## 2026-04-16 - TASK-SW-UI-POLISH-001 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-wizard-redesign.md` に L-POLISH-001〜003 を追加（カテゴリ上限 disabled 分岐パターン / 静的 CSS 監査テストパターン / transition アニメーション検証戦略）
-- `references/task-workflow-completed-recent-2026-04g.md` に TASK-SW-UI-POLISH-001 完了記録を追加（Phase 11 スクリーンショット 4 枚 / Phase 12 成果物 7 件 / 苦戦箇所 3 件）
-- `indexes/resource-map.md` にクイックルックアップ行追加（v1.32.0）・変更履歴追加
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 行を追加
-
-### 背景
-
-TASK-SW-UI-POLISH-001（CSS変数監査・カテゴリ選択上限・アニメーション追加）は Phase 12 close-out 済みだったが、`lessons-learned` / `task-workflow-completed` / `resource-map` への反映が未同期だった。impl-spec-to-skill-sync プロンプトによる Phase-1 監査で差分を検出し、本セッションで完結した。
-
----
-
-## 2026-04-16 - TASK-SW-CANCEL-001 cancel chain end-to-end 完了 impl-spec-to-skill-sync
-
-### 変更内容
-
-- `references/lessons-learned-skill-creator-cancel-chain.md` 新規作成: cancel chain 縦断実装パターン（L-CANCEL-001〜L-CANCEL-004）を記録
-- `references/api-ipc-system-skill-creator.md` に `SKILL_CREATOR_CANCEL` チャンネルと cancel chain の current facts を追加（§TASK-SW-CANCEL-001〜004）
-- `SKILL.md` 変更履歴テーブルに 2026-04-16 cancel chain 行を追加
-
-### 背景
-
-TASK-SW-CANCEL-001（shared 定数追加）〜TASK-SW-CANCEL-004（renderer hook IPC 接続）の cancel chain が current worktree で end-to-end 接続済みとなった。IPC 4層縦断パターン・abort-like error suppression・non-visual タスク判定の知見を lessons-learned に記録し、同種のキャンセル機能追加で再利用できるようにした。
-
-## 2026-04-18: impl-spec-to-skill-sync Phase2 - CANCEL-002スキル反映
-
-- api-ipc-system-skill-creator.md: Preload 3点セット手順追記（インターフェース定義・safeInvoke実装・ALLOWED_INVOKE_CHANNELSホワイトリスト登録を必ず同時修正すること）
-- lessons-learned-current.md: CANCEL-002知見追記（L-CANCEL-002-001: ALLOWED_INVOKE_CHANNELS 登録漏れによる contextBridge silent fail パターン）
-
----
-
-## 2026-04-17 - TASK-SW-STREAM-001 impl-spec-to-skill-sync Phase-12 完了チェックリスト更新
-
-### 変更内容
-
-- `p02-par-STREAM-001/phase-5-implementation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/phase-6-test-expansion.md` 同上
-- `p02-par-STREAM-001/phase-9-quality-assurance.md` 同上
-- `p02-par-STREAM-001/phase-10-final-review.md` 同上
-- `p02-par-STREAM-001/phase-11-manual-test.md` 同上
-- `p02-par-STREAM-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
-- `p02-par-STREAM-001/index.md` ステータス `未着手` → `Phase13 pending（PR作成待ち）`
-- `generate-index.js` 実行 → `indexes/keywords.json`（3078 keywords）/ `indexes/topic-map.md` 再生成
-
-### 背景
-
-Phase-12 成果物5件（implementation-guide / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）は全て揃い PASS。タスク仕様書のチェックボックスが未更新だったため一括修正し、仕様書の完了状態を実態に合わせた。
-
----
 
 ## 2026-04-18 - TASK-SW-CANCEL-002 close-out audit sync
 
@@ -3004,32 +2891,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
-
-## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
-
-- `executeAsync()` の structured error / catch / success / terminal_handoff を current facts として再確認
-- `creatorHandlers.fire-and-forget.test.ts` を IPC relay の主証跡に統一
-- `implementation-guide.md` を validator 要件に合わせて再構成
-- `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
-- completed index / recent bundle / stale unassigned-task を same-wave で同期
-
-| 項目     | 内容                                                                                                                    |
-| -------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
-| 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
-| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
-| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
-
-## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
-
-- `verifyAndImproveLoop()` 内 improve adapter error 時の `notificationService?.notify()` 追加を current facts として記録
-- T-VL-01〜07 / T-REG-01（17 tests / 224 regression）全 PASS を検証証跡として固定
-- completed ledger / recent bundle / topic-map を same-wave で同期
-- NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
-
-| 項目     | 内容                                                                                      |
-| -------- | ----------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
-| 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
-| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
-| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
