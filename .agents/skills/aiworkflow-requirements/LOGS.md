@@ -14,6 +14,28 @@
 | 結果     | describe.skip 0件達成・5テスト PASS・typecheck PASS・lint PASS。知識系 3ファイル + ミラー同期完了                                                                  |
 | 検証     | vitest 5 passed (5) / `pnpm typecheck` exit 0 / `eslint` exit 0                                                                                                   |
 
+## 2026-04-19: TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE Phase 12 close-out
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow.md`, `references/task-workflow-completed.md`, `indexes/topic-map.md`, `references/lessons-learned-current-2026-04.md`, workflow `index.md` / `phase-12-documentation.md`, `unassigned-task/` 2件 |
+| 結果 | success |
+| 備考 | impl-spec-to-skill-sync プロンプト実行。Phase 1-12 完了ステータス反映・skill-feedback（実施した同期/未実施同期テンプレート分離提案）反映 |
+
+### 更新詳細
+
+- `references/task-workflow.md` に 2026-04-19 TASK-SC-08 close-out 記録を追記
+- `references/task-workflow-completed.md` に TASK-SC-08 完了記録を先頭追記
+- workflow `index.md` の全 Phase ステータスを `pending` → `完了` に更新
+- workflow `phase-12-documentation.md` のステータスと完了条件チェックボックスを更新
+- `unassigned-task/` に U-01（本番配線統合テスト）・U-02（planId 付与）の個別ファイルを作成
+- `references/lessons-learned-current-2026-04.md` に本タスクの苦戦箇所を追記
+- `SKILL.md` 変更履歴に 2026-04-19 エントリを追加
+
+---
+
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
 | 項目 | 内容 |
