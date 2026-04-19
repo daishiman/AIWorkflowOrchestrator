@@ -4,6 +4,37 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19）
+
+### L-SC08-001: mode-specific phase が planning に吸収される問題は PHASE_TO_STAGE マップの追記漏れが原因
+
+| 項目       | 内容                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `TASK-SW-STREAM-FUP-03` で Main 側に `interview` / `consensus` / `loading-skill` / `analyzing` / `engine-selection` / `improving` の phase が追加されたが、Renderer 側の `PHASE_TO_STAGE` に対応エントリがなく全て `planning` へ吸収されていた |
+| 解決策     | `useStreamingProgress.ts` の `PHASE_TO_STAGE` に 6 エントリを追加し、適切な `StreamingGenerationStage` へマッピングした。新しい phase を Main 側に追加するたびに Renderer 側のマップも同波で更新する |
+| 標準ルール | `SkillCreatorService` に新 phase を追加するたびに `useStreamingProgress.ts` の `PHASE_TO_STAGE` と対応するテストを同時更新すること                                                              |
+| 関連タスク | TASK-SC-08, TASK-SW-STREAM-FUP-03                                                                                                                                                             |
+
+### L-SC08-002: onProgress コールバックは useEffect cleanup で必ず解除する
+
+| 項目       | 内容                                                                                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `api.onProgress(callback)` が返すクリーンアップ関数を `useEffect` の cleanup で呼ばないと、コンポーネントアンマウント後もリスナーが残存しメモリリークの原因となる             |
+| 解決策     | `const cleanup = api.onProgress(...)` として返り値を変数に保持し、`return () => { cleanup(); resetProgress(); }` でリスナー解除と状態リセットを同時に行う                      |
+| 標準ルール | IPC イベントリスナーは必ず `useEffect` cleanup で解除し、リスナー解除と状態リセットをペアで実装する（P5 対策パターン）                                                          |
+| 関連タスク | TASK-SC-08                                                                                                                                                                    |
+
+### L-SC08-003: system-spec-update-summary の「実施した同期 / 未実施同期」はテンプレートで分離すべき
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `system-spec-update-summary.md` で local workflow 修正のみ行い system spec 更新を省略した際、「全て同期済み」と誤解されやすい書き方になっていた              |
+| 解決策     | 「実施した同期（Step 1-A）」と「実施しなかった同期（Step 1-B）」を明示的に分けて記述するテンプレートを標準化し、省略理由を必ず記録する                        |
+| 標準ルール | Phase 12 `system-spec-update-summary.md` では Step 1-A（実施）と Step 1-B（未実施・理由）を必ず両方記載すること。今回のテンプレートは `aiworkflow-requirements/SKILL.md` のベストプラクティスに追記済み |
+| 関連タスク | TASK-SC-08                                                                                                                                                   |
+
+---
+
 ## TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18）
 
 ### L-LLM-PURPOSE-001: extractPurposeWithLlm は llmClient 未注入時に null を返し options.description fallback で継続する
@@ -1761,3 +1792,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 解決策     | `if (structurePlan !== null)` と厳密に null だけを除外することで、TypeScript の型絞り込みが正確に機能する |
 | 標準ルール | `T                                                                                                        | null`型には`!== null`、`T                                                        | undefined`型には`!== undefined` を使い、`truthy` チェックは避ける |
 | 関連タスク | TASK-SW-STRUCT-002                                                                                        |
+
+---
+
+## TASK-SW-CANCEL-003 skill-creator-cancel-main-handler 教訓（2026-04-19）
+
+### L-CANCEL-003-001: task 作成前に `implementation_mode` を明確化して既実装との混線を防ぐ
+
+| 項目       | 内容                                                                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | 「新規実装」テンプレートで生成された workflow で実際には既実装が存在していた。Phase 4/5 の「RED 作成」「新規実装」記述を「差分確認」に読み替える必要が生じた               |
+| 原因       | task 作成時に `implementation_mode: "new"` vs `"verify_existing"` を明示しておらず、workflow 生成テンプレートが無条件に新規実装フローを採用した                            |
+| 解決策     | task spec の冒頭メタ情報に `implementation_mode: "new" \| "verify_existing"` フィールドを追加し、既実装の場合は Phase 4/5 を「verify（差分確認）」フェーズとして生成する   |
+| 設計原則   | task 着手前の implementation_mode 宣言は「新規 vs 既実装確認」の混線を防ぐための最小コスト防衛策である                                                                     |
+| 適用条件   | IPC handler / preload API など、chain task の一部として既に実装されている可能性がある task 全般                                                                            |
+| 関連タスク | TASK-SW-CANCEL-003                                                                                                                                                         |
+
+### L-CANCEL-003-002: chain task では各 task の scope に「chain における位置と完了定義」を明記する
+
+| 項目       | 内容                                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | CANCEL-001〜004 が連携する chain 構成で、CANCEL-003 単体では「E2E 完了にならない」ことの明示が不足しており、完了判定基準が曖昧だった                                         |
+| 原因       | 各 task の scope 説明に chain 全体の文脈が含まれておらず、単体タスクとして読んだときに何をもって完了とするかが不明確だった                                                   |
+| 解決策     | chain task の scope 欄に「chain 位置: CANCEL-001→002→**003**→004」「本 task 単体の完了定義: Main ハンドラー登録のみ。E2E 疎通は CANCEL-004 完了後」のように明記する           |
+| 設計原則   | chain task の完了定義は「chain における自分の責務範囲」と「chain 全体完了との関係」を MECE に記述する                                                                       |
+| 適用条件   | 複数 task にまたがる IPC chain / preload-main-renderer 三層実装など、単体では E2E 完結しない task 全般                                                                      |
+| 関連タスク | TASK-SW-CANCEL-001 / TASK-SW-CANCEL-002 / TASK-SW-CANCEL-003 / TASK-SW-CANCEL-004                                                                                           |
+
+### L-CANCEL-003-003: NON_VISUAL task の証跡は `{TASK-ID}-manual-test-report.md` に統一する
+
+| 項目       | 内容                                                                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | UI なしの task で Phase 11 の primary evidence をどのファイルに記録するかが task ごとにバラバラになりやすかった                                      |
+| 原因       | NON_VISUAL task の証跡方針が未定義のため、スクリーンショット代替として複数のファイル形式が混在した                                                  |
+| 解決策     | Phase 11 の primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に統一し、vitest 実行ログ・typecheck 結果・確認コマンド出力を記載 |
+| 設計原則   | NON_VISUAL task の証跡は「実行コマンド + 結果（PASS/FAIL）+ 判定理由」の三点セットを manual-test-report に記録し、Phase 12 審査の一貫性を保つ       |
+| 適用条件   | IPC handler / preload API / ユーティリティ関数など、UI レンダリングを伴わない NON_VISUAL task 全般                                                  |
+| 関連タスク | TASK-SW-CANCEL-003                                                                                                                                  |

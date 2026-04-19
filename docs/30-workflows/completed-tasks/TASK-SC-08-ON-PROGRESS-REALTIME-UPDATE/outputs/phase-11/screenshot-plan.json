@@ -1,0 +1,55 @@
+{
+  "taskId": "TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE",
+  "phase": 11,
+  "mode": "SKIP",
+  "reason": "UIロジック変更なし。変更はuseStreamingProgress.tsのPHASE_TO_STAGEマップへの4エントリ追加（hook内部）のみであり、視覚的UIへの影響がないためスクリーンショット撮影対象外とする。",
+  "captureTargets": [],
+  "skippedTargets": [
+    {
+      "state": "skill-lifecycle-create-planning",
+      "canonicalFileName": "skill-lifecycle-create-planning.png",
+      "skipReason": "GenerateStep.tsx変更なし・既存動作に影響なし"
+    },
+    {
+      "state": "skill-lifecycle-update-analyzing",
+      "canonicalFileName": "skill-lifecycle-update-analyzing.png",
+      "skipReason": "phase→stage変換はhook内部のみ・UI表示ロジック変更なし"
+    },
+    {
+      "state": "skill-lifecycle-collaborative-progress",
+      "canonicalFileName": "skill-lifecycle-collaborative-progress.png",
+      "skipReason": "collaborativeモードのUI変更なし"
+    },
+    {
+      "state": "skill-lifecycle-orchestrate-engine-selection",
+      "canonicalFileName": "skill-lifecycle-orchestrate-engine-selection.png",
+      "skipReason": "engine-selectionのUI変更なし・PHASE_TO_STAGEマップ内部変更のみ"
+    },
+    {
+      "state": "skill-lifecycle-improve-prompt-improving",
+      "canonicalFileName": "skill-lifecycle-improve-prompt-improving.png",
+      "skipReason": "improvingのUI変更なし・PHASE_TO_STAGEマップ内部変更のみ"
+    },
+    {
+      "state": "skill-lifecycle-cancel-reset",
+      "canonicalFileName": "skill-lifecycle-cancel-reset.png",
+      "skipReason": "キャンセル・リセットのUI変更なし"
+    }
+  ],
+  "automatedTestCoverage": {
+    "coveredBy": [
+      "TC-01",
+      "TC-02",
+      "TC-03",
+      "TC-04",
+      "TC-05",
+      "TC-06",
+      "TC-07",
+      "TC-08",
+      "TC-09"
+    ],
+    "testFile": "apps/desktop/src/renderer/hooks/__tests__/useStreamingProgress.test.ts",
+    "result": "ALL_PASS"
+  },
+  "createdAt": "2026-04-19"
+}
