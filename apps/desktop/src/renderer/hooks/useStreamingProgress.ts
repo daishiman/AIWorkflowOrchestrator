@@ -33,6 +33,9 @@ const PHASE_TO_STAGE: Record<string, StreamingGenerationStage> = {
   "generating-agents": "generating-agents",
   validating: "validating",
   done: "done",
+  // collaborative モード
+  interview: "planning",
+  consensus: "planning",
   // update モード
   "loading-skill": "planning",
   analyzing: "planning",

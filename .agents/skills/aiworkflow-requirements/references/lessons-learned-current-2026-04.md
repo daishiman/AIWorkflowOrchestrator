@@ -4,6 +4,37 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19）
+
+### L-SC08-001: mode-specific phase が planning に吸収される問題は PHASE_TO_STAGE マップの追記漏れが原因
+
+| 項目       | 内容                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `TASK-SW-STREAM-FUP-03` で Main 側に `interview` / `consensus` / `loading-skill` / `analyzing` / `engine-selection` / `improving` の phase が追加されたが、Renderer 側の `PHASE_TO_STAGE` に対応エントリがなく全て `planning` へ吸収されていた |
+| 解決策     | `useStreamingProgress.ts` の `PHASE_TO_STAGE` に 6 エントリを追加し、適切な `StreamingGenerationStage` へマッピングした。新しい phase を Main 側に追加するたびに Renderer 側のマップも同波で更新する |
+| 標準ルール | `SkillCreatorService` に新 phase を追加するたびに `useStreamingProgress.ts` の `PHASE_TO_STAGE` と対応するテストを同時更新すること                                                              |
+| 関連タスク | TASK-SC-08, TASK-SW-STREAM-FUP-03                                                                                                                                                             |
+
+### L-SC08-002: onProgress コールバックは useEffect cleanup で必ず解除する
+
+| 項目       | 内容                                                                                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `api.onProgress(callback)` が返すクリーンアップ関数を `useEffect` の cleanup で呼ばないと、コンポーネントアンマウント後もリスナーが残存しメモリリークの原因となる             |
+| 解決策     | `const cleanup = api.onProgress(...)` として返り値を変数に保持し、`return () => { cleanup(); resetProgress(); }` でリスナー解除と状態リセットを同時に行う                      |
+| 標準ルール | IPC イベントリスナーは必ず `useEffect` cleanup で解除し、リスナー解除と状態リセットをペアで実装する（P5 対策パターン）                                                          |
+| 関連タスク | TASK-SC-08                                                                                                                                                                    |
+
+### L-SC08-003: system-spec-update-summary の「実施した同期 / 未実施同期」はテンプレートで分離すべき
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `system-spec-update-summary.md` で local workflow 修正のみ行い system spec 更新を省略した際、「全て同期済み」と誤解されやすい書き方になっていた              |
+| 解決策     | 「実施した同期（Step 1-A）」と「実施しなかった同期（Step 1-B）」を明示的に分けて記述するテンプレートを標準化し、省略理由を必ず記録する                        |
+| 標準ルール | Phase 12 `system-spec-update-summary.md` では Step 1-A（実施）と Step 1-B（未実施・理由）を必ず両方記載すること。今回のテンプレートは `aiworkflow-requirements/SKILL.md` のベストプラクティスに追記済み |
+| 関連タスク | TASK-SC-08                                                                                                                                                   |
+
+---
+
 ## TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18）
 
 ### L-LLM-PURPOSE-001: extractPurposeWithLlm は llmClient 未注入時に null を返し options.description fallback で継続する
