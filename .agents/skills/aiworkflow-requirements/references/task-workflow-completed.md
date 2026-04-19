@@ -3223,3 +3223,92 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - 削除済みファイルの cleanup では、対象ファイルの存在確認を先に行うと残存参照スキャンを安全に進められる
 - 正本生成スクリプトは N/A 扱いにせず、存在確認と実行結果を分けて記録する
 - root parity は `diff -q` で証跡化し、存在確認だけで完了扱いにしない
+
+### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-003 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | ipc-handler / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/handlers/skillCreatorHandlers.ts` |
+| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
+
+#### 実施内容
+
+- `SKILL_CREATOR_CANCEL` IPC チャンネルの Main プロセスハンドラー登録を確認
+- 既実装（`handleSkillCreatorCancel`）が存在することを verification として差分確認
+- Phase 12 審査: L-CANCEL-003-001/002/003 教訓を `lessons-learned-current-2026-04.md` に追記
+
+#### chain における位置
+
+| chain | 位置 |
+| --- | --- |
+| CANCEL-001 | IPC チャンネル定義 |
+| CANCEL-002 | Preload API 公開 |
+| **CANCEL-003** | **Main ハンドラー登録（本タスク）** |
+| CANCEL-004 | Renderer フック修正 |
+
+本タスク単体の完了定義: Main ハンドラー登録の確認のみ。E2E 疎通は CANCEL-004 完了後。
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| 「新規実装」テンプレートと既実装の混線 | Phase 4/5 を「差分確認」フェーズとして読み替え |
+| chain task の完了定義の曖昧さ | chain 位置と本タスク単体の完了定義を明示 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop typecheck` | PASS（既実装確認） |
+| `pnpm --filter @repo/desktop test` | PASS |
+
+#### lessons-learned
+
+- `implementation_mode` を task 作成前に宣言することで既実装との混線を防ぐ（→ L-CANCEL-003-001）
+- chain task の scope には chain における位置と完了定義を明記する（→ L-CANCEL-003-002）
+- NON_VISUAL task の証跡は `{TASK-ID}-manual-test-report.md` に統一する（→ L-CANCEL-003-003）
+
+### タスク: UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 SkillCreateWizard LLM生成フロー describe.skip クリーンアップ（2026-04-16）
+
+| 項目          | 値                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------- |
+| タスクID      | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001                                           |
+| ステータス    | **完了（Phase 12 close-out）**                                                      |
+| タイプ        | docs-only / cleanup / NON_VISUAL                                                    |
+| 優先度        | 低                                                                                  |
+| 完了日        | 2026-04-16                                                                          |
+| 対象          | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` |
+| 元ワークフロー | `docs/30-workflows/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/`                     |
+
+#### 実施内容
+
+- 削除済み対象ファイルを確認し、`describe.skip` / `TODO(W2-seq-03a)` の残存が 0 件であることを記録
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
+- `outputs/phase-12/` の 6 成果物を current facts に合わせて同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS |
+| `diff -q artifacts.json outputs/artifacts.json` | PASS |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| generate-index.js の N/A 誤判定 | 実在確認を先に行い、実行結果を実測値で残す |
+| root parity の証跡不足 | `ls` ではなく `diff -q` で同値性を記録する |
+
+#### lessons-learned
+
+- 削除済みファイルの cleanup では、対象ファイルの存在確認を先に行うと残存参照スキャンを安全に進められる
+- 正本生成スクリプトは N/A 扱いにせず、存在確認と実行結果を分けて記録する
+- root parity は `diff -q` で証跡化し、存在確認だけで完了扱いにしない

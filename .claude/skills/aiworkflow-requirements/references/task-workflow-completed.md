@@ -3184,6 +3184,55 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
 
+### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-003 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | ipc-handler / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/handlers/skillCreatorHandlers.ts` |
+| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
+
+#### 実施内容
+
+- `SKILL_CREATOR_CANCEL` IPC チャンネルの Main プロセスハンドラー登録を確認
+- 既実装（`handleSkillCreatorCancel`）が存在することを verification として差分確認
+- Phase 12 審査: L-CANCEL-003-001/002/003 教訓を `lessons-learned-current-2026-04.md` に追記
+
+#### chain における位置
+
+| chain | 位置 |
+| --- | --- |
+| CANCEL-001 | IPC チャンネル定義 |
+| CANCEL-002 | Preload API 公開 |
+| **CANCEL-003** | **Main ハンドラー登録（本タスク）** |
+| CANCEL-004 | Renderer フック修正 |
+
+本タスク単体の完了定義: Main ハンドラー登録の確認のみ。E2E 疎通は CANCEL-004 完了後。
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| 「新規実装」テンプレートと既実装の混線 | Phase 4/5 を「差分確認」フェーズとして読み替え |
+| chain task の完了定義の曖昧さ | chain 位置と本タスク単体の完了定義を明示 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop typecheck` | PASS（既実装確認） |
+| `pnpm --filter @repo/desktop test` | PASS |
+
+#### lessons-learned
+
+- `implementation_mode` を task 作成前に宣言することで既実装との混線を防ぐ（→ L-CANCEL-003-001）
+- chain task の scope には chain における位置と完了定義を明記する（→ L-CANCEL-003-002）
+- NON_VISUAL task の証跡は `{TASK-ID}-manual-test-report.md` に統一する（→ L-CANCEL-003-003）
+
 ### タスク: UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 SkillCreateWizard LLM生成フロー describe.skip クリーンアップ（2026-04-16）
 
 | 項目          | 値                                                                                  |

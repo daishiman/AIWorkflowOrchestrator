@@ -74,6 +74,35 @@ Phase 1、Phase 2、Phase 3。
 - `spec-extraction-map.md` で aiworkflow-requirements 正本と current code anchor の対応を固定する。
 - Phase 1-3 完了前に Phase 4 へ進まない gate を書く。
 
+### chain task の scope セクション必須フィールド（[CANCEL-003-FB-3]）
+
+複数タスクが連携する cancel chain などの chain task では、各タスクの `scope` セクションに以下のフィールドを必ず明記する。
+
+| フィールド | 必須 | 説明 |
+| --- | --- | --- |
+| `chain_position` | ✅ | chain における位置（例: `"1/3"`, `"2/3"`, `"3/3"`） |
+| `chain_id` | ✅ | chain を一意に識別する ID（例: `"CANCEL-CHAIN-001"`） |
+| `chain_completion_definition` | ✅ | このタスクが完了した時点での chain 全体の完了定義（何が達成されれば OK か） |
+| `depends_on_chain_tasks` | 条件付 | 前タスクの成果物のうち、本タスクが依存するものを列挙 |
+| `provides_to_chain_tasks` | 条件付 | 本タスクが後タスクへ引き渡す成果物を列挙 |
+
+**記載例（Phase 1 scope セクション内）:**
+
+```yaml
+chain_position: "2/3"
+chain_id: "SW-CANCEL-CHAIN-001"
+chain_completion_definition: |
+  このタスクが完了 = キャンセルボタンの UI が表示され、クリックイベントが IPC に到達する。
+  chain 全体の完了は TASK-SW-CANCEL-003 の Phase 12 close-out をもって判定する。
+depends_on_chain_tasks:
+  - TASK-SW-CANCEL-001: cancelToken 型定義（packages/shared/src/types/cancel.ts）
+provides_to_chain_tasks:
+  - TASK-SW-CANCEL-003: cancelHandler IPC チャンネル（cancel:request）
+```
+
+- chain の途中タスクで `scope` セクションにこれらが欠落すると、後続タスクの依存関係が曖昧になり Phase 1 でリワークが発生する
+- 単独タスク（chain でない）では不要フィールドは省略してよい
+
 ### 画面遷移 / handoff 改修タスクの追加ルール
 
 - Phase 1 で **実在する state 名** をコードから確定してから書く。`previousView` / `sourceView` / `isExecutionComplete` のような placeholder を spec に書かない。
