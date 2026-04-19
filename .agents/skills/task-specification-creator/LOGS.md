@@ -2,6 +2,24 @@
 
 ## 役割
 
+## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
+
+### 変更内容
+
+TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
+
+| 指摘ID | 内容 | 反映先 |
+| --- | --- | --- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+
+### 変更ファイル
+
+- `SKILL.md`: P50チェックセクションに `implementation_mode` 定義テーブルを追記
+- `references/phase-template-phase12.md`: NON_VISUAL + verify_existing の Phase 11 primary evidence セクションを追加
+- `references/phase-template-core.md`: chain task の scope フィールド必須定義を Phase 1 セクションに追加
+
 ## 2026-04-18 - TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）タスク完了
 
 ### コンテキスト
