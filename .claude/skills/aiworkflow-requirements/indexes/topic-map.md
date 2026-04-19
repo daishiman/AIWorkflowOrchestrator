@@ -3199,26 +3199,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18） | L7 |
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L47 |
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L69 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L109 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L140 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L163 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L188 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L219 |
-| TASK-RT-06 教訓（2026-03-29） | L250 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L272 |
-| TASK-P0-04 教訓（2026-03-30） | L303 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L339 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L433 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L487 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L527 |
-| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L567 |
-| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L598 |
-| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L610 |
-| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L633 |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L641 |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L7 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L29 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L69 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L100 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L123 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L148 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L179 |
+| TASK-RT-06 教訓（2026-03-29） | L210 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L232 |
+| TASK-P0-04 教訓（2026-03-30） | L263 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L299 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L393 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L447 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L487 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L527 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L558 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L570 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L593 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L601 |
+| TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L635 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -5243,9 +5243,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L28 |
-| 利用順序 | L57 |
-| 関連ドキュメント | L62 |
+| 仕様書インデックス | L29 |
+| 利用順序 | L58 |
+| 関連ドキュメント | L63 |
 
 ### references/testing-accessibility.md
 

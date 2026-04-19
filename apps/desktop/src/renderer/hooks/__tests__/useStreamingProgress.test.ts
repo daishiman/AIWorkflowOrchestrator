@@ -238,6 +238,176 @@ describe("useStreamingProgress", () => {
   });
 
   // ==========================================================
+  // TASK-SC-08: モード別phaseマッピングテスト（TC-01〜TC-09）
+  // ==========================================================
+  describe("モード別phaseマッピング（TC-01〜TC-09）", () => {
+    // TC-01: updateモードのloading-skillが planningにマッピングされること
+    it("TC-01: update mode - loading-skill が planning にマッピングされる", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "loading-skill",
+          percentage: 10,
+          message: "スキル読み込み中",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.isGenerating).toBe(true);
+    });
+
+    // TC-02: updateモードのanalyzingが planningにマッピングされること
+    it("TC-02: update mode - analyzing が planning にマッピングされる", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "analyzing",
+          percentage: 20,
+          message: "スキル分析中",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.isGenerating).toBe(true);
+    });
+
+    // TC-03: orchestrateモードのengine-selectionが planningにマッピングされること
+    it("TC-03: orchestrate mode - engine-selection が planning にマッピングされる", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "engine-selection",
+          percentage: 15,
+          message: "実行エンジン選択中",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.isGenerating).toBe(true);
+    });
+
+    // TC-04: improve-promptモードのimprovingが generating-skillにマッピングされること
+    it("TC-04: improve-prompt mode - improving が generating-skill にマッピングされる", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "improving",
+          percentage: 50,
+          message: "プロンプト改善中",
+        });
+      });
+
+      expect(result.current.stage).toBe("generating-skill");
+      expect(result.current.isGenerating).toBe(true);
+    });
+
+    // TC-05: 未知のphaseはplanningにフォールバックすること（意図的フォールバック確認）
+    it("TC-05: 未知のphaseは planning にフォールバックする（意図的）", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "completely-unknown-phase-xyz",
+          percentage: 5,
+          message: "不明フェーズ",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+    });
+
+    // TC-06: onProgressコールバックが呼ばれた時にストアが更新されること
+    it("TC-06: onProgress コールバックで streamingPercent と streamingMessage が更新される", () => {
+      renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "loading-skill",
+          percentage: 30,
+          message: "読み込み中...",
+        });
+      });
+
+      expect(useAppStore.getState().streamingPercent).toBe(30);
+      expect(useAppStore.getState().streamingMessage).toBe("読み込み中...");
+    });
+
+    // TC-07: idle状態でonProgressが来ても isGenerating=false のまま
+    it("TC-07: idle 状態のストアに progress が来ても isGenerating フラグは stage に依存する", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      expect(result.current.isGenerating).toBe(false);
+
+      const callback = mockOnProgress.mock.calls[0][0];
+      act(() => {
+        callback({ phase: "done", percentage: 100, message: "完了" });
+      });
+
+      expect(result.current.isGenerating).toBe(false);
+    });
+
+    // TC-08: アンマウント時にリスナーが解除されストアがリセットされること
+    it("TC-08: アンマウント時に cleanup が呼ばれストアが idle にリセットされる", () => {
+      const { unmount } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({ phase: "analyzing", percentage: 40, message: "分析中" });
+      });
+
+      expect(useAppStore.getState().streamingStage).toBe("planning");
+
+      unmount();
+
+      expect(mockCleanup).toHaveBeenCalledOnce();
+      expect(useAppStore.getState().streamingStage).toBe("idle");
+    });
+
+    // TC-09: 全モードのmode-specific phaseがplanningへの不正吸収なく正しくマッピングされること
+    it("TC-09: 全モードのmode-specific phase が正しいstageにマッピングされる（退行なし）", () => {
+      const modePhaseMap = [
+        { phase: "loading-skill", expected: "planning", mode: "update" },
+        { phase: "analyzing", expected: "planning", mode: "update" },
+        {
+          phase: "engine-selection",
+          expected: "planning",
+          mode: "orchestrate",
+        },
+        {
+          phase: "improving",
+          expected: "generating-skill",
+          mode: "improve-prompt",
+        },
+      ] as const;
+
+      for (const { phase, expected } of modePhaseMap) {
+        // ストアをリセット
+        useAppStore.getState().resetStreamingProgress();
+
+        const { result, unmount } = renderHook(() => useStreamingProgress());
+        const callback =
+          mockOnProgress.mock.calls[mockOnProgress.mock.calls.length - 1][0];
+
+        act(() => {
+          callback({ phase, percentage: 50, message: `${phase} 実行中` });
+        });
+
+        expect(result.current.stage).toBe(expected);
+        unmount();
+      }
+    });
+  });
+
+  // ==========================================================
   // Phase 6: 全ステージマッピングテスト
   // ==========================================================
   describe("全ステージマッピング", () => {

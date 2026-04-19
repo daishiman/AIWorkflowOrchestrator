@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3139,
+  "totalKeywords": 3136,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -8751,19 +8751,6 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
-    "PURPOSE": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "WIRE": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "purpose": [
-      "lessons-learned-current-2026-04.md"
-    ],
-    "抽出": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-test-typesafety.md"
-    ],
     "fetchSkills": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -10478,6 +10465,9 @@
       "lessons-learned-test-typesafety.md"
     ],
     "helper": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "抽出": [
       "lessons-learned-test-typesafety.md"
     ],
     "個別カバレッジ計測": [
