@@ -968,8 +968,9 @@ export class SkillCreatorService {
    */
   private async runOrchestrateWorkflow(
     options: CreateSkillOptions,
-    _signal?: AbortSignal,
+    signal?: AbortSignal,
   ): Promise<void> {
+    this.throwIfAborted(signal);
     // 実行エンジン選択ロジック
     const engine = options.executionEngine || "claude";
     void engine; // unused warning回避
@@ -984,6 +985,7 @@ export class SkillCreatorService {
     options: CreateSkillOptions,
     signal?: AbortSignal,
   ): Promise<StructurePlanJson | null> {
+    this.throwIfAborted(signal);
     try {
       const purpose = await this.extractPurposeWithLlm(options, signal);
       const features = await this.generateFeaturesWithLlm(

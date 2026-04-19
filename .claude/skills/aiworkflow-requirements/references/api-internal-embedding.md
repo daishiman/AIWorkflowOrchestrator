@@ -162,6 +162,59 @@
 | `chunks[].metadata.type`  | string | チャンクタイプ       |
 | `chunks[].size`           | number | サイズ（文字数）     |
 
+### Late Chunking埋め込み生成（UNASSIGNED-EMB-005）
+
+**メソッド**: `EmbeddingService.generateChunkEmbeddings()`
+
+テキスト全体をエンコーダに通し、チャンク境界に基づいてhidden stateをpoolingすることでチャンクごとの埋め込みを生成するメソッド。`EmbeddingServiceConfig.lateChunkingService` が未設定の場合は `EmbeddingError` をスロー。
+
+**メソッドシグネチャ**:
+
+| 項目 | 内容 |
+| --- | --- |
+| メソッド名 | generateChunkEmbeddings |
+| 引数1 | text: string（必須）- エンコード対象の全文テキスト |
+| 引数2 | chunkBoundaries: ChunkBoundary[]（必須）- チャンク文字境界の配列 |
+| 引数3 | config?: Partial&lt;LateChunkingConfig&gt;（任意）- Late Chunking設定 |
+| 戻り値 | Promise&lt;ChunkEmbeddingResult[]&gt; - チャンクごとの埋め込み結果 |
+
+**入力パラメータ**:
+
+| パラメータ | 型 | 説明 |
+| --- | --- | --- |
+| `text` | `string` | エンコード対象の全文テキスト（空文字の場合は空配列を返す） |
+| `chunkBoundaries` | `ChunkBoundary[]` | チャンク境界配列（空配列の場合は空配列を返す） |
+| `config.poolingStrategy` | `"mean" \| "max" \| "cls"` | pooling戦略（デフォルト: "mean"） |
+| `config.maxTokenLength` | `number` | 最大トークン長（デフォルト: 512） |
+| `config.windowOverlapTokens` | `number` | ウィンドウオーバーラップ（デフォルト: 16） |
+
+**出力パラメータ**:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `[].chunkId` | `string` | チャンクID（入力 `ChunkBoundary.chunkId` に対応） |
+| `[].embedding` | `number[]` | 埋め込みベクトル |
+| `[].tokenCount` | `number` | チャンクのトークン数 |
+
+**エラーケース**:
+
+| エラー | 条件 |
+| --- | --- |
+| `EmbeddingError` | `lateChunkingService` が未設定 |
+| `InvalidBoundaryError` | チャンク境界が不正（文字位置超過等） |
+| `OutOfMemoryError` | hidden state処理時のメモリ不足 |
+
+**EmbeddingServiceConfig への統合**:
+
+```typescript
+// lateChunkingService はオプション。設定しない場合、generateChunkEmbeddings() は EmbeddingError をスロー
+const service = new EmbeddingService({
+  providers: [...],
+  fallbackChain: [...],
+  lateChunkingService: new LateChunkingService(encoder), // オプション
+});
+```
+
 ## エラーコード
 
 | エラーコード              | 説明                         | HTTPステータス |
