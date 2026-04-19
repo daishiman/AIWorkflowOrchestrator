@@ -2,6 +2,24 @@
 
 ## 役割
 
+## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
+
+### 変更内容
+
+TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
+
+| 指摘ID | 内容 | 反映先 |
+| --- | --- | --- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+
+### 変更ファイル
+
+- `SKILL.md`: P50チェックセクションに `implementation_mode` 定義テーブルを追記
+- `references/phase-template-phase12.md`: NON_VISUAL + verify_existing の Phase 11 primary evidence セクションを追加
+- `references/phase-template-core.md`: chain task の scope フィールド必須定義を Phase 1 セクションに追加
+
 ## 2026-04-18 - TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）タスク完了
 
 ### コンテキスト
@@ -14,7 +32,13 @@
 - テストカバレッジ: docs-only / NON_VISUAL 証跡 9観点 PASS
 - 実装内容:
   - `manual-test-result.md` を NON_VISUAL 正本テンプレートへ是正
-  - Phase 12 の same-wave sync 範囲と compliance-check を補強
+- Phase 12 の same-wave sync 範囲と compliance-check を補強
+
+## 2026-04-19 - TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 close-out sync
+
+- NON_VISUAL task の Phase 11 で `manual-test-result.md` を正本、task-specific report を summary とする整理を current facts に反映
+- Phase 12 canonical 6成果物と Phase 13 blocked artifact を task workflow に追加し、root / outputs parity を同期
+- private workflow abort 入口保証タスクでは public cancel test に加えて private minimal test を追加するパターンを usage log として記録
 
 ### 結果
 - ステータス: success

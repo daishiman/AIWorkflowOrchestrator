@@ -103,6 +103,17 @@ upstream 実装済みタスクでは「差分確認 → 回帰確認」にシフ
 
 > **標準ルール**: upstream マージ済みの場合は Phase 5 冒頭に「差分確認」セクションを設け、実装の代わりに回帰確認を行う。
 
+### implementation_mode の定義（[CANCEL-003-FB-1]）
+
+P50チェック結果に基づき、タスク仕様書のメタ情報に `implementation_mode` を明記する。
+
+| モード | 値 | 説明 |
+| --- | --- | --- |
+| 通常実装 | `"new"` | RED/GREEN サイクルで新規実装を行う |
+| 既実装確認 | `"verify_existing"` | Phase 4 = targeted test 設計、Phase 5 = diff check に切り替える |
+
+`implementation_mode: "verify_existing"` を選択した場合、Phase 4 では既実装コードのカバレッジを確認する targeted test のみを設計し、Phase 5 では `git diff` によるdiff確認を主要作業とする。詳細は [references/phase-template-core.md](references/phase-template-core.md) の P50チェックセクションを参照。
+
 ## 実行フロー
 
 ### create

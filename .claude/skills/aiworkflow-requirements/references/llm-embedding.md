@@ -144,6 +144,87 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ---
 
+## Late Chunking 型定義（UNASSIGNED-EMB-005）
+
+**実装場所**: `packages/shared/src/services/embedding/late-chunking/`
+
+Late Chunkingは、テキスト全体をエンコーダに通してからチャンク境界でhidden stateをpoolingする手法。チャンク間の文脈保持により検索品質が10-30%向上する。
+
+### LateChunkingConfig
+
+Late Chunking設定型。
+
+| 設定項目 | 型 | デフォルト値 | 説明 |
+| --- | --- | --- | --- |
+| `poolingStrategy` | `PoolingStrategy` | `"mean"` | pooling戦略（mean/max/cls） |
+| `useFloat16` | `boolean` | `false` | Float16精度使用フラグ |
+| `maxTokenLength` | `number` | `512` | 最大トークン長 |
+| `windowOverlapTokens` | `number` | `16` | ウィンドウオーバーラップトークン数 |
+
+### ChunkBoundary
+
+チャンク文字境界型。
+
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| `startChar` | `number` | 開始文字位置 |
+| `endChar` | `number` | 終了文字位置 |
+| `chunkId` | `string` | チャンクID |
+
+### TokenRange
+
+チャンクのトークン範囲型。
+
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| `startToken` | `number` | 開始トークン位置 |
+| `endToken` | `number` | 終了トークン位置 |
+| `chunkId` | `string` | チャンクID |
+
+### EncoderOutput
+
+エンコーダ出力型。
+
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| `hiddenStates` | `Float32Array[]` | 各トークンのhidden state |
+| `offsetMapping` | `[number, number][]` | トークンと文字位置のマッピング |
+
+### ChunkEmbeddingResult
+
+チャンク埋め込み結果型。
+
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| `chunkId` | `string` | チャンクID |
+| `embedding` | `number[]` | 埋め込みベクトル |
+| `tokenCount` | `number` | トークン数 |
+
+### IEncoder
+
+エンコーダインターフェース。
+
+| メソッド | シグネチャ | 説明 |
+| --- | --- | --- |
+| `encode` | `(text: string) => Promise<EncoderOutput>` | テキストをエンコードしhidden stateと位置マッピングを返す |
+
+### ILateChunkingService
+
+Late Chunkingサービスの公開インターフェース。
+
+| メソッド | シグネチャ | 説明 |
+| --- | --- | --- |
+| `generateChunkEmbeddings` | `(text: string, chunkBoundaries: ChunkBoundary[], config?: Partial<LateChunkingConfig>) => Promise<ChunkEmbeddingResult[]>` | チャンク境界に基づいてLate Chunking埋め込みを生成 |
+
+### Late Chunking エラークラス
+
+| エラークラス | 親クラス | 説明 |
+| --- | --- | --- |
+| `InvalidBoundaryError` | `EmbeddingError` | チャンク境界が不正（文字位置がテキスト範囲外等） |
+| `OutOfMemoryError` | `EmbeddingError` | hidden state処理時のメモリ不足 |
+
+---
+
 ## エラー型
 
 ### EmbeddingError
