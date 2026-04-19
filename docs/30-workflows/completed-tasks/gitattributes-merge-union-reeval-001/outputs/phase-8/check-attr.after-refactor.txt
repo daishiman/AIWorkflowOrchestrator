@@ -1,0 +1,10 @@
+.claude/skills/aiworkflow-requirements/LOGS.md: merge: union
+.claude/skills/aiworkflow-requirements/references/LOGS.md: merge: union
+.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md: merge: union
+.claude/skills/aiworkflow-requirements/references/lessons-learned-current.md: merge: union
+.claude/skills/aiworkflow-requirements/references/task-workflow.md: merge: unspecified
+.claude/skills/aiworkflow-requirements/references/lessons-learned.md: merge: unspecified
+.claude/skills/aiworkflow-requirements/references/api-core.md: merge: unspecified
+.claude/skills/aiworkflow-requirements/indexes/topic-map.json: merge: ours
+.claude/skills/aiworkflow-requirements/indexes/topic-map.md: merge: ours
+.claude/skills/aiworkflow-requirements/EVALS.json: merge: ours
