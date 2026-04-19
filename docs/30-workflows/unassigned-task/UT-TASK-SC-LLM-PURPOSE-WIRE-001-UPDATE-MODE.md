@@ -11,7 +11,7 @@
 | 対象機能     | SkillCreatorService.ts / runCreateSkill スイッチ分岐 |
 | 優先度       | 高                                                   |
 | 見積もり規模 | 中規模                                               |
-| ステータス   | 完了（workflow 実装済み・Phase 13 未実施）           |
+| ステータス   | 未実施                                               |
 | 発見元       | TASK-SC-LLM-PURPOSE-WIRE-001 Phase 12 未タスク検出   |
 | 発見日       | 2026-04-18                                           |
 
