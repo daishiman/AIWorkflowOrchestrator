@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3149,
+  "totalKeywords": 3151,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7820,6 +7820,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -7877,7 +7878,8 @@
       "ui-ux-feature-components-theme-chat.md"
     ],
     "COVERAGE": [
-      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "SettingsView": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -8883,6 +8885,12 @@
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "handler": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SNAPSHOT": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "スナップショットカバレッジ": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
