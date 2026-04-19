@@ -1,0 +1,36 @@
+TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 Phase 3 Design Review Prompt
+
+Context:
+This task is a spec-reconstruction task, NOT a new feature implementation.
+The existing code in SkillCreatorService.ts already implements cancel cleanup correctly.
+The goal is to align the task specification with the actual implementation.
+
+Review Focus:
+1. Does the design acknowledge that cleanupCancelledSkillDir exists in the catch block?
+2. Does the design acknowledge that skillDirExistedBefore prevents accidental deletion?
+3. Is the task correctly classified as NON_VISUAL code task (not docs-only)?
+4. Are Phase 11/12 alternative evidence artifacts correctly defined?
+5. Are artifacts.json and outputs/artifacts.json in parity?
+
+Gate Criteria (PASS conditions):
+- MAJOR: task classification, artifact registry, Phase 11/12 redesign
+  → All PASS: design documents acknowledge NON_VISUAL classification
+- MINOR: wording adjustments only
+  → Acceptable, proceed to Phase 4
+
+Evidence Files:
+- outputs/phase-1/requirements-definition.md
+- outputs/phase-1/current-implementation-audit.md
+- outputs/phase-2/solution-design.md
+- outputs/phase-2/subagent-lane-plan.md
+- outputs/phase-2/validation-path.md
+
+Code Reference:
+- apps/desktop/src/main/services/skill/SkillCreatorService.ts (lines 259-280: cleanupCancelledSkillDir)
+- apps/desktop/src/main/services/skill/SkillCreatorService.ts (lines 373-374: skillDirExistedBefore)
+- apps/desktop/src/main/services/skill/SkillCreatorService.ts (lines 538-551: catch/finally)
+- apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.test.ts (SC-CANCEL-001, SC-CANCEL-002)
+
+Conclusion: PASS (proceed to Phase 4)
+Rationale: All MAJOR criteria are satisfied. Design correctly identifies catch-based cleanup,
+           skillDirExistedBefore protection, NON_VISUAL classification, and artifact parity requirements.

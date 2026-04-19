@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerLLMHandlers - チャンネル登録スナップショット > REG-SNAP-LLM-01〜REG-COUNT-LLM-01: 正常系 > REG-SNAP-LLM-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "llm:check-health",
+  "llm:get-providers",
+  "llm:send-chat",
+  "llm:set-selected-config",
+  "llm:stream-cancel",
+  "llm:stream-chat",
+]
+`;
