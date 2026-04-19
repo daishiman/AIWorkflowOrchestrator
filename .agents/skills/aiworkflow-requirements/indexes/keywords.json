@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3145,
+  "totalKeywords": 3156,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -460,6 +460,7 @@
       "interfaces-system-prompt.md",
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -3455,6 +3456,7 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-skill-creator-cancel-chain.md",
@@ -4688,6 +4690,7 @@
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
@@ -4884,6 +4887,7 @@
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md"
     ],
@@ -7083,6 +7087,7 @@
       "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -7169,6 +7174,7 @@
       "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -7475,6 +7481,7 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
@@ -8329,6 +8336,7 @@
     ],
     "実装教訓": [
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md"
     ],
@@ -8777,6 +8785,27 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
+    "ON": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PROGRESS": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "REALTIME": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "UPDATE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "onProgress": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "quick-reference-search-patterns-skill-lifecycle.md"
+    ],
     "PURPOSE": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8820,11 +8849,6 @@
     ],
     "structurePlan": [
       "lessons-learned-current-2026-04.md"
-    ],
-    "接続": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
-      "quick-reference-search-patterns-skill-lifecycle.md"
     ],
     "SHARED": [
       "lessons-learned-current-2026-04.md",
@@ -9298,6 +9322,31 @@
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "Late": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "Chunking": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "EMB": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "教訓サマリー": [
+      "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-rag-embedding-runtime.md"
+    ],
+    "のルートから強制再インストール": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "キャッシュ削除後に再インストール": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "パッケージのビルド確認": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "テスト実行で動作確認": [
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -9423,9 +9472,6 @@
       "task-workflow-completed-ipc-preload-foundation.md"
     ],
     "Extraction": [
-      "lessons-learned-rag-embedding-runtime.md"
-    ],
-    "教訓サマリー": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
     "EMBEDDING": [
@@ -10386,9 +10432,6 @@
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FUP": [
-      "lessons-learned-stream-001-progress-callback.md"
-    ],
-    "PROGRESS": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FLOWS": [

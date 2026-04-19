@@ -155,9 +155,10 @@ node scripts/list-specs.js --topics
 | 埋め込みプロバイダー | L56 |
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
-| 品質メトリクス | L125 |
-| 関連ドキュメント | L153 |
-| 変更履歴 | L161 |
+| Late Chunking パイプライン拡張 | L125 |
+| 品質メトリクス | L185 |
+| 関連ドキュメント | L213 |
+| 変更履歴 | L221 |
 
 ### references/architecture-file-conversion.md
 
@@ -917,8 +918,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L8 |
 | 主要インターフェース | L19 |
-| エラーコード | L165 |
-| 性能指標 | L176 |
+| エラーコード | L218 |
+| 性能指標 | L229 |
 
 ### references/api-internal-search.md
 
@@ -3395,6 +3396,14 @@ node scripts/list-specs.js --topics
 | TASK-SC-05-IMPROVE-LLM（2026-03-23） | L493 |
 | TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L509 |
 
+### references/lessons-learned-late-chunking-esbuild-worktree.md
+
+| セクション | 行 |
+|------------|----|
+| 教訓サマリー | L8 |
+| UNASSIGNED-EMB-005 実装教訓（2026-04-19） | L17 |
+| 関連ドキュメント | L95 |
+
 ### references/lessons-learned-phase12-lifecycle-early-b.md
 
 | セクション | 行 |
@@ -3879,10 +3888,11 @@ node scripts/list-specs.js --topics
 | 出力型 | L93 |
 | 信頼性設定型 | L105 |
 | メトリクス型 | L135 |
-| エラー型 | L147 |
-| 列挙型 | L178 |
-| 品質メトリクス | L206 |
-| 関連ドキュメント | L214 |
+| Late Chunking 型定義（UNASSIGNED-EMB-005） | L147 |
+| エラー型 | L228 |
+| 列挙型 | L259 |
+| 品質メトリクス | L287 |
+| 関連ドキュメント | L295 |
 
 ### references/llm-ipc-types.md
 

@@ -36,6 +36,26 @@
 
 ---
 
+## 2026-04-19: UNASSIGNED-EMB-005 Late Chunking impl-spec-to-skill-sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EMB-005 |
+| 操作 | update-spec / create-spec |
+| 対象ファイル | `references/architecture-embedding-pipeline.md`, `references/llm-embedding.md`, `references/api-internal-embedding.md`, `references/lessons-learned-late-chunking-esbuild-worktree.md`（新規）, `indexes/resource-map.md` |
+| 結果 | success |
+| 備考 | Late Chunking（検索品質10-30%向上）実装内容をsystem specに反映。苦戦箇所（esbuildバイナリバージョン不一致・IEncoderモック雛型設計）をlessons-learnedに記録。 |
+
+### 更新詳細
+
+- `references/architecture-embedding-pipeline.md`: Late Chunkingパイプライン拡張セクションを追加（コンポーネント構成・型定義・インターフェース・エラークラス・EmbeddingService統合・デフォルト設定）
+- `references/llm-embedding.md`: Late Chunking型定義セクションを追加（LateChunkingConfig / ChunkBoundary / TokenRange / EncoderOutput / ChunkEmbeddingResult / IEncoder / ILateChunkingService / エラークラス）
+- `references/api-internal-embedding.md`: `EmbeddingService.generateChunkEmbeddings()` APIドキュメントを追加（シグネチャ・入力・出力・エラーケース・設定例）
+- `references/lessons-learned-late-chunking-esbuild-worktree.md`: 新規作成（L-LC-01: esbuildバ���ナリバージョン不一致 / L-LC-02: IEncoderモック雛型をPhase 2設計書に含める）
+- `indexes/resource-map.md`: Late Chunking / Embedding タスク種別エントリを追加（HybridRAGFactory wiring 行の後）
+
+---
+
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
 | 項目 | 内容 |
