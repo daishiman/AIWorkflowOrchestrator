@@ -3065,6 +3065,7 @@ node scripts/list-specs.js --topics
 | TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L134 |
 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 追加教訓（2026-03-27） | L257 |
 | TASK-RT-06: SDK Event Normalizer 実装知見 | L306 |
+| UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001: auth:login 500ms timeout / fire-and-forget 設計（2026-04-19） | L334 |
 
 ### references/lessons-learned-auth-settings-degradation-guard.md
 
@@ -3734,6 +3735,8 @@ node scripts/list-specs.js --topics
 | L-W2-03A-003: 選択肢A（削除）/ 選択肢B（移植）の判断基準 | L49 |
 | L-W2-03A-004: 削除済み時の残存参照整理チェックリスト | L71 |
 | L-W2-03A-005: CI での削除済みテストファイル参照検出ルール（提案） | L82 |
+| L-W2-03A-006: props廃止後のテスト修正パターン | L95 |
+| L-W2-03A-007: auth回帰テストのモック3点セット | L126 |
 
 ### references/lessons-learned-test-typesafety.md
 

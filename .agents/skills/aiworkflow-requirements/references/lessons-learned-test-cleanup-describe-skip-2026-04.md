@@ -89,3 +89,62 @@ git log --diff-filter=D --name-only -- "*.test.tsx" | \
 
 `grep` の集計は `describe.skip` だけでなく `it.skip` / `test.skip` も含む場合があるため、
 レポート側の件数ラベルも実際の集計ルールに合わせて明記する。
+
+---
+
+## L-W2-03A-006: props廃止後のテスト修正パターン
+
+> 出典タスク: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001
+> 記録日: 2026-04-19
+
+**問題**: コンポーネントから `isOpen`/`defaultTab` props が廃止されたにもかかわらず、
+テストが廃止 props を渡し続けていたため `describe.skip` に追い込まれていた。
+
+**教訓**: コンポーネントのインターフェース変更後は、テストファイル内の
+全 render 呼び出しを現行 props に合わせて更新する。
+廃止 props 起因のテストは「スキップ」ではなく「削除または移植」で対処する。
+
+```typescript
+// 旧（廃止 props を渡していたパターン）
+render(<SkillLifecyclePanel isOpen={true} onClose={vi.fn()} defaultTab="create" />);
+
+// 新（現行インターフェースに合わせる）
+render(
+  <SkillLifecyclePanel
+    onClose={vi.fn()}
+    onOpenWizard={vi.fn()}
+    onOpenSkillWizard={vi.fn()}
+    skillName="test-skill"
+  />,
+);
+```
+
+廃止フロー固有のテスト（UI testId が消えた等）は移植せず削除する方が保守コストが低い。
+
+---
+
+## L-W2-03A-007: auth回帰テストのモック3点セット
+
+> 出典タスク: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001
+> 記録日: 2026-04-19
+
+**問題**: auth:login の非呼び出しを検証するテストで、`window.electronAPI.auth.login`
+のモック設定が不完全だったため、テスト環境での副作用が不明確だった。
+
+**教訓**: auth:login 回帰テストでは以下の3点セットを必ず揃える。
+
+```typescript
+// 1. モック宣言
+const mockAuthLogin = vi.fn();
+
+// 2. window モック設定（beforeEach）
+(window as Window & { electronAPI?: unknown }).electronAPI = {
+  auth: { login: mockAuthLogin },
+};
+
+// 3. 非呼び出しアサーション（fire-and-forget のため await 不要）
+expect(mockAuthLogin).not.toHaveBeenCalled();
+```
+
+auth:login は 500ms timeout の fire-and-forget IPC のため、
+`not.toHaveBeenCalled()` は即時アサーションで十分（await 不要）。
