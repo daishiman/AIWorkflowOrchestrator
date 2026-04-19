@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3164,
+  "totalKeywords": 3166,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -13763,6 +13763,9 @@
     "完了タスクセクション標準化": [
       "spec-guidelines.md"
     ],
+    "タスク分類": [
+      "spec-guidelines.md"
+    ],
     "ファイルサイズ管理": [
       "spec-guidelines.md"
     ],
@@ -13905,6 +13908,9 @@
       "task-workflow-rules.md"
     ],
     "昇格パターン集": [
+      "task-workflow-active.md"
+    ],
+    "アクティブタスク台帳": [
       "task-workflow-active.md"
     ],
     "タスクワークフローバックログ": [

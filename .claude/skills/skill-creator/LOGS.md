@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-04-19 - TASK-SC-LLM-PURPOSE-WIRE-001 extract-purpose LLM統合の知見をSKILL.mdへ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: impl-spec-to-skill-sync
+- **Result**: success
+- **Notes**:
+  - `runCreateWorkflow` が `Promise<void>` → `Promise<StructurePlanJson | null>` に変更。LLM purpose 抽出結果を構造計画として返す
+  - `extractPurposeWithLlm`: `extract-purpose` エージェント（Markdown prompt string）を `ResourceLoader.loadAgent()` で読み込み、`LlmClient.generate({ system, user })` に渡す
+  - `normalizePurposeResponse`: JSON code fence unwrap → `parsed.summary` 優先 → フォールバックは trimmed raw response の多層パース
+  - `LlmClient` は constructor optional inject（未注入時は purpose=null で graceful degradation）
+  - 苦戦箇所: `create` 実装に集中した結果 `update`/`improve-prompt` case が空のまま fall-through。別タスク `UT-TASK-SC-LLM-PURPOSE-WIRE-001-UPDATE-MODE` として分離
+  - switch の全 case に最低限の処理（またはエラー throw）を入れる設計パターンを patterns-pitfall-phase12.md に追加
+  - `SKILL.md` の "create モードの入口実装" セクションを新パイプライン仕様に更新し、update/improve-prompt スタブセクションを追加
+
+---
+
 ## 2026-04-16 - TASK-SC-IMP-CREATE-WORKFLOW-001 runCreateWorkflow create モード実装の知見を SKILL.md へ反映
 
 - **Agent**: skill-creator (update)

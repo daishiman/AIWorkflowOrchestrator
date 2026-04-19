@@ -4883,7 +4883,8 @@ node scripts/list-specs.js --topics
 | 避けるべきこと | L87 |
 | 新規仕様の追加手順 | L96 |
 | 完了タスクセクション標準化 | L104 |
-| ファイルサイズ管理 | L152 |
+| タスク分類 | L153 |
+| ファイルサイズ管理 | L168 |
 
 ### references/spec-splitting-guidelines.md
 
@@ -4918,6 +4919,7 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L85 |
 | 実行時のコマンド・エージェント・スキル | L108 |
 | 昇格パターン集 | L132 |
+| アクティブタスク台帳 | L147 |
 
 ### references/task-workflow-backlog-part2.md
 
