@@ -1,0 +1,7 @@
+{
+  "taskType": "NON_VISUAL",
+  "screenshotRequired": false,
+  "reason": "UIコンポーネント本体（SkillLifecyclePanel.tsx）に変更がないため、画面証跡の取得は不要。変更対象はテストファイルのみ。",
+  "scenarios": [],
+  "validatorCompatNote": "outputs/phase-11/screenshots/ ディレクトリは validator 互換のため保持するが、NON_VISUAL タスクのため画像ファイルは生成しない。"
+}
