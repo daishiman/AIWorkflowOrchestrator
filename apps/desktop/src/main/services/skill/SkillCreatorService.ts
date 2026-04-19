@@ -412,12 +412,16 @@ export class SkillCreatorService {
         case "update":
           emitProgress("loading-skill");
           emitProgress("analyzing");
-          break;
+          await this.runUpdateWorkflow(options, operationSignal);
+          emitProgress("done");
+          return skillDir;
         case "improve-prompt":
           emitProgress("loading-skill");
           emitProgress("analyzing");
           emitProgress("improving");
-          break;
+          await this.runImprovePromptWorkflow(options, operationSignal);
+          emitProgress("done");
+          return skillDir;
       }
 
       this.throwIfAborted(operationSignal);
@@ -964,8 +968,9 @@ export class SkillCreatorService {
    */
   private async runOrchestrateWorkflow(
     options: CreateSkillOptions,
-    _signal?: AbortSignal,
+    signal?: AbortSignal,
   ): Promise<void> {
+    this.throwIfAborted(signal);
     // 実行エンジン選択ロジック
     const engine = options.executionEngine || "claude";
     void engine; // unused warning回避
@@ -980,6 +985,7 @@ export class SkillCreatorService {
     options: CreateSkillOptions,
     signal?: AbortSignal,
   ): Promise<StructurePlanJson | null> {
+    this.throwIfAborted(signal);
     try {
       const purpose = await this.extractPurposeWithLlm(options, signal);
       const features = await this.generateFeaturesWithLlm(
@@ -1041,6 +1047,52 @@ export class SkillCreatorService {
       throw new Error("Empty features array");
     }
     return strings;
+  }
+
+  /**
+   * updateモードのワークフロー実行（スタブ実装）
+   */
+  private async runUpdateWorkflow(
+    options: CreateSkillOptions,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    this.throwIfAborted(signal);
+    await this.ensureExistingSkillFiles(options);
+    this.logger.warn("runUpdateWorkflow: not yet implemented", {
+      skillName: options.name,
+      mode: options.mode,
+    });
+  }
+
+  /**
+   * improve-promptモードのワークフロー実行（スタブ実装）
+   */
+  private async runImprovePromptWorkflow(
+    options: CreateSkillOptions,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    this.throwIfAborted(signal);
+    await this.ensureExistingSkillFiles(options);
+    this.logger.warn("runImprovePromptWorkflow: not yet implemented", {
+      skillName: options.name,
+      mode: options.mode,
+    });
+  }
+
+  private async ensureExistingSkillFiles(
+    options: CreateSkillOptions,
+  ): Promise<void> {
+    const skillDir = options.skillPath
+      ? path.resolve(options.skillPath)
+      : path.join(this.skillsDir, options.name);
+    const skillMdPath = path.join(skillDir, "SKILL.md");
+
+    if (!(await this.pathExists(skillDir))) {
+      throw new Error(`Skill directory not found: ${skillDir}`);
+    }
+    if (!(await this.pathExists(skillMdPath))) {
+      throw new Error(`SKILL.md not found: ${skillMdPath}`);
+    }
   }
 
   /**

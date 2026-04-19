@@ -32,7 +32,13 @@ TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の�
 - テストカバレッジ: docs-only / NON_VISUAL 証跡 9観点 PASS
 - 実装内容:
   - `manual-test-result.md` を NON_VISUAL 正本テンプレートへ是正
-  - Phase 12 の same-wave sync 範囲と compliance-check を補強
+- Phase 12 の same-wave sync 範囲と compliance-check を補強
+
+## 2026-04-19 - TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 close-out sync
+
+- NON_VISUAL task の Phase 11 で `manual-test-result.md` を正本、task-specific report を summary とする整理を current facts に反映
+- Phase 12 canonical 6成果物と Phase 13 blocked artifact を task workflow に追加し、root / outputs parity を同期
+- private workflow abort 入口保証タスクでは public cancel test に加えて private minimal test を追加するパターンを usage log として記録
 
 ### 結果
 - ステータス: success

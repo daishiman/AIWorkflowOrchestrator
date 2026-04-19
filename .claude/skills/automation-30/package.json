@@ -1,0 +1,25 @@
+{
+  "name": "@skills/automation-30",
+  "version": "1.0.0",
+  "description": "Claude Code skill: automation-30",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validate_all.js",
+    "log": "node scripts/log_usage.js",
+    "deps:install": "pnpm install",
+    "deps:add": "pnpm add"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "claude-code",
+    "skill"
+  ],
+  "author": "AIWorkflowOrchestrator",
+  "license": "UNLICENSED",
+  "created": "2026-04-19"
+}
