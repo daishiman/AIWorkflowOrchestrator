@@ -321,5 +321,31 @@ UNASSIGNED-EMB-007 (自動再埋め込み)
 ---
 
 **作成日**: 2025-12-26
-**最終更新**: 2026-01-24
+**最終更新**: 2026-04-19
 **ステータス**: 全7件作成完了
+
+---
+
+## 完了化された未タスク（完了化ログ）
+
+本節は、unassigned-task として配置された後、別 wave/task で実装されて完了化した未タスクの履歴を記録する。
+完了化した未タスク本体は `docs/30-workflows/completed-tasks/` へ移動し、当該ファイルのメタ情報 `status: completed` および末尾「完了記録」セクションで詳細を管理する。
+
+### TASK-EVALS-CONSUMER-AUDIT-001-SKILL-REFLECT-WAVE（2026-04-19 完了）
+
+TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out に続く skill 反映 wave で、`system-spec-update-summary.md` の 3 件の UPDATE-SPEC 提案が aiworkflow-requirements skill へ反映され、対応する 3 件の unassigned-task が完了化された。
+
+| 完了日     | 元 unassigned-task                                                                                                      | 実装場所                                                                                           | UPDATE-SPEC ID  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------- |
+| 2026-04-19 | [task-evals-spec-snake-case-v1-document-001.md](../completed-tasks/task-evals-spec-snake-case-v1-document-001.md)       | `aiworkflow-requirements/references/evals-schema-spec.md` §3                                       | UPDATE-SPEC-001 |
+| 2026-04-19 | [task-evals-spec-quality-insights-document-001.md](../completed-tasks/task-evals-spec-quality-insights-document-001.md) | `aiworkflow-requirements/references/evals-schema-spec.md` §6                                       | UPDATE-SPEC-002 |
+| 2026-04-19 | [task-evals-spec-validator-zero-document-001.md](../completed-tasks/task-evals-spec-validator-zero-document-001.md)     | `aiworkflow-requirements/references/claude-code-overview.md` §272 直下 + `evals-schema-spec.md` §7 | UPDATE-SPEC-003 |
+
+**根拠**: `docs/30-workflows/evals-consumer-audit-001/outputs/phase-12/system-spec-update-summary.md`
+
+**未完了保持タスク（対象外・同 Phase-12 由来）**:
+
+- `task-evals-schema-dialect-unification-001.md`（方言統一は将来の設計判断要）
+- `task-mirror-resource-map-cross-root-link-001.md`（ミラー構造別件）
+- `task-skill-fixture-runner-evals-schema-validate-001.md`（validator 実装は別タスク）
+- `task-skill-scanner-evals-content-validate-001.md`（SkillScanner 強化は別タスク）

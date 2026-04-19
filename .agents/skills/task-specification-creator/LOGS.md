@@ -2,6 +2,44 @@
 
 ## 役割
 
+## 2026-04-19 - TASK-EVALS-CONSUMER-AUDIT-001 PROPOSAL-TSC-01〜05 反映
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-EVALS-CONSUMER-AUDIT-001
+- タスク種別: docs-only / NON_VISUAL / 監査
+- Phase: 12 skill-feedback-report §3 PROPOSAL-TSC-01〜05
+- 起票根拠: `docs/30-workflows/evals-consumer-audit-001/outputs/phase-12/skill-feedback-report.md`
+
+### 変更内容
+
+| ID | 対応 | 反映先 |
+| -- | ---- | ------ |
+| PROPOSAL-TSC-01 | NON_VISUAL / 監査タスク用テンプレ新設 | `references/phase-template-audit-task.md` 新規作成（185 行）。Phase 再解釈マップ（Phase 4 = raw evidence、Phase 5 = consumer 整理、Phase 6 = dual root diff、Phase 7 = 漏れ再検索、Phase 8 = schema 変更手順ガイド、Phase 9 = 正本突合、Phase 11 = 再現コマンド手動実行）、primary evidence 棲み分け、完了ステータス判断、canonical vs 必須 6 成果物の区別、PR12-R1〜R5 落とし穴、Phase 別チェックリスト |
+| PROPOSAL-TSC-02 | Phase 11 NON_VISUAL 固定文言の格上げ | `references/phase-12-documentation-guide.md` 冒頭（Task 12-1 直下）に `UI/UX変更なしのため Phase 11 スクリーンショット不要` 固定記載ルールを明記。primary evidence = `manual-test-result.md` を明記。`references/phase-template-phase11.md` タスク種別判定テーブルに NON_VISUAL 行追加 + NON_VISUAL / 監査タスク分岐セクション新設（再現コマンド実行のみ） |
+| PROPOSAL-TSC-03 | canonical N 成果物 vs 必須 6 成果物の分離明文化 | `references/phase-template-phase12.md` §出力テンプレに canonical N vs 必須 6 成果物の区別表を追加。P12-R2 リスク対策（canonical 重複禁止）ルール共通化 |
+| PROPOSAL-TSC-04 | 未タスク配置先決定フロー集約 | `references/phase-template-phase12.md` §P38 再発防止セクションに If-Then-Else ASCII 決定フロー図を追加。`docs/30-workflows/unassigned-task/` vs `completed-tasks/<workflow>/unassigned-task/` の判定基準を集約 |
+| PROPOSAL-TSC-05 | `phase-template-phase12.md` 誤植修正 | `| phase12-task-spec-compliance-check.md | Task 12-1〜12-5 の準拠チェック |` の重複行を削除し `Task 12-1〜12-6` に統一 |
+
+### 変更ファイル
+
+- `references/phase-template-audit-task.md`（新規 / 185 行）
+- `references/phase-template-phase11.md`（151 行、NON_VISUAL / 監査タスク分岐追加）
+- `references/phase-template-phase12.md`（202 行、canonical 分離 + 決定フロー図 + 誤植修正）
+- `references/phase-12-documentation-guide.md`（219 行、固定フレーズルール追加）
+- `SKILL.md`（Anchors phase templates に audit-task.md 追加、変更履歴 v10.09.57 エントリ追加）
+- `LOGS.md`（本エントリ）
+
+### 500 行超過チェック
+
+- 編集後の最大行数は `phase-12-documentation-guide.md` の 219 行。全ファイル 500 行以内に収まり責務分離は不要。
+
+### 結果
+
+- ステータス: success（`.agents/` ミラーは後続 wave）
+- 完了日時: 2026-04-19
+
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
 ### 変更内容

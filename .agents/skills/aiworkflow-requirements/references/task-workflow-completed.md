@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）
 - 2026-04-19: `TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE` onProgress-realtime-update（`useStreamingProgress.ts` に `PHASE_TO_STAGE` マップ 6 mode-specific phase 追加・`api.onProgress()` コールバック接続・エラーハンドリング・cleanup / UI task (VISUAL) / Phase 12 close-out / Issue #2268 / 未タスク U-01・U-02 を `unassigned-task/` 登録済み）
 - 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
@@ -3184,46 +3185,6 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
-
-### タスク: UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 SkillCreateWizard LLM生成フロー describe.skip クリーンアップ（2026-04-16）
-
-| 項目          | 値                                                                                  |
-| ------------- | ----------------------------------------------------------------------------------- |
-| タスクID      | UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001                                           |
-| ステータス    | **完了（Phase 12 close-out）**                                                      |
-| タイプ        | docs-only / cleanup / NON_VISUAL                                                    |
-| 優先度        | 低                                                                                  |
-| 完了日        | 2026-04-16                                                                          |
-| 対象          | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` |
-| 元ワークフロー | `docs/30-workflows/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/`                     |
-
-#### 実施内容
-
-- 削除済み対象ファイルを確認し、`describe.skip` / `TODO(W2-seq-03a)` の残存が 0 件であることを記録
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
-- `diff -q artifacts.json outputs/artifacts.json` で root / outputs parity を確認
-- `outputs/phase-12/` の 6 成果物を current facts に合わせて同期
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS |
-| `diff -q artifacts.json outputs/artifacts.json` | PASS |
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 解決策概要 |
-| --- | --- |
-| generate-index.js の N/A 誤判定 | 実在確認を先に行い、実行結果を実測値で残す |
-| root parity の証跡不足 | `ls` ではなく `diff -q` で同値性を記録する |
-
-#### lessons-learned
-
-- 削除済みファイルの cleanup では、対象ファイルの存在確認を先に行うと残存参照スキャンを安全に進められる
-- 正本生成スクリプトは N/A 扱いにせず、存在確認と実行結果を分けて記録する
-- root parity は `diff -q` で証跡化し、存在確認だけで完了扱いにしない
 
 ### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）
 

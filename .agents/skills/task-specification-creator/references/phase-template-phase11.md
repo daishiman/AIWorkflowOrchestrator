@@ -10,7 +10,23 @@ Phase 11 の manual test。
 | --- | --- | --- |
 | **設計タスク** | タスク種別が「設計・仕様策定」、UI実装なし | 設計タスク専用セクション（SF-01） |
 | **docs-only タスク** | UI変更なし、ドキュメント・設定変更のみ | docs-only task テンプレ |
+| **NON_VISUAL / 監査タスク** | `taskType: NON_VISUAL` または `implementation_mode: verify_existing`、consumer 監査・正本突合が本質 | NON_VISUAL / 監査タスク分岐（下記） |
 | **UI タスク** | Renderer コンポーネントの追加・変更あり | docs-only + UI task 追加要件 |
+
+## NON_VISUAL / 監査タスク分岐（PROPOSAL-TSC-02 由来）
+
+監査タスク・`verify_existing` タスクでは **screenshot 撮影は行わず、再現コマンドの手動実行** のみが Phase 11 の主活動となる。
+
+| 項目 | 規定 |
+| ---- | ---- |
+| primary evidence | `outputs/phase-11/manual-test-result.md`（docs-only 正本）／ `{TASK-ID}-manual-test-report.md`（`NON_VISUAL + verify_existing` の canonical 名） |
+| 補助 evidence | `reproduction-verification.md`（再現コマンド実行ログ）／`discovered-issues.md` |
+| screenshot | **不要**（`screenshots/.gitkeep` 削除、ディレクトリごと除外） |
+| 固定フレーズ | `UI/UX変更なしのため Phase 11 スクリーンショット不要`（`implementation-guide.md` / `system-spec-update-summary.md` へ記載） |
+| テスト方式 | 再現コマンド（`rg` / `jq` / `diff -qr` 等）を「コマンド / 前提条件 / 期待結果 / 実結果」の 4 項目で記録 |
+
+- 詳細な Phase 再解釈マップ（Phase 4 = raw evidence、Phase 5 = consumer 整理、Phase 6 = dual root diff）は [phase-template-audit-task.md](phase-template-audit-task.md) を参照。
+- `NON_VISUAL + verify_existing` の canonical 名は [phase-template-phase12.md](phase-template-phase12.md) §NON_VISUAL + verify_existing モードの Phase 11 primary evidence を参照。
 
 ## docs-only task テンプレ
 

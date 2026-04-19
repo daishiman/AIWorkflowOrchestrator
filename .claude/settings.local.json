@@ -188,7 +188,17 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md .agents/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md)",
       "Bash(cp .claude/skills/task-specification-creator/LOGS.md .agents/skills/task-specification-creator/LOGS.md)",
       "Bash(cp .claude/skills/task-specification-creator/references/phase-template-core.md .agents/skills/task-specification-creator/references/phase-template-core.md)",
-      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase12.md .agents/skills/task-specification-creator/references/phase-template-phase12.md)"
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase12.md .agents/skills/task-specification-creator/references/phase-template-phase12.md)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/references/claude-code-overview.md .agents/skills/aiworkflow-requirements/references/claude-code-overview.md)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/references/evals-schema-spec.md .agents/skills/aiworkflow-requirements/references/evals-schema-spec.md)",
+      "Bash(cp .claude/skills/aiworkflow-requirements/references/lessons-learned-evals-consumer-audit-001.md .agents/skills/aiworkflow-requirements/references/lessons-learned-evals-consumer-audit-001.md)",
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-12-documentation-guide.md .agents/skills/task-specification-creator/references/phase-12-documentation-guide.md)",
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-audit-task.md .agents/skills/task-specification-creator/references/phase-template-audit-task.md)",
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase11.md .agents/skills/task-specification-creator/references/phase-template-phase11.md)",
+      "Bash(cp .claude/skills/github-issue-manager/LOGS.md .agents/skills/github-issue-manager/LOGS.md)",
+      "Bash(cp .claude/skills/github-issue-manager/SKILL.md .agents/skills/github-issue-manager/SKILL.md)",
+      "Bash(cp .claude/skills/github-issue-manager/scripts/relink_issues.js .agents/skills/github-issue-manager/scripts/relink_issues.js)",
+      "Bash(cp .claude/skills/github-issue-manager/scripts/select_issue.js .agents/skills/github-issue-manager/scripts/select_issue.js)"
     ],
     "deny": [],
     "ask": []

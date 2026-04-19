@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）
 - 2026-04-19: `TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE` onProgress-realtime-update（`useStreamingProgress.ts` に `PHASE_TO_STAGE` マップ 6 mode-specific phase 追加・`api.onProgress()` コールバック接続・エラーハンドリング・cleanup / UI task (VISUAL) / Phase 12 close-out / Issue #2268 / 未タスク U-01・U-02 を `unassigned-task/` 登録済み）
 - 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
