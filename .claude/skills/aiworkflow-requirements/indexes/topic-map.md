@@ -3538,6 +3538,7 @@ node scripts/list-specs.js --topics
 | 主要知見 | L15 |
 | 苦戦箇所と解決策 | L125 |
 | 今後の標準ルール | L137 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 完了記録（2026-04-19） | L153 |
 
 ### references/lessons-learned-skill-contrast-guard-lifecycle-followup.md
 
@@ -5088,9 +5089,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L3 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L39 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L71 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L3 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L28 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L64 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L96 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5216,13 +5218,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L432 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L452 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L454 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L466 |
-| 完了タスク（2026-03後半） | L494 |
-| 完了タスク（機能別アーカイブ） | L502 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L603 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L543 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L563 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L565 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L577 |
+| 完了タスク（2026-03後半） | L605 |
+| 完了タスク（機能別アーカイブ） | L613 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L714 |
 
 ### references/task-workflow-history.md
 

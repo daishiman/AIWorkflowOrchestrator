@@ -1,0 +1,11 @@
+{
+  "taskId": "TASK-SW-STRUCT-LLM-002",
+  "mode": "non_visual_placeholder",
+  "reason": "UI/UX変更なしのため実スクリーンショットは不要。validator 互換用にプレースホルダーを保持する。",
+  "artifacts": [
+    {
+      "file": "outputs/phase-11/screenshots/non-visual-placeholder.png",
+      "description": "NON_VISUAL タスクのプレースホルダー。UI 証跡ではない。"
+    }
+  ]
+}
