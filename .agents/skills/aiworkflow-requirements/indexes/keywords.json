@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3144,
+  "totalKeywords": 3149,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4159,6 +4159,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
@@ -5769,6 +5770,7 @@
     ],
     "main": [
       "deployment-gha.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-creator-cancel-chain.md"
@@ -8775,6 +8777,27 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
+    "ON": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PROGRESS": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "REALTIME": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "UPDATE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "onProgress": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "quick-reference-search-patterns-skill-lifecycle.md"
+    ],
     "PURPOSE": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8819,11 +8842,6 @@
     "structurePlan": [
       "lessons-learned-current-2026-04.md"
     ],
-    "接続": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
-      "quick-reference-search-patterns-skill-lifecycle.md"
-    ],
     "SHARED": [
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -8854,6 +8872,17 @@
       "lessons-learned-skill-creator-tmpdir-fallback.md"
     ],
     "接続配線": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "CANCEL": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "cancel": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "handler": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -9868,12 +9897,6 @@
     "解消手順": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
-    "CANCEL": [
-      "lessons-learned-skill-creator-cancel-chain.md"
-    ],
-    "cancel": [
-      "lessons-learned-skill-creator-cancel-chain.md"
-    ],
     "chain": [
       "lessons-learned-skill-creator-cancel-chain.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
@@ -10379,9 +10402,6 @@
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FUP": [
-      "lessons-learned-stream-001-progress-callback.md"
-    ],
-    "PROGRESS": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FLOWS": [

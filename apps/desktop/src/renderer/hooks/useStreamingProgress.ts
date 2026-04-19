@@ -27,11 +27,22 @@ import type {
 // ---- IPC phase -> stage マッピング ----
 
 const PHASE_TO_STAGE: Record<string, StreamingGenerationStage> = {
+  // create モード
   planning: "planning",
   "generating-skill": "generating-skill",
   "generating-agents": "generating-agents",
   validating: "validating",
   done: "done",
+  // collaborative モード
+  interview: "planning",
+  consensus: "planning",
+  // update モード
+  "loading-skill": "planning",
+  analyzing: "planning",
+  // orchestrate モード
+  "engine-selection": "planning",
+  // improve-prompt モード
+  improving: "generating-skill",
 };
 
 function mapPhaseToStage(phase: string): StreamingGenerationStage {
