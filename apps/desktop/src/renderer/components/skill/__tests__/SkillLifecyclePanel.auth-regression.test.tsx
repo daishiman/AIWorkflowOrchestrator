@@ -10,8 +10,8 @@
  * テストケース:
  *   TC-01: SkillLifecyclePanel の作成フローが auth:login を呼ばないこと（回帰テスト）
  *   TC-02: AccountSection の login() が正常に呼ばれること（正常系保護）
- *   TC-03: スキル生成フローが auth:login タイムアウトなしで完了すること
  *   TC-04: authSlice の login() thunk がデバッグコード除去後も正常動作すること
+ *   TC-08: authModeSlice 状態変化が auth:login を呼ばないこと
  */
 
 import "@testing-library/jest-dom/vitest";
@@ -23,7 +23,6 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
 } from "@testing-library/react";
 
 // ============================================================
@@ -153,42 +152,6 @@ const mockGetWorkflowState = vi.fn();
 const mockOnWorkflowStateChanged = vi.fn();
 const mockGetDisclosureInfo = vi.fn();
 const mockGetVerifyDetail = vi.fn();
-const defaultCreateRequest = "テスト用スキルを作成してください";
-
-type DeferredPromise<T> = {
-  promise: Promise<T>;
-  resolve: (value: T) => void;
-};
-
-function createDeferredPromise<T>(): DeferredPromise<T> {
-  let resolve!: (value: T) => void;
-  const promise = new Promise<T>((res) => {
-    resolve = res;
-  });
-
-  return { promise, resolve };
-}
-
-function fillCreateRequest(_request = defaultCreateRequest): void {
-  // 旧リクエスト入力 testid は UI リファクタリング（遷移ボタン化）により削除済み
-  // describe.skip ブロック内でのみ使用されていたため、本体は no-op とする
-}
-
-function clickPrepareButton(): void {
-  fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
-}
-
-async function waitForCreateModeReady(): Promise<void> {
-  await waitFor(() => {
-    expect(screen.getByTestId("skill-lifecycle-mode-label")).toHaveTextContent(
-      "直作成",
-    );
-  });
-  expect(screen.getByTestId("skill-lifecycle-session-log")).toHaveTextContent(
-    "推奨モード: 直作成",
-  );
-}
-
 // ============================================================
 // TC-01: ウィザード起動で auth:login が呼ばれないこと（回帰テスト）
 // ============================================================
@@ -299,67 +262,6 @@ describe("TC-02: AccountSection triggers auth:login on demand", () => {
 });
 
 // ============================================================
-// TC-03: スキル生成フローが auth:login タイムアウトなしで完了すること
-// ============================================================
-
-describe.skip("TC-03: skill generation completes without auth:login timeout", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockDetectMode.mockResolvedValue({ success: true, data: "create" });
-    mockGetVerifyDetail.mockResolvedValue({ success: false });
-    mockGetWorkflowState.mockResolvedValue({ success: false });
-    mockOnWorkflowStateChanged.mockReturnValue(() => {});
-
-    // auth.login は呼ばれるべきでないため、タイムアウトを模倣したハングを設定
-    // 修正後は呼ばれないのでタイムアウトは発生しない
-    const neverResolve = new Promise<never>(() => {}); // 永遠に pending
-    mockAuthLogin.mockReturnValue(neverResolve);
-
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      auth: {
-        login: mockAuthLogin,
-      },
-    };
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      getWorkflowState: mockGetWorkflowState,
-      onWorkflowStateChanged: mockOnWorkflowStateChanged,
-      getDisclosureInfo: mockGetDisclosureInfo,
-      getVerifyDetail: mockGetVerifyDetail,
-    };
-  });
-
-  afterEach(() => {
-    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
-    cleanup();
-  });
-
-  it("スキル生成後に auth:login が pending 状態にならないこと", async () => {
-    render(
-      <SkillLifecyclePanel
-        isOpen={true}
-        onClose={vi.fn()}
-        defaultTab="create"
-      />,
-    );
-
-    await act(async () => {
-      fillCreateRequest();
-      clickPrepareButton();
-    });
-
-    await waitFor(() => {
-      expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    });
-    await waitForCreateModeReady();
-    expect(mockDetectMode).toHaveBeenCalledWith(defaultCreateRequest);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-  });
-});
-
-// ============================================================
 // TC-04: authSlice.login() がデバッグコード除去後も正常動作すること
 // ============================================================
 
@@ -425,265 +327,10 @@ describe("TC-04: authSlice.login thunk works correctly (no debug code)", () => {
 });
 
 // ============================================================
-// TC-05: 未ログイン状態でのスキル生成 — auth:login は呼ばれない
-// ============================================================
-
-describe.skip("TC-05: skill generation does not call auth:login when user is unauthenticated", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockStoreState = {
-      selectedSkillName: null,
-      isExecuting: false,
-      streamingMessages: [],
-      skillExecutionStatus: null,
-      skillError: null,
-      isGenerating: false,
-      generationProgress: null,
-      generationError: null,
-      currentPlanId: null,
-      currentPlanResult: null,
-      workflowSnapshot: null,
-      workflowError: null,
-      handoffGuidance: null,
-    };
-
-    mockDetectMode.mockResolvedValue({ success: true, data: "create" });
-    mockGetVerifyDetail.mockResolvedValue({ success: false });
-    mockGetWorkflowState.mockResolvedValue({ success: false });
-    mockOnWorkflowStateChanged.mockReturnValue(() => {});
-
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      auth: { login: mockAuthLogin },
-    };
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      getWorkflowState: mockGetWorkflowState,
-      onWorkflowStateChanged: mockOnWorkflowStateChanged,
-      getDisclosureInfo: mockGetDisclosureInfo,
-      getVerifyDetail: mockGetVerifyDetail,
-    };
-  });
-
-  afterEach(() => {
-    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
-    cleanup();
-  });
-
-  it("未認証状態でスキル生成ボタンを押しても auth:login が呼ばれないこと", async () => {
-    render(
-      <SkillLifecyclePanel
-        isOpen={true}
-        onClose={vi.fn()}
-        defaultTab="create"
-      />,
-    );
-
-    await act(async () => {
-      fillCreateRequest();
-      clickPrepareButton();
-    });
-
-    await waitFor(() => {
-      expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    });
-    await waitForCreateModeReady();
-    expect(mockDetectMode).toHaveBeenCalledWith(defaultCreateRequest);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-  });
-});
-
-// ============================================================
-// TC-06: 連続押下でも auth:login が複数回呼ばれないこと
-// ============================================================
-
-describe.skip("TC-06: rapid skill generation clicks do not trigger multiple auth:login", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockStoreState = {
-      selectedSkillName: null,
-      isExecuting: false,
-      streamingMessages: [],
-      skillExecutionStatus: null,
-      skillError: null,
-      isGenerating: false,
-      generationProgress: null,
-      generationError: null,
-      currentPlanId: null,
-      currentPlanResult: null,
-      workflowSnapshot: null,
-      workflowError: null,
-      handoffGuidance: null,
-    };
-
-    mockDetectMode.mockResolvedValue({ success: true, data: "create" });
-    mockGetVerifyDetail.mockResolvedValue({ success: false });
-    mockGetWorkflowState.mockResolvedValue({ success: false });
-    mockOnWorkflowStateChanged.mockReturnValue(() => {});
-
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      auth: { login: mockAuthLogin },
-    };
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      getWorkflowState: mockGetWorkflowState,
-      onWorkflowStateChanged: mockOnWorkflowStateChanged,
-      getDisclosureInfo: mockGetDisclosureInfo,
-      getVerifyDetail: mockGetVerifyDetail,
-    };
-  });
-
-  afterEach(() => {
-    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
-    cleanup();
-  });
-
-  it("スキル生成ボタンを複数回押下しても auth:login が呼ばれないこと", async () => {
-    const deferredDetectMode = createDeferredPromise<{
-      success: boolean;
-      data: "create";
-    }>();
-    mockDetectMode.mockReturnValue(deferredDetectMode.promise as never);
-
-    render(
-      <SkillLifecyclePanel
-        isOpen={true}
-        onClose={vi.fn()}
-        defaultTab="create"
-      />,
-    );
-
-    await act(async () => {
-      fillCreateRequest();
-      const prepareButton = screen.getByTestId(
-        "skill-lifecycle-prepare-button",
-      );
-      // 3回連続でクリック
-      fireEvent.click(prepareButton);
-      fireEvent.click(prepareButton);
-      fireEvent.click(prepareButton);
-    });
-
-    expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    expect(mockDetectMode).toHaveBeenCalledWith(defaultCreateRequest);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-
-    await act(async () => {
-      deferredDetectMode.resolve({ success: true, data: "create" });
-      await deferredDetectMode.promise;
-    });
-
-    await waitForCreateModeReady();
-    expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-  });
-});
-
-// ============================================================
-// TC-07: コンポーネント再レンダリング時に auth:login が呼ばれないこと
-// ============================================================
-
-describe.skip("TC-07: auth:login is not triggered on component re-render during skill flow", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockStoreState = {
-      selectedSkillName: null,
-      isExecuting: false,
-      streamingMessages: [],
-      skillExecutionStatus: null,
-      skillError: null,
-      isGenerating: false,
-      generationProgress: null,
-      generationError: null,
-      currentPlanId: null,
-      currentPlanResult: null,
-      workflowSnapshot: null,
-      workflowError: null,
-      handoffGuidance: null,
-    };
-
-    mockDetectMode.mockResolvedValue({ success: true, data: "create" });
-    mockGetVerifyDetail.mockResolvedValue({ success: false });
-    mockGetWorkflowState.mockResolvedValue({ success: false });
-    mockOnWorkflowStateChanged.mockReturnValue(() => {});
-
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      auth: { login: mockAuthLogin },
-    };
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      getWorkflowState: mockGetWorkflowState,
-      onWorkflowStateChanged: mockOnWorkflowStateChanged,
-      getDisclosureInfo: mockGetDisclosureInfo,
-      getVerifyDetail: mockGetVerifyDetail,
-    };
-  });
-
-  afterEach(() => {
-    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
-    cleanup();
-  });
-
-  it("コンポーネントのマウント・再レンダリング時に auth:login が呼ばれないこと", async () => {
-    const deferredDetectMode = createDeferredPromise<{
-      success: boolean;
-      data: "create";
-    }>();
-    mockDetectMode.mockReturnValue(deferredDetectMode.promise as never);
-
-    const { rerender } = render(
-      <SkillLifecyclePanel
-        isOpen={true}
-        onClose={vi.fn()}
-        defaultTab="create"
-      />,
-    );
-
-    // レンダリング更新が prepare フローを二重実行しないことを確認する
-    await act(async () => {
-      fillCreateRequest();
-      clickPrepareButton();
-    });
-
-    expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    expect(mockDetectMode).toHaveBeenCalledWith(defaultCreateRequest);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-
-    await act(async () => {
-      rerender(
-        <SkillLifecyclePanel
-          isOpen={true}
-          onClose={vi.fn()}
-          defaultTab="create"
-        />,
-      );
-    });
-
-    expect(mockDetectMode).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      deferredDetectMode.resolve({ success: true, data: "create" });
-      await deferredDetectMode.promise;
-    });
-
-    await waitForCreateModeReady();
-    expect(mockDetectMode).toHaveBeenCalledTimes(1);
-    expect(mockPlanSkill).not.toHaveBeenCalled();
-    expect(mockAuthLogin).not.toHaveBeenCalled();
-  });
-});
-
-// ============================================================
 // TC-08: authModeSlice 状態変化が auth:login を呼ばないこと
 // ============================================================
 
-describe.skip("TC-08: authModeSlice state changes do not trigger unexpected auth:login", () => {
+describe("TC-08: authModeSlice state changes do not trigger unexpected auth:login", () => {
   it("authModeSlice の setMode('api-key') が auth.login を呼ばず IPC と state を更新すること", async () => {
     const authModeModule = await import("../../../store/slices/authModeSlice");
     const { createAuthModeSlice, resetAuthModeListenerFlag } = authModeModule;
