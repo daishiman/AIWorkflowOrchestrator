@@ -123,6 +123,20 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 
 **注意**: `unassigned-task-report.md` のような類似名ファイルを作成しないこと。正式名称は `unassigned-task-detection.md` である。
 
+## NON_VISUAL + verify_existing モードの Phase 11 primary evidence（[CANCEL-003-FB-2]）
+
+`taskType: "NON_VISUAL"` かつ `implementation_mode: "verify_existing"` の組み合わせでは、Phase 11 の primary evidence を以下のルールで自動的に設定する。
+
+| 条件 | primary evidence パス |
+| --- | --- |
+| NON_VISUAL + verify_existing | `outputs/phase-11/{TASK-ID}-manual-test-report.md` |
+| NON_VISUAL + new | `outputs/phase-11/manual-test-result.md`（既存ルール） |
+| VISUAL（任意モード） | screenshot + `manual-test-result.md`（既存ルール） |
+
+- `{TASK-ID}-manual-test-report.md` には「verify_existing により実施した差分確認の結果」と「回帰テストの自動実行結果」を必ず記載する
+- `implementation-guide.md` の `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記し、上記パスへのリンクを貼る
+- `screenshots/.gitkeep` は削除し、ディレクトリごと除外する（NON_VISUAL 共通ルール）
+
 ## 関連ガイド
 
 - [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-6 の詳細手順

@@ -4164,6 +4164,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-skill-wizard-mso-main-tool-badge.md",
@@ -5774,6 +5775,7 @@
     ],
     "main": [
       "deployment-gha.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-creator-cancel-chain.md"
@@ -8865,6 +8867,17 @@
     "接続配線": [
       "lessons-learned-current-2026-04.md"
     ],
+    "CANCEL": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "cancel": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "handler": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9899,12 +9912,6 @@
     ],
     "解消手順": [
       "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "CANCEL": [
-      "lessons-learned-skill-creator-cancel-chain.md"
-    ],
-    "cancel": [
-      "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "chain": [
       "lessons-learned-skill-creator-cancel-chain.md",

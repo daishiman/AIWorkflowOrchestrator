@@ -2947,3 +2947,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+
+## 2026-04-19 — TASK-SW-CANCEL-003 知見を lessons-learned に追記
+
+- `TASK-SW-CANCEL-003`（skill-creator-cancel-main-handler）Phase 12 完了に伴い、`lessons-learned-current-2026-04.md` に3件の教訓を追記
+- L-CANCEL-003-001: `implementation_mode` 明確化による既実装との混線防止
+- L-CANCEL-003-002: chain task の scope に「chain 位置と完了定義」を明記する
+- L-CANCEL-003-003: NON_VISUAL task の証跡を `{TASK-ID}-manual-test-report.md` に統一
+- `task-workflow-completed.md` に TASK-SW-CANCEL-003 Phase 12 完了 close-out を追記
+
+| 項目     | 内容                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-only / lessons-learned-sync                                              |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md`   |
+| 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                              |
+| 検証     | docs-only / 記録のみ                                                                       |
