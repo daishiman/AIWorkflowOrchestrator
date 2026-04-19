@@ -6,8 +6,12 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-19: `TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001` createSkill private workflow abort entry guard（Phase 1-12 completed / Phase 13 blocked / NON_VISUAL / task-specific close-out）
 - 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
 - [2026-04-15: UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001 resolveExternalIntegration 複数ツール並列統合対応](./task-workflow-completed-recent-2026-04g.md)
+- 2026-04-18: `TASK-SW-STREAM-FUP-03` mode-specific-progress-flow-detail（SkillCreatorService の mode 別 onProgress 詳細化 / Phase 12 close-out / NON_VISUAL / Issue #2208 / current facts 追加）
+- 2026-04-18: `TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001` executeAsync snapshot error propagation verification close-out（NON_VISUAL / docs close-out / parity sync）
+- 2026-04-18: `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` verifyAndImproveLoop adapter error notification（Phase 12 close-out / NON_VISUAL / Issue #1959 / Phase 13 blocked）
 - 2026-04-18: `TASK-SW-STREAM-FUP-03` mode-specific-progress-flow-detail（SkillCreatorService の mode 別 onProgress 詳細化 / Phase 12 close-out / NON_VISUAL / Issue #2208 / current facts 追加）
 - 2026-04-16: `UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001` llm-generation-test-cleanup（Phase 12 close-out / NON_VISUAL / CLEANUP）。後続 backlog: `UT-LIFECYCLE-PANEL-LLM-GEN-DESCRIBE-SKIP-CLEANUP-001`（Issue #2236）・`UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001`（Issue #2237）を `unassigned-task/` に登録済み。`docs/30-workflows/completed-tasks/UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001/` へ移動済み。
 - 2026-04-17: `TASK-SW-STRUCT-002` struct-002-connect-structure-plan-to-skill-md（`void structurePlan` 削除・`generateSkillMd` 接続・3段階フォールバック実装 / Phase 12 close-out / NON_VISUAL / upstream PR #2209）
@@ -167,6 +171,7 @@
 - `NON_VISUAL` タスクは screenshot 不要でも、Phase 12 の文書と台帳は必ず current facts へ同期する
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
+### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
 
 | 項目       | 値                                                                                         |
 | ---------- | ------------------------------------------------------------------------------------------ |
@@ -175,6 +180,107 @@
 | タスク種別 | implementation（VISUAL / state-detail recovery）                                           |
 | 関連Issue  | -                                                                                          |
 | Phase 13   | blocked（ユーザー承認待ち）                                                               |
+
+#### 実施内容
+
+- `SkillCreateWizard.tsx` の `catch` に stale guard を追加し、キャンセル後の遅延 reject が error を再表示しないようにした
+- `SkillCreateWizard.tsx` の `finally` で `generationLockRef` を必ず解放するようにした
+- `GenerateStep.tsx` に template mode recovery を接続し、`最初からやり直す` を template error 専用導線として固定した
+- `ConversationRoundStep.tsx` で `answers` prop 変更時に `internalAnswers` を再初期化し、Step 1 の local state を親 state に再同期した
+- `outputs/phase-11/` に screenshot bundle と metadata を保存し、template error cancel / step0 return / normal error no cancel の 3 状態を visual evidence として閉じた
+- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / skill-feedback / compliance を current facts に同期した
+
+#### Phase 11/12 成果物
+
+| 成果物                                    | パス                                                              |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| スクリーンショット計画                    | `outputs/phase-11/screenshot-plan.json`                           |
+| キャプチャメタデータ                      | `outputs/phase-11/phase11-capture-metadata.json`                  |
+| 画面証跡 1                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png` |
+| 画面証跡 2                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png` |
+| 画面証跡 3                               | `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png` |
+| 手動テスト結果                            | `outputs/phase-11/manual-test-result.md`                          |
+| 手動テストレポート                        | `outputs/phase-11/manual-test-report.md`                          |
+| 発見事項記録                              | `outputs/phase-11/discovered-issues.md`                           |
+| UI サニティレビュー                       | `outputs/phase-11/ui-sanity-visual-review.md`                     |
+| スクリーンショットカバレッジ              | `outputs/phase-11/screenshot-coverage.md`                         |
+| 実装ガイド                                | `outputs/phase-12/implementation-guide.md`                        |
+| システム仕様書更新サマリー                | `outputs/phase-12/system-spec-update-summary.md`                  |
+| 変更履歴                                  | `outputs/phase-12/documentation-changelog.md`                     |
+| 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
+| スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
+| Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1`: PASS（172 tests）
+- `node apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs`: PASS
+- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png`: PASS
+- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png`: PASS
+- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png`: PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `artifacts.json` / `outputs/artifacts.json`: parity PASS
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                               | 解決策                                                                 |
+| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
+| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
+| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
+| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
+
+#### lessons-learned
+
+- 生成キャンセル後の UI は「エラーを消す」だけでなく「古い結果を再表示しない」ことまで含めて設計する
+- template recovery は通常 error と分け、`retry` と `start over` の意味を UI で明確に分離する
+- Step 1 の local state は親 state の再同期点を持たせると、再開・戻る・再生成の 3 経路で破綻しにくい
+
+### タスク: TASK-CI-FUTURE-007 @repo/backend Codecov カバレッジアップロード対応（2026-04-16）
+
+| 項目       | 値                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-CI-FUTURE-007                                                                                                           |
+| 完了日     | 2026-04-16                                                                                                                   |
+| タスク種別 | docs-only（CI 改善 / NON_VISUAL / ledger-sync）                                                                             |
+| 関連Issue  | -                                                                                                                            |
+| Phase 13   | blocked（ユーザー承認待ち）                                                                                                  |
+
+#### 実施内容
+
+- `task-workflow.md` の current facts に `TASK-CI-FUTURE-007` の close-out を追加し、`phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync` を反映した
+- `task-workflow-completed-recent-2026-04g.md` に `TASK-CI-FUTURE-007` の完了記録を追加した
+- `task-specification-creator/LOGS.md` と `aiworkflow-requirements/LOGS.md` を 2026-04-16 同波で更新し、`.agents` mirror も同期した
+- `indexes/topic-map.md` と `indexes/keywords.json` を再生成した
+
+#### 検証証跡
+
+- `task-workflow.md` current facts: `TASK-CI-FUTURE-007` / `phase12_completed` / `phase 11 non-visual` / `backend codecov flag` / `artifacts parity` / `outputs/artifacts.json sync`
+- `task-workflow-completed.md` / `task-workflow-completed-recent-2026-04g.md`: 完了記録追加
+- `task-specification-creator/LOGS.md` / `aiworkflow-requirements/LOGS.md`: 2026-04-16 同期
+- `indexes/topic-map.md` / `indexes/keywords.json`: regenerate PASS
+
+#### lessons-learned
+
+- ledger と index は task-workflow 本文と同波で更新すると、current facts の齟齬を早く潰せる
+- NON_VISUAL の CI タスクでも、phase 11 の証跡型と backend codecov flag のような確認観点を文言化すると再監査しやすい
+- `outputs/artifacts.json sync` を明記すると、root と outputs の parity をレビューで追いやすい
+
+### タスク: UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001 notion-freetext-special-case-eliminate（2026-04-15）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SW-FIX-STATE-DETAIL-001                                                               |
+| 完了日     | 2026-04-14                                                                                 |
+| タスク種別 | implementation（VISUAL / state-detail recovery）                                           |
+| 関連Issue  | -                                                                                          |
+| Phase 13   | blocked（ユーザー承認待ち）                                                               |
+| 項目       | 値                                                                       |
+| ---------- | ------------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001                        |
+| 完了日     | 2026-04-15                                                               |
+| タスク種別 | implementation（NON_VISUAL / semantic-default special-case elimination） |
+| 関連Issue  | [#2089](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2089) |
+| Phase 13   | blocked（ユーザー承認待ち）                                              |
 
 #### 実施内容
 
