@@ -594,6 +594,7 @@ describe("registerSkillDocsHandlers", () => {
       expect(result).toEqual({
         success: false,
         error: "Internal error",
+        errorCode: "INTERNAL_ERROR",
       });
     });
 
@@ -622,6 +623,8 @@ describe("registerSkillDocsHandlers", () => {
         success: false,
         error:
           "APIキーが設定されていません。設定画面でAPIキーを入力してください。",
+        errorCode: "API_KEY_MISSING",
+        retryable: false,
       });
     });
 
