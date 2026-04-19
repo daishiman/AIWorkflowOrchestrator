@@ -19,7 +19,9 @@ description: |
   スキル作成, スキル更新, プロンプト改善, skill creation, skill update, improve prompt,
   Codexに任せて, assign codex, Codexで実行, GPTに依頼, 実行モード選択, どのAIを使う,
   IPC Bridge統一, API統一パターン, safeInvoke/safeOn, Preload API標準化,
-  IPC handler registration, Preload API integration, contextBridge, Electron IPC pattern
+  IPC handler registration, Preload API integration, contextBridge, Electron IPC pattern,
+  extractPurposeWithLlm, ILLMClient, AnthropicProvider, normalizePurposeResponse,
+  LLM purpose extraction, LLM DI pattern, extract-purpose agent wiring
 allowed-tools:
   - Read
   - Write
@@ -36,7 +38,9 @@ allowed-tools:
 スキルを作成・更新・プロンプト改善するためのメタスキル。
 
 ## 必須：最初の実行ステップ
+
 **このスキルを呼ばれたら、最初のアクションは必ず `AskUserQuestion` である。**
+
 1. インタビュー深度を確認する（quick / standard / detailed）
 2. 深度が確定したら `agents/discover-problem.md` を読み込み Phase 0-0 を開始する
 3. `problem-definition.json` が存在しない場合は AskUserQuestion で問題定義を収集する
@@ -143,9 +147,9 @@ plan → review (awaiting user input) → execute → verify → [pass] handoff
 
 `RuntimeSkillCreatorFacade` の LLMAdapter からのエラーは `RuntimeSkillCreatorPlanErrorResponse` として propagate される（TASK-RT-01 で silent failure → explicit error response へ改善）。
 
-| フィールド | 型 | 説明 |
-| --- | --- | --- |
-| `status` | `"error"` | plan フェーズのエラーを示す固定値 |
+| フィールド       | 型                                  | 説明                                                             |
+| ---------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| `status`         | `"error"`                           | plan フェーズのエラーを示す固定値                                |
 | `degradedReason` | `RuntimeSkillCreatorDegradedReason` | 劣化理由（`llm_unavailable` / `api_key_missing` / `unknown` 等） |
 
 Renderer はこのレスポンスを受け取った場合、`plan.status === "error"` + `degradedReason` で劣化状態を UI に表示する。
@@ -156,20 +160,21 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 **ツール名**: `AskUserQuestion`
 
-| パラメータ    | 型                                                                 | 必須 | 説明                                               |
-| ------------- | ------------------------------------------------------------------ | ---- | -------------------------------------------------- |
-| `question`    | `string`                                                           | ✓    | ユーザーに提示する質問文                           |
-| `type`        | `"single_select" \| "multi_select" \| "free_text" \| "secret" \| "confirm"` | —    | 入力種別（省略時は `free_text`）                   |
-| `options`     | `Array<{ value?: string; label?: string; description?: string; preview?: string }>` | —    | `single_select` / `multi_select` 時の選択肢        |
-| `placeholder` | `string`                                                           | —    | `free_text` 時の入力欄ヒント文字列                 |
+| パラメータ    | 型                                                                                  | 必須 | 説明                                        |
+| ------------- | ----------------------------------------------------------------------------------- | ---- | ------------------------------------------- |
+| `question`    | `string`                                                                            | ✓    | ユーザーに提示する質問文                    |
+| `type`        | `"single_select" \| "multi_select" \| "free_text" \| "secret" \| "confirm"`         | —    | 入力種別（省略時は `free_text`）            |
+| `options`     | `Array<{ value?: string; label?: string; description?: string; preview?: string }>` | —    | `single_select` / `multi_select` 時の選択肢 |
+| `placeholder` | `string`                                                                            | —    | `free_text` 時の入力欄ヒント文字列          |
 
 呼び出し例:
+
 ```json
 {
   "question": "インタビューの深度を選んでください",
   "type": "single_select",
   "options": [
-    { "value": "quick",    "label": "Quick（最小限）" },
+    { "value": "quick", "label": "Quick（最小限）" },
     { "value": "standard", "label": "Standard（推奨）" },
     { "value": "detailed", "label": "Detailed（詳細）" }
   ]
@@ -180,13 +185,13 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 #### ユーザー入力ブリッジ（5種）
 
-| kind            | 用途                  | 例                      |
-| --------------- | --------------------- | ----------------------- |
-| `single_select` | 選択肢から1つ選択     | plan review の承認/却下 |
+| kind            | 用途                  | 例                             |
+| --------------- | --------------------- | ------------------------------ |
+| `single_select` | 選択肢から1つ選択     | plan review の承認/却下        |
 | `multi_select`  | 選択肢から複数選択    | interview で利用機能を複数選ぶ |
-| `free_text`     | 自由テキスト入力      | フィードバックコメント  |
-| `secret`        | 秘匿入力（APIキー等） | LLM API キー            |
-| `confirm`       | Yes/No 確認           | reverify 実行確認       |
+| `free_text`     | 自由テキスト入力      | フィードバックコメント         |
+| `secret`        | 秘匿入力（APIキー等） | LLM API キー                   |
+| `confirm`       | Yes/No 確認           | reverify 実行確認              |
 
 #### Verify Detail Surface（layer3/layer4）
 
@@ -218,13 +223,14 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 `verifyAndImproveLoop()` は verify → improve → re-verify のサイクルを自動的に回す閉ループパイプライン。
 
-| フェーズ | 処理 |
-| ------- | ---- |
-| verify | `skill-creator:get-verify-detail` を実行し、check 結果を取得 |
-| improve | `failedChecks`（error/warning）のみを LLM 改善入力に渡す。`info` は除外 |
-| re-verify | improve 適用後に再度 verify を実行 |
+| フェーズ  | 処理                                                                    |
+| --------- | ----------------------------------------------------------------------- |
+| verify    | `skill-creator:get-verify-detail` を実行し、check 結果を取得            |
+| improve   | `failedChecks`（error/warning）のみを LLM 改善入力に渡す。`info` は除外 |
+| re-verify | improve 適用後に再度 verify を実行                                      |
 
 **ループ制御**（`RuntimeSkillCreatorFacadeDeps.maxImproveRetry`）:
+
 - デフォルト 3、範囲 1-10（範囲外は自動クランプ）
 - 直前の improve 要約を次回 feedback に合成（feedback memory）し、同一修正の繰り返しを抑制
 - 全 check PASS → `finalStatus: "pass"` で正常終了
@@ -238,14 +244,15 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 **二重パイプライン設計**:
 
-| 経路 | パイプライン | 正式度 | 説明 |
-| --- | --- | --- | --- |
-| A経路 | Facade → `parseLlmResponseToContent()` → `SkillFileWriter.persist()` | 正式経路 | execute() 内で直接コンテンツ抽出・永続化 |
-| B経路 | `SkillCreatorOutputHandler` → `SkillRegistry` | 別系統 | IPC Bridge 経由のセッション完了時パイプライン |
+| 経路  | パイプライン                                                         | 正式度   | 説明                                          |
+| ----- | -------------------------------------------------------------------- | -------- | --------------------------------------------- |
+| A経路 | Facade → `parseLlmResponseToContent()` → `SkillFileWriter.persist()` | 正式経路 | execute() 内で直接コンテンツ抽出・永続化      |
+| B経路 | `SkillCreatorOutputHandler` → `SkillRegistry`                        | 別系統   | IPC Bridge 経由のセッション完了時パイプライン |
 
 **Setter Injection**: `SkillFileWriter` は `RuntimeSkillCreatorFacadeDeps.skillFileWriter?` で optional inject。未注入時は `console.warn` で警告し persist をスキップ（graceful degradation）。
 
 **結果型拡張**: `SkillExecuteResult` に以下のフィールドを追加:
+
 - `persistResult: PersistResult | null` - persist 成功時の書き込み結果
 - `persistError: string | null` - persist 中の例外メッセージ（スキル実行自体の成否とは独立）
 
@@ -296,20 +303,20 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 ### CIスクリプト設計パターン（UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001 経験）
 
-| パターン | 説明 |
-| --- | --- |
-| **外部依存ゼロ** | CI検証スクリプトは `fs` / `path` のみ使用。`pnpm install` 不要で高速起動 |
-| **ステートマシン方式コメント除去** | 文字列リテラル内のコメントパターンを誤検出しないよう、文字単位の状態遷移で除去 |
-| **参照マーカー方式** | 定数参照・spread構文の未解決値にプレフィックス（`__REF__:`）を付け、後段で解決チェーンを走らせる |
-| **テスト4分割** | `parsers.test.ts`（パーサ）/ `validators.test.ts`（検証ロジック）/ `reporter.test.ts`（出力）/ `e2e.test.ts`（統合）に分離 |
+| パターン                           | 説明                                                                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **外部依存ゼロ**                   | CI検証スクリプトは `fs` / `path` のみ使用。`pnpm install` 不要で高速起動                                                   |
+| **ステートマシン方式コメント除去** | 文字列リテラル内のコメントパターンを誤検出しないよう、文字単位の状態遷移で除去                                             |
+| **参照マーカー方式**               | 定数参照・spread構文の未解決値にプレフィックス（`__REF__:`）を付け、後段で解決チェーンを走らせる                           |
+| **テスト4分割**                    | `parsers.test.ts`（パーサ）/ `validators.test.ts`（検証ロジック）/ `reporter.test.ts`（出力）/ `e2e.test.ts`（統合）に分離 |
 
 ### scripts/ 配下のスクリプト分類
 
-| 種別 | 配置 | テスト |
-| --- | --- | --- |
-| CI検証（外部依存ゼロ） | `scripts/verify-*.cjs` | `scripts/__tests__/verify-*/` |
-| スキル内スクリプト | `.claude/skills/<name>/scripts/` | EVALS.json で品質追跡 |
-| ワークフロー検証 | `.claude/skills/<name>/scripts/validate-*.js` | agents/ 内で参照 |
+| 種別                   | 配置                                          | テスト                        |
+| ---------------------- | --------------------------------------------- | ----------------------------- |
+| CI検証（外部依存ゼロ） | `scripts/verify-*.cjs`                        | `scripts/__tests__/verify-*/` |
+| スキル内スクリプト     | `.claude/skills/<name>/scripts/`              | EVALS.json で品質追跡         |
+| ワークフロー検証       | `.claude/skills/<name>/scripts/validate-*.js` | agents/ 内で参照              |
 
 ## scripts/init_skill.js の動作仕様
 
@@ -319,10 +326,10 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 `init_skill.js` は起動時に `loadSkillNameConstants()` を非同期実行し、`@repo/shared/constants` から以下の定数を動的ロードする：
 
-| 定数                 | 値                              | 用途                     |
-| -------------------- | ------------------------------- | ------------------------ |
-| `SKILL_NAME_PATTERN` | `^[a-z0-9]+(-[a-z0-9]+)*$`     | スキル名フォーマット検証 |
-| `MAX_SKILL_NAME_LENGTH` | `64`                         | スキル名最大文字数       |
+| 定数                    | 値                         | 用途                     |
+| ----------------------- | -------------------------- | ------------------------ |
+| `SKILL_NAME_PATTERN`    | `^[a-z0-9]+(-[a-z0-9]+)*$` | スキル名フォーマット検証 |
+| `MAX_SKILL_NAME_LENGTH` | `64`                       | スキル名最大文字数       |
 
 ### runtime fallback 機構
 
@@ -356,10 +363,10 @@ node scripts/init_skill.js my-new-skill --resources agents,references
 node scripts/generate_skill_md.js --plan <plan-json-path> --output <skill-md-path>
 ```
 
-| 引数 | 型 | 必須 | 説明 |
-| --- | --- | --- | --- |
-| `--plan` | string | ✓ | plan オブジェクトを含む JSON ファイルのパス |
-| `--output` | string | ✓ | 生成する SKILL.md のファイルパス |
+| 引数       | 型     | 必須 | 説明                                        |
+| ---------- | ------ | ---- | ------------------------------------------- |
+| `--plan`   | string | ✓    | plan オブジェクトを含む JSON ファイルのパス |
+| `--output` | string | ✓    | 生成する SKILL.md のファイルパス            |
 
 ### plan JSON 構造
 
@@ -394,45 +401,121 @@ node scripts/generate_skill_md.js --plan <plan-json-path> --output <skill-md-pat
 
 **StructurePlanJson → workflow 変換マッピング**（`SkillCreatorService.ts:36`）:
 
-| StructurePlanJson | workflow 形式 | 変換ルール |
-| --- | --- | --- |
-| `description` | `workflow.summary` | そのまま |
-| `purpose` | `workflow.trigger.description` | `Use when {name} is requested. Purpose: {purpose}` |
-| `triggers \|\| [skillName]` | `workflow.trigger.keywords` | 空 → `[skillName]` |
-| `anchors \|\| []` | `workflow.anchors` | undefined → `[]` |
+| StructurePlanJson           | workflow 形式                  | 変換ルール                                         |
+| --------------------------- | ------------------------------ | -------------------------------------------------- |
+| `description`               | `workflow.summary`             | そのまま                                           |
+| `purpose`                   | `workflow.trigger.description` | `Use when {name} is requested. Purpose: {purpose}` |
+| `triggers \|\| [skillName]` | `workflow.trigger.keywords`    | 空 → `[skillName]`                                 |
+| `anchors \|\| []`           | `workflow.anchors`             | undefined → `[]`                                   |
+
+---
+
+## create モードの入口実装（TASK-SC-IMP-CREATE-WORKFLOW-001）
+
+`SkillCreatorService` の `runCreateWorkflow` は、create モードの入口で `analyze-request` プロンプトを読み込む。
+
+### current contract
+
+| 項目                             | 型                | 説明                                                         |
+| -------------------------------- | ----------------- | ------------------------------------------------------------ |
+| `createSkill(options)`           | `Promise<string>` | スキルディレクトリパスを返す（変更なし）                     |
+| `runCreateWorkflow(options)`     | `Promise<void>`   | create フローの内部処理（変更なし）                          |
+| `ResourceLoader.loadAgent(name)` | `Promise<string>` | Agent オブジェクトではなく Markdown prompt **string** を返す |
+| `options.description`            | `string`          | downstream の init_skill.js へそのまま渡す                   |
+
+### 実装パターン
+
+```typescript
+private async runCreateWorkflow(options: CreateSkillOptions): Promise<void> {
+  const requestPrompt = await this.resourceLoader.loadAgent("analyze-request").catch(() => null);
+  if (requestPrompt === null) {
+    return; // フォールバック: createSkill 後続処理を継続
+  }
+  void requestPrompt;
+  void options.description;
+}
+```
+
+### 設計上の注意点
+
+- `loadAgent()` は `Promise<string>` であり、Agent オブジェクトや `run()` 呼び出しは**しない**
+- `loadAgent` 失敗時は `null` でフォールバックし、create フロー全体を壊さない
+- `options.description` は downstream（`init_skill.js --description`）にそのまま維持する
+- 新規 interface / IPC / state contract の追加はなし（system spec 更新は no-op）
+
+---
+
+## LLM 接続パターン（TASK-SC-LLM-PURPOSE-WIRE-001 / TASK-UT-9I-001）
+
+`runCreateWorkflow` 内で確立した LLM 呼び出し・purpose 抽出パターン。
+
+### ILLMClient DI パターン
+
+```typescript
+interface ILLMClient {
+  generate(options: { system: string; user: string }): Promise<string>;
+}
+```
+
+`SkillCreatorService` は `ILLMClient` を constructor DI で受け取る。`AnthropicProvider` が `ILLMClient` を実装し runtime path として注入される。
+
+### extractPurposeWithLlm フロー
+
+```typescript
+const purposeAgentDef = await this.resourceLoader.loadAgent("extract-purpose", { signal });
+const skillInput = `スキル名: ${options.name}\n説明: ${options.description}`;
+const response = await this.llmClient.generate({ system: purposeAgentDef, user: skillInput });
+const purpose = this.normalizePurposeResponse(response);
+// 失敗時: options.description にフォールバック
+```
+
+### normalizePurposeResponse 2 段階 fallback
+
+| 返答形式 | 処理 |
+| -------- | ---- |
+| JSON 文字列 / `` ```json `` コードブロック | `summary` フィールドを優先採用 |
+| JSON ではない文字列 | trim 済み文字列をそのまま採用 |
+| 空文字 | 空文字を返す |
+| `llmClient` 未設定 / `loadAgent` / `generate` 失敗 | `null` を返し呼び出し元で `options.description` にフォールバック |
+
+### 設計上の制約
+
+- abort 系例外は握りつぶさず rethrow する
+- `create` モード以外には purpose 抽出を波及させない
+- `LLMDocQueryAdapter` → `LLMClient` 委譲パターン（TASK-UT-9I-001）: `ipc/index.ts` は薄い wiring として残し、実処理は `LLMDocQueryAdapter` が `ILLMClient` へ委譲する
 
 ---
 
 ## 機能別ガイド
 
-| 機能                         | 参照先                                       |
-| ---------------------------- | -------------------------------------------- |
-| **問題発見フレームワーク**   | references/problem-discovery-framework.md    |
-| **ドメインモデリング**       | references/domain-modeling-guide.md          |
-| **Clean Architecture**       | references/clean-architecture-for-skills.md  |
-| **プロンプト生成ポリシー**   | references/prompt-generation-policy.md       |
-| **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
-| **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
-| **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
-| **ナレッジ管理（構築）**     | references/knowledge-management-guide.md     |
-| **ナレッジ管理（検索・運用）** | references/knowledge-search-and-lifecycle.md |
-| スクリプト生成               | references/script-types-catalog.md           |
-| ワークフローパターン         | references/workflow-patterns.md              |
-| オーケストレーション         | references/orchestration-guide.md            |
-| 実行モード選択               | references/execution-mode-guide.md           |
-| ドキュメント生成             | references/api-docs-standards.md             |
-| Phase 12 再監査              | references/update-process.md, `references/output-patterns.md`, `references/patterns-success-ipc-auth.md`, `references/patterns-success-ipc-auth-b.md`, `references/patterns-success-skill-phase12.md`, `references/patterns-success-skill-phase12-b.md`, `references/patterns-success-testing-security.md`, `references/patterns-failure-misc.md`, `references/patterns-failure-phase12.md`, `references/patterns-pitfall-phase12.md`, `references/patterns-pitfall-testing-ui.md` |
-| 自己改善サイクル             | references/self-improvement-cycle.md         |
-| ライブラリ管理               | references/library-management.md             |
+| 機能                           | 参照先                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **問題発見フレームワーク**     | references/problem-discovery-framework.md                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **ドメインモデリング**         | references/domain-modeling-guide.md                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Clean Architecture**         | references/clean-architecture-for-skills.md                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| **プロンプト生成ポリシー**     | references/prompt-generation-policy.md                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **スクリプト/LLM分担**         | references/script-llm-patterns.md                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **クロススキル参照パターン**   | references/cross-skill-reference-patterns.md                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| **外部CLIエージェント統合**    | references/external-cli-agents-guide.md                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **ナレッジ管理（構築）**       | references/knowledge-management-guide.md                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **ナレッジ管理（検索・運用）** | references/knowledge-search-and-lifecycle.md                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| スクリプト生成                 | references/script-types-catalog.md                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ワークフローパターン           | references/workflow-patterns.md                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| オーケストレーション           | references/orchestration-guide.md                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 実行モード選択                 | references/execution-mode-guide.md                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ドキュメント生成               | references/api-docs-standards.md                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Phase 12 再監査                | references/update-process.md, `references/output-patterns.md`, `references/patterns-success-ipc-auth.md`, `references/patterns-success-ipc-auth-b.md`, `references/patterns-success-skill-phase12.md`, `references/patterns-success-skill-phase12-b.md`, `references/patterns-success-testing-security.md`, `references/patterns-failure-misc.md`, `references/patterns-failure-phase12.md`, `references/patterns-pitfall-phase12.md`, `references/patterns-pitfall-testing-ui.md` |
+| 自己改善サイクル               | references/self-improvement-cycle.md                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ライブラリ管理                 | references/library-management.md                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ### 追加リファレンス
 
-| カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`, `references/knowledge-management-guide.md`, `references/knowledge-search-and-lifecycle.md` |
-| ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
-| 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
-| 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |
+| ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                                  |
+| 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md`             |
+| 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                               |
 
 ---
 
@@ -496,20 +579,22 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 ## ベストプラクティス
 
-| すべきこと                           | 避けるべきこと                    |
-| ------------------------------------ | --------------------------------- |
-| 問題を先に特定する（Problem First）  | 機能から設計を始める              |
-| Core Domainに集中する                | 全体を均等に設計する              |
-| Outcomeでゴール定義                  | Outputでゴール定義する            |
-| Script優先（決定論的処理）           | 全リソースを一度に読み込む        |
-| LLMは判断・創造のみ                  | Script可能な処理をLLMに任せる     |
-| Progressive Disclosure               | 具体例をテンプレートに書く        |
-| クロススキル参照は相対パスで         | 絶対パスやハードコードで参照      |
-| SubAgentは3ファイル以下/エージェント | 多数ファイルを1エージェントに集中 |
+| すべきこと                                   | 避けるべきこと                                      |
+| -------------------------------------------- | --------------------------------------------------- |
+| 問題を先に特定する（Problem First）          | 機能から設計を始める                                |
+| Core Domainに集中する                        | 全体を均等に設計する                                |
+| Outcomeでゴール定義                          | Outputでゴール定義する                              |
+| Script優先（決定論的処理）                   | 全リソースを一度に読み込む                          |
+| LLMは判断・創造のみ                          | Script可能な処理をLLMに任せる                       |
+| Progressive Disclosure                       | 具体例をテンプレートに書く                          |
+| クロススキル参照は相対パスで                 | 絶対パスやハードコードで参照                        |
+| SubAgentは3ファイル以下/エージェント         | 多数ファイルを1エージェントに集中                   |
 | エージェントプロンプトはprompt-creatorで生成 | skill-creator内で独自フォーマットのプロンプトを書く |
+
 | 1プロンプト5000文字以内・単一責務 | 複数責務を1ファイルに詰め込む |
 | CIスクリプトは外部依存ゼロ（Node.js標準のみ） | npm install が必要なCI検証スクリプト |
 | 静的解析ではステートマシン方式でコメント除去 | 正規表現のみでコメント除去（文字列リテラル内誤検出） |
+
 
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの

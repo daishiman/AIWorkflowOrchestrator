@@ -33,6 +33,12 @@
 | 標準ルール | Phase 12 `system-spec-update-summary.md` では Step 1-A（実施）と Step 1-B（未実施・理由）を必ず両方記載すること。今回のテンプレートは `aiworkflow-requirements/SKILL.md` のベストプラクティスに追記済み |
 | 関連タスク | TASK-SC-08                                                                                                                                                   |
 
+### L-SC08-004: mode-specific phase 追加時の同期規則
+
+- `PHASE_TO_STAGE` マップに新しい mode を追加する場合、`useStreamingProgress.ts` と該当 mode の IPC ハンドラの両方を同一コミットで変更すること
+- 片側のみ変更するとマッピング漏れが発生し、progress bar が特定の mode でのみ停止するバグが生じる
+- 追加後は各 mode の integration test で progress event が正しく流れることを必ず確認すること
+
 ---
 
 ## TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18）

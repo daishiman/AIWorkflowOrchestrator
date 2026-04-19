@@ -3183,6 +3183,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ------------------------------------------------------------------------------------------------------------------------- | ---- |
 | `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
+
+### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 close-out sync）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-003 |
+| ステータス | **完了（Phase 12 close-out 済み・Phase 13 blocked）** |
+| タイプ | main / ipc / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` / `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/services/skill/SkillService.ts` |
+| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
+
+#### 実施内容
+
+- `SKILL_CREATOR_CANCEL` の main handler と `cancelCurrentOperation()` close-out を workflow 正本へ同期
+- `onCancelCurrentSkillCreation` から `SkillService.cancelCurrentSkillCreation()` へ接続される cancel bridge を記録
+- `NON_VISUAL` として Phase 11 screenshot N/A、Phase 10/11 を代替証跡とする close-out を明記
+- `index.md` / `artifacts.json` / `outputs/artifacts.json` / legacy link を completed 状態へ同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/p03-seq-CANCEL-003` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/p03-seq-CANCEL-003` | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
 
 ### タスク: UT-W2-03A-LLM-GENERATION-TEST-CLEANUP-001 SkillCreateWizard LLM生成フロー describe.skip クリーンアップ（2026-04-16）
