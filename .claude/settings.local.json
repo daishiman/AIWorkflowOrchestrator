@@ -190,6 +190,9 @@
       "Bash(cp .claude/skills/skill-creator/SKILL.md .agents/skills/skill-creator/SKILL.md)",
       "Bash(cp .claude/skills/skill-creator/scripts/generate_features.js .agents/skills/skill-creator/scripts/generate_features.js)",
       "Bash(cp .claude/skills/skill-creator/scripts/generate_skill_md.js .agents/skills/skill-creator/scripts/generate_skill_md.js)",
+      "Bash(cp .claude/skills/task-specification-creator/LOGS.md .agents/skills/task-specification-creator/LOGS.md)",
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-core.md .agents/skills/task-specification-creator/references/phase-template-core.md)",
+      "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase12.md .agents/skills/task-specification-creator/references/phase-template-phase12.md)",
       "Bash(pnpm --version)"
     ],
     "deny": [],
