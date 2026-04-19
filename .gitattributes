@@ -1,30 +1,48 @@
-# Visual regression baseline 画像を binary として扱う（git diff を抑制）
-# Playwright はデフォルトで spec-file-name-snapshots/ ディレクトリに保存する
-apps/desktop/e2e/ui-ux/*.spec.ts-snapshots/*.png binary
-apps/desktop/e2e/ui-ux/snapshots/*.png binary
+# === 関連リソース ===
+# - merge ドライバー登録: bash .claude/scripts/setup-merge-drivers.sh
+# - 判断ガイドライン: docs/30-workflows/gitattributes-merge-union-reeval-001/
+# - 元タスク Issue: https://github.com/daishiman/AIWorkflowOrchestrator/issues/2281
 
-# ── マージ戦略 ──────────────────────────────────────────────────────────────
-# 追記型ログ・評価記録: 並列ブランチからの追記を自動統合（コンフリクトマーカー不要）
-# 並列PR開発でコンフリクトが発生しないよう全スキル共通で適用
-.claude/skills/*/LOGS.md          merge=union
-.agents/skills/*/LOGS.md          merge=union
-.claude/skills/*/EVALS.json       merge=ours
-.agents/skills/*/EVALS.json       merge=ours
+## グループD: binary（git diff 抑制・差分計算スキップ）
+# [意図] Visual regression baseline 画像は binary として扱い、textual diff を発生させない
+# [注意] Playwright はデフォルトで `<spec>.spec.ts-snapshots/` に保存し、独自 snapshot ディレクトリも併存
+# [関連] apps/desktop/e2e/ui-ux/ 以下の visual regression テスト
+apps/desktop/e2e/ui-ux/*.spec.ts-snapshots/*.png           binary
+apps/desktop/e2e/ui-ux/snapshots/*.png                     binary
 
-# リファレンス・記録ファイル（append-only）
-.claude/skills/*/references/*.md  merge=union
-.agents/skills/*/references/*.md  merge=union
+## グループA: append-only（merge=union で並列追記を自動統合）
+# [意図] 末尾追記が支配的で行順序が意味を持たないファイルに限り、union で両側の追記を保持
+# [注意] 新規ファイルは「追記が支配的か」で判定。構造化ファイル（見出し/表/節）は本グループに含めない
+# [関連] 冒頭「関連リソース」参照。判断ガイドラインは docs/30-workflows/gitattributes-merge-union-reeval-001/
+.agents/skills/*/LOGS.md                                   merge=union
+.agents/skills/*/SKILL-changelog.md                        merge=union
+.agents/skills/*/references/LOGS.md                        merge=union
+.agents/skills/*/references/SKILL-changelog.md             merge=union
+.agents/skills/*/references/lessons-learned-*.md           merge=union
+.agents/skills/*/references/task-workflow-completed*.md    merge=union
+.claude/skills/*/LOGS.md                                   merge=union
+.claude/skills/*/SKILL-changelog.md                        merge=union
+.claude/skills/*/references/LOGS.md                        merge=union
+.claude/skills/*/references/SKILL-changelog.md             merge=union
+.claude/skills/*/references/lessons-learned-*.md           merge=union
+.claude/skills/*/references/task-workflow-completed*.md    merge=union
 
-# SKILL-changelog.md: 変更履歴は追記型のため merge=union で両ブランチの追記を統合
-.claude/skills/*/SKILL-changelog.md  merge=union
-.agents/skills/*/SKILL-changelog.md  merge=union
+## グループC: auto-generated（merge=ours で自ブランチ側採用・マージ後に再生成）
+# [意図] スクリプトで再生成可能な自動生成物は ours で自ブランチ側を採用し、後から再生成する
+# [注意] merge=ours はカスタムドライバー（Git 組み込みではない）。初回 clone 後に登録必須
+# [関連] 登録: bash .claude/scripts/setup-merge-drivers.sh / 再生成: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+.agents/skills/*/EVALS.json                                merge=ours
+.agents/skills/*/indexes/*.json                            merge=ours
+.agents/skills/*/indexes/*.md                              merge=ours
+.claude/skills/*/EVALS.json                                merge=ours
+.claude/skills/*/indexes/*.json                            merge=ours
+.claude/skills/*/indexes/*.md                              merge=ours
 
-# auto-generated インデックスファイル: マージせず現ブランチを優先し、マージ後にスクリプトで再生成する
-# merge=ours はカスタムドライバー名（built-in ではない）。事前に以下を実行すること:
-#   bash .claude/scripts/setup-merge-drivers.sh
-# または: git config merge.ours.driver true
-# マージ後の再生成: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-.claude/skills/*/indexes/*.json   merge=ours
-.claude/skills/*/indexes/*.md     merge=ours
-.agents/skills/*/indexes/*.json   merge=ours
-.agents/skills/*/indexes/*.md     merge=ours
+## グループB: 構造化ドキュメント（デフォルト 3-way マージで人手解決）
+# [意図] 見出し・表・節構造を持つファイルは union すると破綻するため、明示指定せずデフォルト戦略に委ねる
+# [注意] 明示指定なし（default）のため本ファイルにエントリを書かない。対象例:
+#        references/task-workflow{,-rules,-phases,-active,-backlog*}.md
+#        references/lessons-learned.md (root) / api-*.md / arch-*.md
+#        quick-reference*.md / resource-map*.md / topic-map*.md
+#        phase-template-*.md / unassigned-task-*.md
+# [関連] 新規ファイル追加判断: 追記支配ならグループA、構造あるならグループB（本グループ）

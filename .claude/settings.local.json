@@ -195,7 +195,10 @@
       "Bash(cp .claude/skills/task-specification-creator/LOGS.md .agents/skills/task-specification-creator/LOGS.md)",
       "Bash(cp .claude/skills/task-specification-creator/references/phase-template-core.md .agents/skills/task-specification-creator/references/phase-template-core.md)",
       "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase12.md .agents/skills/task-specification-creator/references/phase-template-phase12.md)",
-      "Bash(pnpm --version)"
+      "Bash(pnpm --version)",
+      "Bash(cp .claude/scripts/setup-merge-drivers.sh docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/setup-merge-drivers.sh.before)",
+      "Bash(git check-attr *)",
+      "Bash(tee docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/check-attr.before.txt)"
     ],
     "deny": [],
     "ask": []
