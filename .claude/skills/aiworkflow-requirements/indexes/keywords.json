@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3144,
+  "totalKeywords": 3148,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -8775,6 +8775,27 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
+    "ON": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "PROGRESS": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "REALTIME": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "UPDATE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "onProgress": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "接続": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-w3-usage-tracking-2026-04.md",
+      "quick-reference-search-patterns-skill-lifecycle.md"
+    ],
     "PURPOSE": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8818,11 +8839,6 @@
     ],
     "structurePlan": [
       "lessons-learned-current-2026-04.md"
-    ],
-    "接続": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-w3-usage-tracking-2026-04.md",
-      "quick-reference-search-patterns-skill-lifecycle.md"
     ],
     "SHARED": [
       "lessons-learned-current-2026-04.md",
@@ -10379,9 +10395,6 @@
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FUP": [
-      "lessons-learned-stream-001-progress-callback.md"
-    ],
-    "PROGRESS": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "FLOWS": [

@@ -1,0 +1,13 @@
+{
+  "taskId": "TASK-SC-08",
+  "phase": 11,
+  "captureMode": "SKIP",
+  "reason": "NON_VISUAL。変更は useStreamingProgress.ts の phase-to-stage マッピングと対応テストのみで、UI コンポーネントの視覚変更がないため。",
+  "evidence": [
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-checklist.md",
+    "outputs/phase-11/screenshot-plan.json",
+    "outputs/phase-11/discovered-issues.md"
+  ],
+  "createdAt": "2026-04-19"
+}
