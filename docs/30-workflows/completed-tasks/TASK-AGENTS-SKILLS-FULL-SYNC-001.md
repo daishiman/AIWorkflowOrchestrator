@@ -9,7 +9,7 @@ task_name: .agents/skills/ と .claude/skills/ 完全パリティガード実装
 category: 改善
 priority: 高
 scale: 中規模
-status: 未実施
+status: 完了（spec_created）
 source_phase: TASK-CONFLICT-PREVENT-001 Phase 12（unassigned-task-detection.md）
 created_date: 2026-04-18
 related_tasks:
@@ -26,7 +26,7 @@ spec_path: docs/30-workflows/unassigned-task/TASK-AGENTS-SKILLS-FULL-SYNC-001.md
 | 分類         | 改善                                                               |
 | 優先度       | 高                                                                 |
 | 見積もり規模 | 中規模                                                             |
-| ステータス   | 未実施                                                             |
+| ステータス   | 完了（spec_created）                                               |
 | 発見元       | TASK-CONFLICT-PREVENT-001 Phase 12（unassigned-task-detection.md） |
 | 発見日       | 2026-04-18                                                         |
 

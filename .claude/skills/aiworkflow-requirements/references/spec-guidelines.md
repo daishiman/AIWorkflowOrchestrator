@@ -166,3 +166,49 @@ node scripts/split-reference.js --analyze
 # 設定に基づいて分割
 node scripts/split-reference.js --split <file> <config.json>
 ```
+
+---
+
+## Canonical/Mirror 原則
+
+### 正本と鏡像の役割分担
+
+スキル一式は 2 つの root に配置される。両者は「常に完全一致（full parity）」でなければならない。
+
+| 役割      | パス              | 編集可否 | 生成方法                                           |
+| --------- | ----------------- | -------- | -------------------------------------------------- |
+| canonical | `.claude/skills/` | 可       | 仕様書作成・スキル更新の**唯一の正本**             |
+| mirror    | `.agents/skills/` | 不可     | `sync-skills-mirror.sh` による canonical からの複製 |
+
+### 運用スクリプト
+
+| スクリプト                                | 役割                                        | exit コード契約                                                                                     |
+| ----------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `.claude/scripts/verify-skills-parity.sh` | `diff -qr` による差分検証                   | 0=OK または bootstrap skip（両 root 不在 / canonical 不在） / 1=mirror 欠損 or 差分検出             |
+| `.claude/scripts/sync-skills-mirror.sh`   | `rsync -a --delete` による canonical→mirror | 0=最終 parity OK / 1=再同期後も差分残存 or `--check-only` 差分検出                                  |
+
+### ガードレール
+
+- **pre-push hook** (`.husky/pre-push`): push 直前に `verify-skills-parity.sh` を実行。NG で push を拒否
+- **session-init hook** (`.claude/hooks/session-init.sh`): セッション開始時に parity 警告を出力（`CLAUDE_SKIP_HEAVY_HOOKS=1` で opt-out 可）
+
+### 復旧手順
+
+parity NG 時は以下を実行する。
+
+```bash
+# 1. 差分を確認
+bash .claude/scripts/verify-skills-parity.sh
+
+# 2. canonical→mirror に再同期
+bash .claude/scripts/sync-skills-mirror.sh
+
+# 3. parity OK を再確認
+bash .claude/scripts/verify-skills-parity.sh
+```
+
+### 禁止事項
+
+- `.agents/skills/` 配下の直接編集（mirror は canonical の派生物であり SSoT ではない）
+- pre-push hook のスキップ（`--no-verify`）
+- mirror のみ先行更新（必ず canonical から同期する）

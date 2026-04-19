@@ -3078,6 +3078,15 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L178 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L283 |
 
+### references/lessons-learned-canonical-mirror-parity-guard-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| 背景 | L5 |
+| 苦戦した点と解決策 | L9 |
+| 将来同様課題を解決するための原則 | L64 |
+| 関連成果物 | L72 |
+
 ### references/lessons-learned-ci-measurement-template-2026-04.md
 
 | セクション | 行 |
@@ -4873,6 +4882,7 @@ node scripts/list-specs.js --topics
 | 新規仕様の追加手順 | L96 |
 | 完了タスクセクション標準化 | L104 |
 | ファイルサイズ管理 | L152 |
+| Canonical/Mirror 原則 | L172 |
 
 ### references/spec-splitting-guidelines.md
 
@@ -5206,13 +5216,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L432 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L452 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L454 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L466 |
-| 完了タスク（2026-03後半） | L494 |
-| 完了タスク（機能別アーカイブ） | L502 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L603 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L433 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L453 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L455 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L467 |
+| 完了タスク（2026-03後半） | L495 |
+| 完了タスク（機能別アーカイブ） | L503 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L604 |
 
 ### references/task-workflow-history.md
 
@@ -5246,9 +5256,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L29 |
-| 利用順序 | L58 |
-| 関連ドキュメント | L63 |
+| 仕様書インデックス | L30 |
+| 利用順序 | L59 |
+| 関連ドキュメント | L64 |
 
 ### references/testing-accessibility.md
 
