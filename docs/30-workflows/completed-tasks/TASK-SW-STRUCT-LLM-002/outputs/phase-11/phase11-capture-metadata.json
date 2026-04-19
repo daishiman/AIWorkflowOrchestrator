@@ -1,0 +1,49 @@
+{
+  "phase": 11,
+  "taskId": "TASK-SW-STRUCT-LLM-002",
+  "date": "2026-04-19",
+  "captureStatus": "CAPTURE_BLOCKED",
+  "reason": "main process と補助 script のみ変更。UI/UX変更なし。",
+  "scenarios": [
+    {
+      "id": "create-flow",
+      "description": "runCreateWorkflow が features を生成する",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": [
+        {
+          "testFile": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.features.test.ts",
+          "testId": "TC-01",
+          "assertion": "generate_features.js が呼ばれる",
+          "result": "PASS"
+        },
+        {
+          "testFile": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.features.test.ts",
+          "testId": "TC-02",
+          "assertion": "structurePlan.features が非空配列",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "id": "fallback",
+      "description": "script failure / timeout でも workflow が継続する",
+      "captureStatus": "CAPTURE_BLOCKED",
+      "alternativeEvidence": [
+        {
+          "testFile": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.features.test.ts",
+          "testId": "TC-03",
+          "assertion": "failure 時に features: []",
+          "result": "PASS"
+        },
+        {
+          "testFile": "apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.features.test.ts",
+          "testId": "TC-14",
+          "assertion": "timeout 時に features: []",
+          "result": "PASS"
+        }
+      ]
+    }
+  ],
+  "overallResult": "PASS",
+  "blockers": 0
+}
