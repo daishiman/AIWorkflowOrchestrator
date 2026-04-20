@@ -3052,6 +3052,14 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                              |
 | 検証     | docs-only / 記録のみ                                                                       |
 
+| 項目     | 内容                                                                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / verify_existing                                                                                                                |
+| 変更対象 | `references/logs-archive-policy.md`（新規）、`.agents/.../logs-archive-policy.md`（mirror）、3インデックス更新（topic-map / quick-reference / resource-map） |
+| 結果     | TASK-LOGS-ARCHIVE-POLICY-001 Phase 1〜12 完了。アーカイブ閾値（300行/30KB/月次）・命名規則（YYYY-MM）・canonical 配置先（`references/`）を正本ポリシーとして確定 |
+| 検証     | TC-01〜TC-12 全 PASS / Phase 7 カバレッジ 100% / mirror diff=0 / Phase 10 最終レビュー PASS / root artifacts parity 回復                                   |
+| Issue    | Refs #2282                                                                                                                                              |
+
 ## 2026-04-19 — TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 Phase 12 close-out sync
 
 - `task-workflow-active.md` 台帳に TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 エントリ追加（in_progress / Phase 12 / Issue #2229）

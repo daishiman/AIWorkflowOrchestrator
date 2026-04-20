@@ -2021,8 +2021,8 @@ node scripts/list-specs.js --topics
 | 用語定義 | L190 |
 | 参照 | L205 |
 | クイックリファレンス | L245 |
-| 変更履歴 | L285 |
-| ドキュメント構成 | L306 |
+| 変更履歴 | L282 |
+| ドキュメント構成 | L303 |
 
 ### references/claude-code-skills-agents.md
 
@@ -2843,19 +2843,6 @@ node scripts/list-specs.js --topics
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
 
-### references/evals-schema-spec.md
-
-| セクション | 行 |
-|------------|----|
-| 1. 目的 | L9 |
-| 2. 標準スキーマ（camelCase v2 系） | L24 |
-| 3. 方言スキーマ（snake_case v1 系） | L49 |
-| 4. consumer 一覧 | L80 |
-| 5. schema 変更手順 | L102 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
-| 7. 既知の制約（validator=0 件） | L154 |
-| 8. 変更履歴 | L184 |
-
 ### references/governance-hooks-factory-audit-sink.md
 
 | セクション | 行 |
@@ -3253,19 +3240,6 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L154 |
 | クイックリファレンス: カテゴリ別検索ガイド | L174 |
 | 分割ファイル一覧 | L178 |
-
-### references/lessons-learned-evals-consumer-audit-001.md
-
-| セクション | 行 |
-|------------|----|
-| 概要 | L11 |
-| L-EVALS-001: 「正本 coverage 穴」発見過程 | L17 |
-| L-EVALS-002: canonical 4 vs 必須 6 成果物の区別 | L38 |
-| L-EVALS-003: NON_VISUAL 監査タスク Phase-11 再解釈（screenshot 不要） | L59 |
-| L-EVALS-004: dual root bit-for-bit 一致の検証コマンド | L79 |
-| L-EVALS-005: docs-only タスクの `spec_created` ステータス採用根拠 | L114 |
-| 関連ドキュメント | L143 |
-| 変更履歴 | L158 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -4529,6 +4503,19 @@ node scripts/list-specs.js --topics
 | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE | L58 |
 | 変更履歴アーカイブ | L111 |
 
+### references/logs-archive-policy.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| 1. 適用範囲 | L16 |
+| 2. アーカイブ閾値 | L29 |
+| 3. archive 先パス規則 | L60 |
+| 4. アーカイブ手順 | L92 |
+| 5. 運用ルール | L123 |
+| 6. 参照 | L152 |
+| 7. CHANGELOG | L173 |
+
 ### references/patterns-advanced.md
 
 | セクション | 行 |
@@ -5232,13 +5219,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L433 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L453 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L455 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L467 |
-| 完了タスク（2026-03後半） | L495 |
-| 完了タスク（機能別アーカイブ） | L503 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L604 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L432 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L452 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L454 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L466 |
+| 完了タスク（2026-03後半） | L494 |
+| 完了タスク（機能別アーカイブ） | L502 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L603 |
 
 ### references/task-workflow-history.md
 
