@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）
+- 2026-04-19: `TASK-AGENTS-SKILLS-FULL-SYNC-001` canonical/mirror full parity guard（`.claude/scripts/verify-skills-parity.sh` + `.claude/scripts/sync-skills-mirror.sh` 新規 / `.husky/pre-push` + `.claude/hooks/session-init.sh` 追記 / `CLAUDE_SKIP_HEAVY_HOOKS=1` opt-out / AC-6 session-init 最大 0.443s / NON_VISUAL infra-guard / Phase 1-12 完了 / Phase 13 は user 承認まで blocked / Issue #2278 / spec_created）
 - 2026-04-19: `TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001` createSkill private workflow abort entry guard（Phase 1-12 completed / Phase 13 blocked / NON_VISUAL / task-specific close-out）
 - 2026-04-19: `TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE` onProgress-realtime-update（`useStreamingProgress.ts` に `PHASE_TO_STAGE` マップ 6 mode-specific phase 追加・`api.onProgress()` コールバック接続・エラーハンドリング・cleanup / UI task (VISUAL) / Phase 12 close-out / Issue #2268 / 未タスク U-01・U-02 を `unassigned-task/` 登録済み）
 - 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
@@ -173,7 +174,6 @@
 - `NON_VISUAL` タスクは screenshot 不要でも、Phase 12 の文書と台帳は必ず current facts へ同期する
 
 ### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
-### タスク: TASK-SW-FIX-STATE-DETAIL-001 GenerateStep template cancel / answers reset / generationLockRef release（2026-04-14）
 
 | 項目       | 値                                                                                         |
 | ---------- | ------------------------------------------------------------------------------------------ |
@@ -286,12 +286,11 @@
 
 #### 実施内容
 
-- `SkillCreateWizard.tsx` の `catch` に stale guard を追加し、キャンセル後の遅延 reject が error を再表示しないようにした
-- `SkillCreateWizard.tsx` の `finally` で `generationLockRef` を必ず解放するようにした
-- `GenerateStep.tsx` に template mode recovery を接続し、`最初からやり直す` を template error 専用導線として固定した
-- `ConversationRoundStep.tsx` で `answers` prop 変更時に `internalAnswers` を再初期化し、Step 1 の local state を親 state に再同期した
-- `outputs/phase-11/` に screenshot bundle と metadata を保存し、template error cancel / step0 return / normal error no cancel の 3 状態を visual evidence として閉じた
-- `outputs/phase-12/` の implementation guide / system-spec / changelog / unassigned-task / skill-feedback / compliance を current facts に同期した
+- `packages/shared/src/types/skill-wizard-label-map.ts` に `SemanticLabelEntry` / `SemanticLabelResult` / `resolveLabelEntry()` を追加し、semantic default の変換を shared 側へ集約した
+- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` から `notion` 専用のハードコード特別ケースを削除した
+- `resolveLabelEntry()` のフォールバックで raw 値の表記を保持するように修正し、`Jira` / `Markdown` / `JSON` の原表記が壊れないようにした
+- `packages/shared/src/types/__tests__/skill-wizard-label-map.test.ts` を拡張し、`notion` / `Jira` / `Markdown` の回帰を固定した
+- `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/*.md` を current facts に合わせて作成・更新した
 
 #### Phase 11/12 成果物
 
@@ -313,30 +312,37 @@
 | 未タスク検出レポート                      | `outputs/phase-12/unassigned-task-detection.md`                   |
 | スキルフィードバックレポート              | `outputs/phase-12/skill-feedback-report.md`                       |
 | Phase 12 準拠チェック（root evidence）    | `outputs/phase-12/phase12-task-spec-compliance-check.md`         |
+| 成果物                       | パス                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| 手動テスト結果               | `outputs/phase-11/manual-test-result.md`                 |
+| 手動テストレポート           | `outputs/phase-11/manual-test-report.md`                 |
+| 実装ガイド                   | `outputs/phase-12/implementation-guide.md`               |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         |
+| ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 準拠チェック        | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 #### 検証証跡
 
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --maxWorkers 1`: PASS（172 tests）
-- `node apps/desktop/scripts/capture-task-sw-fix-state-detail-phase11.mjs`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-03-template-error-cancel.png`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-04-template-error-step0.png`: PASS
-- `outputs/phase-11/screenshots/TC-SW-FIX-STATE-DETAIL-11-05-normal-error-no-cancel.png`: PASS
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
-- `artifacts.json` / `outputs/artifacts.json`: parity PASS
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-wizard-label-map.test.ts`: PASS（16 tests）
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --maxWorkers 1`: PASS（93 tests）
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared build`: PASS
+- `pnpm --filter @repo/desktop build`: PASS
+- `grep -n "normalizedKey.*notion\\|notion.*その他\\|特別ケース" apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`: 出力なし
 
 #### 苦戦箇所
 
-| #   | 苦戦箇所                                               | 解決策                                                                 |
-| --- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| 1   | キャンセル後の遅延 reject が error 表示を復活させる    | `catch` 側に stale guard を入れ、`finally` で lock 解除を確実にした     |
-| 2   | template 失敗時の復帰導線が曖昧になりやすい            | `mode="template"` のときだけ `最初からやり直す` を出すように固定した   |
-| 3   | `answers` の local state が親 state とずれる            | `ConversationRoundStep` で prop 変更時に `internalAnswers` を再初期化した |
+- raw 値を正規化した後の fallback で小文字化してしまうと、`Jira` / `Markdown` / `JSON` の元表記が壊れる
+- `resolveLabelEntry()` を shared に寄せたあとも、renderer 側の special case を残してしまうと source of truth が二重化する
 
 #### lessons-learned
 
-- 生成キャンセル後の UI は「エラーを消す」だけでなく「古い結果を再表示しない」ことまで含めて設計する
-- template recovery は通常 error と分け、`retry` と `start over` の意味を UI で明確に分離する
-- Step 1 の local state は親 state の再同期点を持たせると、再開・戻る・再生成の 3 経路で破綻しにくい
+- `SemanticLabelEntry` のような union で「表示ラベル + 補足情報」を同時に持たせると、special case を shared に閉じやすい
+- raw 値の fallback は原表記を優先し、正規化は lookup のためだけに使う
+- 互換 wrapper を残すと、既存契約を壊さずに内部実装だけを改善できる
 
 ### タスク: TASK-CI-FUTURE-007 @repo/backend Codecov カバレッジアップロード対応（2026-04-16）
 
@@ -3290,6 +3296,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ------------------------------------------------------------------------------------------------------------------------- | ---- |
 | `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
+
+### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 close-out sync）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-003 |
+| ステータス | **完了（Phase 12 close-out 済み・Phase 13 blocked）** |
+| タイプ | main / ipc / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` / `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/services/skill/SkillService.ts` |
+| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
+
+#### 実施内容
+
+- `SKILL_CREATOR_CANCEL` の main handler と `cancelCurrentOperation()` close-out を workflow 正本へ同期
+- `onCancelCurrentSkillCreation` から `SkillService.cancelCurrentSkillCreation()` へ接続される cancel bridge を記録
+- `NON_VISUAL` として Phase 11 screenshot N/A、Phase 10/11 を代替証跡とする close-out を明記
+- `index.md` / `artifacts.json` / `outputs/artifacts.json` / legacy link を completed 状態へ同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/p03-seq-CANCEL-003` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/p03-seq-CANCEL-003` | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
 
 ### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）

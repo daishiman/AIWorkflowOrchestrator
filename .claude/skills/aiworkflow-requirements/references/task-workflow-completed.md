@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）
+- 2026-04-19: `TASK-AGENTS-SKILLS-FULL-SYNC-001` canonical/mirror full parity guard（`.claude/scripts/verify-skills-parity.sh` + `.claude/scripts/sync-skills-mirror.sh` 新規 / `.husky/pre-push` + `.claude/hooks/session-init.sh` 追記 / `CLAUDE_SKIP_HEAVY_HOOKS=1` opt-out / AC-6 session-init 最大 0.443s / NON_VISUAL infra-guard / Phase 1-12 完了 / Phase 13 は user 承認まで blocked / Issue #2278 / spec_created）
 - 2026-04-19: `TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001` createSkill private workflow abort entry guard（Phase 1-12 completed / Phase 13 blocked / NON_VISUAL / task-specific close-out）
 - 2026-04-19: `TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE` onProgress-realtime-update（`useStreamingProgress.ts` に `PHASE_TO_STAGE` マップ 6 mode-specific phase 追加・`api.onProgress()` コールバック接続・エラーハンドリング・cleanup / UI task (VISUAL) / Phase 12 close-out / Issue #2268 / 未タスク U-01・U-02 を `unassigned-task/` 登録済み）
 - 2026-04-18: `TASK-CONFLICT-PREVENT-001` conflict-prevent-skills-001（`.gitattributes` の generated index merge policy 是正 / `generate-index.js` の deterministic 化 / merge driver bootstrap + hook 導線補強 / Phase 12 same-wave sync 補正 / NON_VISUAL）
@@ -3295,6 +3296,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ------------------------------------------------------------------------------------------------------------------------- | ---- |
 | `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
+
+### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 close-out sync）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SW-CANCEL-003 |
+| ステータス | **完了（Phase 12 close-out 済み・Phase 13 blocked）** |
+| タイプ | main / ipc / NON_VISUAL |
+| 優先度 | 高 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` / `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/services/skill/SkillService.ts` |
+| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
+
+#### 実施内容
+
+- `SKILL_CREATOR_CANCEL` の main handler と `cancelCurrentOperation()` close-out を workflow 正本へ同期
+- `onCancelCurrentSkillCreation` から `SkillService.cancelCurrentSkillCreation()` へ接続される cancel bridge を記録
+- `NON_VISUAL` として Phase 11 screenshot N/A、Phase 10/11 を代替証跡とする close-out を明記
+- `index.md` / `artifacts.json` / `outputs/artifacts.json` / legacy link を completed 状態へ同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/p03-seq-CANCEL-003` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/p03-seq-CANCEL-003` | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
 
 ### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）
