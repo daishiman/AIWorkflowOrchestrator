@@ -87,6 +87,19 @@ Phase 11 の manual test。
 | `ui-sanity-visual-review.md` | UI task のみ | 視覚レビュー |
 | `phase11-capture-metadata.json` | UI task のみ | capture 実行時の evidence inventory |
 
+### canonical ファイル名の優先順位（[UT-LIFECYCLE-FB-2]）
+
+`manual-test-result.md` が Phase 11 の canonical ファイル名であり最優先される。
+`{TASK-ID}-manual-test-report.md`（ガイド補助命名）との競合が生じた場合は `manual-test-result.md` を採用すること。
+
+| ファイル名 | 分類 | 適用条件 |
+| --- | --- | --- |
+| `manual-test-result.md` | canonical（正規名称） | 全タスク共通（必須） |
+| `{TASK-ID}-manual-test-report.md` | 補助命名 | `NON_VISUAL + verify_existing` の場合のみ |
+
+`verify_existing` モード以外で `{TASK-ID}-manual-test-report.md` を primary evidence にした場合、
+Phase 12 の `phase12-task-spec-compliance-check.md` で参照エラーとなる。
+
 ### 環境チェック（Phase 11 着手前）
 
 UI task で screenshot 撮影を行う場合は、着手前に以下を確認する：

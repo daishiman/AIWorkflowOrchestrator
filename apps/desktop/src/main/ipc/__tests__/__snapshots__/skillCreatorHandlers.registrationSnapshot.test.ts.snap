@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerSkillCreatorHandlers - チャンネル登録スナップショット > REG-SNAP-SKILL-CREATOR-01〜REG-COUNT-SKILL-CREATOR-01: 正常系 > REG-SNAP-SKILL-CREATOR-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "skill-creator:apply-improvement",
+  "skill-creator:cancel",
+  "skill-creator:cleanup-expired-sessions",
+  "skill-creator:configure-api",
+  "skill-creator:create",
+  "skill-creator:debug",
+  "skill-creator:delete-session",
+  "skill-creator:detect-mode",
+  "skill-creator:execute-plan",
+  "skill-creator:execute-tasks",
+  "skill-creator:fork",
+  "skill-creator:generate-docs",
+  "skill-creator:get-adapter-status",
+  "skill-creator:get-governance-state",
+  "skill-creator:get-session-detail",
+  "skill-creator:get-verify-detail",
+  "skill-creator:get-workflow-state",
+  "skill-creator:improve",
+  "skill-creator:improve-skill",
+  "skill-creator:list-sessions",
+  "skill-creator:normalize-sdk-messages",
+  "skill-creator:output-overwrite-approved",
+  "skill-creator:plan",
+  "skill-creator:resume-session",
+  "skill-creator:reverify-workflow",
+  "skill-creator:schedule",
+  "skill-creator:share",
+  "skill-creator:stats",
+  "skill-creator:submit-user-input",
+  "skill-creator:validate",
+  "skill-creator:validate-schema",
+  "skill-creator:verify",
+]
+`;

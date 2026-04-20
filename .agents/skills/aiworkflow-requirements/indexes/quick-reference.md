@@ -607,6 +607,21 @@
 | R-03   | ハードコード文字列 | warning | IPC_CHANNELS 定数でなく文字列リテラル（P27対応） |
 | R-04   | 未登録チャンネル   | error   | Preload にあるが Main にない                     |
 
+### IPC ハンドラー登録スナップショットカバレッジ（TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001）
+
+- **IPC registration testing**: REG-SNAP + REG-DEDUP + REG-COUNT の3点契約 → `api-ipc-system-core.md § IPC Handler Registration Testing Contract`
+
+| 項目         | 値                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| 契約         | REG-SNAP（スナップショット一致）/ REG-DEDUP（重複ゼロ）/ REG-COUNT（登録数一致）                                     |
+| 対象         | direct正本 48件 / auxiliary 1件（`registerAllIpcHandlers()` 配下）                                                    |
+| Wave 1       | 8ファイル / 41テスト（完了・PASS）                                                                                    |
+| Wave 2       | 16ファイル / 80テスト（完了・PASS）                                                                                   |
+| Wave 3       | 25ファイル（計画中・AC-006）                                                                                          |
+| 環境制約     | `ESBUILD_BINARY_PATH` を `.pnpm` 配下から指定、24ファイル一括はSIGKILL（Wave分割が正本手順）                         |
+| 仕様         | `references/api-ipc-system-core.md` § IPC Handler Registration Testing Contract                                      |
+| 教訓         | `references/lessons-learned-current-2026-04.md` (L-IPC-SNAP-001/002/003)                                            |
+
 ### IPC 4層整合CI検証（UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001）
 
 | 項目         | 値                                                                                                                   |

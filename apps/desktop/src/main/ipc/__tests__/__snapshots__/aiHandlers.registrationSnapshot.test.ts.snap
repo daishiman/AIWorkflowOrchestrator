@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerAIHandlers - チャンネル登録スナップショット > REG-SNAP-AI-01〜REG-COUNT-AI-01: 正常系 > REG-SNAP-AI-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "ai:chat",
+  "ai:check-connection",
+  "ai:index",
+]
+`;
