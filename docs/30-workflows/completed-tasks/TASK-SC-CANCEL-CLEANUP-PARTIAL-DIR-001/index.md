@@ -3,9 +3,10 @@ task_id: TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001
 task_name: キャンセル後の半作成スキルディレクトリ残存クリーンアップ
 task_type: NON_VISUAL
 category: bugfix-regression-check
-status: in_progress
+status: pending_pr
 current_phase: 13
 created_date: 2026-04-19
+closeout_date: 2026-04-20
 issue_number: 2229
 ---
 
@@ -165,6 +166,14 @@ commit / push / PR は実施しない。並列化できる検証は SubAgent 単
 | 11    | 手動テスト       | [phase-11-manual-test.md](phase-11-manual-test.md)           | `NON_VISUAL code task` として代替証跡を固定する                     | completed  |
 | 12    | ドキュメント更新 | [phase-12-documentation.md](phase-12-documentation.md)       | Phase 12 mandatory 5 tasks のうち branch 内レビュー成果物を更新する | completed  |
 | 13    | PR作成           | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 本 task では scope 外。実施しない                                   | pending    |
+
+## Follow-up 同期
+
+本タスク Phase 12 の close-out 波及は branch 内で完結し、repo-wide への波及は以下の follow-up タスクで 2026-04-20 に実施済み。
+
+| follow-up タスク                                                         | scope                                                                      | 状態      | 完了日     |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------- | --------- | ---------- |
+| [TASK-SC-CANCEL-LOGS-SYNC-001](../TASK-SC-CANCEL-LOGS-SYNC-001/index.md) | 両 LOGS / canonical spec / lessons-learned / 親 index.md の repo-wide 同期 | completed | 2026-04-20 |
 
 ## Canonical Artifacts
 

@@ -3038,3 +3038,33 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+
+## 2026-04-20 — TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
+
+- 親タスク `TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001` Phase 12 close-out の repo-wide 波及を follow-up `TASK-SC-CANCEL-LOGS-SYNC-001` として分離
+- `references/task-workflow-active.md` から親タスクエントリを削除し `references/task-workflow-completed-recent-2026-04g.md` の末尾に completed 形式で移動（AC-3）
+- `references/lessons-learned-current-2026-04.md` に 3 知見を独立 h3 エントリとして追加（L-SC-CANCEL-NON-VISUAL-001 / L-SC-CANCEL-SCOPE-BOUNDARY-001 / L-SC-CANCEL-REPO-WIDE-SYNC-001）（AC-4）
+- 親 `index.md` フロントマター `status: in_progress` → `status: pending_pr` に更新、`closeout_date: 2026-04-20` を追加、Follow-up 同期セクションを追加して本タスクへ逆参照（AC-5）
+- spec-update-workflow.md の canonical spec 更新標準フローに準拠
+
+| 項目     | 内容                                                                                                                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-sync / repo-wide sync wave / follow-up close-out / lessons-learned-sync                                                                                                           |
+| 変更対象 | `references/task-workflow-active.md`、`references/task-workflow-completed-recent-2026-04g.md`、`references/lessons-learned-current-2026-04.md`、親 `index.md`（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）、本 `LOGS.md` |
+| 結果     | AC-2〜AC-5 all PASS。Lane B/C 対応完了。canonical spec active→completed 移動、lessons-learned 3 知見追加、親 index.md 完了宣言                                                                      |
+| 検証     | TC-02〜TC-05 grep PASS（`outputs/phase-11/grep-snapshots/` 参照）/ spec-update-workflow 準拠 / 最小変更原則維持                                                                                       |
+
+## 2026-04-20 — TASK-SC-CANCEL-LOGS-SYNC-001 Phase 12 self-close-out
+
+- 本タスク `TASK-SC-CANCEL-LOGS-SYNC-001` 自体の Phase 1-12 完了を self-close-out として本 LOGS にも記録（親→本タスクの追跡性を双方向で閉鎖）
+- Phase 12 mandatory 5 tasks + compliance check 追加 1 タスク all PASS（`outputs/phase-12/phase12-task-spec-compliance-check.md` の最終判定 COMPLIANCE PASS）
+- spec-update-workflow.md の canonical spec 更新フロー / LOGS 追記規約（h2 形式 / 3 節 + 表） / lessons-learned h3 命名（`L-<TASK-ID>-<NNN>`）すべて準拠
+- `topic-map.md` / `keywords.json` は再生成なし（最小変更原則維持）
+- Phase 13（PR 作成）は user 承認待ちで blocked、commit / push は実施しない
+
+| 項目     | 内容                                                                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-sync / self-close-out / spec-update-workflow 準拠                                                                                                         |
+| 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
+| 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |

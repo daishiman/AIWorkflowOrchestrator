@@ -1866,3 +1866,40 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 解決策     | `REG-SNAP`（snapshot 一致）・`REG-DEDUP`（重複なし）・`REG-COUNT`（総数一致）の3点を必ずセットで実装する |
 | 標準ルール | IPC 登録テストは REG-SNAP / REG-DEDUP / REG-COUNT の3点セットを registration unit ごとに用意する |
 | 関連タスク | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 |
+
+---
+
+## TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 教訓（2026-04-20）
+
+### L-SC-CANCEL-NON-VISUAL-001: NON_VISUAL タスクの代替証跡確立
+
+| 項目       | 内容                                                                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | docs-sync wave は UI 画面がなく従来の screenshot 証跡が取得不能で、Phase 11 の primary evidence をどう固定するかが曖昧になりやすかった                    |
+| 原因       | Phase 11 手動テストが screenshot 前提に設計されており、NON_VISUAL タスク（IPC / 仕様書 / スキル定義など）の証跡方針が明示されていなかった                 |
+| 解決策     | `grep` 出力スナップショットを TC-01〜TC-05 と 1:1 対応で取得し、`outputs/phase-11/grep-snapshots/` に配置。text-based diff / grep / lint 出力が画像の役割を担う |
+| 設計原則   | **NON_VISUAL タスクは代替証跡を明示的に定義**。Phase 1 要件定義時点でタスク種別を判定し、Phase 4 の TC 設計段階でスナップショット出力先を確定する         |
+| 適用条件   | タスク種別が docs-sync / config-sync / knowledge-base-sync / IPC handler registration など、UI 変更を伴わないすべての wave                                 |
+| 関連タスク | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001、TASK-SC-CANCEL-LOGS-SYNC-001                                                                                      |
+
+### L-SC-CANCEL-SCOPE-BOUNDARY-001: scope 境界の設計原則（branch 内 vs repo-wide）
+
+| 項目       | 内容                                                                                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | 親タスク Phase 12 close-out が他スキル/spec ファイルへ波及しないまま残り、Issue #2313 で同期漏れ 6 項目として報告された                                                                    |
+| 原因       | 親タスク scope を「branch 内ドキュメント」に限定したことが Phase 1 で明示されず、結果として close-out 範囲が曖昧なまま Phase 13 PR 前提まで進んだ                                         |
+| 解決策     | 親タスクの scope を「branch 内」、子タスク（本タスク TASK-SC-CANCEL-LOGS-SYNC-001）の scope を「repo-wide sync」に明示分離し、親は Phase 13 PR に専念、子は sync wave として独立実行      |
+| 設計原則   | **親/子タスクの責務分離を scope で明示**。Phase 1 で「branch 内 or repo-wide」のどちらかを固定し、scope 違反（コード変更混入 / 既存エントリ遡及修正 / 他スキル波及）を Phase 10 で検知する |
+| 適用条件   | 親タスク close-out が複数スキル / 複数 canonical spec / mirror / repo-wide ドキュメントに波及するとき                                                                                     |
+| 関連タスク | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001、TASK-SC-CANCEL-LOGS-SYNC-001、Issue #2313                                                                                                         |
+
+### L-SC-CANCEL-REPO-WIDE-SYNC-001: repo-wide sync wave 手法
+
+| 項目       | 内容                                                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 症状       | 親タスク完了の波及が 5 ファイル以上に及ぶ場合、親タスク Phase 12 内に全波及を詰め込むと PR サイズが爆発し、scope 境界も曖昧になる                                                                                                      |
+| 原因       | close-out の波及を「親タスク Phase 12 内」で処理する前提になっており、Lane 分けした並列 wave として独立させる設計パターンが確立されていなかった                                                                                       |
+| 解決策     | repo-wide sync wave を別タスクとして発行し、Lane A（両 LOGS）/ Lane B（canonical spec + lessons-learned）/ Lane C（親 index.md 完了宣言）で責務分離。TC-01〜TC-05 の grep スナップショットで証跡取得し、Phase 10 で all-must-pass 判定 |
+| 設計原則   | **close-out の波及は Lane 分けした並列 wave で実施**。各 Lane は独立した AC に対応し、並列実行可能。sync wave は親タスクとは別 index.md / artifacts.json を持つ独立タスクとする                                                        |
+| 適用条件   | 親タスクの close-out が 5 ファイル以上に波及する / 両 skill 系 LOGS に同期が必要 / canonical spec の active → completed 移動を伴う場合                                                                                                 |
+| 関連タスク | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001、TASK-SC-CANCEL-LOGS-SYNC-001、Issue #2313                                                                                                                                                     |

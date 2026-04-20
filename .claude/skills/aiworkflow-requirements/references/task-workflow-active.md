@@ -146,6 +146,8 @@
 
 ## アクティブタスク台帳
 
-| task_id                                | task_name                                                | category                | status      | current_phase | issue_number | created_date |
-| -------------------------------------- | -------------------------------------------------------- | ----------------------- | ----------- | ------------- | ------------ | ------------ |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 | キャンセル後の半作成スキルディレクトリ残存クリーンアップ | bugfix-regression-check | in_progress | 12            | 2229         | 2026-04-19   |
+| task_id | task_name | category | status | current_phase | issue_number | created_date |
+| ------- | --------- | -------- | ------ | ------------- | ------------ | ------------ |
+
+<!-- TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 was moved to task-workflow-completed-recent-2026-04g.md on 2026-04-20 via TASK-SC-CANCEL-LOGS-SYNC-001 -->
+

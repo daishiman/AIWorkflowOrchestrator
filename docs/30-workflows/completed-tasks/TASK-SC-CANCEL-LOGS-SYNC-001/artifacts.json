@@ -1,0 +1,231 @@
+{
+  "feature": "task-sc-cancel-logs-sync-001",
+  "created": "2026-04-20T00:00:00Z",
+  "lastUpdated": "2026-04-20T00:00:00Z",
+  "status": "pending_pr",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（why / what / scope 境界 / AC-1〜AC-5）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-boundary.md",
+          "description": "branch 内 / repo-wide の scope 境界定義表"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準（grep 検証コマンドと期待結果）"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/sync-design.md",
+          "description": "5ファイル更新の追記方針・既存エントリ形式整合方針"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/target-file-map.md",
+          "description": "対象ファイル一覧と追記ポイントマップ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/lessons-learned-injection-plan.md",
+          "description": "lessons-learned 系への3知見の反映計画"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS/MINOR/MAJOR 判定と戻り先）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/format-alignment-check.md",
+          "description": "既存エントリ形式との整合性チェック結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/verification-commands.md",
+          "description": "grep / cat 等の検証コマンド一覧と期待結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/format-fixture-snapshots.md",
+          "description": "各ファイルの既存最新エントリ抜粋（追記時の形式参照用）"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/sync-execution-log.md",
+          "description": "5ファイル追記の実行ログ（追記前後 diff サマリ）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/format-regression-check.md",
+          "description": "Markdown 構文・日付・既存エントリ形式の回帰確認"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "Issue #2313「未実施」6項目すべての対応カバレッジ"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactor-decision-log.md",
+          "description": "追記内容の重複削減・冗長表現整理の判断記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-report.md",
+          "description": "品質ゲート結果（lint / 全 grep 検証 / 日付正確性）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（親タスク Phase 12 完了宣言の整合性確認）"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "NON_VISUAL 代替証跡（grep コマンド出力スナップショット）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト（5検証コマンド）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "手動テストで発見された課題（0件でも記録）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 中学生レベル / Part 2 開発者向け）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "Step 1-A〜1-C / Step 2 の更新要否記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "本タスクによるドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出（0件でも出力）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "両スキルへのフィードバック記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 mandatory 5 tasks の compliance チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR 情報（ユーザー承認後に作成、本タスク内では blocked）"
+        }
+      ],
+      "notes": "ユーザー承認があるまで blocked。本タスク内では PR を作成しない。"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["10", "11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "taskId": "TASK-SC-CANCEL-LOGS-SYNC-001",
+    "title": "キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期",
+    "issue": 2313,
+    "parentTask": "TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001",
+    "category": "documentation-sync",
+    "nonVisual": true,
+    "priority": "high",
+    "scale": "small",
+    "estimatedPhases": 13
+  }
+}
