@@ -133,6 +133,27 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 | NON_VISUAL + new | `outputs/phase-11/manual-test-result.md`（既存ルール） |
 | VISUAL（任意モード） | screenshot + `manual-test-result.md`（既存ルール） |
 
+## NON_VISUAL 判定時の artifacts.json 2ファイル同期（[UT-LIFECYCLE-FB-1]）
+
+`taskType: "NON_VISUAL"` と判定した場合、以下の **2ファイル両方** に同期することを必須とする。
+`index.md` の更新のみで完了とした場合、`outputs/artifacts.json` との不一致が生じる。
+
+| ファイル | 場所 | 更新内容 |
+| --- | --- | --- |
+| `artifacts.json` | ワークフロールート | `"taskType": "NON_VISUAL"` を追加 |
+| `outputs/artifacts.json` | `outputs/` 直下 | 同上 |
+
+**確認コマンド（Phase 12 完了前に必ず実行）**:
+
+```bash
+grep -n "taskType" \
+  docs/30-workflows/{{FEATURE_NAME}}/artifacts.json \
+  docs/30-workflows/{{FEATURE_NAME}}/outputs/artifacts.json
+# 両ファイルに "NON_VISUAL" が出力されることを確認
+```
+
+---
+
 ## Phase 3 前の実行基盤確認（必須チェック）
 
 実装前に以下を確認する。実行基盤が壊れると Phase 4〜11 の検証が全停止する。
