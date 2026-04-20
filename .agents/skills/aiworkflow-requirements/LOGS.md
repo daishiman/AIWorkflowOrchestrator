@@ -86,6 +86,15 @@
 - `references/lessons-learned-late-chunking-esbuild-worktree.md`: 新規作成（L-LC-01: esbuildバ���ナリバージョン不一致 / L-LC-02: IEncoderモック雛型をPhase 2設計書に含める）
 - `indexes/resource-map.md`: Late Chunking / Embedding タスク種別エントリを追加（HybridRAGFactory wiring 行の後）
 
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 system spec sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスク | `TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001` |
+| 概要 | `ChunkingService` から `ChunkingLateChunkingAdapter` への委譲抽出を正本仕様へ反映 |
+| 更新 | `references/architecture-embedding-pipeline.md` に component 行追加、`indexes/topic-map.md` 再生成 |
+| 補足 | 既存 token-level `LateChunkingService` は温存し、2 系統の責務境界を明示 |
+
 ---
 
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
@@ -3038,3 +3047,13 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 仕様反映
+
+| 項目 | 内容 |
+|-----|------|
+| タスク | TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 |
+| 操作 | spec-reflection / Phase-12完了後の正本仕様同期 |
+| 変更対象 | architecture-embedding-pipeline.md（Adapter命名由来追記）、resource-map.md（Late Chunking Adapterエントリ追加）、topic-map.md（埋め込みセクション追加）、05-architecture.md（ドメインサービス分層パターン追記） |
+| 結果 | success |
+| 備考 | ChunkingService→ChunkingLateChunkingAdapter委譲抽出完了。Adapter命名はtoken-level LateChunkingServiceとの衝突回避のため。 |

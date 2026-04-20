@@ -270,10 +270,45 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
 
+---
+
+## Lessons Learned（実装事例からのFB）
+
+### FB-01: Phase 1 仕様書vs実装クラス名ズレ検出（必須）
+
+Phase 1冒頭で仕様書に記載されたクラス名とcurrentコードベースのクラス名が一致するか確認する。
+不一致の場合は命名方針をPhase 2設計より前に確定させること。
+
+**事例**: `LateChunkingService`（仕様書記述）vs `ChunkingLateChunkingAdapter`（実装クラス名）のズレがPhase 1で早期検出できれば、後続フェーズの手戻りを防げた（TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001）。
+
+### FB-02: Phase 11 NON_VISUAL証跡ファイル名の固定
+
+Phase 11のNON_VISUALテンプレートでは証跡ファイル名を事前に宣言・固定すること。
+後からファイル名が変わるとPhase 12のartifacts parity確認で矛盾が発生する。
+
+**事例**: `evidence-collection.md` などのcanonical名を強制することで、`manual-test-result.md` 単独では不明瞭だった証跡範囲をdrift防止できる（TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001）。
+
+### FB-03: Phase 12 正本仕様更新を必須ゲート化
+
+Phase 12で「system-spec-update: 更新要」と判定した場合、
+summaryファイル作成だけでなく正本仕様ファイルの実際の更新まで完了条件とする。
+
+**事例**: Phase 12がsummaryファイル作成で完結せず、正本仕様の更新まで完了条件にする必要がある（TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001）。
+
+### FB-04: Phase 2 クラス名衝突検査
+
+新規クラスを設計する際は同一パッケージ内の既存クラス名と照合する。
+衝突する場合はPrefix/Suffix（Adapter, Service, Handler等）で区別すること。
+
+**事例**: token-levelの`LateChunkingService`と同名になりそうだったため、Phase 2で`ChunkingLateChunkingAdapter`に改名した。早期検査が必要（TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001）。
+
+---
+
 ## 変更履歴
 
 | Version                | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v10.09.55**          | **2026-04-20**             | **TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 Phase12 skill-feedback 反映**: `Lessons Learned` セクション新設（FB-01〜FB-04）。Phase 1 仕様書vsクラス名ズレ検出の必須化、Phase 11 NON_VISUAL証跡ファイル名固定、Phase 12正本仕様更新の必須ゲート化、Phase 2クラス名衝突検査を追記。`.agents` mirror を同波更新。 |
 | **v10.09.54**          | **2026-04-17**             | **UT-9I-001 current reference sync**: `phase-12-documentation.md` / `phase-12-completion-checklist.md` / `phase12-checklist-definition.md` / `phase-12-guide.md` / `phase-12-tasks-guide.md` を 6タスク / 6成果物 / current filename へ同期し、`phase-12-docs.md` 旧表記を `phase-12-documentation.md` へ是正。`task-workflow` / `api-ipc` / `interfaces` / `topic-map` / `keywords` / `LOGS.md` の same-wave 更新を記録。                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **v10.09.51**          | **2026-04-15**             | **TASK-CRON-CUSTOM-VALIDATION-001 skill-feedback 反映**: 「よくある漏れ」テーブルに **[VSCPKR-03]**（Phase 4 でコンポーネントテスト設計時に外部 props か内部 state かを Phase 2 で確認せず TDD RED が誤前提になる）を追記。`phase-template-core.md` の Phase 2 セクションに「UI コンポーネントテスト設計時の Props vs internal state 確認」サブセクションを追加。LOGS.md 同波更新。                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **v10.09.50**          | **2026-04-15**             | **TASK-SC-IMP-CREATE-WORKFLOW-001 phase 12 close-out sync**: Phase 12 の 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を同波で揃え、Part 1 / Part 2 分割、63件 Green、screenshot N/A、`outputs/artifacts.json` parity を current facts に反映。planned wording 直書きを排除し、`runCreateWorkflow` の戻り値観測を guard する方針を明文化。                                                                                                                                                                                                                                                                                                                                                       |

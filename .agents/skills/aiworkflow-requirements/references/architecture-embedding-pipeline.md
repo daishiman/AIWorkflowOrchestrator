@@ -134,10 +134,23 @@ Late Chunkingは、テキスト全体をエンコーダに通した後にチャ�
 
 | コンポーネント | ファイル | 責務 |
 |---|---|---|
-| `LateChunkingService` | `late-chunking-service.ts` | Late Chunking処理のオーケストレーション |
+| `LateChunkingService` | `late-chunking-service.ts` | token-level `IEncoder` ベースの Late Chunking 処理 |
+| `ChunkingLateChunkingAdapter` | `chunking-late-chunking-adapter.ts` | `ChunkingService` 専用の Late Chunking 委譲先 |
 | `TokenBoundaryCalculator` | `token-boundary-calculator.ts` | チャンク境界をトークン範囲に変換 |
 | `HiddenStatePooler` | `hidden-state-pooler.ts` | hidden stateのpooling（mean/max/cls） |
 | `WindowSplitter` | `window-splitter.ts` | 長文テキストのウィンドウ分割 |
+
+### ChunkingLateChunkingAdapter 命名由来とAdapter層の設計方針
+
+`ChunkingLateChunkingAdapter` という命名は、token-level インターフェース（`IEncoder`）を実装する `LateChunkingService` との名前衝突を回避するために採用された。`LateChunkingService` がtoken-level層の責務（エンコーダ操作・hidden state pooling）を担うのに対し、`ChunkingLateChunkingAdapter` はtext-level層に位置し、`ChunkingService` から委譲される Late Chunking 専用ロジック（`applyLateChunking` / `determineChunkBoundaries` / `poolTokenEmbeddings`）をカプセル化する。
+
+**Adapter層の責務**:
+
+| 責務 | 説明 |
+|---|---|
+| SRP遵守 | `ChunkingService` の責務をチャンク分割のオーケストレーションに限定し、Late Chunking固有ロジックをAdapter層に移譲 |
+| テスト観測性向上 | `ChunkingLateChunkingAdapter` を独立してモック・スタブ可能にすることでユニットテストの観測境界を明確化 |
+| レイヤー分離 | token-level（`LateChunkingService`）とtext-level（`ChunkingLateChunkingAdapter`）を明確に分離し、相互依存を排除 |
 
 ### Late Chunking 型定義
 

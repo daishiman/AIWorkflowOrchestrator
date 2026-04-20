@@ -10,7 +10,7 @@ category: リファクタリング
 target_feature: packages/shared/src/services/embedding/late-chunking/
 priority: 高
 scale: 中規模
-status: 未実施
+status: 実施済み
 source_phase: UNASSIGNED-EMB-005 review wave Phase 10-12
 created_date: 2026-04-19
 ```
@@ -25,7 +25,7 @@ created_date: 2026-04-19
 | 対象機能     | packages/shared/src/services/embedding/late-chunking/ |
 | 優先度       | 高                                                    |
 | 見積もり規模 | 中規模                                                |
-| ステータス   | 未実施                                                |
+| ステータス   | 実施済み                                              |
 | 発見元       | UNASSIGNED-EMB-005 review wave Phase 10-12            |
 | 発見日       | 2026-04-19                                            |
 
