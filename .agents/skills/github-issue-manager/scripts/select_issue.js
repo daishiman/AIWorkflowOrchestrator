@@ -7,11 +7,19 @@
  * デフォルトはローカルファイルから検索（高速）。
  *
  * Usage:
- *   node select_issue.js                     # 最適Issue上位5件を表示
- *   node select_issue.js --category bugfix   # カテゴリ絞り込み
- *   node select_issue.js --top 10            # 上位10件を表示
- *   node select_issue.js --json              # JSON形式で出力
- *   node select_issue.js --remote            # GitHubから取得
+ *   node select_issue.js                          # 最適Issue上位5件を表示
+ *   node select_issue.js --category bugfix        # カテゴリ絞り込み
+ *   node select_issue.js --top 10                 # 上位10件を表示
+ *   node select_issue.js --json                   # JSON形式で出力
+ *   node select_issue.js --remote                 # GitHubから取得
+ *   node select_issue.js --include-closed-spec    # CLOSED Issue由来の仕様書存続タスクを対象に含める
+ *   node select_issue.js --help                   # ヘルプを表示
+ *
+ * --include-closed-spec フラグ（PROPOSAL-GIM-02）:
+ *   SKILL.md Part 5「CLOSED Issue 仕様書存続モード（spec-from-closed-issue）」に対応。
+ *   仕様書メタ情報に `issue_status: CLOSED` または `spec_purpose` を持つタスクを
+ *   選択対象に含める。デフォルト（フラグなし）では後方互換性のため従来挙動を維持し、
+ *   CLOSED 由来仕様書存続タスクは選択対象に含まれない。
  */
 
 const fs = require("fs");
@@ -33,6 +41,32 @@ const {
 
 const LOCAL_ISSUES_DIR = "docs/30-workflows/issues";
 
+function printHelp() {
+  const helpText = [
+    "Usage: node select_issue.js [options]",
+    "",
+    "Options:",
+    "  --remote                GitHub から直接 Issue を取得（デフォルトはローカル）",
+    "  --category <name>       カテゴリで絞り込み（bugfix|improvement|requirements|refactoring|security|performance）",
+    "  --priority <level>      優先度で絞り込み（high|medium|low）",
+    "  --scale <size>          規模で絞り込み（large|medium|small）",
+    "  --top <n>               表示件数（デフォルト: 5）",
+    "  --json                  JSON 形式で出力",
+    "  --include-closed-spec   CLOSED Issue 由来の仕様書存続タスクを選択対象に含める",
+    "                          （SKILL.md Part 5「spec-from-closed-issue」モード対応）",
+    "                          仕様書メタ情報に issue_status: CLOSED または",
+    "                          spec_purpose を持つタスクが対象。未指定時は従来挙動（後方互換）。",
+    "  --help, -h              このヘルプを表示",
+    "",
+    "Examples:",
+    "  node select_issue.js",
+    "  node select_issue.js --priority high --scale small",
+    "  node select_issue.js --include-closed-spec",
+    "  node select_issue.js --remote --json",
+  ].join("\n");
+  console.log(helpText);
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
   const options = {
@@ -42,6 +76,8 @@ function parseArgs() {
     scale: null,
     top: 5,
     json: false,
+    includeClosedSpec: false,
+    help: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -64,6 +100,19 @@ function parseArgs() {
       case "--json":
         options.json = true;
         break;
+      case "--include-closed-spec":
+        options.includeClosedSpec = true;
+        break;
+      case "--help":
+      case "-h":
+        options.help = true;
+        break;
+      default:
+        // 未知の引数は stderr に警告を出すが処理は継続
+        if (args[i].startsWith("--")) {
+          process.stderr.write(`[warn] 未知のオプション: ${args[i]}\n`);
+        }
+        break;
     }
   }
 
@@ -71,10 +120,26 @@ function parseArgs() {
 }
 
 /**
+ * メタ情報が「CLOSED Issue 由来の仕様書存続タスク」に該当するか判定
+ * SKILL.md Part 5「spec-from-closed-issue」モード準拠。
+ * @param {object} metadata - 仕様書メタ情報
+ * @returns {boolean}
+ */
+function isClosedSpecTask(metadata) {
+  if (!metadata) return false;
+  const issueStatus = (metadata.issueStatus || metadata.issue_status || "")
+    .toString()
+    .toUpperCase();
+  const specPurpose = metadata.specPurpose || metadata.spec_purpose;
+  return issueStatus === "CLOSED" || Boolean(specPurpose);
+}
+
+/**
  * ローカルIssueファイルから詳細情報を取得
+ * @param {object} options - CLIオプション
  * @returns {object[]} Issue情報の配列
  */
-function getLocalIssuesWithDetails() {
+function getLocalIssuesWithDetails(options = {}) {
   const dir = path.resolve(LOCAL_ISSUES_DIR);
   if (!fs.existsSync(dir)) {
     return [];
@@ -99,55 +164,86 @@ function getLocalIssuesWithDetails() {
         metadata,
         filepath,
         source: "local",
+        isClosedSpec: isClosedSpecTask(metadata),
       };
     })
     .filter((issue) => {
-      // 未実施または進行中のIssueのみ
+      // デフォルト: 未実施または進行中のIssueのみ
       const status = issue.metadata.status;
-      return !status || status === "未実施" || status === "進行中";
+      const baseMatch = !status || status === "未実施" || status === "進行中";
+
+      if (baseMatch) return true;
+
+      // --include-closed-spec 指定時は CLOSED 由来の仕様書存続タスクも含める
+      if (options.includeClosedSpec && issue.isClosedSpec) {
+        return true;
+      }
+
+      return false;
     });
 }
 
 /**
  * GitHubからIssue詳細を取得
+ * @param {object} options - CLIオプション
  * @returns {object[]} Issue情報の配列
  */
-function getRemoteIssuesWithDetails() {
+function getRemoteIssuesWithDetails(options = {}) {
+  // --include-closed-spec 時は closed も含めて取得し、
+  // 後段で isClosedSpecTask 判定で絞り込む
+  const state = options.includeClosedSpec ? "all" : "open";
+
   const result = execGh([
     "issue",
     "list",
     "--state",
-    "open",
+    state,
     "--limit",
     "1000",
     "--json",
-    "number,title,body,labels,createdAt",
+    "number,title,body,labels,createdAt,state",
   ]);
 
   const issues = JSON.parse(result);
 
-  return issues.map((issue) => {
-    const labels = issue.labels.map((l) => l.name);
-    let metadata = labelsToMetadata(labels);
+  return issues
+    .map((issue) => {
+      const labels = issue.labels.map((l) => l.name);
+      let metadata = labelsToMetadata(labels);
 
-    // ボディからもメタ情報を抽出
-    if (issue.body) {
-      const bodyMetadata = extractMetadata(issue.body);
-      metadata = { ...metadata, ...bodyMetadata };
-    }
+      // ボディからもメタ情報を抽出
+      if (issue.body) {
+        const bodyMetadata = extractMetadata(issue.body);
+        metadata = { ...metadata, ...bodyMetadata };
+      }
 
-    // 作成日を追加
-    if (!metadata.createdDate && issue.createdAt) {
-      metadata.createdDate = issue.createdAt.split("T")[0];
-    }
+      // 作成日を追加
+      if (!metadata.createdDate && issue.createdAt) {
+        metadata.createdDate = issue.createdAt.split("T")[0];
+      }
 
-    return {
-      number: issue.number,
-      title: issue.title,
-      metadata,
-      source: "remote",
-    };
-  });
+      // リモート state を metadata.issueStatus として注入（CLOSED 判定に利用）
+      if (issue.state && !metadata.issueStatus && !metadata.issue_status) {
+        metadata.issueStatus = issue.state.toUpperCase();
+      }
+
+      return {
+        number: issue.number,
+        title: issue.title,
+        metadata,
+        source: "remote",
+        isClosedSpec: isClosedSpecTask(metadata),
+        remoteState: issue.state,
+      };
+    })
+    .filter((issue) => {
+      // リモートが open ならそのまま採用
+      if (issue.remoteState && issue.remoteState.toUpperCase() === "OPEN") {
+        return true;
+      }
+      // closed の場合は --include-closed-spec かつ isClosedSpec のみ
+      return Boolean(options.includeClosedSpec && issue.isClosedSpec);
+    });
 }
 
 /**
@@ -288,32 +384,50 @@ function printScoredTable(scoredIssues) {
 }
 
 function main() {
-  const options = parseArgs();
+  let options;
+  try {
+    options = parseArgs();
+  } catch (e) {
+    process.stderr.write(`[error] 引数解析に失敗しました: ${e.message}\n`);
+    process.exit(1);
+  }
+
+  if (options.help) {
+    printHelp();
+    process.exit(0);
+  }
 
   let issues;
 
-  if (options.remote) {
-    if (!isGhAvailable()) {
-      error("gh CLI がインストールされていません");
-      process.exit(1);
-    }
+  try {
+    if (options.remote) {
+      if (!isGhAvailable()) {
+        error("gh CLI がインストールされていません");
+        process.exit(1);
+      }
 
-    if (!isGhAuthenticated()) {
-      error("gh CLI が認証されていません。`gh auth login` を実行してください");
-      process.exit(1);
-    }
+      if (!isGhAuthenticated()) {
+        error(
+          "gh CLI が認証されていません。`gh auth login` を実行してください",
+        );
+        process.exit(1);
+      }
 
-    info("GitHubからIssueを取得中...");
-    issues = getRemoteIssuesWithDetails();
-  } else {
-    issues = getLocalIssuesWithDetails();
+      info("GitHubからIssueを取得中...");
+      issues = getRemoteIssuesWithDetails(options);
+    } else {
+      issues = getLocalIssuesWithDetails(options);
 
-    if (issues.length === 0) {
-      info(
-        "ローカルIssueが見つかりません。`node sync_issues.js` で同期してください。",
-      );
-      process.exit(0);
+      if (issues.length === 0) {
+        info(
+          "ローカルIssueが見つかりません。`node sync_issues.js` で同期してください。",
+        );
+        process.exit(0);
+      }
     }
+  } catch (e) {
+    process.stderr.write(`[error] Issue 取得に失敗しました: ${e.message}\n`);
+    process.exit(1);
   }
 
   // フィルタリング

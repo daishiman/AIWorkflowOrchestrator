@@ -1,0 +1,46 @@
+# command: rg -n 'EVALS\.json|EVALS_PATH|evalsPath|EVALS_FILE' .claude/skills/ -g '!**/node_modules/**' -g '!**/.backups/**' -g '*.{js,ts,tsx,mjs,cjs}'
+# executed_at: 2026-04-19T08:49:46Z
+# working_directory: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160952-wt-9
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:97:  // 2. EVALS.json を更新
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:98:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:101:    if (!existsSync(evalsPath)) {
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:103:        "⚠ EVALS.json が見つかりません。メトリクス更新をスキップします。",
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:108:    const evalsData = JSON.parse(readFileSync(evalsPath, "utf-8"));
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:148:    // EVALS.json を保存
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:149:    writeFileSync(evalsPath, JSON.stringify(evalsData, null, 2), "utf-8");
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:150:    console.log(`✓ EVALS.json を更新しました`);
+.claude/skills/aiworkflow-requirements/scripts/log_usage.js:152:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
+.claude/skills/task-specification-creator/scripts/log-usage.js:6: * EVALS.jsonのメトリクスを更新する。
+.claude/skills/task-specification-creator/scripts/log-usage.js:27:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
+.claude/skills/task-specification-creator/scripts/log-usage.js:101:// EVALS.jsonを更新
+.claude/skills/task-specification-creator/scripts/log-usage.js:105:  if (existsSync(EVALS_PATH)) {
+.claude/skills/task-specification-creator/scripts/log-usage.js:106:    evals = JSON.parse(readFileSync(EVALS_PATH, "utf-8"));
+.claude/skills/task-specification-creator/scripts/log-usage.js:108:    console.error(`Error: EVALS.json not found at ${EVALS_PATH}`);
+.claude/skills/task-specification-creator/scripts/log-usage.js:179:  // EVALS.json書き込み
+.claude/skills/task-specification-creator/scripts/log-usage.js:180:  writeFileSync(EVALS_PATH, JSON.stringify(evals, null, 2), "utf-8");
+.claude/skills/task-specification-creator/scripts/log-usage.js:232:  // EVALS.json更新
+.claude/skills/task-specification-creator/scripts/log-usage.js:234:  console.log(`✅ EVALS.json を更新しました`);
+.claude/skills/skill-creator/scripts/collect_feedback.js:5: * スキルのLOGS.mdとEVALS.jsonからフィードバックデータを収集・集計する。
+.claude/skills/skill-creator/scripts/collect_feedback.js:226:  const evalsPath = join(resolvedSkillPath, "EVALS.json");
+.claude/skills/skill-creator/scripts/collect_feedback.js:243:    // EVALS.jsonを読み込み（あれば）
+.claude/skills/skill-creator/scripts/collect_feedback.js:245:    if (existsSync(evalsPath)) {
+.claude/skills/skill-creator/scripts/collect_feedback.js:246:      existingEvals = JSON.parse(readFileSync(evalsPath, "utf-8"));
+.claude/skills/skill-creator/scripts/log_usage.js:7: * LOGS.mdに実行ログを追記し、EVALS.jsonのメトリクスを更新します。
+.claude/skills/skill-creator/scripts/log_usage.js:54:  - EVALS.json: メトリクスを更新（存在する場合）
+.claude/skills/skill-creator/scripts/log_usage.js:75:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+.claude/skills/skill-creator/scripts/log_usage.js:76:  if (!existsSync(evalsPath)) {
+.claude/skills/skill-creator/scripts/log_usage.js:106:    writeFileSync(evalsPath, JSON.stringify(initialEvals, null, 2), "utf-8");
+.claude/skills/skill-creator/scripts/log_usage.js:107:    console.log("✓ EVALS.json を新規作成しました");
+.claude/skills/skill-creator/scripts/log_usage.js:109:  return evalsPath;
+.claude/skills/skill-creator/scripts/log_usage.js:156:  // 2. EVALS.json を更新
+.claude/skills/skill-creator/scripts/log_usage.js:158:    const evalsPath = ensureEvalsFile();
+.claude/skills/skill-creator/scripts/log_usage.js:159:    const evalsData = JSON.parse(readFileSync(evalsPath, "utf-8"));
+.claude/skills/skill-creator/scripts/log_usage.js:198:    // EVALS.json を保存
+.claude/skills/skill-creator/scripts/log_usage.js:199:    writeFileSync(evalsPath, JSON.stringify(evalsData, null, 2), "utf-8");
+.claude/skills/skill-creator/scripts/log_usage.js:200:    console.log(`✓ EVALS.json を更新しました`);
+.claude/skills/skill-creator/scripts/log_usage.js:202:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
+.claude/skills/skill-creator/scripts/init_skill.js:120:  ├── EVALS.json        # メトリクス（フィードバック機構）
+.claude/skills/skill-creator/scripts/init_skill.js:556:    // EVALS.json
+.claude/skills/skill-creator/scripts/init_skill.js:558:      join(skillDir, "EVALS.json"),
+.claude/skills/skill-creator/scripts/init_skill.js:585:      join(skillDir, "EVALS.json"),
+# exit_status: 0
