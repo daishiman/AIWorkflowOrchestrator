@@ -2550,6 +2550,21 @@
 - **状態**: Phase 12完了 / Phase 13 blocked（PR pending）
 - **タスク仕様書**: `docs/30-workflows/task-cron-converter-weekdays-guard/`
 
+### TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPC ハンドラー登録スナップショットカバレッジ拡張
+
+- **カテゴリ**: Quality Gate / Test Coverage
+- **契約**: REG-SNAP / REG-DEDUP / REG-COUNT の3点契約
+- **対象母集団**: direct正本 48件（`registerAllIpcHandlers()` 配下）、auxiliary 1件
+- **テストファイル**: `apps/desktop/src/main/ipc/__tests__/*Handlers.registrationSnapshot.test.ts`
+- **Wave 1**: 8ファイル / 41テスト（完了・PASS）
+- **Wave 2**: 16ファイル / 80テスト（完了・PASS）
+- **Wave 3**: 25ファイル（計画中・AC-006）
+- **環境制約**: `ESBUILD_BINARY_PATH` を `.pnpm` ディレクトリから指定必要、24ファイル一括はSIGKILL
+- **仕様書**: `references/api-ipc-system-core.md` § IPC Handler Registration Testing Contract
+- **詳細実装ガイド**: `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/outputs/phase-12/implementation-guide.md`
+- **教訓**: `lessons-learned-current-2026-04.md` (L-IPC-SNAP-001/002/003)
+- IPC registration snapshot contract (REG-SNAP/REG-DEDUP/REG-COUNT) → `references/api-ipc-system-core.md` § IPC Handler Registration Testing Contract
+
 ### UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001: IPC 4層整合CI検証スクリプト
 
 - **カテゴリ**: Quality Gate / CI Automation

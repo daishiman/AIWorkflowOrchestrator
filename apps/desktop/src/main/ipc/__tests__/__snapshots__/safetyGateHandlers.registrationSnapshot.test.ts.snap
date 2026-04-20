@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerSafetyGateHandlers - チャンネル登録スナップショット > REG-SNAP-SAFETY-GATE-01〜REG-COUNT-SAFETY-GATE-01: 正常系 > REG-SNAP-SAFETY-GATE-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "skill:evaluate-safety",
+]
+`;

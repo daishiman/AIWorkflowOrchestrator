@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerUserSettingsHandlers - チャンネル登録スナップショット > REG-SNAP-USERSETTINGS-01〜REG-COUNT-USERSETTINGS-01: 正常系 > REG-SNAP-USERSETTINGS-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "settings:get",
+  "settings:update",
+]
+`;

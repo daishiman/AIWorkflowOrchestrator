@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerFileHandlers - チャンネル登録スナップショット > REG-SNAP-FILE-01〜REG-COUNT-FILE-01: 正常系 > REG-SNAP-FILE-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "file:get-tree",
+  "file:read",
+  "file:rename",
+  "file:watch-start",
+  "file:watch-stop",
+  "file:write",
+]
+`;

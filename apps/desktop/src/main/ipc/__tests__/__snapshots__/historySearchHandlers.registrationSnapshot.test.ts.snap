@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerHistorySearchHandlers - チャンネル登録スナップショット > REG-SNAP-HISTORYSEARCH-01〜REG-COUNT-HISTORYSEARCH-01: 正常系 > REG-SNAP-HISTORYSEARCH-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "history:get-stats",
+  "history:search",
+]
+`;

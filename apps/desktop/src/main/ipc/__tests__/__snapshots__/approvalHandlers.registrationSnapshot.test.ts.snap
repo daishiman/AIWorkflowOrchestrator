@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerApprovalHandlers - チャンネル登録スナップショット > REG-SNAP-APPROVAL-01〜REG-COUNT-APPROVAL-01: 正常系 > REG-SNAP-APPROVAL-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "approval:respond",
+]
+`;

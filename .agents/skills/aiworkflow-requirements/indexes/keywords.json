@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3164,
+  "totalKeywords": 3176,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2697,6 +2697,23 @@
       "ui-ux-search-panel-history.md",
       "ui-ux-search-panel.md"
     ],
+    "Handler": [
+      "api-ipc-system-core.md",
+      "api-ipc-system-skill-creator-part2.md",
+      "arch-ipc-persistence.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "security-skill-ipc-core.md"
+    ],
+    "Registration": [
+      "api-ipc-system-core.md",
+      "arch-ipc-persistence.md"
+    ],
+    "Testing": [
+      "api-ipc-system-core.md"
+    ],
+    "Contract": [
+      "api-ipc-system-core.md"
+    ],
     "分割ファイル一覧": [
       "api-ipc-system-core.md",
       "lessons-learned-current.md",
@@ -2963,12 +2980,6 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
-    ],
-    "Handler": [
-      "api-ipc-system-skill-creator-part2.md",
-      "arch-ipc-persistence.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "security-skill-ipc-core.md"
     ],
     "Lifecycle": [
       "api-ipc-system-skill-creator-part2.md",
@@ -3555,9 +3566,6 @@
       "arch-feature-addition.md"
     ],
     "・永続化パターン": [
-      "arch-ipc-persistence.md"
-    ],
-    "Registration": [
       "arch-ipc-persistence.md"
     ],
     "Pattern": [
@@ -7905,7 +7913,8 @@
     ],
     "COVERAGE": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "SettingsView": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -8919,7 +8928,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "SNAPSHOT": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "スナップショットカバレッジ": [
       "lessons-learned-current-2026-04.md"
@@ -13763,6 +13773,9 @@
     "完了タスクセクション標準化": [
       "spec-guidelines.md"
     ],
+    "タスク分類": [
+      "spec-guidelines.md"
+    ],
     "ファイルサイズ管理": [
       "spec-guidelines.md"
     ],
@@ -13907,6 +13920,9 @@
     "昇格パターン集": [
       "task-workflow-active.md"
     ],
+    "アクティブタスク台帳": [
+      "task-workflow-active.md"
+    ],
     "タスクワークフローバックログ": [
       "task-workflow-backlog-part2.md"
     ],
@@ -13995,6 +14011,9 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "createSkill": [
@@ -15507,6 +15526,28 @@
     "苦戦箇所と標準ルール": [
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "REG-SNAP": [
+      "api-ipc-system-core.md"
+    ],
+    "REG-DEDUP": [
+      "api-ipc-system-core.md"
+    ],
+    "REG-COUNT": [
+      "api-ipc-system-core.md"
+    ],
+    "registration snapshot": [
+      "api-ipc-system-core.md"
+    ],
+    "esbuild binary path": [
+      "api-ipc-system-core.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "wave split": [
+      "api-ipc-system-core.md"
+    ],
+    "SIGKILL": [
+      "api-ipc-system-core.md"
     ]
   }
 }
