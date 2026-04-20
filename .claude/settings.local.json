@@ -186,6 +186,8 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow.md .agents/skills/aiworkflow-requirements/references/task-workflow.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md .agents/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md)",
+      "Bash(cp \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.claude/skills/skill-creator/SKILL.md\" \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.agents/skills/skill-creator/SKILL.md\")",
+      "Bash(cp \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.claude/skills/skill-creator/SKILL-changelog.md\" \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.agents/skills/skill-creator/SKILL-changelog.md\")",
       "Bash(cp .agents/skills/aiworkflow-requirements/LOGS.md .claude/skills/aiworkflow-requirements/LOGS.md)",
       "Bash(cp .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/skill-creator/LOGS.md .agents/skills/skill-creator/LOGS.md)",
