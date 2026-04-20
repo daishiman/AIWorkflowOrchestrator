@@ -2,26 +2,21 @@
 
 ## 役割
 
-## 2026-04-20 - UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001 フィードバック反映
+## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
 
 ### 変更内容
 
-UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001 Phase 12 の skill-feedback-report に記載された2件の改善提案を反映した。
+TASK-SW-CANCEL-004 Phase 12 の skill-feedback-report に記載された改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| UT-LIFECYCLE-FB-1 | NON_VISUAL 判定時に `artifacts.json`（ルート）と `outputs/artifacts.json` の2ファイル両方の同期を必須化 | `references/phase-template-phase12.md` に新セクション追加 |
-| UT-LIFECYCLE-FB-2 | Phase 11 canonical ファイル名 `manual-test-result.md` と補助命名 `{TASK-ID}-manual-test-report.md` の優先順位を明文化 | `references/phase-template-phase11.md` に新サブセクション追加 |
-
-### 追加パターン
-
-auth:login 非発火回帰テストの rapid click / rerender パターンを `references/patterns-ui-type-auth.md` に追記した。
+| 指摘ID          | 内容                                                                                                        | 反映先                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| FB-CANCEL-004-1 | `AbortSignal` のような partial fix 契約ズレを Phase 10 で residual issue として格下げするテンプレートを追記 | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
+| FB-CANCEL-004-2 | `unassigned-task-detection.md` に関連済みタスク差分確認欄を設けて重複起票を防ぐ方針を追記                   | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
 
 ### 変更ファイル
 
-- `references/phase-template-phase12.md`: NON_VISUAL artifacts.json 2ファイル同期セクションを追加
-- `references/phase-template-phase11.md`: canonical ファイル名優先順位サブセクションを追加
-- `references/patterns-ui-type-auth.md`: auth:login 非発火回帰テストパターンを追加
+- `.claude/skills/task-specification-creator/SKILL.md`: よくある漏れテーブルに FB-CANCEL-004-1/2 を追記
+- `.agents/skills/task-specification-creator/SKILL.md`: 同上（mirror 同期）
 
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
@@ -29,11 +24,11 @@ auth:login 非発火回帰テストの rapid click / rerender パターンを `r
 
 TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| 指摘ID          | 内容                                                                                                                                                   | 反映先                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示                                                                                       | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加                    |
 | CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
-| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加                                                              | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加      |
 
 ### 変更ファイル
 
