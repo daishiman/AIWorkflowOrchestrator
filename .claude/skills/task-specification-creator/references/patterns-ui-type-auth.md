@@ -415,3 +415,32 @@
   - 再検証・手戻りの削減
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8C-C
+
+---
+
+## auth:login 非発火回帰テストパターン（UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001）
+
+### rapid click / rerender での auth:login 非発火テストパターン
+
+- **状況**: prepare フローなど廃止済みフローに依存したテストケース（TC-06/TC-07相当）が旧コードのまま残存し、現行 UI との乖離が生じた場合
+- **パターン**: 旧テストを削除し、現行 UI の実際の操作（rapid click・rerender）ベースで `auth:login` 非発火を検証し直す
+- **テストケース設計**:
+  | テストケース | 条件 | 検証内容 |
+  | --- | --- | --- |
+  | rapid click テスト | 短時間内に複数回クリック操作 | `auth:login` が発火しないこと |
+  | rerender テスト | props 変更による rerender を発生 | `auth:login` が発火しないこと |
+- **実装ポイント**:
+  - `ipcRenderer.on('auth:login', ...)` をモックし、呼び出し回数を `expect(...).not.toHaveBeenCalled()` で検証
+  - rapid click は `fireEvent.click` を複数回連打して `auth:login` が累積しないことを確認
+  - rerender は `rerender()` で props を変えた後に `auth:login` が呼ばれていないことを確認
+- **削除判断基準**:
+  | 条件 | 対応 |
+  | --- | --- |
+  | 依存するフロー（prepare フロー等）が廃止済み | 旧テストケースを削除し、現行 UI に合わせ再設計 |
+  | テストは通るが現行 UI と保証内容がずれている | 同上（false green を排除） |
+  | 新テストが `auth:login` 非発火を現行実装で保証できる | 削除して置き換え |
+- **効果**:
+  - 廃止済みフローへの依存を排除し、回帰テストの有効性を回復
+  - rapid click・rerender という実際の操作パターンで `auth:login` の意図しない発火を防止
+- **発見日**: 2026-04-19
+- **関連タスク**: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001
