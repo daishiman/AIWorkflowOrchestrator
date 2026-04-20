@@ -46,6 +46,30 @@
 
 ---
 
+## 2026-04-20 CANCEL-004実装反映
+
+### 変更内容
+
+- `references/api-ipc-system-skill-creator.md`: SKILL_CREATOR_CANCEL cancel chain セクションに CANCEL-004 renderer hook contract 追加（optional chain 2段 / catch swallow / verify_existing モード）
+- `references/lessons-learned-skill-creator-cancel-chain.md`: L-CANCEL-005〜008 追加（verify_existing宣言 / IPC failure swallow / optional chain 2段 / NON_VISUAL 3点セット）
+- `references/task-workflow-completed-recent-2026-04g.md`: TASK-SW-CANCEL-004 完了記録追加（実装モード: verify_existing / 苦戦箇所5点）
+- `references/lessons-learned-current-2026-04.md`: CANCEL-003/004セクションを cancel 専用ファイルへ分割移動。参照リンクを残した
+- `references/lessons-learned-current-2026-04-cancel.md`: 新規作成（CANCEL-003/004 教訓 L-CANCEL-003-001〜003 / L-CANCEL-004-001〜005 収録）
+
+### 保留事項（分割計画）
+
+以下のファイルは今回の作業で更新検討したが、分割リスク・影響範囲を考慮して今回は保留する。
+
+| ファイル | 現行行数 | 理由 |
+| --- | --- | --- |
+| `references/lessons-learned-current-2026-04.md` | 1845行 | CANCEL系を分割済みだが全体はまだ1845行。次回同期時に wizard / runtime-sdk / cron-validation 等の task family 別に段階的分割を継続する |
+| `LOGS.md` | 3040行 | archive対象エントリを `logs-archive-2026-04-*.md` に移動して500行以内に縮小する計画（次回 archive wave で対応） |
+| `indexes/resource-map.md` | 2632行 | CANCEL-004 参照行の追加は最小変更だが全体分割は影響範囲が広い。分割計画は topic-cluster 別で別波にて対応 |
+| `indexes/quick-reference.md` | 803行 | Skill Creator Cancel Chain への参照追加は次回 index-sync wave で実施 |
+| `indexes/topic-map.md` | 5475行 | 全体分割は今回保留。CANCEL-004 エントリ追加も次回 index-sync wave で対応 |
+
+---
+
 ## 2026-04-19: impl-spec-to-skill-sync（TASK-UT-9I-001 反映）
 
 | 項目 | 内容 |
