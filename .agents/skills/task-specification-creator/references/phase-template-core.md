@@ -200,6 +200,37 @@ UI コンポーネントを含むタスクの Phase 4 テスト設計前に、�
 - **根拠**: TASK-CRON-CUSTOM-VALIDATION-001 Phase 4 で `VisualCronPicker` の `isAdvancedMode` が内部 state であることを Phase 2 で確認せず、TDD RED のテスト操作が誤った前提で書かれた
 - **適用条件**: UI コンポーネントで複数のモード・状態を持つ場合（例: advanced/simple トグル、ウィザードステップ）
 
+### インターフェース定義にはモック実装雛型を含めること（Phase 4テスト作成高速化）
+
+新規インターフェース（`IEncoder`、`ILLMProvider` 等）を Phase 2 設計書に定義する場合、**テスト用モック実装例** を同一設計書内に雛型として記載する。
+
+**理由**: Phase 4 でテストを作成する際、モック実装を一から書くのは手間がかかる。Phase 2 設計時にインターフェースの意図が最も明確なため、その時点でモック雛型を残すと Phase 4 の作業時間が短縮される。
+
+**テスト用モック実装例テンプレート（Phase 2 設計書に含める）:**
+
+```typescript
+// テスト用モック実装例（Phase 4 で vi.fn() に置き換えて使用）
+export class Mock{{InterfaceName}} implements {{InterfaceName}} {
+  // 各メソッドをスタブ実装
+  {{method1}}({{args}}): {{returnType}} {
+    return {{defaultValue}};
+  }
+
+  // 戻り値を制御するヘルパー（必要に応じて）
+  private _{{method1}}ReturnValue: {{returnType}} = {{defaultValue}};
+  set{{Method1}}ReturnValue(value: {{returnType}}) {
+    this._{{method1}}ReturnValue = value;
+  }
+}
+```
+
+**適用条件**: 新規インターフェースを Phase 2 で定義する場合、特に以下のケース:
+- 外部サービス・LLM・Encoder 等の IO を抽象化するインターフェース
+- テストで差し替えが必要な依存クラスの Port 定義
+- `IEncoder`、`ILLMProvider`、`IEmbeddingService` のようなサービス抽象化
+
+**根拠**: UNASSIGNED-EMB-005-late-chunking Phase 12 フィードバック「Phase 2 の設計書にモック実装の雛型を含めるとPhase 4テスト作成がスムーズになる」
+
 ## Phase 3 のポイント
 
 - PASS / MINOR / MAJOR の戻り先を明示する。

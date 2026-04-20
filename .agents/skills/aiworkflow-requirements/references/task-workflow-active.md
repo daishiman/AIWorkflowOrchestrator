@@ -142,3 +142,10 @@
   4. aiworkflow-requirements の同 wave 更新
 - **参考**: UT-UIUX-VISUAL-BASELINE-DRIFT-001（2026-04-03）
 
+---
+
+## アクティブタスク台帳
+
+| task_id                                | task_name                                                | category                | status      | current_phase | issue_number | created_date |
+| -------------------------------------- | -------------------------------------------------------- | ----------------------- | ----------- | ------------- | ------------ | ------------ |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 | キャンセル後の半作成スキルディレクトリ残存クリーンアップ | bugfix-regression-check | in_progress | 12            | 2229         | 2026-04-19   |

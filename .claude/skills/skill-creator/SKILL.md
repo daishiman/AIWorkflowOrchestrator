@@ -410,67 +410,38 @@ node scripts/generate_skill_md.js --plan <plan-json-path> --output <skill-md-pat
 
 ---
 
-## create モードの入口実装（TASK-SC-LLM-PURPOSE-WIRE-001 完了）
+## create モードの入口実装（TASK-SC-IMP-CREATE-WORKFLOW-001）
 
-`SkillCreatorService` の `runCreateWorkflow` は `extract-purpose` エージェントを LLM に渡し、スキルの purpose を抽出して `StructurePlanJson` を構築する。
+`SkillCreatorService` の `runCreateWorkflow` は、create モードの入口で `analyze-request` プロンプトを読み込む。
 
-### current contract（TASK-SC-LLM-PURPOSE-WIRE-001 完了後）
+### current contract
 
-| 項目                                    | 型                              | 説明                                                                                      |
-| --------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
-| `createSkill(options)`                  | `Promise<string>`               | スキルディレクトリパスを返す（変更なし）                                                  |
-| `runCreateWorkflow(options)`            | `Promise<StructurePlanJson \| null>` | LLM purpose 抽出結果を含む構造計画 JSON を返す。失敗時は `null`                      |
-| `extractPurposeWithLlm(options)`        | `Promise<string \| null>`       | `extract-purpose` エージェントを読み込んで LLM に purpose 生成を依頼                     |
-| `ResourceLoader.loadAgent(name)`        | `Promise<string>`               | Agent オブジェクトではなく Markdown prompt **string** を返す（変更なし）                  |
-| `LlmClient.generate({system, user})`   | `Promise<string>`               | constructor inject; 未注入時は `extractPurposeWithLlm` が `null` を返してフォールバック   |
+| 項目                             | 型                | 説明                                                         |
+| -------------------------------- | ----------------- | ------------------------------------------------------------ |
+| `createSkill(options)`           | `Promise<string>` | スキルディレクトリパスを返す（変更なし）                     |
+| `runCreateWorkflow(options)`     | `Promise<void>`   | create フローの内部処理（変更なし）                          |
+| `ResourceLoader.loadAgent(name)` | `Promise<string>` | Agent オブジェクトではなく Markdown prompt **string** を返す |
+| `options.description`            | `string`          | downstream の init_skill.js へそのまま渡す                   |
 
-### LLM Purpose 抽出パイプライン
+### 実装パターン
 
-```
-ResourceLoader.loadAgent("extract-purpose")
-  → purposeAgentDef (string prompt)
-  → LlmClient.generate({
-      system: purposeAgentDef,
-      user: "スキル名: {name}\n説明: {description}"
-    })
-  → normalizePurposeResponse(rawResponse)
-     → unwrapJsonCodeFence() → JSON.parse() → parsed.summary (string)
-     → フォールバック: trimmed raw response
-  → purpose (string | null)
-  → StructurePlanJson {
-      skillName, description, purpose, features: [],
-      agents: ["extract-purpose", "plan-structure"]
-    }
+```typescript
+private async runCreateWorkflow(options: CreateSkillOptions): Promise<void> {
+  const requestPrompt = await this.resourceLoader.loadAgent("analyze-request").catch(() => null);
+  if (requestPrompt === null) {
+    return; // フォールバック: createSkill 後続処理を継続
+  }
+  void requestPrompt;
+  void options.description;
+}
 ```
 
 ### 設計上の注意点
 
-- `llmClient` は constructor optional inject（`new SkillCreatorService(skillsDir, workflowsDir, llmClient)`）
-- `llmClient` 未注入時は `extractPurposeWithLlm` が即座に `null` を返す（graceful degradation）
-- LLM response は JSON code fence（`` ```json ... ``` ``）またはプレーン JSON の両方を受け付ける
-- `normalizePurposeResponse` は `summary` フィールド優先・フォールバックは trimmed raw response
-- AbortError は必ず再 throw（AbortSignal 連鎖を維持）
+- `loadAgent()` は `Promise<string>` であり、Agent オブジェクトや `run()` 呼び出しは**しない**
+- `loadAgent` 失敗時は `null` でフォールバックし、create フロー全体を壊さない
 - `options.description` は downstream（`init_skill.js --description`）にそのまま維持する
-
----
-
-## update / improve-prompt モードのディスパッチ（UT-TASK-SC-LLM-PURPOSE-WIRE-001-UPDATE-MODE）
-
-`runCreateWorkflow` LLM 統合（TASK-SC-LLM-PURPOSE-WIRE-001）と同 wave で switch fall-through バグを修正しスタブ実装を追加した。
-
-### ディスパッチ契約
-
-| モード           | 呼び出しメソッド             | 状態       | 注意点                                                                     |
-| ---------------- | ---------------------------- | ---------- | -------------------------------------------------------------------------- |
-| `update`         | `runUpdateWorkflow()`        | スタブ実装 | `ensureExistingSkillFiles()` でスキル存在チェック後、`logger.warn` を出力 |
-| `improve-prompt` | `runImprovePromptWorkflow()` | スタブ実装 | 同上。`init_skill.js`（新規作成フロー）は呼ばれない                       |
-
-### 修正内容
-
-- **Before**: `case "update":` / `case "improve-prompt":` が空（コメントのみ）で fall-through → `init_skill.js`（新規作成フロー）が誤動作
-- **After**: 各 case でメソッドを呼び出し、`emitProgress("done")` 後に `return skillDir` で早期 return
-
-update / improve-prompt モード固有の本処理実装は `UT-TASK-SC-LLM-PURPOSE-WIRE-001-UPDATE-MODE` および `TASK-SC-IMPROVE-PROMPT-IMPL-001` で対応予定。
+- 新規 interface / IPC / state contract の追加はなし（system spec 更新は no-op）
 
 ---
 
@@ -590,9 +561,10 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 ### Phase 12 再監査ショートカット
 
 - `spec_created` / docs-heavy task を更新する時は、先に [task-specification-creator/references/phase-11-12-guide.md](../task-specification-creator/references/phase-11-12-guide.md) と [task-specification-creator/references/spec-update-workflow.md](../task-specification-creator/references/spec-update-workflow.md) を開く。
-- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。
+- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。lane D の最終ステップは必ず `bash .claude/scripts/sync-skills-mirror.sh` を呼び、`bash .claude/scripts/verify-skills-parity.sh` で parity 0 を確認する（pre-push hook 経由でも強制される）。
+- 新規スキル作成直後も `sync-skills-mirror.sh` を実行し `.agents/skills/<new-skill>/` を同時生成する。canonical-only 状態のまま放置しない（`int-test-skill` drift を再発させない）。
 - [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
-- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
+- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` に加え、`verify-skills-parity.sh` をまとめて閉じる。
 - NON_VISUAL / docs-heavy / env blocker task では、screen evidence の代替根拠、blocker の絶対パス、既存未タスクとの重複確認結果を同じターンで記録する。
 - UI 再撮影がある場合は `theme lock → screenshot evidence → docs/spec sync` の順で閉じ、`NON_VISUAL` のまま止めず `SCREENSHOT + outputs` を優先する。
 
