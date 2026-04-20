@@ -4,6 +4,38 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19: impl-spec-to-skill-sync（TASK-UT-9I-001 反映）
+
+| 項目 | 内容 |
+| --- | --- |
+| 操作 | spec-reflection / lessons-learned 新規作成 |
+| 変更対象 | `references/lessons-learned-skill-docs-runtime-ipc-contract.md`（新規作成）, `SKILL.md`（TASK-UT-9I-001 エントリ追加）, `references/lessons-learned-current-2026-04.md`（L-SC08-004 追加）, `indexes/resource-map.md`（TASK-UT-9I-001 参照追加） |
+| 結果 | success |
+| 備考 | Phase-12 全5タスク準拠確認済み。スキル未反映だった TASK-UT-9I-001 の IPC error contract 教訓を体系化 |
+
+---
+
+## 2026-04-19: TASK-AGENTS-SKILLS-FULL-SYNC-001（canonical/mirror full parity guard 導入）
+
+| 項目         | 内容                                                                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-AGENTS-SKILLS-FULL-SYNC-001                                                                                                                                 |
+| 操作         | spec-created / Phase 1-12 完了 / Phase 13 は blocked 維持                                                                                                        |
+| 変更対象     | `.claude/scripts/verify-skills-parity.sh` 新規・`.claude/scripts/sync-skills-mirror.sh` 新規・`.husky/pre-push` 追記・`.claude/hooks/session-init.sh` 追記・`.agents/skills/` 一式同期 |
+| 結果         | drift 4 件→0 件収束・Phase 9 品質 8 ステップ全 PASS（shellcheck SKIP 許容）・Phase 10 Blocker 0 件・Phase 11 手動テスト 6 シナリオ全 PASS（session-init 最大 0.443s / AC-6 基準 < 1 秒）  |
+| 検証         | `bash verify-skills-parity.sh` exit=0 / `diff -qr .claude/skills .agents/skills` 空出力 / Phase 11 bash-execution-log.txt + timing-measurement.txt 証跡         |
+| 備考         | NON_VISUAL infra-guard。sync script の実行順序は仕様書から調整（`generate-index → rsync → diff`）。Phase 13 は user 明示承認まで blocked                     |
+
+### 更新詳細
+
+- `references/task-workflow-completed.md` に本タスクの `spec_created` 完了エントリを先頭追加
+- `references/task-workflow.md` の `TASK-CONFLICT-PREVENT-001` 後続タスク列に相互参照追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を `generate-index.js --quiet` で再生成
+- `indexes/resource-map.md` は変更なし（no-op / current facts 不変）
+- `.agents/skills/` 側へ `sync-skills-mirror.sh` 経由で同期（same-wave sync 完了）
+
+---
+
 ## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
 
 | 項目     | 内容                                                                                                                                                                                                                                                             |
@@ -2926,6 +2958,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+## 2026-04-19 - TASK-SW-CANCEL-003 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に TASK-SW-CANCEL-003 完了記録を追加
+- `docs/30-workflows/p03-seq-CANCEL-003/` の `index.md` / `artifacts.json` / `outputs/artifacts.json` を completed 同期
+- `NON_VISUAL` 証跡、cancel bridge、legacy link 修正を Phase 11/12 成果物へ反映
+
+### 背景
+
+TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台帳・legacy path・close-out 記述にドリフトが残っていた。same-wave sync を行い、後続 CANCEL-004 が正本導線から依存できる状態へ修正した。
 
 ## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
 

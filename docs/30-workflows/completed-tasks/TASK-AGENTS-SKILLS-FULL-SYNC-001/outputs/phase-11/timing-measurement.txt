@@ -1,0 +1,11 @@
+# session-init.sh timing measurement (AC-6: < 1 second)
+# Date: Sun Apr 19 21:14:20 JST 2026
+
+## Run 1: opt-out (CLAUDE_SKIP_HEAVY_HOOKS=1)
+CLAUDE_SKIP_HEAVY_HOOKS=1 bash .claude/hooks/session-init.sh > /dev/null 2>&1  0.09s user 0.09s system 76% cpu 0.228 total
+
+## Run 2: normal (parity OK 状態)
+bash .claude/hooks/session-init.sh > /dev/null 2>&1  0.14s user 0.20s system 86% cpu 0.384 total
+
+## Run 3: normal (parity NG 状態)
+bash .claude/hooks/session-init.sh > /dev/null 2>&1  0.14s user 0.21s system 78% cpu 0.443 total

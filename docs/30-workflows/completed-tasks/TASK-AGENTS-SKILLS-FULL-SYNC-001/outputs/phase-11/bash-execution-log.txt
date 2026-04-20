@@ -1,0 +1,184 @@
+============================================================
+Phase 11 Manual Test - bash execution log
+Date: Sun Apr 19 21:11:02 JST 2026
+============================================================
+
+### シナリオ 1: 差分検出（NG ケース） ###
+--- command ---
+echo "dummy" >> .claude/skills/aiworkflow-requirements/LOGS.md && bash .claude/scripts/verify-skills-parity.sh; echo "exit=$?"
+--- output ---
+[parity-check] NG: 以下の差分が検出されました:
+Files /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/.claude/skills/aiworkflow-requirements/LOGS.md and /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/.agents/skills/aiworkflow-requirements/LOGS.md differ
+
+修正: bash .claude/scripts/sync-skills-mirror.sh
+exit=1
+
+--- post cleanup (git checkout LOGS.md) ---
+checkout_exit=0
+
+### シナリオ 2: 同期・修復（OK ケース） ###
+--- setup: drift を作成 ---
+--- command: sync + verify ---
+[mirror-sync] index 再生成中...
+[mirror-sync] rsync 開始: canonical → mirror
+[mirror-sync] parity 最終確認...
+[mirror-sync] 完了: parity OK
+sync_exit=0
+[parity-check] OK: .claude/skills と .agents/skills に差分はありません
+verify_exit=0
+--- diff -qr post-sync ---
+diff_exit=0
+--- post cleanup: restore LOGS.md ---
+[mirror-sync] index 再生成中...
+[mirror-sync] rsync 開始: canonical → mirror
+[mirror-sync] parity 最終確認...
+[mirror-sync] 完了: parity OK
+restore-sync exit=0
+
+### シナリオ 3: pre-push 中止（disposable bare remote） ###
+Initialized empty Git repository in /private/var/folders/35/t3gvbkdd2w55yk8csmzskzrw0000gn/T/tmp.ywklmSuFrf/skills-parity-test.git/
+remote_init_exit=0
+TMP_REMOTE=/var/folders/35/t3gvbkdd2w55yk8csmzskzrw0000gn/T/tmp.ywklmSuFrf/skills-parity-test.git
+--- drift 作成 + commit ---
+⚠ Skipping backup because `--no-stash` was used. This might result in data loss.
+
+[STARTED] Preparing lint-staged...
+[COMPLETED] Preparing lint-staged...
+[STARTED] Running tasks for staged files...
+[STARTED] .lintstagedrc.json — 1 file
+[STARTED] *.{js,jsx,ts,tsx} — 0 files
+[STARTED] *.{json,md,yml,yaml} — 1 file
+[SKIPPED] *.{js,jsx,ts,tsx} — no files
+[STARTED] prettier --write
+[COMPLETED] prettier --write
+[COMPLETED] *.{json,md,yml,yaml} — 1 file
+[COMPLETED] .lintstagedrc.json — 1 file
+[COMPLETED] Running tasks for staged files...
+[STARTED] Applying modifications from tasks...
+[COMPLETED] Applying modifications from tasks...
+[docs/task-spec-TASK-AGENTS-SKILLS-FULL-SYNC-001 9abfd0852] test: parity guard abort test (phase11 scenario 3)
+ 1 file changed, 1 insertion(+)
+commit_exit=0
+--- git push (expect exit 1) ---
+🔍 Running pre-push CI validation...
+
+═══════════════════════════════════════════
+  Phase 1: Lint + Shared Build（並列）
+═══════════════════════════════════════════
+📝 [1/2] Starting lint...
+📦 [2/2] Starting shared build...
+✅ Lint passed
+❌ Shared build failed (exit code: 1)
+
+> @repo/shared@1.0.0 build /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/packages/shared
+> tsup
+
+✘ [ERROR] Cannot start service: Host version "0.27.2" does not match binary version "0.25.12"
+
+1 error
+Error: The service was stopped
+    at /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/node_modules/.pnpm/esbuild@0.27.2/node_modules/esbuild/lib/main.js:949:34
+    at responseCallbacks.<computed> (/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/node_modules/.pnpm/esbuild@0.27.2/node_modules/esbuild/lib/main.js:603:9)
+    at Socket.afterClose (/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/node_modules/.pnpm/esbuild@0.27.2/node_modules/esbuild/lib/main.js:594:28)
+    at Socket.emit (node:events:531:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/packages/shared:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @repo/shared@1.0.0 build: `tsup`
+Exit status 1
+
+❌ Phase 1 failed: shared-build
+💡 Fix the errors above and try again.
+husky - pre-push script failed (code 1)
+error: failed to push some refs to '/var/folders/35/t3gvbkdd2w55yk8csmzskzrw0000gn/T/tmp.ywklmSuFrf/skills-parity-test.git'
+push_exit=1
+--- check message content ---
+0
+0
+--- post cleanup: reset + restore + rm remote ---
+cleanup done
+[mirror-sync] index 再生成中...
+[mirror-sync] rsync 開始: canonical → mirror
+[mirror-sync] parity 最終確認...
+[mirror-sync] 完了: parity OK
+
+### シナリオ 3 補足: parity gate isolated 実測（既存 CI gate バイパス） ###
+--- 理由: Phase 1 shared build が esbuild version mismatch で先に失敗するため ---
+--- isolated: pre-push 末尾の parity block を直接実行 ---
+[parity-check] NG: 以下の差分が検出されました:
+Files /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/.claude/skills/aiworkflow-requirements/LOGS.md and /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160834-wt-6/.agents/skills/aiworkflow-requirements/LOGS.md differ
+
+修正: bash .claude/scripts/sync-skills-mirror.sh
+
+[pre-push] parity NG のため push を中止します。
+  修正: bash .claude/scripts/sync-skills-mirror.sh
+isolated_exit=1
+msg_abort_count=1
+msg_sync_count=2
+--- cleanup: restore LOGS.md + sync ---
+[mirror-sync] index 再生成中...
+[mirror-sync] rsync 開始: canonical → mirror
+[mirror-sync] parity 最終確認...
+[mirror-sync] 完了: parity OK
+cleanup_parity=0
+
+### シナリオ 4: int-test-skill mirror 存在 ###
+-rw-r--r--@ 1 dm  staff  1016 Apr 19 16:08 .agents/skills/int-test-skill/SKILL.md
+exit=0
+size_bytes=    1016
+
+### シナリオ 5: 全量検証（diff-qr + generate-index + validate-structure） ###
+diff_exit=0
+index_exit=0
+🔍 スキル構造検証
+
+1. ディレクトリ構造...
+   [32m✅[0m references/
+   [32m✅[0m scripts/
+   [32m✅[0m indexes/
+
+2. 必須ファイル...
+   [32m✅[0m SKILL.md (211行)
+
+3. references/の内容...
+   [32m✅[0m 473ファイル
+   📊 総行数: 120,919行
+   [33m⚠️[0m 10ファイルが500行超:
+      - lessons-learned-2026-04-early.md (786行)
+      - lessons-learned-current-2026-04.md (1832行)
+      - lessons-learned-ipc-preload-runtime.md (745行)
+      - lessons-learned-skill-wizard-redesign.md (585行)
+      - quick-reference.md (823行)
+
+4. indexes/の内容...
+   [32m✅[0m topic-map.md
+   [32m✅[0m keywords.json
+
+5. scripts/の内容...
+   📊 8スクリプト: generate-index.js, list-specs.js, log_usage.js, remove-heading-numbers.js, search-spec.js, select-template.js, split-reference.js, validate-structure.js
+
+────────────────────────────────────────
+
+[33m⚠️ 警告 (5件):[0m
+   - ファイルサイズ超過: lessons-learned-2026-04-early.md (786行)
+   - ファイルサイズ超過: lessons-learned-current-2026-04.md (1832行)
+   - ファイルサイズ超過: lessons-learned-ipc-preload-runtime.md (745行)
+   - ファイルサイズ超過: lessons-learned-skill-wizard-redesign.md (585行)
+   - ファイルサイズ超過: quick-reference.md (823行)
+
+validate_exit=0
+
+--- post-sync check ---
+[mirror-sync] index 再生成中...
+[mirror-sync] rsync 開始: canonical → mirror
+[mirror-sync] parity 最終確認...
+[mirror-sync] 完了: parity OK
+post_sync_diff=0
+
+### シナリオ 6: CLAUDE_SKIP_HEAVY_HOOKS=1 opt-out ###
+--- opt-out: CLAUDE_SKIP_HEAVY_HOOKS=1 ---
+optout_exit=0
+optout_parity_count=0 (expected: 0)
+
+--- normal: without env var, parity OK ---
+normal_exit=0

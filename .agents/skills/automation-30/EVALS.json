@@ -1,0 +1,23 @@
+{
+  "skillName": "automation-30",
+  "currentLevel": 1,
+  "metrics": {
+    "totalUsageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0,
+    "averageDuration": 0,
+    "lastEvaluated": null
+  },
+  "levelHistory": [
+    {
+      "level": 1,
+      "achievedAt": "2026-04-19"
+    }
+  ],
+  "patterns": {
+    "commonErrors": [],
+    "slowPhases": [],
+    "successPatterns": []
+  }
+}
