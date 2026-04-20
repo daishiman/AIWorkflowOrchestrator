@@ -3735,7 +3735,8 @@ node scripts/list-specs.js --topics
 | L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
 | L-STREAM-FUP-03: PROGRESS_FLOWS 単一集約パターン（TASK-SW-STREAM-FUP-03 / 2026-04-18） | L92 |
 | 再利用メモ（skill-feedback-report.md より抽出） | L126 |
-| 後続タスク・未タスク | L134 |
+| L-STREAM-FUP-05: filter-by-planId 契約（TASK-SC-08-FUP-02 / 2026-04-20） | L134 |
+| 後続タスク・未タスク | L153 |
 
 ### references/lessons-learned-templates.md
 

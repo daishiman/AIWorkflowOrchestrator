@@ -62,6 +62,10 @@ export interface UseStreamingProgressReturn {
   isGenerating: boolean;
 }
 
+export interface UseStreamingProgressOptions {
+  planId?: string;
+}
+
 const ACTIVE_STAGES: StreamingGenerationStage[] = [
   "planning",
   "generating-skill",
@@ -75,6 +79,8 @@ type StreamingProgressApi = {
       phase: string;
       percentage: number;
       message: string;
+      planId?: string;
+      requestId?: string;
     }) => void,
   ) => () => void;
 };
@@ -86,7 +92,9 @@ function getSkillCreatorApi(): StreamingProgressApi | null {
   );
 }
 
-export function useStreamingProgress(): UseStreamingProgressReturn {
+export function useStreamingProgress(
+  options?: UseStreamingProgressOptions,
+): UseStreamingProgressReturn {
   const stage = useStreamingStage();
   const percent = useStreamingPercent();
   const message = useStreamingMessage();
@@ -96,6 +104,7 @@ export function useStreamingProgress(): UseStreamingProgressReturn {
   const setStage = useSetStreamingStage();
   const setError = useSetStreamingError();
   const resetProgress = useResetStreamingProgress();
+  const targetPlanId = options?.planId;
 
   useEffect(() => {
     const api = getSkillCreatorApi();
@@ -103,6 +112,14 @@ export function useStreamingProgress(): UseStreamingProgressReturn {
 
     // P5 対策: safeOn が返すクリーンアップ関数を保持
     const cleanup = api.onProgress((progress) => {
+      if (
+        targetPlanId !== undefined &&
+        progress.planId !== undefined &&
+        progress.planId !== targetPlanId
+      ) {
+        return;
+      }
+
       // エラーチェック
       if (progress.phase === "error") {
         const errorCode = parseErrorCode(progress.message);
@@ -123,7 +140,7 @@ export function useStreamingProgress(): UseStreamingProgressReturn {
       cleanup();
       resetProgress();
     };
-  }, [updateProgress, setStage, setError, resetProgress]);
+  }, [targetPlanId, updateProgress, setStage, setError, resetProgress]);
 
   return {
     stage,

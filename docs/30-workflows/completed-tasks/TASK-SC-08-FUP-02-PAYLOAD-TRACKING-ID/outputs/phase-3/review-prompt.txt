@@ -1,0 +1,135 @@
+TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID 設計レビュー用 LLM プロンプト
+
+あなたはソフトウェア設計レビュアーです。
+以下の task 設計を 30 思考法 7 系統と 4 条件で再レビューし、
+PASS / MAJOR / MINOR の判定とその根拠を出力してください。
+
+====================================================================
+【task 概要】
+====================================================================
+
+- task id: TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID
+- 目的: Electron IPC チャンネル skill-creator:progress の payload に
+  planId / requestId を追加し、並行 executePlan 実行時の UI 混線を防ぐ
+- 対象ファイル 4 件:
+  1) apps/desktop/src/preload/skill-creator-api.ts
+     （SkillCreatorProgress に planId? / requestId? を追加）
+  2) apps/desktop/src/main/ipc/skillCreatorHandlers.ts
+     （sendSkillCreatorProgress の progress 引数型に planId? / requestId? を追加）
+  3) apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts
+     （executeAsync の progress emit 経路に planId を貫通）
+  4) apps/desktop/src/renderer/hooks/useStreamingProgress.ts
+     （options?: { planId?: string } 引数を追加し callback 先頭で filter 分岐）
+
+- task type: NON_VISUAL code task
+- 後方互換ポリシー: planId / requestId / options.planId すべてオプショナル
+- フィルタ条件: options.planId !== undefined
+               && progress.planId !== undefined
+               && progress.planId !== options.planId
+               の 3 条件 AND のときのみスキップ
+- 棄却案: skill-creator:progress:{planId} の動的 channel 多重化
+  （Electron IPC ホワイトリスト機構と両立しないため棄却）
+
+====================================================================
+【AC（受入基準）】
+====================================================================
+
+AC-1: SkillCreatorProgress 型に planId?: string / requestId?: string 追加
+AC-2: sendSkillCreatorProgress が planId / requestId を payload に含めて送信
+AC-3: useStreamingProgress に options.planId フィルタリングロジック実装
+AC-4: planId 一致時のみ Zustand ストアに書き込まれる
+AC-5: planId 不一致の progress はスキップ
+AC-6: progress.planId 未設定時は後方互換で受け入れ
+AC-7: options.planId 未指定時は全通知受け入れ
+AC-8: 既存 useStreamingProgress テストが全 PASS
+AC-9: pnpm --filter @repo/desktop typecheck / lint / targeted test PASS
+
+====================================================================
+【レビュー観点: 30 思考法 7 系統】
+====================================================================
+
+1. 論理分析系（批判的思考、演繹思考、帰納的思考、アブダクション、垂直思考）
+   - 「planId 不一致のみスキップ」論理矛盾の検出
+   - 空文字 planId などエッジケースの論理整合性
+2. 構造分解系（要素分解、MECE、2軸思考、プロセス思考）
+   - 4 ファイル × 4 lane × 5 検証ステップの漏れ確認
+3. メタ・抽象系（メタ思考、抽象化思考、ダブル・ループ思考）
+   - チャンネル多重化案棄却と payload 拡張採用の合理性確認
+4. 発想・拡張系（ブレスト、水平思考、逆説思考、類推思考、if思考、素人思考）
+   - 「planId 未設定なら受け入れる」後方互換ロジックの素人視点妥当性
+5. システム系（システム思考、因果関係分析、因果ループ）
+   - useEffect 依存配列変更で再登録ループが生じないか確認
+6. 戦略・価値系（トレードオン、プラスサム、価値提案、戦略的思考）
+   - オプショナル化の価値 vs. 将来強制化の移行コスト
+7. 問題解決系（why、改善、仮説、論点、KJ法）
+   - Runtime ルート emit 経路未決の残論点明示化
+
+====================================================================
+【4 条件】
+====================================================================
+
+- 矛盾なし: 設計内の論理的整合性
+- 漏れなし: 対象ファイル / lane / テストシナリオ / 検証ステップの網羅性
+- 整合性あり: 既存実装 / 既存テスト / 既存設計書との整合
+- 依存関係整合: phase 依存、lane 依存、Issue depends_on リンクの整備
+
+====================================================================
+【レビュー項目チェックリスト】
+====================================================================
+
+1. planId 未設定時の後方互換ロジックが擬似コードで明示されているか
+2. options.planId 未指定時の全受け入れ挙動が説明されているか
+3. useEffect の依存配列に options?.planId を含めるかどうかの判断根拠があるか
+4. Runtime ルート（executeAsync）の emit 経路調査が Phase 5 実装計画に組み込まれているか
+5. 既存テスト破壊が発生しないことが担保されているか（オプショナルフィールド運用）
+6. チャンネル多重化案を棄却した理由（Electron IPC の動的追加困難性）が記録されているか
+
+====================================================================
+【出力フォーマット】
+====================================================================
+
+# 系統別判定
+
+1) 論理分析系: [PASS/MINOR/MAJOR] 理由:
+2) 構造分解系: [PASS/MINOR/MAJOR] 理由:
+3) メタ・抽象系: [PASS/MINOR/MAJOR] 理由:
+4) 発想・拡張系: [PASS/MINOR/MAJOR] 理由:
+5) システム系: [PASS/MINOR/MAJOR] 理由:
+6) 戦略・価値系: [PASS/MINOR/MAJOR] 理由:
+7) 問題解決系: [PASS/MINOR/MAJOR] 理由:
+
+# 4 条件判定
+
+- 矛盾なし: [PASS/FAIL] 理由:
+- 漏れなし: [PASS/FAIL] 理由:
+- 整合性あり: [PASS/要確認/FAIL] 理由:
+- 依存関係整合: [PASS/FAIL] 理由:
+
+# チェックリスト 6 項目
+
+1: [YES/NO]  根拠:
+2: [YES/NO]  根拠:
+3: [YES/NO]  根拠:
+4: [YES/NO]  根拠:
+5: [YES/NO]  根拠:
+6: [YES/NO]  根拠:
+
+# Gate 総合判定
+
+[PASS / MINOR / MAJOR] 根拠:
+
+# 改善提案
+
+（MINOR / MAJOR の場合のみ具体的な修正提案を記載）
+
+====================================================================
+【参考資料】
+====================================================================
+
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/phase-1-requirements.md
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/phase-2-design.md
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/phase-3-design-review.md
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/outputs/phase-1/current-implementation-audit.md
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/outputs/phase-2/solution-design.md
+- docs/30-workflows/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID/outputs/phase-3/solution-elegance-review.md
+- docs/30-workflows/unassigned-task/TASK-SC-08-FUP-02-PAYLOAD-TRACKING-ID.md

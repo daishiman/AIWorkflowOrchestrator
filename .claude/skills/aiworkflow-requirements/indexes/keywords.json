@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3177,
+  "totalKeywords": 3179,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1515,6 +1515,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-auth.md",
       "interfaces-skill-verify-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "security-electron-ipc-advanced.md",
       "ui-history-search-view.md",
       "ui-ux-navigation-chat-patterns.md"
@@ -2957,6 +2958,7 @@
       "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
       "security-electron-ipc-examples.md",
@@ -10171,6 +10173,7 @@
     ],
     "filter": [
       "lessons-learned-skill-remove-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "ui-ux-atoms-patterns-core.md"
@@ -10524,6 +10527,12 @@
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "より抽出": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "by": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "planId": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "後続タスク・未タスク": [
