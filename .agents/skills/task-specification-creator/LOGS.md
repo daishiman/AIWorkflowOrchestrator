@@ -3260,3 +3260,41 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/`（artifacts.json parity・Phase 12 outputs）、`LOGS.md`（本エントリ）                  |
 | 結果     | NON_VISUAL 再分類・artifacts.json parity・mandatory 5 tasks の Phase 12 実行完了。差分確認型 NON_VISUAL code task パターンをスキル知見として記録 |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）                                                               |
+
+## 2026-04-20 - TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
+
+### 変更内容
+
+- 親タスク `TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001` Phase 12 close-out の repo-wide 波及を follow-up タスク `TASK-SC-CANCEL-LOGS-SYNC-001` として分離・実施
+- 本 LOGS への追記（AC-1）、`aiworkflow-requirements/LOGS.md` への追記（AC-2）、canonical spec（`task-workflow-active.md` → `task-workflow-completed-recent-2026-04g.md`）への移動（AC-3）、`lessons-learned-current-2026-04.md` への 3 知見追加（AC-4）、親 `index.md` Phase 12 完了宣言（AC-5）を Lane A/B/C 並列で完了
+- NON_VISUAL タスクの代替証跡として TC-01〜TC-05 grep スナップショットを `outputs/phase-11/grep-snapshots/` に取得
+
+### 背景
+
+親タスク Phase 12 は branch 内 close-out で完結したが、`.claude/skills/` 配下の両 LOGS および canonical spec への波及が漏れており、Issue #2313 で同期漏れ 6 項目のうち 5 項目として報告されていた。本タスクは scope を「repo-wide sync wave」に限定し、コード変更なしの docs-sync として Lane 並列で 5 ファイル群を一括同期。NON_VISUAL / scope 境界 / repo-wide sync wave の 3 知見を lessons-learned へ定着させた。
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-sync / repo-wide sync wave / follow-up close-out / skill-sync                                                                                    |
+| 変更対象 | 本 `LOGS.md`、`aiworkflow-requirements/LOGS.md`、`references/task-workflow-active.md`、`references/task-workflow-completed-recent-2026-04g.md`、`references/lessons-learned-current-2026-04.md`、親 `index.md`（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001） |
+| 結果     | AC-1〜AC-5 all PASS。Lane A/B/C 並列実行で 5 ファイル群同期完了。3 知見（NON_VISUAL 代替証跡 / scope 境界 / repo-wide sync）を lessons-learned に h3 独立エントリとして定着 |
+| 検証     | TC-01〜TC-05 grep 全件 PASS（`outputs/phase-11/grep-snapshots/` 参照）/ Markdown lint PASS / 日付 2026-04-20 統一確認                                               |
+
+## 2026-04-20 - TASK-SC-CANCEL-LOGS-SYNC-001 Phase 12 self-close-out
+
+### 変更内容
+
+- 本タスク `TASK-SC-CANCEL-LOGS-SYNC-001` 自体の Phase 1-12 完了を self-close-out として本 LOGS に記録
+- Phase 12 mandatory 5 tasks（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）+ 追加 1 タスク（phase12-task-spec-compliance-check）all PASS
+- Phase 13（PR 作成）は user 承認待ちで blocked、commit / push は実施しない
+
+### 背景
+
+親タスク close-out 波及を完了した本 follow-up タスク自身も、トラッカーとして自己の完了を両 LOGS に記録することで self-close-out を成立させ、親→本タスクの追跡性を双方向で閉じる。phase-templates.md の Phase 1-13 骨格・artifact-naming-conventions の `outputs/phase-N/` 規約・4 条件 + 30 思考法レビューの各テンプレートに準拠。Phase 12 成果物 6 点は `docs/30-workflows/TASK-SC-CANCEL-LOGS-SYNC-001/outputs/phase-12/` に配置。
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-sync / self-close-out / phase-12-compliance                                                                                                      |
+| 変更対象 | 本 `LOGS.md`（self-close-out エントリ）、`aiworkflow-requirements/LOGS.md`（同エントリ）                                                                            |
+| 結果     | Phase 12 mandatory 5 tasks all PASS、task-spec-creator テンプレート準拠、artifacts.json parity 一致、self-close-out 完了、Phase 13 blocked 宣言                    |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / 全 Phase 1-12 成果物 parity PASS / 3 知見（L-SC-CANCEL-NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 |
