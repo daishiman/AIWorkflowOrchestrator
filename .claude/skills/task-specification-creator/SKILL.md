@@ -497,7 +497,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守**               | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**                     | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も**               | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
-| **worktree環境でも `.claude` 正本を実更新する**          | worktree を理由に LOGS.md / SKILL.md / backlog / workflow の更新を先送りしない。`.agents/skills/` は `rsync` / `diff` で mirror parity を確認する                                                                                                                    |
+| **worktree環境でも `.claude` 正本を実更新する**          | worktree を理由に LOGS.md / SKILL.md / backlog / workflow の更新を先送りしない。`.agents/skills/` は **`bash .claude/scripts/sync-skills-mirror.sh`** で同期し、**`bash .claude/scripts/verify-skills-parity.sh`** で parity 0 を確認する（pre-push hook でも自動実行される） |
 | **並列エージェント完了後はファイルシステムで検証**       | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する                                                                                            |
 | **NON_VISUAL判定時は `screenshots/.gitkeep` を削除する** | `screenshots/` ディレクトリが空（PNG 0件）のまま残るとvalidator errorになる。NON_VISUAL判定で実スクリーンショットが不要な場合は `screenshots/.gitkeep` を削除してディレクトリごと除外する                                                                            |
 | **worktree作成後は `pnpm install` を確認する**           | `esbuild` host/binary version drift により Vitest 起動前に停止することがある。worktree作成後は必ず `pnpm install` を実行してバイナリの整合を確保する                                                                                                                 |
@@ -626,6 +626,8 @@ node scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
 node ../skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
 node ../skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
+bash .claude/scripts/verify-skills-parity.sh      # canonical/mirror 全スキル parity（pre-push hook と同一ロジック）
+bash .claude/scripts/sync-skills-mirror.sh        # parity NG 時は rsync + index 再生成で修復
 node scripts/log-usage.js --result success --phase "Phase {{N}}"
 ```
 
@@ -649,17 +651,19 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 ### 避けるべきこと
 
-- `.agents` 側だけ先に更新して canonical root を残すこと。
+- `.agents` 側だけ先に更新して canonical root を残すこと（pre-push hook の parity gate が `verify-skills-parity.sh` で push を拒否する）。
 - `outputs/` を後回しにして phase 完了だけ先に付けること。
 - `current` と `baseline` の監査結果を混ぜること。
 - UI task で screenshot を自動テスト代替として扱うこと。
 - user の明示承認なしに commit や PR を作ること。
+- pre-push hook を `--no-verify` でスキップすること（parity NG のまま push される）。
 
 ## 変更履歴
 
 | Version                  | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **v10.09.57**            | **2026-04-19**             | **TASK-LOGS-ARCHIVE-POLICY-001 skill-feedback 反映**: docs-only タスクへの Phase 13 フレームワーク適用が機能確認済み。Phase 6〜9（テスト拡充・カバレッジ・リファクタリング・QA）の docs-only 向け読み替え定義が各 Phase に分散しているため、docs-only 専用テンプレートの新設を検討項目として記録。NON_VISUAL Phase 11 の証跡を `manual-test-result.md` チェックリストで代替するパターンを `references/` に追記予定。 |
+| **v10.09.57**            | **2026-04-19**             | **TASK-AGENTS-SKILLS-FULL-SYNC-001 impl-spec-to-skill-sync**: 検証コマンドに `bash .claude/scripts/verify-skills-parity.sh` と `bash .claude/scripts/sync-skills-mirror.sh` を追加（pre-push hook と同一ロジック）。「worktree環境でも `.claude` 正本を実更新する」行を書き換え、`sync-skills-mirror.sh` による同期と `verify-skills-parity.sh` による parity 0 確認を明示。避けるべきことに「pre-push を `--no-verify` でスキップ」を追加。 |
 | **v10.09.56**            | **2026-04-18**             | **UT-IPC-HANDLER-CI-001 skill-feedback 反映**: 「Phase 12 実行時によくある漏れ」テーブルに **[FB-IPC-SNAP-001]**（Electron ipcMain snapshot test で vi.spyOn 直接適用が不安定になる / vi.hoisted + vi.mock パターンを使う）・**[FB-IPC-SNAP-002]**（Phase 5 に --updateSnapshot 初回生成と比較確認を別ステップとして明示する）を追記。LOGS.md 2ファイル同波更新。                                                                     |
 | **v10.09.55**            | **2026-04-17**             | **TASK-UT-9I-001 Phase-12 検証完了**: Phase-12成果物全6ファイルPASS確認。implementation-guide.md / system-spec-update-summary.md / documentation-changelog.md / unassigned-task-detection.md / skill-feedback-report.md / phase12-task-spec-compliance-check.md の存在・内容を検証し全87項目PASS。Phase 11 BLOCKED（API_KEY未設定）でも Phase 12 ドキュメントは作成可能な非依存性を記録。                                                  |
 | **v10.09.53**            | **2026-04-16**             | **TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY current facts sync**: Phase 11 screenshot canonical 名を `inline-model-selector-description-hidden.png` / `inline-model-selector-tooltip-visible.png` に統一し、`phase11-capture-metadata.json` / `manual-test-result.md` / `implementation-guide.md` / completed ledger を同波で更新。`TASK-LLM-MOD-05` completed 化に合わせ、`Phase 12 実行時によくある漏れ` に **[FB-VISUAL-CAP-001]** を追加。 |

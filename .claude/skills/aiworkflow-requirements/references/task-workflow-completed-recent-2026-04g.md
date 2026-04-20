@@ -1,5 +1,30 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）** |
+| タイプ | implementation / close-out sync |
+| 優先度 | 中 |
+| 完了日 | 2026-04-19 |
+| 対象 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService-cancel.test.ts` / `docs/30-workflows/TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001/` |
+| 成果物 | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json` |
+
+#### 実施内容
+
+- `runOrchestrateWorkflow()` / `runCreateWorkflow()` の先頭に `throwIfAborted(signal)` を追加し、private workflow 入口保証を public flow と整合させた
+- `SkillCreatorService-cancel.test.ts` に private minimal test 4 件を追加し、aborted signal / signal なしの両経路を固定した
+- task workflow 側の Phase 11/12/13 close-out を作成し、canonical outputs と root / outputs parity を同期した
+
+#### 検証証跡
+
+- `docs/30-workflows/TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001/outputs/phase-10/final-review-result.md`: GO
+- `docs/30-workflows/TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001/outputs/phase-11/manual-test-result.md`: PASS
+- `docs/30-workflows/TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `pnpm --filter @repo/desktop test:run -- ...SkillCreatorService*.ts`: FAIL（`esbuild` host/binary mismatch。実装不具合ではなく環境不整合として記録）
+
 ## UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18）
 
 | 項目       | 内容                                                                                                                                   |

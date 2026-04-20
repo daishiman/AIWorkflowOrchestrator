@@ -1,0 +1,22 @@
+[Phase 11 進行可否確認プロンプト]
+
+Phase 10 最終レビューが完了しました。以下の状態で Phase 11（手動テスト）へ進行します。
+
+▼ 判定サマリ
+- Blocker: なし
+- AC-1〜AC-5 / AC-7 / AC-8 / AC-9: PASS
+- AC-6: Phase 11 で実測確認予定（session-init timing 1 秒未満、CLAUDE_SKIP_HEAVY_HOOKS=1 opt-out）
+
+▼ Phase 11 で実行する 6 シナリオ
+1. parity NG 検出（verify exit 1）
+2. sync 修復（verify exit 0）
+3. pre-push abort（disposable local bare remote へ push、exit 1）
+4. int-test-skill mirror 存在確認
+5. 全量検証（diff-qr + generate-index + validate-structure 全 exit 0）
+6. CLAUDE_SKIP_HEAVY_HOOKS=1 opt-out（session-init の parity ブロック不実行）
+
+▼ Phase 13 の扱い
+- AC-8 に従い Phase 13 は user の明示承認まで blocked 維持
+- project remote への push / PR は Phase 13 解除後のみ
+
+進行しますか？（YES / NO）

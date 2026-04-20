@@ -1,0 +1,5 @@
+TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 final review:
+- private workflow abort entry guard を 2 箇所追加
+- private minimal test 4 件追加
+- NON_VISUAL phase11/12/13 close-out outputs 作成
+- Vitest rerun は esbuild host/binary mismatch のため要再実行

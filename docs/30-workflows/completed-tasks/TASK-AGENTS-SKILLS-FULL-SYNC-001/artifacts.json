@@ -1,0 +1,158 @@
+{
+  "task_id": "TASK-AGENTS-SKILLS-FULL-SYNC-001",
+  "title": ".agents/skills/ と .claude/skills/ 完全パリティガード実装",
+  "task_name": ".agents/skills/ と .claude/skills/ 完全パリティガード実装",
+  "issue_number": 2278,
+  "issue_url": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/2278",
+  "issue_state": "CLOSED",
+  "type": "spec_created",
+  "status": "spec_created",
+  "implementation_mode": "new",
+  "category": "改善",
+  "priority": "高",
+  "scale": "中規模",
+  "task_type": "NON_VISUAL",
+  "created_date": "2026-04-19",
+  "source_phase": "TASK-CONFLICT-PREVENT-001 Phase 12 (unassigned-task-detection.md)",
+  "spec_root": "docs/30-workflows/TASK-AGENTS-SKILLS-FULL-SYNC-001/",
+  "dependencies": {
+    "upstream": ["TASK-CONFLICT-PREVENT-001"],
+    "siblings": [
+      "task-imp-aiworkflow-same-wave-sync-guard-001",
+      "task-p0-05-mirror-sync-automation"
+    ]
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "requirements",
+      "file": "phase-01-requirements.md",
+      "depends_on": [],
+      "parallel": false
+    },
+    {
+      "phase": 2,
+      "name": "design",
+      "file": "phase-02-design.md",
+      "depends_on": [1],
+      "parallel": false
+    },
+    {
+      "phase": 3,
+      "name": "design-review",
+      "file": "phase-03-design-review.md",
+      "depends_on": [1, 2],
+      "parallel": false
+    },
+    {
+      "phase": 4,
+      "name": "test-creation",
+      "file": "phase-04-test-creation.md",
+      "depends_on": [3],
+      "parallel": true
+    },
+    {
+      "phase": 5,
+      "name": "implementation",
+      "file": "phase-05-implementation.md",
+      "depends_on": [4],
+      "parallel": false
+    },
+    {
+      "phase": 6,
+      "name": "test-expansion",
+      "file": "phase-06-test-expansion.md",
+      "depends_on": [5],
+      "parallel": true
+    },
+    {
+      "phase": 7,
+      "name": "coverage",
+      "file": "phase-07-coverage.md",
+      "depends_on": [6],
+      "parallel": true
+    },
+    {
+      "phase": 8,
+      "name": "refactoring",
+      "file": "phase-08-refactoring.md",
+      "depends_on": [7],
+      "parallel": false
+    },
+    {
+      "phase": 9,
+      "name": "quality-assurance",
+      "file": "phase-09-quality-assurance.md",
+      "depends_on": [8],
+      "parallel": true
+    },
+    {
+      "phase": 10,
+      "name": "final-review",
+      "file": "phase-10-final-review.md",
+      "depends_on": [9],
+      "parallel": false
+    },
+    {
+      "phase": 11,
+      "name": "manual-test",
+      "file": "phase-11-manual-test.md",
+      "depends_on": [10],
+      "parallel": false,
+      "notes": "NON_VISUAL: UI/UX変更なしのためスクリーンショット不要。代替証跡として bash 実行ログを使用"
+    },
+    {
+      "phase": 12,
+      "name": "documentation",
+      "file": "phase-12-documentation.md",
+      "depends_on": [11],
+      "parallel": false
+    },
+    {
+      "phase": 13,
+      "name": "pr",
+      "file": "phase-13-pr.md",
+      "depends_on": [12],
+      "parallel": false,
+      "status": "blocked",
+      "blocked_reason": "user の明示承認が必要"
+    }
+  ],
+  "implementation_artifacts": {
+    "new_files": [
+      ".claude/scripts/verify-skills-parity.sh",
+      ".claude/scripts/sync-skills-mirror.sh"
+    ],
+    "modified_files": [
+      ".husky/pre-push",
+      ".claude/hooks/session-init.sh",
+      ".claude/skills/aiworkflow-requirements/LOGS.md",
+      ".claude/skills/aiworkflow-requirements/indexes/topic-map.md",
+      ".claude/skills/aiworkflow-requirements/indexes/keywords.json",
+      ".claude/skills/aiworkflow-requirements/references/task-workflow.md",
+      ".claude/skills/aiworkflow-requirements/references/task-workflow-completed.md",
+      ".agents/skills/aiworkflow-requirements/LOGS.md",
+      ".agents/skills/aiworkflow-requirements/indexes/topic-map.md",
+      ".agents/skills/aiworkflow-requirements/indexes/keywords.json",
+      ".agents/skills/aiworkflow-requirements/references/task-workflow.md",
+      ".agents/skills/aiworkflow-requirements/references/task-workflow-completed.md",
+      "docs/30-workflows/unassigned-task/TASK-AGENTS-SKILLS-FULL-SYNC-001.md"
+    ],
+    "new_mirror_entries": [".agents/skills/int-test-skill/"],
+    "untouched_files": [
+      ".gitattributes",
+      ".claude/skills/aiworkflow-requirements/EVALS.json"
+    ]
+  },
+  "acceptance_criteria": [
+    "AC-1: diff -qr .claude/skills .agents/skills が空出力となる (Phase 5 完了時点)",
+    "AC-2: verify-skills-parity.sh が exit 0 (OK) / exit 1 (NG) を deterministic に返す",
+    "AC-3: sync-skills-mirror.sh が generate-index + rsync + diff を単一コマンドで完結",
+    "AC-4: pre-push hook が parity NG 時に push を中止し、--no-verify 導線を設けない",
+    "AC-5: int-test-skill が .agents/skills/int-test-skill/ へ同期済み",
+    "AC-6: session-init.sh の parity warning が 1 秒未満、CLAUDE_SKIP_HEAVY_HOOKS=1 で opt-out 可",
+    "AC-7: .gitattributes の merge policy を本タスクで変更しない",
+    "AC-8: Phase 13 は user の明示承認取得まで blocked 維持",
+    "AC-9: EVALS.json schema を本タスクで変更しない"
+  ]
+}
