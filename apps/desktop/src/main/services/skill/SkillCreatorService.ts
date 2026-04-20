@@ -964,8 +964,9 @@ export class SkillCreatorService {
    */
   private async runOrchestrateWorkflow(
     options: CreateSkillOptions,
-    _signal?: AbortSignal,
+    signal?: AbortSignal,
   ): Promise<void> {
+    this.throwIfAborted(signal);
     // 実行エンジン選択ロジック
     const engine = options.executionEngine || "claude";
     void engine; // unused warning回避
@@ -980,13 +981,18 @@ export class SkillCreatorService {
     options: CreateSkillOptions,
     signal?: AbortSignal,
   ): Promise<StructurePlanJson | null> {
+    this.throwIfAborted(signal);
     try {
       const purpose = await this.extractPurposeWithLlm(options, signal);
+      const features = await this.generateFeaturesWithLlm(
+        options.description,
+        signal,
+      );
       const structurePlan: StructurePlanJson = {
         skillName: options.name,
         description: options.description,
         purpose: purpose ?? options.description,
-        features: [],
+        features,
         agents: ["extract-purpose", "plan-structure"],
       };
       return structurePlan;
@@ -994,6 +1000,49 @@ export class SkillCreatorService {
       if (this.isAbortError(error)) throw error;
       return null;
     }
+  }
+
+  /**
+   * TASK-SW-STRUCT-LLM-002: generate_features.js を使い LLM で features を生成する。
+   * 失敗時は [] にフォールバックし、ワークフローを継続する。
+   */
+  private async generateFeaturesWithLlm(
+    description: string,
+    signal?: AbortSignal,
+  ): Promise<string[]> {
+    try {
+      const args = ["--description", description];
+      const result = signal
+        ? await this.scriptExecutor.execute("generate_features.js", args, {
+            signal,
+          })
+        : await this.scriptExecutor.execute("generate_features.js", args);
+      if (!result.success) {
+        return [];
+      }
+      return this.parseFeaturesResponse(result.stdout);
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * TASK-SW-STRUCT-LLM-002: LLM レスポンスから JSON 配列を抽出し文字列要素のみ返す。
+   * JSON 配列が見つからない・空の場合は throw する（呼び出し元で [] にフォールバック）。
+   */
+  private parseFeaturesResponse(response: string): string[] {
+    const match = response.match(/\[[\s\S]*?\]/);
+    if (!match) {
+      throw new Error("No JSON array found in features response");
+    }
+    const parsed: unknown[] = JSON.parse(match[0]) as unknown[];
+    const strings = parsed.filter(
+      (item): item is string => typeof item === "string",
+    );
+    if (strings.length === 0) {
+      throw new Error("Empty features array");
+    }
+    return strings;
   }
 
   /**
