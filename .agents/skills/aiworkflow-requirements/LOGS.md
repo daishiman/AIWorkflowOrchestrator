@@ -104,13 +104,13 @@
 
 ## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
 
-| 項目     | 内容                                                                                                                                                                                                                                                             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID | UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001                                                                                                                                                                                                              |
-| 操作     | spec-reflection / lessons-learned 追記                                                                                                                                                                                                                           |
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID | UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001                                                                                                               |
+| 操作     | spec-reflection / lessons-learned 追記                                                                                                                             |
 | 変更対象 | `references/lessons-learned-test-cleanup-describe-skip-2026-04.md`（L-W2-03A-006/007追加）、`references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`（auth:login 500ms timeout 節追加）、`indexes/resource-map.md`（テストクリーンアップ行追加） |
-| 結果     | describe.skip 0件達成・5テスト PASS・typecheck PASS・lint PASS。知識系 3ファイル + ミラー同期完了                                                                                                                                                                |
-| 検証     | vitest 5 passed (5) / `pnpm typecheck` exit 0 / `eslint` exit 0                                                                                                                                                                                                  |
+| 結果     | describe.skip 0件達成・5テスト PASS・typecheck PASS・lint PASS。知識系 3ファイル + ミラー同期完了                                                                  |
+| 検証     | vitest 5 passed (5) / `pnpm typecheck` exit 0 / `eslint` exit 0                                                                                                   |
 
 ## 2026-04-19: TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE Phase 12 close-out
 
@@ -156,13 +156,13 @@
 
 ## 2026-04-18: TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）
 
-| 項目         | 内容                                                                                                                   |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-CONFLICT-PREVENT-001                                                                                              |
-| 操作         | update-spec                                                                                                            |
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-CONFLICT-PREVENT-001 |
+| 操作 | update-spec |
 | 対象ファイル | `references/task-workflow-completed.md`, `indexes/topic-map.md`, `indexes/keywords.json`, workflow Phase 11/12 outputs |
-| 結果         | success                                                                                                                |
-| 備考         | generated index merge policy / bootstrap-hook 導線 / same-wave sync 判定を current facts に反映                        |
+| 結果 | success |
+| 備考 | generated index merge policy / bootstrap-hook 導線 / same-wave sync 判定を current facts に反映 |
 
 ### 更新詳細
 
@@ -184,12 +184,27 @@
 - `SKILL.md` の変更履歴テーブルに 2026-04-18 エントリを追加（Step 1-D 三区分テンプレート・NON_VISUAL task 固有パスガイド）
 - `SKILL.md` の「ベストプラクティス → すべきこと」に Step 1-D 三区分（未更新 / 再生成のみ / 内容変更あり）と NON_VISUAL 証跡 task 固有パス記録ルールを追記
 
-| 項目     | 内容                                                                              |
-| -------- | --------------------------------------------------------------------------------- |
-| 種別     | skill-feedback 反映                                                               |
-| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）           |
-| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化 |
-| 検証     | generate-index.js 再実行 / mirror sync 確認                                       |
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | skill-feedback 反映                                                                                                      |
+| 変更対象 | `SKILL.md`（変更履歴・ベストプラクティス更新）、`LOGS.md`（本エントリ）                                                  |
+| 結果     | Step 1-D の索引更新分類とNON_VISUAL task 固有パス証跡記録を標準ルールとして明文化                                       |
+| 検証     | generate-index.js 再実行 / mirror sync 確認                                                                              |
+
+---
+
+## 2026-04-18 - TASK-SC-LLM-PURPOSE-WIRE-001 impl-spec-to-skill-sync Phase-12 close-out
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/phase-12-documentation.md` ステータス `未実施` → `完了`、チェックボックス全 `[x]` 化
+- `docs/30-workflows/TASK-SC-LLM-PURPOSE-WIRE-001/index.md` ステータス `進行中（実装あり・Phase 11/12 再監査中）` → `完了（Phase 12 close-out 済み・Phase 13 pending）`、Phase 1〜12 ステータス全 `完了` 更新
+- `references/task-workflow.md` の TASK-SC-LLM-PURPOSE-WIRE-001 エントリ重複解消と Phase 12 close-out 記録追記
+- `SKILL.md` 変更履歴テーブルに 2026-04-18 impl-spec-to-skill-sync 行を追加
+
+### 背景
+
+TASK-SC-LLM-PURPOSE-WIRE-001（purpose 抽出 LLM 統合）は Phase 11/12 の成果物6件が全て揃っていたが、phase-12-documentation.md と index.md のステータスフィールドおよびPhase一覧テーブルが「未実施」のままだった。また task-workflow.md に同タスクの2026-04-18 エントリが重複していた。本セッションで impl-spec-to-skill-sync プロンプト（Phase 1 並列監査 → Phase 2 直列編集 → Phase 3 検証）を用いてこれらを修正した。
 
 ---
 
@@ -2991,26 +3006,25 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - `generate-index.js` deterministic 化（日付ヘッダー除去）
 - `.agents/skills/aiworkflow-requirements/LOGS.md` にも同じエントリを追記
 
-| 項目     | 内容                                                                                                                                             |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 種別     | NON_VISUAL / docs-only / spec redesign / conflict prevention                                                                                     |
+| 項目 | 内容 |
+|------|------|
+| 種別 | NON_VISUAL / docs-only / spec redesign / conflict prevention |
 | 変更対象 | `.gitattributes`、`setup-merge-drivers.sh`（新規）、`session-init.sh`、`post-merge-index-regenerate.sh`、`generate-index.js`（deterministic 化） |
-| 結果     | 4カテゴリ分類で merge policy 設計完了。custom driver bootstrap + session warning + deterministic generate の3層防衛実装                          |
-| 検証     | Phase 9/10/11 docs-only validation PASS                                                                                                          |
-| 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                                                                     |
-
+| 結果 | 4カテゴリ分類で merge policy 設計完了。custom driver bootstrap + session warning + deterministic generate の3層防衛実装 |
+| 検証 | Phase 9/10/11 docs-only validation PASS |
+| 検証     | gh api REST API による実測。17 シャード全件 created_at / started_at 取得済み                     |
 ## 2026-04-18 — UT-IPC-HANDLER-CI-001 completed (close-out sync)
 
 - `UT-IPC-HANDLER-CI-001` の close-out で、IPC 契約変更なしの `no-op` 判定を維持しつつ、branch current state に合わせて `indexes/topic-map.md` / `indexes/keywords.json` を再生成対象として整理
 - workflow root の `artifacts.json` を `phase12_completed / NON_VISUAL / Phase 13 blocked` へ同期し、`outputs/artifacts.json` parity を追加
 - `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を追加し、`register*Handlers()` への snapshot guard 横展開を大粒度 backlog として formalize
 
-| 項目     | 内容                                                                                                   |
-| -------- | ------------------------------------------------------------------------------------------------------ |
-| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                              |
-| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`          |
+| 項目     | 内容                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / test guard / phase12 close-out / ledger sync                                            |
+| 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `indexes/topic-map.md` / `indexes/keywords.json`       |
 | 結果     | API / IPC 契約本体は不変のまま、close-out 記録・索引同期・未タスク formalize を current state に揃えた |
-| 検証     | targeted vitest PASS / index regenerate 実行予定                                                       |
+| 検証     | targeted vitest PASS / index regenerate 実行予定                                                      |
 
 ## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
 
@@ -3024,17 +3038,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
-## 2026-04-19 - TASK-SW-CANCEL-003 close-out sync
-
-### 変更内容
-
-- `references/task-workflow-completed.md` に TASK-SW-CANCEL-003 完了記録を追加
-- `docs/30-workflows/p03-seq-CANCEL-003/` の `index.md` / `artifacts.json` / `outputs/artifacts.json` を completed 同期
-- `NON_VISUAL` 証跡、cancel bridge、legacy link 修正を Phase 11/12 成果物へ反映
-
-### 背景
-
-TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台帳・legacy path・close-out 記述にドリフトが残っていた。same-wave sync を行い、後続 CANCEL-004 が正本導線から依存できる状態へ修正した。
 
 ## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
 
