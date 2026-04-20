@@ -4,6 +4,20 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## L-CLOSEOUT-PARITY-001: Phase 12 close-out parity guard
+
+- 発見: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001 Phase 12 再監査
+- 事象: outputs/artifacts.json が completed を主張していても root 側が pending のまま残り SSOT 崩壊
+- 対策: validate-closeout-parity.js による三者+phase本文の自動一致検証を Phase 12 必須ゲートに昇格
+- 教訓: close-out 時の status 同値更新は complete-phase.js に一元化し、手動チェックに頼らない
+
+| 項目       | 内容                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | S2（root artifacts.json）と S3（outputs/artifacts.json）の status が手動更新依存で乖離する                                                                               |
+| 解決策     | `complete-phase.js` で S1〜S4 を同時更新し、`validate-closeout-parity.js` で機械検証する                                                                               |
+| 標準ルール | Phase 12 close-out の完了条件: `validate-closeout-parity.js --json` で `code: "PARITY_OK"` / `exitCode: 0` を得ること                                                  |
+| 関連タスク | UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001                                                                                                                                |
+
 ## TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19）
 
 ### L-SC08-001: mode-specific phase が planning に吸収される問題は PHASE_TO_STAGE マップの追記漏れが原因
@@ -1801,40 +1815,10 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 
 ---
 
-## TASK-SW-CANCEL-003 skill-creator-cancel-main-handler 教訓（2026-04-19）
+## TASK-SW-CANCEL-003/004 cancel chain 教訓（2026-04-19〜20）
 
-### L-CANCEL-003-001: task 作成前に `implementation_mode` を明確化して既実装との混線を防ぐ
-
-| 項目       | 内容                                                                                                                                                                       |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | 「新規実装」テンプレートで生成された workflow で実際には既実装が存在していた。Phase 4/5 の「RED 作成」「新規実装」記述を「差分確認」に読み替える必要が生じた               |
-| 原因       | task 作成時に `implementation_mode: "new"` vs `"verify_existing"` を明示しておらず、workflow 生成テンプレートが無条件に新規実装フローを採用した                            |
-| 解決策     | task spec の冒頭メタ情報に `implementation_mode: "new" \| "verify_existing"` フィールドを追加し、既実装の場合は Phase 4/5 を「verify（差分確認）」フェーズとして生成する   |
-| 設計原則   | task 着手前の implementation_mode 宣言は「新規 vs 既実装確認」の混線を防ぐための最小コスト防衛策である                                                                     |
-| 適用条件   | IPC handler / preload API など、chain task の一部として既に実装されている可能性がある task 全般                                                                            |
-| 関連タスク | TASK-SW-CANCEL-003                                                                                                                                                         |
-
-### L-CANCEL-003-002: chain task では各 task の scope に「chain における位置と完了定義」を明記する
-
-| 項目       | 内容                                                                                                                                                                         |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | CANCEL-001〜004 が連携する chain 構成で、CANCEL-003 単体では「E2E 完了にならない」ことの明示が不足しており、完了判定基準が曖昧だった                                         |
-| 原因       | 各 task の scope 説明に chain 全体の文脈が含まれておらず、単体タスクとして読んだときに何をもって完了とするかが不明確だった                                                   |
-| 解決策     | chain task の scope 欄に「chain 位置: CANCEL-001→002→**003**→004」「本 task 単体の完了定義: Main ハンドラー登録のみ。E2E 疎通は CANCEL-004 完了後」のように明記する           |
-| 設計原則   | chain task の完了定義は「chain における自分の責務範囲」と「chain 全体完了との関係」を MECE に記述する                                                                       |
-| 適用条件   | 複数 task にまたがる IPC chain / preload-main-renderer 三層実装など、単体では E2E 完結しない task 全般                                                                      |
-| 関連タスク | TASK-SW-CANCEL-001 / TASK-SW-CANCEL-002 / TASK-SW-CANCEL-003 / TASK-SW-CANCEL-004                                                                                           |
-
-### L-CANCEL-003-003: NON_VISUAL task の証跡は `{TASK-ID}-manual-test-report.md` に統一する
-
-| 項目       | 内容                                                                                                                                                |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 症状       | UI なしの task で Phase 11 の primary evidence をどのファイルに記録するかが task ごとにバラバラになりやすかった                                      |
-| 原因       | NON_VISUAL task の証跡方針が未定義のため、スクリーンショット代替として複数のファイル形式が混在した                                                  |
-| 解決策     | Phase 11 の primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に統一し、vitest 実行ログ・typecheck 結果・確認コマンド出力を記載 |
-| 設計原則   | NON_VISUAL task の証跡は「実行コマンド + 結果（PASS/FAIL）+ 判定理由」の三点セットを manual-test-report に記録し、Phase 12 審査の一貫性を保つ       |
-| 適用条件   | IPC handler / preload API / ユーティリティ関数など、UI レンダリングを伴わない NON_VISUAL task 全般                                                  |
-| 関連タスク | TASK-SW-CANCEL-003                                                                                                                                  |
+> **分割済み**: このセクションの詳細は [lessons-learned-current-2026-04-cancel.md](lessons-learned-current-2026-04-cancel.md) に移動しました。
+> 収録内容: L-CANCEL-003-001〜003（CANCEL-003 教訓）/ L-CANCEL-004-001〜005（CANCEL-004 教訓 / verify_existing / IPC swallow / optional chain 2段 / NON_VISUAL 3点セット / superseded宣言）
 
 ---
 
@@ -1903,3 +1887,41 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | **close-out の波及は Lane 分けした並列 wave で実施**。各 Lane は独立した AC に対応し、並列実行可能。sync wave は親タスクとは別 index.md / artifacts.json を持つ独立タスクとする                                                        |
 | 適用条件   | 親タスクの close-out が 5 ファイル以上に波及する / 両 skill 系 LOGS に同期が必要 / canonical spec の active → completed 移動を伴う場合                                                                                                 |
 | 関連タスク | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001、TASK-SC-CANCEL-LOGS-SYNC-001、Issue #2313                                                                                                                                                     |
+
+---
+
+## TASK-LOGS-ARCHIVE-POLICY-001 LOGS.mdアーカイブポリシー文書化 教訓（2026-04-19）
+
+### L-LAP-001: LOGS.md肥大化はworktreeマージコンフリクトの主要因
+
+| 項目       | 内容                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | LOGS.md が 2000 行超になると worktree でのマージコンフリクトが頻発し、同一ファイルへの並行書き込みがブロック要因になる                                                          |
+| 解決策     | 300 行超 / 30KB 超 / 月次（OR 条件）でアーカイブを実施し、`logs-archive-YYYY-MM.md` へ旧エントリを移動する。ポリシー正本: `references/logs-archive-policy.md`                  |
+| 標準ルール | 各スキルの LOGS.md は 300 行を閾値として月次アーカイブを実施すること。legacy 月名スペル（logs-archive-2026-feb.md 等）は残置し、新規は YYYY-MM 数値形式に統一する（F-001対応） |
+| 関連タスク | TASK-LOGS-ARCHIVE-POLICY-001                                                                                                                                                   |
+
+### L-LAP-002: verify_existingモードで重複実装を防止できる
+
+| 項目       | 内容                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | docs-only タスクでは既存ファイルを確認せずに再作成すると、内容の重複・矛盾が発生しやすい                                                                           |
+| 解決策     | Phase 3 の設計レビューで `verify_existing` モードを採用し、既存実装の確認から始めることで重複実装を防止した                                                         |
+| 標準ルール | docs-only タスクでは Phase 2〜3 で必ず既存ファイルの存在確認を行い、新規作成の前に `verify_existing` 判定を実施すること                                             |
+| 関連タスク | TASK-LOGS-ARCHIVE-POLICY-001                                                                                                                                       |
+
+### L-LAP-003: docs-onlyタスクのPhase 11はNON_VISUALとして手動テストチェックリストで代替
+
+| 項目       | 内容                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | docs-only タスクには UI 変更がないため Phase 11（スクリーンショット証跡）が適用できず、NON_VISUAL 扱いとする判断基準が不明確だった                                                               |
+| 解決策     | Phase 11 を「手動テストチェックリスト（ファイル存在確認・内容整合・mirror 同期確認）」として再定義し、`manual-test-result.md` にチェックリスト形式で記録した                                      |
+| 標準ルール | docs-only タスクの Phase 11 は NON_VISUAL を明記し、`manual-test-result.md` に「確認した内容・コマンド・結果」をチェックリスト形式で記録すること（スクリーンショット不要）                       |
+| 関連タスク | TASK-LOGS-ARCHIVE-POLICY-001                                                                                                                                                                     |
+
+---
+
+## TASK-SW-CANCEL-004 useCancelGeneration renderer hook 正規化 教訓（2026-04-20）
+
+> **分割済み**: このセクションの詳細は [lessons-learned-current-2026-04-cancel.md](lessons-learned-current-2026-04-cancel.md) に移動しました。
+> 収録内容: L-CANCEL-004-001〜005（verify_existing / IPC swallow / optional chain 2段 / NON_VISUAL 3点セット / superseded宣言）
