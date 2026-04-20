@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3149,
+  "totalKeywords": 3160,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -5279,7 +5279,8 @@
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md"
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "logs-archive-policy.md"
     ],
     "品質基準": [
       "claude-code-agents-workflow.md",
@@ -5313,6 +5314,7 @@
       "claude-code-overview.md",
       "claude-code-skills-process.md",
       "interfaces-agent-sdk-executor-details.md",
+      "logs-archive-policy.md",
       "security-skill-execution-permission.md",
       "skill-executor-type-migration.md",
       "testing-accessibility.md",
@@ -5473,6 +5475,7 @@
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logging-migration-guide.md",
+      "logs-archive-policy.md",
       "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -7820,6 +7823,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -7877,7 +7881,8 @@
       "ui-ux-feature-components-theme-chat.md"
     ],
     "COVERAGE": [
-      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-current-2026-04.md"
     ],
     "SettingsView": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -8883,6 +8888,23 @@
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "handler": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SNAPSHOT": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "スナップショットカバレッジ": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "LOGS": [
+      "lessons-learned-current-2026-04.md",
+      "logs-archive-index.md",
+      "logs-archive-policy.md"
+    ],
+    "ARCHIVE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "アーカイブポリシー文書化": [
       "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
@@ -11309,6 +11331,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "logs-archive-index.md",
       "logs-archive-legacy.md",
+      "logs-archive-policy.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
     ],
     "DEP": [
@@ -12863,9 +12886,6 @@
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md"
     ],
-    "LOGS": [
-      "logs-archive-index.md"
-    ],
     "認証コールバック": [
       "logs-archive-legacy.md"
     ],
@@ -12875,6 +12895,27 @@
     ],
     "変更履歴アーカイブ": [
       "logs-archive-legacy.md"
+    ],
+    "アーカイブポリシー": [
+      "logs-archive-policy.md"
+    ],
+    "適用範囲": [
+      "logs-archive-policy.md"
+    ],
+    "アーカイブ閾値": [
+      "logs-archive-policy.md"
+    ],
+    "先パス規則": [
+      "logs-archive-policy.md"
+    ],
+    "アーカイブ手順": [
+      "logs-archive-policy.md"
+    ],
+    "運用ルール": [
+      "logs-archive-policy.md"
+    ],
+    "CHANGELOG": [
+      "logs-archive-policy.md"
     ],
     "統合システム設計仕様書": [
       "master-design.md"

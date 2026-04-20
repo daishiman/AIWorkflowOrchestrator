@@ -10,6 +10,21 @@
 > **検索パターン集・コードパターン早見は [quick-reference-search-patterns.md](quick-reference-search-patterns.md) に分離**
 > 機能・タスク別のキーワード分割、読む順番、IPC/Zustand/Result 等のコードスニペットを収録
 
+### LOGS.md アーカイブポリシー即時導線（2026-04-19 / TASK-LOGS-ARCHIVE-POLICY-001）
+
+| 目的 | 参照先 |
+| --- | --- |
+| アーカイブポリシー正本 | `references/logs-archive-policy.md` |
+| 閾値（300行超 / 30KB超 / 月次） | `references/logs-archive-policy.md` §2 |
+| 命名規則（logs-archive-YYYY-MM.md） | `references/logs-archive-policy.md` §3 |
+| 配置先（canonical） | `references/logs-archive-policy.md` §3.1 |
+| アーカイブ手順（6ステップ） | `references/logs-archive-policy.md` §4 |
+| エスカレーションフロー | `references/logs-archive-policy.md` §5.3 |
+| legacy表記（feb/march）共存方針 | `references/logs-archive-policy.md` §3.3 |
+| タスク仕様書 | `docs/30-workflows/logs-archive-policy-001/` |
+
+---
+
 ### AI Chat / LLM Integration Fix 即時導線（2026-03-21）
 
 | 目的                          | 最初に開くファイル                                                              |
