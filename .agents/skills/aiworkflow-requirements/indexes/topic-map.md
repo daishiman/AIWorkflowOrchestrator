@@ -76,7 +76,8 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | L23 |
+| Phase 12 close-out 必須品質ゲート（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001） | L23 |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | L37 |
 
 ---
 
@@ -2023,8 +2024,8 @@ node scripts/list-specs.js --topics
 | 用語定義 | L190 |
 | 参照 | L205 |
 | クイックリファレンス | L245 |
-| 変更履歴 | L282 |
-| ドキュメント構成 | L303 |
+| 変更履歴 | L285 |
+| ドキュメント構成 | L306 |
 
 ### references/claude-code-skills-agents.md
 
@@ -2813,6 +2814,7 @@ node scripts/list-specs.js --topics
 | 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L259 |
 | リトライ戦略 | L303 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L367 |
+| parity guard エラー分類（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001） | L404 |
 
 ### references/error-handling-details.md
 
@@ -2844,6 +2846,19 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
+
+### references/evals-schema-spec.md
+
+| セクション | 行 |
+|------------|----|
+| 1. 目的 | L9 |
+| 2. 標準スキーマ（camelCase v2 系） | L24 |
+| 3. 方言スキーマ（snake_case v1 系） | L49 |
+| 4. consumer 一覧 | L80 |
+| 5. schema 変更手順 | L102 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
+| 7. 既知の制約（validator=0 件） | L154 |
+| 8. 変更履歴 | L184 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -2906,10 +2921,10 @@ node scripts/list-specs.js --topics
 | 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L37 |
-| Detailed Register | L56 |
-| Section Extract Register (2026-03-17) | L237 |
-| 500-Line Split Register (2026-03-16) | L248 |
+| Family Summary | L38 |
+| Detailed Register | L57 |
+| Section Extract Register (2026-03-17) | L238 |
+| 500-Line Split Register (2026-03-16) | L249 |
 
 ### references/lessons-learned-2026-04-early-part-1.md
 
@@ -3134,6 +3149,14 @@ node scripts/list-specs.js --topics
 |------------|----|
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L4 |
 
+### references/lessons-learned-current-2026-04-cancel.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-SW-CANCEL-003 skill-creator-cancel-main-handler 教訓（2026-04-19） | L10 |
+| TASK-SW-CANCEL-004 useCancelGeneration renderer hook 正規化 教訓（2026-04-20） | L47 |
+| 変更履歴 | L106 |
+
 ### references/lessons-learned-current-2026-04-runtime-sdk.md
 
 | セクション | 行 |
@@ -3211,26 +3234,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19） | L7 |
-| TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18） | L44 |
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L84 |
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L106 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L146 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L177 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L200 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L225 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L256 |
-| TASK-RT-06 教訓（2026-03-29） | L287 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L309 |
-| TASK-P0-04 教訓（2026-03-30） | L340 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L376 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L470 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L524 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L564 |
-| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L604 |
-| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L635 |
-| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L647 |
-| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L670 |
+| L-CLOSEOUT-PARITY-001: Phase 12 close-out parity guard | L7 |
+| TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19） | L21 |
+| TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18） | L58 |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L98 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L120 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L160 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L191 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L214 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L239 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L270 |
+| TASK-RT-06 教訓（2026-03-29） | L301 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L323 |
+| TASK-P0-04 教訓（2026-03-30） | L354 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L390 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L484 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L538 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L578 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L618 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L649 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L661 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3251,6 +3274,19 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L154 |
 | クイックリファレンス: カテゴリ別検索ガイド | L174 |
 | 分割ファイル一覧 | L178 |
+
+### references/lessons-learned-evals-consumer-audit-001.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L11 |
+| L-EVALS-001: 「正本 coverage 穴」発見過程 | L17 |
+| L-EVALS-002: canonical 4 vs 必須 6 成果物の区別 | L38 |
+| L-EVALS-003: NON_VISUAL 監査タスク Phase-11 再解釈（screenshot 不要） | L59 |
+| L-EVALS-004: dual root bit-for-bit 一致の検証コマンド | L79 |
+| L-EVALS-005: docs-only タスクの `spec_created` ステータス採用根拠 | L114 |
+| 関連ドキュメント | L143 |
+| 変更履歴 | L158 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3587,7 +3623,11 @@ node scripts/list-specs.js --topics
 | L-CANCEL-002: abort-like error は UI failure として見せない | L15 |
 | L-CANCEL-003: non-visual task は Phase 11 で screenshot N/A を明記する | L24 |
 | L-CANCEL-004: 小粒度タスクのテスト構成は「専用ファイル + 既存ファイル修正」の2点セット | L33 |
-| 変更履歴 | L44 |
+| L-CANCEL-005: verify_existing モードで Phase を再構成する際は冒頭に宣言する | L42 |
+| L-CANCEL-006: IPC failure swallow は try/catch + stage先行更新の 2 点セット | L51 |
+| L-CANCEL-007: optional chain 2 段チェーン（`?.method?.()）は API/method 両方の Undefined guard | L60 |
+| L-CANCEL-008: NON_VISUAL Phase 11 証跡は checklist / result / discovered-issues の 3 点セット | L69 |
+| 変更履歴 | L80 |
 
 ### references/lessons-learned-skill-creator-ipc-handler-scope.md
 
@@ -4534,6 +4574,19 @@ node scripts/list-specs.js --topics
 | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE | L58 |
 | 変更履歴アーカイブ | L111 |
 
+### references/logs-archive-policy.md
+
+| セクション | 行 |
+|------------|----|
+| メタ情報 | L3 |
+| 1. 適用範囲 | L16 |
+| 2. アーカイブ閾値 | L29 |
+| 3. archive 先パス規則 | L60 |
+| 4. アーカイブ手順 | L92 |
+| 5. 運用ルール | L123 |
+| 6. 参照 | L152 |
+| 7. CHANGELOG | L173 |
+
 ### references/patterns-advanced.md
 
 | セクション | 行 |
@@ -5113,12 +5166,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L3 |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L41 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L66 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L102 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L134 |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L581 |
-| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L621 |
+| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L41 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L84 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L109 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L145 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L177 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5244,13 +5298,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L544 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L564 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L566 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L578 |
-| 完了タスク（2026-03後半） | L606 |
-| 完了タスク（機能別アーカイブ） | L614 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L715 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L543 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L563 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L565 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L577 |
+| 完了タスク（2026-03後半） | L605 |
+| 完了タスク（機能別アーカイブ） | L613 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L714 |
 
 ### references/task-workflow-history.md
 
@@ -5284,9 +5338,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L30 |
-| 利用順序 | L59 |
-| 関連ドキュメント | L64 |
+| 仕様書インデックス | L31 |
+| 利用順序 | L60 |
+| 関連ドキュメント | L65 |
 
 ### references/testing-accessibility.md
 
