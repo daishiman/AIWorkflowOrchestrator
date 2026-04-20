@@ -400,3 +400,18 @@ HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパー�
 リトライ待機中（sleep中）にAbortSignalが発火した場合、即座に待機を中断しAbortErrorをスローする。
 
 ---
+
+## parity guard エラー分類（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001）
+
+`validate-closeout-parity.js` が出力するエラーコードと exit code の対応表。
+
+| JSON code | exit code | 意味 | 対処方法 |
+| --- | --- | --- | --- |
+| `PARITY_OK` | 0 | 全ソース（S1〜S4）のステータスが一致 | 問題なし |
+| `PARITY_DRIFT` | 1 | ソース間でステータス値が異なる | `complete-phase.js` で同値更新してから再実行 |
+| `MISSING_SOURCE` | 2 | 必須ファイル（index.md / artifacts.json）が欠損 | 欠損ファイルを生成してから再実行 |
+| `INVALID_STATUS_VALUE` | 3 | 許可外の status 値（"done" / "finished" 等） | 正しい status 値（pending/in_progress/completed/blocked）に修正 |
+
+許可 status 値: `pending` / `in_progress` / `completed` / `blocked`（S1 のみ `-` も許可）
+
+スクリプト: `.claude/skills/task-specification-creator/scripts/validate-closeout-parity.js`

@@ -10,6 +10,21 @@
 > **検索パターン集・コードパターン早見は [quick-reference-search-patterns.md](quick-reference-search-patterns.md) に分離**
 > 機能・タスク別のキーワード分割、読む順番、IPC/Zustand/Result 等のコードスニペットを収録
 
+### LOGS.md アーカイブポリシー即時導線（2026-04-19 / TASK-LOGS-ARCHIVE-POLICY-001）
+
+| 目的 | 参照先 |
+| --- | --- |
+| アーカイブポリシー正本 | `references/logs-archive-policy.md` |
+| 閾値（300行超 / 30KB超 / 月次） | `references/logs-archive-policy.md` §2 |
+| 命名規則（logs-archive-YYYY-MM.md） | `references/logs-archive-policy.md` §3 |
+| 配置先（canonical） | `references/logs-archive-policy.md` §3.1 |
+| アーカイブ手順（6ステップ） | `references/logs-archive-policy.md` §4 |
+| エスカレーションフロー | `references/logs-archive-policy.md` §5.3 |
+| legacy表記（feb/march）共存方針 | `references/logs-archive-policy.md` §3.3 |
+| タスク仕様書 | `docs/30-workflows/logs-archive-policy-001/` |
+
+---
+
 ### AI Chat / LLM Integration Fix 即時導線（2026-03-21）
 
 | 目的                          | 最初に開くファイル                                                              |
@@ -606,21 +621,6 @@
 | R-02   | 引数形式不一致     | error   | Main=object, Preload=primitive（P44対応）        |
 | R-03   | ハードコード文字列 | warning | IPC_CHANNELS 定数でなく文字列リテラル（P27対応） |
 | R-04   | 未登録チャンネル   | error   | Preload にあるが Main にない                     |
-
-### IPC ハンドラー登録スナップショットカバレッジ（TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001）
-
-- **IPC registration testing**: REG-SNAP + REG-DEDUP + REG-COUNT の3点契約 → `api-ipc-system-core.md § IPC Handler Registration Testing Contract`
-
-| 項目         | 値                                                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------------------------------------- |
-| 契約         | REG-SNAP（スナップショット一致）/ REG-DEDUP（重複ゼロ）/ REG-COUNT（登録数一致）                                     |
-| 対象         | direct正本 48件 / auxiliary 1件（`registerAllIpcHandlers()` 配下）                                                    |
-| Wave 1       | 8ファイル / 41テスト（完了・PASS）                                                                                    |
-| Wave 2       | 16ファイル / 80テスト（完了・PASS）                                                                                   |
-| Wave 3       | 25ファイル（計画中・AC-006）                                                                                          |
-| 環境制約     | `ESBUILD_BINARY_PATH` を `.pnpm` 配下から指定、24ファイル一括はSIGKILL（Wave分割が正本手順）                         |
-| 仕様         | `references/api-ipc-system-core.md` § IPC Handler Registration Testing Contract                                      |
-| 教訓         | `references/lessons-learned-current-2026-04.md` (L-IPC-SNAP-001/002/003)                                            |
 
 ### IPC 4層整合CI検証（UT-IMP-IPC-4LAYER-ALIGNMENT-CI-001）
 

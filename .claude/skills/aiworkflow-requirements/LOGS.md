@@ -4,6 +4,23 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
+
+- validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
+- complete-phase.js に S1〜S4 同値更新・rollback 拡張
+- verify-all-specs.js に parity gate 組込み
+- lessons-learned-current-2026-04.md に L-CLOSEOUT-PARITY-001 追加
+- task-workflow-completed.md に完了記録追加
+- error-handling-core.md に parity guard エラーコード分類追加
+- quality-requirements.md に Phase 12 必須品質ゲート追加
+
+| 項目     | 内容                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / parity guard / workflow quality                                            |
+| 変更対象 | references/lessons-learned-current-2026-04.md / references/task-workflow-completed.md  |
+| 結果     | Phase 12 close-out の SSOT 崩壊を機械的に防止するゲートを確立                         |
+| 検証     | dogfooding PARITY_OK / exit=0 確認済み                                                  |
+
 ## 2026-04-19: TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out（skill-feedback 反映）
 
 | 項目     | 内容                                                                                                                                                                                                                              |
@@ -26,6 +43,30 @@
 - `indexes/resource-map.md` に「EVALS schema変更前 consumer全特定（TASK-EVALS-CONSUMER-AUDIT-001）」行を追加、`evals-schema-spec.md` をリソース登録
 - `indexes/keywords.json` 手動追加キーワード: EVALS, EVALS.json, currentLevel, current_level, levelHistory, levels, qualityInsights, phaseMetrics, validator-zero, schema-change-guide, consumer-audit, dual-root-parity, evals-field-map
 - `SKILL.md` description を 200〜400 字規模へ縮小し、trigger キーワード群を `indexes/keywords.json` へ移行
+
+---
+
+## 2026-04-20 CANCEL-004実装反映
+
+### 変更内容
+
+- `references/api-ipc-system-skill-creator.md`: SKILL_CREATOR_CANCEL cancel chain セクションに CANCEL-004 renderer hook contract 追加（optional chain 2段 / catch swallow / verify_existing モード）
+- `references/lessons-learned-skill-creator-cancel-chain.md`: L-CANCEL-005〜008 追加（verify_existing宣言 / IPC failure swallow / optional chain 2段 / NON_VISUAL 3点セット）
+- `references/task-workflow-completed-recent-2026-04g.md`: TASK-SW-CANCEL-004 完了記録追加（実装モード: verify_existing / 苦戦箇所5点）
+- `references/lessons-learned-current-2026-04.md`: CANCEL-003/004セクションを cancel 専用ファイルへ分割移動。参照リンクを残した
+- `references/lessons-learned-current-2026-04-cancel.md`: 新規作成（CANCEL-003/004 教訓 L-CANCEL-003-001〜003 / L-CANCEL-004-001〜005 収録）
+
+### 保留事項（分割計画）
+
+以下のファイルは今回の作業で更新検討したが、分割リスク・影響範囲を考慮して今回は保留する。
+
+| ファイル | 現行行数 | 理由 |
+| --- | --- | --- |
+| `references/lessons-learned-current-2026-04.md` | 1845行 | CANCEL系を分割済みだが全体はまだ1845行。次回同期時に wizard / runtime-sdk / cron-validation 等の task family 別に段階的分割を継続する |
+| `LOGS.md` | 3040行 | archive対象エントリを `logs-archive-2026-04-*.md` に移動して500行以内に縮小する計画（次回 archive wave で対応） |
+| `indexes/resource-map.md` | 2632行 | CANCEL-004 参照行の追加は最小変更だが全体分割は影響範囲が広い。分割計画は topic-cluster 別で別波にて対応 |
+| `indexes/quick-reference.md` | 803行 | Skill Creator Cancel Chain への参照追加は次回 index-sync wave で実施 |
+| `indexes/topic-map.md` | 5475行 | 全体分割は今回保留。CANCEL-004 エントリ追加も次回 index-sync wave で対応 |
 
 ---
 
@@ -3051,6 +3092,14 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md`   |
 | 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                              |
 | 検証     | docs-only / 記録のみ                                                                       |
+
+| 項目     | 内容                                                                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / verify_existing                                                                                                                |
+| 変更対象 | `references/logs-archive-policy.md`（新規）、`.agents/.../logs-archive-policy.md`（mirror）、3インデックス更新（topic-map / quick-reference / resource-map） |
+| 結果     | TASK-LOGS-ARCHIVE-POLICY-001 Phase 1〜12 完了。アーカイブ閾値（300行/30KB/月次）・命名規則（YYYY-MM）・canonical 配置先（`references/`）を正本ポリシーとして確定 |
+| 検証     | TC-01〜TC-12 全 PASS / Phase 7 カバレッジ 100% / mirror diff=0 / Phase 10 最終レビュー PASS / root artifacts parity 回復                                   |
+| Issue    | Refs #2282                                                                                                                                              |
 
 ## 2026-04-19 — TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 Phase 12 close-out sync
 

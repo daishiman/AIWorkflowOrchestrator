@@ -38,6 +38,49 @@
 
 - L-IPC-SNAP-001〜003: `references/lessons-learned-current-2026-04.md` に記録済み
 
+## TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20）
+
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-CANCEL-004                                                                                                                           |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                                                               |
+| タイプ     | implementation / verify_existing / close-out sync                                                                                            |
+| 優先度     | 中                                                                                                                                           |
+| 完了日     | 2026-04-20                                                                                                                                   |
+| 実装モード | `verify_existing`（useCancelGeneration.ts は既実装。テスト追加と Phase 11/12 close-out が本タスクの実体）                                   |
+| 対象       | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` / `apps/desktop/src/renderer/hooks/__tests__/useCancelGeneration.test.ts` / `docs/30-workflows/p04-seq-CANCEL-004/` |
+| 成果物     | `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-11/manual-test-result.md` / `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-12/` / `docs/30-workflows/p04-seq-CANCEL-004/artifacts.json` |
+
+#### 実施内容
+
+- `useCancelGeneration.ts` が既実装であることを確認・正規化し、Phase 11/12 ルールに適合させた
+- `useCancelGeneration.test.ts` に 2 件のテストケースを追加:
+  - TC-A: `window.skillCreatorAPI = undefined` での optional chain graceful fail
+  - TC-B: `cancelGeneration()` IPC reject 時でも `cancelled` stage を維持（try/catch swallow）
+- ワークフローパスを `docs/30-workflows/skill-create-flow-gaps/p04-seq-CANCEL-004/` → `docs/30-workflows/p04-seq-CANCEL-004/` へ移動
+- NON_VISUAL 証跡を `checklist / result / discovered-issues` の 3 点セットとして整理
+- `api-ipc-system-skill-creator.md` に renderer hook contract（optional chain 2段 / catch swallow）を追記
+- `lessons-learned-skill-creator-cancel-chain.md` に L-CANCEL-005〜008 を追加
+
+#### 検証証跡
+
+- `apps/desktop/src/renderer/hooks/__tests__/useCancelGeneration.test.ts`: PASS（既存 + 追加 2件）
+- `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-11/manual-test-result.md`: PASS（NON_VISUAL）
+- `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- cancel chain CANCEL-001〜004 の E2E 接続確認: 完了
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                        | 解決策                                                                                           |
+| --- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1   | 旧テンプレートが「未実装前提」で固定化されていた                | `implementation_mode = verify_existing` を冒頭に宣言してフェーズを再定義した                    |
+| 2   | NON_VISUAL 証跡の構造化が Phase 11 に不足していた               | checklist / result / discovered-issues の 3 点セット化を明示した                                 |
+| 3   | optional chain 2 段チェーンが未記録だった                       | renderer hook contract として仕様書と lessons-learned に明記した                                 |
+| 4   | IPC failure swallow パターンがテストのみで記録されていなかった  | L-CANCEL-006 として汎用ルール化し lessons-learned に昇格した                                    |
+| 5   | 旧仕様が現実と矛盾した場合の整理方針が不明確だった              | `superseded` と明宣言して削除せず残す方針を確立した                                              |
+
+---
+
 ## TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19）
 
 | 項目 | 内容 |

@@ -76,4 +76,47 @@ describe("useCancelGeneration", () => {
 
     expect(useAppStore.getState().streamingStage).toBe("cancelled");
   });
+
+  it("skillCreatorAPI が未定義でもエラーを伝播させず cancelled を維持する", async () => {
+    Object.defineProperty(window, "skillCreatorAPI", {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useCancelGeneration());
+
+    act(() => {
+      result.current.startGeneration();
+    });
+
+    await act(async () => {
+      await expect(result.current.cancelGeneration()).resolves.toBeUndefined();
+    });
+
+    expect(useAppStore.getState().streamingStage).toBe("cancelled");
+    expect(mockCancelGeneration).not.toHaveBeenCalled();
+  });
+
+  it("IPC cancelGeneration が reject してもエラーを伝播させず cancelled を維持する", async () => {
+    const rejectingMock = vi.fn().mockRejectedValue(new Error("IPC fail"));
+    Object.defineProperty(window, "skillCreatorAPI", {
+      value: { cancelGeneration: rejectingMock },
+      writable: true,
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useCancelGeneration());
+
+    act(() => {
+      result.current.startGeneration();
+    });
+
+    await act(async () => {
+      await expect(result.current.cancelGeneration()).resolves.toBeUndefined();
+    });
+
+    expect(rejectingMock).toHaveBeenCalledTimes(1);
+    expect(useAppStore.getState().streamingStage).toBe("cancelled");
+  });
 });
