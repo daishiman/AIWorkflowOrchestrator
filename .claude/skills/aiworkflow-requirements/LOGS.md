@@ -3016,20 +3016,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
-
-## 2026-04-19 — TASK-GITATTRIBUTES-MERGE-UNION-REEVAL-001 `.gitattributes` merge=union 範囲精緻化
-
-- `.gitattributes` の `references/*.md merge=union` 一括適用を削除し、append-only ファイル（`LOGS.md` / `SKILL-changelog.md` / `task-workflow-completed*.md` / `lessons-learned-*.md`）のみ個別 glob で `merge=union` を明示
-- 構造化ドキュメント（`task-workflow.md` / `lessons-learned.md`(root) / `api-*.md` / `arch-*.md` 等）は default 3-way マージに切替（`git check-attr merge` で `unspecified` 実測）
-- `.claude/scripts/setup-merge-drivers.sh` 冒頭コメント拡充（ロジック変更なし）
-- Phase 11 MT-01〜MT-05 全 PASS（macOS / git 2.38.1）。FAIL-01（driver 未登録時の stderr warning 欠如）は MEDIUM として未タスク候補へ申し送り
-- mirror parity `.claude/skills/*` ↔ `.agents/skills/*` 9/9 完全対称
-- 判断ガイド: 新規 `references/<name>.md` 追加時は「末尾追記支配なら A/union、構造化なら B/default、自動生成なら C/ours」
-
-| 項目       | 内容                                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------------------------- |
-| 種別       | NON_VISUAL / config-only / merge-strategy-refinement                                                       |
-| 変更対象   | `.gitattributes`、`.claude/scripts/setup-merge-drivers.sh`                                                 |
-| 結果       | 構造化 4 ファイルの `merge: union` 誤適用を除去・append-only 12 glob / auto-generated 6 glob は維持       |
-| 検証       | Phase 5 `git check-attr` 10/10 PASS / Phase 11 MT 5/5 PASS / Phase 9 quality-report 全項目 PASS          |
-| 関連 Issue | #2281                                                                                                      |
