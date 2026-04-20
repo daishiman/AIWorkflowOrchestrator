@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerAgentSkillHandlers - チャンネル登録スナップショット > REG-SNAP-AGENTSKILL-01〜REG-COUNT-AGENTSKILL-01: 正常系 > REG-SNAP-AGENTSKILL-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "agent:execute",
+  "agent:get-skill-detail",
+  "agent:get-skills",
+  "agent:permission-respond",
+]
+`;

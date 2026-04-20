@@ -1043,7 +1043,8 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L236 |
 | Conversation IPC API（会話履歴永続化） | L280 |
 | Electron IPC API設計 | L316 |
-| 分割ファイル一覧 | L461 |
+| IPC Handler Registration Testing Contract | L461 |
+| 分割ファイル一覧 | L510 |
 
 ### references/api-ipc-system-details.md
 
@@ -5111,10 +5112,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L3 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L28 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L64 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L96 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L3 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L41 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L66 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L102 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L134 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

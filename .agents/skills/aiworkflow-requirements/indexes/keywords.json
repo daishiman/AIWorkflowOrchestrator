@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3184,
+  "totalKeywords": 3187,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2700,6 +2700,23 @@
       "ui-ux-search-panel-history.md",
       "ui-ux-search-panel.md"
     ],
+    "Handler": [
+      "api-ipc-system-core.md",
+      "api-ipc-system-skill-creator-part2.md",
+      "arch-ipc-persistence.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "security-skill-ipc-core.md"
+    ],
+    "Registration": [
+      "api-ipc-system-core.md",
+      "arch-ipc-persistence.md"
+    ],
+    "Testing": [
+      "api-ipc-system-core.md"
+    ],
+    "Contract": [
+      "api-ipc-system-core.md"
+    ],
     "分割ファイル一覧": [
       "api-ipc-system-core.md",
       "lessons-learned-current.md",
@@ -2966,12 +2983,6 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
-    ],
-    "Handler": [
-      "api-ipc-system-skill-creator-part2.md",
-      "arch-ipc-persistence.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "security-skill-ipc-core.md"
     ],
     "Lifecycle": [
       "api-ipc-system-skill-creator-part2.md",
@@ -3560,9 +3571,6 @@
       "arch-feature-addition.md"
     ],
     "・永続化パターン": [
-      "arch-ipc-persistence.md"
-    ],
-    "Registration": [
       "arch-ipc-persistence.md"
     ],
     "Pattern": [
@@ -7914,7 +7922,8 @@
     ],
     "COVERAGE": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "SettingsView": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -8969,7 +8978,8 @@
       "lessons-learned-current-2026-04.md"
     ],
     "SNAPSHOT": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "スナップショットカバレッジ": [
       "lessons-learned-current-2026-04.md"
@@ -14080,6 +14090,9 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "createSkill": [
