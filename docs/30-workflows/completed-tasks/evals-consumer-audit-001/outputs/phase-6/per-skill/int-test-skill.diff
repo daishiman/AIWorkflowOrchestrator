@@ -1,0 +1,4 @@
+# skill: int-test-skill
+# left:  .claude/skills/int-test-skill/EVALS.json
+# right: .agents/skills/int-test-skill/EVALS.json
+# executed_at: 2026-04-19T08:56:11Z

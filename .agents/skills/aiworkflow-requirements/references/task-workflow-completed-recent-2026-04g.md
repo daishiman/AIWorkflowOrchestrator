@@ -1,5 +1,86 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19）
+
+| 項目       | 内容                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001                                                                                                            |
+| ステータス | **Wave 1/2 完了（PASS）/ Wave 3 計画中（AC-006）**                                                                                               |
+| タイプ     | test / snapshot coverage / close-out sync                                                                                                         |
+| 優先度     | 中                                                                                                                                                |
+| 完了日     | 2026-04-19                                                                                                                                        |
+| 対象       | `apps/desktop/src/main/ipc/__tests__/*Handlers.registrationSnapshot.test.ts` / `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/`       |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json`                                 |
+
+#### 実施内容
+
+- `registerAllIpcHandlers()` 配下の direct正本 48件に対して REG-SNAP / REG-DEDUP / REG-COUNT の3点契約スナップショットテストを実装した
+- Wave 1（8ファイル / 41テスト）・Wave 2（16ファイル / 80テスト）を完了し、合計24ファイル / 121テストが PASS 済み
+- `ESBUILD_BINARY_PATH` を `.pnpm` ディレクトリから指定する環境変数制約を特定し、Wave分割実行を正本手順として確立した
+- Wave 3（25ファイル）は AC-006 として計画中
+
+#### 検証証跡
+
+- Wave 1: 8ファイル / 41テスト PASS（`VITEST_MAX_FORKS=1 VITEST_FILE_PARALLELISM=false` 環境下）
+- Wave 2: 16ファイル / 80テスト PASS
+- `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- 24ファイル一括実行はSIGKILL（メモリ制約）を確認し、Wave分割を正本手順として記録
+
+#### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 |
+|---|----------|--------|
+| 1 | 24ファイル一括実行でSIGKILL（メモリ制約） | Wave分割（8→16→25）で実行する正本手順を確立 |
+| 2 | esbuildバイナリパス不整合でテスト起動失敗 | `ESBUILD_BINARY_PATH` を `.pnpm` ディレクトリから明示指定 |
+| 3 | auxiliary snapshot（`registerRuntimeSkillCreatorHandlers`）との母集団境界 | direct正本 48件 / auxiliary 1件を明確に区分定義 |
+
+#### lessons-learned
+
+- L-IPC-SNAP-001〜003: `references/lessons-learned-current-2026-04.md` に記録済み
+
+## TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20）
+
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SW-CANCEL-004                                                                                                                           |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）**                                                                               |
+| タイプ     | implementation / verify_existing / close-out sync                                                                                            |
+| 優先度     | 中                                                                                                                                           |
+| 完了日     | 2026-04-20                                                                                                                                   |
+| 実装モード | `verify_existing`（useCancelGeneration.ts は既実装。テスト追加と Phase 11/12 close-out が本タスクの実体）                                   |
+| 対象       | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` / `apps/desktop/src/renderer/hooks/__tests__/useCancelGeneration.test.ts` / `docs/30-workflows/p04-seq-CANCEL-004/` |
+| 成果物     | `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-11/manual-test-result.md` / `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-12/` / `docs/30-workflows/p04-seq-CANCEL-004/artifacts.json` |
+
+#### 実施内容
+
+- `useCancelGeneration.ts` が既実装であることを確認・正規化し、Phase 11/12 ルールに適合させた
+- `useCancelGeneration.test.ts` に 2 件のテストケースを追加:
+  - TC-A: `window.skillCreatorAPI = undefined` での optional chain graceful fail
+  - TC-B: `cancelGeneration()` IPC reject 時でも `cancelled` stage を維持（try/catch swallow）
+- ワークフローパスを `docs/30-workflows/skill-create-flow-gaps/p04-seq-CANCEL-004/` → `docs/30-workflows/p04-seq-CANCEL-004/` へ移動
+- NON_VISUAL 証跡を `checklist / result / discovered-issues` の 3 点セットとして整理
+- `api-ipc-system-skill-creator.md` に renderer hook contract（optional chain 2段 / catch swallow）を追記
+- `lessons-learned-skill-creator-cancel-chain.md` に L-CANCEL-005〜008 を追加
+
+#### 検証証跡
+
+- `apps/desktop/src/renderer/hooks/__tests__/useCancelGeneration.test.ts`: PASS（既存 + 追加 2件）
+- `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-11/manual-test-result.md`: PASS（NON_VISUAL）
+- `docs/30-workflows/p04-seq-CANCEL-004/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- cancel chain CANCEL-001〜004 の E2E 接続確認: 完了
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                        | 解決策                                                                                           |
+| --- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1   | 旧テンプレートが「未実装前提」で固定化されていた                | `implementation_mode = verify_existing` を冒頭に宣言してフェーズを再定義した                    |
+| 2   | NON_VISUAL 証跡の構造化が Phase 11 に不足していた               | checklist / result / discovered-issues の 3 点セット化を明示した                                 |
+| 3   | optional chain 2 段チェーンが未記録だった                       | renderer hook contract として仕様書と lessons-learned に明記した                                 |
+| 4   | IPC failure swallow パターンがテストのみで記録されていなかった  | L-CANCEL-006 として汎用ルール化し lessons-learned に昇格した                                    |
+| 5   | 旧仕様が現実と矛盾した場合の整理方針が不明確だった              | `superseded` と明宣言して削除せず残す方針を確立した                                              |
+
+---
+
 ## TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19）
 
 | 項目 | 内容 |
@@ -539,3 +620,73 @@
 - CSS 変数化の遵守は静的監査テスト（`fs.readFileSync` + 正規表現）で自動化できる（L-POLISH-002）
 - アニメーション仕様はクラス検証 + visual evidence の 2 段構えで担保する（L-POLISH-003）
 - 詳細: `lessons-learned-skill-wizard-redesign.md` §TASK-SW-UI-POLISH-001 教訓
+
+## TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20）
+
+| 項目       | 値                                                                               |
+| ---------- | -------------------------------------------------------------------------------- |
+| Task ID    | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001                                           |
+| Status     | completed                                                                        |
+| Completed  | 2026-04-20                                                                       |
+| Created    | 2026-04-19                                                                       |
+| Issue      | #2229                                                                            |
+| Category   | bugfix-regression-check                                                          |
+| Task Type  | NON_VISUAL                                                                       |
+| Follow-up  | [TASK-SC-CANCEL-LOGS-SYNC-001](../../../../docs/30-workflows/TASK-SC-CANCEL-LOGS-SYNC-001/index.md) |
+
+#### 実施内容
+
+- 既存実装（`SkillCreatorService.createSkill()` の `catch` → `cleanupCancelledSkillDir(...)` + `skillDirExistedBefore`）を差分確認型 NON_VISUAL code task として仕様書化
+- Phase 1-12 の仕様書を task-specification-creator テンプレートに準拠させ、`artifacts.json` / `outputs/artifacts.json` を parity 状態で固定
+- Phase 11 は NON_VISUAL として差分確認コマンドと既存テスト（`SC-CANCEL-001` / `SC-CANCEL-002`）を代替証跡に採用
+- Phase 12 mandatory 5 tasks（implementation-guide / system-spec-update / changelog / unassigned-task-detection / skill-feedback）完了
+
+#### 検証証跡
+
+- vitest PASS / typecheck PASS / lint PASS（既存テスト `SC-CANCEL-001` / `SC-CANCEL-002` を含む）
+- `outputs/phase-11/manual-test-result.md` に差分確認コマンド実行ログを記録
+- `artifacts.json` / `outputs/artifacts.json` の parity 確認済み
+
+#### 苦戦箇所
+
+| #   | 苦戦箇所                                                                                  | 解決策                                                                                 |
+| --- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 1   | `docs-only` vs `NON_VISUAL code task` の分類曖昧で証跡方針が二転三転した                  | Phase 1 要件定義で「差分確認型 NON_VISUAL code task」に明示固定し、以降の Phase を整合 |
+| 2   | 親タスク Phase 12 close-out が repo-wide へ波及せず、両 LOGS / canonical spec に漏れが残った | 波及同期を別タスク（TASK-SC-CANCEL-LOGS-SYNC-001）として分離し、Lane A/B/C 並列で実施    |
+
+#### lessons-learned
+
+- 差分確認型 NON_VISUAL code task パターン: 既存実装に合わせた仕様再構成 + 既存テスト証跡（L-SC-CANCEL-NON-VISUAL-001）
+- scope 境界の設計原則: branch 内 / repo-wide を Phase 1 で固定（L-SC-CANCEL-SCOPE-BOUNDARY-001）
+- repo-wide sync wave 手法: 親 close-out の波及を別 wave に分離（L-SC-CANCEL-REPO-WIDE-SYNC-001）
+- 詳細: `lessons-learned-current-2026-04.md` §TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 教訓
+
+## TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20）
+
+| 項目       | 値                                                                               |
+| ---------- | -------------------------------------------------------------------------------- |
+| Task ID    | TASK-SC-CANCEL-LOGS-SYNC-001                                                     |
+| Status     | completed                                                                        |
+| Completed  | 2026-04-20                                                                       |
+| Created    | 2026-04-20                                                                       |
+| Issue      | #2313                                                                            |
+| Category   | documentation-sync                                                               |
+| Task Type  | NON_VISUAL                                                                       |
+| Parent     | [TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001](../../../../docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/index.md) |
+
+#### 実施内容
+
+- 両 LOGS、completed ledger、lessons-learned、親子 `index.md`、workflow artifacts を同一 wave で同期
+- 本タスク自身の self-close-out を両 LOGS と completed ledger に追記
+- Phase 11 の grep スナップショットを一次ソース化し、Phase 12 成果物の構造不整合を修正
+
+#### 検証証跡
+
+- `outputs/phase-11/manual-test-result.md` で TC-01〜TC-05 PASS
+- `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS
+- `.claude` 正本更新後に `.agents` mirror を同期
+
+#### lessons-learned
+
+- NON_VISUAL docs-sync の一次ソースは `manual-test-result.md`
+- close-out 完了宣言には本文・台帳・mirror parity の 3 点同期が必要

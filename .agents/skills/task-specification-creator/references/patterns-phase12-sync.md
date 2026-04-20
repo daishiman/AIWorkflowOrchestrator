@@ -92,7 +92,20 @@ Phase 12 を複数の SubAgent で分担する場合、documentation-changelog �
 
 **禁止パターン**: SubAgent が独立して changelog を作成し、他 SubAgent の成果物件数を確認しないまま「完了」と記録する
 
-## パターン10: artifacts.json 二重管理チェック
+## パターン10: close-out parity guard（自動検証）
+
+手動確認から validator 実行へ昇格。complete-phase.js が S1〜S4 を同値更新し、
+validate-closeout-parity.js で drift を機械検証する。
+
+### parity guard チェックリスト
+
+- [ ] `node validate-closeout-parity.js --workflow <path> --json` を実行し `code: "PARITY_OK"` を確認する
+- [ ] `complete-phase.js` で Phase 完了させ、手動で artifacts.json を直接書き換えない
+- [ ] drift が出た場合は `complete-phase.js` を通して修正してから再実行する
+
+### 元のartifacts.json 二重管理チェック（参考）
+
+## パターン10-legacy: artifacts.json 二重管理チェック
 
 `outputs/artifacts.json` とルートの `artifacts.json`（または同等の台帳）が乖離することがある。Phase 12 final sync の完了前に以下を確認する。
 

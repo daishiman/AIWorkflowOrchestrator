@@ -1,0 +1,106 @@
+{
+  "feature": "logs-archive-policy-001",
+  "taskId": "TASK-LOGS-ARCHIVE-POLICY-001",
+  "taskType": "docs",
+  "visualMode": "NON_VISUAL",
+  "implementationMode": "verify_existing",
+  "created": "2026-04-19T09:25:37.850Z",
+  "lastUpdated": "2026-04-19T10:40:00.000Z",
+  "status": "phase12_completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/spec-extraction-map.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/decision-matrix.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/minor-tracking.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-creation.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-record.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/validation-report.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/TASK-LOGS-ARCHIVE-POLICY-001-manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "visualMode": "NON_VISUAL",
+    "estimatedPhases": 13,
+    "actualPhases": 12
+  }
+}

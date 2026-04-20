@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerAuthHandlers - チャンネル登録スナップショット > REG-SNAP-AUTH-01〜REG-COUNT-AUTH-01: 正常系 > REG-SNAP-AUTH-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "auth:check-online",
+  "auth:get-session",
+  "auth:login",
+  "auth:logout",
+  "auth:refresh",
+  "auth:start-oauth-flow",
+  "auth:test-callback",
+]
+`;

@@ -10,7 +10,23 @@ Phase 11 の manual test。
 | --- | --- | --- |
 | **設計タスク** | タスク種別が「設計・仕様策定」、UI実装なし | 設計タスク専用セクション（SF-01） |
 | **docs-only タスク** | UI変更なし、ドキュメント・設定変更のみ | docs-only task テンプレ |
+| **NON_VISUAL / 監査タスク** | `taskType: NON_VISUAL` または `implementation_mode: verify_existing`、consumer 監査・正本突合が本質 | NON_VISUAL / 監査タスク分岐（下記） |
 | **UI タスク** | Renderer コンポーネントの追加・変更あり | docs-only + UI task 追加要件 |
+
+## NON_VISUAL / 監査タスク分岐（PROPOSAL-TSC-02 由来）
+
+監査タスク・`verify_existing` タスクでは **screenshot 撮影は行わず、再現コマンドの手動実行** のみが Phase 11 の主活動となる。
+
+| 項目 | 規定 |
+| ---- | ---- |
+| primary evidence | `outputs/phase-11/manual-test-result.md`（docs-only 正本）／ `{TASK-ID}-manual-test-report.md`（`NON_VISUAL + verify_existing` の canonical 名） |
+| 補助 evidence | `reproduction-verification.md`（再現コマンド実行ログ）／`discovered-issues.md` |
+| screenshot | **不要**（`screenshots/.gitkeep` 削除、ディレクトリごと除外） |
+| 固定フレーズ | `UI/UX変更なしのため Phase 11 スクリーンショット不要`（`implementation-guide.md` / `system-spec-update-summary.md` へ記載） |
+| テスト方式 | 再現コマンド（`rg` / `jq` / `diff -qr` 等）を「コマンド / 前提条件 / 期待結果 / 実結果」の 4 項目で記録 |
+
+- 詳細な Phase 再解釈マップ（Phase 4 = raw evidence、Phase 5 = consumer 整理、Phase 6 = dual root diff）は [phase-template-audit-task.md](phase-template-audit-task.md) を参照。
+- `NON_VISUAL + verify_existing` の canonical 名は [phase-template-phase12.md](phase-template-phase12.md) §NON_VISUAL + verify_existing モードの Phase 11 primary evidence を参照。
 
 ## docs-only task テンプレ
 
@@ -59,6 +75,31 @@ Phase 11 の manual test。
 > `NON_VISUAL` で作成したファイルを Phase 11 で差し替える場合、`taskId` フィールドが旧タスクのままになりやすい。
 > Phase 11 着手前に `phase11-capture-metadata.json` の `taskId` が **現行タスク ID** と一致しているかを確認し、不一致なら preflight で fail-fast させる。
 > 確認コマンド例: `jq '.taskId' outputs/phase-11/phase11-capture-metadata.json`
+
+## NON_VISUAL証跡 3点セット（CANCEL-004 知見）
+
+UI/UX変更なしタスク（`verify_existing` / `docs-only` / IPC・バックエンドのみ）では、スクリーンショットの代わりに以下3点セットを成果物とする。
+
+| 成果物 | ファイル名 | 内容 |
+| --- | --- | --- |
+| 確認チェックリスト | `manual-test-checklist.md` | 何を確認するか（確認観点の事前リスト） |
+| 確認結果 | `manual-test-result.md` | 実際に確認した内容・スクショ不要の理由 |
+| 発見課題 | `discovered-issues.md` | 問題なしを含め全項目を記録 |
+
+**固定文言**: Phase 11 証跡内の `manual-test-result.md` の冒頭に次の文を必ず記載する。
+
+```markdown
+## テスト方式
+
+UI/UX変更なしのため Phase 11 スクリーンショット不要
+```
+
+**判定基準**:
+- UI コンポーネントへの変更がない（Renderer ファイルへの追加・変更なし）
+- IPC ハンドラ・サービス層・型定義のみの変更
+- `verify_existing` モードで宣言されたタスク
+
+**根拠**: CANCEL-004（p04-seq-CANCEL-004）`useCancelGeneration` フックの既存実装証跡化タスク。UIなしタスクでスクリーンショットを要求すると証跡作成が形骸化する。
 
 ## 必須成果物
 

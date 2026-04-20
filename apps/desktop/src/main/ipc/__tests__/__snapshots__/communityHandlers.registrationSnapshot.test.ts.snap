@@ -1,0 +1,12 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerCommunityHandlers - チャンネル登録スナップショット > REG-SNAP-COMMUNITY-01〜REG-COUNT-COMMUNITY-01: 正常系 > REG-SNAP-COMMUNITY-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "community:getAll",
+  "community:getById",
+  "community:getByLevel",
+  "community:getMembers",
+  "community:getSummary",
+  "community:search",
+]
+`;

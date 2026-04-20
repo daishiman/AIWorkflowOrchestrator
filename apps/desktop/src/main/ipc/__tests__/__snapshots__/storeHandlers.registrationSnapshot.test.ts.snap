@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerStoreHandlers - チャンネル登録スナップショット > REG-SNAP-STORE-01〜REG-COUNT-STORE-01: 正常系 > REG-SNAP-STORE-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "store:get",
+  "store:get-secure",
+  "store:set",
+  "store:set-secure",
+]
+`;

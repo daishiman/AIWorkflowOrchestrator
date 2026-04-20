@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3184,
+  "totalKeywords": 3192,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2700,6 +2700,23 @@
       "ui-ux-search-panel-history.md",
       "ui-ux-search-panel.md"
     ],
+    "Handler": [
+      "api-ipc-system-core.md",
+      "api-ipc-system-skill-creator-part2.md",
+      "arch-ipc-persistence.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "security-skill-ipc-core.md"
+    ],
+    "Registration": [
+      "api-ipc-system-core.md",
+      "arch-ipc-persistence.md"
+    ],
+    "Testing": [
+      "api-ipc-system-core.md"
+    ],
+    "Contract": [
+      "api-ipc-system-core.md"
+    ],
     "分割ファイル一覧": [
       "api-ipc-system-core.md",
       "lessons-learned-current.md",
@@ -2966,12 +2983,6 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
-    ],
-    "Handler": [
-      "api-ipc-system-skill-creator-part2.md",
-      "arch-ipc-persistence.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "security-skill-ipc-core.md"
     ],
     "Lifecycle": [
       "api-ipc-system-skill-creator-part2.md",
@@ -3560,9 +3571,6 @@
       "arch-feature-addition.md"
     ],
     "・永続化パターン": [
-      "arch-ipc-persistence.md"
-    ],
-    "Registration": [
       "arch-ipc-persistence.md"
     ],
     "Pattern": [
@@ -4216,6 +4224,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "Modifier": [
@@ -7766,7 +7775,8 @@
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -7914,7 +7924,8 @@
     ],
     "COVERAGE": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "SettingsView": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -8319,7 +8330,9 @@
     ],
     "CLEANUP": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-skill-wizard-redesign.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "login": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -8380,7 +8393,8 @@
     ],
     "learned": [
       "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "canonical": [
       "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
@@ -8959,7 +8973,8 @@
     ],
     "CANCEL": [
       "lessons-learned-current-2026-04.md",
-      "lessons-learned-skill-creator-cancel-chain.md"
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "cancel": [
       "lessons-learned-current-2026-04.md",
@@ -8969,10 +8984,19 @@
       "lessons-learned-current-2026-04.md"
     ],
     "SNAPSHOT": [
-      "lessons-learned-current-2026-04.md"
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "スナップショットカバレッジ": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "PARTIAL": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "DIR": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -12368,7 +12392,8 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "quick-reference-search-patterns-ipc-infra.md"
+      "quick-reference-search-patterns-ipc-infra.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "準拠再確認": [
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
@@ -12986,7 +13011,8 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md"
     ],
     "LOGS": [
-      "logs-archive-index.md"
+      "logs-archive-index.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "認証コールバック": [
       "logs-archive-legacy.md"
@@ -14082,6 +14108,9 @@
     "完了タスク台帳": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
+    "ハンドラー登録スナップショットカバレッジ拡張": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "createSkill": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14110,6 +14139,15 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "修正": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "キャンセル後の半作成スキルディレクトリ残存クリーンアップ": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "キャンセルクリーンアップ仕様書": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "wide": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "TerminalHandoff": [

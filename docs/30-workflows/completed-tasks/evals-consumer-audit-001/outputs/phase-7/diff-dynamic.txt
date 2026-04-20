@@ -1,0 +1,60 @@
+--- docs/30-workflows/evals-consumer-audit-001/outputs/phase-4/raw-grep-dynamic.txt	2026-04-19 17:50:20
++++ docs/30-workflows/evals-consumer-audit-001/outputs/phase-7/recheck-grep-dynamic.txt	2026-04-19 18:04:40
+@@ -1,37 +1,36 @@
+ # command: rg -n "join\([^)]*EVALS|\`[^\`]*EVALS\.json|'EVALS\.json'|\"EVALS\.json\"" .claude/skills/ .agents/skills/ apps/ -g '!**/node_modules/**' -g '!**/.backups/**' -g '*.{js,ts,tsx,mjs,cjs}'
+-# executed_at: 2026-04-19T08:50:18Z
++# executed_at: 2026-04-19T09:04:40Z
+ # working_directory: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160952-wt-9
+-.agents/skills/skill-creator/scripts/collect_feedback.js:226:  const evalsPath = join(resolvedSkillPath, "EVALS.json");
+-.agents/skills/aiworkflow-requirements/scripts/log_usage.js:98:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+-.agents/skills/aiworkflow-requirements/scripts/log_usage.js:150:    console.log(`✓ EVALS.json を更新しました`);
+-.agents/skills/aiworkflow-requirements/scripts/log_usage.js:152:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
++.claude/skills/skill-creator/scripts/collect_feedback.js:226:  const evalsPath = join(resolvedSkillPath, "EVALS.json");
++.claude/skills/skill-creator/scripts/init_skill.js:558:      join(skillDir, "EVALS.json"),
++.claude/skills/skill-creator/scripts/init_skill.js:585:      join(skillDir, "EVALS.json"),
++.claude/skills/skill-creator/scripts/log_usage.js:75:  const evalsPath = join(SKILL_DIR, "EVALS.json");
++.claude/skills/skill-creator/scripts/log_usage.js:200:    console.log(`✓ EVALS.json を更新しました`);
++.claude/skills/skill-creator/scripts/log_usage.js:202:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
++.claude/skills/aiworkflow-requirements/scripts/log_usage.js:98:  const evalsPath = join(SKILL_DIR, "EVALS.json");
++.claude/skills/aiworkflow-requirements/scripts/log_usage.js:150:    console.log(`✓ EVALS.json を更新しました`);
++.claude/skills/aiworkflow-requirements/scripts/log_usage.js:152:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
+ .agents/skills/skill-creator/scripts/log_usage.js:75:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+ .agents/skills/skill-creator/scripts/log_usage.js:200:    console.log(`✓ EVALS.json を更新しました`);
+ .agents/skills/skill-creator/scripts/log_usage.js:202:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
+ .agents/skills/skill-creator/scripts/init_skill.js:558:      join(skillDir, "EVALS.json"),
+ .agents/skills/skill-creator/scripts/init_skill.js:585:      join(skillDir, "EVALS.json"),
+-.claude/skills/aiworkflow-requirements/scripts/log_usage.js:98:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+-.claude/skills/aiworkflow-requirements/scripts/log_usage.js:150:    console.log(`✓ EVALS.json を更新しました`);
+-.claude/skills/aiworkflow-requirements/scripts/log_usage.js:152:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
++.agents/skills/skill-creator/scripts/collect_feedback.js:226:  const evalsPath = join(resolvedSkillPath, "EVALS.json");
+ .claude/skills/task-specification-creator/scripts/log-usage.js:27:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
+ .claude/skills/task-specification-creator/scripts/log-usage.js:108:    console.error(`Error: EVALS.json not found at ${EVALS_PATH}`);
+ .claude/skills/task-specification-creator/scripts/log-usage.js:234:  console.log(`✅ EVALS.json を更新しました`);
+-.claude/skills/skill-creator/scripts/collect_feedback.js:226:  const evalsPath = join(resolvedSkillPath, "EVALS.json");
+-.claude/skills/skill-creator/scripts/log_usage.js:75:  const evalsPath = join(SKILL_DIR, "EVALS.json");
+-.claude/skills/skill-creator/scripts/log_usage.js:200:    console.log(`✓ EVALS.json を更新しました`);
+-.claude/skills/skill-creator/scripts/log_usage.js:202:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
+-.claude/skills/skill-creator/scripts/init_skill.js:558:      join(skillDir, "EVALS.json"),
+-.claude/skills/skill-creator/scripts/init_skill.js:585:      join(skillDir, "EVALS.json"),
+-apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:159:      fixturePath("complete-skill", "EVALS.json"),
+-apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:499:    expect(await fileExists(path.join(SKILL_RUNNER_DIR, "EVALS.json"))).toBe(
++.agents/skills/aiworkflow-requirements/scripts/log_usage.js:98:  const evalsPath = join(SKILL_DIR, "EVALS.json");
++.agents/skills/aiworkflow-requirements/scripts/log_usage.js:150:    console.log(`✓ EVALS.json を更新しました`);
++.agents/skills/aiworkflow-requirements/scripts/log_usage.js:152:    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
++.agents/skills/task-specification-creator/scripts/log-usage.js:27:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
++.agents/skills/task-specification-creator/scripts/log-usage.js:108:    console.error(`Error: EVALS.json not found at ${EVALS_PATH}`);
++.agents/skills/task-specification-creator/scripts/log-usage.js:234:  console.log(`✅ EVALS.json を更新しました`);
++apps/desktop/src/main/services/skill/SkillScanner.ts:40:  { filename: "EVALS.json", type: "evals" },
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:982:        path.join(skillDir, "EVALS.json"),
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:995:        expect.objectContaining({ filename: "EVALS.json", type: "evals" }),
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1062:      await realFs.writeFile(path.join(skillDir, "EVALS.json"), "{}");
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1076:        expect.objectContaining({ filename: "EVALS.json", type: "evals" }),
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1096:      await realFs.writeFile(path.join(skillDir, "EVALS.json"), evalsContent);
+ apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1106:        (f) => f.filename === "EVALS.json",
+-apps/desktop/src/main/services/skill/SkillScanner.ts:40:  { filename: "EVALS.json", type: "evals" },
+-.agents/skills/task-specification-creator/scripts/log-usage.js:27:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
+-.agents/skills/task-specification-creator/scripts/log-usage.js:108:    console.error(`Error: EVALS.json not found at ${EVALS_PATH}`);
+-.agents/skills/task-specification-creator/scripts/log-usage.js:234:  console.log(`✅ EVALS.json を更新しました`);
+-# exit_status: 0
++apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:159:      fixturePath("complete-skill", "EVALS.json"),
++apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:499:    expect(await fileExists(path.join(SKILL_RUNNER_DIR, "EVALS.json"))).toBe(
