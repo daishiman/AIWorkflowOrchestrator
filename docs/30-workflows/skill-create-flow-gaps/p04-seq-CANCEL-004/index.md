@@ -150,6 +150,6 @@ graph TD
 
 ## 関連
 
-- 前提タスク: `docs/30-workflows/skill-create-flow-gaps/p03-seq-CANCEL-003/index.md`
+- 前提タスク: `docs/30-workflows/p03-seq-CANCEL-003/index.md`
 - 設計根拠: `docs/30-workflows/00-task-spec-design-docs/phase-2-solution.md`（問題2解決アプローチD）
 - 問題分析: `docs/30-workflows/00-task-spec-design-docs/phase-1-analysis.md`（問題2）

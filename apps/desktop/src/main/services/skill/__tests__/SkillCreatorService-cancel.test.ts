@@ -7,6 +7,12 @@
  * TC-03: cancelCurrentOperation() 後に currentAbortController が null になること
  * TC-04: createSkill() 呼び出し中に currentAbortController が設定され、finally でリセットされること
  * TC-05: createSkill() が ScriptExecutor に AbortSignal を渡し、cancelCurrentOperation() で中断されること
+ *
+ * TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: private workflow abort 入口保証
+ * TC-PM-01: runOrchestrateWorkflow() が abort 済み signal を受け取ると AbortError をスローすること
+ * TC-PM-02: runOrchestrateWorkflow() が signal なしで正常終了すること
+ * TC-PM-03: runCreateWorkflow() が abort 済み signal を受け取ると AbortError をスローすること
+ * TC-PM-04: runCreateWorkflow() が signal なしで正常終了すること
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -15,6 +21,14 @@ import { SkillCreatorService } from "../SkillCreatorService";
 import { ScriptExecutor } from "../ScriptExecutor";
 import { ResourceLoader } from "../ResourceLoader";
 import type { CreateSkillOptions } from "@repo/shared/types";
+
+type StructurePlanJson = {
+  skillName: string;
+  description: string;
+  purpose: string;
+  features: string[];
+  agents: string[];
+};
 
 vi.mock("../ScriptExecutor");
 vi.mock("../ResourceLoader");
@@ -165,5 +179,85 @@ describe("SkillCreatorService - cancelCurrentOperation (TASK-SW-CANCEL-003)", ()
       (service as unknown as { currentAbortController: AbortController | null })
         .currentAbortController,
     ).toBeNull();
+  });
+});
+
+describe("private workflow abort 入口保証 (TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001)", () => {
+  type PrivateWorkflow = {
+    runOrchestrateWorkflow: (
+      o: CreateSkillOptions,
+      s?: AbortSignal,
+    ) => Promise<void>;
+    runCreateWorkflow: (
+      o: CreateSkillOptions,
+      s?: AbortSignal,
+    ) => Promise<StructurePlanJson | null>;
+  };
+
+  let service: SkillCreatorService;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(ScriptExecutor).mockImplementation(
+      () =>
+        ({
+          execute: vi.fn(),
+          executeJson: vi.fn(),
+        }) as unknown as ScriptExecutor,
+    );
+    vi.mocked(ResourceLoader).mockImplementation(
+      () =>
+        ({
+          load: vi.fn(),
+          loadAgent: vi.fn(),
+          loadSchema: vi.fn(),
+          clearCache: vi.fn(),
+        }) as unknown as ResourceLoader,
+    );
+    service = new SkillCreatorService();
+  });
+
+  const baseOpts = (mode: "orchestrate" | "create"): CreateSkillOptions => ({
+    name: "x",
+    description: "y",
+    mode,
+  });
+
+  it("TC-PM-01: runOrchestrateWorkflow() が abort 済み signal を受け取ると AbortError をスローすること", async () => {
+    const ctrl = new AbortController();
+    ctrl.abort();
+    await expect(
+      (service as unknown as PrivateWorkflow).runOrchestrateWorkflow(
+        baseOpts("orchestrate"),
+        ctrl.signal,
+      ),
+    ).rejects.toMatchObject({ name: "AbortError" });
+  });
+
+  it("TC-PM-02: runOrchestrateWorkflow() が signal なしで正常終了すること", async () => {
+    await expect(
+      (service as unknown as PrivateWorkflow).runOrchestrateWorkflow(
+        baseOpts("orchestrate"),
+      ),
+    ).resolves.toBeUndefined();
+  });
+
+  it("TC-PM-03: runCreateWorkflow() が abort 済み signal を受け取ると AbortError をスローすること", async () => {
+    const ctrl = new AbortController();
+    ctrl.abort();
+    await expect(
+      (service as unknown as PrivateWorkflow).runCreateWorkflow(
+        baseOpts("create"),
+        ctrl.signal,
+      ),
+    ).rejects.toMatchObject({ name: "AbortError" });
+  });
+
+  it("TC-PM-04: runCreateWorkflow() が signal なしで正常終了すること", async () => {
+    const result = await (
+      service as unknown as PrivateWorkflow
+    ).runCreateWorkflow(baseOpts("create"));
+    expect(result).not.toBeNull();
+    expect((result as StructurePlanJson).skillName).toBe("x");
   });
 });

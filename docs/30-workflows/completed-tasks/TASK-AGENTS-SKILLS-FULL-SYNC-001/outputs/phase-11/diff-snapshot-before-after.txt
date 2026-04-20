@@ -1,0 +1,26 @@
+# diff-snapshot-before-after.txt
+# Phase 11 開始時点および終了時点の diff -qr スナップショット
+
+## Before (Phase 11 開始時 / parity OK 状態)
+$ diff -qr .claude/skills .agents/skills
+(空出力 = 差分 0 件)
+$ echo "exit=$?"
+exit=0
+
+## During シナリオ 1 (NG 検出)
+$ echo "dummy" >> .claude/skills/aiworkflow-requirements/LOGS.md
+$ diff -qr .claude/skills .agents/skills
+Files .claude/skills/aiworkflow-requirements/LOGS.md and .agents/skills/aiworkflow-requirements/LOGS.md differ
+$ echo "exit=$?"
+exit=1
+
+## After シナリオ 2 (sync で修復)
+$ bash .claude/scripts/sync-skills-mirror.sh
+[mirror-sync] 完了: parity OK
+$ diff -qr .claude/skills .agents/skills
+(空出力)
+$ echo "exit=$?"
+exit=0
+
+## Final (Phase 11 終了時)
+final_exit=0

@@ -14,6 +14,12 @@ import type {
 import type { IEmbeddingProvider } from "./providers/interfaces";
 import { MetricsCollector } from "./utils/metrics-collector";
 import { EmbeddingError } from "./types/errors";
+import type {
+  ChunkBoundary,
+  LateChunkingConfig,
+  ChunkEmbeddingResult,
+  ILateChunkingService,
+} from "./late-chunking/index";
 
 /**
  * 埋め込みサービス設定
@@ -25,6 +31,8 @@ export interface EmbeddingServiceConfig {
   fallbackChain: EmbeddingModelId[];
   /** メトリクス収集（省略時は新規作成） */
   metricsCollector?: MetricsCollector;
+  /** Late Chunkingサービス（省略時は generateChunkEmbeddings 不可） */
+  lateChunkingService?: ILateChunkingService;
 }
 
 /**
@@ -34,11 +42,13 @@ export class EmbeddingService {
   private providers: Map<EmbeddingModelId, IEmbeddingProvider>;
   private fallbackChain: EmbeddingModelId[];
   private metricsCollector: MetricsCollector;
+  private lateChunkingService?: ILateChunkingService;
 
   constructor(config: EmbeddingServiceConfig) {
     this.providers = new Map(config.providers.map((p) => [p.modelId, p]));
     this.fallbackChain = config.fallbackChain;
     this.metricsCollector = config.metricsCollector || new MetricsCollector();
+    this.lateChunkingService = config.lateChunkingService;
 
     // フォールバックチェーンに含まれるモデルが全て利用可能か検証
     for (const modelId of this.fallbackChain) {
@@ -249,6 +259,31 @@ export class EmbeddingService {
    */
   getFallbackChain(): EmbeddingModelId[] {
     return [...this.fallbackChain];
+  }
+
+  /**
+   * Late ChunkingによるチャンクごとのEmbedding生成
+   *
+   * @param text - 全文テキスト
+   * @param chunkBoundaries - チャンク境界配列
+   * @param config - Late Chunking設定（省略時はデフォルト）
+   * @returns チャンクごとのEmbedding結果
+   */
+  async generateChunkEmbeddings(
+    text: string,
+    chunkBoundaries: ChunkBoundary[],
+    config?: Partial<LateChunkingConfig>,
+  ): Promise<ChunkEmbeddingResult[]> {
+    if (!this.lateChunkingService) {
+      throw new EmbeddingError(
+        "LateChunkingService is not configured. Pass lateChunkingService in EmbeddingServiceConfig.",
+      );
+    }
+    return this.lateChunkingService.generateChunkEmbeddings(
+      text,
+      chunkBoundaries,
+      config,
+    );
   }
 
   /**

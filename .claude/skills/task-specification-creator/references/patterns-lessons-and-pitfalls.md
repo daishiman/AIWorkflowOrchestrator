@@ -61,6 +61,27 @@
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-9B-G
 
+### worktree環境でのesbuild binary mismatch（UNASSIGNED-EMB-005 / step-ut-rt-06）
+
+- **状況**: Git worktree 環境で `pnpm --filter @repo/shared build` を実行すると esbuild のバイナリバージョン不一致エラーが発生する
+- **問題**: worktree は `node_modules` をメインリポジトリと共有するが、esbuild のプラットフォームバイナリ（`node_modules/.bin/esbuild`）が worktree の環境と食い違い、ビルドが中断する
+- **エラー例**: `Error: esbuild's binary does not match` / `You must rebuild the esbuild package` のようなメッセージ
+- **対処法**:
+  1. ビルド前に `pnpm install` を実行してバイナリを再解決する
+  2. `node_modules/.bin/esbuild --version` で現在のバイナリバージョンを確認する
+  3. 解消しない場合は `pnpm store prune && pnpm install --force` でキャッシュをリセットする
+  ```bash
+  # worktree 環境でのビルド前手順
+  pnpm install
+  pnpm --filter @repo/shared build
+  ```
+- **教訓**:
+  1. worktree 環境でビルドエラーが出たら、まず `pnpm install` を試す
+  2. esbuild binary mismatch は Node.js バージョン変更・worktree 切り替え後に起きやすい
+  3. CI 環境と worktree 環境でバイナリが乖離する場合は `pnpm install --force` で強制再構築する
+- **発見日**: 2026-04-19
+- **関連タスク**: UNASSIGNED-EMB-005-late-chunking, step-ut-rt-06-esbuild-arch-mismatch-001
+
 ### ネイティブモジュールNODE_MODULE_VERSION不一致（ENV-INFRA-001）
 
 - **状況**: better-sqlite3がNODE_MODULE_VERSION不一致エラー（127 vs 131）で動作しない
