@@ -125,6 +125,28 @@
 - cancel 由来の AbortError は UI failure として表示しない（agentSlice / SkillCreateWizard で抑制）
 - UI/UX 変更なし（Phase 11 スクリーンショット N/A）
 
+#### TASK-SW-CANCEL-004 renderer hook 追加実装（2026-04-20）
+
+TASK-SW-CANCEL-004（p04-seq-CANCEL-004）で `useCancelGeneration.ts` が既実装であることを正規化し、以下のテストを追加した。
+
+| テストケース | 内容 |
+| --- | --- |
+| skillCreatorAPI未定義でもcancelledを維持 | `window.skillCreatorAPI = undefined` → optional chain `?.cancelGeneration?.()` で graceful fail。エラー伝播なし |
+| IPC cancelGenerationがrejectしてもcancelledを維持 | try/catch でエラーを握りつぶし、`setStage('cancelled')` を先行させる |
+
+**renderer hook contract（useCancelGeneration.ts 確定動作）**:
+
+| ステップ | 動作 |
+| --- | --- |
+| 1. abort ref clear | `abortControllerRef.current` をリセット |
+| 2. setStage('cancelled') | renderer state を先行更新 |
+| 3. IPC await | `window.skillCreatorAPI?.cancelGeneration?.()` を呼び出し（optional chain 2段）|
+| 4. catch swallow | IPC reject を握りつぶし、cancelled state を維持する |
+
+**optional chain 2段設計**: `window.skillCreatorAPI?.cancelGeneration?.()` により、API namespace 未定義と method 未定義の両方をカバーする Undefined guard として機能する。
+
+**実装モード**: `verify_existing`（useCancelGeneration.ts は既実装。Phase 4/5 は差分確認として再利用）
+
 #### Preload APIに新規チャネルを追加する際の必須手順（3点セット）
 
 TASK-SW-CANCEL-002 の実装で判明した苦戦箇所: Preload APIに新規チャネルを追加する場合、以下の **3点を必ず同時に修正** しないとランタイムエラーになる。

@@ -99,6 +99,30 @@ find .github/actions -name "action.yml" | xargs grep -l "cache" 2>/dev/null
 Phase 2: 設計
 ```
 
+## Implementation Mode 宣言（CANCEL-004 知見）
+
+Phase 1 開始時に以下の4モードから1つを宣言し、以降の Phase 責務を自動決定する。
+
+| Mode | 説明 | Phase 4 の扱い | Phase 5 の扱い | Phase 11 証跡 |
+| --- | --- | --- | --- | --- |
+| `verify_existing` | 既存実装の正規化・証跡化（新規実装なし） | 既存実装の確認（新規作成なし） | contract vs 実装の diff check | NON_VISUAL 3点セット |
+| `new_feature` | 純粋な新規実装 | TDD Red フェーズ（新規テスト作成） | 新規実装 | タスク種別に応じた証跡 |
+| `bugfix` | バグ修正 | 既存テスト + 再現テスト作成 | バグ修正実装 | タスク種別に応じた証跡 |
+| `enhancement` | 機能拡張 | 既存テスト確認 + 拡張テスト作成 | 拡張実装 | タスク種別に応じた証跡 |
+
+### `verify_existing` モードの Phase 責務マッピング
+
+`verify_existing` を宣言した場合、各 Phase の責務は以下に変更される。
+
+| Phase | 通常モード | verify_existing モード |
+| --- | --- | --- |
+| Phase 4 | テスト作成（TDD Red） | 既存実装・既存テストの確認（新規作成なし） |
+| Phase 5 | 実装 | contract（仕様書）vs 実装の diff check |
+| Phase 6 | テスト拡張 | 観測性向上のための targeted 追加（小規模・不足ケースのみ） |
+| Phase 11 | UI/UX 手動テスト | NON_VISUAL 証跡3点セット（スクリーンショット不要） |
+
+**根拠**: CANCEL-004（p04-seq-CANCEL-004）の実装から得た知見。既存実装の証跡化タスクに通常の新規開発フローを適用すると、Phase 4/5 が空振りになる。
+
 ## 関連ガイド
 
 - [phase-template-core.md](phase-template-core.md) — Phase 1-3 共通骨格

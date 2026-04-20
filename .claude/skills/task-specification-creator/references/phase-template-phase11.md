@@ -76,6 +76,31 @@ Phase 11 の manual test。
 > Phase 11 着手前に `phase11-capture-metadata.json` の `taskId` が **現行タスク ID** と一致しているかを確認し、不一致なら preflight で fail-fast させる。
 > 確認コマンド例: `jq '.taskId' outputs/phase-11/phase11-capture-metadata.json`
 
+## NON_VISUAL証跡 3点セット（CANCEL-004 知見）
+
+UI/UX変更なしタスク（`verify_existing` / `docs-only` / IPC・バックエンドのみ）では、スクリーンショットの代わりに以下3点セットを成果物とする。
+
+| 成果物 | ファイル名 | 内容 |
+| --- | --- | --- |
+| 確認チェックリスト | `manual-test-checklist.md` | 何を確認するか（確認観点の事前リスト） |
+| 確認結果 | `manual-test-result.md` | 実際に確認した内容・スクショ不要の理由 |
+| 発見課題 | `discovered-issues.md` | 問題なしを含め全項目を記録 |
+
+**固定文言**: Phase 11 証跡内の `manual-test-result.md` の冒頭に次の文を必ず記載する。
+
+```markdown
+## テスト方式
+
+UI/UX変更なしのため Phase 11 スクリーンショット不要
+```
+
+**判定基準**:
+- UI コンポーネントへの変更がない（Renderer ファイルへの追加・変更なし）
+- IPC ハンドラ・サービス層・型定義のみの変更
+- `verify_existing` モードで宣言されたタスク
+
+**根拠**: CANCEL-004（p04-seq-CANCEL-004）`useCancelGeneration` フックの既存実装証跡化タスク。UIなしタスクでスクリーンショットを要求すると証跡作成が形骸化する。
+
 ## 必須成果物
 
 | 成果物 | タスク種別 | 用途 |

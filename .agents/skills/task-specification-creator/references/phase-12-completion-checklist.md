@@ -9,6 +9,7 @@
 
 > **⚠️ 以下を Phase 12 の最初に確認すること。台帳 drift を早い段階で検出するために昇格させた項目。**
 
+- [ ] 【初手チェック】`node .claude/skills/task-specification-creator/scripts/validate-closeout-parity.js --workflow <workflow-path>` が PASS（code=PARITY_OK / exit=0）であることを確認した
 - [ ] 【初手チェック】`outputs/artifacts.json` を生成し、root `artifacts.json` との parity を確認した（drift 0件）
 
 ---
@@ -83,6 +84,8 @@
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
 - [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
 - [ ] Phase 13（`/ai:diff-to-pr`）で参照する `TARGET_WORKFLOW_DIR` が今回差分のworkflowを指すことを確認した
+- [ ] `node .claude/skills/task-specification-creator/scripts/validate-closeout-parity.js --workflow <workflow-path> --json` で `code=PARITY_OK` を確認した
+- [ ] PARITY_DRIFT が検出された状態で Phase 12 PASS にしない（parity validator を最低1回実行し最終実行でPARITY_OKを記録した）
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 自動化コマンド

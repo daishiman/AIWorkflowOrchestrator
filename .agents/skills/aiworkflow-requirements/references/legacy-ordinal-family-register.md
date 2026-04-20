@@ -33,6 +33,7 @@ rename は命名作業ではなく、classification-first の結果として行�
 | `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001` workflow root | `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/` | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/` | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/` | 2026-03-21 |
 | `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-error-message-i18n-support.md` | `docs/30-workflows/completed-tasks/task-ut-chatview-error-banner-i18n-001.md` | `docs/30-workflows/completed-tasks/` | 2026-03-20 |
 | `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-ai-chat-error-code-inventory.md` | `docs/30-workflows/completed-tasks/task-ut-ai-chat-error-code-inventory-001.md` | `docs/30-workflows/completed-tasks/` | 2026-03-20 |
+| `TASK-SW-CANCEL-004` p04-seq-CANCEL-004 ワークフローパス移動 | `docs/30-workflows/skill-create-flow-gaps/p04-seq-CANCEL-004/` | `docs/30-workflows/p04-seq-CANCEL-004/` | `docs/30-workflows/p04-seq-CANCEL-004/` | 2026-04-20 |
 
 ## Family Summary
 

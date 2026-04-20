@@ -101,6 +101,40 @@ Phase 4 仕様書のタスク説明に「本タスクでは public callback 経�
 
 Phase 5 仕様書のタスク2以降に「canUseTool 適用可能範囲と制約」セクションを設け、上記を1〜3行で明記すること。
 
+## Phase 6: Targeted test追加基準（CANCEL-004 知見）
+
+`verify_existing` モードおよびテスト拡張フェーズの Phase 6 では、以下のフローでカバレッジを判定し、不足ケースのみを追加する。
+
+### phase-matrix カバレッジ判定プロセス
+
+```
+Phase 4: 観点列挙（test-matrix 作成）
+  ↓ 列挙したテスト観点を「covered / uncovered」に分類
+Phase 5: coverage 判定（既存テストと観点の対応確認）
+  ↓ Uncovered 観点を特定する
+Phase 6: 不足ケース追加（Uncovered のみ対象）
+  ↓ Covered 観点の重複追加は禁止
+完了: targeted 追加が0件でも Phase 6 は完了とする
+```
+
+### test-matrix フォーマット
+
+| 観点 ID | テスト観点 | 既存テスト | ステータス |
+| ------- | ---------- | ---------- | ---------- |
+| TM-01 | 正常系: XXX | `describe("YYY") > it("ZZZ")` | Covered |
+| TM-02 | 異常系: AAA | （なし） | **Uncovered** |
+
+### targeted 追加の判断基準
+
+| 状況 | 判断 | 理由 |
+| --- | --- | --- |
+| `verify_existing` モードで既存テストが観点を網羅している | 追加なし（Phase 6 完了） | 観測性向上のため追加は許可範囲だが、強制ではない |
+| `verify_existing` モードで観測性向上に有効な Uncovered あり | targeted 追加（小規模） | 正規化・証跡化の観点から追加価値あり |
+| `new_feature` / `enhancement` で Uncovered あり | targeted 追加（標準） | 品質基準に応じた追加 |
+| Covered 観点の重複追加 | 禁止 | テスト肥大化を防ぐ |
+
+**根拠**: CANCEL-004（p04-seq-CANCEL-004）で `useCancelGeneration` フックの Phase 6 を実施。`verify_existing` でも観測性向上のための targeted 追加は許可範囲と判断した。
+
 ## Phase 7-10
 
 | Phase | 重点                                            |
