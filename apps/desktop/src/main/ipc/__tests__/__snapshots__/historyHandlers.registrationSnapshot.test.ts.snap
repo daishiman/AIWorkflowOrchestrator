@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerHistoryHandlers - チャンネル登録スナップショット > REG-SNAP-HISTORY-01〜REG-COUNT-HISTORY-01: 正常系 > REG-SNAP-HISTORY-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "history:getConversionLogs",
+  "history:getFileHistory",
+  "history:getVersionDetail",
+  "history:restoreVersion",
+]
+`;

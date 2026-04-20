@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerNotificationHandlers - チャンネル登録スナップショット > REG-SNAP-NOTIFICATION-01〜REG-COUNT-NOTIFICATION-01: 正常系 > REG-SNAP-NOTIFICATION-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "notification:clear",
+  "notification:delete",
+  "notification:get-history",
+  "notification:mark-all-read",
+  "notification:mark-read",
+]
+`;

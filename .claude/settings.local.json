@@ -186,6 +186,8 @@
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/task-workflow.md .agents/skills/aiworkflow-requirements/references/task-workflow.md)",
       "Bash(cp .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md .agents/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md)",
+      "Bash(cp \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.claude/skills/skill-creator/SKILL.md\" \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.agents/skills/skill-creator/SKILL.md\")",
+      "Bash(cp \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.claude/skills/skill-creator/SKILL-changelog.md\" \"/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-180907-wt-11/.agents/skills/skill-creator/SKILL-changelog.md\")",
       "Bash(cp .agents/skills/aiworkflow-requirements/LOGS.md .claude/skills/aiworkflow-requirements/LOGS.md)",
       "Bash(cp .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md)",
       "Bash(cp .claude/skills/skill-creator/LOGS.md .agents/skills/skill-creator/LOGS.md)",
@@ -195,10 +197,14 @@
       "Bash(cp .claude/skills/task-specification-creator/LOGS.md .agents/skills/task-specification-creator/LOGS.md)",
       "Bash(cp .claude/skills/task-specification-creator/references/phase-template-core.md .agents/skills/task-specification-creator/references/phase-template-core.md)",
       "Bash(cp .claude/skills/task-specification-creator/references/phase-template-phase12.md .agents/skills/task-specification-creator/references/phase-template-phase12.md)",
-      "Bash(pnpm --version)",
-      "Bash(cp .claude/scripts/setup-merge-drivers.sh docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/setup-merge-drivers.sh.before)",
-      "Bash(git check-attr *)",
-      "Bash(tee docs/30-workflows/gitattributes-merge-union-reeval-001/outputs/phase-5/snapshots/check-attr.before.txt)"
+      "Bash(bash .claude/scripts/verify-skills-parity.sh)",
+      "Bash(tee docs/30-workflows/TASK-AGENTS-SKILLS-FULL-SYNC-001/outputs/phase-04/red-state-diff-snapshot.txt)",
+      "Bash(set +e)",
+      "Bash(mv .claude/skills /tmp/.claude-skills.bak)",
+      "Bash(mv /tmp/.claude-skills.bak .claude/skills)",
+      "Bash(mv .agents/skills /tmp/.agents-skills.bak)",
+      "Bash(mv /tmp/.agents-skills.bak .agents/skills)",
+      "Bash(pnpm --version)"
     ],
     "deny": [],
     "ask": []

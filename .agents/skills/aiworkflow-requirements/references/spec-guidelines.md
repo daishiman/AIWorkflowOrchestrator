@@ -112,33 +112,34 @@
 
 ### タスク: {{TASK_NAME}}（{{YYYY-MM-DD}}完了）
 
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | {{TASK_ID}} |
-| ステータス | **完了** |
-| 完了日 | {{YYYY-MM-DD}} |
-| 実装内容 | {{実装内容の1行サマリー}} |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| タスクID   | {{TASK_ID}}               |
+| ステータス | **完了**                  |
+| 完了日     | {{YYYY-MM-DD}}            |
+| 実装内容   | {{実装内容の1行サマリー}} |
 
 **テスト結果サマリー**:
+
 - テスト数: {{N}}件全PASS
 - カバレッジ: Line {{X}}% / Branch {{Y}}% / Function {{Z}}%
 
 **成果物**:
 
-| 成果物 | パス |
-| --- | --- |
+| 成果物       | パス         |
+| ------------ | ------------ |
 | {{成果物名}} | {{相対パス}} |
 ```
 
 ### 記載ルール
 
-| ルール | 説明 |
-| --- | --- |
-| 見出しレベル | `### タスク:` で統一（`##` ではない） |
-| 日付形式 | ISO 8601（`YYYY-MM-DD`） |
-| テスト結果 | 件数とカバレッジを必ず記載 |
-| 成果物テーブル | 実際の出力ファイルパスを記載 |
-| 複数タスク | 完了日降順で並べる（最新が上） |
+| ルール         | 説明                                  |
+| -------------- | ------------------------------------- |
+| 見出しレベル   | `### タスク:` で統一（`##` ではない） |
+| 日付形式       | ISO 8601（`YYYY-MM-DD`）              |
+| テスト結果     | 件数とカバレッジを必ず記載            |
+| 成果物テーブル | 実際の出力ファイルパスを記載          |
+| 複数タスク     | 完了日降順で並べる（最新が上）        |
 
 ### 避けるべきパターン
 
@@ -146,6 +147,21 @@
 - テスト結果・カバレッジの省略
 - 成果物テーブルの省略
 - 日付なしの完了記録
+
+---
+
+## タスク分類
+
+### 差分確認型 NON_VISUAL code task
+
+既存実装の差分確認・回帰確認に特化したタスク種別。
+
+| 項目     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 定義     | 新機能実装ではなく、コード変更なしで仕様書再構成を主論点とするタスク                                     |
+| 適用条件 | 対象機能がすでに実装済みで、仕様書と実コードのずれ是正が目的の場合                                       |
+| Phase 11 | NON_VISUAL証跡（`final-review-result.md` + `manual-test-result.md`）で代替。スクリーンショット取得は不要 |
+| 識別キー | タスク名・仕様書に「差分確認」「回帰確認」「close-out sync」「impl-spec-to-skill-sync」を含む場合に該当  |
 
 ---
 
@@ -166,3 +182,49 @@ node scripts/split-reference.js --analyze
 # 設定に基づいて分割
 node scripts/split-reference.js --split <file> <config.json>
 ```
+
+---
+
+## Canonical/Mirror 原則
+
+### 正本と鏡像の役割分担
+
+スキル一式は 2 つの root に配置される。両者は「常に完全一致（full parity）」でなければならない。
+
+| 役割      | パス              | 編集可否 | 生成方法                                           |
+| --------- | ----------------- | -------- | -------------------------------------------------- |
+| canonical | `.claude/skills/` | 可       | 仕様書作成・スキル更新の**唯一の正本**             |
+| mirror    | `.agents/skills/` | 不可     | `sync-skills-mirror.sh` による canonical からの複製 |
+
+### 運用スクリプト
+
+| スクリプト                                | 役割                                        | exit コード契約                                                                                     |
+| ----------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `.claude/scripts/verify-skills-parity.sh` | `diff -qr` による差分検証                   | 0=OK または bootstrap skip（両 root 不在 / canonical 不在） / 1=mirror 欠損 or 差分検出             |
+| `.claude/scripts/sync-skills-mirror.sh`   | `rsync -a --delete` による canonical→mirror | 0=最終 parity OK / 1=再同期後も差分残存 or `--check-only` 差分検出                                  |
+
+### ガードレール
+
+- **pre-push hook** (`.husky/pre-push`): push 直前に `verify-skills-parity.sh` を実行。NG で push を拒否
+- **session-init hook** (`.claude/hooks/session-init.sh`): セッション開始時に parity 警告を出力（`CLAUDE_SKIP_HEAVY_HOOKS=1` で opt-out 可）
+
+### 復旧手順
+
+parity NG 時は以下を実行する。
+
+```bash
+# 1. 差分を確認
+bash .claude/scripts/verify-skills-parity.sh
+
+# 2. canonical→mirror に再同期
+bash .claude/scripts/sync-skills-mirror.sh
+
+# 3. parity OK を再確認
+bash .claude/scripts/verify-skills-parity.sh
+```
+
+### 禁止事項
+
+- `.agents/skills/` 配下の直接編集（mirror は canonical の派生物であり SSoT ではない）
+- pre-push hook のスキップ（`--no-verify`）
+- mirror のみ先行更新（必ず canonical から同期する）

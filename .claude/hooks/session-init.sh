@@ -56,6 +56,19 @@ if git -C "$PROJECT_DIR" rev-parse --git-dir &>/dev/null; then
   fi
 fi
 
+# ---- TASK-AGENTS-SKILLS-FULL-SYNC-001: parity warning ----
+if [ "${CLAUDE_SKIP_HEAVY_HOOKS:-0}" != "1" ]; then
+  PARITY_SCRIPT="$PROJECT_DIR/.claude/scripts/verify-skills-parity.sh"
+  if [ -f "$PARITY_SCRIPT" ]; then
+    PARITY_RESULT=$(bash "$PARITY_SCRIPT" 2>&1 || true)
+    if echo "$PARITY_RESULT" | grep -q "NG"; then
+      echo "⚠️  [session-init] .agents/skills が .claude/skills と差分があります。"
+      echo "   修正: bash .claude/scripts/sync-skills-mirror.sh"
+    fi
+  fi
+fi
+# ---- end parity warning ----
+
 # post-merge フックの自動インストールチェック
 HOOK_PATH="$(git -C "$PROJECT_DIR" rev-parse --git-path hooks/post-merge 2>/dev/null || true)"
 INSTALL_SCRIPT="$(git -C "$PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null || true)/.claude/scripts/install-git-hooks.sh"
