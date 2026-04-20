@@ -1,0 +1,23 @@
+# Phase 10 最終レビュー prompt
+
+本レビューは TASK-EVALS-CONSUMER-AUDIT-001 Phase 10 の最終レビューゲートである。
+
+検証観点:
+1. Phase 5〜9 の必須成果物存在
+2. AC-1〜AC-8 充足
+3. QG-3〜QG-8 PASS
+4. AC-6 解除条件 4 項目
+5. spec-alignment-report.md の総括
+
+主参照:
+- outputs/phase-5/consumer-audit-report.md
+- outputs/phase-5/evals-field-map.md
+- outputs/phase-6/dual-root-parity.md
+- outputs/phase-7/coverage-recheck.md
+- outputs/phase-8/schema-change-guide.md
+- outputs/phase-9/spec-alignment-report.md
+
+出力:
+- final-review-result.md 相当のレビュー結果
+- AC-6 判定の pass / fail 根拠
+- 戻り先 Phase があれば明示

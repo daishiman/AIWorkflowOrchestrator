@@ -1,0 +1,77 @@
+{
+  "task_id": "TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001",
+  "task_name": "IPC handler registration snapshot coverage 拡張",
+  "taskType": "NON_VISUAL",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "status": "completed",
+  "created_date": "2026-04-19",
+  "updated_date": "2026-04-20",
+  "phases": {
+    "phase_1": {
+      "status": "completed",
+      "outputs": ["handler-inventory.md", "existing-test-map.md"]
+    },
+    "phase_2": {
+      "status": "completed",
+      "outputs": [
+        "priority-matrix.md",
+        "test-pattern-design.md",
+        "wave-plan.md"
+      ]
+    },
+    "phase_3": {
+      "status": "completed",
+      "outputs": ["review-result.md", "gate-decision.md"]
+    },
+    "phase_4": { "status": "completed", "outputs": ["red-test-result.md"] },
+    "phase_5": {
+      "status": "completed",
+      "outputs": ["green-test-result.md", "wave1-channel-counts.md"]
+    },
+    "phase_6": {
+      "status": "completed",
+      "outputs": ["wave2-test-plan.md", "wave3-prereq-check.md"]
+    },
+    "phase_7": { "status": "completed", "outputs": ["coverage-report.md"] },
+    "phase_8": { "status": "completed", "outputs": ["refactoring-log.md"] },
+    "phase_9": {
+      "status": "completed",
+      "outputs": ["quality-check-result.md"]
+    },
+    "phase_10": {
+      "status": "completed",
+      "outputs": ["final-review-result.md"]
+    },
+    "phase_11": {
+      "status": "completed",
+      "outputs": [
+        "manual-test-result.md",
+        "manual-test-checklist.md",
+        "discovered-issues.md"
+      ]
+    },
+    "phase_12": {
+      "status": "completed",
+      "outputs": [
+        "implementation-guide.md",
+        "system-spec-update-summary.md",
+        "documentation-changelog.md",
+        "unassigned-task-detection.md",
+        "skill-feedback-report.md",
+        "phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase_13": {
+      "status": "blocked",
+      "reason": "user approval required",
+      "outputs": [
+        "local-check-result.md",
+        "change-summary.md",
+        "pr-info.md",
+        "pr-creation-result.md"
+      ]
+    }
+  }
+}
