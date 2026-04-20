@@ -18,6 +18,10 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "fs";
 import { join, dirname } from "path";
+import { spawnSync } from "child_process";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
 
 // Phase依存関係マップ (Phase 0〜13)
 // Phase 0は条件付き（外部SDK調査が必要な場合のみ）
@@ -52,6 +56,7 @@ function getDependentPhases(phaseNum) {
 // 引数パース
 function parseArgs(args) {
   const result = { workflow: null, phase: null, artifacts: [] };
+  const knownFlags = ["--workflow", "--phase", "--artifacts"];
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--workflow" && args[i + 1]) {
@@ -68,6 +73,11 @@ function parseArgs(args) {
         return { path: path.trim(), description: description?.trim() || path };
       });
       i++;
+    } else if (args[i].startsWith("--")) {
+      // 未知フラグを拒否
+      console.error(`エラー: 未知のオプション: ${args[i]}`);
+      showUsage();
+      process.exit(1);
     }
   }
 
@@ -230,6 +240,134 @@ function updatePhaseReferences(
   console.log(`  ✅ Phase ${targetPhase} (${phaseFile}) を更新`);
 }
 
+// S1: index.md のPhase表のステータスを completed に更新
+function updateIndexMdPhaseTable(workflowDir, phaseNum) {
+  const indexPath = join(workflowDir, "index.md");
+  if (!existsSync(indexPath)) {
+    console.log("  ℹ️  index.md が見つかりません（スキップ）");
+    return;
+  }
+
+  let content;
+  try {
+    content = readFileSync(indexPath, "utf-8");
+  } catch {
+    console.warn("⚠️  WARNING: index.md を読み取れませんでした");
+    return;
+  }
+
+  // | N | ... | status | 形式の行のstatus列を completed に置換
+  // Phase番号が指定のphaseNumと一致する行のみ更新
+  const lines = content.split("\n");
+  let changed = false;
+  const updated = lines.map((line) => {
+    // Phase列が数字でphaseNumと一致する行を検索
+    const match = line.match(/^(\|\s*)(\d+)(\s*\|.+\|\s*)(\S+)(\s*\|?\s*)$/);
+    if (match && parseInt(match[2], 10) === phaseNum) {
+      changed = true;
+      return `${match[1]}${match[2]}${match[3]}completed${match[5]}`;
+    }
+    return line;
+  });
+
+  if (!changed) {
+    console.log(`  ℹ️  index.md: Phase ${phaseNum} の行が見つかりませんでした（スキップ）`);
+    return;
+  }
+
+  try {
+    writeFileSync(indexPath, updated.join("\n"), "utf-8");
+    console.log(`  ✅ index.md の Phase ${phaseNum} ステータスを completed に更新`);
+  } catch (err) {
+    console.warn(`⚠️  WARNING: index.md の書き込みに失敗しました: ${err.message}`);
+  }
+}
+
+// S4: phase-N-*.md frontmatterのステータスを completed に更新
+function updatePhaseFrontmatter(workflowDir, phaseNum) {
+  let files;
+  try {
+    files = readdirSync(workflowDir);
+  } catch {
+    console.warn(`⚠️  WARNING: ワークフローディレクトリを読み取れません: ${workflowDir}`);
+    return;
+  }
+
+  const phaseFile = files.find(
+    (f) => f.startsWith(`phase-${phaseNum}-`) && f.endsWith(".md"),
+  );
+
+  if (!phaseFile) {
+    console.log(
+      `  ℹ️  Phase ${phaseNum} の phase-N-*.md ファイルが見つかりません（スキップ）`,
+    );
+    return;
+  }
+
+  const filePath = join(workflowDir, phaseFile);
+  let content;
+  try {
+    content = readFileSync(filePath, "utf-8");
+  } catch {
+    console.warn(`⚠️  WARNING: ${phaseFile} を読み取れませんでした`);
+    return;
+  }
+
+  // | ステータス | xxx | の行を | ステータス | completed | に置換
+  const updated = content.replace(
+    /^(\|\s*ステータス\s*\|\s*)\S+(\s*\|)$/m,
+    `$1completed$2`,
+  );
+
+  if (updated === content) {
+    console.log(`  ℹ️  ${phaseFile}: ステータス行が見つかりませんでした（スキップ）`);
+    return;
+  }
+
+  try {
+    writeFileSync(filePath, updated, "utf-8");
+    console.log(`  ✅ ${phaseFile} のステータスを completed に更新`);
+  } catch (err) {
+    console.warn(`⚠️  WARNING: ${phaseFile} の書き込みに失敗しました: ${err.message}`);
+  }
+}
+
+// outputs/artifacts.json を更新（失敗時はthrowしてrollback対象とする）
+function saveOutputsArtifacts(workflowDir, phaseNum) {
+  const outputsDir = join(workflowDir, "outputs");
+  const outputsArtifactsPath = join(outputsDir, "artifacts.json");
+
+  if (!existsSync(outputsDir)) {
+    try {
+      mkdirSync(outputsDir, { recursive: true });
+    } catch {
+      // ignore
+    }
+  }
+
+  let outputsArtifacts = { phases: {} };
+  if (existsSync(outputsArtifactsPath)) {
+    try {
+      outputsArtifacts = JSON.parse(readFileSync(outputsArtifactsPath, "utf-8"));
+      if (!outputsArtifacts.phases) {
+        outputsArtifacts.phases = {};
+      }
+    } catch {
+      outputsArtifacts = { phases: {} };
+    }
+  }
+
+  outputsArtifacts.phases[phaseNum] = {
+    ...(outputsArtifacts.phases[phaseNum] || {}),
+    status: "completed",
+    completedAt: new Date().toISOString(),
+  };
+
+  // 失敗時はthrow（呼び出し元でrollbackする）
+  writeFileSync(outputsArtifactsPath, JSON.stringify(outputsArtifacts, null, 2), "utf-8");
+  console.log(`✅ outputs/artifacts.json を更新: ${outputsArtifactsPath}`);
+}
+
 // メイン処理
 function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -259,6 +397,44 @@ function main() {
     process.exit(1);
   }
 
+  // Phase番号の存在確認: phase-N-*.md が存在しない場合はエラー
+  const phaseNum = parseInt(args.phase, 10);
+  const files = readdirSync(args.workflow);
+  const phaseFileExists = files.some(
+    (f) => f.startsWith(`phase-${phaseNum}-`) && f.endsWith(".md"),
+  );
+
+  if (!phaseFileExists) {
+    // outputs/phase-N/ ディレクトリも存在しない場合はエラー
+    const outputsPhaseDir = join(args.workflow, `outputs/phase-${phaseNum}`);
+    if (!existsSync(outputsPhaseDir)) {
+      console.error(`Error: Phase ${phaseNum} のファイルが見つかりません`);
+      process.exit(1);
+    }
+  }
+
+  // 事前 parity check: 既存のdriftがある場合はエラー
+  const validatorPath = join(dirname(__filename), "validate-closeout-parity.js");
+  if (existsSync(validatorPath)) {
+    const preCheck = spawnSync("node", [validatorPath, "--workflow", args.workflow], {
+      encoding: "utf-8",
+    });
+    if (preCheck.status === 1) {
+      // PARITY_DRIFT: 既存のdriftがあるため完了処理を拒否
+      console.error(`Error: 完了処理を実行する前に parity drift が検出されました。`);
+      console.error(preCheck.stdout);
+      console.error("parity drift を修正してから完了処理を実行してください。");
+      process.exit(1);
+    }
+    // exit 2 (MISSING_SOURCE) や exit 3 (INVALID_STATUS_VALUE) は警告のみで続行
+    if (preCheck.status === 2) {
+      console.warn("⚠️  WARNING: parity check に必要なソースファイルが欠損しています（続行）");
+    }
+    if (preCheck.status === 3) {
+      console.warn("⚠️  WARNING: parity check で無効なステータス値を検出しました（続行）");
+    }
+  }
+
   console.log(`\n🚀 Phase ${args.phase} 完了処理を開始\n`);
   console.log(`ワークフロー: ${args.workflow}`);
   console.log(`成果物: ${args.artifacts.length}個\n`);
@@ -273,10 +449,44 @@ function main() {
   // outputs ディレクトリの存在を検証（WARNING のみ、処理は続行）
   validatePhaseOutputs(args.workflow, args.phase);
 
-  // artifacts.json を更新
+  // artifacts.json を更新（S2: root artifacts.json）
   const artifacts = loadArtifacts(args.workflow);
+  // rollback用に変更前の内容を保存
+  const artifactsPath = join(args.workflow, "artifacts.json");
+  const rootJsonBefore = existsSync(artifactsPath)
+    ? readFileSync(artifactsPath, "utf-8")
+    : null;
+
   registerPhaseArtifacts(artifacts, args.phase, args.artifacts);
   saveArtifacts(args.workflow, artifacts);
+
+  // outputs/artifacts.json を更新 (S3): 失敗時はrollback
+  try {
+    saveOutputsArtifacts(args.workflow, args.phase);
+  } catch (err) {
+    console.error(`Error: outputs/artifacts.json の書き込みに失敗しました: ${err.message}`);
+    // root artifacts.json をロールバック
+    if (rootJsonBefore !== null) {
+      try {
+        writeFileSync(artifactsPath, rootJsonBefore, "utf-8");
+        console.error("root artifacts.json をロールバックしました");
+      } catch {
+        console.error("root artifacts.json のロールバックにも失敗しました");
+      }
+    } else {
+      // 元々なかった場合はファイルを削除する必要があるが、ここではエラーのみ
+      console.error("root artifacts.json は元々存在しなかったため、ロールバックをスキップします");
+    }
+    process.exit(1);
+  }
+
+  // S1: index.md Phase表のステータスを更新
+  console.log("\n📝 index.md のPhase表ステータスを更新:");
+  updateIndexMdPhaseTable(args.workflow, phaseNum);
+
+  // S4: phase-N-*.md frontmatterのステータスを更新
+  console.log("\n📝 Phase MDファイルのステータスを更新:");
+  updatePhaseFrontmatter(args.workflow, phaseNum);
 
   // 依存Phaseを更新
   updateDependentPhases(args.workflow, args.phase, args.artifacts);

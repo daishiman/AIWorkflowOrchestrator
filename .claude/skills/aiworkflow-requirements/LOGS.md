@@ -4,6 +4,23 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
+
+- validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
+- complete-phase.js に S1〜S4 同値更新・rollback 拡張
+- verify-all-specs.js に parity gate 組込み
+- lessons-learned-current-2026-04.md に L-CLOSEOUT-PARITY-001 追加
+- task-workflow-completed.md に完了記録追加
+- error-handling-core.md に parity guard エラーコード分類追加
+- quality-requirements.md に Phase 12 必須品質ゲート追加
+
+| 項目     | 内容                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / parity guard / workflow quality                                            |
+| 変更対象 | references/lessons-learned-current-2026-04.md / references/task-workflow-completed.md  |
+| 結果     | Phase 12 close-out の SSOT 崩壊を機械的に防止するゲートを確立                         |
+| 検証     | dogfooding PARITY_OK / exit=0 確認済み                                                  |
+
 ## 2026-04-19: TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out（skill-feedback 反映）
 
 | 項目     | 内容                                                                                                                                                                                                                              |
