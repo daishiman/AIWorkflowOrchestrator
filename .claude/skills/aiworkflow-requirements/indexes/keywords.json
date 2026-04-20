@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3184,
+  "totalKeywords": 3187,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1734,6 +1734,7 @@
     ],
     "GUARD": [
       "api-ipc-agent-core.md",
+      "error-handling-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
@@ -1754,6 +1755,7 @@
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "quality-requirements.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04e.md",
@@ -2060,6 +2062,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
+      "error-handling-core.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-skill-editor.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
@@ -2781,6 +2784,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "architecture-implementation-patterns-shared.md",
+      "error-handling-core.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
@@ -2826,6 +2830,7 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "quality-requirements.md",
       "quick-reference-search-patterns-ipc-infra.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
       "security-api-electron.md",
@@ -5247,6 +5252,7 @@
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "phase-12-documentation-retrospective.md",
+      "quality-requirements.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed.md",
@@ -6007,6 +6013,41 @@
       "error-handling-core.md",
       "interfaces-agent-sdk-executor-core.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md"
+    ],
+    "parity": [
+      "error-handling-core.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-current-2026-04.md",
+      "spec-guidelines.md"
+    ],
+    "guard": [
+      "error-handling-core.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-current-2026-04.md",
+      "quick-reference-search-patterns-ipc-infra.md",
+      "task-workflow-completed-recent-2026-04g.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "WORKFLOW": [
+      "error-handling-core.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-recent.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "quality-requirements.md"
+    ],
+    "CLOSEOUT": [
+      "error-handling-core.md",
+      "lessons-learned-current-2026-04.md",
+      "quality-requirements.md"
+    ],
+    "PARITY": [
+      "error-handling-core.md",
+      "lessons-learned-current-2026-04.md",
+      "quality-requirements.md"
     ],
     "TokenRefreshScheduler": [
       "error-handling-details.md"
@@ -8251,12 +8292,6 @@
     "engine": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
-    "WORKFLOW": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
     "ENGINE": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
@@ -8341,15 +8376,6 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-docs-runtime-ipc-contract.md"
     ],
-    "guard": [
-      "lessons-learned-auth-settings-degradation-guard.md",
-      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
-      "quick-reference-search-patterns-ipc-infra.md",
-      "task-workflow-completed-recent-2026-04g.md",
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
-    ],
     "APIKEY": [
       "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -8398,10 +8424,6 @@
     "mirror": [
       "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "spec-guidelines.md"
-    ],
-    "parity": [
-      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
       "spec-guidelines.md"
     ],
     "導入": [
@@ -8857,6 +8879,23 @@
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
+    ],
+    "close": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
+    ],
+    "out": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md",
+      "task-workflow-phases.md"
     ],
     "ON": [
       "lessons-learned-current-2026-04.md"
@@ -9437,19 +9476,6 @@
     "HARNESS": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "ui-ux-panels.md"
-    ],
-    "close": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed.md"
-    ],
-    "out": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed.md",
-      "task-workflow-phases.md"
     ],
     "ESBUILD": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -13163,6 +13189,9 @@
     ],
     "可用性": [
       "quality-requirements-details.md"
+    ],
+    "必須品質ゲート": [
+      "quality-requirements.md"
     ],
     "検索パターン集": [
       "quick-reference-search-patterns-code.md",

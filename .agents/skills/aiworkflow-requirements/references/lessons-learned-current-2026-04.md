@@ -4,6 +4,20 @@
 > 前半記録（2026-03-25～2026-04-08）: [lessons-learned-2026-04-early.md](lessons-learned-2026-04-early.md)
 > CI計測テンプレート教訓（2026-04-15）: [lessons-learned-ci-measurement-template-2026-04.md](lessons-learned-ci-measurement-template-2026-04.md)
 
+## L-CLOSEOUT-PARITY-001: Phase 12 close-out parity guard
+
+- 発見: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001 Phase 12 再監査
+- 事象: outputs/artifacts.json が completed を主張していても root 側が pending のまま残り SSOT 崩壊
+- 対策: validate-closeout-parity.js による三者+phase本文の自動一致検証を Phase 12 必須ゲートに昇格
+- 教訓: close-out 時の status 同値更新は complete-phase.js に一元化し、手動チェックに頼らない
+
+| 項目       | 内容                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | S2（root artifacts.json）と S3（outputs/artifacts.json）の status が手動更新依存で乖離する                                                                               |
+| 解決策     | `complete-phase.js` で S1〜S4 を同時更新し、`validate-closeout-parity.js` で機械検証する                                                                               |
+| 標準ルール | Phase 12 close-out の完了条件: `validate-closeout-parity.js --json` で `code: "PARITY_OK"` / `exitCode: 0` を得ること                                                  |
+| 関連タスク | UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001                                                                                                                                |
+
 ## TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19）
 
 ### L-SC08-001: mode-specific phase が planning に吸収される問題は PHASE_TO_STAGE マップの追記漏れが原因
