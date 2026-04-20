@@ -270,6 +270,9 @@ Claude Code はセッションベースで動作するため、永続的な状�
 - [ ] SKILL.md が500行以内
 - [ ] YAML Frontmatter が有効（name, description, version, level, last_updated, references）
 - [ ] EVALS.json が存在し、有効なJSON
+
+  > **注記（validator=0 件の既知制約）**: 本チェックリストは `.claude/skills/skill-fixture-runner/scripts/validate-skill-structure.js` によって確認される「存在性」「JSON parse 可能性」までを対象とする。EVALS.json の**内部フィールド構造**（schema）を機械的に検証する consumer は現状 0 件である（`validate-schemas.js` は `schemas/*.json` のみを扱う）。このため、フィールド削除 / リネーム時の silent break / NaN 伝播は自動検出されない。schema 変更時は `docs/30-workflows/evals-consumer-audit-001/outputs/phase-8/schema-change-guide.md` §7 の 3 カテゴリ手動検証（静的参照 / dual root 一致 / JSON パース）を必ず実施すること。validator 化タスクは `UNASSIGNED-EVALS-VALIDATOR-GUARD-001` で追跡中。詳細スキーマは [evals-schema-spec.md](./evals-schema-spec.md) を参照。
+
 - [ ] CHANGELOG.md が存在
 - [ ] LOGS.md が存在
 - [ ] scripts/log_usage.js が存在

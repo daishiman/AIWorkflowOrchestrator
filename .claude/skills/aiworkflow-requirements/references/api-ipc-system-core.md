@@ -458,6 +458,55 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 ---
 
+## IPC Handler Registration Testing Contract
+
+### 概要
+IPCハンドラーの登録状態を検証する3点契約（REG-SNAP / REG-DEDUP / REG-COUNT）を定義する。
+チャンネル登録の追加・削除・重複を fail-fast で検出するためのスナップショットテスト体系。
+
+### 契約定義
+
+| 契約名 | 検証内容 | 実装方法 |
+|--------|----------|----------|
+| REG-SNAP | 登録チャンネル一覧がスナップショットと一致 | vitest snapshot |
+| REG-DEDUP | 重複登録がゼロ | Set.size === Array.length |
+| REG-COUNT | 登録数が期待値と一致 | toHaveLength(N) |
+
+### 対象母集団
+
+| 区分 | 件数 | 定義 |
+|------|------|------|
+| direct正本 | 48件 | `registerAllIpcHandlers()` から直接呼ばれる registration unit |
+| auxiliary | 1件 | `registerRuntimeSkillCreatorHandlers` 用の既存 snapshot |
+
+### 実装状況
+
+| Wave | ファイル数 | テスト数 | 状態 |
+|------|-----------|----------|------|
+| Wave 1 | 8 | 41 | 完了（PASS） |
+| Wave 2 | 16 | 80 | 完了（PASS） |
+| Wave 3 | 25 | 未実装 | 計画中（AC-006） |
+
+### テストファイル命名規則
+`*Handlers.registrationSnapshot.test.ts` — `__snapshots__/` 配下に `.snap` ファイルが生成される
+
+### 実行方法（環境制約対応）
+```bash
+ESBUILD_BINARY_PATH=<repo>/node_modules/.pnpm/esbuild@0.21.5/node_modules/@esbuild/darwin-arm64/bin/esbuild \
+VITEST_MAX_FORKS=1 \
+VITEST_FILE_PARALLELISM=false \
+pnpm --dir apps/desktop exec vitest run <wave-files> --reporter=dot
+```
+
+**注意**: 24ファイル一括実行はSIGKILL（メモリ制約）。Wave分割が正本手順。
+
+### 参照
+- 詳細仕様: `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/outputs/phase-12/implementation-guide.md`
+- Wave 3 前提条件: `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/outputs/phase-6/wave3-prereq-check.md`
+- 教訓: `references/lessons-learned-current-2026-04.md` (L-IPC-SNAP-001/002/003)
+
+---
+
 ## 分割ファイル一覧
 
 | ファイル | カテゴリ | 含まれるセクション |

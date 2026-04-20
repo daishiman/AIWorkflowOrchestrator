@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerDashboardHandlers - チャンネル登録スナップショット > REG-SNAP-DASHBOARD-01〜REG-COUNT-DASHBOARD-01: 正常系 > REG-SNAP-DASHBOARD-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "dashboard:get-activity",
+  "dashboard:get-stats",
+]
+`;

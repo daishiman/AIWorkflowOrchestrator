@@ -1,0 +1,78 @@
+{
+  "task_id": "UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001",
+  "task_name": "auth regression coverage realignment",
+  "taskType": "NON_VISUAL",
+  "status": "pending",
+  "created_date": "2026-04-19",
+  "phases": {
+    "phase_1": {
+      "status": "pending",
+      "outputs": [
+        "responsibility-boundary.md",
+        "guarantee-points.md",
+        "spec-extraction-map.md"
+      ]
+    },
+    "phase_2": {
+      "status": "pending",
+      "outputs": ["test-design.md", "test-cases.md"]
+    },
+    "phase_3": {
+      "status": "pending",
+      "outputs": ["design-review-result.md", "thought-method-matrix.md"]
+    },
+    "phase_4": {
+      "status": "pending",
+      "outputs": ["failing-test-list.md"]
+    },
+    "phase_5": {
+      "status": "pending",
+      "outputs": ["changed-files.md"]
+    },
+    "phase_6": {
+      "status": "pending",
+      "outputs": ["coverage-report.md"]
+    },
+    "phase_7": {
+      "status": "pending",
+      "outputs": ["traceability-matrix.md", "coverage-result.md"]
+    },
+    "phase_8": {
+      "status": "pending",
+      "outputs": ["refactoring-summary.md"]
+    },
+    "phase_9": {
+      "status": "pending",
+      "outputs": ["quality-check-result.md"]
+    },
+    "phase_10": {
+      "status": "pending",
+      "outputs": ["final-review-result.md", "release-readiness-checklist.md"]
+    },
+    "phase_11": {
+      "status": "pending",
+      "outputs": ["manual-test-result.md"]
+    },
+    "phase_12": {
+      "status": "pending",
+      "outputs": [
+        "implementation-guide.md",
+        "system-spec-update-summary.md",
+        "documentation-changelog.md",
+        "unassigned-task-detection.md",
+        "skill-feedback-report.md",
+        "phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase_13": {
+      "status": "blocked",
+      "reason": "user approval required",
+      "outputs": [
+        "pr-url.md",
+        "local-check-result.md",
+        "change-summary.md",
+        "pr-info.md"
+      ]
+    }
+  }
+}

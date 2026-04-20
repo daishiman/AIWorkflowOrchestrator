@@ -1,0 +1,36 @@
+===== aiworkflow-requirements =====
+# skill: aiworkflow-requirements
+# left:  .claude/skills/aiworkflow-requirements/EVALS.json
+# right: .agents/skills/aiworkflow-requirements/EVALS.json
+# executed_at: 2026-04-19T08:55:32Z
+
+===== github-issue-manager =====
+# skill: github-issue-manager
+# left:  .claude/skills/github-issue-manager/EVALS.json
+# right: .agents/skills/github-issue-manager/EVALS.json
+# executed_at: 2026-04-19T08:55:53Z
+
+===== int-test-skill =====
+# skill: int-test-skill
+# left:  .claude/skills/int-test-skill/EVALS.json
+# right: .agents/skills/int-test-skill/EVALS.json
+# executed_at: 2026-04-19T08:56:11Z
+
+===== skill-creator =====
+# skill: skill-creator
+# left:  .claude/skills/skill-creator/EVALS.json
+# right: .agents/skills/skill-creator/EVALS.json
+# executed_at: 2026-04-19T08:56:21Z
+
+===== skill-fixture-runner =====
+# skill: skill-fixture-runner
+# left:  .claude/skills/skill-fixture-runner/EVALS.json
+# right: .agents/skills/skill-fixture-runner/EVALS.json
+# executed_at: 2026-04-19T08:56:32Z
+
+===== task-specification-creator =====
+# skill: task-specification-creator
+# left:  .claude/skills/task-specification-creator/EVALS.json
+# right: .agents/skills/task-specification-creator/EVALS.json
+# executed_at: 2026-04-19T08:56:40Z
+

@@ -46,6 +46,7 @@ GitHub Issueを`gh` CLIで操作し、タスク仕様書との双方向連携を
 | **close**    | Issueクローズ              | `close_issue.js`      |
 | **relink**   | Issue↔仕様書再リンク       | `relink_issues.js`    |
 | **label**    | 全Issueにラベル一括付与    | `label_all_issues.js` |
+| **spec-from-closed-issue** | CLOSED Issueから後付け仕様書作成（Part 5参照） | 手動運用 |
 
 ---
 
@@ -302,5 +303,94 @@ dependencies: []
 | ステータス | 未実施 |
 
 **解析**: YAML優先、Markdownテーブルはフォールバック
+
+---
+
+# Part 5: CLOSED Issue 仕様書存続モード（spec-from-closed-issue）
+
+## 概要
+
+通常の基本ワークフロー（Part 1）は「仕様書作成 → Hook で Issue 作成」の一方向。
+一方、以下のようなケースでは **CLOSED Issue に対して後付けで仕様書を作成する** 必要がある:
+
+- 既に CLOSED された Issue の運用正本化（AC 解除根拠の文書化）
+- 監査タスク（NON_VISUAL / docs-only）による過去 Issue の再文書化
+- Issue は閉じたままだが仕様書だけを資産として残したい場合
+
+このモードを **`spec-from-closed-issue`** と呼称する。本モードでは **Issue を reopen しない**。
+
+## 適用判断フロー
+
+```
+Issue を参照する
+    ↓
+Issue の state は CLOSED か？
+    ├─ OPEN   → 基本ワークフロー（Part 1）を使用
+    └─ CLOSED
+          ↓
+    仕様書を後付け作成する必要があるか？
+          ├─ なし → 何もしない（現状維持）
+          └─ あり
+                ↓
+          Issue を reopen する必要があるか？
+                ├─ あり → 通常の update/relink ワークフロー（Part 2）
+                └─ なし → 本モード（spec-from-closed-issue）を使用
+```
+
+## 必須メタ情報（YAML）
+
+`task-specification-creator` の `phase-template-phase1.md` と **フォーマット互換性** を保つため、
+本モードで作成する仕様書のメタ情報には以下を必須とする:
+
+```yaml
+task_id: TASK-EVALS-CONSUMER-AUDIT-001
+issue_number: 2279
+issue_status: CLOSED
+issue_closed_reason: 運用上クローズ済みだが、ユーザー指示により仕様書は作成する
+spec_purpose: AC解除根拠 # または: 運用正本化 / 監査証跡 / 等
+spec_created: true # completed の代替（docs-only モード）
+```
+
+| 項目                  | 必須 | 説明                                                              |
+| --------------------- | ---- | ----------------------------------------------------------------- |
+| `issue_status`        | ✅   | `CLOSED` 固定（reopen しない宣言）                                |
+| `issue_closed_reason` | ✅   | CLOSED の理由と仕様書を作成する根拠                               |
+| `spec_purpose`        | ✅   | 仕様書存続の目的。例: `AC解除根拠` / `運用正本化` / `監査証跡`    |
+| `spec_created`        | 推奨 | docs-only モードで `completed` の代替として使用                   |
+| `task_id`             | ✅   | `phase-template-phase1.md` 互換                                   |
+| `issue_number`        | ✅   | CLOSED Issue 番号                                                 |
+
+## フォーマット互換性
+
+`task-specification-creator` の `references/phase-template-phase1.md` の Phase 1 テンプレートとの差分:
+
+- **追加**: `issue_status` / `issue_closed_reason` / `spec_purpose`
+- **変更**: `status: 未実施` の代わりに `spec_created: true` を採用可能
+- **維持**: `task_id` / `task_name` / `category` / `priority` / `scale` 等の既存フィールド
+
+双方向連携 Hook（`auto-create-issue.sh`）は `issue_status: CLOSED` を検出した場合 **Issue 作成・更新を抑止** する（実装は後続タスクで追加予定。現状は手動運用）。
+
+## 使用例
+
+- **TASK-EVALS-CONSUMER-AUDIT-001**（Issue #2279 CLOSED 維持）
+  - 参照: `docs/30-workflows/evals-consumer-audit-001/design-docs/phase-1-requirements.md`
+  - 理由: AC-6 解除根拠として EVALS consumer 監査結果を仕様書化。Issue は既に CLOSED、reopen 不要。
+
+## Issue reopen せず台帳整合を取る運用
+
+Phase 12 close-out 時、仕様書側の `issue_status` / `spec_created` / `status` 表記と
+ローカル台帳（`docs/30-workflows/issues/issue-<number>.md`）の整合を取りたいが、
+**Issue 本体の state は変更したくない** 場合の運用:
+
+1. 仕様書側で `issue_status: CLOSED` / `spec_created: true` を明記
+2. ローカル台帳ファイル（`docs/30-workflows/issues/issue-<number>.md`）の `status:` を
+   手動で `完了` 相当に更新（例: `status: 完了（docs-only 仕様書化）`）
+3. GitHub 側の state は **変更しない**（`gh issue reopen` も `gh issue close` も不要）
+4. 仕様書の `system-spec-update-summary.md` / `documentation-changelog.md` に
+   本モード利用の旨を cross-reference として記録
+
+> **重要**: `relink_issues.js` はこのユースケース（台帳整合のみ）に流用できる。
+> `--dry-run` で差分確認 → 仕様書側メタ情報書き戻しのみ実行し、Issue state は触らない。
+> `relink_issues.js` ファイル冒頭コメントブロックに同ユースケースを明記してある。
 
 ---

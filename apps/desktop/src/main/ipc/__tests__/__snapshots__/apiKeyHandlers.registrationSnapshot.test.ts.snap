@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerApiKeyHandlers - チャンネル登録スナップショット > REG-SNAP-APIKEY-01〜REG-COUNT-APIKEY-01: 正常系 > REG-SNAP-APIKEY-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "apiKey:delete",
+  "apiKey:list",
+  "apiKey:save",
+  "apiKey:validate",
+]
+`;

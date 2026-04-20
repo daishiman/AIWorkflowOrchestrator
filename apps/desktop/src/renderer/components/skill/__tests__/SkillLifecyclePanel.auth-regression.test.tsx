@@ -12,6 +12,13 @@
  *   TC-02: AccountSection の login() が正常に呼ばれること（正常系保護）
  *   TC-04: authSlice の login() thunk がデバッグコード除去後も正常動作すること
  *   TC-08: authModeSlice 状態変化が auth:login を呼ばないこと
+ *
+ * 追加テストケース（UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001）:
+ *   TC-06相当: AUTH-REGRESS-RAPID-CLICK-06 — rapid click 時に auth:login が呼ばれないこと
+ *   TC-07相当: AUTH-REGRESS-RERENDER-07 — rerender 時に auth:login が呼ばれないこと
+ *   AUTH-REGRESS-HANDLER-GUARANTEE — handler 呼び出し保証点
+ *   AUTH-REGRESS-INTEGRATION-01/02 — 統合境界テスト
+ *   AUTH-REGRESS-EDGE-01〜04 — 境界条件・エッジケース
  */
 
 import "@testing-library/jest-dom/vitest";
@@ -148,6 +155,9 @@ import { SkillLifecyclePanel } from "../SkillLifecyclePanel";
 const mockDetectMode = vi.fn();
 const mockPlanSkill = vi.fn();
 const mockAuthLogin = vi.fn();
+const mockListSessions = vi.fn();
+const mockDeleteSession = vi.fn();
+const mockCleanupExpiredSessions = vi.fn();
 const mockGetWorkflowState = vi.fn();
 const mockOnWorkflowStateChanged = vi.fn();
 const mockGetDisclosureInfo = vi.fn();
@@ -184,6 +194,9 @@ describe("TC-01: SkillLifecyclePanel wizard flow does not call auth:login", () =
     mockGetVerifyDetail.mockResolvedValue({ success: false });
     mockGetWorkflowState.mockResolvedValue({ success: false });
     mockOnWorkflowStateChanged.mockReturnValue(() => {});
+    mockListSessions.mockResolvedValue({ success: true, data: [] });
+    mockDeleteSession.mockResolvedValue(undefined);
+    mockCleanupExpiredSessions.mockResolvedValue(0);
 
     // window.electronAPI.auth.login をスパイとして設定
     (window as Window & { electronAPI?: unknown }).electronAPI = {
@@ -198,6 +211,9 @@ describe("TC-01: SkillLifecyclePanel wizard flow does not call auth:login", () =
       onWorkflowStateChanged: mockOnWorkflowStateChanged,
       getDisclosureInfo: mockGetDisclosureInfo,
       getVerifyDetail: mockGetVerifyDetail,
+      listSessions: mockListSessions,
+      deleteSession: mockDeleteSession,
+      cleanupExpiredSessions: mockCleanupExpiredSessions,
     };
   });
 
@@ -331,7 +347,7 @@ describe("TC-04: authSlice.login thunk works correctly (no debug code)", () => {
 // ============================================================
 
 describe("TC-08: authModeSlice state changes do not trigger unexpected auth:login", () => {
-  it("authModeSlice の setMode('api-key') が auth.login を呼ばず IPC と state を更新すること", async () => {
+  it("authModeSlice の setMode('api-key') が auth.login を呼ばず IPC と state を更新すること [TC-08]", async () => {
     const authModeModule = await import("../../../store/slices/authModeSlice");
     const { createAuthModeSlice, resetAuthModeListenerFlag } = authModeModule;
     resetAuthModeListenerFlag();
@@ -410,5 +426,565 @@ describe("TC-08: authModeSlice state changes do not trigger unexpected auth:logi
     expect(authModeApi?.status).toHaveBeenCalledTimes(1);
     expect(storeRef.current!.mode).toBe("api-key");
     expect(storeRef.current!.status).toEqual(mockStatus);
+  });
+});
+
+// ============================================================
+// TC-06相当: AUTH-REGRESS-RAPID-CLICK-06
+// rapid click — onOpenSkillWizard を連続クリックしても auth:login が呼ばれないこと
+// ============================================================
+
+describe("TC-06: rapid click — onOpenSkillWizard を連続クリックしても auth:login が呼ばれないこと", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      selectedSkillName: null,
+      isExecuting: false,
+      streamingMessages: [],
+      skillExecutionStatus: null,
+      skillError: null,
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
+      handoffGuidance: null,
+    };
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("3回連続クリックしても auth:login が呼ばれないこと", async () => {
+    const mockOnOpenSkillWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={mockOnOpenSkillWizard}
+        skillName="test-skill"
+      />,
+    );
+
+    const button = screen.getByTestId("skill-lifecycle-open-wizard-button");
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+    expect(mockOnOpenSkillWizard).toHaveBeenCalledTimes(3);
+  });
+
+  it("5回連続クリックしても auth:login が呼ばれないこと", async () => {
+    const mockOnOpenSkillWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={mockOnOpenSkillWizard}
+        skillName="test-skill"
+      />,
+    );
+
+    const button = screen.getByTestId("skill-lifecycle-open-wizard-button");
+    for (let i = 0; i < 5; i++) {
+      await act(async () => {
+        fireEvent.click(button);
+      });
+    }
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+    expect(mockOnOpenSkillWizard).toHaveBeenCalledTimes(5);
+  });
+});
+
+// ============================================================
+// TC-07相当: AUTH-REGRESS-RERENDER-07
+// rerender — 再レンダリング時に auth:login が呼ばれないこと
+// ============================================================
+
+describe("TC-07: rerender — 再レンダリング時に auth:login が呼ばれないこと", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      selectedSkillName: null,
+      isExecuting: false,
+      streamingMessages: [],
+      skillExecutionStatus: null,
+      skillError: null,
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
+      handoffGuidance: null,
+    };
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("skillName props 変更による rerender で auth:login が呼ばれないこと", async () => {
+    const { rerender } = render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="skill-a"
+      />,
+    );
+
+    await act(async () => {
+      rerender(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="skill-b"
+        />,
+      );
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("onOpenWizard props 変更による rerender で auth:login が呼ばれないこと", async () => {
+    const { rerender } = render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      rerender(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("store 状態変化（isGenerating: false→true）による rerender で auth:login が呼ばれないこと", async () => {
+    const { rerender } = render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      mockStoreState = { ...mockStoreState, isGenerating: true };
+      rerender(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+});
+
+// ============================================================
+// AUTH-REGRESS-HANDLER-GUARANTEE
+// onOpenSkillWizard / onOpenWizard の auth:login 非混入保証
+// ============================================================
+
+describe("AUTH-REGRESS-HANDLER-GUARANTEE: onOpenSkillWizard/onOpenWizard の auth:login 非混入保証", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      selectedSkillName: null,
+      isExecuting: false,
+      streamingMessages: [],
+      skillExecutionStatus: null,
+      skillError: null,
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
+      handoffGuidance: null,
+    };
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      listSessions: mockListSessions,
+      deleteSession: mockDeleteSession,
+      cleanupExpiredSessions: mockCleanupExpiredSessions,
+    };
+    mockListSessions.mockResolvedValue({ success: true, data: [] });
+    mockDeleteSession.mockResolvedValue(undefined);
+    mockCleanupExpiredSessions.mockResolvedValue(0);
+  });
+
+  afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
+    cleanup();
+  });
+
+  it("onOpenSkillWizard ボタン押下時に onOpenSkillWizard が呼ばれ auth:login が呼ばれないこと [TC-GUARD-01a]", async () => {
+    const mockOnOpenSkillWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={mockOnOpenSkillWizard}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-open-wizard-button"));
+    });
+
+    expect(mockOnOpenSkillWizard).toHaveBeenCalledTimes(1);
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("onOpenWizard ボタン押下時に onOpenWizard が呼ばれ auth:login が呼ばれないこと [TC-GUARD-01b]", async () => {
+    const mockOnOpenWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={mockOnOpenWizard}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-open-wizard"));
+    });
+
+    expect(mockOnOpenWizard).toHaveBeenCalledTimes(1);
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("session-start-new-btn 押下時に deleteSession と onOpenWizard が呼ばれ auth:login が呼ばれないこと [TC-GUARD-01c]", async () => {
+    const resumableSession = {
+      checkpointId: "checkpoint-001",
+      sessionId: "session-001",
+      planId: "plan-001",
+      checkpointType: "review-ready" as const,
+      currentPhase: "review" as const,
+      startedAt: Date.now() - 60_000,
+      createdAt: Date.now() - 60_000,
+      updatedAt: Date.now(),
+      compatibility: {
+        status: "compatible" as const,
+        reasons: [],
+        warnings: [],
+      },
+    };
+    const mockOnOpenWizard = vi.fn();
+    mockListSessions.mockResolvedValue({
+      success: true,
+      data: [resumableSession],
+    });
+
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={mockOnOpenWizard}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
+      />,
+    );
+
+    const startNewButton = await screen.findByTestId("session-start-new-btn");
+    await act(async () => {
+      fireEvent.click(startNewButton);
+    });
+
+    expect(mockDeleteSession).toHaveBeenCalledWith("checkpoint-001");
+    expect(mockOnOpenWizard).toHaveBeenCalledTimes(1);
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+});
+
+// ============================================================
+// AUTH-REGRESS-INTEGRATION-01/02: 統合境界テスト
+// ============================================================
+
+describe("AUTH-REGRESS-INTEGRATION-01: wizard 起動先を含む統合境界で auth:login が混入しないこと", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      selectedSkillName: null,
+      isExecuting: false,
+      streamingMessages: [],
+      skillExecutionStatus: null,
+      skillError: null,
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
+      handoffGuidance: null,
+    };
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("onOpenSkillWizard 起動後も auth:login が呼ばれないこと", async () => {
+    const mockOnOpenSkillWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={mockOnOpenSkillWizard}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-open-wizard-button"));
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("onOpenWizard 起動後も wizard 境界で auth:login が呼ばれないこと", async () => {
+    const mockOnOpenWizard = vi.fn();
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={mockOnOpenWizard}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-open-wizard"));
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+});
+
+describe("AUTH-REGRESS-INTEGRATION-02: マウント・アンマウント境界で auth:login が呼ばれないこと", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("マウント直後に auth:login が呼ばれないこと", async () => {
+    await act(async () => {
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+
+  it("アンマウント（cleanup）後に auth:login が呼ばれないこと", async () => {
+    await act(async () => {
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+    });
+
+    await act(async () => {
+      cleanup();
+    });
+
+    expect(mockAuthLogin).not.toHaveBeenCalled();
+  });
+});
+
+// ============================================================
+// AUTH-REGRESS-EDGE: 境界条件・エッジケース
+// ============================================================
+
+describe("AUTH-REGRESS-EDGE: 境界条件・エッジケースでの auth:login 非発火保証", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      selectedSkillName: null,
+      isExecuting: false,
+      streamingMessages: [],
+      skillExecutionStatus: null,
+      skillError: null,
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
+      handoffGuidance: null,
+    };
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      auth: { login: mockAuthLogin },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  describe("AUTH-REGRESS-EDGE-01: skillError 状態での wizard 起動", () => {
+    it("skillError がある状態でも onOpenSkillWizard クリックで auth:login が呼ばれないこと", async () => {
+      mockStoreState = { ...mockStoreState, skillError: "テストエラー" };
+
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-open-wizard-button"),
+        );
+      });
+
+      expect(mockAuthLogin).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("AUTH-REGRESS-EDGE-02: isGenerating 状態での rapid click", () => {
+    it("isGenerating=true の状態で連続クリックしても auth:login が呼ばれないこと", async () => {
+      mockStoreState = { ...mockStoreState, isGenerating: true };
+
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={vi.fn()}
+          skillName="test-skill"
+        />,
+      );
+
+      const button = screen.getByTestId("skill-lifecycle-open-wizard-button");
+      await act(async () => {
+        fireEvent.click(button);
+      });
+      await act(async () => {
+        fireEvent.click(button);
+      });
+
+      expect(mockAuthLogin).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("AUTH-REGRESS-EDGE-03: onOpenSkillWizard に空の関数を渡したケース", () => {
+    it("onOpenSkillWizard が空の arrow function でも auth:login が呼ばれないこと", async () => {
+      render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={() => {}}
+          skillName="test-skill"
+        />,
+      );
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-open-wizard-button"),
+        );
+      });
+
+      expect(mockAuthLogin).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("AUTH-REGRESS-EDGE-04: 複数回 rerender 後の状態安定性", () => {
+    it("3回以上 rerender 後も auth:login が呼ばれず onOpenSkillWizard クリックが機能すること", async () => {
+      const mockOnOpenSkillWizard = vi.fn();
+      const { rerender } = render(
+        <SkillLifecyclePanel
+          onClose={vi.fn()}
+          onOpenWizard={vi.fn()}
+          onOpenSkillWizard={mockOnOpenSkillWizard}
+          skillName="skill-a"
+        />,
+      );
+
+      for (const name of ["skill-b", "skill-c", "skill-d"]) {
+        await act(async () => {
+          rerender(
+            <SkillLifecyclePanel
+              onClose={vi.fn()}
+              onOpenWizard={vi.fn()}
+              onOpenSkillWizard={mockOnOpenSkillWizard}
+              skillName={name}
+            />,
+          );
+        });
+      }
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-open-wizard-button"),
+        );
+      });
+
+      expect(mockAuthLogin).not.toHaveBeenCalled();
+      expect(mockOnOpenSkillWizard).toHaveBeenCalledTimes(1);
+    });
   });
 });

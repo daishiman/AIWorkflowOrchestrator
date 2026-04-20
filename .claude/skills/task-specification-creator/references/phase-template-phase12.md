@@ -44,7 +44,22 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 | `unassigned-task-detection.md` | 0件でも summary を残す |
 | `skill-feedback-report.md` | 改善点 or 改善点なし |
 | `phase12-task-spec-compliance-check.md` | Task 12-1〜12-6 の準拠チェック |
-| `phase12-task-spec-compliance-check.md` | Task 12-1〜12-5 の準拠チェック |
+
+### canonical N 成果物 vs 必須 6 成果物の分離（PROPOSAL-TSC-03 由来 / P12-R2 対策）
+
+Phase 12 の成果物は 2 種類存在する。**混在させず、canonical N 成果物は Phase 12 へコピーせずパス参照に留める**。
+
+| カテゴリ | 定義 | Phase 12 での扱い | 例 |
+| -------- | ---- | ----------------- | -- |
+| **必須 6 成果物（Phase 12 固定）** | 上表の 6 ファイル。全 workflow 共通の close-out 成果物 | `outputs/phase-12/` に物理配置 | `implementation-guide.md` 他 5 件 |
+| **canonical N 成果物（workflow 固有）** | Phase 4/5/6/8 で生成した workflow 固有成果物（監査タスクでは consumer-audit-report / field-map / dual-root-parity / schema-change-guide 等） | **Phase 12 へコピーせず**、`outputs/phase-5/...` 等のパス参照のみで引用 | `outputs/phase-5/consumer-audit-report.md`、`outputs/phase-6/dual-root-parity.md` |
+
+**P12-R2 リスク対策（canonical 重複禁止）ルール**:
+
+- canonical N 成果物を `outputs/phase-12/` 配下にコピーして増殖させない
+- `implementation-guide.md` / `system-spec-update-summary.md` 内では **相対パス参照**（例: `../phase-5/consumer-audit-report.md`）で引用する
+- 監査タスクでの canonical N 成果物一覧は [phase-template-audit-task.md](phase-template-audit-task.md) §canonical N 成果物 vs 必須 6 成果物の区別を参照
+- `documentation-changelog.md` には **参照したパスのみ** を列挙し、コピー元/先の二重記載を避ける
 
 ## 設計タスク向け補足（SF-02, SF-03対応）
 
@@ -98,6 +113,47 @@ rg -n "仕様策定のみ|実行予定|保留として記録" \
 | 完了済み standalone UT | `docs/30-workflows/completed-tasks/*.md` |
 | legacy | `docs/30-workflows/completed-tasks/unassigned-task/` |
 
+### 未タスク配置先決定フロー（PROPOSAL-TSC-04 由来、If-Then-Else 集約）
+
+複数ドキュメントに分散していた判定基準を 1 枚に集約する。Phase 12 Task 12-4 で必ず参照すること。
+
+```
+[未タスクを検出]
+     │
+     ▼
+Q1: 現在のワークフロー自体が既に completed-tasks/<workflow>/ に移管済みか？
+     │
+     ├─ YES ─────────────────────────────────────────────────────────────────────┐
+     │                                                                           │
+     │   Q2: その workflow に固有の継続 backlog か（他 workflow でも再利用しない）？
+     │       │                                                                   │
+     │       ├─ YES → docs/30-workflows/completed-tasks/<workflow>/unassigned-task/
+     │       │                                                                   │
+     │       └─ NO  → Q3 へ                                                      │
+     │                                                                           │
+     └─ NO ─→ Q3: 未タスク自体が既に完了しているか（standalone UT）？            │
+             │                                                                   │
+             ├─ YES → docs/30-workflows/completed-tasks/*.md（standalone）       │
+             │                                                                   │
+             └─ NO  → docs/30-workflows/unassigned-task/（デフォルト）           │
+                                                                                 │
+     [legacy 配置]: 2025 年以前の未タスクは docs/30-workflows/completed-tasks/unassigned-task/ に残存
+```
+
+**判定基準の明示（Q1〜Q3 の具体的条件）**:
+
+| 判定項目 | 判定条件 | 出力ディレクトリ |
+| -------- | -------- | ---------------- |
+| Q1: workflow completed 済み + workflow 固有 backlog | 現 workflow が `completed-tasks/<workflow>/` 配下にあり、かつ未タスクが「その workflow の続き」として定義される | `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` |
+| Q3 YES: 未タスク自体が standalone で完了 | 未タスクが一度 open で作成されたが、本 Phase 12 内で同 wave 解消 | `docs/30-workflows/completed-tasks/*.md`（ファイル名 = 未タスク ID） |
+| Q3 NO: デフォルト（通常の open 未タスク） | 上記以外 | `docs/30-workflows/unassigned-task/` |
+| legacy | 2025 年以前に生成された未タスクのみ | `docs/30-workflows/completed-tasks/unassigned-task/`（新規作成は禁止） |
+
+**補足（unassigned-task-detection-guide.md との関係）**:
+
+- 詳細な検出パターン（型定義→実装 / 契約→テスト / UI 仕様→コンポーネント / 仕様書間差異→設計決定）は [unassigned-task-detection-guide.md](unassigned-task-detection-guide.md) を参照。
+- 本節（配置先決定フロー）と detection-guide（検出パターン）の 2 軸を同時に使う：検出パターンで「何を未タスクとして認識するか」、配置先フローで「どこに置くか」を決める。
+
 **確認コマンド（Phase 12 完了前に必ず実行）**:
 
 ```bash
@@ -133,6 +189,27 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 | NON_VISUAL + new | `outputs/phase-11/manual-test-result.md`（既存ルール） |
 | VISUAL（任意モード） | screenshot + `manual-test-result.md`（既存ルール） |
 
+## NON_VISUAL 判定時の artifacts.json 2ファイル同期（[UT-LIFECYCLE-FB-1]）
+
+`taskType: "NON_VISUAL"` と判定した場合、以下の **2ファイル両方** に同期することを必須とする。
+`index.md` の更新のみで完了とした場合、`outputs/artifacts.json` との不一致が生じる。
+
+| ファイル | 場所 | 更新内容 |
+| --- | --- | --- |
+| `artifacts.json` | ワークフロールート | `"taskType": "NON_VISUAL"` を追加 |
+| `outputs/artifacts.json` | `outputs/` 直下 | 同上 |
+
+**確認コマンド（Phase 12 完了前に必ず実行）**:
+
+```bash
+grep -n "taskType" \
+  docs/30-workflows/{{FEATURE_NAME}}/artifacts.json \
+  docs/30-workflows/{{FEATURE_NAME}}/outputs/artifacts.json
+# 両ファイルに "NON_VISUAL" が出力されることを確認
+```
+
+---
+
 ## Phase 3 前の実行基盤確認（必須チェック）
 
 実装前に以下を確認する。実行基盤が壊れると Phase 4〜11 の検証が全停止する。
@@ -165,6 +242,7 @@ grep -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts
 ## 関連ガイド
 
 - [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-6 の詳細手順
+- [phase-template-audit-task.md](phase-template-audit-task.md) — NON_VISUAL / 監査タスクの Phase 再解釈マップ
 - [spec-update-workflow.md](spec-update-workflow.md) — Step 1/2 の実行フロー
 - [spec-update-validation-matrix.md](spec-update-validation-matrix.md) — 完了判定コマンド
 - [phase-11-12-guide.md](phase-11-12-guide.md) — Phase 12 完了条件チェックリスト（全項目）

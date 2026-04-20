@@ -4,6 +4,42 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19: TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out（skill-feedback 反映）
+
+| 項目     | 内容                                                                                                                                                                                                                              |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID | TASK-EVALS-CONSUMER-AUDIT-001                                                                                                                                                                                                     |
+| 操作     | skill-feedback 反映（PROPOSAL-AWR-01〜04 実施 + canonical 4 成果物参照）                                                                                                                                                         |
+| 変更対象 | 新規: `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md`。更新: `references/claude-code-overview.md`（Skill 作成時チェックリスト §validator=0 件注記）、`references/task-workflow-completed.md`（完了記録）、`indexes/resource-map.md`（EVALS リソース登録）、`indexes/keywords.json`（EVALS キーワード追加）、`indexes/topic-map.md`（generate-index 再生成）、`SKILL.md`（description 縮小 / 変更履歴追加）、`LOGS.md`（本エントリ）                                                                         |
+| canonical 4 成果物 | `docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md` / `phase-5/evals-field-map.md` / `phase-6/dual-root-parity.md` / `phase-8/schema-change-guide.md`                                                   |
+| 必須 6 成果物 | `outputs/phase-12/{phase12-task-spec-compliance-check.md,system-spec-update-summary.md,documentation-changelog.md,unassigned-task-detection.md,skill-feedback-report.md,completed-tasks-record.md}` 全件生成済み                                               |
+| 未タスク7件 | UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 / -QUALITY-INSIGHTS-DOCUMENT-001 / -VALIDATOR-ZERO-DOCUMENT-001 / -SCHEMA-DIALECT-UNIFICATION-001 / -MIRROR-RESOURCE-MAP-CROSS-ROOT-LINK-001 / -SKILL-SCANNER-EVALS-CONTENT-VALIDATE-001 / -SKILL-FIXTURE-RUNNER-EVALS-SCHEMA-VALIDATE-001（`docs/30-workflows/unassigned-task/` 配置済み）           |
+| 結果     | success                                                                                                                                                                                                                          |
+| 検証     | `node scripts/generate-index.js` / `node scripts/validate-structure.js` 実行                                                                                                                                                      |
+| 備考     | Phase 12 Task 5 `skill-feedback-report.md` PROPOSAL-AWR-01（EVALS スキーマ正本記述）/ AWR-02（インデックス更新）/ AWR-03（consumer 表記統一）/ AWR-04（SKILL.md description Progressive Disclosure 準拠）を実施。`.agents/` ミラーは後続 wave で同期。 |
+
+### 変更詳細
+
+- `references/evals-schema-spec.md` 新規作成: camelCase v2 / snake_case v1 / consumer 一覧 / schema 変更手順 / qualityInsights / validator=0 件 既知制約 の 8 章構成
+- `references/claude-code-overview.md` 272 行目直下に `validator=0 件` 注記を追加（`UNASSIGNED-EVALS-VALIDATOR-GUARD-001` への追跡参照）
+- `references/lessons-learned-evals-consumer-audit-001.md` 新規作成: L-EVALS-001〜005（正本 coverage 穴 / canonical vs 必須 6 / NON_VISUAL Phase-11 再解釈 / dual root bit-for-bit 検証 / spec_created 採用根拠）
+- `indexes/resource-map.md` に「EVALS schema変更前 consumer全特定（TASK-EVALS-CONSUMER-AUDIT-001）」行を追加、`evals-schema-spec.md` をリソース登録
+- `indexes/keywords.json` 手動追加キーワード: EVALS, EVALS.json, currentLevel, current_level, levelHistory, levels, qualityInsights, phaseMetrics, validator-zero, schema-change-guide, consumer-audit, dual-root-parity, evals-field-map
+- `SKILL.md` description を 200〜400 字規模へ縮小し、trigger キーワード群を `indexes/keywords.json` へ移行
+
+---
+
+## 2026-04-19: impl-spec-to-skill-sync（TASK-UT-9I-001 反映）
+
+| 項目 | 内容 |
+| --- | --- |
+| 操作 | spec-reflection / lessons-learned 新規作成 |
+| 変更対象 | `references/lessons-learned-skill-docs-runtime-ipc-contract.md`（新規作成）, `SKILL.md`（TASK-UT-9I-001 エントリ追加）, `references/lessons-learned-current-2026-04.md`（L-SC08-004 追加）, `indexes/resource-map.md`（TASK-UT-9I-001 参照追加） |
+| 結果 | success |
+| 備考 | Phase-12 全5タスク準拠確認済み。スキル未反映だった TASK-UT-9I-001 の IPC error contract 教訓を体系化 |
+
+---
+
 ## 2026-04-19: TASK-AGENTS-SKILLS-FULL-SYNC-001（canonical/mirror full parity guard 導入）
 
 | 項目         | 内容                                                                                                                                                             |
@@ -2947,6 +2983,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
+## 2026-04-19 - TASK-SW-CANCEL-003 close-out sync
+
+### 変更内容
+
+- `references/task-workflow-completed.md` に TASK-SW-CANCEL-003 完了記録を追加
+- `docs/30-workflows/p03-seq-CANCEL-003/` の `index.md` / `artifacts.json` / `outputs/artifacts.json` を completed 同期
+- `NON_VISUAL` 証跡、cancel bridge、legacy link 修正を Phase 11/12 成果物へ反映
+
+### 背景
+
+TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台帳・legacy path・close-out 記述にドリフトが残っていた。same-wave sync を行い、後続 CANCEL-004 が正本導線から依存できる状態へ修正した。
 
 ## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
 
