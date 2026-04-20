@@ -4,6 +4,27 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-19: TASK-AGENTS-SKILLS-FULL-SYNC-001（canonical/mirror full parity guard 導入）
+
+| 項目         | 内容                                                                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-AGENTS-SKILLS-FULL-SYNC-001                                                                                                                                 |
+| 操作         | spec-created / Phase 1-12 完了 / Phase 13 は blocked 維持                                                                                                        |
+| 変更対象     | `.claude/scripts/verify-skills-parity.sh` 新規・`.claude/scripts/sync-skills-mirror.sh` 新規・`.husky/pre-push` 追記・`.claude/hooks/session-init.sh` 追記・`.agents/skills/` 一式同期 |
+| 結果         | drift 4 件→0 件収束・Phase 9 品質 8 ステップ全 PASS（shellcheck SKIP 許容）・Phase 10 Blocker 0 件・Phase 11 手動テスト 6 シナリオ全 PASS（session-init 最大 0.443s / AC-6 基準 < 1 秒）  |
+| 検証         | `bash verify-skills-parity.sh` exit=0 / `diff -qr .claude/skills .agents/skills` 空出力 / Phase 11 bash-execution-log.txt + timing-measurement.txt 証跡         |
+| 備考         | NON_VISUAL infra-guard。sync script の実行順序は仕様書から調整（`generate-index → rsync → diff`）。Phase 13 は user 明示承認まで blocked                     |
+
+### 更新詳細
+
+- `references/task-workflow-completed.md` に本タスクの `spec_created` 完了エントリを先頭追加
+- `references/task-workflow.md` の `TASK-CONFLICT-PREVENT-001` 後続タスク列に相互参照追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を `generate-index.js --quiet` で再生成
+- `indexes/resource-map.md` は変更なし（no-op / current facts 不変）
+- `.agents/skills/` 側へ `sync-skills-mirror.sh` 経由で同期（same-wave sync 完了）
+
+---
+
 ## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
 
 | 項目     | 内容                                                                                                                                                                                                                                                             |

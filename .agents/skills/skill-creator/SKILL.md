@@ -518,9 +518,10 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 ### Phase 12 再監査ショートカット
 
 - `spec_created` / docs-heavy task を更新する時は、先に [task-specification-creator/references/phase-11-12-guide.md](../task-specification-creator/references/phase-11-12-guide.md) と [task-specification-creator/references/spec-update-workflow.md](../task-specification-creator/references/spec-update-workflow.md) を開く。
-- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。
+- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。lane D の最終ステップは必ず `bash .claude/scripts/sync-skills-mirror.sh` を呼び、`bash .claude/scripts/verify-skills-parity.sh` で parity 0 を確認する（pre-push hook 経由でも強制される）。
+- 新規スキル作成直後も `sync-skills-mirror.sh` を実行し `.agents/skills/<new-skill>/` を同時生成する。canonical-only 状態のまま放置しない（`int-test-skill` drift を再発させない）。
 - [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
-- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
+- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` に加え、`verify-skills-parity.sh` をまとめて閉じる。
 - NON_VISUAL / docs-heavy / env blocker task では、screen evidence の代替根拠、blocker の絶対パス、既存未タスクとの重複確認結果を同じターンで記録する。
 - UI 再撮影がある場合は `theme lock → screenshot evidence → docs/spec sync` の順で閉じ、`NON_VISUAL` のまま止めず `SCREENSHOT + outputs` を優先する。
 

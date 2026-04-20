@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3164,
+  "totalKeywords": 3177,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6876,7 +6876,8 @@
       "ipc-contract-checklist.md"
     ],
     "背景": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
     ],
     "non": [
       "ipc-contract-checklist.md",
@@ -7741,6 +7742,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -8333,6 +8335,7 @@
     ],
     "guard": [
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
       "quick-reference-search-patterns-ipc-infra.md",
       "task-workflow-completed-recent-2026-04g.md",
       "workflow-light-theme-contrast-regression-guard.md",
@@ -8366,6 +8369,44 @@
     "再監査教訓": [
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
+    ],
+    "learned": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md"
+    ],
+    "canonical": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "spec-guidelines.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "mirror": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "spec-guidelines.md"
+    ],
+    "parity": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "spec-guidelines.md"
+    ],
+    "導入": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "苦戦した点と解決策": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "将来同様課題を解決するための原則": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "関連成果物": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
     ],
     "計測テンプレート": [
       "lessons-learned-ci-measurement-template-2026-04.md"
@@ -9923,17 +9964,6 @@
     "same": [
       "lessons-learned-skill-create-multi-select-kind.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "canonical": [
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-chat-llm-integration-fix.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "へ同期する": [
       "lessons-learned-skill-create-multi-select-kind.md"
@@ -12590,9 +12620,6 @@
     "再監査で責務証跡と": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
-    "mirror": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
     "抽出を強化": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -12779,9 +12806,6 @@
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "責務分離の仕様固定": [
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
-    "learned": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "再監査と仕様同期": [
@@ -13763,6 +13787,9 @@
     "完了タスクセクション標準化": [
       "spec-guidelines.md"
     ],
+    "タスク分類": [
+      "spec-guidelines.md"
+    ],
     "ファイルサイズ管理": [
       "spec-guidelines.md"
     ],
@@ -13770,6 +13797,29 @@
       "spec-guidelines.md"
     ],
     "設定に基づいて分割": [
+      "spec-guidelines.md"
+    ],
+    "Canonical": [
+      "spec-guidelines.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
+    ],
+    "Mirror": [
+      "spec-guidelines.md"
+    ],
+    "原則": [
+      "spec-guidelines.md"
+    ],
+    "差分を確認": [
+      "spec-guidelines.md"
+    ],
+    "に再同期": [
+      "spec-guidelines.md"
+    ],
+    "OK": [
+      "spec-guidelines.md"
+    ],
+    "を再確認": [
       "spec-guidelines.md"
     ],
     "仕様書分割ガイドライン": [
@@ -13905,6 +13955,9 @@
       "task-workflow-rules.md"
     ],
     "昇格パターン集": [
+      "task-workflow-active.md"
+    ],
+    "アクティブタスク台帳": [
       "task-workflow-active.md"
     ],
     "タスクワークフローバックログ": [
@@ -15426,10 +15479,6 @@
     ],
     "現行": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "Canonical": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Set": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md",

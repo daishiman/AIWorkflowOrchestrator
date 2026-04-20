@@ -3079,6 +3079,15 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L178 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L283 |
 
+### references/lessons-learned-canonical-mirror-parity-guard-2026-04.md
+
+| セクション | 行 |
+|------------|----|
+| 背景 | L5 |
+| 苦戦した点と解決策 | L9 |
+| 将来同様課題を解決するための原則 | L64 |
+| 関連成果物 | L72 |
+
 ### references/lessons-learned-ci-measurement-template-2026-04.md
 
 | セクション | 行 |
@@ -4883,7 +4892,9 @@ node scripts/list-specs.js --topics
 | 避けるべきこと | L87 |
 | 新規仕様の追加手順 | L96 |
 | 完了タスクセクション標準化 | L104 |
-| ファイルサイズ管理 | L152 |
+| タスク分類 | L153 |
+| ファイルサイズ管理 | L168 |
+| Canonical/Mirror 原則 | L188 |
 
 ### references/spec-splitting-guidelines.md
 
@@ -4918,6 +4929,7 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L85 |
 | 実行時のコマンド・エージェント・スキル | L108 |
 | 昇格パターン集 | L132 |
+| アクティブタスク台帳 | L147 |
 
 ### references/task-workflow-backlog-part2.md
 
@@ -5218,13 +5230,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L543 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L563 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L565 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L577 |
-| 完了タスク（2026-03後半） | L605 |
-| 完了タスク（機能別アーカイブ） | L613 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L714 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L544 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L564 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L566 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L578 |
+| 完了タスク（2026-03後半） | L606 |
+| 完了タスク（機能別アーカイブ） | L614 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L715 |
 
 ### references/task-workflow-history.md
 
@@ -5258,9 +5270,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L29 |
-| 利用順序 | L58 |
-| 関連ドキュメント | L63 |
+| 仕様書インデックス | L30 |
+| 利用順序 | L59 |
+| 関連ドキュメント | L64 |
 
 ### references/testing-accessibility.md
 
