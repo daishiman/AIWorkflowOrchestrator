@@ -2,17 +2,33 @@
 
 ## 役割
 
+## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
+
+### 変更内容
+
+TASK-SW-CANCEL-004 Phase 12 の skill-feedback-report に記載された改善提案を反映した。
+
+| 指摘ID          | 内容                                                                                                        | 反映先                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| FB-CANCEL-004-1 | `AbortSignal` のような partial fix 契約ズレを Phase 10 で residual issue として格下げするテンプレートを追記 | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
+| FB-CANCEL-004-2 | `unassigned-task-detection.md` に関連済みタスク差分確認欄を設けて重複起票を防ぐ方針を追記                   | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
+
+### 変更ファイル
+
+- `.claude/skills/task-specification-creator/SKILL.md`: よくある漏れテーブルに FB-CANCEL-004-1/2 を追記
+- `.agents/skills/task-specification-creator/SKILL.md`: 同上（mirror 同期）
+
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
 ### 変更内容
 
 TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| 指摘ID          | 内容                                                                                                                                                   | 反映先                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示                                                                                       | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加                    |
 | CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
-| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加                                                              | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加      |
 
 ### 変更ファイル
 
@@ -23,12 +39,14 @@ TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の�
 ## 2026-04-18 - TASK-CONFLICT-PREVENT-001（conflict-prevent-skills-001）タスク完了
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - タスクID: TASK-CONFLICT-PREVENT-001
 - タスク名: conflict-prevent-skills-001
 - Phase: 1-12
 
 ### 成果
+
 - テストカバレッジ: docs-only / NON_VISUAL 証跡 9観点 PASS
 - 実装内容:
   - `manual-test-result.md` を NON_VISUAL 正本テンプレートへ是正
@@ -41,6 +59,7 @@ TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の�
 - private workflow abort 入口保証タスクでは public cancel test に加えて private minimal test を追加するパターンを usage log として記録
 
 ### 結果
+
 - ステータス: success
 - 完了日時: 2026-04-18
 
@@ -100,21 +119,24 @@ TASK-SW-CANCEL-001 スキルフィードバックレポートに記録された�
 ## 2026-04-17 TASK-UT-9I-001 Phase-12 完了確認
 
 ### 実施内容
+
 - Phase-12成果物 全6ファイルの存在・内容を検証
 - docs/30-workflows/TASK-UT-9I-001-LLM-PROVIDER-INTEGRATION/outputs/phase-12/ に全ファイル確認
 - Phase-12コンプライアンスチェック: 全87項目PASS
 
 ### 検証結果
-| 成果物 | 状態 | 確認内容 |
-|--------|------|---------|
-| implementation-guide.md | ✅ | Part 1（中学生レベル）+ Part 2（技術詳細）完備 |
-| system-spec-update-summary.md | ✅ | Step 1-A〜1-G の記録存在 |
-| documentation-changelog.md | ✅ | SKILL.md / LOGS.md 更新記録あり |
-| unassigned-task-detection.md | ✅ | 0件検出・report 形式で記録 |
-| skill-feedback-report.md | ✅ | 改善点なし形式で出力 |
-| phase12-task-spec-compliance-check.md | ✅ | Phase 12 タスク充足状況記録 |
+
+| 成果物                                | 状態 | 確認内容                                       |
+| ------------------------------------- | ---- | ---------------------------------------------- |
+| implementation-guide.md               | ✅   | Part 1（中学生レベル）+ Part 2（技術詳細）完備 |
+| system-spec-update-summary.md         | ✅   | Step 1-A〜1-G の記録存在                       |
+| documentation-changelog.md            | ✅   | SKILL.md / LOGS.md 更新記録あり                |
+| unassigned-task-detection.md          | ✅   | 0件検出・report 形式で記録                     |
+| skill-feedback-report.md              | ✅   | 改善点なし形式で出力                           |
+| phase12-task-spec-compliance-check.md | ✅   | Phase 12 タスク充足状況記録                    |
 
 ### 知見・苦戦箇所
+
 - TASK-UT-9I-001はPhase 11（Anthropic API実機テスト）がAPI_KEY未設定でBLOCKED → NON_VISUALとして記録
 - Phase 12ドキュメントはPhase 11のBLOCK状態でも作成可能（非依存）
 - 実装ガイドPart 1の例え話（図書館の例え話）がvalidator準拠
@@ -165,6 +187,7 @@ TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY の skill-feedback-report（Phase 12 成�
 VISUAL タスクの close-out は、画像ファイル名・metadata・manual-test・implementation guide・completed ledger を同一 wave で揃えないと stale reference が残る。今回の同期で old `TC-11-01` / `TC-11-02` 命名を canonical 名に寄せ、後続の仕様更新で参照先がぶれない状態へ閉じた。
 
 ## 2026-04-16 - TASK-SC-PLAN-CONNECT-GENERATE-SKILL-MD-001 phase 12 close-out sync + impl-spec-to-skill-sync
+
 ## 2026-04-16 - TASK-CI-FUTURE-007 スキルフィードバック反映
 
 ### 変更内容
@@ -3107,7 +3130,7 @@ TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の 
 | 変更対象 | `docs/30-workflows/UT-SKILL-WIZARD-NOTION-SPECIAL-CASE-ELIMINATE-001/` (index.md + Phase 1-13 + artifacts.json)                                                                                                                        |
 | 結果     | notion freeText 特別ケースを解消。`resolveLabelEntry()` 追加で呼び出し元が label と freeText を明示的に分離できる設計を採用。`SemanticLabelEntry` 型を shared に定義し将来の拡張は SEMANTIC_LABEL_MAP エントリ追加のみで対応可能にした |
 | 検証     | タスク仕様書 Phase 1-13 + artifacts.json 作成完了。依存タスク（UT-SKILL-WIZARD-SEMANTIC-DEFAULT-EXTENSIBILITY-001）との整合確認済み                                                                                                    |
-| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）
+| 検証     | vitest PASS / typecheck PASS / Phase 11 screenshot evidence 3 枚（TC-11-03/04/05）                                                                                                                                                     |
 
 ---
 
@@ -3126,12 +3149,13 @@ TASK-SW-FIX-STATE-DETAIL-001（SkillCreateWizard 状態管理バグ修正）の 
 UT-FIX-STORE-SETTINGS-DEEP-MERGE-001（settings:update ハンドラーの deepMerge 化）の Phase 12 close-out sync。
 IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/ディープマージ戦略を設計段階で決定しなかったため、実装段階で後付けのリファクタが必要になった知見を定型化。
 
-| 項目     | 内容                                                                                                                         |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 種別     | bug-fix / TDD / IPC handler / security hardening / Phase 12 close-out / skill-sync                                          |
+| 項目     | 内容                                                                                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| 種別     | bug-fix / TDD / IPC handler / security hardening / Phase 12 close-out / skill-sync                                                                                      |
 | 変更対象 | `SKILL.md`（Feedback IPC-MERGE-001 追加）、`LOGS.md`（本エントリ）、`aiworkflow-requirements/LOGS.md`、`topic-map.md`、`lessons-learned-ipc-preload-runtime-2026-04.md` |
-| 結果     | Phase 2 設計にマージ戦略の明示義務とprototype pollution 防止を標準化。deepMerge パターンと安全要件をスキル知見として記録  |
-| 検証     | vitest PASS / typecheck PASS / lint PASS（UT-FIX-STORE-SETTINGS-DEEP-MERGE-001）                                           |                                                                                                                                                     |
+| 結果     | Phase 2 設計にマージ戦略の明示義務とprototype pollution 防止を標準化。deepMerge パターンと安全要件をスキル知見として記録                                                |
+| 検証     | vitest PASS / typecheck PASS / lint PASS（UT-FIX-STORE-SETTINGS-DEEP-MERGE-001）                                                                                        |     |
+
 ## 2026-04-18 - UT-IPC-HANDLER-CI-001 skill-feedback 反映
 
 ### 変更内容
@@ -3140,10 +3164,10 @@ IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/
 - `SKILL.md` の同テーブルに **[FB-IPC-SNAP-002]**（Phase 5 に `--updateSnapshot` 初回生成と既存 snapshot 比較確認を別ステップとして明示する）を追記
 - `SKILL.md` バージョンを v10.09.55 → v10.09.56 に更新
 
-| 項目     | 内容                                                                                            |
-| -------- | ----------------------------------------------------------------------------------------------- |
-| 種別     | skill-feedback 反映 / Pitfall 追加                                                              |
-| 変更対象 | `SKILL.md`（FB-IPC-SNAP-001/002 追加・v10.09.56）、`LOGS.md`（本エントリ）                      |
+| 項目     | 内容                                                                                           |
+| -------- | ---------------------------------------------------------------------------------------------- |
+| 種別     | skill-feedback 反映 / Pitfall 追加                                                             |
+| 変更対象 | `SKILL.md`（FB-IPC-SNAP-001/002 追加・v10.09.56）、`LOGS.md`（本エントリ）                     |
 | 結果     | Electron IPC snapshot テストの mock 安定化パターンと --updateSnapshot 運用ルールをスキル知見化 |
 | 検証     | validate-phase-output.js PASS / mirror sync 確認済み                                           |
 
@@ -3156,9 +3180,30 @@ IPC ハンドラーで `Record<string, unknown>` 型を扱う際にシャロー/
 - `phase-12-documentation.md` と Phase 12 outputs の close-out 文言を機械検証に通る表現へ修正
 - `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` を formalize
 
-| 項目     | 内容                                                                                                                       |
-| -------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 種別     | test / CI guard / Phase 12 close-out / NON_VISUAL / workflow sync                                                         |
+| 項目     | 内容                                                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | test / CI guard / Phase 12 close-out / NON_VISUAL / workflow sync                                                                   |
 | 変更対象 | `docs/30-workflows/UT-IPC-HANDLER-CI-001/` / `docs/30-workflows/unassigned-task/task-ipc-handler-registration-snapshot-coverage.md` |
-| 結果     | close-out の主問題を「コード」ではなく「台帳・仕様・成果物の不整合」と定義し、validator fail 項目と証跡参照の曖昧さを是正 |
-| 検証     | targeted vitest PASS / workflow validator 再実行予定                                                                        |
+| 結果     | close-out の主問題を「コード」ではなく「台帳・仕様・成果物の不整合」と定義し、validator fail 項目と証跡参照の曖昧さを是正           |
+| 検証     | targeted vitest PASS / workflow validator 再実行予定                                                                                |
+
+## 2026-04-19 - TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/` の Phase 12 close-out sync を実施
+- タスク種別を `NON_VISUAL`（差分確認型 NON_VISUAL code task）へ再分類
+- `artifacts.json` を Phase 1〜12 `completed` / Phase 13 `blocked_awaiting_user_instruction` へ更新（parity 確認済み）
+- mandatory 5 tasks（Phase 12 必須項目）の実行完了を確認
+
+### 背景
+
+TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキルディレクトリ残存クリーンアップ）の Phase 12 close-out sync が未実施だったため実施。
+本タスクは「差分確認型 NON_VISUAL code task」パターンを適用し、UI スクリーンショット証跡不要でテスト・型チェック・lint の PASS のみを根拠とする close-out を完了させた。
+
+| 項目     | 内容                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | bug-fix / cleanup / NON_VISUAL / Phase 12 close-out / skill-sync                                                                                 |
+| 変更対象 | `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/`（artifacts.json parity・Phase 12 outputs）、`LOGS.md`（本エントリ）                  |
+| 結果     | NON_VISUAL 再分類・artifacts.json parity・mandatory 5 tasks の Phase 12 実行完了。差分確認型 NON_VISUAL code task パターンをスキル知見として記録 |
+| 検証     | vitest PASS / typecheck PASS / lint PASS（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）                                                               |
