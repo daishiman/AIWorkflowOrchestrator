@@ -1,0 +1,4 @@
+Files .claude/skills/aiworkflow-requirements/indexes/topic-map.md and .agents/skills/aiworkflow-requirements/indexes/topic-map.md differ
+Files .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md and .agents/skills/aiworkflow-requirements/references/task-workflow-completed.md differ
+Files .claude/skills/skill-creator/LOGS.md and .agents/skills/skill-creator/LOGS.md differ
+Files .claude/skills/skill-creator/SKILL.md and .agents/skills/skill-creator/SKILL.md differ

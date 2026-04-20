@@ -1,0 +1,3 @@
+      40 .claude/scripts/verify-skills-parity.sh
+      48 .claude/scripts/sync-skills-mirror.sh
+      88 total
