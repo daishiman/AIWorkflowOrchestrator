@@ -1,0 +1,238 @@
+{
+  "taskId": "UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001",
+  "featureName": "UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001",
+  "createdAt": "2026-04-19T00:00:00Z",
+  "updatedAt": "2026-04-19T00:00:00Z",
+  "status": "pending",
+  "taskType": "docs",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-19T13:11:52.402Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準 AC-1〜AC-7"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/drift-inventory.md",
+          "description": "drift baseline 実測"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-19T13:16:59.788Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/parity-algorithm-design.md",
+          "description": "parity判定アルゴリズム設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validator-placement-design.md",
+          "description": "validator CLI/JSON契約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/complete-phase-extension-design.md",
+          "description": "complete-phase拡張設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/checklist-gate-design.md",
+          "description": "checklist gate設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-19T13:19:58.410Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "設計レビューゲート判定書"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-19T13:42:25.155Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-spec.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/tdd-red-results.md",
+          "description": "TDD Red確認ログ"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-19T14:21:17.252Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files.md",
+          "description": "変更ファイル一覧"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:24:32.141Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/extended-test-cases.md",
+          "description": "拡張テストケース一覧"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:26:10.212Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/traceability-matrix.md",
+          "description": "トレーサビリティマトリクス"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:27:48.770Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタリング計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-results.md",
+          "description": "リファクタリング結果"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:31:19.216Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:33:06.147Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/shipping-checklist.md",
+          "description": "出荷準備チェックリスト"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-20T02:37:17.178Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-20T04:21:58.050Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "コンプライアンスチェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  },
+  "metadata": {
+    "taskType": "docs",
+    "visualMode": "NON_VISUAL",
+    "issueNumber": 2293,
+    "discoveryTask": "UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001"
+  },
+  "lastUpdated": "2026-04-20T04:21:58.053Z"
+}

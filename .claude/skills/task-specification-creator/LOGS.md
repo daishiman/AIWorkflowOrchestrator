@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
+
+- validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
+- complete-phase.js に S1〜S4 同値更新・rollback 拡張
+- verify-all-specs.js に parity gate 組込み
+- phase-12-completion-checklist.md にparity必須ゲート追加
+
+| 項目     | 内容                                                                              |
+| -------- | --------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / parity guard / workflow quality                                      |
+| 変更対象 | `validate-closeout-parity.js`（新規）、`complete-phase.js`、`verify-all-specs.js` |
+| 結果     | Phase 12 close-out の parity 検証が機械化され、手動確認依存を排除                |
+| 検証     | dogfooding PARITY_OK / exit=0 確認済み                                           |
+
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
 ### 変更内容
