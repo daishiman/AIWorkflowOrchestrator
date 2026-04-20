@@ -1,5 +1,18 @@
 # Phase 12 Documentation Guide
 
+## NON_VISUAL / 監査タスクの固定記載ルール（PROPOSAL-TSC-02 由来）
+
+Task 12-1 の `implementation-guide.md` 冒頭 **直下** に以下を固定フレーズで記載する（監査タスク / docs-only / NON_VISUAL 共通）。フレーズを変えると NON_VISUAL 判定の解釈ぶれが生じる。
+
+```
+UI/UX変更なしのため Phase 11 スクリーンショット不要
+```
+
+- 同フレーズは `system-spec-update-summary.md` の Phase 11 参照欄にも固定する（[phase-template-phase12.md](phase-template-phase12.md) §NON_VISUAL 固定フレーズ参照）。
+- 監査タスクの **primary evidence** は `outputs/phase-11/manual-test-result.md` とする（[phase-template-phase11.md](phase-template-phase11.md) §docs-only task テンプレの正本ポリシー、および [phase-template-audit-task.md](phase-template-audit-task.md) §primary evidence の棲み分けを参照）。
+- `NON_VISUAL + verify_existing` では canonical 名を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に昇格させる（[phase-template-phase12.md](phase-template-phase12.md) 末尾参照）。
+- 監査タスク種別の Phase 再解釈マップ全体は [phase-template-audit-task.md](phase-template-audit-task.md) を参照する。
+
 ## Task 12-1: 実装ガイド作成【必須・2パート構成】
 
 | パート     | 対象読者                 | 内容                                                             |

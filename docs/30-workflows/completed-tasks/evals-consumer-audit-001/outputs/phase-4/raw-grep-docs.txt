@@ -1,0 +1,84 @@
+# command: rg -n 'EVALS\.json|EVALS' .claude/skills/ .agents/skills/ -g '!**/node_modules/**' -g '!**/.backups/**' -g '*.md'
+# executed_at: 2026-04-19T08:50:34Z
+# working_directory: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160952-wt-9
+.claude/skills/aiworkflow-requirements/SKILL.md:189:| `EVALS.json` | スキルレベル・メトリクス管理 |
+.claude/skills/aiworkflow-requirements/assets/claude-code-feature-template.md:217:└── EVALS.json            # 評価メトリクス
+.claude/skills/aiworkflow-requirements/assets/claude-code-template.md:132:### EVALS.json
+.claude/skills/aiworkflow-requirements/LOGS.md:2856:- `.gitattributes` にカテゴリ別 merge policy（generated index: merge=ours、mirror tree: merge=ours、LOGS.md: merge=union、EVALS: merge=ours）を追加
+.claude/skills/aiworkflow-requirements/references/lessons-learned-2026-04-early.md:579:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.claude/skills/skill-creator/assets/skill-template.md:308:| EVALS.json | メトリクス | 毎回実行後 |
+.claude/skills/skill-creator/assets/skill-template.md:346:スキル実行 → LOGS.md記録 → EVALS.json更新
+.claude/skills/aiworkflow-requirements/references/lessons-learned-2026-04-early-part-2.md:349:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.claude/skills/aiworkflow-requirements/references/logs-archive-2026-01-skill-selector-todo-scan-template.md:22:| `EVALS.json`            | 使用回数 +1（28→29）                                          |
+.claude/skills/aiworkflow-requirements/references/arch-electron-services-details-part1.md:115:| EVALS.json   | evals   |
+.claude/skills/aiworkflow-requirements/references/lessons-learned-health-policy-worktree-2026-04.md:48:| 原因 | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.claude/skills/skill-creator/SKILL.md:316:| スキル内スクリプト     | `.claude/skills/<name>/scripts/`              | EVALS.json で品質追跡         |
+.claude/skills/skill-creator/agents/design-update.md:82:| EVALS.json       | フィードバック機構が未導入の場合     |
+.claude/skills/skill-creator/agents/design-update.md:92:| EVALS.json             | メトリクス管理           | assets/evals-template.json |
+.claude/skills/skill-creator/agents/design-update.md:100:| EVALS.json が存在しない         | evals-template.json から生成 |
+.claude/skills/skill-creator/references/resource-map.md:229:| [evals-template.json](.claude/skills/skill-creator/assets/evals-template.json)   | スキル作成時 | EVALS.jsonの初期テンプレート             |
+.claude/skills/skill-creator/LOGS.md:1480:- **Notes**: システム仕様書（aiworkflow-requirements references/）とコードベースTODOからの未タスク検出・仕様書作成セッション。3エージェント並列探索（system-spec-gap, codebase-todo, toolMetadata-gap）→5件の新規未タスク仕様書を9セクションテンプレート準拠で作成。task-specification-creator/LOGS・EVALS、aiworkflow-requirements/EVALS、skill-creator/LOGS・EVALS更新。
+.claude/skills/skill-creator/LOGS.md:1489:- **Notes**: task-imp-permission-tool-metadata-001の仕様カバレッジ85%→95%改善。interfaces-agent-sdk-ui.md v1.5.0（RiskLevel/ToolMetadata型定義追加）、security-skill-execution.md v1.3.0（toolMetadataクロスリファレンス追加）、ui-ux-agent-execution.md v1.7.0（RISK_LEVEL_STYLES/PermissionDialog統合/ツールカバレッジマッピング追加）。topic-map.md 8エントリ・7キーワード追加。task-specification-creator patterns.md 3件・EVALS更新。
+.claude/skills/skill-creator/LOGS.md:1507:- **Notes**: TASK-7D完了を受けた包括的スキル改善セッション。task-specification-creator（patterns最適化・EVALS拡張）、aiworkflow-requirements（4仕様書追記・トピックマップ再生成）、skill-creator自身（LOGS・EVALS更新）を並列更新。
+.claude/skills/skill-creator/LOGS.md:2243:- **Notes**: TASK-7D ChatPanel統合からのフィードバック反映。task-specification-creator patterns.mdに成功パターン4件追加（forwardRef+useImperativeHandleテスト、Exclude型設定マップ、Store個別セレクタ最適化、並列バックグラウンドエージェント）。EVALS.json使用カウント更新。
+.claude/skills/skill-creator/references/library-management.md:47:├── EVALS.json           # メトリクス
+.claude/skills/skill-creator/references/self-improvement-cycle.md:23:[メトリクス更新] ← EVALS.json
+.claude/skills/skill-creator/references/self-improvement-cycle.md:103:**EVALS.json**:
+.claude/skills/skill-creator/references/self-improvement-cycle.md:281:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
+.claude/skills/skill-creator/references/self-improvement-cycle.md:293:  // EVALS.json更新
+.claude/skills/skill-creator/references/self-improvement-cycle.md:294:  const evals = existsSync(EVALS_PATH)
+.claude/skills/skill-creator/references/self-improvement-cycle.md:295:    ? JSON.parse(readFileSync(EVALS_PATH, "utf-8"))
+.claude/skills/skill-creator/references/self-improvement-cycle.md:302:  writeFileSync(EVALS_PATH, JSON.stringify(evals, null, 2));
+.claude/skills/skill-creator/references/feedback-loop.md:96:### EVALS.json
+.claude/skills/skill-creator/references/feedback-loop.md:130:| 1    | EVALS.json の `current_level` を更新                 |
+.claude/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04-wizard-integration.md:202:| 原因 | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.claude/skills/task-specification-creator/outputs/skill-overview-report.md:28:├── EVALS.json            # 評価データ
+.claude/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md:713:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.claude/skills/aiworkflow-requirements/references/claude-code-overview.md:127:- 標準フォルダ構造（SKILL.md, EVALS.json, CHANGELOG.md, LOGS.md, scripts/, resources/, templates/）
+.claude/skills/aiworkflow-requirements/references/claude-code-overview.md:272:- [ ] EVALS.json が存在し、有効なJSON
+.claude/skills/task-specification-creator/references/changelog-archive.md:105:| **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新                                                     |
+.claude/skills/task-specification-creator/references/self-improvement-cycle.md:6:> - 関連ファイル: LOGS.md, EVALS.json, scripts/log-usage.js
+.claude/skills/task-specification-creator/references/self-improvement-cycle.md:26:[メトリクス更新] ← EVALS.json
+.claude/skills/task-specification-creator/references/self-improvement-cycle.md:97:### 3.1 EVALS.json構造
+.claude/skills/task-specification-creator/references/self-improvement-cycle.md:202:- **メトリクス**: See [EVALS.json](../EVALS.json)
+.agents/skills/aiworkflow-requirements/assets/claude-code-feature-template.md:217:└── EVALS.json            # 評価メトリクス
+.agents/skills/aiworkflow-requirements/assets/claude-code-template.md:132:### EVALS.json
+.agents/skills/aiworkflow-requirements/SKILL.md:189:| `EVALS.json` | スキルレベル・メトリクス管理 |
+.agents/skills/aiworkflow-requirements/references/lessons-learned-2026-04-early-part-2.md:349:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.agents/skills/aiworkflow-requirements/LOGS.md:2856:- `.gitattributes` にカテゴリ別 merge policy（generated index: merge=ours、mirror tree: merge=ours、LOGS.md: merge=union、EVALS: merge=ours）を追加
+.agents/skills/aiworkflow-requirements/references/logs-archive-2026-01-skill-selector-todo-scan-template.md:22:| `EVALS.json`            | 使用回数 +1（28→29）                                          |
+.agents/skills/aiworkflow-requirements/references/arch-electron-services-details-part1.md:115:| EVALS.json   | evals   |
+.agents/skills/aiworkflow-requirements/references/lessons-learned-2026-04-early.md:579:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.agents/skills/aiworkflow-requirements/references/lessons-learned-health-policy-worktree-2026-04.md:48:| 原因 | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.agents/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04-wizard-integration.md:202:| 原因 | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.agents/skills/aiworkflow-requirements/references/lessons-learned-current-2026-04.md:713:| 原因       | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/\*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+.agents/skills/aiworkflow-requirements/references/claude-code-overview.md:127:- 標準フォルダ構造（SKILL.md, EVALS.json, CHANGELOG.md, LOGS.md, scripts/, resources/, templates/）
+.agents/skills/aiworkflow-requirements/references/claude-code-overview.md:272:- [ ] EVALS.json が存在し、有効なJSON
+.agents/skills/skill-creator/assets/skill-template.md:308:| EVALS.json | メトリクス | 毎回実行後 |
+.agents/skills/skill-creator/assets/skill-template.md:346:スキル実行 → LOGS.md記録 → EVALS.json更新
+.agents/skills/skill-creator/SKILL.md:311:| スキル内スクリプト | `.claude/skills/<name>/scripts/` | EVALS.json で品質追跡 |
+.agents/skills/skill-creator/references/feedback-loop.md:96:### EVALS.json
+.agents/skills/skill-creator/references/feedback-loop.md:130:| 1    | EVALS.json の `current_level` を更新                 |
+.agents/skills/skill-creator/LOGS.md:1412:- **Notes**: システム仕様書（aiworkflow-requirements references/）とコードベースTODOからの未タスク検出・仕様書作成セッション。3エージェント並列探索（system-spec-gap, codebase-todo, toolMetadata-gap）→5件の新規未タスク仕様書を9セクションテンプレート準拠で作成。task-specification-creator/LOGS・EVALS、aiworkflow-requirements/EVALS、skill-creator/LOGS・EVALS更新。
+.agents/skills/skill-creator/LOGS.md:1421:- **Notes**: task-imp-permission-tool-metadata-001の仕様カバレッジ85%→95%改善。interfaces-agent-sdk-ui.md v1.5.0（RiskLevel/ToolMetadata型定義追加）、security-skill-execution.md v1.3.0（toolMetadataクロスリファレンス追加）、ui-ux-agent-execution.md v1.7.0（RISK_LEVEL_STYLES/PermissionDialog統合/ツールカバレッジマッピング追加）。topic-map.md 8エントリ・7キーワード追加。task-specification-creator patterns.md 3件・EVALS更新。
+.agents/skills/skill-creator/LOGS.md:1439:- **Notes**: TASK-7D完了を受けた包括的スキル改善セッション。task-specification-creator（patterns最適化・EVALS拡張）、aiworkflow-requirements（4仕様書追記・トピックマップ再生成）、skill-creator自身（LOGS・EVALS更新）を並列更新。
+.agents/skills/skill-creator/LOGS.md:2175:- **Notes**: TASK-7D ChatPanel統合からのフィードバック反映。task-specification-creator patterns.mdに成功パターン4件追加（forwardRef+useImperativeHandleテスト、Exclude型設定マップ、Store個別セレクタ最適化、並列バックグラウンドエージェント）。EVALS.json使用カウント更新。
+.agents/skills/skill-creator/references/library-management.md:47:├── EVALS.json           # メトリクス
+.agents/skills/skill-creator/references/resource-map.md:229:| [evals-template.json](.claude/skills/skill-creator/assets/evals-template.json)   | スキル作成時 | EVALS.jsonの初期テンプレート             |
+.agents/skills/skill-creator/agents/design-update.md:82:| EVALS.json       | フィードバック機構が未導入の場合     |
+.agents/skills/skill-creator/agents/design-update.md:92:| EVALS.json             | メトリクス管理           | assets/evals-template.json |
+.agents/skills/skill-creator/agents/design-update.md:100:| EVALS.json が存在しない         | evals-template.json から生成 |
+.agents/skills/skill-creator/references/self-improvement-cycle.md:23:[メトリクス更新] ← EVALS.json
+.agents/skills/skill-creator/references/self-improvement-cycle.md:103:**EVALS.json**:
+.agents/skills/skill-creator/references/self-improvement-cycle.md:281:const EVALS_PATH = resolve(SKILL_DIR, "EVALS.json");
+.agents/skills/skill-creator/references/self-improvement-cycle.md:293:  // EVALS.json更新
+.agents/skills/skill-creator/references/self-improvement-cycle.md:294:  const evals = existsSync(EVALS_PATH)
+.agents/skills/skill-creator/references/self-improvement-cycle.md:295:    ? JSON.parse(readFileSync(EVALS_PATH, "utf-8"))
+.agents/skills/skill-creator/references/self-improvement-cycle.md:302:  writeFileSync(EVALS_PATH, JSON.stringify(evals, null, 2));
+.agents/skills/task-specification-creator/outputs/skill-overview-report.md:28:├── EVALS.json            # 評価データ
+.agents/skills/task-specification-creator/references/changelog-archive.md:105:| **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新                                                     |
+.agents/skills/task-specification-creator/references/self-improvement-cycle.md:6:> - 関連ファイル: LOGS.md, EVALS.json, scripts/log-usage.js
+.agents/skills/task-specification-creator/references/self-improvement-cycle.md:26:[メトリクス更新] ← EVALS.json
+.agents/skills/task-specification-creator/references/self-improvement-cycle.md:97:### 3.1 EVALS.json構造
+.agents/skills/task-specification-creator/references/self-improvement-cycle.md:202:- **メトリクス**: See [EVALS.json](../EVALS.json)
+# exit_status: 0

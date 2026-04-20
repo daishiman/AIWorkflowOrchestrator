@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerSkillFileHandlers - チャンネル登録スナップショット > REG-SNAP-SKILL-FILE-01〜REG-COUNT-SKILL-FILE-01: 正常系 > REG-SNAP-SKILL-FILE-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "skill:createFile",
+  "skill:deleteFile",
+  "skill:getFileTree",
+  "skill:listBackups",
+  "skill:readFile",
+  "skill:restoreBackup",
+  "skill:writeFile",
+]
+`;

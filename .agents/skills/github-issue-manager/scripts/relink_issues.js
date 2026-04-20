@@ -9,6 +9,39 @@
  * Usage:
  *   node relink_issues.js                # 全Issueを再リンク
  *   node relink_issues.js --dry-run      # 変更内容を表示（実行しない）
+ *
+ * -----------------------------------------------------------------------
+ * ユースケース: Phase 12 close-out 時の「台帳整合のみを取る」運用（PROPOSAL-GIM-03）
+ * -----------------------------------------------------------------------
+ *
+ * 本スクリプトは本来 OPEN Issue と仕様書の issue_number 双方向リンクを
+ * 回復する目的で使われるが、以下の「Issue reopen せず台帳整合のみ取る」
+ * 運用にも流用可能である。
+ *
+ * 背景:
+ *   SKILL.md Part 5「CLOSED Issue 仕様書存続モード（spec-from-closed-issue）」
+ *   では、CLOSED Issue に対して後付けで仕様書を作成するケースがある。
+ *   Phase 12 close-out 時に、仕様書 ⇄ ローカル台帳（docs/30-workflows/issues/）
+ *   の issue_number 整合のみ取りたいが、GitHub 上の Issue state は
+ *   変更したくない（reopen も close もしない）場面がある。
+ *
+ * 運用手順:
+ *   1. まず `node relink_issues.js --dry-run` で差分を確認する
+ *   2. 仕様書側の `issue_number` のみ書き戻す（本スクリプトの副作用）
+ *   3. GitHub 側で `gh issue reopen` / `gh issue close` は **実行しない**
+ *   4. 仕様書メタ情報に `issue_status: CLOSED` / `spec_purpose` が
+ *      記載されていることを事前に確認する
+ *   5. Phase 12 の `system-spec-update-summary.md` /
+ *      `documentation-changelog.md` から本スクリプト実行を cross-reference
+ *
+ * 注意:
+ *   - 本スクリプトはデフォルトで `--state open` の Issue を取得するため、
+ *     CLOSED Issue のリンクが必要な場合は fetchGitHubIssues() の state を
+ *     外部から切り替えるか、手動で仕様書側のメタ情報を更新する。
+ *   - 本スクリプトは Issue state の変更 API を呼び出さない（reopen/close
+ *     は他スクリプト / gh CLI で明示的に実行する）。
+ *
+ * 参照: .claude/skills/github-issue-manager/SKILL.md Part 5
  */
 
 const fs = require("fs");

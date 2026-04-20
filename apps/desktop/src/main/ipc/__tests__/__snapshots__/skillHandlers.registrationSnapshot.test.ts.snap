@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`registerSkillHandlers - チャンネル登録スナップショット > REG-SNAP-SKILL-01〜REG-COUNT-SKILL-01: 正常系 > REG-SNAP-SKILL-01: 登録チャンネル一覧がスナップショットと一致する 1`] = `
+[
+  "skill:abort",
+  "skill:analyze",
+  "skill:create",
+  "skill:execute",
+  "skill:fork",
+  "skill:get-detail",
+  "skill:get-status",
+  "skill:getImported",
+  "skill:import",
+  "skill:improve",
+  "skill:list",
+  "skill:optimize",
+  "skill:optimize:evaluate",
+  "skill:optimize:variants",
+  "skill:remove",
+  "skill:scan",
+  "skill:update",
+]
+`;

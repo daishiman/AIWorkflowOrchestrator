@@ -1,5 +1,43 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19）
+
+| 項目       | 内容                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001                                                                                                            |
+| ステータス | **Wave 1/2 完了（PASS）/ Wave 3 計画中（AC-006）**                                                                                               |
+| タイプ     | test / snapshot coverage / close-out sync                                                                                                         |
+| 優先度     | 中                                                                                                                                                |
+| 完了日     | 2026-04-19                                                                                                                                        |
+| 対象       | `apps/desktop/src/main/ipc/__tests__/*Handlers.registrationSnapshot.test.ts` / `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/`       |
+| 成果物     | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json`                                 |
+
+#### 実施内容
+
+- `registerAllIpcHandlers()` 配下の direct正本 48件に対して REG-SNAP / REG-DEDUP / REG-COUNT の3点契約スナップショットテストを実装した
+- Wave 1（8ファイル / 41テスト）・Wave 2（16ファイル / 80テスト）を完了し、合計24ファイル / 121テストが PASS 済み
+- `ESBUILD_BINARY_PATH` を `.pnpm` ディレクトリから指定する環境変数制約を特定し、Wave分割実行を正本手順として確立した
+- Wave 3（25ファイル）は AC-006 として計画中
+
+#### 検証証跡
+
+- Wave 1: 8ファイル / 41テスト PASS（`VITEST_MAX_FORKS=1 VITEST_FILE_PARALLELISM=false` 環境下）
+- Wave 2: 16ファイル / 80テスト PASS
+- `docs/30-workflows/TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- 24ファイル一括実行はSIGKILL（メモリ制約）を確認し、Wave分割を正本手順として記録
+
+#### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 |
+|---|----------|--------|
+| 1 | 24ファイル一括実行でSIGKILL（メモリ制約） | Wave分割（8→16→25）で実行する正本手順を確立 |
+| 2 | esbuildバイナリパス不整合でテスト起動失敗 | `ESBUILD_BINARY_PATH` を `.pnpm` ディレクトリから明示指定 |
+| 3 | auxiliary snapshot（`registerRuntimeSkillCreatorHandlers`）との母集団境界 | direct正本 48件 / auxiliary 1件を明確に区分定義 |
+
+#### lessons-learned
+
+- L-IPC-SNAP-001〜003: `references/lessons-learned-current-2026-04.md` に記録済み
+
 ## TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19）
 
 | 項目 | 内容 |
