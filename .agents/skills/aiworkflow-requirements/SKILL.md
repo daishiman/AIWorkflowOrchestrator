@@ -208,6 +208,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - `system-spec-update-summary.md` の Step 1 は「実施した同期（Step 1-A）」と「実施しなかった同期・理由（Step 1-B）」を必ず両方記載する（L-SC08-003 feedback: local workflow 修正のみの場合に全て同期済みと誤解される問題を防ぐ）
 - IPCハンドラー登録テスト（REG-SNAP / REG-DEDUP / REG-COUNT）の契約・検索は `references/api-ipc-system-core.md § IPC Handler Registration Testing Contract`（L461）を参照する
 - vitest でのスナップショット一括実行（24ファイル以上）はSIGKILLになる。Wave分割（例: 8ファイル × 3 wave）が正本手順（TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 確立）
+- NON_VISUAL + 単一クラス追加タスクでは既存コードの直接読み込みを優先し、正本参照は「コードから読み取れない情報」（エラー分類方針・デフォルト値等）に絞る（L-EMB-005-003）
 
 ### 避けるべきこと
 

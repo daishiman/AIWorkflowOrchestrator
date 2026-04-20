@@ -21,6 +21,18 @@
 | 結果     | Phase 12 close-out の SSOT 崩壊を機械的に防止するゲートを確立                         |
 | 検証     | dogfooding PARITY_OK / exit=0 確認済み                                                  |
 
+## 2026-04-20: UNASSIGNED-EMB-005-A skill-feedback 反映（スキル更新 wave）
+
+| 項目     | 内容                                                                                                                                                                                                                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID | UNASSIGNED-EMB-005-A                                                                                                                                                                                                                                                                                    |
+| 操作     | Phase-12 skill-feedback 反映（L-EMB-005-001〜003 lessons-learned 追加 / task-workflow-completed-recent-2026-04h.md 新規 / resource-map クイックルックアップ追加 / aiworkflow-requirements SKILL.md ベストプラクティス更新 / task-specification-creator SKILL.md Phase 7 NON_VISUAL 最適化 tip 追加） |
+| 変更対象 | 更新: `references/lessons-learned-current-2026-04.md`（L-EMB-005-001〜003）、`indexes/resource-map.md`（Late Chunking encoder 行追加）、`SKILL.md`（NON_VISUAL + 単一クラス追加 効率化 tip）。新規: `references/task-workflow-completed-recent-2026-04h.md`（EMB-005-A 完了記録）                   |
+| 結果     | success                                                                                                                                                                                                                                                                                                 |
+| 検証     | generate-index.js / validate-structure.js / mirror sync / diff -qr 全 PASS（Phase 3 で検証）                                                                                                                                                                                                           |
+
+---
+
 ## 2026-04-19: TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out（skill-feedback 反映）
 
 | 項目     | 内容                                                                                                                                                                                                                              |
@@ -3112,3 +3124,16 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+
+## 2026-04-20 — UNASSIGNED-EMB-005-A XenovaTransformerEncoder Phase 12 close-out sync
+
+- `references/llm-embedding.md`: `IEncoder` concrete 実装として `XenovaTransformerEncoder` を追加
+- `references/architecture-embedding-pipeline.md`: Late Chunking コンポーネント構成へ `XenovaTransformerEncoder` を追加し、標準 DI 構成を明記
+- `indexes/topic-map.md` / `indexes/keywords.json`: 変更済み正本に追従して再生成
+
+| 項目     | 内容                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / impl-spec-to-skill-sync / phase12 close-out                                                         |
+| 変更対象 | `references/llm-embedding.md`、`references/architecture-embedding-pipeline.md`、`indexes/topic-map.md`、`indexes/keywords.json` |
+| 結果     | concrete encoder 実装の正本同期完了。internal API は `generateChunkEmbeddings()` 契約変更なしのため no-op      |
+| 検証     | vitest 65件 PASS / typecheck PASS / Phase 12 compliance 修正済み                                                |
