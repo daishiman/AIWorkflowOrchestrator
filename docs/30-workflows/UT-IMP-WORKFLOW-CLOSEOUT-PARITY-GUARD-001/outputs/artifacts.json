@@ -1,0 +1,115 @@
+{
+  "taskId": "UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001",
+  "featureName": "UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001",
+  "createdAt": "2026-04-19T00:00:00Z",
+  "updatedAt": "2026-04-19T00:00:00Z",
+  "status": "pending",
+  "taskType": "docs",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/drift-inventory.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/parity-algorithm-design.md",
+        "outputs/phase-2/validator-placement-design.md",
+        "outputs/phase-2/complete-phase-extension-design.md",
+        "outputs/phase-2/checklist-gate-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-spec.md",
+        "outputs/phase-4/tdd-red-results.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-files.md"
+      ],
+      "completedAt": "2026-04-19T14:21:17.264Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/extended-test-cases.md"],
+      "completedAt": "2026-04-20T02:24:32.154Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/traceability-matrix.md"
+      ],
+      "completedAt": "2026-04-20T02:26:10.233Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/refactoring-results.md"
+      ],
+      "completedAt": "2026-04-20T02:27:48.776Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"],
+      "completedAt": "2026-04-20T02:31:19.222Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/shipping-checklist.md"
+      ],
+      "completedAt": "2026-04-20T02:33:06.154Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md"
+      ],
+      "completedAt": "2026-04-20T02:37:17.189Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ],
+      "completedAt": "2026-04-20T04:21:58.056Z"
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  },
+  "metadata": {
+    "taskType": "docs",
+    "visualMode": "NON_VISUAL",
+    "issueNumber": 2293,
+    "discoveryTask": "UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001"
+  }
+}
