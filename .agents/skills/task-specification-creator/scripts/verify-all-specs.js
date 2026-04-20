@@ -19,6 +19,10 @@
 
 import fs from "fs";
 import path from "path";
+import { spawnSync } from "child_process";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
 
 // ====== 定数定義 ======
 
@@ -459,7 +463,52 @@ function runVerification(options) {
     ? results.summary.errors === 0 && results.summary.warnings === 0
     : results.summary.errors === 0;
 
+  // parity検証を追加
+  const parityInfo = runParityCheck(options.workflow);
+  results.parity = parityInfo;
+  if (parityInfo && parityInfo.exitCode !== 0) {
+    results.summary.passed = false;
+    results.summary.errors += 1;
+    results.globalIssues.push({
+      type: "error",
+      category: "parity",
+      phase: null,
+      message: `ステータス parity 検証失敗: ${parityInfo.outcome}`,
+    });
+  }
+
   return results;
+}
+
+// parity検証を実行して結果を返す
+function runParityCheck(workflowDir) {
+  const validatorPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "validate-closeout-parity.js");
+  if (!fs.existsSync(validatorPath)) {
+    return null;
+  }
+
+  const result = spawnSync("node", [validatorPath, "--workflow", workflowDir, "--json"], {
+    encoding: "utf-8",
+  });
+
+  if (result.status === null) {
+    return { outcome: "ERROR", exitCode: -1, message: "parity validator の実行に失敗しました" };
+  }
+
+  let parsed = null;
+  try {
+    parsed = JSON.parse(result.stdout);
+  } catch {
+    // JSON解析失敗は無視
+  }
+
+  return {
+    exitCode: result.status,
+    outcome: parsed?.result || (result.status === 0 ? "PARITY_OK" : "PARITY_DRIFT"),
+    drifts: parsed?.drifts || [],
+    sourcesChecked: parsed?.sourcesChecked || [],
+    generatedAt: parsed?.generatedAt || null,
+  };
 }
 
 function generateMarkdownReport(results) {

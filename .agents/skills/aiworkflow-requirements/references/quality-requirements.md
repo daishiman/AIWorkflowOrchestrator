@@ -20,6 +20,20 @@
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
 
+## Phase 12 close-out 必須品質ゲート（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001）
+
+Phase 12 の close-out 処理では、以下の parity validator 実行を必須の品質ゲートとする。
+
+| ゲート | コマンド | 合格条件 |
+| --- | --- | --- |
+| parity gate | `node .claude/skills/task-specification-creator/scripts/validate-closeout-parity.js --workflow <path> --json` | `"result": "PARITY_OK"` / exit code 0 |
+| 統合検証 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <path>` | exit code 0 |
+
+parity gate が失敗した場合は `complete-phase.js` を通じて S1〜S4 を同値更新し、再実行すること。
+bypass フラグは存在しない（intentional: drift を「後で直す」にしない設計）。
+
+実装日: 2026-04-19 / 関連タスク: UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 / Issue #2293
+
 ## IPC契約ドリフト自動検出（UT-TASK06-007）
 
 | 項目 | 内容 |

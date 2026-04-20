@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `TASK-LOGS-ARCHIVE-POLICY-001`: LOGS.md アーカイブポリシーを文書化し、`aiworkflow-requirements` の `references/logs-archive-policy.md`、`topic-map.md`、`quick-reference.md`、`resource-map.md` に反映。月次 archive の canonical 配置先を `references/` に統一し、NON_VISUAL Phase 11/12 証跡も workflow 側で再同期。
+
 ### Fixed
 
 - `electron.vite.config.ts` の preload セクションで `@repo/shared/src/ipc/channels` が `externalizeDepsPlugin` によって外部化され `window.electronAPI` が `undefined` になる問題を修正。

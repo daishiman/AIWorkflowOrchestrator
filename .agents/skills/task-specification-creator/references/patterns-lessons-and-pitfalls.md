@@ -377,3 +377,40 @@
   - Wave B 実施: テスト追加・ドキュメント整備（既に Green の状態を維持）
 - **発見日**: 2026-04-14
 - **関連タスク**: TASK-SW-FIX-MODE-MGMT-001
+
+---
+
+## `verify_existing` モード代表ケース（CANCEL-004 知見 2026-04-20）
+
+### CANCEL-004: useCancelGeneration フック既存実装証跡化
+
+- **タスクID**: p04-seq-CANCEL-004（TASK-SW-CANCEL-004-ipc-e2e-cancel-integration）
+- **モード宣言**: `verify_existing`
+- **対象**: `apps/desktop/src/renderer/hooks/useCancelGeneration.ts`（既存実装）
+- **タスクの本質**: 新規実装ではなく、既存フックの仕様書・証跡・テスト整備
+
+#### Phase別の実際の動き
+
+| Phase | 宣言したモードでの実際の作業 | 通常モードとの差分 |
+| --- | --- | --- |
+| Phase 1 | 既存フック実装の確認・仕様化 | 要件抽出ではなく実装確認 |
+| Phase 2 | 既存実装をベースにした contract 設計 | 新設計ではなく逆引き設計 |
+| Phase 4 | 既存テストの確認（新規TDD Redなし） | TDD Redフェーズをスキップ |
+| Phase 5 | contract vs 実装の diff check | 実装作業なし |
+| Phase 6 | 観測性向上の targeted 追加のみ | フルテスト拡張ではない |
+| Phase 11 | NON_VISUAL 3点セット作成 | スクリーンショットなし |
+
+#### 成功要因
+
+1. Phase 1 で `verify_existing` を明示宣言したことで、Phase 4/5 の「空振り」を事前に回避できた
+2. Phase 6 での targeted 追加を「観測性向上」として正当化し、適切なスコープに収めた
+3. Phase 11 で `UI/UX変更なしのため Phase 11 スクリーンショット不要` の固定文言を使用し、形骸化証跡を防いだ
+
+#### 教訓
+
+- 既存実装の証跡化・正規化タスクでは `verify_existing` を Phase 1 で宣言することで、後続 Phase の責務が明確になる
+- `verify_existing` でも Phase 6 の targeted 追加は許可範囲。ただし「観測性向上」の観点に限定し、重複追加は禁止
+- NON_VISUAL 証跡3点セットは、UIなしタスク全般に適用できる汎用パターン
+
+- **発見日**: 2026-04-20
+- **関連タスク**: p04-seq-CANCEL-004, TASK-SW-CANCEL-004-ipc-e2e-cancel-integration

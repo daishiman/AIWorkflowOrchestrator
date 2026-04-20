@@ -1,0 +1,17 @@
+# command: rg -n 'EVALS\.json|EVALS_PATH|evalsPath|EVALS_FILE' apps/ -g '!**/node_modules/**' -g '!**/.backups/**' -g '*.{js,ts,tsx,mjs,cjs}'
+# executed_at: 2026-04-19T09:04:38Z
+# working_directory: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260419-160952-wt-9
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:974:    it("should detect EVALS.json", async () => {
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:982:        path.join(skillDir, "EVALS.json"),
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:995:        expect.objectContaining({ filename: "EVALS.json", type: "evals" }),
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1062:      await realFs.writeFile(path.join(skillDir, "EVALS.json"), "{}");
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1076:        expect.objectContaining({ filename: "EVALS.json", type: "evals" }),
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1096:      await realFs.writeFile(path.join(skillDir, "EVALS.json"), evalsContent);
+apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts:1106:        (f) => f.filename === "EVALS.json",
+apps/desktop/src/main/services/skill/SkillScanner.ts:40:  { filename: "EVALS.json", type: "evals" },
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:156:  // TC-004: complete-skill/EVALS.json が存在し、skill_name フィールドを持つ
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:157:  it("TC-004: complete-skill/EVALS.json should exist and have skill_name", async () => {
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:159:      fixturePath("complete-skill", "EVALS.json"),
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:497:  // TC-037: skill-fixture-runner/EVALS.json が存在する
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:498:  it("TC-037: skill-fixture-runner/EVALS.json should exist", async () => {
+apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts:499:    expect(await fileExists(path.join(SKILL_RUNNER_DIR, "EVALS.json"))).toBe(
