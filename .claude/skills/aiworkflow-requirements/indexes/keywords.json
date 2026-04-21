@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3259,
+  "totalKeywords": 3264,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -468,6 +468,7 @@
       "ipc-type-resolution-guide.md",
       "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -1203,6 +1204,7 @@
       "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -2661,6 +2663,7 @@
     ],
     "PROVIDER": [
       "api-ipc-system-core.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-w3-usage-tracking-2026-04.md"
     ],
     "Workflow": [
@@ -2781,6 +2784,7 @@
     ],
     "Provider": [
       "api-ipc-system-skill-creator-part2.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-w3-usage-tracking-2026-04.md",
       "llm-ipc-types.md",
       "testing-fixtures.md"
@@ -4634,14 +4638,14 @@
     "Late": [
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "lessons-learned-late-chunking-token-provider.md",
+      "llm-embedding.md"
     ],
     "Chunking": [
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "lessons-learned-late-chunking-token-provider.md",
+      "llm-embedding.md"
     ],
     "パイプライン拡張": [
       "architecture-embedding-pipeline.md"
@@ -4768,7 +4772,6 @@
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc-core.md",
-      "task-workflow-completed-recent-2026-04h.md",
       "ui-ux-portal-patterns.md"
     ],
     "データフロー型ギャップパターン": [
@@ -4952,12 +4955,10 @@
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-current-2026-04.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "llm-embedding.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "logs-archive-2026-02-validator-task-9f-task-9b.md"
     ],
     "SCOPE": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
@@ -7259,6 +7260,7 @@
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -7348,6 +7350,7 @@
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
       "lessons-learned-phase12-lifecycle-mid.md",
@@ -9175,16 +9178,6 @@
     "アーカイブポリシー文書化": [
       "lessons-learned-current-2026-04.md"
     ],
-    "EMB": [
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md",
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
-    "XenovaTransformerEncoder": [
-      "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9705,8 +9698,14 @@
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "EMB": [
+      "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
+      "llm-embedding.md"
+    ],
     "教訓サマリー": [
       "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
       "lessons-learned-rag-embedding-runtime.md"
     ],
     "のルートから強制再インストール": [
@@ -9720,6 +9719,51 @@
     ],
     "テスト実行で動作確認": [
       "lessons-learned-late-chunking-esbuild-worktree.md"
+    ],
+    "Token": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "LATE": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "CHUNKING": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "TOKEN": [
+      "lessons-learned-late-chunking-token-provider.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "タスク概要": [
+      "lessons-learned-late-chunking-token-provider.md",
+      "lessons-learned-skill-cancel-abortsignal.md",
+      "lessons-learned-skill-wizard-llm-connection.md",
+      "lessons-learned-skill-wizard-mso-main-tool-badge.md",
+      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
+      "lessons-learned-skill-wizard-redesign.md"
+    ],
+    "実装された型・インターフェース": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "苦戦箇所": [
+      "lessons-learned-late-chunking-token-provider.md",
+      "lessons-learned-severity-filter-ui.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "採用した設計判断とその理由": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "未タスク候補とその背景": [
+      "lessons-learned-late-chunking-token-provider.md"
+    ],
+    "実装ファイル参照": [
+      "lessons-learned-late-chunking-token-provider.md"
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-lifecycle-early-b.md",
@@ -10078,17 +10122,6 @@
     "技術的教訓": [
       "lessons-learned-severity-filter-ui.md"
     ],
-    "苦戦箇所": [
-      "lessons-learned-severity-filter-ui.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-skill-views-completed-move.md",
-      "ui-history-search-view.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
     "コードパターン": [
       "lessons-learned-severity-filter-ui.md",
       "logging-migration-guide.md"
@@ -10122,13 +10155,6 @@
     ],
     "AbortSignal": [
       "lessons-learned-skill-cancel-abortsignal.md"
-    ],
-    "タスク概要": [
-      "lessons-learned-skill-cancel-abortsignal.md",
-      "lessons-learned-skill-wizard-llm-connection.md",
-      "lessons-learned-skill-wizard-mso-main-tool-badge.md",
-      "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
-      "lessons-learned-skill-wizard-redesign.md"
     ],
     "主要知見": [
       "lessons-learned-skill-cancel-abortsignal.md"
@@ -12920,9 +12946,6 @@
     "正本へ同期": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
-    "TOKEN": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
     "global": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -14404,8 +14427,7 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
-      "task-workflow-completed-recent-2026-04g.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
@@ -14448,9 +14470,6 @@
     ],
     "wide": [
       "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "IEncoder": [
-      "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"

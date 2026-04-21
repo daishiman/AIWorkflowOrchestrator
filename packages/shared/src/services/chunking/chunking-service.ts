@@ -135,7 +135,7 @@ export class ChunkingService {
 
       // Late Chunking適用
       if (input.advanced?.lateChunking?.enabled) {
-        chunks = await this.applyLateChunking(
+        chunks = await this.applyLateChunkingInternal(
           input.text,
           chunks,
           input.advanced.lateChunking,
@@ -364,7 +364,7 @@ export class ChunkingService {
   /**
    * Late Chunkingを適用する（ChunkingLateChunkingAdapterへ委譲）
    */
-  private async applyLateChunking(
+  private async applyLateChunkingInternal(
     text: string,
     chunks: Chunk[],
     options: LateChunkingOptions,
