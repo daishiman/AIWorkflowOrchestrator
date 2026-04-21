@@ -1,5 +1,11 @@
 # TASK-SW-STREAM-FUP-01: SkillCreatorProgressData の shared 移動
 
+## メタ情報
+
+```yaml
+issue_number: 2206
+```
+
 ## 概要
 
 `SkillCreatorProgressData` 型を `packages/shared/src/types/` へ移動する。

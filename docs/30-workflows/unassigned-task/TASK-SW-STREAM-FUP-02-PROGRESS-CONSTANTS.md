@@ -1,5 +1,11 @@
 # TASK-SW-STREAM-FUP-02: onProgress 進捗フェーズの定数化
 
+## メタ情報
+
+```yaml
+issue_number: 2207
+```
+
 ## 概要
 
 `createSkill()` の5段階進捗フロー（phase/percentage/message）を `PROGRESS_PHASES` 定数オブジェクトに集約する。

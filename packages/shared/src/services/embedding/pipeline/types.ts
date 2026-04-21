@@ -16,6 +16,7 @@ import type {
   BatchEmbedOptions,
   EmbeddingResult,
 } from "../types/embedding.types";
+import type { PoolingStrategy } from "../late-chunking/late-chunking-types";
 
 // Re-export DocumentType from chunking
 export type { DocumentType } from "../../chunking/types";
@@ -73,6 +74,16 @@ export interface PipelineConfig {
     /** 重複排除設定 */
     deduplication?: DeduplicationConfig;
   };
+
+  /** Late Chunking設定（オプション） */
+  lateChunking?: {
+    /** Late Chunking有効化フラグ */
+    enabled: boolean;
+    /** プーリング戦略 */
+    poolingStrategy?: PoolingStrategy;
+    /** 最大トークン長 */
+    maxTokenLength?: number;
+  };
 }
 
 /**
@@ -123,6 +134,8 @@ export interface StageTimings {
   chunking: number;
   embedding: number;
   deduplication: number;
+  /** Late Chunking有効時のみ記録 */
+  lateChunking?: number;
 }
 
 /**
@@ -149,6 +162,7 @@ export interface PipelineProgress {
 export type PipelineStage =
   | "preprocessing"
   | "chunking"
+  | "lateChunking"
   | "embedding"
   | "deduplication"
   | "completed";
