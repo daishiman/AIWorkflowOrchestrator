@@ -25,6 +25,7 @@ import type {
   ContextualEmbeddingsOptions,
   LateChunkingOptions,
   BaseChunkingOptions,
+  TokenEmbeddingsResult,
 } from "./types";
 
 /**
@@ -126,7 +127,7 @@ export class ChunkingService {
 
       // Late Chunking適用
       if (input.advanced?.lateChunking?.enabled) {
-        chunks = await this.applyLateChunking(
+        chunks = await this.applyLateChunkingInternal(
           input.text,
           chunks,
           input.advanced.lateChunking,
@@ -353,9 +354,9 @@ export class ChunkingService {
   }
 
   /**
-   * Late Chunkingを適用する
+   * Late Chunkingを適用する（内部実装）
    */
-  private async applyLateChunking(
+  private async applyLateChunkingInternal(
     text: string,
     chunks: Chunk[],
     options: LateChunkingOptions,
@@ -364,89 +365,169 @@ export class ChunkingService {
       throw new ChunkingError("Embedding client is required for Late Chunking");
     }
 
-    // 1. 文書全体をトークナイズ
-    const tokens = this.tokenizer.encode(text);
-
-    // 2. 全トークンの埋め込みを生成
-    const tokenEmbeddings = await this.getTokenEmbeddings(
-      tokens,
+    const chunkVectors = await this.buildChunkVectors(
+      this.embeddingClient,
+      text,
+      chunks.map((chunk) => chunk.position),
       options.maxSequenceLength,
     );
 
-    // 3. チャンク境界位置を特定
-    const boundaries = this.determineChunkBoundaries(chunks);
-
-    // 4. 境界に基づきトークン埋め込みをグループ化してプーリング
-    const chunkedEmbeddings = this.poolTokenEmbeddings(
-      tokenEmbeddings,
-      boundaries,
-      options.poolingStrategy,
-    );
-
-    // 5. 埋め込みをチャンクに付与（実際の埋め込みベクトルは別途保存）
     return chunks.map((chunk, index) => ({
       ...chunk,
       metadata: {
         ...chunk.metadata,
         lateChunking: {
           applied: true,
-          embeddingDimension: chunkedEmbeddings[index]?.length ?? 0,
+          embeddingDimension: chunkVectors[index]?.vector.length ?? 0,
         },
       },
     }));
   }
 
   /**
-   * トークン埋め込みを取得する
+   * Late Chunking 用のチャンクベクトルを構築する
    */
-  private async getTokenEmbeddings(
-    tokens: number[],
-    maxSequenceLength: number,
-  ): Promise<number[][]> {
-    if (!this.embeddingClient) {
-      throw new ChunkingError("Embedding client is required");
-    }
-
-    const embeddings: number[][] = [];
-
-    // シーケンス長を超える場合は分割処理
-    for (let i = 0; i < tokens.length; i += maxSequenceLength) {
-      const segment = tokens.slice(i, i + maxSequenceLength);
-      const segmentText = this.tokenizer.decode(segment);
-      const embedding = await this.embeddingClient.embed(segmentText);
-      embeddings.push(embedding);
-    }
-
-    return embeddings;
+  private async buildChunkVectors(
+    client: IEmbeddingClient,
+    text: string,
+    chunks: Array<{ start: number; end: number }>,
+    _maxSequenceLength?: number,
+  ): Promise<Array<{ vector: number[] }>> {
+    const tokenEmbeddings = await this.getTokenEmbeddingsResult(client, text);
+    return this.aggregateTokenEmbeddings(tokenEmbeddings, text, chunks);
   }
 
   /**
-   * チャンク境界を決定する
+   * Late Chunking を適用してチャンクごとのベクトルを返す（公開API）
+   * クライアントが getTokenEmbeddings を持つ場合はトークン隠れ状態を使用し、
+   * 持たない場合は embed() にフォールバックする（近似）
    */
-  private determineChunkBoundaries(chunks: Chunk[]): number[] {
-    return chunks.map((chunk) => chunk.position.end);
+  async applyLateChunking(
+    client: IEmbeddingClient,
+    text: string,
+    chunks: Array<{ start: number; end: number }>,
+  ): Promise<Array<{ vector: number[] }>> {
+    return this.buildChunkVectors(client, text, chunks);
   }
 
   /**
-   * トークン埋め込みをプーリングする
+   * クライアントからトークン埋め込み結果を取得する
    */
-  private poolTokenEmbeddings(
-    tokenEmbeddings: number[][],
-    boundaries: number[],
-    strategy: "mean" | "cls" | "attention",
-  ): number[][] {
-    // 簡略化実装: 各セグメントの埋め込みをそのまま返す
-    // 実際にはトークン位置に基づく適切なプーリング処理が必要
-    if (strategy === "mean") {
-      // Mean pooling: すべてのトークンの平均
-      return tokenEmbeddings;
-    } else if (strategy === "cls") {
-      // CLS pooling: 最初のトークンを使用
-      return tokenEmbeddings;
-    } else {
-      // Attention pooling: アテンション重み付き平均
-      return tokenEmbeddings;
+  private async getTokenEmbeddingsResult(
+    client: IEmbeddingClient,
+    text: string,
+  ): Promise<TokenEmbeddingsResult> {
+    if (client.getTokenEmbeddings) {
+      const result = await client.getTokenEmbeddings(text);
+      if (result.tokens.length !== result.embeddings.length) {
+        throw new ChunkingError(
+          `TokenEmbeddingsResult の lengths が不一致: tokens=${result.tokens.length}, embeddings=${result.embeddings.length}`,
+        );
+      }
+      return result;
     }
+
+    // フォールバック: embed() を使用し、概算トークン列へ同一ベクトルを複製する
+    const singleVector = await client.embed(text);
+    const tokens = text.split(/\s+/).filter((token) => token.length > 0);
+    const effectiveTokens = tokens.length > 0 ? tokens : [""];
+    return {
+      tokens: effectiveTokens,
+      embeddings: effectiveTokens.map(() => [...singleVector]),
+    };
+  }
+
+  /**
+   * トークン隠れ状態をチャンク境界で集約してチャンクベクトルを生成する
+   */
+  private aggregateTokenEmbeddings(
+    result: TokenEmbeddingsResult,
+    text: string,
+    chunks: Array<{ start: number; end: number }>,
+  ): Array<{ vector: number[] }> {
+    const tokenSpans = this.calculateTokenSpans(text, result.tokens);
+
+    return chunks.map((chunk) => {
+      const overlappingEmbeddings = tokenSpans
+        .map((span, index) => ({ span, embedding: result.embeddings[index] }))
+        .filter(({ span }) => span.start < chunk.end && span.end > chunk.start)
+        .map(({ embedding }) => embedding);
+
+      const fallbackEmbedding = result.embeddings[0]
+        ? [...result.embeddings[0]]
+        : [];
+      const vectors =
+        overlappingEmbeddings.length > 0
+          ? overlappingEmbeddings
+          : [fallbackEmbedding];
+
+      return { vector: this.averageEmbeddings(vectors) };
+    });
+  }
+
+  /**
+   * トークン文字列を元テキスト上の文字範囲へ近似マッピングする
+   */
+  private calculateTokenSpans(
+    text: string,
+    tokens: string[],
+  ): Array<{ start: number; end: number }> {
+    const spans: Array<{ start: number; end: number }> = [];
+    let cursor = 0;
+
+    for (const token of tokens) {
+      let start = cursor;
+      let matchedToken = token;
+
+      if (token.length > 0) {
+        const exactIndex = text.indexOf(token, cursor);
+        if (exactIndex >= 0) {
+          start = exactIndex;
+        } else {
+          const trimmedToken = token.trim();
+          while (start < text.length && /\s/.test(text[start])) {
+            start += 1;
+          }
+          if (trimmedToken.length > 0) {
+            const trimmedIndex = text.indexOf(trimmedToken, start);
+            if (trimmedIndex >= 0) {
+              start = trimmedIndex;
+              matchedToken = trimmedToken;
+            }
+          }
+        }
+      }
+
+      const end = start + matchedToken.length;
+      spans.push({ start, end });
+      cursor = Math.max(cursor, end);
+    }
+
+    return spans;
+  }
+
+  /**
+   * 複数トークン埋め込みの平均を返す
+   */
+  private averageEmbeddings(embeddings: number[][]): number[] {
+    if (embeddings.length === 0) {
+      return [];
+    }
+
+    if (embeddings.length === 1) {
+      return [...embeddings[0]];
+    }
+
+    const dimensions = embeddings[0]?.length ?? 0;
+    const sums = Array.from({ length: dimensions }, () => 0);
+
+    embeddings.forEach((embedding) => {
+      for (let index = 0; index < dimensions; index += 1) {
+        sums[index] += embedding[index] ?? 0;
+      }
+    });
+
+    return sums.map((sum) => sum / embeddings.length);
   }
 
   /**
