@@ -1407,8 +1407,8 @@ node scripts/list-specs.js --topics
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
 | UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L267 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L282 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L331 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L360 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L333 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L362 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3734,12 +3734,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| タスク概要 | L9 |
-| 実装パターン（将来参照用） | L22 |
-| L-MSO-001: visual label と accessible name は別管理する | L80 |
-| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
-| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
-| スキル改善提案（task-specification-creator への反映事項） | L112 |
+| タスク概要 | L10 |
+| 実装パターン（将来参照用） | L23 |
+| L-MSO-001: visual label と accessible name は別管理する | L81 |
+| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L91 |
+| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L101 |
+| スキル改善提案（task-specification-creator への反映事項） | L113 |
 
 ### references/lessons-learned-skill-wizard-notion-special-case-eliminate.md
 
@@ -3786,7 +3786,8 @@ node scripts/list-specs.js --topics
 | L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
 | L-STREAM-FUP-03: PROGRESS_FLOWS 単一集約パターン（TASK-SW-STREAM-FUP-03 / 2026-04-18） | L92 |
 | 再利用メモ（skill-feedback-report.md より抽出） | L126 |
-| 後続タスク・未タスク | L134 |
+| L-STREAM-FUP-05: filter-by-planId 契約（TASK-SC-08-FUP-02 / 2026-04-20） | L134 |
+| 後続タスク・未タスク | L153 |
 
 ### references/lessons-learned-templates.md
 
@@ -5171,6 +5172,8 @@ node scripts/list-specs.js --topics
 | UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L109 |
 | TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L145 |
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L177 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
 
 ### references/task-workflow-completed-recent-2026-04h.md
 
@@ -5302,13 +5305,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L546 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L566 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L568 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L580 |
-| 完了タスク（2026-03後半） | L608 |
-| 完了タスク（機能別アーカイブ） | L616 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L717 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L547 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L567 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L569 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L581 |
+| 完了タスク（2026-03後半） | L609 |
+| 完了タスク（機能別アーカイブ） | L617 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L718 |
 
 ### references/task-workflow-history.md
 
@@ -5342,9 +5345,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L31 |
-| 利用順序 | L60 |
-| 関連ドキュメント | L65 |
+| 仕様書インデックス | L32 |
+| 利用順序 | L61 |
+| 関連ドキュメント | L66 |
 
 ### references/testing-accessibility.md
 

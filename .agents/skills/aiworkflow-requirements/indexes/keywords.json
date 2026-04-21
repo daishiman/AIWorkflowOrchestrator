@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3252,
+  "totalKeywords": 3259,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1529,6 +1529,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-auth.md",
       "interfaces-skill-verify-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "security-electron-ipc-advanced.md",
       "ui-history-search-view.md",
       "ui-ux-navigation-chat-patterns.md"
@@ -2996,6 +2997,7 @@
       "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
       "security-electron-ipc-examples.md",
@@ -4246,6 +4248,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "Modifier": [
@@ -7909,7 +7912,8 @@
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -8457,7 +8461,9 @@
     ],
     "CLEANUP": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-skill-wizard-redesign.md"
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "login": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -8509,7 +8515,8 @@
     ],
     "learned": [
       "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "canonical": [
       "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
@@ -9148,10 +9155,19 @@
     "スナップショットカバレッジ": [
       "lessons-learned-current-2026-04.md"
     ],
+    "PARTIAL": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "DIR": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "LOGS": [
       "lessons-learned-current-2026-04.md",
       "logs-archive-index.md",
-      "logs-archive-policy.md"
+      "logs-archive-policy.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "ARCHIVE": [
       "lessons-learned-current-2026-04.md"
@@ -10513,6 +10529,7 @@
     ],
     "filter": [
       "lessons-learned-skill-remove-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "ui-ux-atoms-patterns-core.md"
@@ -10863,6 +10880,12 @@
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "より抽出": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "by": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "planId": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
     "後続タスク・未タスク": [
@@ -12663,7 +12686,8 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "quick-reference-search-patterns-ipc-infra.md"
+      "quick-reference-search-patterns-ipc-infra.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "準拠再確認": [
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
@@ -14414,6 +14438,15 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "修正": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "キャンセル後の半作成スキルディレクトリ残存クリーンアップ": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "キャンセルクリーンアップ仕様書": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "wide": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "IEncoder": [
