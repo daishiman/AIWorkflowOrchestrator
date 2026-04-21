@@ -3959,8 +3959,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L52 |
-| 関連ドキュメント | L57 |
+| 利用順序 | L53 |
+| 関連ドキュメント | L58 |
 
 ### references/llm-embedding.md
 
@@ -5370,8 +5370,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L33 |
-| 利用順序 | L62 |
-| 関連ドキュメント | L67 |
+| TASK-RALLY-002: restoredPendingRequest合成ルール明確化（verify_existing / 2026-04-21） | L62 |
+| 利用順序 | L97 |
+| 関連ドキュメント | L102 |
 
 ### references/testing-accessibility.md
 

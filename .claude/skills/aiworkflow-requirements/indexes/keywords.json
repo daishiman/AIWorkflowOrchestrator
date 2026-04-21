@@ -1298,6 +1298,7 @@
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed.md",
+      "task-workflow.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -6938,7 +6939,8 @@
       "interfaces-skill-verify-contract.md",
       "lessons-learned-skill-creator-cancel-chain.md",
       "lessons-learned-verify-contract-consolidation.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+      "task-workflow-completed-skill-lifecycle-ui-verify.md",
+      "task-workflow.md"
     ],
     "Check": [
       "interfaces-skill-verify-contract.md"
@@ -9936,13 +9938,16 @@
       "lessons-learned-rag-embedding-runtime.md"
     ],
     "RALLY": [
-      "lessons-learned-rally-002.md"
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
     ],
     "restoredPendingRequest": [
-      "lessons-learned-rally-002.md"
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
     ],
     "合成ルール明確化": [
-      "lessons-learned-rally-002.md"
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
     ],
     "AuthKey": [
       "lessons-learned-rt-04-authkey-dedup.md"
@@ -10409,7 +10414,8 @@
       "lessons-learned-test-cleanup-describe-skip-2026-04.md"
     ],
     "existing": [
-      "lessons-learned-skill-creator-cancel-chain.md"
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "task-workflow.md"
     ],
     "モードで": [
       "lessons-learned-skill-creator-cancel-chain.md"
