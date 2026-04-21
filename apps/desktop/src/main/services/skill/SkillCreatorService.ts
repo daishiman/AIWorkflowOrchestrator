@@ -371,7 +371,10 @@ export class SkillCreatorService {
       }
     };
 
-    const skillDir = path.join(this.skillsDir, options.name);
+    const skillDir =
+      options.mode === "update" && options.skillPath
+        ? options.skillPath
+        : path.join(this.skillsDir, options.name);
     const skillDirExistedBefore = await this.pathExists(skillDir);
 
     try {
@@ -414,6 +417,22 @@ export class SkillCreatorService {
           break;
         case "update":
           emitProgress("loading-skill");
+          try {
+            structurePlan = await this.runUpdateWorkflow(
+              options,
+              operationSignal,
+            );
+          } catch (error) {
+            if (this.isAbortError(error) || operationSignal.aborted) {
+              throw error;
+            }
+            this.logger.warn("runUpdateWorkflow failed, falling back to null", {
+              skillName: options.name,
+              mode: options.mode,
+              error,
+            });
+            structurePlan = null;
+          }
           emitProgress("analyzing");
           break;
         case "improve-prompt":
@@ -1076,6 +1095,77 @@ export class SkillCreatorService {
     );
 
     return `${originalFrontmatter[0]}${improvedWithoutFrontmatter}`;
+  }
+
+  /**
+   * TASK-SC-CREATOR-UPDATE-IMPL-001: update モードの実処理
+   * 既存スキルの読込 → purpose 再生成または既存値維持 → StructurePlanJson 返却
+   */
+  private async runUpdateWorkflow(
+    options: CreateSkillOptions,
+    signal?: AbortSignal,
+  ): Promise<StructurePlanJson | null> {
+    this.throwIfAborted(signal);
+    try {
+      const skillDir =
+        options.skillPath || path.join(this.skillsDir, options.name);
+      const skillMdPath = path.join(skillDir, "SKILL.md");
+
+      let existingPurpose: string | null = null;
+      try {
+        const content = await fs.readFile(skillMdPath, "utf-8");
+        existingPurpose = this.extractPurposeFromSkillMd(content);
+      } catch {
+        // SKILL.md が存在しない場合は null のまま続行
+      }
+
+      this.throwIfAborted(signal);
+
+      const regeneratedPurpose = await this.extractPurposeWithLlm(
+        options,
+        signal,
+      );
+      const normalizedRegeneratedPurpose =
+        typeof regeneratedPurpose === "string" &&
+        regeneratedPurpose.trim() !== ""
+          ? regeneratedPurpose.trim()
+          : null;
+      const purpose =
+        normalizedRegeneratedPurpose ?? existingPurpose ?? options.description;
+
+      return {
+        skillName: options.name,
+        description: options.description,
+        purpose,
+        features: [],
+        agents: ["extract-purpose"],
+      };
+    } catch (error) {
+      if (this.isAbortError(error)) throw error;
+      return null;
+    }
+  }
+
+  private extractPurposeFromSkillMd(content: string): string | null {
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    if (!frontmatterMatch) return null;
+
+    const frontmatter = frontmatterMatch[1];
+    const multilineMatch = frontmatter.match(
+      /description:\s*\|\s*\n((?:[ \t]+[^\n]*\n?)+)/,
+    );
+    if (multilineMatch) {
+      const description = multilineMatch[1].trim();
+      return description === "" ? null : description;
+    }
+
+    const singlelineMatch = frontmatter.match(/description:\s*(.+)/);
+    if (singlelineMatch) {
+      const description = singlelineMatch[1].trim();
+      return description === "" ? null : description;
+    }
+
+    return null;
   }
 
   /**

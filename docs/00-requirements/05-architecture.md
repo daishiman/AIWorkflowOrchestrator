@@ -722,15 +722,23 @@ Embedding Generation Pipelineは、ドキュメントを意味的に検索可能
 
 **主要コンポーネント**:
 
-| コンポーネント      | 責務                                           |
-| ------------------- | ---------------------------------------------- |
-| `EmbeddingPipeline` | パイプライン全体のオーケストレーション         |
-| `ChunkingService`   | ドキュメントのチャンク分割（複数戦略サポート） |
-| `EmbeddingService`  | 埋め込みベクトル生成（マルチプロバイダー）     |
-| `BatchProcessor`    | バッチ処理と並列実行制御                       |
-| `RetryHandler`      | リトライ機構（指数バックオフ）                 |
-| `CircuitBreaker`    | サーキットブレーカー（障害遮断）               |
-| `RateLimiter`       | レート制限（Token Bucket）                     |
+| コンポーネント      | 責務                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `EmbeddingPipeline` | パイプライン全体のオーケストレーション                                              |
+| `ChunkingService`   | ドキュメントのチャンク分割（複数戦略サポート、Late Chunking は専用 adapter へ委譲） |
+| `EmbeddingService`  | 埋め込みベクトル生成（マルチプロバイダー）                                          |
+| `BatchProcessor`    | バッチ処理と並列実行制御                                                            |
+| `RetryHandler`      | リトライ機構（指数バックオフ）                                                      |
+| `CircuitBreaker`    | サーキットブレーカー（障害遮断）                                                    |
+| `RateLimiter`       | レート制限（Token Bucket）                                                          |
+
+**Late Chunking 責務分離（2026-04-20 反映）**:
+
+- `packages/shared/src/services/embedding/late-chunking/chunking-late-chunking-adapter.ts`
+  - `ChunkingService` から委譲される Late Chunking 専用処理
+- `packages/shared/src/services/embedding/late-chunking/late-chunking-service.ts`
+  - token-level `IEncoder` ベース実装
+- これにより `ChunkingService` は facade としての責務へ寄り、Late Chunking 固有ロジックは分離される
 
 ### 5.2B.2 チャンキング戦略
 
@@ -829,6 +837,29 @@ Embedding Generation Pipelineは、ドキュメントを意味的に検索可能
 - リトライ成功率: 100%（50リクエスト中12回のレート制限を全てリカバリー）
 - サーキットブレーカー: 3状態管理で障害遮断
 - エラーハンドリング: 4種類のエラーケースを網羅
+
+### 5.2B.7 ドメインサービス分層パターン（Late Chunking Adapterによる責務分離）
+
+`packages/shared/src/services/` 配下のドメインサービス層では、単一責任原則（SRP）に基づきサービス間の責務を明確に分離するパターンを採用する。Late Chunkingの実装はその典型例として機能する。
+
+**レイヤー構成**:
+
+| レイヤー              | クラス                        | 責務                                                                                                            | ファイルパス                                                         |
+| --------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| text-level Adapter層  | `ChunkingLateChunkingAdapter` | `ChunkingService` からの委譲先。`applyLateChunking` / `determineChunkBoundaries` / `poolTokenEmbeddings` を提供 | `services/embedding/late-chunking/chunking-late-chunking-adapter.ts` |
+| token-level Service層 | `LateChunkingService`         | `IEncoder` ベースのtoken操作・hidden state pooling                                                              | `services/embedding/late-chunking/late-chunking-service.ts`          |
+
+**命名設計の背景**:
+
+`ChunkingLateChunkingAdapter` という名称は、token-level インターフェース `IEncoder` を直接扱う `LateChunkingService` との名前衝突を回避するために採用された。`Adapter` サフィックスにより「`ChunkingService` が必要とする形式への変換・橋渡し役」であることを明示する。
+
+**このパターンのメリット**:
+
+| メリット         | 説明                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| SRP遵守          | `ChunkingService` をオーケストレーション責務のみに絞り込み、Late Chunking固有ロジックをAdapter層に移譲 |
+| テスト観測性向上 | Adapter層を独立してモック・スタブできるため、ユニットテストの観測境界が明確になる                      |
+| レイヤー分離     | token-level処理とtext-level処理が混在せず、将来の拡張時に影響範囲を限定できる                          |
 
 ---
 

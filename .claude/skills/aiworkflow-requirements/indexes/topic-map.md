@@ -157,9 +157,9 @@ node scripts/list-specs.js --topics
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
 | Late Chunking パイプライン拡張 | L125 |
-| 品質メトリクス | L188 |
-| 関連ドキュメント | L216 |
-| 変更履歴 | L224 |
+| 品質メトリクス | L217 |
+| 関連ドキュメント | L245 |
+| 変更履歴 | L253 |
 
 ### references/architecture-file-conversion.md
 
@@ -919,8 +919,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L8 |
 | 主要インターフェース | L19 |
-| エラーコード | L218 |
-| 性能指標 | L229 |
+| エラーコード | L227 |
+| 性能指標 | L238 |
 
 ### references/api-internal-search.md
 
@@ -3450,6 +3450,19 @@ node scripts/list-specs.js --topics
 | UNASSIGNED-EMB-005 実装教訓（2026-04-19） | L17 |
 | 関連ドキュメント | L95 |
 
+### references/lessons-learned-late-chunking-token-provider.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 教訓サマリー | L19 |
+| 実装された型・インターフェース | L31 |
+| 苦戦箇所 | L102 |
+| 採用した設計判断とその理由 | L215 |
+| 未タスク候補とその背景 | L227 |
+| 関連ドキュメント | L249 |
+| 実装ファイル参照 | L257 |
+
 ### references/lessons-learned-phase12-lifecycle-early-b.md
 
 | セクション | 行 |
@@ -3947,14 +3960,14 @@ node scripts/list-specs.js --topics
 | プロバイダーインターフェース | L13 |
 | データ型 | L37 |
 | 設定型 | L53 |
-| 出力型 | L93 |
-| 信頼性設定型 | L105 |
-| メトリクス型 | L135 |
-| Late Chunking 型定義（UNASSIGNED-EMB-005） | L147 |
-| エラー型 | L241 |
-| 列挙型 | L272 |
-| 品質メトリクス | L300 |
-| 関連ドキュメント | L308 |
+| 出力型 | L101 |
+| 信頼性設定型 | L125 |
+| メトリクス型 | L155 |
+| Late Chunking 型定義（UNASSIGNED-EMB-005） | L167 |
+| エラー型 | L261 |
+| 列挙型 | L292 |
+| 品質メトリクス | L320 |
+| 関連ドキュメント | L328 |
 
 ### references/llm-ipc-types.md
 
