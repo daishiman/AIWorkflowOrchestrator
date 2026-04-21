@@ -157,9 +157,9 @@ node scripts/list-specs.js --topics
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
 | Late Chunking パイプライン拡張 | L125 |
-| 品質メトリクス | L185 |
-| 関連ドキュメント | L213 |
-| 変更履歴 | L221 |
+| 品質メトリクス | L188 |
+| 関連ドキュメント | L216 |
+| 変更履歴 | L224 |
 
 ### references/architecture-file-conversion.md
 
@@ -1407,8 +1407,8 @@ node scripts/list-specs.js --topics
 | SkillCreateWizard UI（TASK-10A-C / completed） | L106 |
 | UI整合性修正（TASK-SW-FIX-UI-001 / completed） | L267 |
 | ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed） | L282 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L331 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L360 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L333 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L362 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3734,12 +3734,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| タスク概要 | L9 |
-| 実装パターン（将来参照用） | L22 |
-| L-MSO-001: visual label と accessible name は別管理する | L80 |
-| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L90 |
-| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L100 |
-| スキル改善提案（task-specification-creator への反映事項） | L112 |
+| タスク概要 | L10 |
+| 実装パターン（将来参照用） | L23 |
+| L-MSO-001: visual label と accessible name は別管理する | L81 |
+| L-MSO-002: exact match テストを壊さないバッジ追加パターン | L91 |
+| L-MSO-003: 削除容易性を保ったまま条件分岐バッジを実装する | L101 |
+| スキル改善提案（task-specification-creator への反映事項） | L113 |
 
 ### references/lessons-learned-skill-wizard-notion-special-case-eliminate.md
 
@@ -3786,7 +3786,8 @@ node scripts/list-specs.js --topics
 | L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
 | L-STREAM-FUP-03: PROGRESS_FLOWS 単一集約パターン（TASK-SW-STREAM-FUP-03 / 2026-04-18） | L92 |
 | 再利用メモ（skill-feedback-report.md より抽出） | L126 |
-| 後続タスク・未タスク | L134 |
+| L-STREAM-FUP-05: filter-by-planId 契約（TASK-SC-08-FUP-02 / 2026-04-20） | L134 |
+| 後続タスク・未タスク | L153 |
 
 ### references/lessons-learned-templates.md
 
@@ -3950,10 +3951,10 @@ node scripts/list-specs.js --topics
 | 信頼性設定型 | L105 |
 | メトリクス型 | L135 |
 | Late Chunking 型定義（UNASSIGNED-EMB-005） | L147 |
-| エラー型 | L228 |
-| 列挙型 | L259 |
-| 品質メトリクス | L287 |
-| 関連ドキュメント | L295 |
+| エラー型 | L241 |
+| 列挙型 | L272 |
+| 品質メトリクス | L300 |
+| 関連ドキュメント | L308 |
 
 ### references/llm-ipc-types.md
 
@@ -5174,6 +5175,12 @@ node scripts/list-specs.js --topics
 | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
 | TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
 
+### references/task-workflow-completed-recent-2026-04h.md
+
+| セクション | 行 |
+|------------|----|
+| UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -5298,13 +5305,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L546 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L566 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L568 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L580 |
-| 完了タスク（2026-03後半） | L608 |
-| 完了タスク（機能別アーカイブ） | L616 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L717 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L547 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L567 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L569 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L581 |
+| 完了タスク（2026-03後半） | L609 |
+| 完了タスク（機能別アーカイブ） | L617 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L718 |
 
 ### references/task-workflow-history.md
 
@@ -5338,9 +5345,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L31 |
-| 利用順序 | L60 |
-| 関連ドキュメント | L65 |
+| 仕様書インデックス | L32 |
+| 利用順序 | L61 |
+| 関連ドキュメント | L66 |
 
 ### references/testing-accessibility.md
 
