@@ -41,6 +41,10 @@ export function ConversationalInterview({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // セッション復元時は restoredPendingRequest が優先される。
+  // 通常フローでは workflowSnapshot?.awaitingUserInput を使用する。
+  // 復元セッション中は restoredPendingRequest を優先し、
+  // snapshot が更新されたタイミング（requestId 変化）で自動クリアされる。
   const pendingRequest =
     restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
@@ -52,6 +56,7 @@ export function ConversationalInterview({
     }
   }, [pendingRequest?.requestId]);
 
+  // workflowSnapshot に新しい質問が届いたら復元状態をクリアし通常フローへ戻す。
   useEffect(() => {
     if (workflowSnapshot?.awaitingUserInput) {
       setRestoredPendingRequest(null);

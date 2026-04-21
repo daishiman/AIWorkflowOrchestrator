@@ -1,0 +1,142 @@
+{
+  "feature": "TASK-RALLY-002",
+  "created": "2026-04-21T00:00:00.000Z",
+  "lastUpdated": "2026-04-21T00:00:00.000Z",
+  "status": "blocked",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/p50-check-result.md",
+        "outputs/phase-1/thinking-coverage-map.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/verification-design.md",
+        "outputs/phase-2/responsibility-boundary-matrix.md",
+        "outputs/phase-2/validation-command-matrix.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md",
+        "outputs/phase-3/dependency-risk-register.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/existing-test-inventory.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/diff-check-result.md",
+        "outputs/phase-5/changed-files.md",
+        "outputs/phase-5/verification-result.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-cases.md",
+        "outputs/phase-6/regression-test-result.md",
+        "outputs/phase-6/edge-case-result.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-check-result.md",
+        "outputs/phase-7/traceability-coverage-report.md",
+        "outputs/phase-7/uncovered-analysis.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/change-rationale-table.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/four-conditions-audit.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/gate-decision.md",
+        "outputs/phase-10/release-readiness-checklist.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/TASK-RALLY-002-manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-plan.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "improvement",
+    "implementationMode": "verify_existing",
+    "visualMode": "NON_VISUAL",
+    "waveGroup": "0",
+    "parallelTasks": ["RALLY-001", "RALLY-004"],
+    "blockedBy": [],
+    "blocks": ["RALLY-010", "RALLY-011", "RALLY-012", "RALLY-013"],
+    "conflictDomain": "ConversationalInterview",
+    "targetFile": "apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx"
+  }
+}

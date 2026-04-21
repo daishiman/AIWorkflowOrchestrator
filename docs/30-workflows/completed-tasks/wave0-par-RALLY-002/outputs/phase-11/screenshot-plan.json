@@ -1,0 +1,7 @@
+{
+  "taskId": "TASK-RALLY-002",
+  "visualMode": "NON_VISUAL",
+  "status": "not_required",
+  "reason": "UI/UX変更なしのため Phase 11 スクリーンショット不要",
+  "primaryEvidence": "outputs/phase-11/TASK-RALLY-002-manual-test-report.md"
+}

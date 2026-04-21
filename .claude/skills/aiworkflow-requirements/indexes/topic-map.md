@@ -3532,6 +3532,13 @@ node scripts/list-specs.js --topics
 | 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
 
+### references/lessons-learned-rally-002.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-RALLY-002: restoredPendingRequest合成ルール明確化 (2026-04-21) | L6 |
+| 関連ドキュメント | L48 |
+
 ### references/lessons-learned-rt-04-authkey-dedup.md
 
 | セクション | 行 |

@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3273,
+  "totalKeywords": 3276,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -469,6 +469,7 @@
       "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-late-chunking-token-provider.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -1210,6 +1211,7 @@
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -7294,6 +7296,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -7384,6 +7387,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -9930,6 +9934,15 @@
     ],
     "メソッドシグネチャを比較": [
       "lessons-learned-rag-embedding-runtime.md"
+    ],
+    "RALLY": [
+      "lessons-learned-rally-002.md"
+    ],
+    "restoredPendingRequest": [
+      "lessons-learned-rally-002.md"
+    ],
+    "合成ルール明確化": [
+      "lessons-learned-rally-002.md"
     ],
     "AuthKey": [
       "lessons-learned-rt-04-authkey-dedup.md"
