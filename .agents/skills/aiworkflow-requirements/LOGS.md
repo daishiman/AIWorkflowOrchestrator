@@ -5,6 +5,32 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
+
+- 操作: optimize-description
+- 変更前: 約407字
+- 変更後: 320字
+- 理由: Progressive Disclosure原則（200-400字）への準拠
+
+## 2026-04-21: TASK-SW-TODO-001（current fact close-out sync）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SW-TODO-001 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow.md`, `references/task-workflow-completed.md`, `references/ui-ux-feature-components-skill-analysis.md`, `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`, `indexes/topic-map.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | 主ツールバッジを current contract から historical pattern へ降格し、stale unassigned ledger を completed retrospective として再同期 |
+
+### 更新詳細
+
+- **更新**: `references/task-workflow.md`
+  - `TASK-SW-TODO-001` verify_existing close-out、Phase 11 canonical evidence 名、stale unassigned ledger 是正を current facts に追加
+- **更新**: `references/ui-ux-feature-components-skill-analysis.md`
+  - 主ツールバッジ節を historical note 化し、current 実装から削除済みである旨を明記
+- **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
+  - 削除待ち前提を current fact に合わせて完了済み手順へ是正
+
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
