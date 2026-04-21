@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3278,
+  "totalKeywords": 3277,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6188,8 +6188,13 @@
     "スキーマ仕様": [
       "evals-schema-spec.md"
     ],
-    "標準スキーマ": [
-      "evals-schema-spec.md"
+    "Legacy": [
+      "evals-schema-spec.md",
+      "legacy-ordinal-family-register.md"
+    ],
+    "スキーマ": [
+      "evals-schema-spec.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "camelCase": [
       "evals-schema-spec.md"
@@ -6836,9 +6841,6 @@
       "rag-knowledge-graph.md",
       "security-input-validation.md"
     ],
-    "スキーマ": [
-      "interfaces-rag-entity-extraction.md"
-    ],
     "エンティティタイプ": [
       "interfaces-rag-entity-extraction.md"
     ],
@@ -7201,9 +7203,6 @@
     ],
     "適用実績": [
       "ipc-type-resolution-guide.md"
-    ],
-    "Legacy": [
-      "legacy-ordinal-family-register.md"
     ],
     "Ordinal": [
       "legacy-ordinal-family-register.md"
