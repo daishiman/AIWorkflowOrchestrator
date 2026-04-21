@@ -6,6 +6,7 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ChunkingService } from "../chunking-service";
+import { ChunkingLateChunkingAdapter } from "../../embedding/late-chunking/chunking-late-chunking-adapter";
 import { ValidationError, ChunkingError } from "../errors";
 import {
   MockTokenizer,
@@ -500,6 +501,99 @@ describe("ChunkingService Integration Tests", () => {
       await expect(service.chunk(input)).rejects.toThrow(
         "Embedding client is required",
       );
+    });
+  });
+
+  // ===========================================================================
+  // Late Chunking - 委譲確認 (SEP-08 / SEP-09)
+  // ===========================================================================
+
+  describe("Late Chunking - 委譲確認", () => {
+    it("SEP-08: lateChunking.enabled=true のとき Adapter.applyLateChunking に委譲する", async () => {
+      // Arrange
+      const mockAdapter = new ChunkingLateChunkingAdapter(
+        tokenizer,
+        embeddingClient,
+      );
+      const applySpy = vi
+        .spyOn(mockAdapter, "applyLateChunking")
+        .mockImplementation(async (_text, chunks) => chunks);
+
+      service = new ChunkingService(
+        tokenizer,
+        embeddingClient,
+        llmClient,
+        mockAdapter,
+      );
+
+      const input: ChunkingInput = {
+        text: "Delegation test content for late chunking.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+        advanced: {
+          lateChunking: {
+            enabled: true,
+            maxSequenceLength: 512,
+            poolingStrategy: "mean",
+          },
+        },
+      };
+
+      // Act
+      await service.chunk(input);
+
+      // Assert
+      expect(applySpy).toHaveBeenCalledTimes(1);
+      const [delegatedText, delegatedChunks, delegatedOptions] =
+        applySpy.mock.calls[0];
+      expect(delegatedText).toBe(input.text);
+      expect(Array.isArray(delegatedChunks)).toBe(true);
+      expect(delegatedChunks.length).toBeGreaterThan(0);
+      expect(delegatedOptions).toEqual(input.advanced?.lateChunking);
+    });
+
+    it("SEP-09: lateChunking.enabled=false のとき Adapter.applyLateChunking は呼ばれない", async () => {
+      // Arrange
+      const mockAdapter = new ChunkingLateChunkingAdapter(
+        tokenizer,
+        embeddingClient,
+      );
+      const applySpy = vi
+        .spyOn(mockAdapter, "applyLateChunking")
+        .mockImplementation(async (_text, chunks) => chunks);
+
+      service = new ChunkingService(
+        tokenizer,
+        embeddingClient,
+        llmClient,
+        mockAdapter,
+      );
+
+      const inputDisabled: ChunkingInput = {
+        text: "No delegation expected.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+        advanced: {
+          lateChunking: {
+            enabled: false,
+            maxSequenceLength: 512,
+            poolingStrategy: "mean",
+          },
+        },
+      };
+
+      const inputUndefined: ChunkingInput = {
+        text: "No delegation expected either.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+      };
+
+      // Act
+      await service.chunk(inputDisabled);
+      await service.chunk(inputUndefined);
+
+      // Assert
+      expect(applySpy).not.toHaveBeenCalled();
     });
   });
 
