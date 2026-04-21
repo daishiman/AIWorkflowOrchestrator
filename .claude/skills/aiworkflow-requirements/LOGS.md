@@ -5,6 +5,7 @@
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
 
 - 操作: optimize-description
@@ -30,6 +31,23 @@
   - 主ツールバッジ節を historical note 化し、current 実装から削除済みである旨を明記
 - **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
   - 削除待ち前提を current fact に合わせて完了済み手順へ是正
+
+## 2026-04-21: TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- improve-prompt 実処理化、frontmatter 保全、post-improve bootstrap 除外を current facts として反映
+- workflow `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` / `artifacts.json` completed 同期を記録
+- `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を follow-up として登録
+
+## 2026-04-21: UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| 操作 | update-spec / close-out sync |
+| 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
 
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
@@ -111,6 +129,42 @@
 
 ## 2026-04-19: impl-spec-to-skill-sync（TASK-UT-9I-001 反映）
 
+| 項目 | 内容 |
+| --- | --- |
+| 操作 | spec-reflection / lessons-learned 新規作成 |
+| 変更対象 | `references/lessons-learned-skill-docs-runtime-ipc-contract.md`（新規作成）, `SKILL.md`（TASK-UT-9I-001 エントリ追加）, `references/lessons-learned-current-2026-04.md`（L-SC08-004 追加）, `indexes/resource-map.md`（TASK-UT-9I-001 参照追加） |
+| 結果 | success |
+| 備考 | Phase-12 全5タスク準拠確認済み。スキル未反映だった TASK-UT-9I-001 の IPC error contract 教訓を体系化 |
+
+---
+
+## 2026-04-19: TASK-AGENTS-SKILLS-FULL-SYNC-001（canonical/mirror full parity guard 導入）
+
+| 項目         | 内容                                                                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-AGENTS-SKILLS-FULL-SYNC-001                                                                                                                                 |
+| 操作         | spec-created / Phase 1-12 完了 / Phase 13 は blocked 維持                                                                                                        |
+| 変更対象     | `.claude/scripts/verify-skills-parity.sh` 新規・`.claude/scripts/sync-skills-mirror.sh` 新規・`.husky/pre-push` 追記・`.claude/hooks/session-init.sh` 追記・`.agents/skills/` 一式同期 |
+| 結果         | drift 4 件→0 件収束・Phase 9 品質 8 ステップ全 PASS（shellcheck SKIP 許容）・Phase 10 Blocker 0 件・Phase 11 手動テスト 6 シナリオ全 PASS（session-init 最大 0.443s / AC-6 基準 < 1 秒）  |
+| 検証         | `bash verify-skills-parity.sh` exit=0 / `diff -qr .claude/skills .agents/skills` 空出力 / Phase 11 bash-execution-log.txt + timing-measurement.txt 証跡         |
+| 備考         | NON_VISUAL infra-guard。sync script の実行順序は仕様書から調整（`generate-index → rsync → diff`）。Phase 13 は user 明示承認まで blocked                     |
+
+### 更新詳細
+
+- `references/task-workflow-completed.md` に本タスクの `spec_created` 完了エントリを先頭追加
+- `references/task-workflow.md` の `TASK-CONFLICT-PREVENT-001` 後続タスク列に相互参照追加
+- `indexes/topic-map.md` / `indexes/keywords.json` を `generate-index.js --quiet` で再生成
+- `indexes/resource-map.md` は変更なし（no-op / current facts 不変）
+- `.agents/skills/` 側へ `sync-skills-mirror.sh` 経由で同期（same-wave sync 完了）
+
+---
+| 項目     | 内容                                                                                                                  |
+| -------- | --------------------------------------------------------------------------------------------------------------------- |
+| タスクID | TASK-SW-CANCEL-004                                                                                                    |
+| 操作     | Phase 12 close-out / skill-feedback 反映                                                                              |
+| 変更対象 | `task-specification-creator/SKILL.md`（FB-CANCEL-004-1/2 追記）、`task-specification-creator/LOGS.md`（今回エントリ） |
+| 結果     | partial fix 残存課題格下げテンプレート・unassigned重複防止ルールを「よくある漏れ」テーブルに追加。mirror同期完了      |
+| 備考     | system-spec-update-summary.md Step 1-F に従い本体への新規セクション追加はなし（新規IPC契約なし）                      |
 | 項目     | 内容                                                                                                                  |
 | -------- | --------------------------------------------------------------------------------------------------------------------- |
 | タスクID | TASK-SW-CANCEL-004                                                                                                    |
@@ -168,6 +222,15 @@
 - `references/api-internal-embedding.md`: `EmbeddingService.generateChunkEmbeddings()` APIドキュメントを追加（シグネチャ・入力・出力・エラーケース・設定例）
 - `references/lessons-learned-late-chunking-esbuild-worktree.md`: 新規作成（L-LC-01: esbuildバ���ナリバージョン不一致 / L-LC-02: IEncoderモック雛型をPhase 2設計書に含める）
 - `indexes/resource-map.md`: Late Chunking / Embedding タスク種別エントリを追加（HybridRAGFactory wiring 行の後）
+
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 system spec sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスク | `TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001` |
+| 概要 | `ChunkingService` から `ChunkingLateChunkingAdapter` への委譲抽出を正本仕様へ反映 |
+| 更新 | `references/architecture-embedding-pipeline.md` に component 行追加、`indexes/topic-map.md` 再生成 |
+| 補足 | 既存 token-level `LateChunkingService` は温存し、2 系統の責務境界を明示 |
 
 ---
 
@@ -3098,6 +3161,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md` |
 | 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                             |
 | 検証     | docs-only / 記録のみ                                                                     |
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / lessons-learned-sync                                            |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md` |
+| 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                             |
+| 検証     | docs-only / 記録のみ                                                                     |
 
 | 項目     | 内容                                                                                                                                                    |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -3118,6 +3187,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 仕様反映
+
+| 項目 | 内容 |
+|-----|------|
+| タスク | TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 |
+| 操作 | spec-reflection / Phase-12完了後の正本仕様同期 |
+| 変更対象 | architecture-embedding-pipeline.md（Adapter命名由来追記）、resource-map.md（Late Chunking Adapterエントリ追加）、topic-map.md（埋め込みセクション追加）、05-architecture.md（ドメインサービス分層パターン追記） |
+| 結果 | success |
+| 備考 | ChunkingService→ChunkingLateChunkingAdapter委譲抽出完了。Adapter命名はtoken-level LateChunkingServiceとの衝突回避のため。 |
 
 ## 2026-04-20 — UNASSIGNED-EMB-005-A XenovaTransformerEncoder Phase 12 close-out sync
 
@@ -3167,3 +3246,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |
+
+## 2026-04-20 — TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Phase 12 close-out sync
+
+- `references/llm-embedding.md` に `PipelineConfig.lateChunking` / `StageTimings.lateChunking` / `PipelineStage.lateChunking` を追記
+- `references/api-internal-embedding.md` に `EmbeddingPipeline.process()` の Late Chunking 分岐、progress、skip semantics を追記
+- `references/architecture-embedding-pipeline.md` に Stage 2.5 と `chunkId` 整列責務を追記
+- `references/task-workflow-completed.md` に close-out エントリを追記
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | NON_VISUAL / feature-integration / phase12 close-out |
+| 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
+| 結果 | Late Chunking pipeline integration の正本同期完了 |
+| 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |

@@ -9,6 +9,7 @@ import { SentenceChunkingStrategy } from "./strategies/sentence-chunking-strateg
 import { SemanticChunkingStrategy } from "./strategies/semantic-chunking-strategy";
 import { HierarchicalChunkingStrategy } from "./strategies/hierarchical-chunking-strategy";
 import { ChunkingError, ValidationError } from "./errors";
+import { ChunkingLateChunkingAdapter } from "../embedding/late-chunking/chunking-late-chunking-adapter";
 import type {
   IChunkingStrategy,
   ITokenizer,
@@ -53,6 +54,7 @@ export class ChunkingService {
   private tokenizer: ITokenizer;
   private embeddingClient?: IEmbeddingClient;
   private llmClient?: ILLMClient;
+  private lateChunkingAdapter?: ChunkingLateChunkingAdapter;
 
   /**
    * コンストラクタ
@@ -60,15 +62,22 @@ export class ChunkingService {
    * @param tokenizer - トークナイザー
    * @param embeddingClient - 埋め込みクライアント（セマンティックチャンキング用、オプション）
    * @param llmClient - LLMクライアント（Contextual Embeddings用、オプション）
+   * @param lateChunkingAdapter - Late Chunking アダプタ（オプション、テスト注入用）
    */
   constructor(
     tokenizer: ITokenizer,
     embeddingClient?: IEmbeddingClient,
     llmClient?: ILLMClient,
+    lateChunkingAdapter?: ChunkingLateChunkingAdapter,
   ) {
     this.tokenizer = tokenizer;
     this.embeddingClient = embeddingClient;
     this.llmClient = llmClient;
+    this.lateChunkingAdapter =
+      lateChunkingAdapter ??
+      (embeddingClient
+        ? new ChunkingLateChunkingAdapter(tokenizer, embeddingClient)
+        : undefined);
     this.strategies = new Map();
     this.registerStrategies();
   }
@@ -126,7 +135,7 @@ export class ChunkingService {
 
       // Late Chunking適用
       if (input.advanced?.lateChunking?.enabled) {
-        chunks = await this.applyLateChunking(
+        chunks = await this.applyLateChunkingInternal(
           input.text,
           chunks,
           input.advanced.lateChunking,
@@ -353,100 +362,124 @@ export class ChunkingService {
   }
 
   /**
-   * Late Chunkingを適用する
+   * Late Chunkingをクライアント指定で直接適用する（テスト・外部利用向け公開API）
+   *
+   * @param client 埋め込みクライアント（getTokenEmbeddings があれば優先使用）
+   * @param text テキスト
+   * @param chunks チャンク範囲配列（文字オフセット）
+   * @param options Late Chunkingオプション
    */
-  private async applyLateChunking(
+  async applyLateChunking(
+    client: IEmbeddingClient,
+    text: string,
+    chunks: Array<{ start: number; end: number }>,
+    options?: Partial<LateChunkingOptions>,
+  ): Promise<Array<{ vector: number[] }>> {
+    const poolingStrategy = options?.poolingStrategy ?? "mean";
+
+    if (client.getTokenEmbeddings) {
+      const result = await client.getTokenEmbeddings(text);
+      if (result.tokens.length !== result.embeddings.length) {
+        throw new ChunkingError(
+          `TokenEmbeddingsResult length mismatch: tokens=${result.tokens.length}, embeddings=${result.embeddings.length}`,
+        );
+      }
+      return this.poolEmbeddingsByCharBoundaries(
+        result.embeddings,
+        chunks,
+        text.length,
+        poolingStrategy,
+      );
+    }
+
+    return Promise.all(
+      chunks.map(async (chunk) => {
+        const vector = await client.embed(text.slice(chunk.start, chunk.end));
+        return { vector };
+      }),
+    );
+  }
+
+  /**
+   * Late Chunkingを適用する（ChunkingLateChunkingAdapterへ委譲）
+   */
+  private async applyLateChunkingInternal(
     text: string,
     chunks: Chunk[],
     options: LateChunkingOptions,
   ): Promise<Chunk[]> {
-    if (!this.embeddingClient) {
+    if (this.embeddingClient?.getTokenEmbeddings) {
+      const result = await this.embeddingClient.getTokenEmbeddings(text);
+      if (result.tokens.length !== result.embeddings.length) {
+        throw new ChunkingError(
+          `TokenEmbeddingsResult length mismatch: tokens=${result.tokens.length}, embeddings=${result.embeddings.length}`,
+        );
+      }
+      const boundaries = chunks.map((c) => ({
+        start: c.position.start,
+        end: c.position.end,
+      }));
+      const vectors = this.poolEmbeddingsByCharBoundaries(
+        result.embeddings,
+        boundaries,
+        text.length,
+        options.poolingStrategy,
+      );
+      return chunks.map((chunk, i) => ({
+        ...chunk,
+        metadata: {
+          ...chunk.metadata,
+          lateChunking: {
+            applied: true,
+            embeddingDimension: vectors[i]?.vector.length ?? 0,
+          },
+        },
+      }));
+    }
+
+    if (!this.lateChunkingAdapter) {
       throw new ChunkingError("Embedding client is required for Late Chunking");
     }
-
-    // 1. 文書全体をトークナイズ
-    const tokens = this.tokenizer.encode(text);
-
-    // 2. 全トークンの埋め込みを生成
-    const tokenEmbeddings = await this.getTokenEmbeddings(
-      tokens,
-      options.maxSequenceLength,
-    );
-
-    // 3. チャンク境界位置を特定
-    const boundaries = this.determineChunkBoundaries(chunks);
-
-    // 4. 境界に基づきトークン埋め込みをグループ化してプーリング
-    const chunkedEmbeddings = this.poolTokenEmbeddings(
-      tokenEmbeddings,
-      boundaries,
-      options.poolingStrategy,
-    );
-
-    // 5. 埋め込みをチャンクに付与（実際の埋め込みベクトルは別途保存）
-    return chunks.map((chunk, index) => ({
-      ...chunk,
-      metadata: {
-        ...chunk.metadata,
-        lateChunking: {
-          applied: true,
-          embeddingDimension: chunkedEmbeddings[index]?.length ?? 0,
-        },
-      },
-    }));
+    return this.lateChunkingAdapter.applyLateChunking(text, chunks, options);
   }
 
-  /**
-   * トークン埋め込みを取得する
-   */
-  private async getTokenEmbeddings(
-    tokens: number[],
-    maxSequenceLength: number,
-  ): Promise<number[][]> {
-    if (!this.embeddingClient) {
-      throw new ChunkingError("Embedding client is required");
-    }
-
-    const embeddings: number[][] = [];
-
-    // シーケンス長を超える場合は分割処理
-    for (let i = 0; i < tokens.length; i += maxSequenceLength) {
-      const segment = tokens.slice(i, i + maxSequenceLength);
-      const segmentText = this.tokenizer.decode(segment);
-      const embedding = await this.embeddingClient.embed(segmentText);
-      embeddings.push(embedding);
-    }
-
-    return embeddings;
-  }
-
-  /**
-   * チャンク境界を決定する
-   */
-  private determineChunkBoundaries(chunks: Chunk[]): number[] {
-    return chunks.map((chunk) => chunk.position.end);
-  }
-
-  /**
-   * トークン埋め込みをプーリングする
-   */
-  private poolTokenEmbeddings(
+  private poolEmbeddingsByCharBoundaries(
     tokenEmbeddings: number[][],
-    boundaries: number[],
+    chunks: Array<{ start: number; end: number }>,
+    textLength: number,
     strategy: "mean" | "cls" | "attention",
-  ): number[][] {
-    // 簡略化実装: 各セグメントの埋め込みをそのまま返す
-    // 実際にはトークン位置に基づく適切なプーリング処理が必要
-    if (strategy === "mean") {
-      // Mean pooling: すべてのトークンの平均
-      return tokenEmbeddings;
-    } else if (strategy === "cls") {
-      // CLS pooling: 最初のトークンを使用
-      return tokenEmbeddings;
-    } else {
-      // Attention pooling: アテンション重み付き平均
-      return tokenEmbeddings;
+  ): Array<{ vector: number[] }> {
+    const N = tokenEmbeddings.length;
+    const effectiveLength = Math.max(textLength, 1);
+
+    return chunks.map((chunk) => {
+      const tokenStart = Math.floor((chunk.start / effectiveLength) * N);
+      const tokenEnd = Math.max(
+        tokenStart + 1,
+        Math.ceil((chunk.end / effectiveLength) * N),
+      );
+      const slice = tokenEmbeddings.slice(tokenStart, Math.min(tokenEnd, N));
+
+      if (slice.length === 0) {
+        return { vector: tokenEmbeddings[0] ?? [] };
+      }
+      if (strategy === "cls") {
+        return { vector: slice[0] ?? [] };
+      }
+      return { vector: this.averageVectors(slice) };
+    });
+  }
+
+  private averageVectors(vecs: number[][]): number[] {
+    const dim = vecs[0]?.length ?? 0;
+    if (dim === 0) return [];
+    const sum = new Array<number>(dim).fill(0);
+    for (const v of vecs) {
+      for (let i = 0; i < dim; i++) {
+        sum[i] += v[i] ?? 0;
+      }
     }
+    return sum.map((s) => s / vecs.length);
   }
 
   /**

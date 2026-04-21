@@ -1,5 +1,50 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-IMPROVE-PROMPT-IMPL-001 |
+| ステータス | **完了（phase12_completed / NON_VISUAL / Phase 13 blocked）** |
+| タイプ | implementation / close-out sync |
+| 優先度 | 中 |
+| 完了日 | 2026-04-21 |
+| 対象 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/services/skill/__tests__/SkillCreatorService*.test.ts` / `docs/30-workflows/TASK-SC-IMPROVE-PROMPT-IMPL-001/` |
+| 成果物 | `outputs/phase-11/manual-test-result.md` / `outputs/phase-12/implementation-guide.md` / `outputs/artifacts.json` |
+
+#### 実施内容
+
+- `runImprovePromptWorkflow()` を実装し、LLM 経路と `improveSkill()` fallback を接続した
+- improve-prompt 実行後に `init_skill.js` / `generate_skill_md.js` を再実行しないよう共通 bootstrap を分離した
+- LLM 出力が YAML frontmatter を壊しても original frontmatter を保持する保護を追加した
+- task workflow 側の Phase 11/12 と `artifacts.json` / `outputs/artifacts.json` を completed 同期した
+- 大きな契約差分は `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` として分離した
+
+#### 検証証跡
+
+- `pnpm vitest run apps/desktop/src/main/services/skill/__tests__/SkillCreatorService.improve-prompt.test.ts ...`: 148 tests PASS
+- `docs/30-workflows/TASK-SC-IMPROVE-PROMPT-IMPL-001/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- NON_VISUAL のため screenshot は不要。headless substitute evidence を `manual-test-result.md` に固定
+
+## UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| ステータス | **spec_created（Phase 1-12 completed / Phase 13 blocked）** |
+| タイプ | docs-only / NON_VISUAL / close-out sync |
+| 完了日 | 2026-04-21 |
+| 対象 | `.claude/skills/skill-fixture-runner/` / `.claude/skills/aiworkflow-requirements/` / `docs/30-workflows/UNASSIGNED-EVALS-VALIDATOR-GUARD-001/` |
+| 成果物 | `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` |
+
+#### 実施内容
+
+- `validate-evals.js` を `--path <file-or-dir>` / strict pair validation / allowlist-only fixture exclusion へ是正
+- `validate-evals.test.js` の skip 2 件を実測テストへ置換
+- `evals-schema-spec.md` / `claude-code-overview.md` の validator=0 件記述を現況化
+- `quality-requirements.md` と `error-handling.md` に EVALS validator current facts を反映
+- workflow outputs / index / artifacts parity を close-out wave で同期
+
 ## TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19）
 
 | 項目       | 内容                                                                                                                                              |

@@ -18,3 +18,15 @@
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
+
+## EVALS validator エラー分類（UNASSIGNED-EVALS-VALIDATOR-GUARD-001）
+
+`validate-evals.js` のエラーは以下の 3 層で扱う。
+
+| 層 | 検出内容 | 代表例 | 実行結果 |
+| --- | --- | --- | --- |
+| L1 | JSON パース失敗 | 破損JSON / 空ファイル | exit code 1 |
+| L2 | top-level 必須キー欠落 | `skillName/skill_name` 欠落 / `currentLevel/current_level` 欠落 / `metrics` 欠落 | exit code 1 |
+| L3 | dual root 不一致 | `.claude` と `.agents` の EVALS.json 差分 / ミラー欠損 | exit code 1 |
+
+運用上は `phase-10/final-review-result.md` と `phase-11/manual-test-result.md` に実測値を残し、close-out 時は `system-spec-update-summary.md` へ replay 結果を転記する。

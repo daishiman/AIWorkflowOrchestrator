@@ -22,7 +22,7 @@
 
 **メソッド**: `EmbeddingPipeline.process()`
 
-ドキュメントを入力として受け取り、チャンク分割・埋め込み生成・重複排除を一括処理するパイプラインメソッド。進捗コールバックによりリアルタイムで処理状況を監視可能。
+ドキュメントを入力として受け取り、チャンク分割・埋め込み生成・重複排除を一括処理するパイプラインメソッド。`config.lateChunking?.enabled === true` の場合は Stage 2.5 として `EmbeddingService.generateChunkEmbeddings()` を呼び、通常の Stage 3 `embedBatch()` をスキップする。進捗コールバックでは `currentStage: "lateChunking"` を通知可能。
 
 **メソッドシグネチャ**:
 
@@ -45,6 +45,9 @@
 | `config.chunking.strategy`                | string       | fixed / markdown / code / semantic |
 | `config.chunking.options.chunkSize`       | number       | 512（デフォルト）                  |
 | `config.embedding.modelId`                | string       | EMB-002等                          |
+| `config.lateChunking.enabled`             | boolean      | true で Stage 2.5 Late Chunking を有効化 |
+| `config.lateChunking.poolingStrategy`     | string       | mean / max / cls                   |
+| `config.lateChunking.maxTokenLength`      | number       | 最大トークン長                     |
 | `config.embedding.batchOptions.batchSize` | number       | 50（デフォルト）                   |
 | `onProgress`                              | function     | 進捗コールバック                   |
 
@@ -54,13 +57,19 @@
 | ----------------------- | ---------- | ---------------------- |
 | `documentId`            | string     | ドキュメントID         |
 | `chunks`                | Chunk[]    | 生成されたチャンク配列 |
-| `embeddings`            | number[][] | 埋め込みベクトル配列   |
+| `embeddings`            | `EmbeddingResult[]` | 埋め込み結果配列 |
 | `chunksProcessed`       | number     | 処理されたチャンク数   |
 | `embeddingsGenerated`   | number     | 生成された埋め込み数   |
 | `duplicatesRemoved`     | number     | 重複排除数             |
 | `cacheHits`             | number     | キャッシュヒット数     |
 | `totalProcessingTimeMs` | number     | 総処理時間（ms）       |
-| `stageTimings`          | object     | ステージ別処理時間     |
+| `stageTimings`          | object     | ステージ別処理時間。Late Chunking 有効時は `lateChunking` が記録され、`embedding` は 0 |
+
+**補足契約**:
+
+- Late Chunking 有効時は `generateChunkEmbeddings()` の戻り値を `chunkId` で元チャンク順へ整列してから `EmbeddingResult[]` に変換する。
+- Late Chunking 無効時は既存どおり `embedBatch()` を使う。
+- `lateChunkingService` 未設定で有効化した場合は診断可能な `PipelineError` として伝播する。
 
 ### 単一埋め込み生成
 

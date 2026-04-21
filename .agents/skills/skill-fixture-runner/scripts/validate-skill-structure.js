@@ -72,8 +72,17 @@ function main() {
     }
   }
 
+  // EVALS.json 存在チェック（存在しない場合は警告）
+  const evalsPath = path.join(resolvedTarget, 'EVALS.json');
+  const warnings = [];
+  if (!fs.existsSync(evalsPath)) {
+    warnings.push('EVALS.json が存在しません（推奨: 追加してください）');
+  } else {
+    files.push('EVALS.json');
+  }
+
   const valid = errors.length === 0;
-  console.log(JSON.stringify({ valid, errors, structure: { directories, files } }));
+  console.log(JSON.stringify({ valid, errors, warnings, structure: { directories, files } }));
   process.exit(valid ? EXIT_CODES.SUCCESS : EXIT_CODES.VALIDATION_FAILED);
 }
 

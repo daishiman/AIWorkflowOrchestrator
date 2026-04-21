@@ -7,6 +7,7 @@
 ## 最近の完了タスク（2026-04）
 
 - 2026-04-20: `TASK-SW-TODO-001` conversation-round-step-todo-cleanup（verify_existing / NON_VISUAL / Phase 11 canonical evidence を `TASK-SW-TODO-001-manual-test-report.md` へ統一 / stale unassigned ledgers を completed retrospective へ是正 / `ui-ux-feature-components-skill-analysis.md` historical note 反映）
+- 2026-04-21: `UNASSIGNED-EVALS-VALIDATOR-GUARD-001` evals-validator-guard（`validate-evals.js` 契約修正 / `--path <file-or-dir>` / strict 両方言必須 / allowlist-only fixture 除外 / aiworkflow current facts sync / docs-only / NON_VISUAL / Phase 1-12 completed / Phase 13 blocked / Issue #2325 CLOSED）
 - 2026-04-19: `UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001` closeout-parity-guard（`validate-closeout-parity.js` 新規作成・`complete-phase.js`/`verify-all-specs.js` 拡張 / Phase 12 close-out 完了 / NON_VISUAL / Issue #2293 / dogfooding PARITY_OK exit=0 確認済み）
 - 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）
 - 2026-04-19: `TASK-AGENTS-SKILLS-FULL-SYNC-001` canonical/mirror full parity guard（`.claude/scripts/verify-skills-parity.sh` + `.claude/scripts/sync-skills-mirror.sh` 新規 / `.husky/pre-push` + `.claude/hooks/session-init.sh` 追記 / `CLAUDE_SKIP_HEAVY_HOOKS=1` opt-out / AC-6 session-init 最大 0.443s / NON_VISUAL infra-guard / Phase 1-12 完了 / Phase 13 は user 承認まで blocked / Issue #2278 / spec_created）
@@ -3298,32 +3299,6 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 | ------------------------------------------------------------------------------------------------------------------------- | ---- |
 | `pnpm --filter @repo/shared exec vitest run src/ipc/__tests__/channels.test.ts src/ipc/__tests__/channels-cancel.test.ts` | PASS |
 | `pnpm --filter @repo/shared build`                                                                                        | PASS |
-
-### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 close-out sync）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SW-CANCEL-003 |
-| ステータス | **完了（Phase 12 close-out 済み・Phase 13 blocked）** |
-| タイプ | main / ipc / NON_VISUAL |
-| 優先度 | 高 |
-| 完了日 | 2026-04-19 |
-| 対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` / `apps/desktop/src/main/services/skill/SkillCreatorService.ts` / `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/services/skill/SkillService.ts` |
-| workflow | `docs/30-workflows/p03-seq-CANCEL-003/` |
-
-#### 実施内容
-
-- `SKILL_CREATOR_CANCEL` の main handler と `cancelCurrentOperation()` close-out を workflow 正本へ同期
-- `onCancelCurrentSkillCreation` から `SkillService.cancelCurrentSkillCreation()` へ接続される cancel bridge を記録
-- `NON_VISUAL` として Phase 11 screenshot N/A、Phase 10/11 を代替証跡とする close-out を明記
-- `index.md` / `artifacts.json` / `outputs/artifacts.json` / legacy link を completed 状態へ同期
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/p03-seq-CANCEL-003` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/p03-seq-CANCEL-003` | PASS |
 | `pnpm typecheck`                                                                                                          | PASS |
 
 ### タスク: TASK-SW-CANCEL-003 skill-creator-cancel-main-handler（2026-04-19 Phase 12 close-out）
@@ -3414,3 +3389,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - 削除済みファイルの cleanup では、対象ファイルの存在確認を先に行うと残存参照スキャンを安全に進められる
 - 正本生成スクリプトは N/A 扱いにせず、存在確認と実行結果を分けて記録する
 - root parity は `diff -q` で証跡化し、存在確認だけで完了扱いにしない
+
+### タスク: TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Late Chunking EmbeddingPipeline・設定導線への正式統合（2026-04-20）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | NON_VISUAL / feature-integration / new |
+| 完了日 | 2026-04-20 |
+| 対象 | `packages/shared/src/services/embedding/pipeline/` |
+| workflow | `docs/30-workflows/TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001/` |
+
+#### 実施内容
+
+- `PipelineConfig.lateChunking` と `StageTimings.lateChunking` を正式統合
+- `EmbeddingPipeline.process()` に `lateChunking` progress 通知、Stage 3 skip semantics、`chunkId` 整列を追加
+- workflow root / Phase 12 成果物 / aiworkflow-requirements 正本 / mirror / completed ledger を同一 wave で同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm exec vitest run src/services/embedding/pipeline/__tests__/embedding-pipeline.integration.test.ts` | PASS（18 tests） |
+
+#### lessons-learned
+
+- service 単体仕様の更新だけで閉じず、pipeline 契約と workflow root まで同一 wave で同期する
+- Late Chunking の observability を `StageTimings` だけでなく `PipelineStage` にも反映する
