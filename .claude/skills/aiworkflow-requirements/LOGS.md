@@ -3210,3 +3210,24 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |
+
+## 2026-04-21 — TASK-RALLY-001 Phase 12 close-out (SkillLifecyclePanel dead code 除去)
+
+### 変更内容
+
+- `SkillLifecyclePanel.tsx` から dead code 3グループを削除（`_handleSubmitWorkflowInput` 関数・旧入力 state 4種・companion `useEffect`）
+- Wave 0 並列タスク RALLY-001 の Phase 1〜12 を全完了（task-specification-creator テンプレート準拠）
+- `docs/30-workflows/wave0-par-RALLY-001/` を canonical 配置先として確定（旧: `skill-create-flow-gaps/wave0-par-RALLY-001/`）
+- system spec 影響: なし（AIWorkflow 公開インターフェース変更なし / system-spec-update-summary.md に N/A と記録）
+- task-workflow-completed-recent-2026-04h.md に RALLY-001 完了エントリを追加
+
+### 背景
+
+ラリー機能設計ギャップ（IPC invoke pull と IPC push の両方が `workflowSnapshot` 更新権限を持つ問題）の修正を Wave 0 並列タスクとして実施。公開インターフェースに変更がないため aiworkflow-requirements の system spec 更新は no-op だが、LOGS として完了記録を残す。
+
+| 項目     | 内容                                                                                                                                      |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / dead-code-removal / impl-spec-to-skill-sync / phase12 close-out                                                              |
+| 変更対象 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`docs/30-workflows/wave0-par-RALLY-001/`、本 `LOGS.md`、`task-specification-creator/LOGS.md`、`references/task-workflow-completed-recent-2026-04h.md` |
+| 結果     | AC-1〜AC-5 + AC-2b all PASS。dead code 3グループ除去完了。system spec は no-op（公開 API 変更なし）。Phase 13 blocked（user approval 待ち） |
+| 検証     | vitest PASS / typecheck PASS / lint PASS / Phase 12 compliance PASS                                                                        |

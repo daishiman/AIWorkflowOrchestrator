@@ -5180,6 +5180,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
+| TASK-RALLY-001: SkillLifecyclePanel dead code 除去（RALLY Wave 0 並列タスク）（2026-04-21） | L61 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

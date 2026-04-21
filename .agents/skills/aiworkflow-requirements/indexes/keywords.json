@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3259,
+  "totalKeywords": 3263,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1286,6 +1286,7 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -7821,6 +7822,7 @@
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
@@ -10712,7 +10714,8 @@
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "Wave": [
-      "lessons-learned-skill-wizard-mode-mgmt.md"
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実施では": [
       "lessons-learned-skill-wizard-mode-mgmt.md"
@@ -14247,7 +14250,8 @@
       "spec-splitting-guidelines.md"
     ],
     "code": [
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実行手順": [
       "spec-splitting-guidelines.md"
@@ -14450,6 +14454,18 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "IEncoder": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "RALLY": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "dead": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "除去": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "並列タスク": [
       "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [

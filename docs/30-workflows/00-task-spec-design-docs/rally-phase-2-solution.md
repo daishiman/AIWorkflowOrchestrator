@@ -131,7 +131,7 @@ Wave 1 で確立した更新経路を前提に依存配列を整理する。
 
 ### RALLY-001: SkillLifecyclePanel dead code 削除
 
-**対象ファイル**: `apps/desktop/src/renderer/components/skill-lifecycle/SkillLifecyclePanel.tsx`
+**対象ファイル**: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
 **変更箇所**:
 
@@ -258,7 +258,7 @@ type WorkflowInputAnswer = {
 
 **対象ファイル**:
 
-- `apps/desktop/src/renderer/components/skill-lifecycle/SkillLifecyclePanel.tsx`
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 - `apps/desktop/src/main/ipc/handlers/creatorHandlers.ts`
 
 **変更箇所**:
@@ -304,7 +304,7 @@ seqNo がサーバー側に存在しない場合は updatedAt タイムスタン
 
 ### RALLY-006: useEffect 依存配列修正（循環排除）
 
-**対象ファイル**: `apps/desktop/src/renderer/components/skill-lifecycle/SkillLifecyclePanel.tsx`
+**対象ファイル**: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
 **変更箇所**:
 
@@ -371,7 +371,7 @@ const addAssistantMessage = useCallback((message: AssistantMessage) => {
 
 ### RALLY-008: processWorkflowOutcome await 統一
 
-**対象ファイル**: `apps/desktop/src/renderer/components/skill-lifecycle/SkillLifecyclePanel.tsx`
+**対象ファイル**: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
 **変更箇所**:
 
