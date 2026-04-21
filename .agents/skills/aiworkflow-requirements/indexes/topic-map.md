@@ -157,9 +157,9 @@ node scripts/list-specs.js --topics
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
 | Late Chunking パイプライン拡張 | L125 |
-| 品質メトリクス | L185 |
-| 関連ドキュメント | L213 |
-| 変更履歴 | L221 |
+| 品質メトリクス | L202 |
+| 関連ドキュメント | L230 |
+| 変更履歴 | L238 |
 
 ### references/architecture-file-conversion.md
 
@@ -2852,13 +2852,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 1. 目的 | L9 |
-| 2. 標準スキーマ（camelCase v2 系） | L24 |
-| 3. 方言スキーマ（snake_case v1 系） | L49 |
-| 4. consumer 一覧 | L80 |
-| 5. schema 変更手順 | L102 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
-| 7. 既知の制約（validator=0 件） | L154 |
-| 8. 変更履歴 | L184 |
+| 2. Legacy スキーマ（camelCase v2 系） | L24 |
+| 3. 方言スキーマ（snake_case v1 系） | L51 |
+| 4. consumer 一覧 | L83 |
+| 5. schema 変更手順 | L105 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L131 |
+| 7. 既知の制約（validator=0 件） | L157 |
+| 8. 変更履歴 | L187 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -3964,10 +3964,10 @@ node scripts/list-specs.js --topics
 | 信頼性設定型 | L105 |
 | メトリクス型 | L135 |
 | Late Chunking 型定義（UNASSIGNED-EMB-005） | L147 |
-| エラー型 | L228 |
-| 列挙型 | L259 |
-| 品質メトリクス | L287 |
-| 関連ドキュメント | L295 |
+| エラー型 | L241 |
+| 列挙型 | L272 |
+| 品質メトリクス | L300 |
+| 関連ドキュメント | L308 |
 
 ### references/llm-ipc-types.md
 
@@ -5187,6 +5187,12 @@ node scripts/list-specs.js --topics
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L177 |
 | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
 | TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
+
+### references/task-workflow-completed-recent-2026-04h.md
+
+| セクション | 行 |
+|------------|----|
+| UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
