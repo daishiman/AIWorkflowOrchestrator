@@ -299,3 +299,15 @@ export interface ChunkingOutput {
   /** 警告メッセージ */
   warnings?: string[];
 }
+
+/**
+ * トークンレベルの埋め込みベクトル結果
+ * Late Chunking でトークン隠れ状態を取得する際に使用する
+ * tokens.length === embeddings.length が常に成立すること
+ */
+export interface TokenEmbeddingsResult {
+  /** トークン文字列の配列 */
+  tokens: string[];
+  /** 各トークンの埋め込みベクトル配列。tokens と同じ長さであること */
+  embeddings: number[][];
+}

@@ -61,6 +61,8 @@ export interface SkillCreatorProgress {
   phase: string;
   percentage: number;
   message: string;
+  planId?: string;
+  requestId?: string;
 }
 
 /**

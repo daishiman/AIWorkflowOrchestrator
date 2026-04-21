@@ -687,7 +687,17 @@ describe("SkillCreatorService", () => {
         exitCode: 0,
       });
       const result = await service.createSkill(options);
-      expect(result).toContain("existing-skill");
+      expect(result).toBe("/path/to/existing");
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "init_skill.js",
+        expect.arrayContaining(["--output", "/path/to/existing"]),
+        expect.any(Object),
+      );
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "validate_all.js",
+        ["/path/to/existing"],
+        expect.any(Object),
+      );
     });
 
     it("SC-021: should execute improve-prompt workflow for mode=improve-prompt", async () => {
@@ -2487,6 +2497,209 @@ describe("SkillCreatorService", () => {
           "フォールバックテスト",
           undefined,
         );
+      });
+    });
+  });
+
+  // ============================================================
+  // TASK-SC-CREATOR-UPDATE-IMPL-001: runUpdateWorkflow テスト
+  // ============================================================
+  describe("runUpdateWorkflow (TASK-SC-CREATOR-UPDATE-IMPL-001)", () => {
+    const baseOptions: CreateSkillOptions = {
+      name: "existing-skill",
+      description: "既存スキルの更新テスト",
+      mode: "update",
+    };
+
+    beforeEach(() => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+    });
+
+    describe("update-TC-01: 既存SKILL.mdが存在する場合", () => {
+      it("existing SKILL.md の description を purpose として読み込む", async () => {
+        const existingSkillMd = `---
+name: existing-skill
+description: |
+  既存スキルの目的説明
+allowed-tools:
+  - Read
+---
+
+# existing-skill
+`;
+        vi.mocked(fsPromises.readFile).mockImplementation(async (p) => {
+          if (String(p).endsWith("SKILL.md"))
+            return Buffer.from(existingSkillMd);
+          return Buffer.from("");
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+
+        const result = await service.createSkill(baseOptions);
+        expect(result).toContain("existing-skill");
+      });
+    });
+
+    describe("update-TC-02: LLMクライアントがある場合", () => {
+      it("purpose が LLM で再生成される", async () => {
+        const mockLlm = {
+          generate: vi
+            .fn()
+            .mockResolvedValue('{"summary": "LLMが生成した目的"}'),
+        };
+        const serviceWithLlm = new SkillCreatorService(
+          undefined,
+          undefined,
+          mockLlm,
+        );
+
+        const existingSkillMd = `---
+name: existing-skill
+description: 既存の説明
+---
+`;
+        vi.mocked(fsPromises.readFile).mockImplementation(async (p) => {
+          if (String(p).endsWith("SKILL.md"))
+            return Buffer.from(existingSkillMd);
+          return Buffer.from("");
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+        mockResourceLoader.loadAgent.mockResolvedValue(
+          "extract-purpose-agent-def",
+        );
+
+        vi.mocked(ScriptExecutor).mockImplementation(
+          () => mockScriptExecutor as unknown as ScriptExecutor,
+        );
+        vi.mocked(ResourceLoader).mockImplementation(
+          () => mockResourceLoader as unknown as ResourceLoader,
+        );
+
+        const result = await serviceWithLlm.createSkill(baseOptions);
+        expect(mockLlm.generate).toHaveBeenCalled();
+        expect(result).toContain("existing-skill");
+      });
+    });
+
+    describe("update-TC-03: LLM失敗時のフォールバック", () => {
+      it("LLM呼び出し失敗時は既存purposeにフォールバックして成功する", async () => {
+        const mockLlm = {
+          generate: vi.fn().mockRejectedValue(new Error("LLM error")),
+        };
+        const serviceWithLlm = new SkillCreatorService(
+          undefined,
+          undefined,
+          mockLlm,
+        );
+
+        const existingSkillMd = `---
+name: existing-skill
+description: 既存の説明
+---
+`;
+        vi.mocked(fsPromises.readFile).mockImplementation(async (p) => {
+          if (String(p).endsWith("SKILL.md"))
+            return Buffer.from(existingSkillMd);
+          return Buffer.from("");
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+        mockResourceLoader.loadAgent.mockResolvedValue("agent-def");
+
+        vi.mocked(ScriptExecutor).mockImplementation(
+          () => mockScriptExecutor as unknown as ScriptExecutor,
+        );
+        vi.mocked(ResourceLoader).mockImplementation(
+          () => mockResourceLoader as unknown as ResourceLoader,
+        );
+
+        const result = await serviceWithLlm.createSkill(baseOptions);
+        expect(result).toContain("existing-skill");
+      });
+    });
+
+    describe("update-TC-04: 既存SKILL.mdが存在しない場合", () => {
+      it("descriptionをpurposeとして使う", async () => {
+        vi.mocked(fsPromises.readFile).mockRejectedValue(
+          Object.assign(new Error("ENOENT"), { code: "ENOENT" }),
+        );
+        vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
+
+        const result = await service.createSkill(baseOptions);
+        expect(result).toContain("existing-skill");
+      });
+    });
+
+    describe("update-TC-05: cancelCurrentOperation による中断", () => {
+      it("update モード実行中に cancelCurrentOperation を呼ぶと AbortError を返す", async () => {
+        const mockLlm = {
+          generate: vi.fn().mockResolvedValue('{"summary":"LLM"}'),
+        };
+        const serviceWithLlm = new SkillCreatorService(
+          undefined,
+          undefined,
+          mockLlm,
+        );
+
+        vi.mocked(ScriptExecutor).mockImplementation(
+          () => mockScriptExecutor as unknown as ScriptExecutor,
+        );
+        vi.mocked(ResourceLoader).mockImplementation(
+          () => mockResourceLoader as unknown as ResourceLoader,
+        );
+        vi.mocked(fsPromises.readFile).mockImplementation(async (p) => {
+          if (String(p).endsWith("SKILL.md")) {
+            return Buffer.from(
+              "---\nname: existing-skill\ndescription: 既存の説明\n---\n",
+            );
+          }
+          return Buffer.from("");
+        });
+        vi.mocked(fsPromises.access).mockResolvedValue(undefined);
+        mockResourceLoader.loadAgent.mockImplementation(
+          (_name, options?: { signal?: AbortSignal }) =>
+            new Promise((resolve, reject) => {
+              void resolve;
+              const abortError = new DOMException("Aborted", "AbortError");
+              if (options?.signal?.aborted) {
+                reject(abortError);
+                return;
+              }
+              options?.signal?.addEventListener(
+                "abort",
+                () => reject(abortError),
+                { once: true },
+              );
+            }),
+        );
+
+        const pending = serviceWithLlm.createSkill(baseOptions);
+        serviceWithLlm.cancelCurrentOperation();
+
+        await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+      });
+    });
+
+    describe("update-TC-06: progress emit 順序", () => {
+      it("loading-skill → analyzing → generating-skill → validating → done の順に emit される", async () => {
+        const progressEvents: string[] = [];
+        vi.mocked(fsPromises.access).mockRejectedValue(new Error("ENOENT"));
+        vi.mocked(fsPromises.readFile).mockRejectedValue(
+          Object.assign(new Error("ENOENT"), { code: "ENOENT" }),
+        );
+
+        await service.createSkill(baseOptions, (p) => {
+          progressEvents.push(p.phase);
+        });
+
+        const idx = (phase: string) => progressEvents.indexOf(phase);
+        expect(idx("loading-skill")).toBeLessThan(idx("analyzing"));
+        expect(idx("analyzing")).toBeLessThan(idx("generating-skill"));
+        expect(idx("generating-skill")).toBeLessThan(idx("validating"));
+        expect(idx("validating")).toBeLessThan(idx("done"));
       });
     });
   });

@@ -1,7 +1,7 @@
 ---
 name: aiworkflow-requirements
 description: |
-  AIWorkflowOrchestrator の正本仕様を `references/` から検索・参照・更新するスキル。`resource-map` / `quick-reference` / `topic-map` / `keywords` を起点に Progressive Disclosure で必要最小限だけ読む。用途は要件確認、設計・API・IPC 契約確認、UI/状態管理/セキュリティ判断、`task-workflow` / `lessons-learned` / 未タスク同期、EVALS schema consumer 監査。Anchors: Specification-Driven Development, Progressive Disclosure。Trigger キーワード群は `indexes/keywords.json` を参照（rg / search-spec.js で検索）。
+  AIWorkflowOrchestrator の正本仕様を `references/` から検索・参照・更新するスキル。`resource-map` / `quick-reference` / `topic-map` を起点に Progressive Disclosure で必要最小限だけ読む。用途: 要件確認・設計/API/IPC 契約確認・UI/状態管理/セキュリティ判断・タスク同期・EVALS schema 監査。Anchors: Specification-Driven Development, Progressive Disclosure。Trigger キーワードは `indexes/keywords.json` 参照。
 allowed-tools:
   - Read
   - Glob
@@ -20,6 +20,7 @@ AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 
 | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-21 | TASK-SW-TODO-001 current fact close-out sync: `references/task-workflow.md` に verify_existing cleanup close-out を追記し、`references/ui-ux-feature-components-skill-analysis.md` の主ツールバッジ節を historical note 化、`references/lessons-learned-skill-wizard-mso-main-tool-badge.md` の「将来削除」前提を完了済み手順へ是正。stale unassigned ledger retrospective 同期を `LOGS.md` と `topic-map.md` へ反映。SKILL.md description を Progressive Disclosure 原則（320字）に準拠最適化。 |
 | 2026-04-20 | TASK-SC-CANCEL-LOGS-SYNC-001 close-out sync: `TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001` の repo-wide 同期 wave を `task-workflow-completed-recent-2026-04g.md` へ completed 記録として移動し、`TASK-SC-CANCEL-LOGS-SYNC-001` 自身の completed entry を追加。`lessons-learned-current-2026-04.md` の 3 知見、Phase 11 grep 正本、Phase 12 close-out、`.agents` mirror sync、`generate-index.js` 再生成まで同波で反映。 |
 | 2026-04-20 | TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 Phase 1-12 close-out sync: IPCハンドラー登録テスト3点契約（REG-SNAP / REG-DEDUP / REG-COUNT）を `api-ipc-system-core.md § IPC Handler Registration Testing Contract`（L461）に確立。esbuildバイナリパス問題（worktree環境でのplatform mismatch）・Wave分割実行パターン（24ファイル一括はSIGKILL）を current facts に追加。`topic-map.md` に IPC Handler Registration Testing Contract セクション（L461）追記・分割ファイル一覧 L461→L510 修正。`keywords.json` に REG-SNAP / REG-DEDUP / REG-COUNT / registration snapshot / esbuild binary path / wave split / SIGKILL を追加。`.agents/` mirror 完全同期。 |
 | 2026-04-19 | UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 parity guard実装: validate-closeout-parity.js新規追加、complete-phase.js/verify-all-specs.js拡張。Phase 12 close-out parity 必須ゲート化。lessons-learned-current-2026-04.md / task-workflow-completed.md / error-handling-core.md / quality-requirements.md を同波更新。 |
@@ -209,6 +210,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - `system-spec-update-summary.md` の Step 1 は「実施した同期（Step 1-A）」と「実施しなかった同期・理由（Step 1-B）」を必ず両方記載する（L-SC08-003 feedback: local workflow 修正のみの場合に全て同期済みと誤解される問題を防ぐ）
 - IPCハンドラー登録テスト（REG-SNAP / REG-DEDUP / REG-COUNT）の契約・検索は `references/api-ipc-system-core.md § IPC Handler Registration Testing Contract`（L461）を参照する
 - vitest でのスナップショット一括実行（24ファイル以上）はSIGKILLになる。Wave分割（例: 8ファイル × 3 wave）が正本手順（TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001 確立）
+- NON_VISUAL + 単一クラス追加タスクでは既存コードの直接読み込みを優先し、正本参照は「コードから読み取れない情報」（エラー分類方針・デフォルト値等）に絞る（L-EMB-005-003）
 
 ### 避けるべきこと
 

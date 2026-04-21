@@ -561,4 +561,83 @@ describe("useStreamingProgress", () => {
       );
     });
   });
+
+  describe("planId フィルタ", () => {
+    it("一致する planId の progress のみ反映する", () => {
+      const { result } = renderHook(() =>
+        useStreamingProgress({ planId: "plan-1" }),
+      );
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "planning",
+          percentage: 25,
+          message: "plan-1 の進捗",
+          planId: "plan-1",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.percent).toBe(25);
+      expect(result.current.message).toBe("plan-1 の進捗");
+    });
+
+    it("不一致の planId の progress は無視する", () => {
+      const { result } = renderHook(() =>
+        useStreamingProgress({ planId: "plan-1" }),
+      );
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "planning",
+          percentage: 25,
+          message: "plan-2 の進捗",
+          planId: "plan-2",
+        });
+      });
+
+      expect(result.current.stage).toBe("idle");
+      expect(result.current.percent).toBe(0);
+      expect(result.current.message).toBe("");
+    });
+
+    it("legacy payload は planId 未指定でも受け入れる", () => {
+      const { result } = renderHook(() =>
+        useStreamingProgress({ planId: "plan-1" }),
+      );
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "planning",
+          percentage: 30,
+          message: "legacy progress",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.percent).toBe(30);
+      expect(result.current.message).toBe("legacy progress");
+    });
+
+    it("options.planId 未指定時は全 progress を受け入れる", () => {
+      const { result } = renderHook(() => useStreamingProgress());
+      const callback = mockOnProgress.mock.calls[0][0];
+
+      act(() => {
+        callback({
+          phase: "planning",
+          percentage: 40,
+          message: "no filter",
+          planId: "plan-2",
+        });
+      });
+
+      expect(result.current.stage).toBe("planning");
+      expect(result.current.percent).toBe(40);
+      expect(result.current.message).toBe("no filter");
+    });
+  });
 });

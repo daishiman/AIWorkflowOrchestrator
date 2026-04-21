@@ -42,6 +42,22 @@
 
 `skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。current fact として、ack 受理後に Renderer は `getWorkflowState` を再読込し、`handoffBundle` または `verifyResult.status === "fail"` の snapshot を UI エラーとして扱う（adapter guard failure は `recordExecuteAdapterFailure()` で review-ready snapshot を先に保存する）。この ack 後再読込は `SkillCreateWizard` の failure handling の正本であり、`executeAsync()` の message 伝搬統一は別 follow-up として切り出す。
 
+### `skill-creator:progress` payload tracking contract（TASK-SC-08-FUP-02 / 2026-04-20）
+
+`skill-creator:progress` は createSkill 系 progress の push channel として維持し、payload に追跡用 ID を含める。
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `phase` | `string` | 必須 | progress phase |
+| `percentage` | `number` | 必須 | 進捗率 |
+| `message` | `string` | 必須 | 表示メッセージ |
+| `planId` | `string` | 任意 | どの createSkill 実行に属する progress かを識別する ID |
+| `requestId` | `string` | 任意 | 同一 progress wave の request 単位 ID |
+
+- 後方互換: `planId` / `requestId` 未設定の legacy payload は受信側で受け入れる
+- 受信契約: `useStreamingProgress(options.planId)` は `options.planId` と `progress.planId` が両方ある場合のみ mismatch を skip する
+- 範囲: runtime `execute-plan` の正本進捗は引き続き `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay が担う
+
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。
@@ -333,5 +349,43 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 **適用箇所**: ApiKeysSection loadProviders
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+
+---
+
+### 完了タスク（TASK-SC-CREATOR-UPDATE-IMPL-001: SkillCreatorService update モード実装）
+
+> 完了日: 2026-04-21
+
+#### 実装パターン（current facts）
+
+`SkillCreatorService.runUpdateWorkflow()` は以下の順序で動作する:
+
+| ステップ | 処理 | ファイル |
+| -------- | ---- | -------- |
+| 1. read | 既存 `SKILL.md` を読込み、`extractPurposeFromSkillMd()` で frontmatter の `description` を抽出する | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` |
+| 2. purpose-regen | `extractPurposeWithLlm()` で LLM による purpose 再生成を試みる | 同上 |
+| 3. StructurePlanJson | `purpose` 解決順: `LLM再生成 > 既存値 > options.description` でフォールバックし、`StructurePlanJson` を返す | 同上 |
+
+#### purpose 解決の優先順位
+
+```
+normalizedRegeneratedPurpose ?? existingPurpose ?? options.description
+```
+
+- `normalizedRegeneratedPurpose`: LLM 再生成結果（空文字列・null は除外）
+- `existingPurpose`: SKILL.md frontmatter から `extractPurposeFromSkillMd()` で抽出した値
+- `options.description`: fallback（入力パラメータ）
+
+#### extractPurposeFromSkillMd() の抽出ロジック
+
+| frontmatter 形式 | 対応パターン |
+| ---------------- | ------------ |
+| multiline block (`description: \|`) | `description:\s*\|\s*\n((?:[ \t]+[^\n]*\n?)+)` |
+| single-line | `description:\s*(.+)` |
+| 未検出 / 空文字 | `null` を返す |
+
+#### 既知制約
+
+update モードの後続処理（`StructurePlanJson` 以降）は create モードと同じ再初期化フローを共有しており、既存 anchors / references / agents / body を保持した差分更新契約は未実装。この乖離の是正は `TASK-SC-UPDATE-MODE-DIFF-SEMANTICS-001`（`docs/30-workflows/unassigned-task/`）として formalize 済み。
 
 ---
