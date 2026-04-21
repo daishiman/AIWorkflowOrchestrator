@@ -3080,6 +3080,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+## 2026-04-20 — TASK-SC-08-FUP-02 payload tracking sync
+
+- `references/api-ipc-system-skill-creator.md` に `skill-creator:progress` payload tracking contract（`planId?` / `requestId?` / receiver filter 契約）を追記
+- `references/lessons-learned-stream-001-progress-callback.md` に L-STREAM-FUP-05（filter-by-planId 契約）を追記、後続タスク表に TASK-SC-08-FUP-02 完了と TASK-SC-08-FUP-03 / TASK-SC-08-FUP-04 のクロスリファレンスを追加
+- `references/quick-reference.md` の SkillCreatorService progress セクションに payload tracking contract 導線と受信フック `useStreamingProgress.ts` の参照先を追加
+- mirror parity: `.agents/skills/aiworkflow-requirements/` に同内容を同期
 
 ## 2026-04-20 — TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
 

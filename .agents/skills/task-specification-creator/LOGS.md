@@ -3260,6 +3260,10 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/`（artifacts.json parity・Phase 12 outputs）、`LOGS.md`（本エントリ）                  |
 | 結果     | NON_VISUAL 再分類・artifacts.json parity・mandatory 5 tasks の Phase 12 実行完了。差分確認型 NON_VISUAL code task パターンをスキル知見として記録 |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）                                                               |
+## 2026-04-20 — TASK-SC-08-FUP-02 NON_VISUAL close-out note
+
+- NON_VISUAL code task の Phase 11/12 close-out では `PASS 予定` を避け、`PASS` / `BLOCKED` / `NOT RUN` を分離して記録する必要がある
+- Phase 11 証跡は未実施計画ではなく、少なくとも grep / typecheck / lint など実測済み項目を一次ソースへ反映する
 
 ## 2026-04-20 - TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
 

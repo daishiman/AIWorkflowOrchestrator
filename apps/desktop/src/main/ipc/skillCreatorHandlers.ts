@@ -12,6 +12,7 @@
  *
  * @module @repo/desktop/main/ipc/skillCreatorHandlers
  */
+import { randomUUID } from "crypto";
 import path from "path";
 import { ipcMain, BrowserWindow } from "electron";
 import type { IpcMainInvokeEvent } from "electron";
@@ -274,11 +275,17 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
+        const progressPlanId = `skill-create-${randomUUID()}`;
+        const requestId = randomUUID();
         // progress 通知を renderer に送る
         const skillDir = await skillCreatorService.createSkill(
           validatedArgs,
           (progress) => {
-            sendSkillCreatorProgress(mainWindow, progress);
+            sendSkillCreatorProgress(mainWindow, {
+              ...progress,
+              planId: progressPlanId,
+              requestId,
+            });
           },
         );
         return { success: true, data: skillDir };
@@ -723,6 +730,8 @@ export function sendSkillCreatorProgress(
     phase: string;
     percentage: number;
     message: string;
+    planId?: string;
+    requestId?: string;
   },
 ): void {
   if (!mainWindow.isDestroyed()) {
