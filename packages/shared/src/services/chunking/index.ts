@@ -26,6 +26,7 @@ export type {
   ContextualChunk,
   ChunkingStatistics,
   ChunkingOutput,
+  TokenEmbeddingsResult,
 } from "./types";
 
 // インターフェース
