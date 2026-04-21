@@ -1,5 +1,11 @@
 # TASK-SW-STREAM-FUP-03: モード別 onProgress 進捗フロー詳細化
 
+## メタ情報
+
+```yaml
+issue_number: 2369
+```
+
 ## 概要
 
 `SkillCreatorService.createSkill()` の進捗通知をモード別に詳細化する。
