@@ -4,8 +4,16 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-21: UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 current facts sync
+
+- 操作: update-spec
+- 変更前: `references/evals-schema-spec.md` の canonical 成果物リンクが stale path のまま、`metrics.average_satisfaction` の consumer 記述も実監査と不一致
+- 変更後: completed-task canonical path へ修正し、`average_satisfaction` を read/write 0 件の観測事実へ更新。`indexes/topic-map.md` を再生成し mirror 同期まで完了
+- 理由: EVALS schema 正本と task spec close-out の same-wave 整合を回復するため
+
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+
 ## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
 
 - 操作: optimize-description
@@ -48,6 +56,14 @@
 | 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
 | 結果 | success |
 | 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
+
+## 2026-04-21 - impl-spec-to-skill-sync (UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001)
+
+- Phase-12監査PASS確認（全6成果物完備、artifacts parity確認）
+- SKILL.md changelog: UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 close-out エントリ追加
+- LOGS.md 本エントリ追加
+- keywords.json: v1固有フィールド名追加確認
+- .claude ↔ .agents mirror sync 実施
 
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 

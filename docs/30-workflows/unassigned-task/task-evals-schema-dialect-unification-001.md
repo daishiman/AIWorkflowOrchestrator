@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: TBD
+issue_number: 2383
 task_id: UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001
 task_name: EVALS スキーマ方言（camelCase / snake_case）統一
 category: 改善

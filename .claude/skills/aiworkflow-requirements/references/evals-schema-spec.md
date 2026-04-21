@@ -1,8 +1,8 @@
 # EVALS.json スキーマ仕様
 
 > 正本: 各スキル (`.claude/skills/<skill>/EVALS.json`) と dual root ミラー (`.agents/skills/<skill>/EVALS.json`)
-> 最終更新: 2026-04-19（TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 close-out 由来）
-> 関連 canonical 成果物: `docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md` / `evals-field-map.md` / `phase-6/dual-root-parity.md` / `phase-8/schema-change-guide.md`
+> 最終更新: 2026-04-21（UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 反映）
+> 関連 canonical 成果物: `docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md` / `evals-field-map.md` / `phase-6/dual-root-parity.md` / `phase-8/schema-change-guide.md`
 
 ---
 
@@ -42,7 +42,7 @@ v2 系は `skill-creator` / `task-specification-creator` などの新規スキ�
 | `patterns.slowPhases[].*`        | object    | 遅い Phase                                 | log_usage                  | improve_skill                         |
 | `qualityInsights.*`              | object    | 拡張メトリクス（§6 参照）                   | 手動メンテ                 | reader=0 件（将来用）                 |
 
-フィールド詳細は canonical `docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md` §3 を参照する。
+フィールド詳細は canonical `docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md` §3 を参照する。
 
 ---
 
@@ -59,7 +59,7 @@ v2 系は `skill-creator` / `task-specification-creator` などの新規スキ�
 | `metrics.successRate`     | `metrics.success_rate`                  | 0..1                        |
 | `metrics.averageDuration` | `metrics.average_duration`              | ms                          |
 | `metrics.lastEvaluated`   | `metrics.last_evaluated`                | ISO-8601                    |
-| `levelHistory`            | `levels`                                | 配列構造                    |
+| `levelHistory`            | `levels`                                | 静的オブジェクト（レベル番号文字列キー）— 詳細は §3.4 |
 | -                         | `metrics.average_satisfaction`          | v1 固有（v2 に対応フィールドなし） |
 
 ### 3.1 どちらが正本か
@@ -75,15 +75,73 @@ v2 系は `skill-creator` / `task-specification-creator` などの新規スキ�
 - NaN 伝播リスク: 同一スキル内で camel/snake を併用すると `totalUsageCount + total_usage_count` のような集計ミスで NaN が伝播する可能性あり
 - 移行時は `schema-change-guide.md` §6-§8 の手順（dual root 同時更新 / consumer 逐次確認 / JSON parse 検証）に従う
 
+### 3.3 v1 固有フィールド完全定義
+
+v1 系固有フィールドのうち、§3 対照テーブルで詳細が未定義のフィールドを完全型テーブルで補完する。
+
+| フィールド | 型 | 範囲 / 形式 | 必須/任意 | 意味 | 主 writer | 主 reader |
+| --- | --- | --- | --- | --- | --- | --- |
+| `metrics.average_satisfaction` | number | 観測値: `0`, `4.5`（固定値域は断定しない） | optional | 満足度スコアの集計値（推定）— v1 固有 | なし（現行 script 側の write 実装なし） | なし（現行 script 側の read 実装なし） |
+
+#### `metrics.average_satisfaction` 詳細
+
+- **型**: `number`（浮動小数点）
+- **観測値**: `0`（skill-creator、未評価相当）、`4.5`（aiworkflow-requirements、評価済み相当）
+- **値域**: グローバル固定値域は断定しない。上記観測値を根拠として 0 以上であることは確認済み
+- **意味**: 満足度スコアの集計値。実データから意味を確定することは困難なため「推定」として記載する
+- **v1 固有**: v2 スキーマには対応フィールドが現時点では確認されていない
+- **現行 consumer 状態**: consumer audit 時点では read/write とも 0 件で、JSON 上に残存するデッドフィールド候補として扱う
+- **非保持スキル**: `skill-fixture-runner` は `metrics.average_satisfaction` を保持しない（フィールドキー自体が存在しない）
+
+### 3.4 `levels` フィールドの構造
+
+#### 3.4.1 全体の型
+
+`levels` は**レベル番号文字列キー**を持つ静的オブジェクトである（§3 対照テーブルも参照）。
+
+```json
+{
+  "levels": {
+    "1": { "name": "Beginner", "requirements": { "min_usage_count": 0, "min_success_rate": 0 } },
+    "2": { "name": "Intermediate", "requirements": { "min_usage_count": 5, "min_success_rate": 0.6 } },
+    "3": { "name": "Advanced", "requirements": { "min_usage_count": 15, "min_success_rate": 0.75 } },
+    "4": { "name": "Expert", "requirements": { "min_usage_count": 30, "min_success_rate": 0.85 } }
+  }
+}
+```
+
+#### 3.4.2 `LevelEntry` 型定義
+
+| フィールド | 型 | 必須/任意 | 根拠 |
+| --- | --- | --- | --- |
+| `name` | string | required | skill-creator / aiworkflow-requirements 両方で保持 |
+| `description` | string | optional | aiworkflow-requirements のみ保持（skill-creator には存在しない） |
+| `unlocked` | boolean | optional | aiworkflow-requirements のみ保持 |
+| `requirements.min_usage_count` | number | required | 両スキルで保持（0 以上） |
+| `requirements.min_success_rate` | number（0..1） | required | 両スキルで保持 |
+
+#### 3.4.3 非保持スキル
+
+`skill-fixture-runner` は `levels` フィールドを保持しない（フィールドキー自体が存在しない）。`null` や空オブジェクトとは区別する。
+
+#### 3.4.4 writer / reader
+
+- writer: `init_skill.js`（初期化時に静的定義として設定）/ `log_usage.js`（更新）
+- reader: `select_skill.js`（レベル昇格判定）/ analytics 処理
+
+#### 3.4.5 `levelHistory`（v2）との比較
+
+`levelHistory`（camelCase v2）は配列型のレベル変動**履歴**であり、`levels`（snake_case v1）はレベル定義の静的オブジェクトである。両者は意味論的に比較可能だが、構造・用途・writer コンテキストが異なるため直接等価とはみなさない。v1/v2 の正本断定については §3.1 を参照すること。
+
 ---
 
 ## 4. consumer 一覧
 
 consumer 全集合と 9 列表（`path` / `root` / `consumer_type` / `operation` / `read_fields` / `write_fields` / `dynamic_path` / `notes` / `source_evidence`）は canonical 成果物を参照する。
 
-- 正本: [`docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md`](../../../../docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md)
-- フィールド別突合: [`docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md`](../../../../docs/30-workflows/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md)
-- dual root 差分: [`docs/30-workflows/evals-consumer-audit-001/outputs/phase-6/dual-root-parity.md`](../../../../docs/30-workflows/evals-consumer-audit-001/outputs/phase-6/dual-root-parity.md)
+- 正本: [`docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md`](../../../../docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/consumer-audit-report.md)
+- フィールド別突合: [`docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md`](../../../../docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-5/evals-field-map.md)
+- dual root 差分: [`docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-6/dual-root-parity.md`](../../../../docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-6/dual-root-parity.md)
 
 `references/arch-electron-services-details-part1.md` の `OTHER_FILES` 定数表（2 列表記）は consumer サマリ（path / 役割）のみを提供する。完全な 9 列表を参照する場合は上記 canonical 成果物を優先する。
 
@@ -103,7 +161,7 @@ consumer 全集合と 9 列表（`path` / `root` / `consumer_type` / `operation`
 
 schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 検証が必須。詳細手順は canonical を参照。
 
-- 正本: [`docs/30-workflows/evals-consumer-audit-001/outputs/phase-8/schema-change-guide.md`](../../../../docs/30-workflows/evals-consumer-audit-001/outputs/phase-8/schema-change-guide.md)
+- 正本: [`docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-8/schema-change-guide.md`](../../../../docs/30-workflows/completed-tasks/evals-consumer-audit-001/outputs/phase-8/schema-change-guide.md)
 
 ### 5.1 変更時チェックリスト（要約）
 
@@ -188,3 +246,4 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-19 | 初版作成。TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 Task 2 `system-spec-update-summary.md` §4.1.1 / §4.2.1 / §4.3.1 のドラフトを正本化。camelCase v2 / snake_case v1 / qualityInsights / validator=0 件 を明示。 |
+| 2026-04-21 | UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 Phase 5 で §3 を追補。`levels` 行の「配列構造」誤記を「静的オブジェクト」に修正。§3.3（`average_satisfaction` 独立定義）/ §3.4（`levels.{N}` ツリー構造定義）を新設。 |

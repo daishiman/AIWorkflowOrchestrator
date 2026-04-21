@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: null
+issue_number: 2325
 task_id: UNASSIGNED-EVALS-VALIDATOR-GUARD-001
 task_name: skill-fixture-runner EVALS.json スキーマ検証追加
 category: 改善
