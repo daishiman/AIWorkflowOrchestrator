@@ -54,7 +54,15 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ### PipelineConfig
 
-パイプライン設定型。チャンキング設定（戦略とオプション）、埋め込み設定（モデルID、フォールバックチェーン、オプション、バッチオプション）、重複排除設定を含む。
+パイプライン設定型。チャンキング設定（戦略とオプション）、埋め込み設定（モデルID、フォールバックチェーン、オプション、バッチオプション）、重複排除設定、および Late Chunking 統合設定を含む。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `chunking` | `ChunkingConfig` | チャンキング設定 |
+| `embedding` | `EmbeddingConfig` | 埋め込み設定 |
+| `pipeline` | `PipelineRuntimeConfig` | 実行制御設定 |
+| `persistence` | `PersistenceConfig` | 重複排除などの永続化設定 |
+| `lateChunking` | `{ enabled: boolean; poolingStrategy?: PoolingStrategy; maxTokenLength?: number }` | Late Chunking 有効化と追加設定。未設定時は通常フロー |
 
 ### ChunkingOptions
 
@@ -98,7 +106,19 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ### StageTimings
 
-ステージ別処理時間型。前処理、チャンキング、埋め込み、重複排除、ストレージの各ステージの処理時間（ミリ秒）を含む。
+ステージ別処理時間型。前処理、チャンキング、Late Chunking、埋め込み、重複排除の各ステージ処理時間（ミリ秒）を含む。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `preprocessing` | `number` | 前処理時間 |
+| `chunking` | `number` | チャンキング時間 |
+| `lateChunking` | `number \| undefined` | Stage 2.5 Late Chunking 実行時間。無効時は `undefined` |
+| `embedding` | `number` | Stage 3 埋め込み時間。Late Chunking 有効時は `0` |
+| `deduplication` | `number` | 重複排除時間 |
+
+### PipelineStage
+
+パイプライン進捗ステージ。`"preprocessing" | "chunking" | "lateChunking" | "embedding" | "deduplication" | "completed"` を取る。
 
 ---
 

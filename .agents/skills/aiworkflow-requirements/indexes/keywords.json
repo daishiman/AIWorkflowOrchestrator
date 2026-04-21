@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3264,
+  "totalKeywords": 3266,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4639,13 +4639,15 @@
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-late-chunking-token-provider.md",
-      "llm-embedding.md"
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "Chunking": [
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-late-chunking-token-provider.md",
-      "llm-embedding.md"
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "パイプライン拡張": [
       "architecture-embedding-pipeline.md"
@@ -4772,6 +4774,7 @@
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc-core.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "ui-ux-portal-patterns.md"
     ],
     "データフロー型ギャップパターン": [
@@ -4955,10 +4958,12 @@
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "llm-embedding.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md"
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "SCOPE": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
@@ -9178,6 +9183,17 @@
     "アーカイブポリシー文書化": [
       "lessons-learned-current-2026-04.md"
     ],
+    "EMB": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
+      "lessons-learned-late-chunking-token-provider.md",
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "XenovaTransformerEncoder": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9697,11 +9713,6 @@
     "エラーコールバックガード": [
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "EMB": [
-      "lessons-learned-late-chunking-esbuild-worktree.md",
-      "lessons-learned-late-chunking-token-provider.md",
-      "llm-embedding.md"
     ],
     "教訓サマリー": [
       "lessons-learned-late-chunking-esbuild-worktree.md",
@@ -14427,7 +14438,8 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
-      "task-workflow-completed-recent-2026-04g.md"
+      "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
@@ -14470,6 +14482,9 @@
     ],
     "wide": [
       "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "IEncoder": [
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"
