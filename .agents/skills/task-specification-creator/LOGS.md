@@ -2,6 +2,29 @@
 
 ## 役割
 
+## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
+## 2026-04-21 - TASK-SW-TODO-001 close-out sync
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-SW-TODO-001
+- タスク名: conversation-round-step-todo-cleanup
+- Phase: 1-12
+
+### 成果
+
+- テストカバレッジ: verify_existing / NON_VISUAL close-out 証跡を current template へ再整流
+- 実装内容:
+  - Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` へ統一
+  - `manual-test-result.md` に fixed phrase / 実施情報 / 仕様判断根拠 / 実行記録を集約
+  - Phase 12 compliance-check を Task 12-1〜12-6 / Step 1-A〜1-G / Step 2 まで拡張
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-04-21
+
 ## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -58,22 +81,17 @@
 
 ### 変更内容
 
-UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001 Phase 12 の skill-feedback-report に記載された2件の改善提案を反映した。
+TASK-SW-CANCEL-004 Phase 12 の skill-feedback-report に記載された改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| UT-LIFECYCLE-FB-1 | NON_VISUAL 判定時に `artifacts.json`（ルート）と `outputs/artifacts.json` の2ファイル両方の同期を必須化 | `references/phase-template-phase12.md` に新セクション追加 |
-| UT-LIFECYCLE-FB-2 | Phase 11 canonical ファイル名 `manual-test-result.md` と補助命名 `{TASK-ID}-manual-test-report.md` の優先順位を明文化 | `references/phase-template-phase11.md` に新サブセクション追加 |
-
-### 追加パターン
-
-auth:login 非発火回帰テストの rapid click / rerender パターンを `references/patterns-ui-type-auth.md` に追記した。
+| 指摘ID          | 内容                                                                                                        | 反映先                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| FB-CANCEL-004-1 | `AbortSignal` のような partial fix 契約ズレを Phase 10 で residual issue として格下げするテンプレートを追記 | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
+| FB-CANCEL-004-2 | `unassigned-task-detection.md` に関連済みタスク差分確認欄を設けて重複起票を防ぐ方針を追記                   | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
 
 ### 変更ファイル
 
-- `references/phase-template-phase12.md`: NON_VISUAL artifacts.json 2ファイル同期セクションを追加
-- `references/phase-template-phase11.md`: canonical ファイル名優先順位サブセクションを追加
-- `references/patterns-ui-type-auth.md`: auth:login 非発火回帰テストパターンを追加
+- `.claude/skills/task-specification-creator/SKILL.md`: よくある漏れテーブルに FB-CANCEL-004-1/2 を追記
+- `.agents/skills/task-specification-creator/SKILL.md`: 同上（mirror 同期）
 
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
@@ -81,11 +99,11 @@ auth:login 非発火回帰テストの rapid click / rerender パターンを `r
 
 TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| 指摘ID          | 内容                                                                                                                                                   | 反映先                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示                                                                                       | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加                    |
 | CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
-| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加                                                              | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加      |
 
 ### 変更ファイル
 
@@ -3264,6 +3282,10 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/`（artifacts.json parity・Phase 12 outputs）、`LOGS.md`（本エントリ）                  |
 | 結果     | NON_VISUAL 再分類・artifacts.json parity・mandatory 5 tasks の Phase 12 実行完了。差分確認型 NON_VISUAL code task パターンをスキル知見として記録 |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）                                                               |
+## 2026-04-20 — TASK-SC-08-FUP-02 NON_VISUAL close-out note
+
+- NON_VISUAL code task の Phase 11/12 close-out では `PASS 予定` を避け、`PASS` / `BLOCKED` / `NOT RUN` を分離して記録する必要がある
+- Phase 11 証跡は未実施計画ではなく、少なくとも grep / typecheck / lint など実測済み項目を一次ソースへ反映する
 
 ## 2026-04-20 - TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
 

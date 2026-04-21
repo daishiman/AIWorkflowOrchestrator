@@ -20,8 +20,8 @@
 | -------- | -------- | ------------------ |
 | 高       | 1件      | 大規模             |
 | 中       | 3件      | 中規模×3           |
-| 低       | 4件      | 小規模×3、中規模×1 |
-| **合計** | **8件**  | -                  |
+| 低       | 5件      | 小規模×3、中規模×2 |
+| **合計** | **9件**  | -                  |
 
 ---
 
@@ -199,6 +199,23 @@
 
 ---
 
+### EMB-005-B: XenovaTransformerEncoder Electron E2E 検証
+
+| 項目         | 内容                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| ファイル     | [EMB-005-B-electron-e2e.md](EMB-005-B-electron-e2e.md)                   |
+| 分類         | 検証                                                                     |
+| 優先度       | 低                                                                       |
+| 見積もり規模 | 中規模                                                                   |
+| 発見元       | UNASSIGNED-EMB-005-A Phase 12 未タスク検出                               |
+| 関連Issue    | [#2359](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2359) |
+
+**目的**: Electron レンダラー（`contextIsolation`）下での `XenovaTransformerEncoder` 動作実証
+
+**効果**: 本番 Electron 環境での動作保証、問題発生時の切り分け迅速化
+
+---
+
 ## 推奨実装順序
 
 ### フェーズ1: 品質向上（優先度High）
@@ -321,8 +338,8 @@ UNASSIGNED-EMB-007 (自動再埋め込み)
 ---
 
 **作成日**: 2025-12-26
-**最終更新**: 2026-04-19
-**ステータス**: 全7件作成完了
+**最終更新**: 2026-04-20
+**ステータス**: 全9件作成完了（うち2件は完了タスク由来の follow-up）
 
 ---
 
@@ -349,3 +366,17 @@ TASK-EVALS-CONSUMER-AUDIT-001 Phase-12 close-out に続く skill 反映 wave で
 - `task-mirror-resource-map-cross-root-link-001.md`（ミラー構造別件）
 - `task-skill-fixture-runner-evals-schema-validate-001.md`（validator 実装は別タスク）
 - `task-skill-scanner-evals-content-validate-001.md`（SkillScanner 強化は別タスク）
+
+### UNASSIGNED-EMB-005-A-xenova-transformer-encoder（2026-04-20 完了）
+
+UNASSIGNED-EMB-005-A Phase-12 close-out により、`XenovaTransformerEncoder` 実装タスクが完了し、タスク仕様書ディレクトリが `completed-tasks/` へ移動された。
+
+| 完了日     | タスク仕様書ディレクトリ                                                                                               | 実装場所                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| 2026-04-20 | [UNASSIGNED-EMB-005-A-xenova-transformer-encoder](../completed-tasks/UNASSIGNED-EMB-005-A-xenova-transformer-encoder/) | `packages/shared/src/services/embedding/late-chunking/xenova-transformer-encoder.ts` |
+
+**成果**: `IEncoder` インターフェース実装、全テスト35件 PASS、`@xenova/transformers ^2.17.2` 統合完了
+
+**follow-up 未タスク（本タスク由来）**:
+
+- `EMB-005-B-electron-e2e.md`（Electron レンダラー E2E 検証、Issue [#2359](https://github.com/daishiman/AIWorkflowOrchestrator/issues/2359)）

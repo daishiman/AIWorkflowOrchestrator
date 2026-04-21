@@ -42,6 +42,22 @@
 
 `skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。current fact として、ack 受理後に Renderer は `getWorkflowState` を再読込し、`handoffBundle` または `verifyResult.status === "fail"` の snapshot を UI エラーとして扱う（adapter guard failure は `recordExecuteAdapterFailure()` で review-ready snapshot を先に保存する）。この ack 後再読込は `SkillCreateWizard` の failure handling の正本であり、`executeAsync()` の message 伝搬統一は別 follow-up として切り出す。
 
+### `skill-creator:progress` payload tracking contract（TASK-SC-08-FUP-02 / 2026-04-20）
+
+`skill-creator:progress` は createSkill 系 progress の push channel として維持し、payload に追跡用 ID を含める。
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `phase` | `string` | 必須 | progress phase |
+| `percentage` | `number` | 必須 | 進捗率 |
+| `message` | `string` | 必須 | 表示メッセージ |
+| `planId` | `string` | 任意 | どの createSkill 実行に属する progress かを識別する ID |
+| `requestId` | `string` | 任意 | 同一 progress wave の request 単位 ID |
+
+- 後方互換: `planId` / `requestId` 未設定の legacy payload は受信側で受け入れる
+- 受信契約: `useStreamingProgress(options.planId)` は `options.planId` と `progress.planId` が両方ある場合のみ mismatch を skip する
+- 範囲: runtime `execute-plan` の正本進捗は引き続き `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay が担う
+
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。

@@ -22,3 +22,4 @@ export type {
   IHiddenStatePooler,
   IWindowSplitter,
 } from "./late-chunking-interfaces";
+export { XenovaTransformerEncoder } from "./xenova-transformer-encoder";
