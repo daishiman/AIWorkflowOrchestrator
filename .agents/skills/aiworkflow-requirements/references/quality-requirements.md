@@ -34,6 +34,17 @@ bypass フラグは存在しない（intentional: drift を「後で直す」に
 
 実装日: 2026-04-19 / 関連タスク: UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 / Issue #2293
 
+## EVALS.json 構造検証ゲート（UNASSIGNED-EVALS-VALIDATOR-GUARD-001）
+
+EVALS.json を更新した wave では、close-out 前に以下を必須品質ゲートとする。
+
+| ゲート | コマンド | 合格条件 |
+| --- | --- | --- |
+| EVALS 構造検証 | `node .claude/skills/skill-fixture-runner/scripts/validate-evals.js --all-skills --check-dual-root` | 6/6 PASS / exit code 0 |
+| fixture-runner 統合検証 | `node .claude/skills/skill-fixture-runner/scripts/run-all-validations.js --target .claude/skills/skill-fixture-runner` | `"overall": true` / exit code 0 |
+
+`validate-evals.js` は L1 JSON パース、L2 top-level 必須キー、L3 dual root 一致を対象とする。詳細な schema 変更時は `references/evals-schema-spec.md` と `schema-change-guide.md` の手動検証も併用すること。
+
 ## IPC契約ドリフト自動検出（UT-TASK06-007）
 
 | 項目 | 内容 |

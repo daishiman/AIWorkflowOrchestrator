@@ -190,6 +190,21 @@ Late Chunkingは、テキスト全体をエンコーダに通した後にチャ�
 
 `EmbeddingService.generateChunkEmbeddings()` メソッドが追加され、Late Chunkingサービスが設定されていない場合は `EmbeddingError` をスローする。
 
+### EmbeddingPipeline への正式統合
+
+`EmbeddingPipeline.process()` は Stage 2 の chunking 後に、`config.lateChunking?.enabled === true` の場合のみ Stage 2.5 を実行する。
+
+| 段階 | 通常フロー | Late Chunking フロー |
+| --- | --- | --- |
+| Stage 2 | chunking | chunking |
+| Stage 2.5 | なし | `EmbeddingService.generateChunkEmbeddings()` |
+| Stage 3 | `embedBatch()` | skip |
+
+- Stage 2.5 の処理時間は `StageTimings.lateChunking` に記録する。
+- progress 契約では `PipelineStage.lateChunking` を通知する。
+- `generateChunkEmbeddings()` の戻り値は `chunkId` を使って元チャンク順に整列し、`EmbeddingResult[]` へ変換する。
+- `lateChunking` 未設定または `enabled=false` の場合は後方互換のため従来フローを維持する。
+
 ### デフォルト設定（DEFAULT_LATE_CHUNKING_CONFIG）
 
 | 設定項目 | デフォルト値 | 説明 |

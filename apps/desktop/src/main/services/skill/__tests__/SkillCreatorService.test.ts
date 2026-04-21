@@ -712,6 +712,7 @@ describe("SkillCreatorService", () => {
         stderr: "",
         exitCode: 0,
       });
+      mockScriptExecutor.executeJson.mockResolvedValue({ suggestions: [] });
       const result = await service.createSkill(options);
       expect(result).toContain("prompt-skill");
     });

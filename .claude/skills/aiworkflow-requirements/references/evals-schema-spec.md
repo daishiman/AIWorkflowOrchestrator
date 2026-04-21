@@ -15,7 +15,7 @@
 - camelCase v2 系（標準）と snake_case v1 系（方言）の両併存を「事実」として記録する
 - 「どちらが正本か」は本ファイルでは**断定しない**（dual root 正本断定禁止方針 / phase-2 scope-architecture §3.1 準拠）
 - consumer コントラクト（reader / writer）と変更手順を canonical 4 成果物へリンクする
-- validator=0 件の既知制約と代替の手動検証運用を明記する
+- `validate-evals.js` による構造検証の現在地と、残る制約を明記する
 
 `EVALS.json` の存在性・JSON parse 可能性のみを対象とする「Skill 作成時のチェックリスト」は `references/claude-code-overview.md` §「Skill 作成時のチェックリスト」を参照すること。
 
@@ -98,7 +98,7 @@ consumer 全集合と 9 列表（`path` / `root` / `consumer_type` / `operation`
 | reader（動的）  | `select_skill.js`（スキル選定スコアリング）                                                       |
 | writer          | `log_usage.js`（各スキル scripts/ 配下）                                                           |
 | mixed / runner  | `skill-fixture-runner/scripts/*` (fixture 層、本タスクでは非実行 consumer として記録)             |
-| validator       | **現状 0 件**（§7 参照）                                                                          |
+| validator       | `skill-fixture-runner/scripts/validate-evals.js`（L1/L2/L3 / allowlist 6件 / dual-root 比較）    |
 
 ---
 
@@ -149,38 +149,39 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 ### 6.1 運用ルール
 
 - 手動更新時は commit メッセージに `chore(evals): qualityInsights update` を付与する
-- validator 化は UNASSIGNED-EVALS-VALIDATOR-GUARD-001 の設計検討後に実施する（手動値の書式検証）
+- validator は導入済みだが、`qualityInsights.*` の詳細妥当性までは未検証
 - reader 0 件である状態も「既知の制約」として §7 に明記
 
 ---
 
-## 7. 既知の制約（validator=0 件）
+## 7. 既知の制約（validator=1 件、ただし完全ではない）
 
-本スキーマには現状、**構造体フィールドを機械的に検証する consumer が 0 件**である。
+本スキーマには、**構造体フィールドを機械的に検証する validator が 1 件存在する**。
 
 ### 7.1 事実
 
-- `skill-fixture-runner/scripts/validate-skill-structure.js` は EVALS.json の**存在性・JSON parse 可能性**のみを対象とする
-- `validate-schemas.js`（`skill-fixture-runner/scripts/` 配下）は `schemas/*.json` 管下のみを扱う（EVALS.json は schemas/ 配下ではない）
-- `consumer-audit-report.md` §3 で validator_type consumer は 0 件と確認済み
+- `skill-fixture-runner/scripts/validate-evals.js` は L1 JSON パース / L2 top-level 必須キー / L3 dual root 一致を検証する
+- `skill-fixture-runner/scripts/validate-skill-structure.js` は引き続き EVALS.json の存在性のみを扱う
+- `validate-schemas.js` は `schemas/*.json` 管下のみを扱い、EVALS.json 自体は扱わない
 
 ### 7.2 影響
 
-- フィールド削除 / リネーム時の silent break が自動検出されない
-- NaN 伝播（camel/snake 混在起因など）が自動検出されない
-- 方言統一時の破壊的変更が手動検証に依存する
+- `skillName/skill_name`・`currentLevel/current_level`・`metrics` の欠落は自動検出できる
+- `qualityInsights.*` や `phaseMetrics.*` の詳細妥当性はまだ自動検出できない
+- 方言統一時の破壊的変更は依然として手動検証と consumer 監査に依存する
 
 ### 7.3 代替の手動検証運用
 
 - schema 変更時は §5.1 の 7 ステップを必ず実施
-- `schema-change-guide.md` §7 の 3 カテゴリ手動検証（静的参照 / dual root 一致 / JSON パース）が primary guard
-- validator 実装タスクは `UNASSIGNED-EVALS-VALIDATOR-GUARD-001` で追跡中
+- `schema-change-guide.md` §7 の 3 カテゴリ手動検証（静的参照 / dual root 一致 / JSON パース）は引き続き primary guard
+- `validate-evals.js --all-skills --check-dual-root` を close-out 時の必須 replay に追加する
 
-### 7.4 validator 新設時の設計ポリント（参考）
+### 7.4 残課題
 
-- 検証対象: camelCase v2 系 / snake_case v1 系の両方言を許容、ただし同一ファイル内の混在は禁止として拒否
-- 配置候補: `skill-fixture-runner/scripts/validate-evals-schema.js`（新設）
-- CI 組み込み: pre-commit hook / PR 時の必須 check
+- `qualityInsights.*` の詳細検証
+- `phaseMetrics.*` / `levelCriteria.*` の構造検証
+- 方言統一後の strict default 化
+- CI 必須チェック化の是非判断
 
 ---
 
@@ -189,4 +190,5 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 | Date       | 変更内容                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 2026-04-21 | UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001 Phase 1-12 完了に伴う更新。§2 を legacy スキーマに改訂、§3.1 を snake_case v1 正本確定に更新。全スキル EVALS.json（`.claude/skills/` + `.agents/skills/`）が snake_case v1 に統一済み。 |
+| 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-19 | 初版作成。TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 Task 2 `system-spec-update-summary.md` §4.1.1 / §4.2.1 / §4.3.1 のドラフトを正本化。camelCase v2 / snake_case v1 / qualityInsights / validator=0 件 を明示。 |

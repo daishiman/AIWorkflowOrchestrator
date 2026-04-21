@@ -32,6 +32,23 @@
 - **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
   - 削除待ち前提を current fact に合わせて完了済み手順へ是正
 
+## 2026-04-21: TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- improve-prompt 実処理化、frontmatter 保全、post-improve bootstrap 除外を current facts として反映
+- workflow `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` / `artifacts.json` completed 同期を記録
+- `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を follow-up として登録
+
+## 2026-04-21: UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| 操作 | update-spec / close-out sync |
+| 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
+
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -3229,3 +3246,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |
+
+## 2026-04-20 — TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Phase 12 close-out sync
+
+- `references/llm-embedding.md` に `PipelineConfig.lateChunking` / `StageTimings.lateChunking` / `PipelineStage.lateChunking` を追記
+- `references/api-internal-embedding.md` に `EmbeddingPipeline.process()` の Late Chunking 分岐、progress、skip semantics を追記
+- `references/architecture-embedding-pipeline.md` に Stage 2.5 と `chunkId` 整列責務を追記
+- `references/task-workflow-completed.md` に close-out エントリを追記
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | NON_VISUAL / feature-integration / phase12 close-out |
+| 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
+| 結果 | Late Chunking pipeline integration の正本同期完了 |
+| 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |
