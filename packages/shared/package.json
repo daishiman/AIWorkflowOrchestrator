@@ -327,6 +327,7 @@
     "@anthropic-ai/claude-agent-sdk": "^0.2.5",
     "@libsql/client": "^0.15.15",
     "@supabase/supabase-js": "^2.86.2",
+    "@xenova/transformers": "^2.17.2",
     "better-sqlite3": "^12.5.0",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.2",
