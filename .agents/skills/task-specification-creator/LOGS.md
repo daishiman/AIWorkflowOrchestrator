@@ -25,6 +25,12 @@
 - ステータス: success
 - 完了日時: 2026-04-21
 
+## 2026-04-21 - TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- NON_VISUAL + headless substitute evidence を Phase 11 primary evidence として task-local に固定
+- Phase 11 / 12 spec, root `artifacts.json`, `outputs/artifacts.json` を completed へ同期
+- unassigned follow-up `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を formalize
+
 ## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）

@@ -362,6 +362,45 @@ export class ChunkingService {
   }
 
   /**
+   * Late Chunkingをクライアント指定で直接適用する（テスト・外部利用向け公開API）
+   *
+   * @param client 埋め込みクライアント（getTokenEmbeddings があれば優先使用）
+   * @param text テキスト
+   * @param chunks チャンク範囲配列（文字オフセット）
+   * @param options Late Chunkingオプション
+   */
+  async applyLateChunking(
+    client: IEmbeddingClient,
+    text: string,
+    chunks: Array<{ start: number; end: number }>,
+    options?: Partial<LateChunkingOptions>,
+  ): Promise<Array<{ vector: number[] }>> {
+    const poolingStrategy = options?.poolingStrategy ?? "mean";
+
+    if (client.getTokenEmbeddings) {
+      const result = await client.getTokenEmbeddings(text);
+      if (result.tokens.length !== result.embeddings.length) {
+        throw new ChunkingError(
+          `TokenEmbeddingsResult length mismatch: tokens=${result.tokens.length}, embeddings=${result.embeddings.length}`,
+        );
+      }
+      return this.poolEmbeddingsByCharBoundaries(
+        result.embeddings,
+        chunks,
+        text.length,
+        poolingStrategy,
+      );
+    }
+
+    return Promise.all(
+      chunks.map(async (chunk) => {
+        const vector = await client.embed(text.slice(chunk.start, chunk.end));
+        return { vector };
+      }),
+    );
+  }
+
+  /**
    * Late Chunkingを適用する（ChunkingLateChunkingAdapterへ委譲）
    */
   private async applyLateChunkingInternal(
@@ -369,10 +408,78 @@ export class ChunkingService {
     chunks: Chunk[],
     options: LateChunkingOptions,
   ): Promise<Chunk[]> {
+    if (this.embeddingClient?.getTokenEmbeddings) {
+      const result = await this.embeddingClient.getTokenEmbeddings(text);
+      if (result.tokens.length !== result.embeddings.length) {
+        throw new ChunkingError(
+          `TokenEmbeddingsResult length mismatch: tokens=${result.tokens.length}, embeddings=${result.embeddings.length}`,
+        );
+      }
+      const boundaries = chunks.map((c) => ({
+        start: c.position.start,
+        end: c.position.end,
+      }));
+      const vectors = this.poolEmbeddingsByCharBoundaries(
+        result.embeddings,
+        boundaries,
+        text.length,
+        options.poolingStrategy,
+      );
+      return chunks.map((chunk, i) => ({
+        ...chunk,
+        metadata: {
+          ...chunk.metadata,
+          lateChunking: {
+            applied: true,
+            embeddingDimension: vectors[i]?.vector.length ?? 0,
+          },
+        },
+      }));
+    }
+
     if (!this.lateChunkingAdapter) {
       throw new ChunkingError("Embedding client is required for Late Chunking");
     }
     return this.lateChunkingAdapter.applyLateChunking(text, chunks, options);
+  }
+
+  private poolEmbeddingsByCharBoundaries(
+    tokenEmbeddings: number[][],
+    chunks: Array<{ start: number; end: number }>,
+    textLength: number,
+    strategy: "mean" | "cls" | "attention",
+  ): Array<{ vector: number[] }> {
+    const N = tokenEmbeddings.length;
+    const effectiveLength = Math.max(textLength, 1);
+
+    return chunks.map((chunk) => {
+      const tokenStart = Math.floor((chunk.start / effectiveLength) * N);
+      const tokenEnd = Math.max(
+        tokenStart + 1,
+        Math.ceil((chunk.end / effectiveLength) * N),
+      );
+      const slice = tokenEmbeddings.slice(tokenStart, Math.min(tokenEnd, N));
+
+      if (slice.length === 0) {
+        return { vector: tokenEmbeddings[0] ?? [] };
+      }
+      if (strategy === "cls") {
+        return { vector: slice[0] ?? [] };
+      }
+      return { vector: this.averageVectors(slice) };
+    });
+  }
+
+  private averageVectors(vecs: number[][]): number[] {
+    const dim = vecs[0]?.length ?? 0;
+    if (dim === 0) return [];
+    const sum = new Array<number>(dim).fill(0);
+    for (const v of vecs) {
+      for (let i = 0; i < dim; i++) {
+        sum[i] += v[i] ?? 0;
+      }
+    }
+    return sum.map((s) => s / vecs.length);
   }
 
   /**
