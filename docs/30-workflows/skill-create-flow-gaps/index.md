@@ -5,7 +5,7 @@
 `skill-create-flow-gaps` で特定した変更差分を、30種の思考法で分解し、実装レーンを `STREAM` / `CANCEL` / `STRUCT` / `TODO` の4グループ9タスクに整理した親 index。
 
 - 目的: 依存関係、並列可否、ファイル衝突ドメインを一目で判断できるようにする
-- 現在の状態: 仕様書作成済み / 実装未着手 / PR作成禁止
+- 現在の状態: 一部完了済み workflow を含む / PR作成禁止
 - 分析詳細: 30種の思考法そのものの展開は設計ドキュメント側に集約する
 
 ## 設計根拠
@@ -26,7 +26,7 @@
 | CANCEL | renderer hook から cancel を送信する        | CANCEL-004        | [p04-seq-CANCEL-004](./p04-seq-CANCEL-004/index.md)                  |
 | STRUCT | `runCreateWorkflow()` の構造出力を正す      | STRUCT-001 ✅完了 | [p01-par-STRUCT-001](../completed-tasks/p01-par-STRUCT-001/index.md) |
 | STRUCT | `structurePlan` を SKILL.md 生成へ接続する  | STRUCT-002 ✅完了 | [p02-par-STRUCT-002](../completed-tasks/p02-par-STRUCT-002/index.md) |
-| TODO   | 残置 TODO の cleanup を行う                 | TODO-001          | [p05-opt-TODO-001](./p05-opt-TODO-001/index.md)                      |
+| TODO   | 残置 TODO の cleanup を行う                 | TODO-001 ✅完了   | [p05-opt-TODO-001](../p05-opt-TODO-001/index.md)                     |
 
 ## カノニカルな位置づけ
 

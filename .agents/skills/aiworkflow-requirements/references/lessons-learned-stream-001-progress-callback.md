@@ -131,6 +131,25 @@ const emitProgress = (phase: string): void => {
 
 ---
 
+## L-STREAM-FUP-05: filter-by-planId 契約（TASK-SC-08-FUP-02 / 2026-04-20）
+
+### 背景
+
+単一の `skill-creator:progress` push channel を複数実行が共有すると、受信側で識別子がない限り別実行の進捗が混線する。
+
+### 契約
+
+- payload は `planId?: string` / `requestId?: string` を持てる
+- 受信側 `useStreamingProgress(options.planId)` は `options.planId` と `progress.planId` の両方が存在する場合のみ mismatch を skip する
+- `progress.planId` 未設定の legacy payload は後方互換で受け入れる
+
+### 教訓
+
+- push channel を増やさずに識別したい場合、`optional tracking ID + receiver filter` は破壊範囲が小さい
+- legacy payload を残す期間は `required 化` の follow-up task とセットで管理しないと、混線防止価値が半減する
+
+---
+
 ## 後続タスク・未タスク
 
 | ID     | 内容                                                            | 優先度  | 状態              |
@@ -140,3 +159,6 @@ const emitProgress = (phase: string): void => {
 | FUP-03 | mode 別に progress の詳細を変える                               | Medium  | **完了（2026-04-18）** |
 | FUP-04 | renderer 側の useStreamingProgress mode-specific phase mapping  | Medium  | open（TASK-SC-08） |
 | 後続   | TASK-SW-STREAM-002（IPC 配線）                                  | -       | -                 |
+| 後続   | TASK-SC-08-FUP-02（payload tracking: `planId?` / `requestId?`）  | Medium  | **完了（2026-04-20）** |
+| 後続   | TASK-SC-08-FUP-03（`planId` required 化）                        | Medium  | open（`docs/30-workflows/unassigned-task/TASK-SC-08-FUP-03-PAYLOAD-PLANID-REQUIRED.md`） |
+| 後続   | TASK-SC-08-FUP-04（filter-by-id の水平展開）                     | Low     | open（`docs/30-workflows/unassigned-task/TASK-SC-08-FUP-04-PROGRESS-FILTER-HORIZONTAL.md`） |

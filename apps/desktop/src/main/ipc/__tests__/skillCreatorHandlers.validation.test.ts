@@ -693,6 +693,26 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
       );
       expect(destroyedWindow.webContents.send).not.toHaveBeenCalled();
     });
+
+    it("IPC-SP-018: planId / requestId を含む payload をそのまま送信する", () => {
+      const progress = {
+        phase: "generating",
+        percentage: 50,
+        message: "Generating code...",
+        planId: "plan-123",
+        requestId: "req-456",
+      };
+
+      sendSkillCreatorProgress(
+        mockMainWindow as unknown as BrowserWindowType,
+        progress,
+      );
+
+      expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
+        expect.any(String),
+        progress,
+      );
+    });
   });
 
   describe("P65 dead-end namespace 不在確認", () => {
