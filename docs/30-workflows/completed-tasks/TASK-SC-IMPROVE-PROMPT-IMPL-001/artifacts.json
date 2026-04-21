@@ -1,0 +1,182 @@
+{
+  "taskId": "TASK-SC-IMPROVE-PROMPT-IMPL-001",
+  "taskName": "improve-prompt-impl",
+  "featureName": "TASK-SC-IMPROVE-PROMPT-IMPL-001",
+  "status": "completed",
+  "createdAt": "2026-04-21",
+  "taskType": "NON_VISUAL",
+  "dependsOn": [
+    "UT-TASK-SC-LLM-PURPOSE-WIRE-001-UPDATE-MODE",
+    "TASK-SC-CREATOR-UPDATE-IMPL-001"
+  ],
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        { "name": "code-audit.md", "path": "outputs/phase-1/code-audit.md" },
+        {
+          "name": "skill-md-format.md",
+          "path": "outputs/phase-1/skill-md-format.md"
+        },
+        {
+          "name": "test-strategy.md",
+          "path": "outputs/phase-1/test-strategy.md"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "workflow-design.md",
+          "path": "outputs/phase-2/workflow-design.md"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "design-review.md",
+          "path": "outputs/phase-3/design-review.md"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "test-case-matrix.md",
+          "path": "outputs/phase-4/test-case-matrix.md"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "implementation-diff.md",
+          "path": "outputs/phase-5/implementation-diff.md"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "fail-path-matrix.md",
+          "path": "outputs/phase-6/fail-path-matrix.md"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "coverage-summary.md",
+          "path": "outputs/phase-7/coverage-summary.md"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "refactoring-plan.md",
+          "path": "outputs/phase-8/refactoring-plan.md"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "quality-gate-results.md",
+          "path": "outputs/phase-9/quality-gate-results.md"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "final-review-result.md",
+          "path": "outputs/phase-10/final-review-result.md"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "manual-test-checklist.md",
+          "path": "outputs/phase-11/manual-test-checklist.md"
+        },
+        {
+          "name": "manual-test-result.md",
+          "path": "outputs/phase-11/manual-test-result.md"
+        },
+        {
+          "name": "discovered-issues.md",
+          "path": "outputs/phase-11/discovered-issues.md"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "implementation-guide.md",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "system-spec-update-summary.md",
+          "path": "outputs/phase-12/system-spec-update-summary.md"
+        },
+        {
+          "name": "documentation-changelog.md",
+          "path": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "name": "unassigned-task-detection.md",
+          "path": "outputs/phase-12/unassigned-task-detection.md"
+        },
+        {
+          "name": "skill-feedback-report.md",
+          "path": "outputs/phase-12/skill-feedback-report.md"
+        },
+        {
+          "name": "phase12-task-spec-compliance-check.md",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "name": "change-summary.md",
+          "path": "outputs/phase-13/change-summary.md"
+        },
+        {
+          "name": "local-check-result.md",
+          "path": "outputs/phase-13/local-check-result.md"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

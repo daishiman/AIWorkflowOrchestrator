@@ -4,7 +4,12 @@
  * @description チャンキング戦略と外部依存のインターフェース
  */
 
-import type { ChunkingStrategy, ChunkingOptions, Chunk } from "./types";
+import type {
+  ChunkingStrategy,
+  ChunkingOptions,
+  Chunk,
+  TokenEmbeddingsResult,
+} from "./types";
 
 /**
  * チャンキング戦略インターフェース
@@ -93,6 +98,12 @@ export interface IEmbeddingClient {
    * @returns 埋め込みベクトル配列
    */
   embedBatch(texts: string[]): Promise<number[][]>;
+
+  /**
+   * テキスト全体のトークンレベル隠れ状態を返す（オプショナル）
+   * このメソッドが存在しない場合、ChunkingService は embed() にフォールバックする
+   */
+  getTokenEmbeddings?(text: string): Promise<TokenEmbeddingsResult>;
 }
 
 /**
