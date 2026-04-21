@@ -134,6 +134,7 @@ Late Chunkingは、テキスト全体をエンコーダに通した後にチャ�
 
 | コンポーネント | ファイル | 責務 |
 |---|---|---|
+| `XenovaTransformerEncoder` | `xenova-transformer-encoder.ts` | `IEncoder` の concrete 実装。transformers.js の tokenizer/model 呼び出しと例外分類を担当 |
 | `LateChunkingService` | `late-chunking-service.ts` | Late Chunking処理のオーケストレーション |
 | `TokenBoundaryCalculator` | `token-boundary-calculator.ts` | チャンク境界をトークン範囲に変換 |
 | `HiddenStatePooler` | `hidden-state-pooler.ts` | hidden stateのpooling（mean/max/cls） |
@@ -159,6 +160,8 @@ Late Chunkingは、テキスト全体をエンコーダに通した後にチャ�
 | `IHiddenStatePooler` | `late-chunking-interfaces.ts` | hidden state poolingの抽象 |
 | `IWindowSplitter` | `late-chunking-interfaces.ts` | ウィンドウ分割の抽象 |
 | `ILateChunkingService` | `late-chunking-interfaces.ts` | Late Chunkingサービスの公開インターフェース |
+
+`LateChunkingService` は `IEncoder` を DI で受け取る。標準実装は `new XenovaTransformerEncoder()` を注入する構成を想定する。
 
 ### Late Chunking エラークラス
 

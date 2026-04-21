@@ -208,6 +208,19 @@ Late Chunking設定型。
 | --- | --- | --- |
 | `encode` | `(text: string) => Promise<EncoderOutput>` | テキストをエンコードしhidden stateと位置マッピングを返す |
 
+### XenovaTransformerEncoder
+
+`IEncoder` の concrete 実装。`@xenova/transformers` を遅延 import し、`AutoTokenizer` / `AutoModel` を用いて `EncoderOutput` を組み立てる。
+
+| 項目 | 内容 |
+| --- | --- |
+| 実装場所 | `late-chunking/xenova-transformer-encoder.ts` |
+| デフォルトモデル | `Xenova/all-MiniLM-L6-v2` |
+| 依存 | `@xenova/transformers` |
+| 読み込み戦略 | 初回 `encode()` 時に tokenizer / model を1回だけロード |
+| 例外変換 | load / tokenize / infer の一般失敗は `EmbeddingError`、OOM は `OutOfMemoryError` |
+| 出力検査 | `last_hidden_state ?? hidden_states.at(-1)` を採用し、欠落時は `EmbeddingError` |
+
 ### ILateChunkingService
 
 Late Chunkingサービスの公開インターフェース。

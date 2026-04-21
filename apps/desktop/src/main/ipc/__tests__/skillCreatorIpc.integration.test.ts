@@ -618,6 +618,26 @@ describe("SkillCreator IPC Handlers", () => {
 
       expect(destroyedWindow.webContents.send).not.toHaveBeenCalled();
     });
+
+    it("planId / requestId を含む payload を送信できること", () => {
+      const progress = {
+        phase: "creating",
+        percentage: 50,
+        message: "スキル作成中...",
+        planId: "plan-123",
+        requestId: "req-456",
+      };
+
+      sendSkillCreatorProgress(
+        mockMainWindow as unknown as BrowserWindowType,
+        progress,
+      );
+
+      expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+        progress,
+      );
+    });
   });
 
   // ============================================
