@@ -157,9 +157,9 @@ node scripts/list-specs.js --topics
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
 | Late Chunking パイプライン拡張 | L125 |
-| 品質メトリクス | L185 |
-| 関連ドキュメント | L213 |
-| 変更履歴 | L221 |
+| 品質メトリクス | L217 |
+| 関連ドキュメント | L245 |
+| 変更履歴 | L253 |
 
 ### references/architecture-file-conversion.md
 
@@ -919,8 +919,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 変更履歴 | L8 |
 | 主要インターフェース | L19 |
-| エラーコード | L218 |
-| 性能指標 | L229 |
+| エラーコード | L227 |
+| 性能指標 | L238 |
 
 ### references/api-internal-search.md
 
@@ -3960,14 +3960,14 @@ node scripts/list-specs.js --topics
 | プロバイダーインターフェース | L13 |
 | データ型 | L37 |
 | 設定型 | L53 |
-| 出力型 | L93 |
-| 信頼性設定型 | L105 |
-| メトリクス型 | L135 |
-| Late Chunking 型定義（UNASSIGNED-EMB-005） | L147 |
-| エラー型 | L228 |
-| 列挙型 | L259 |
-| 品質メトリクス | L287 |
-| 関連ドキュメント | L295 |
+| 出力型 | L101 |
+| 信頼性設定型 | L125 |
+| メトリクス型 | L155 |
+| Late Chunking 型定義（UNASSIGNED-EMB-005） | L167 |
+| エラー型 | L261 |
+| 列挙型 | L292 |
+| 品質メトリクス | L320 |
+| 関連ドキュメント | L328 |
 
 ### references/llm-ipc-types.md
 
@@ -5187,6 +5187,12 @@ node scripts/list-specs.js --topics
 | TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L177 |
 | TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
 | TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
+
+### references/task-workflow-completed-recent-2026-04h.md
+
+| セクション | 行 |
+|------------|----|
+| UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

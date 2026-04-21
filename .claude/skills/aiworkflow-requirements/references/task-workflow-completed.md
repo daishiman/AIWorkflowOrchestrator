@@ -3388,3 +3388,32 @@ Wave C の state detail タスクは Phase 10〜12 が完了し、Phase 13 は�
 - 削除済みファイルの cleanup では、対象ファイルの存在確認を先に行うと残存参照スキャンを安全に進められる
 - 正本生成スクリプトは N/A 扱いにせず、存在確認と実行結果を分けて記録する
 - root parity は `diff -q` で証跡化し、存在確認だけで完了扱いにしない
+
+### タスク: TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Late Chunking EmbeddingPipeline・設定導線への正式統合（2026-04-20）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | NON_VISUAL / feature-integration / new |
+| 完了日 | 2026-04-20 |
+| 対象 | `packages/shared/src/services/embedding/pipeline/` |
+| workflow | `docs/30-workflows/TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001/` |
+
+#### 実施内容
+
+- `PipelineConfig.lateChunking` と `StageTimings.lateChunking` を正式統合
+- `EmbeddingPipeline.process()` に `lateChunking` progress 通知、Stage 3 skip semantics、`chunkId` 整列を追加
+- workflow root / Phase 12 成果物 / aiworkflow-requirements 正本 / mirror / completed ledger を同一 wave で同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm exec vitest run src/services/embedding/pipeline/__tests__/embedding-pipeline.integration.test.ts` | PASS（18 tests） |
+
+#### lessons-learned
+
+- service 単体仕様の更新だけで閉じず、pipeline 契約と workflow root まで同一 wave で同期する
+- Late Chunking の observability を `StageTimings` だけでなく `PipelineStage` にも反映する
