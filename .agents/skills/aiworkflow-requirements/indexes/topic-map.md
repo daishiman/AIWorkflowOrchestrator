@@ -77,7 +77,8 @@ node scripts/list-specs.js --topics
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
 | Phase 12 close-out 必須品質ゲート（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001） | L23 |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | L37 |
+| EVALS.json 構造検証ゲート（UNASSIGNED-EVALS-VALIDATOR-GUARD-001） | L37 |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | L48 |
 
 ---
 
@@ -2846,6 +2847,7 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
+| EVALS validator エラー分類（UNASSIGNED-EVALS-VALIDATOR-GUARD-001） | L22 |
 
 ### references/evals-schema-spec.md
 
@@ -2854,11 +2856,11 @@ node scripts/list-specs.js --topics
 | 1. 目的 | L9 |
 | 2. 標準スキーマ（camelCase v2 系） | L24 |
 | 3. 方言スキーマ（snake_case v1 系） | L49 |
-| 4. consumer 一覧 | L80 |
-| 5. schema 変更手順 | L102 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
-| 7. 既知の制約（validator=0 件） | L154 |
-| 8. 変更履歴 | L184 |
+| 4. consumer 一覧 | L138 |
+| 5. schema 変更手順 | L160 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L186 |
+| 7. 既知の制約（validator=1 件、ただし完全ではない） | L212 |
+| 8. 変更履歴 | L243 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -5179,14 +5181,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L3 |
-| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L41 |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L84 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L109 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L145 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L177 |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L624 |
-| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L664 |
+| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L3 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L29 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L48 |
+| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L86 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L129 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L154 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L190 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L222 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L669 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L709 |
 
 ### references/task-workflow-completed-recent-2026-04h.md
 
@@ -5318,13 +5322,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L547 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L567 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L569 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L581 |
-| 完了タスク（2026-03後半） | L609 |
-| 完了タスク（機能別アーカイブ） | L617 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L718 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L548 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L568 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L570 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L582 |
+| 完了タスク（2026-03後半） | L610 |
+| 完了タスク（機能別アーカイブ） | L618 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L719 |
 
 ### references/task-workflow-history.md
 
@@ -5358,9 +5362,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L32 |
-| 利用順序 | L61 |
-| 関連ドキュメント | L66 |
+| 仕様書インデックス | L33 |
+| 利用順序 | L62 |
+| 関連ドキュメント | L67 |
 
 ### references/testing-accessibility.md
 

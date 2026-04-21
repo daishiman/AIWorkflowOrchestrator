@@ -2856,11 +2856,11 @@ node scripts/list-specs.js --topics
 | 1. 目的 | L9 |
 | 2. 標準スキーマ（camelCase v2 系） | L24 |
 | 3. 方言スキーマ（snake_case v1 系） | L49 |
-| 4. consumer 一覧 | L80 |
-| 5. schema 変更手順 | L102 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
-| 7. 既知の制約（validator=1 件、ただし完全ではない） | L154 |
-| 8. 変更履歴 | L185 |
+| 4. consumer 一覧 | L138 |
+| 5. schema 変更手順 | L160 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L186 |
+| 7. 既知の制約（validator=1 件、ただし完全ではない） | L212 |
+| 8. 変更履歴 | L243 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
