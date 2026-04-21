@@ -3532,6 +3532,13 @@ node scripts/list-specs.js --topics
 | 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
 
+### references/lessons-learned-rally-002.md
+
+| セクション | 行 |
+|------------|----|
+| TASK-RALLY-002: restoredPendingRequest合成ルール明確化 (2026-04-21) | L6 |
+| 関連ドキュメント | L48 |
+
 ### references/lessons-learned-rt-04-authkey-dedup.md
 
 | セクション | 行 |
@@ -3952,8 +3959,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L52 |
-| 関連ドキュメント | L57 |
+| 利用順序 | L53 |
+| 関連ドキュメント | L58 |
 
 ### references/llm-embedding.md
 
@@ -5363,8 +5370,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L33 |
-| 利用順序 | L62 |
-| 関連ドキュメント | L67 |
+| TASK-RALLY-002: restoredPendingRequest合成ルール明確化（verify_existing / 2026-04-21） | L62 |
+| 利用順序 | L97 |
+| 関連ドキュメント | L102 |
 
 ### references/testing-accessibility.md
 
