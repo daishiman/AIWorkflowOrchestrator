@@ -1,5 +1,24 @@
 # 完了タスク台帳 — 2026-04 (g)
 
+## UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| ステータス | **spec_created（Phase 1-12 completed / Phase 13 blocked）** |
+| タイプ | docs-only / NON_VISUAL / close-out sync |
+| 完了日 | 2026-04-21 |
+| 対象 | `.claude/skills/skill-fixture-runner/` / `.claude/skills/aiworkflow-requirements/` / `docs/30-workflows/UNASSIGNED-EVALS-VALIDATOR-GUARD-001/` |
+| 成果物 | `outputs/phase-12/implementation-guide.md` / `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` |
+
+#### 実施内容
+
+- `validate-evals.js` を `--path <file-or-dir>` / strict pair validation / allowlist-only fixture exclusion へ是正
+- `validate-evals.test.js` の skip 2 件を実測テストへ置換
+- `evals-schema-spec.md` / `claude-code-overview.md` の validator=0 件記述を現況化
+- `quality-requirements.md` と `error-handling.md` に EVALS validator current facts を反映
+- workflow outputs / index / artifacts parity を close-out wave で同期
+
 ## TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19）
 
 | 項目       | 内容                                                                                                                                              |
