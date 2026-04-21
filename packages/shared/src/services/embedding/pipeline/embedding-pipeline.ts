@@ -10,6 +10,10 @@ import type { EmbeddingResult } from "../types/embedding.types";
 import type { EmbeddingService } from "../embedding-service";
 import type { EmbeddingBatchProcessor } from "../batch-processor";
 import type {
+  ChunkBoundary,
+  ChunkEmbeddingResult,
+} from "../late-chunking/late-chunking-types";
+import type {
   PipelineInput,
   PipelineConfig,
   PipelineOutput,
@@ -176,51 +180,67 @@ export class EmbeddingPipeline {
         elapsedTimeMs: Date.now() - startTime,
       });
 
-      // Stage 3: Embedding
+      // Stage 2.5: Late Chunking (optional)
+      const lateChunkingEmbeddings = await this.runLateChunkingStage(
+        chunks,
+        preprocessedText,
+        config,
+        stageTimings,
+        startTime,
+        onProgress,
+      );
+
+      // Stage 3: Embedding (Late Chunking有効時はスキップ)
       const embeddingStart = Date.now();
       const embeddings: EmbeddingResult[] = [];
-      const chunkTexts = chunks.map((c) => c.content);
 
-      try {
-        const embeddingResult = await this.embeddingService.embedBatch(
-          chunkTexts,
-          config.embedding.modelId,
-          {
-            ...config.embedding.batchOptions,
-            onProgress: (processed, total) => {
-              const embeddingProgress = 30 + (processed / total) * 40;
-              onProgress?.({
-                currentStage: "embedding",
-                progressPercentage: embeddingProgress,
-                chunksProcessed: processed,
-                totalChunks: total,
-                elapsedTimeMs: Date.now() - startTime,
-              });
+      if (lateChunkingEmbeddings !== null) {
+        embeddings.push(...lateChunkingEmbeddings);
+        stageTimings.embedding = 0;
+      } else {
+        const chunkTexts = chunks.map((c) => c.content);
+
+        try {
+          const embeddingResult = await this.embeddingService.embedBatch(
+            chunkTexts,
+            config.embedding.modelId,
+            {
+              ...config.embedding.batchOptions,
+              onProgress: (processed, total) => {
+                const embeddingProgress = 50 + (processed / total) * 20;
+                onProgress?.({
+                  currentStage: "embedding",
+                  progressPercentage: embeddingProgress,
+                  chunksProcessed: processed,
+                  totalChunks: total,
+                  elapsedTimeMs: Date.now() - startTime,
+                });
+              },
             },
-          },
-        );
+          );
 
-        embeddings.push(...embeddingResult.embeddings);
+          embeddings.push(...embeddingResult.embeddings);
 
-        // エラー情報を収集
-        if (embeddingResult.errors.length > 0) {
-          for (const err of embeddingResult.errors) {
-            errors.push({
-              stage: "embedding",
-              error: err.error,
-              chunkIndex: err.index,
-            });
+          // エラー情報を収集
+          if (embeddingResult.errors.length > 0) {
+            for (const err of embeddingResult.errors) {
+              errors.push({
+                stage: "embedding",
+                error: err.error,
+                chunkIndex: err.index,
+              });
+            }
           }
+        } catch (error) {
+          throw new EmbeddingStageError(
+            `Embedding failed: ${error instanceof Error ? error.message : String(error)}`,
+            undefined,
+            { cause: error },
+          );
         }
-      } catch (error) {
-        throw new EmbeddingStageError(
-          `Embedding failed: ${error instanceof Error ? error.message : String(error)}`,
-          undefined,
-          { cause: error },
-        );
-      }
 
-      stageTimings.embedding = Date.now() - embeddingStart;
+        stageTimings.embedding = Date.now() - embeddingStart;
+      }
 
       onProgress?.({
         currentStage: "embedding",
@@ -365,6 +385,114 @@ export class EmbeddingPipeline {
     await Promise.all(executing);
 
     return results;
+  }
+
+  /**
+   * Late Chunking Stage 2.5 実行
+   *
+   * @returns Late Chunking結果、または無効時はnull
+   */
+  private async runLateChunkingStage(
+    chunks: Chunk[],
+    preprocessedText: string,
+    config: PipelineConfig,
+    stageTimings: StageTimings,
+    startTime: number,
+    onProgress?: (progress: PipelineProgress) => void,
+  ): Promise<EmbeddingResult[] | null> {
+    if (config.lateChunking?.enabled !== true) {
+      return null;
+    }
+
+    this.validateLateChunkingConfig(config);
+
+    onProgress?.({
+      currentStage: "lateChunking",
+      progressPercentage: 50,
+      chunksProcessed: 0,
+      totalChunks: chunks.length,
+      elapsedTimeMs: Date.now() - startTime,
+    });
+
+    const lateChunkingStart = Date.now();
+
+    const boundaries: ChunkBoundary[] = chunks.map((chunk) => ({
+      startChar: chunk.position.start,
+      endChar: chunk.position.end,
+      chunkId: chunk.id,
+    }));
+
+    const results = await this.embeddingService.generateChunkEmbeddings(
+      preprocessedText,
+      boundaries,
+      {
+        poolingStrategy: config.lateChunking.poolingStrategy,
+        maxTokenLength: config.lateChunking.maxTokenLength,
+      },
+    );
+
+    stageTimings.lateChunking = Date.now() - lateChunkingStart;
+
+    onProgress?.({
+      currentStage: "lateChunking",
+      progressPercentage: 65,
+      chunksProcessed: chunks.length,
+      totalChunks: chunks.length,
+      elapsedTimeMs: Date.now() - startTime,
+    });
+
+    return this.convertLateChunkingToEmbeddingResults(chunks, results);
+  }
+
+  /**
+   * Late Chunking設定バリデーション
+   */
+  private validateLateChunkingConfig(config: PipelineConfig): void {
+    const lc = config.lateChunking;
+    if (!lc) return;
+
+    const validStrategies = ["mean", "max", "cls"];
+    if (lc.poolingStrategy && !validStrategies.includes(lc.poolingStrategy)) {
+      throw new PipelineError(
+        `Invalid poolingStrategy: ${lc.poolingStrategy}. Must be one of: ${validStrategies.join(", ")}`,
+      );
+    }
+
+    if (lc.maxTokenLength !== undefined && lc.maxTokenLength <= 0) {
+      throw new PipelineError(
+        `Invalid maxTokenLength: ${lc.maxTokenLength}. Must be positive.`,
+      );
+    }
+  }
+
+  /**
+   * ChunkEmbeddingResult[] → EmbeddingResult[] (chunkId順序でアライメント)
+   */
+  private convertLateChunkingToEmbeddingResults(
+    chunks: Chunk[],
+    results: ChunkEmbeddingResult[],
+  ): EmbeddingResult[] {
+    const resultMap = new Map<string, ChunkEmbeddingResult>(
+      results.map((r) => [r.chunkId, r]),
+    );
+
+    return chunks.map((chunk) => {
+      const result = resultMap.get(chunk.id);
+      if (!result) {
+        return {
+          embedding: [],
+          tokenCount: 0,
+          model: "late-chunking",
+          processingTimeMs: 0,
+        };
+      }
+      return {
+        embedding: result.embedding,
+        tokenCount: result.tokenCount,
+        model: "late-chunking",
+        processingTimeMs: 0,
+      };
+    });
   }
 
   /**

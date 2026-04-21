@@ -3,6 +3,28 @@
 ## 役割
 
 ## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
+## 2026-04-21 - TASK-SW-TODO-001 close-out sync
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-SW-TODO-001
+- タスク名: conversation-round-step-todo-cleanup
+- Phase: 1-12
+
+### 成果
+
+- テストカバレッジ: verify_existing / NON_VISUAL close-out 証跡を current template へ再整流
+- 実装内容:
+  - Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` へ統一
+  - `manual-test-result.md` に fixed phrase / 実施情報 / 仕様判断根拠 / 実行記録を集約
+  - Phase 12 compliance-check を Task 12-1〜12-6 / Step 1-A〜1-G / Step 2 まで拡張
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-04-21
+
 ## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
