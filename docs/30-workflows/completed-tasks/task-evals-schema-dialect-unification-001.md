@@ -10,11 +10,12 @@ category: 改善
 target_feature: EVALS writer / reader / fixture（skill-creator / aiworkflow-requirements / task-specification-creator / int-test-skill / github-issue-manager / skill-fixture-runner）
 priority: 高
 scale: 中規模
-status: 未実施
+status: completed
 source_phase: TASK-EVALS-CONSUMER-AUDIT-001 Phase 12
 created_date: 2026-04-19
+completed_date: 2026-04-21
 dependencies: [UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001]
-spec_path: docs/30-workflows/unassigned-task/task-evals-schema-dialect-unification-001.md
+spec_path: docs/30-workflows/UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001/index.md
 ```
 
 | 項目         | 内容                                                                                                                                                                   |
@@ -25,7 +26,7 @@ spec_path: docs/30-workflows/unassigned-task/task-evals-schema-dialect-unificati
 | 対象機能     | EVALS writer / reader / fixture（skill-creator / aiworkflow-requirements / task-specification-creator / int-test-skill / github-issue-manager / skill-fixture-runner） |
 | 優先度       | 高                                                                                                                                                                     |
 | 見積もり規模 | 中規模                                                                                                                                                                 |
-| ステータス   | 未実施                                                                                                                                                                 |
+| ステータス   | completed                                                                                                                                                              |
 | 発見元       | TASK-EVALS-CONSUMER-AUDIT-001 Phase 12                                                                                                                                 |
 | 発見日       | 2026-04-19                                                                                                                                                             |
 | 関連タスク   | UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001（先行）／ UNASSIGNED-SKILL-FIXTURE-RUNNER-EVALS-SCHEMA-VALIDATE-001（後続）                                           |
@@ -194,4 +195,19 @@ camelCase に統一する決定となった場合、test を修正せずに writ
 - [ ] 移行計画・検証ログ（`dialect-unification-decision.md` / `dialect-unification-verification.md`）が dual root 同期手順に準拠した形で記載されている。
 - [ ] 先行タスク UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 の成果を根拠として引用している。
 - [ ] 後続タスク UNASSIGNED-SKILL-FIXTURE-RUNNER-EVALS-SCHEMA-VALIDATE-001 への引き継ぎ事項（validator 実装スコープ / 優先フィールド）が PR 本文または `dialect-unification-verification.md` に記載されている。
-- [ ] typecheck / lint / 関連 test が通る。
+- [x] typecheck / lint / 関連 test が通る。
+
+---
+
+## 6. 完了記録
+
+| 項目            | 内容                                                                               |
+| --------------- | ---------------------------------------------------------------------------------- |
+| 完了日          | 2026-04-21                                                                         |
+| 採用方言        | snake_case v1                                                                      |
+| 更新スキル      | automation-30 / github-issue-manager / int-test-skill / task-specification-creator |
+| 対象ルート      | `.claude/skills/` + `.agents/skills/`（dual root bit-for-bit 同期）                |
+| 対応ブランチ    | `docs/task-spec-UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001`                   |
+| タスク仕様書    | `docs/30-workflows/UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001/index.md`       |
+| Phase 12 成果物 | `outputs/phase-12/` 配下の必須 6 ファイル（implementation-guide 他）               |
+| 後続タスク      | UNASSIGNED-SKILL-FIXTURE-RUNNER-EVALS-SCHEMA-VALIDATE-001（validator 実装）        |
