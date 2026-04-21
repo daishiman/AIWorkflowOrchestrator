@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3191,
+  "totalKeywords": 3259,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -143,6 +143,7 @@
       "ipc-4-layer-pattern.md",
       "ipc-type-resolution-guide.md",
       "legacy-ordinal-family-register.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -278,6 +279,7 @@
       "development-guidelines-history.md",
       "environment-variables.md",
       "error-handling-history.md",
+      "evals-schema-spec.md",
       "interfaces-agent-sdk-executor-history.md",
       "interfaces-agent-sdk-history-history-doc-links-changelog.md",
       "interfaces-agent-sdk-integration.md",
@@ -304,12 +306,14 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-04-cancel.md",
       "lessons-learned-current.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-preload-runtime-part-1.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-skill-creator-cancel-chain.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -462,6 +466,7 @@
       "interfaces-system-prompt.md",
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -716,6 +721,7 @@
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-skill-creator-cancel-chain.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -908,7 +914,8 @@
       "api-internal.md"
     ],
     "一覧": [
-      "api-internal.md"
+      "api-internal.md",
+      "evals-schema-spec.md"
     ],
     "の概要": [
       "api-internal.md"
@@ -1185,6 +1192,7 @@
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
@@ -1521,6 +1529,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-auth.md",
       "interfaces-skill-verify-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "security-electron-ipc-advanced.md",
       "ui-history-search-view.md",
       "ui-ux-navigation-chat-patterns.md"
@@ -1738,6 +1747,7 @@
     ],
     "GUARD": [
       "api-ipc-agent-core.md",
+      "error-handling-core.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
@@ -1758,6 +1768,7 @@
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "quality-requirements.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04e.md",
@@ -1821,6 +1832,7 @@
       "arch-state-management-reference-selectors.md",
       "arch-state-management-skill-creator.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -1842,6 +1854,7 @@
       "arch-state-management-reference-selectors.md",
       "arch-state-management-skill-creator.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -2064,6 +2077,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
+      "error-handling-core.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-skill-editor.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
@@ -2694,6 +2708,7 @@
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "ui-history-design.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
@@ -2702,6 +2717,23 @@
       "ui-ux-search-panel-details.md",
       "ui-ux-search-panel-history.md",
       "ui-ux-search-panel.md"
+    ],
+    "Handler": [
+      "api-ipc-system-core.md",
+      "api-ipc-system-skill-creator-part2.md",
+      "arch-ipc-persistence.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "security-skill-ipc-core.md"
+    ],
+    "Registration": [
+      "api-ipc-system-core.md",
+      "arch-ipc-persistence.md"
+    ],
+    "Testing": [
+      "api-ipc-system-core.md"
+    ],
+    "Contract": [
+      "api-ipc-system-core.md"
     ],
     "分割ファイル一覧": [
       "api-ipc-system-core.md",
@@ -2784,6 +2816,7 @@
       "arch-state-management-skill-creator.md",
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "architecture-implementation-patterns-shared.md",
+      "error-handling-core.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
@@ -2829,6 +2862,7 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "quality-requirements.md",
       "quick-reference-search-patterns-ipc-infra.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
       "security-api-electron.md",
@@ -2963,18 +2997,13 @@
       "lessons-learned-skill-cancel-abortsignal.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
       "security-electron-ipc-examples.md",
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
-    ],
-    "Handler": [
-      "api-ipc-system-skill-creator-part2.md",
-      "arch-ipc-persistence.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "security-skill-ipc-core.md"
     ],
     "Lifecycle": [
       "api-ipc-system-skill-creator-part2.md",
@@ -3365,6 +3394,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "lessons-learned-skill-wizard-redesign.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
@@ -3449,6 +3479,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "lessons-learned-verify-contract-consolidation.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -3561,9 +3592,6 @@
       "arch-feature-addition.md"
     ],
     "・永続化パターン": [
-      "arch-ipc-persistence.md"
-    ],
-    "Registration": [
       "arch-ipc-persistence.md"
     ],
     "Pattern": [
@@ -4015,6 +4043,7 @@
       "lessons-learned-ipc-preload-runtime-part-2.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-lifecycle-mid.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "lessons-learned-skill-wizard-llm-connection.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-test-typesafety.md",
@@ -4605,12 +4634,14 @@
     "Late": [
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md"
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "Chunking": [
       "architecture-embedding-pipeline.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md"
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "パイプライン拡張": [
       "architecture-embedding-pipeline.md"
@@ -4737,6 +4768,7 @@
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc-core.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "ui-ux-portal-patterns.md"
     ],
     "データフロー型ギャップパターン": [
@@ -4808,7 +4840,8 @@
     ],
     "既知の制約": [
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
-      "csrf-state-parameter.md"
+      "csrf-state-parameter.md",
+      "evals-schema-spec.md"
     ],
     "教訓": [
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
@@ -4833,6 +4866,7 @@
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-creator-tmpdir-fallback.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "lessons-learned-skill-wizard-notion-special-case-eliminate.md",
       "lessons-learned-skill-wizard-redesign.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
@@ -4890,6 +4924,7 @@
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
@@ -4917,10 +4952,12 @@
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "llm-embedding.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md"
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "SCOPE": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
@@ -5211,6 +5248,7 @@
       "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-04.md",
@@ -5253,6 +5291,7 @@
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "phase-12-documentation-retrospective.md",
+      "quality-requirements.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed.md",
@@ -5315,7 +5354,8 @@
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md"
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "logs-archive-policy.md"
     ],
     "品質基準": [
       "claude-code-agents-workflow.md",
@@ -5349,6 +5389,7 @@
       "claude-code-overview.md",
       "claude-code-skills-process.md",
       "interfaces-agent-sdk-executor-details.md",
+      "logs-archive-policy.md",
       "security-skill-execution-permission.md",
       "skill-executor-type-migration.md",
       "testing-accessibility.md",
@@ -5386,7 +5427,8 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "目的": [
-      "claude-code-skills-agents.md"
+      "claude-code-skills-agents.md",
+      "evals-schema-spec.md"
     ],
     "の位置づけ": [
       "claude-code-skills-agents.md"
@@ -5435,6 +5477,7 @@
     ],
     "docs": [
       "claude-code-skills-process.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "quick-reference.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
@@ -5509,6 +5552,7 @@
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logging-migration-guide.md",
+      "logs-archive-policy.md",
       "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -6014,6 +6058,42 @@
       "interfaces-agent-sdk-executor-core.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md"
     ],
+    "parity": [
+      "error-handling-core.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-current-2026-04.md",
+      "spec-guidelines.md"
+    ],
+    "guard": [
+      "error-handling-core.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "quick-reference-search-patterns-ipc-infra.md",
+      "task-workflow-completed-recent-2026-04g.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "WORKFLOW": [
+      "error-handling-core.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-recent.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "quality-requirements.md"
+    ],
+    "CLOSEOUT": [
+      "error-handling-core.md",
+      "lessons-learned-current-2026-04.md",
+      "quality-requirements.md"
+    ],
+    "PARITY": [
+      "error-handling-core.md",
+      "lessons-learned-current-2026-04.md",
+      "quality-requirements.md"
+    ],
     "TokenRefreshScheduler": [
       "error-handling-details.md"
     ],
@@ -6064,6 +6144,59 @@
     ],
     "エラーハンドリングの実装指針": [
       "error-handling-details.md"
+    ],
+    "EVALS": [
+      "evals-schema-spec.md",
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "json": [
+      "evals-schema-spec.md",
+      "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "スキーマ仕様": [
+      "evals-schema-spec.md"
+    ],
+    "標準スキーマ": [
+      "evals-schema-spec.md"
+    ],
+    "camelCase": [
+      "evals-schema-spec.md"
+    ],
+    "方言スキーマ": [
+      "evals-schema-spec.md"
+    ],
+    "snake": [
+      "evals-schema-spec.md"
+    ],
+    "case": [
+      "evals-schema-spec.md"
+    ],
+    "consumer": [
+      "evals-schema-spec.md"
+    ],
+    "schema": [
+      "evals-schema-spec.md"
+    ],
+    "変更手順": [
+      "evals-schema-spec.md"
+    ],
+    "qualityInsights": [
+      "evals-schema-spec.md"
+    ],
+    "拡張メトリクス": [
+      "evals-schema-spec.md"
+    ],
+    "writer": [
+      "evals-schema-spec.md"
+    ],
+    "手動メンテ": [
+      "evals-schema-spec.md"
+    ],
+    "validator": [
+      "evals-schema-spec.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
     "用語集": [
       "glossary.md"
@@ -6891,7 +7024,8 @@
       "ipc-contract-checklist.md"
     ],
     "背景": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
     ],
     "non": [
       "ipc-contract-checklist.md",
@@ -6993,7 +7127,8 @@
       "ipc-contract-checklist.md"
     ],
     "exit": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-evals-consumer-audit-001.md"
     ],
     "厳格モード": [
       "ipc-contract-checklist.md"
@@ -7112,6 +7247,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
@@ -7200,6 +7336,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-health-policy-worktree-2026-04.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-ipc-channel-whitelist-sync.md",
@@ -7758,6 +7895,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -8261,12 +8399,6 @@
     "engine": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
-    "WORKFLOW": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current-2026-04.md",
-      "lessons-learned-phase12-lifecycle-recent.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
     "ENGINE": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
@@ -8350,16 +8482,8 @@
       "lessons-learned-auth-settings-degradation-guard.md"
     ],
     "degradation": [
-      "lessons-learned-auth-settings-degradation-guard.md"
-    ],
-    "guard": [
       "lessons-learned-auth-settings-degradation-guard.md",
-      "lessons-learned-skill-creator-cancel-chain.md",
-      "quick-reference-search-patterns-ipc-infra.md",
-      "task-workflow-completed-recent-2026-04g.md",
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
     ],
     "APIKEY": [
       "lessons-learned-auth-settings-degradation-guard.md",
@@ -8389,6 +8513,42 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
+    "learned": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "canonical": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "spec-guidelines.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "mirror": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "spec-guidelines.md"
+    ],
+    "導入": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "苦戦した点と解決策": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "将来同様課題を解決するための原則": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
+    "関連成果物": [
+      "lessons-learned-canonical-mirror-parity-guard-2026-04.md"
+    ],
     "計測テンプレート": [
       "lessons-learned-ci-measurement-template-2026-04.md"
     ],
@@ -8406,10 +8566,6 @@
       "lessons-learned-ci-measurement-template-2026-04.md",
       "task-workflow-completed-agent-view-line-budget.md"
     ],
-    "json": [
-      "lessons-learned-ci-measurement-template-2026-04.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
     "jobs": [
       "lessons-learned-ci-measurement-template-2026-04.md"
     ],
@@ -8418,9 +8574,11 @@
     ],
     "vs": [
       "lessons-learned-ci-measurement-template-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-4layer-verification-2026-04.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "testing-component-patterns-core.md"
     ],
     "選択指針の事前記載": [
@@ -8619,6 +8777,7 @@
     "VISUAL": [
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "PICKER": [
@@ -8696,6 +8855,7 @@
     "NON": [
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "純粋関数タスクの": [
@@ -8867,6 +9027,23 @@
       "lessons-learned-skill-wizard-redesign.md",
       "workflow-onboarding-wizard-alignment.md"
     ],
+    "close": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md"
+    ],
+    "out": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "lessons-learned-skill-wizard-redesign.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed.md",
+      "task-workflow-phases.md"
+    ],
     "ON": [
       "lessons-learned-current-2026-04.md"
     ],
@@ -8989,6 +9166,7 @@
     "LOGS": [
       "lessons-learned-current-2026-04.md",
       "logs-archive-index.md",
+      "logs-archive-policy.md",
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "ARCHIVE": [
@@ -8996,6 +9174,16 @@
     ],
     "アーカイブポリシー文書化": [
       "lessons-learned-current-2026-04.md"
+    ],
+    "EMB": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-late-chunking-esbuild-worktree.md",
+      "llm-embedding.md",
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "XenovaTransformerEncoder": [
+      "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
@@ -9023,6 +9211,100 @@
     ],
     "カテゴリ別検索ガイド": [
       "lessons-learned-current.md"
+    ],
+    "CONSUMER": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "正本": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "coverage": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+    ],
+    "発見過程": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "必須": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "成果物の区別": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "監査タスク": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "再解釈": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "screenshot": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+    ],
+    "不要": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "dual": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "root": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "lessons-learned-workflow-quality-line-budget-reform.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "bit": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "for": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "一致の検証コマンド": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "一致確認": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "差分ゼロなら": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "出力なし": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "差分を可視化": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "fingerprint": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "を付与して監査証跡化": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "だけを個別に比較": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "drift": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
+    ],
+    "を早期発見": [
+      "lessons-learned-evals-consumer-audit-001.md"
+    ],
+    "only": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "quick-reference.md"
+    ],
+    "タスクの": [
+      "lessons-learned-evals-consumer-audit-001.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "ステータス採用根拠": [
+      "lessons-learned-evals-consumer-audit-001.md"
     ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
@@ -9090,9 +9372,6 @@
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-ai-runtime-execution-responsibility-realignment.md",
       "workflow-task-rt-06-artifact-inventory.md"
-    ],
-    "タスクの": [
-      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "formalize": [
       "lessons-learned-governance-hooks-phase-policy.md",
@@ -9426,10 +9705,6 @@
       "lessons-learned-ipc-preload-runtime-part-3.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "EMB": [
-      "lessons-learned-late-chunking-esbuild-worktree.md",
-      "llm-embedding.md"
-    ],
     "教訓サマリー": [
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-rag-embedding-runtime.md"
@@ -9460,19 +9735,6 @@
     "HARNESS": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "ui-ux-panels.md"
-    ],
-    "close": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed.md"
-    ],
-    "out": [
-      "lessons-learned-phase12-lifecycle-early-b.md",
-      "lessons-learned-skill-wizard-redesign.md",
-      "task-workflow-completed-recent-2026-04d.md",
-      "task-workflow-completed.md",
-      "task-workflow-phases.md"
     ],
     "ESBUILD": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -9684,11 +9946,13 @@
       "lessons-learned-rt-04-authkey-dedup.md"
     ],
     "stub": [
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
     ],
     "error": [
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-creator-cancel-chain.md",
+      "lessons-learned-skill-docs-runtime-ipc-contract.md",
       "quick-reference-search-patterns-ipc-infra.md"
     ],
     "notification": [
@@ -9993,17 +10257,6 @@
       "lessons-learned-skill-create-multi-select-kind.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
-    "canonical": [
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-chat-llm-integration-fix.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
     "へ同期する": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
@@ -10065,11 +10318,6 @@
     ],
     "として見せない": [
       "lessons-learned-skill-creator-cancel-chain.md"
-    ],
-    "screenshot": [
-      "lessons-learned-skill-creator-cancel-chain.md",
-      "lessons-learned-ui-ux-visual-baseline-drift.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
     ],
     "を明記する": [
       "lessons-learned-skill-creator-cancel-chain.md"
@@ -10158,6 +10406,27 @@
     ],
     "generateSkillMd": [
       "lessons-learned-skill-creator-tmpdir-fallback.md"
+    ],
+    "SkillDocGenerator": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "プロバイダ連携・": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "本番置換パターン": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "AbortError": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "graceful": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "LLMDocQueryAdapter": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
+    ],
+    "強化": [
+      "lessons-learned-skill-docs-runtime-ipc-contract.md"
     ],
     "executeSkill": [
       "lessons-learned-skill-execute-hook-migration.md"
@@ -10260,6 +10529,7 @@
     ],
     "filter": [
       "lessons-learned-skill-remove-contract.md",
+      "lessons-learned-stream-001-progress-callback.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "ui-ux-atoms-patterns-core.md"
@@ -10612,6 +10882,12 @@
     "より抽出": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
+    "by": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
+    "planId": [
+      "lessons-learned-stream-001-progress-callback.md"
+    ],
     "後続タスク・未タスク": [
       "lessons-learned-stream-001-progress-callback.md"
     ],
@@ -10868,11 +11144,6 @@
       "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "workflow-ui-ux-visual-baseline-drift.md"
     ],
-    "drift": [
-      "lessons-learned-ui-ux-visual-baseline-drift.md",
-      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
-      "workflow-ui-ux-visual-baseline-drift.md"
-    ],
     "dark": [
       "lessons-learned-ui-ux-visual-baseline-drift.md"
     ],
@@ -11050,10 +11321,6 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "task-workflow-completed-agent-view-line-budget.md"
-    ],
-    "root": [
-      "lessons-learned-workflow-quality-line-budget-reform.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "evidence": [
       "lessons-learned-workflow-quality-line-budget-reform.md"
@@ -11501,6 +11768,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "logs-archive-index.md",
       "logs-archive-legacy.md",
+      "logs-archive-policy.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
     ],
     "DEP": [
@@ -12671,9 +12939,6 @@
     "ユーザー再依頼": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
-    "dual": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
     "へ登録": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -12698,9 +12963,6 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "再監査で責務証跡と": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
-    "mirror": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "抽出を強化": [
@@ -12842,13 +13104,6 @@
     "証跡正規化": [
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
-    "coverage": [
-      "logs-archive-2026-03-notification-history-sigterm-guard.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
-    ],
-    "validator": [
-      "logs-archive-2026-03-notification-history-sigterm-guard.md"
-    ],
     "fail": [
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
@@ -12890,10 +13145,6 @@
     ],
     "責務分離の仕様固定": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
-    "learned": [
-      "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "task-workflow-completed-recent-2026-04g.md"
     ],
     "再監査と仕様同期": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
@@ -13049,6 +13300,27 @@
     ],
     "変更履歴アーカイブ": [
       "logs-archive-legacy.md"
+    ],
+    "アーカイブポリシー": [
+      "logs-archive-policy.md"
+    ],
+    "適用範囲": [
+      "logs-archive-policy.md"
+    ],
+    "アーカイブ閾値": [
+      "logs-archive-policy.md"
+    ],
+    "先パス規則": [
+      "logs-archive-policy.md"
+    ],
+    "アーカイブ手順": [
+      "logs-archive-policy.md"
+    ],
+    "運用ルール": [
+      "logs-archive-policy.md"
+    ],
+    "CHANGELOG": [
+      "logs-archive-policy.md"
     ],
     "統合システム設計仕様書": [
       "master-design.md"
@@ -13216,6 +13488,9 @@
     "可用性": [
       "quality-requirements-details.md"
     ],
+    "必須品質ゲート": [
+      "quality-requirements.md"
+    ],
     "検索パターン集": [
       "quick-reference-search-patterns-code.md",
       "quick-reference-search-patterns-ipc-infra.md",
@@ -13340,9 +13615,6 @@
       "quick-reference.md"
     ],
     "型定義クイックアクセス": [
-      "quick-reference.md"
-    ],
-    "only": [
       "quick-reference.md"
     ],
     "チャンネル早見表": [
@@ -13883,6 +14155,29 @@
     "設定に基づいて分割": [
       "spec-guidelines.md"
     ],
+    "Canonical": [
+      "spec-guidelines.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
+    ],
+    "Mirror": [
+      "spec-guidelines.md"
+    ],
+    "原則": [
+      "spec-guidelines.md"
+    ],
+    "差分を確認": [
+      "spec-guidelines.md"
+    ],
+    "に再同期": [
+      "spec-guidelines.md"
+    ],
+    "OK": [
+      "spec-guidelines.md"
+    ],
+    "を再確認": [
+      "spec-guidelines.md"
+    ],
     "仕様書分割ガイドライン": [
       "spec-splitting-guidelines.md"
     ],
@@ -14109,7 +14404,8 @@
       "task-workflow-completed-recent-2026-04e.md"
     ],
     "完了タスク台帳": [
-      "task-workflow-completed-recent-2026-04g.md"
+      "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
@@ -14152,6 +14448,9 @@
     ],
     "wide": [
       "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "IEncoder": [
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"
@@ -15552,10 +15851,6 @@
     ],
     "現行": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "Canonical": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Set": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
