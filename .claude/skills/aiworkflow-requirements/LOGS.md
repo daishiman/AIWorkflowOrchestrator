@@ -31,6 +31,13 @@
 - **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
   - 削除待ち前提を current fact に合わせて完了済み手順へ是正
 
+## 2026-04-21: TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- improve-prompt 実処理化、frontmatter 保全、post-improve bootstrap 除外を current facts として反映
+- workflow `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` / `artifacts.json` completed 同期を記録
+- `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を follow-up として登録
+
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
