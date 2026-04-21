@@ -157,9 +157,9 @@ node scripts/list-specs.js --topics
 | 信頼性機能 | L70 |
 | パフォーマンス最適化 | L98 |
 | Late Chunking パイプライン拡張 | L125 |
-| 品質メトリクス | L188 |
-| 関連ドキュメント | L216 |
-| 変更履歴 | L224 |
+| 品質メトリクス | L202 |
+| 関連ドキュメント | L230 |
+| 変更履歴 | L238 |
 
 ### references/architecture-file-conversion.md
 

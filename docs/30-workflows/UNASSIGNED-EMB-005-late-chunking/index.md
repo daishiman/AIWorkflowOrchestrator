@@ -29,8 +29,11 @@ issue_number: null
 ## 依然として残る本体スコープ
 
 - token-level hidden state を返す provider / service 契約の追加
-- `packages/shared/src/services/embedding/late-chunking/` への責務分離
 - `EmbeddingPipeline` / schema / 設定導線への正式統合
+
+## 派生して完了したタスク
+
+- `TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001`: `ChunkingService` から `ChunkingLateChunkingAdapter` を抽出し、`packages/shared/src/services/embedding/late-chunking/` へ責務分離を完了（2026-04-20）
 
 ## 成果物
 
