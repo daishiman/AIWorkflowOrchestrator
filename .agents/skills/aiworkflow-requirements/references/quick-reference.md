@@ -811,12 +811,21 @@ await skillCreatorService.createSkill(validatedArgs, (progress) => {
 - FUP-02: progress phase/percentage/message 定数化（Low）
 - FUP-03: mode 別 progress 詳細化（Medium）
 
+### payload tracking contract（TASK-SC-08-FUP-02 / 2026-04-20）
+
+- payload に `planId?: string` / `requestId?: string` を付与し、受信側 `useStreamingProgress(options.planId)` が両 ID 存在時のみ mismatch を skip する（legacy payload は後方互換で受け入れ）
+- 正本契約: `references/api-ipc-system-skill-creator.md`（`skill-creator:progress` payload tracking contract セクション）
+- 詳細教訓: `references/lessons-learned-stream-001-progress-callback.md`（L-STREAM-FUP-05）
+- 未タスク: `docs/30-workflows/unassigned-task/TASK-SC-08-FUP-03-PAYLOAD-PLANID-REQUIRED.md`（planId required 化）/ `TASK-SC-08-FUP-04-PROGRESS-FILTER-HORIZONTAL.md`（水平展開）
+
 ### 参照先
 
 | 目的 | 参照先 |
 | --- | --- |
 | API 仕様 | `references/api-ipc-system-core.md`（SkillCreatorService progressコールバック IPC 仕様 セクション） |
+| payload tracking 契約 | `references/api-ipc-system-skill-creator.md`（`skill-creator:progress` payload tracking contract セクション） |
 | 型定義 | `references/interfaces-agent-sdk-skill-reference.md`（SkillCreatorProgressData セクション） |
 | 詳細教訓 | `references/lessons-learned-stream-001-progress-callback.md` |
 | 実装 | `apps/desktop/src/main/services/skill/SkillCreatorService.ts` |
 | IPC | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` |
+| 受信フック | `apps/desktop/src/renderer/hooks/useStreamingProgress.ts` |
