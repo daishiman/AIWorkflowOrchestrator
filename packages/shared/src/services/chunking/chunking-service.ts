@@ -362,6 +362,26 @@ export class ChunkingService {
   }
 
   /**
+   * Late Chunkingをクライアント指定で直接適用する（テスト・外部利用向け公開API）
+   */
+  async applyLateChunking(
+    client: IEmbeddingClient,
+    text: string,
+    chunks: Chunk[],
+    options?: Partial<LateChunkingOptions>,
+  ): Promise<Chunk[]> {
+    const adapter = new ChunkingLateChunkingAdapter(this.tokenizer, client);
+    const resolvedOptions: LateChunkingOptions = {
+      enabled: true,
+      embeddingModel: "",
+      chunkBoundaries: "token",
+      maxSequenceLength: options?.maxSequenceLength ?? 512,
+      poolingStrategy: options?.poolingStrategy ?? "mean",
+    };
+    return adapter.applyLateChunking(text, chunks, resolvedOptions);
+  }
+
+  /**
    * Late Chunkingを適用する（ChunkingLateChunkingAdapterへ委譲）
    */
   private async applyLateChunkingInternal(
