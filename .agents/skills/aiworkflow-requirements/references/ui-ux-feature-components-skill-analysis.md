@@ -281,7 +281,9 @@ Phase 11 は 9 枚のスクリーンショットと DevTools audit PASS で完�
 
 ## ConversationRoundStep 主ツールバッジ（UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 / completed）
 
-UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 で `ConversationRoundStep` の Q5 に「主ツール」バッジを追加し、複数ツール選択時の先頭選択項目を視覚的に明示した。Phase 1-12 を完了。
+UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001 で `ConversationRoundStep` の Q5 に「主ツール」バッジを追加し、複数ツール選択時の先頭選択項目を視覚的に明示した。これは 2026-04-13 時点の historical contract であり、2026-04-15 の `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` 完了後に current 実装からは削除済み。
+
+> current fact: `ConversationRoundStep.tsx` に `MAIN_TOOL_BADGE_ENABLED` / `shouldShowMainToolBadge()` / 主ツールバッジ JSX は存在しない。以下は再利用用の historical pattern として保持する。
 
 ### 実装コンポーネント
 

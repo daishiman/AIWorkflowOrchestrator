@@ -321,7 +321,7 @@ export const SkillCreateWizard = React.forwardRef<
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
-  const { cancelGeneration } = useCancelGeneration();
+  const { cancelGeneration, startGeneration } = useCancelGeneration();
   const workflowSnapshot = useWorkflowSnapshot();
   const clearGenerationState = useClearGenerationState();
   const resetStreamingProgress = useResetStreamingProgress();
@@ -464,6 +464,7 @@ export const SkillCreateWizard = React.forwardRef<
     trackEvent("skill_wizard_step_complete", { step: 1, stepName: STEPS[1] });
 
     generationLockRef.current = true;
+    startGeneration();
     invalidateGenerationRequests();
     const requestId = generationRequestIdRef.current;
     const defaults = smartDefaults ?? inferSmartDefaults(formData);
@@ -550,8 +551,8 @@ export const SkillCreateWizard = React.forwardRef<
   };
 
   /** 生成をキャンセルして Step 0 に戻る */
-  const handleCancelGeneration = () => {
-    cancelGeneration();
+  const handleCancelGeneration = async () => {
+    await cancelGeneration();
     resetGeneratedState(true);
     goToStep(0);
   };

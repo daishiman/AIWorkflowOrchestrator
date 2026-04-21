@@ -3,6 +3,7 @@
 > 区分: 教訓記録（lessons-learned）
 > タスクID: UT-SKILL-WIZARD-MSO-MAIN-TOOL-UI-001
 > 完了日: 2026-04-13
+> 注記: 2026-04-15 に `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` が完了し、`MAIN_TOOL_BADGE_ENABLED` / `shouldShowMainToolBadge()` / 主ツールバッジ JSX は current 実装から削除済み。以下は historical pattern として参照する。
 
 ---
 
@@ -68,7 +69,7 @@ function shouldShowMainToolBadge(
 
 ### Pattern 3: NON_VISUAL タスクでのバッジ削除手順
 
-将来 `UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` 完了後にバッジ削除が必要な場合:
+`UT-SKILL-WIZARD-MSO-RESOLVE-EXTERNAL-001` 完了時に実施したバッジ削除手順:
 
 1. `shouldShowMainToolBadge` 関数と `MAIN_TOOL_BADGE_ENABLED` 定数を削除
 2. `aria-describedby` を含むバッジ JSX を削除

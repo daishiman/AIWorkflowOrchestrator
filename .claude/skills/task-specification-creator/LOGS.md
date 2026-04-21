@@ -2,6 +2,29 @@
 
 ## 役割
 
+## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
+## 2026-04-21 - TASK-SW-TODO-001 close-out sync
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-SW-TODO-001
+- タスク名: conversation-round-step-todo-cleanup
+- Phase: 1-12
+
+### 成果
+
+- テストカバレッジ: verify_existing / NON_VISUAL close-out 証跡を current template へ再整流
+- 実装内容:
+  - Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` へ統一
+  - `manual-test-result.md` に fixed phrase / 実施情報 / 仕様判断根拠 / 実行記録を集約
+  - Phase 12 compliance-check を Task 12-1〜12-6 / Step 1-A〜1-G / Step 2 まで拡張
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-04-21
+
 ## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -58,22 +81,17 @@
 
 ### 変更内容
 
-UT-LIFECYCLE-PANEL-AUTH-REGRESSION-COVERAGE-REALIGN-001 Phase 12 の skill-feedback-report に記載された2件の改善提案を反映した。
+TASK-SW-CANCEL-004 Phase 12 の skill-feedback-report に記載された改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| UT-LIFECYCLE-FB-1 | NON_VISUAL 判定時に `artifacts.json`（ルート）と `outputs/artifacts.json` の2ファイル両方の同期を必須化 | `references/phase-template-phase12.md` に新セクション追加 |
-| UT-LIFECYCLE-FB-2 | Phase 11 canonical ファイル名 `manual-test-result.md` と補助命名 `{TASK-ID}-manual-test-report.md` の優先順位を明文化 | `references/phase-template-phase11.md` に新サブセクション追加 |
-
-### 追加パターン
-
-auth:login 非発火回帰テストの rapid click / rerender パターンを `references/patterns-ui-type-auth.md` に追記した。
+| 指摘ID          | 内容                                                                                                        | 反映先                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| FB-CANCEL-004-1 | `AbortSignal` のような partial fix 契約ズレを Phase 10 で residual issue として格下げするテンプレートを追記 | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
+| FB-CANCEL-004-2 | `unassigned-task-detection.md` に関連済みタスク差分確認欄を設けて重複起票を防ぐ方針を追記                   | `SKILL.md` Phase 12よくある漏れテーブル末尾 |
 
 ### 変更ファイル
 
-- `references/phase-template-phase12.md`: NON_VISUAL artifacts.json 2ファイル同期セクションを追加
-- `references/phase-template-phase11.md`: canonical ファイル名優先順位サブセクションを追加
-- `references/patterns-ui-type-auth.md`: auth:login 非発火回帰テストパターンを追加
+- `.claude/skills/task-specification-creator/SKILL.md`: よくある漏れテーブルに FB-CANCEL-004-1/2 を追記
+- `.agents/skills/task-specification-creator/SKILL.md`: 同上（mirror 同期）
 
 ## 2026-04-19 - TASK-SW-CANCEL-003 フィードバック反映
 
@@ -81,11 +99,11 @@ auth:login 非発火回帰テストの rapid click / rerender パターンを `r
 
 TASK-SW-CANCEL-003 Phase 12 の skill-feedback-report に記載された3件の改善提案を反映した。
 
-| 指摘ID | 内容 | 反映先 |
-| --- | --- | --- |
-| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示 | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加 |
+| 指摘ID          | 内容                                                                                                                                                   | 反映先                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| CANCEL-003-FB-1 | `implementation_mode` の2種類（`new` / `verify_existing`）を明示                                                                                       | `SKILL.md` P50チェック配下（行105〜115付近）に定義テーブルを追加                    |
 | CANCEL-003-FB-2 | `NON_VISUAL + verify_existing` 組み合わせ時の Phase 11 primary evidence を `outputs/phase-11/{TASK-ID}-manual-test-report.md` に設定するロジックを追加 | `references/phase-template-phase12.md` 末尾（関連ガイドの直前）に新セクションを追加 |
-| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加 | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加 |
+| CANCEL-003-FB-3 | chain task の `scope` セクションに chain における位置と完了定義を明記するフィールドを追加                                                              | `references/phase-template-core.md` Phase 1 セクションに新サブセクションを追加      |
 
 ### 変更ファイル
 
@@ -3264,3 +3282,45 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | `docs/30-workflows/TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001/`（artifacts.json parity・Phase 12 outputs）、`LOGS.md`（本エントリ）                  |
 | 結果     | NON_VISUAL 再分類・artifacts.json parity・mandatory 5 tasks の Phase 12 実行完了。差分確認型 NON_VISUAL code task パターンをスキル知見として記録 |
 | 検証     | vitest PASS / typecheck PASS / lint PASS（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）                                                               |
+## 2026-04-20 — TASK-SC-08-FUP-02 NON_VISUAL close-out note
+
+- NON_VISUAL code task の Phase 11/12 close-out では `PASS 予定` を避け、`PASS` / `BLOCKED` / `NOT RUN` を分離して記録する必要がある
+- Phase 11 証跡は未実施計画ではなく、少なくとも grep / typecheck / lint など実測済み項目を一次ソースへ反映する
+
+## 2026-04-20 - TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
+
+### 変更内容
+
+- 親タスク `TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001` Phase 12 close-out の repo-wide 波及を follow-up タスク `TASK-SC-CANCEL-LOGS-SYNC-001` として分離・実施
+- 本 LOGS への追記（AC-1）、`aiworkflow-requirements/LOGS.md` への追記（AC-2）、canonical spec（`task-workflow-active.md` → `task-workflow-completed-recent-2026-04g.md`）への移動（AC-3）、`lessons-learned-current-2026-04.md` への 3 知見追加（AC-4）、親 `index.md` Phase 12 完了宣言（AC-5）を Lane A/B/C 並列で完了
+- NON_VISUAL タスクの代替証跡として TC-01〜TC-05 grep スナップショットを `outputs/phase-11/grep-snapshots/` に取得
+
+### 背景
+
+親タスク Phase 12 は branch 内 close-out で完結したが、`.claude/skills/` 配下の両 LOGS および canonical spec への波及が漏れており、Issue #2313 で同期漏れ 6 項目のうち 5 項目として報告されていた。本タスクは scope を「repo-wide sync wave」に限定し、コード変更なしの docs-sync として Lane 並列で 5 ファイル群を一括同期。NON_VISUAL / scope 境界 / repo-wide sync wave の 3 知見を lessons-learned へ定着させた。
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-sync / repo-wide sync wave / follow-up close-out / skill-sync                                                                                    |
+| 変更対象 | 本 `LOGS.md`、`aiworkflow-requirements/LOGS.md`、`references/task-workflow-active.md`、`references/task-workflow-completed-recent-2026-04g.md`、`references/lessons-learned-current-2026-04.md`、親 `index.md`（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001） |
+| 結果     | AC-1〜AC-5 all PASS。Lane A/B/C 並列実行で 5 ファイル群同期完了。3 知見（NON_VISUAL 代替証跡 / scope 境界 / repo-wide sync）を lessons-learned に h3 独立エントリとして定着 |
+| 検証     | TC-01〜TC-05 grep 全件 PASS（`outputs/phase-11/grep-snapshots/` 参照）/ Markdown lint PASS / 日付 2026-04-20 統一確認                                               |
+
+## 2026-04-20 - TASK-SC-CANCEL-LOGS-SYNC-001 Phase 12 self-close-out
+
+### 変更内容
+
+- 本タスク `TASK-SC-CANCEL-LOGS-SYNC-001` 自体の Phase 1-12 完了を self-close-out として本 LOGS に記録
+- Phase 12 mandatory 5 tasks（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）+ 追加 1 タスク（phase12-task-spec-compliance-check）all PASS
+- Phase 13（PR 作成）は user 承認待ちで blocked、commit / push は実施しない
+
+### 背景
+
+親タスク close-out 波及を完了した本 follow-up タスク自身も、トラッカーとして自己の完了を両 LOGS に記録することで self-close-out を成立させ、親→本タスクの追跡性を双方向で閉じる。phase-templates.md の Phase 1-13 骨格・artifact-naming-conventions の `outputs/phase-N/` 規約・4 条件 + 30 思考法レビューの各テンプレートに準拠。Phase 12 成果物 6 点は `docs/30-workflows/TASK-SC-CANCEL-LOGS-SYNC-001/outputs/phase-12/` に配置。
+
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / docs-sync / self-close-out / phase-12-compliance                                                                                                      |
+| 変更対象 | 本 `LOGS.md`（self-close-out エントリ）、`aiworkflow-requirements/LOGS.md`（同エントリ）                                                                            |
+| 結果     | Phase 12 mandatory 5 tasks all PASS、task-spec-creator テンプレート準拠、artifacts.json parity 一致、self-close-out 完了、Phase 13 blocked 宣言                    |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / 全 Phase 1-12 成果物 parity PASS / 3 知見（L-SC-CANCEL-NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 |
