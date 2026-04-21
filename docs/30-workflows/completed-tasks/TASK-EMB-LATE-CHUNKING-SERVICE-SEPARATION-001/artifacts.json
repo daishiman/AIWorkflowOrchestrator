@@ -1,0 +1,97 @@
+{
+  "taskId": "TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001",
+  "featureName": "emb-late-chunking-service-separation",
+  "createdDate": "2026-04-20",
+  "status": "completed",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/method-inventory.md",
+        "outputs/phase-1/artifact-canonical-list.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/solution-design.md",
+        "outputs/phase-2/constructor-signature.md",
+        "outputs/phase-2/validation-path.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/solution-elegance-review.md",
+        "outputs/phase-3/review-prompt.txt"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-scenarios.md",
+        "outputs/phase-4/command-expectations.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-diff-check.md",
+        "outputs/phase-5/patch-plan.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/regression-expansion-plan.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactor-decision-log.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-gate-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/evidence-collection.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "reason": "user approval required",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  }
+}

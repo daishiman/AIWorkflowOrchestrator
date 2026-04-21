@@ -214,7 +214,11 @@
       "Bash(mv /tmp/.claude-skills.bak .claude/skills)",
       "Bash(mv .agents/skills /tmp/.agents-skills.bak)",
       "Bash(mv /tmp/.agents-skills.bak .agents/skills)",
-      "Bash(pnpm --version)"
+      "Bash(pnpm --version)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.claude/skills/skill-fixture-runner/scripts/validate-evals.js /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.agents/skills/skill-fixture-runner/scripts/validate-evals.js)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.claude/skills/skill-fixture-runner/scripts/validate-skill-structure.js /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.agents/skills/skill-fixture-runner/scripts/validate-skill-structure.js)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.claude/skills/skill-fixture-runner/scripts/run-all-validations.js /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.agents/skills/skill-fixture-runner/scripts/run-all-validations.js)",
+      "Bash(cp /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.claude/skills/skill-fixture-runner/scripts/__tests__/validate-evals.test.js /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260421-093230-wt-6/.agents/skills/skill-fixture-runner/scripts/__tests__/validate-evals.test.js)"
     ],
     "deny": [],
     "ask": []

@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-04-21: UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync
+
+- **操作**: EVALS validator current facts 反映
+- **結果**: success
+- **変更内容**:
+  - `validate-evals.js` を正式 validator として追加
+  - `run-all-validations.js` に EVALS 検証統合
+  - `--path <file-or-dir>` / `--strict` / `--verbose` 契約を確定
+  - fixture 除外を allowlist-only に修正
+  - `validate-evals.test.js` の skip 2件を実測テストへ置換
+  - SKILL.md に CLI 契約・変更履歴を追記
+
 ## 2026-02-01: skill-creator準拠リファクタリング
 
 - **操作**: update (skill-creator standards optimization)

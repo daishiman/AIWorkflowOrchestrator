@@ -816,3 +816,41 @@ packages/
 - 複合フィールド（1,15 / 1-15）はStage 3対象外
 
 教訓: `references/lessons-learned-current-2026-04.md` → L-CRON-SV-001〜003
+
+---
+
+### Late Chunking Token Provider（TASK-EMB-LATE-CHUNKING-TOKEN-PROVIDER-001）[2026-04-21 完了]
+
+**概要:** `IEmbeddingClient.getTokenEmbeddings?()` オプショナル契約の追加と、`ChunkingService` でのプロバイダー優先 / フォールバック分岐実装
+
+| 観点 | 詳細 |
+| --- | --- |
+| `TokenEmbeddingsResult` 型定義場所 | `packages/shared/src/services/chunking/types.ts` |
+| `IEmbeddingClient.getTokenEmbeddings?` 追加場所 | `packages/shared/src/services/chunking/interfaces.ts` |
+| `MockTokenEmbeddingClient` 実装パス | `packages/shared/src/services/embedding/providers/mock-token-embedding-provider.ts` |
+| フォールバック動作 | `getTokenEmbeddings` 未実装の場合、`embed()` + スペース分割複製で近似 |
+| 不変条件 | `tokens.length === embeddings.length`（違反時 `ChunkingError`） |
+| 統合テスト | `packages/shared/src/services/chunking/__tests__/chunking-service.integration.test.ts` |
+| 教訓（L-EMBTOK-001〜005） | `references/lessons-learned-late-chunking-token-provider.md` |
+| 未タスク候補 | `REAL_PROVIDER_TOKEN_EMBEDDINGS_SUPPORT` / `LATE_CHUNKING_SPEC_RECONCILIATION` |
+
+#### TokenEmbeddingsResult 型
+
+```typescript
+// packages/shared/src/services/chunking/types.ts
+export interface TokenEmbeddingsResult {
+  tokens: string[];       // トークン文字列の配列
+  embeddings: number[][]; // 各トークンの埋め込みベクトル（tokens と同じ長さ）
+}
+```
+
+#### IEmbeddingClient オプショナル契約
+
+```typescript
+// packages/shared/src/services/chunking/interfaces.ts
+export interface IEmbeddingClient {
+  embed(text: string): Promise<number[]>;
+  embedBatch(texts: string[]): Promise<number[][]>;
+  getTokenEmbeddings?(text: string): Promise<TokenEmbeddingsResult>; // オプショナル
+}
+```

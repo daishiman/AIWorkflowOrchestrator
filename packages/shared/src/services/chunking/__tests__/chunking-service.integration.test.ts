@@ -4,8 +4,9 @@
  * @description Contextual EmbeddingsとLate Chunkingの統合テスト
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ChunkingService } from "../chunking-service";
+import { ChunkingLateChunkingAdapter } from "../../embedding/late-chunking/chunking-late-chunking-adapter";
 import { ValidationError, ChunkingError } from "../errors";
 import {
   MockTokenizer,
@@ -504,6 +505,99 @@ describe("ChunkingService Integration Tests", () => {
   });
 
   // ===========================================================================
+  // Late Chunking - 委譲確認 (SEP-08 / SEP-09)
+  // ===========================================================================
+
+  describe("Late Chunking - 委譲確認", () => {
+    it("SEP-08: lateChunking.enabled=true のとき Adapter.applyLateChunking に委譲する", async () => {
+      // Arrange
+      const mockAdapter = new ChunkingLateChunkingAdapter(
+        tokenizer,
+        embeddingClient,
+      );
+      const applySpy = vi
+        .spyOn(mockAdapter, "applyLateChunking")
+        .mockImplementation(async (_text, chunks) => chunks);
+
+      service = new ChunkingService(
+        tokenizer,
+        embeddingClient,
+        llmClient,
+        mockAdapter,
+      );
+
+      const input: ChunkingInput = {
+        text: "Delegation test content for late chunking.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+        advanced: {
+          lateChunking: {
+            enabled: true,
+            maxSequenceLength: 512,
+            poolingStrategy: "mean",
+          },
+        },
+      };
+
+      // Act
+      await service.chunk(input);
+
+      // Assert
+      expect(applySpy).toHaveBeenCalledTimes(1);
+      const [delegatedText, delegatedChunks, delegatedOptions] =
+        applySpy.mock.calls[0];
+      expect(delegatedText).toBe(input.text);
+      expect(Array.isArray(delegatedChunks)).toBe(true);
+      expect(delegatedChunks.length).toBeGreaterThan(0);
+      expect(delegatedOptions).toEqual(input.advanced?.lateChunking);
+    });
+
+    it("SEP-09: lateChunking.enabled=false のとき Adapter.applyLateChunking は呼ばれない", async () => {
+      // Arrange
+      const mockAdapter = new ChunkingLateChunkingAdapter(
+        tokenizer,
+        embeddingClient,
+      );
+      const applySpy = vi
+        .spyOn(mockAdapter, "applyLateChunking")
+        .mockImplementation(async (_text, chunks) => chunks);
+
+      service = new ChunkingService(
+        tokenizer,
+        embeddingClient,
+        llmClient,
+        mockAdapter,
+      );
+
+      const inputDisabled: ChunkingInput = {
+        text: "No delegation expected.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+        advanced: {
+          lateChunking: {
+            enabled: false,
+            maxSequenceLength: 512,
+            poolingStrategy: "mean",
+          },
+        },
+      };
+
+      const inputUndefined: ChunkingInput = {
+        text: "No delegation expected either.",
+        strategy: "fixed",
+        options: { chunkSize: 10 },
+      };
+
+      // Act
+      await service.chunk(inputDisabled);
+      await service.chunk(inputUndefined);
+
+      // Assert
+      expect(applySpy).not.toHaveBeenCalled();
+    });
+  });
+
+  // ===========================================================================
   // ChunkingService - その他の機能
   // ===========================================================================
 
@@ -606,6 +700,245 @@ describe("ChunkingService Integration Tests", () => {
       // 警告のテストケースを正しく設定する必要があるが、
       // 現在の実装では150%超過チャンクを作るのが難しい
       expect(result.warnings).toBeUndefined();
+    });
+  });
+
+  // ===========================================================================
+  // Late Chunking with token-level embeddings
+  // TASK-EMB-LATE-CHUNKING-TOKEN-PROVIDER-001 テストID: TP-01〜TP-05
+  // ===========================================================================
+
+  describe("Late Chunking with token-level embeddings", () => {
+    describe("TP-01: getTokenEmbeddings を持つクライアントで Late Chunking 適用", () => {
+      it("embed() が呼ばれず getTokenEmbeddings() が呼ばれる", async () => {
+        // Arrange
+        const mockEmbed = vi.fn();
+        const mockGetTokenEmbeddings = vi.fn().mockResolvedValue({
+          tokens: ["Hello", "world"],
+          embeddings: [
+            [0.1, 0.2, 0.3],
+            [0.4, 0.5, 0.6],
+          ],
+        });
+        const client = {
+          embed: mockEmbed,
+          embedBatch: vi.fn(),
+          getTokenEmbeddings: mockGetTokenEmbeddings,
+        };
+        const text = "Hello world";
+        const chunks = [
+          { start: 0, end: 5 },
+          { start: 6, end: 11 },
+        ];
+
+        // Act
+        await service.applyLateChunking(client, text, chunks);
+
+        // Assert
+        expect(mockGetTokenEmbeddings).toHaveBeenCalledOnce();
+        expect(mockEmbed).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("TP-02: getTokenEmbeddings を持たないクライアントはフォールバック", () => {
+      it("embed() がフォールバックとして呼ばれる", async () => {
+        // Arrange
+        const mockEmbed = vi.fn().mockResolvedValue([0.1, 0.2, 0.3]);
+        const client = {
+          embed: mockEmbed,
+          embedBatch: vi.fn(),
+        };
+        const text = "Hello world";
+        const chunks = [{ start: 0, end: 5 }];
+
+        // Act
+        const result = await service.applyLateChunking(client, text, chunks);
+
+        // Assert
+        expect(mockEmbed).toHaveBeenCalled();
+        expect(result).toHaveLength(chunks.length);
+        expect(result[0]?.vector).toEqual([0.1, 0.2, 0.3]);
+      });
+    });
+
+    describe("TP-03: MockTokenEmbeddingClient の型整合性", () => {
+      it("tokens.length === embeddings.length で型エラーなし", async () => {
+        // Arrange
+        const { MockTokenEmbeddingClient } =
+          await import("../../embedding/providers/mock-token-embedding-provider");
+        const client = new MockTokenEmbeddingClient();
+        const text = "foo bar baz";
+
+        // Act
+        const result = await client.getTokenEmbeddings(text);
+
+        // Assert
+        expect(result.tokens.length).toBe(result.embeddings.length);
+      });
+    });
+
+    describe("TP-04: チャンク境界とトークン隠れ状態の対応確認", () => {
+      it("各チャンクに異なるベクトルが割り当てられる", async () => {
+        // Arrange
+        const { MockTokenEmbeddingClient } =
+          await import("../../embedding/providers/mock-token-embedding-provider");
+        const client = new MockTokenEmbeddingClient();
+        const text = "chunk one. chunk two.";
+        const chunks = [
+          { start: 0, end: 10 },
+          { start: 11, end: 20 },
+        ];
+
+        // Act
+        const result = await service.applyLateChunking(client, text, chunks);
+
+        // Assert
+        expect(result).toHaveLength(2);
+        expect(result[0].vector).not.toEqual(result[1].vector);
+      });
+    });
+
+    describe("TP-05: TokenEmbeddingsResult の lengths 不一致エラー", () => {
+      it("tokens と embeddings の長さが不一致のとき ChunkingError がスローされる", async () => {
+        // Arrange
+        const mockGetTokenEmbeddings = vi.fn().mockResolvedValue({
+          tokens: ["a", "b", "c"],
+          embeddings: [[0.1], [0.2]],
+        });
+        const client = {
+          embed: vi.fn(),
+          embedBatch: vi.fn(),
+          getTokenEmbeddings: mockGetTokenEmbeddings,
+        };
+        const text = "a b c";
+        const chunks = [{ start: 0, end: 5 }];
+
+        // Act & Assert
+        await expect(
+          service.applyLateChunking(client, text, chunks),
+        ).rejects.toThrow(ChunkingError);
+      });
+    });
+
+    describe("長文テキスト（maxSequenceLength 超過）での Late Chunking 動作", () => {
+      it("長文テキストでも各チャンクにベクトルが割り当てられる", async () => {
+        const { MockTokenEmbeddingClient } =
+          await import("../../embedding/providers/mock-token-embedding-provider");
+        const client = new MockTokenEmbeddingClient();
+        const longText = Array.from(
+          { length: 100 },
+          (_, i) => `token${i}`,
+        ).join(" ");
+        const chunks = [
+          { start: 0, end: Math.floor(longText.length / 2) },
+          { start: Math.floor(longText.length / 2) + 1, end: longText.length },
+        ];
+
+        const result = await service.applyLateChunking(
+          client,
+          longText,
+          chunks,
+        );
+
+        expect(result).toHaveLength(2);
+        result.forEach((chunkResult) => {
+          expect(chunkResult.vector).toBeDefined();
+          expect(chunkResult.vector.length).toBeGreaterThan(0);
+        });
+      });
+    });
+
+    describe("セグメント内ローカルトークン位置とグローバルトークン位置の変換", () => {
+      it("チャンク境界のグローバルオフセットが正しくマッピングされる", async () => {
+        const { MockTokenEmbeddingClient } =
+          await import("../../embedding/providers/mock-token-embedding-provider");
+        const client = new MockTokenEmbeddingClient();
+        const text = "aa bb cc dd";
+        const chunks = [
+          { start: 0, end: 5 },
+          { start: 6, end: 11 },
+        ];
+
+        const result = await service.applyLateChunking(client, text, chunks);
+
+        expect(result).toHaveLength(2);
+        expect(result[0].vector).not.toEqual(result[1].vector);
+        expect(result[0].vector).toBeDefined();
+        expect(result[1].vector).toBeDefined();
+      });
+    });
+
+    describe("chunk() 本流での token provider 分岐", () => {
+      it("getTokenEmbeddings 実装がある場合は本流で優先使用される", async () => {
+        const mockEmbed = vi.fn().mockResolvedValue([9, 9, 9]);
+        const mockGetTokenEmbeddings = vi.fn().mockResolvedValue({
+          tokens: ["a", "b", "c", "d", "e", "f"],
+          embeddings: [
+            [1, 0, 0],
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+            [0, 0, 1],
+          ],
+        });
+        const localService = new ChunkingService(tokenizer, {
+          embed: mockEmbed,
+          embedBatch: vi.fn(),
+          getTokenEmbeddings: mockGetTokenEmbeddings,
+        });
+
+        const result = await localService.chunk({
+          text: "abcdef",
+          strategy: "fixed",
+          options: { chunkSize: 2 },
+          advanced: {
+            lateChunking: {
+              enabled: true,
+              boundaryType: "token",
+              poolingStrategy: "mean",
+              maxSequenceLength: 8,
+            },
+          },
+        });
+
+        expect(mockGetTokenEmbeddings).toHaveBeenCalledOnce();
+        expect(mockEmbed).not.toHaveBeenCalled();
+        expect(result.chunks.length).toBeGreaterThan(1);
+        result.chunks.forEach((chunk) => {
+          expect(chunk.metadata.lateChunking?.applied).toBe(true);
+          expect(chunk.metadata.lateChunking?.embeddingDimension).toBe(3);
+        });
+      });
+
+      it("getTokenEmbeddings 未実装でも chunk 数と metadata が維持される", async () => {
+        const mockEmbed = vi.fn().mockResolvedValue([0.5, 0.5, 0.5]);
+        const localService = new ChunkingService(tokenizer, {
+          embed: mockEmbed,
+          embedBatch: vi.fn(),
+        });
+
+        const result = await localService.chunk({
+          text: "alpha beta gamma",
+          strategy: "fixed",
+          options: { chunkSize: 5 },
+          advanced: {
+            lateChunking: {
+              enabled: true,
+              boundaryType: "token",
+              poolingStrategy: "mean",
+              maxSequenceLength: 16,
+            },
+          },
+        });
+
+        expect(mockEmbed).toHaveBeenCalledOnce();
+        expect(result.chunks.length).toBeGreaterThan(1);
+        result.chunks.forEach((chunk) => {
+          expect(chunk.metadata.lateChunking?.applied).toBe(true);
+          expect(chunk.metadata.lateChunking?.embeddingDimension).toBe(3);
+        });
+      });
     });
   });
 

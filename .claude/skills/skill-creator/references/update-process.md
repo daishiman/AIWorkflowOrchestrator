@@ -241,3 +241,27 @@ node scripts/validate_all.js .claude/skills/my-skill
 - authority injection・shared auth mode service・decision vocabulary・reason source of truth のいずれかを composition root で変更した場合も internal hardening とみなし、Step 2 / lessons / skill feedback を更新する。
 - handler / consumer テストの期待値は実体 enum と同じ語彙へ合わせ、`integrated_api` / `terminal_handoff` のような canonical vocabulary と reason source 単一化を summary に残す。
 - Phase 12 root evidence を手編集した後は `rg "\\*\\*\\* Add File:|\\*\\*\\* Begin Patch|\\*\\*\\* End Patch"` で patch marker 混入を監査し、artifact existence だけで false green にしない。
+
+---
+
+## 既知制約: update モードとアプリ runtime 実装の乖離（TASK-SC-CREATOR-UPDATE-IMPL-001, 2026-04-21）
+
+### 問題
+
+このドキュメント（update-process.md）は `update` モードを「差分適用ベース」として定義しているが、`SkillCreatorService.runUpdateWorkflow()` の実際の実装は以下の制約を持つ:
+
+| 項目 | 正本（このドキュメント） | app runtime の実態 |
+| ---- | ---------------------- | ------------------- |
+| 更新方式 | `apply_updates.js` で差分適用 | `StructurePlanJson` 返却後は create と同じ再初期化フロー |
+| 既存内容の保持 | anchors / references / agents / body を保持 | `purpose` のみ読込・保持（その他は再生成） |
+| 差分更新契約 | 明示的な差分更新 | 未実装（新規生成寄り共通処理を共有） |
+
+### 影響
+
+- このスキルを正本として読むエージェントと、app runtime の期待動作がずれる
+- update 系タスクの設計時に、差分保持を前提とした実装が成立しない
+
+### 対応方針
+
+是正タスク `TASK-SC-UPDATE-MODE-DIFF-SEMANTICS-001`（`docs/30-workflows/unassigned-task/`）として formalize 済み。  
+このドキュメントの update フロー定義は「目標仕様」として維持し、app runtime との乖離は上記タスクで解消する。

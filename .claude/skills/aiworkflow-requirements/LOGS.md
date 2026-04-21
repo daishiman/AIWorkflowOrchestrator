@@ -32,6 +32,23 @@
 - **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
   - 削除待ち前提を current fact に合わせて完了済み手順へ是正
 
+## 2026-04-21: TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
+- improve-prompt 実処理化、frontmatter 保全、post-improve bootstrap 除外を current facts として反映
+- workflow `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` / `artifacts.json` completed 同期を記録
+- `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を follow-up として登録
+
+## 2026-04-21: UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| 操作 | update-spec / close-out sync |
+| 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
+
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -205,6 +222,15 @@
 - `references/api-internal-embedding.md`: `EmbeddingService.generateChunkEmbeddings()` APIドキュメントを追加（シグネチャ・入力・出力・エラーケース・設定例）
 - `references/lessons-learned-late-chunking-esbuild-worktree.md`: 新規作成（L-LC-01: esbuildバ���ナリバージョン不一致 / L-LC-02: IEncoderモック雛型をPhase 2設計書に含める）
 - `indexes/resource-map.md`: Late Chunking / Embedding タスク種別エントリを追加（HybridRAGFactory wiring 行の後）
+
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 system spec sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスク | `TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001` |
+| 概要 | `ChunkingService` から `ChunkingLateChunkingAdapter` への委譲抽出を正本仕様へ反映 |
+| 更新 | `references/architecture-embedding-pipeline.md` に component 行追加、`indexes/topic-map.md` 再生成 |
+| 補足 | 既存 token-level `LateChunkingService` は温存し、2 系統の責務境界を明示 |
 
 ---
 
@@ -3162,6 +3188,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
 
+## 2026-04-20: TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 仕様反映
+
+| 項目 | 内容 |
+|-----|------|
+| タスク | TASK-EMB-LATE-CHUNKING-SERVICE-SEPARATION-001 |
+| 操作 | spec-reflection / Phase-12完了後の正本仕様同期 |
+| 変更対象 | architecture-embedding-pipeline.md（Adapter命名由来追記）、resource-map.md（Late Chunking Adapterエントリ追加）、topic-map.md（埋め込みセクション追加）、05-architecture.md（ドメインサービス分層パターン追記） |
+| 結果 | success |
+| 備考 | ChunkingService→ChunkingLateChunkingAdapter委譲抽出完了。Adapter命名はtoken-level LateChunkingServiceとの衝突回避のため。 |
+
 ## 2026-04-20 — UNASSIGNED-EMB-005-A XenovaTransformerEncoder Phase 12 close-out sync
 
 - `references/llm-embedding.md`: `IEncoder` concrete 実装として `XenovaTransformerEncoder` を追加
@@ -3231,3 +3267,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`docs/30-workflows/wave0-par-RALLY-001/`、本 `LOGS.md`、`task-specification-creator/LOGS.md`、`references/task-workflow-completed-recent-2026-04h.md` |
 | 結果     | AC-1〜AC-5 + AC-2b all PASS。dead code 3グループ除去完了。system spec は no-op（公開 API 変更なし）。Phase 13 blocked（user approval 待ち） |
 | 検証     | vitest PASS / typecheck PASS / lint PASS / Phase 12 compliance PASS                                                                        |
+
+## 2026-04-20 — TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Phase 12 close-out sync
+
+- `references/llm-embedding.md` に `PipelineConfig.lateChunking` / `StageTimings.lateChunking` / `PipelineStage.lateChunking` を追記
+- `references/api-internal-embedding.md` に `EmbeddingPipeline.process()` の Late Chunking 分岐、progress、skip semantics を追記
+- `references/architecture-embedding-pipeline.md` に Stage 2.5 と `chunkId` 整列責務を追記
+- `references/task-workflow-completed.md` に close-out エントリを追記
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | NON_VISUAL / feature-integration / phase12 close-out |
+| 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
+| 結果 | Late Chunking pipeline integration の正本同期完了 |
+| 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |
