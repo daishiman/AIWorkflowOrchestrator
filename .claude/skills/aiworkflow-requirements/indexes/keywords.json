@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3266,
+  "totalKeywords": 3273,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1506,6 +1506,7 @@
       "quality-e2e-testing.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-recent-2026-04d.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
@@ -1750,6 +1751,7 @@
     "GUARD": [
       "api-ipc-agent-core.md",
       "error-handling-core.md",
+      "error-handling.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-2026-04-schedule-feedback.md",
       "lessons-learned-current-2026-04.md",
@@ -1774,6 +1776,7 @@
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04e.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "ui-ux-feature-components-theme-chat.md"
     ],
     "スキルファイル操作": [
@@ -4957,12 +4960,15 @@
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
+      "error-handling.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current-2026-04.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "llm-embedding.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
     "SCOPE": [
@@ -6044,7 +6050,8 @@
       "error-handling.md"
     ],
     "エラー分類": [
-      "error-handling-core.md"
+      "error-handling-core.md",
+      "error-handling.md"
     ],
     "認可エラー": [
       "error-handling-core.md"
@@ -6152,20 +6159,41 @@
       "error-handling-details.md"
     ],
     "EVALS": [
+      "error-handling.md",
       "evals-schema-spec.md",
-      "lessons-learned-evals-consumer-audit-001.md"
+      "lessons-learned-evals-consumer-audit-001.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "validator": [
+      "error-handling.md",
+      "evals-schema-spec.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md"
+    ],
+    "VALIDATOR": [
+      "error-handling.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "json": [
       "evals-schema-spec.md",
       "lessons-learned-ci-measurement-template-2026-04.md",
       "lessons-learned-evals-consumer-audit-001.md",
+      "quality-requirements.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "スキーマ仕様": [
       "evals-schema-spec.md"
     ],
-    "標準スキーマ": [
-      "evals-schema-spec.md"
+    "Legacy": [
+      "evals-schema-spec.md",
+      "legacy-ordinal-family-register.md"
+    ],
+    "スキーマ": [
+      "evals-schema-spec.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "camelCase": [
       "evals-schema-spec.md"
@@ -6200,9 +6228,8 @@
     "手動メンテ": [
       "evals-schema-spec.md"
     ],
-    "validator": [
-      "evals-schema-spec.md",
-      "logs-archive-2026-03-notification-history-sigterm-guard.md"
+    "ただし完全ではない": [
+      "evals-schema-spec.md"
     ],
     "用語集": [
       "glossary.md"
@@ -6463,7 +6490,8 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "quick-reference.md"
+      "quick-reference.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
@@ -6811,9 +6839,6 @@
       "interfaces-rag-entity-extraction.md",
       "rag-knowledge-graph.md",
       "security-input-validation.md"
-    ],
-    "スキーマ": [
-      "interfaces-rag-entity-extraction.md"
     ],
     "エンティティタイプ": [
       "interfaces-rag-entity-extraction.md"
@@ -7177,9 +7202,6 @@
     ],
     "適用実績": [
       "ipc-type-resolution-guide.md"
-    ],
-    "Legacy": [
-      "legacy-ordinal-family-register.md"
     ],
     "Ordinal": [
       "legacy-ordinal-family-register.md"
@@ -9637,6 +9659,7 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-viewtype-electron-ui.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-agent-execution-core.md",
@@ -12779,9 +12802,6 @@
     "CARD": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
-    "VALIDATOR": [
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
-    ],
     "起票同期": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -13048,7 +13068,8 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "improve": [
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
@@ -13523,6 +13544,9 @@
       "quality-requirements-details.md"
     ],
     "必須品質ゲート": [
+      "quality-requirements.md"
+    ],
+    "構造検証ゲート": [
       "quality-requirements.md"
     ],
     "検索パターン集": [
@@ -14441,6 +14465,28 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
+    "PROMPT": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "IMPL": [
+      "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-ut-06-safety-gate.md"
+    ],
+    "prompt": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "実処理実装": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "fixture": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "runner": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "スキーマ検証追加": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14613,9 +14659,6 @@
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
     "gate": [
-      "task-workflow-completed-ut-06-safety-gate.md"
-    ],
-    "IMPL": [
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
     "evaluateSafety": [

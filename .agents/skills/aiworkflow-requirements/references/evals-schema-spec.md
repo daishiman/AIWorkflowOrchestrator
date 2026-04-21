@@ -21,9 +21,11 @@
 
 ---
 
-## 2. 標準スキーマ（camelCase v2 系）
+## 2. Legacy スキーマ（camelCase v2 系）
 
-v2 系は `skill-creator` / `task-specification-creator` などの新規スキルで採用されている。
+> **注意**: camelCase v2 系は 2026-04-21 の方言統一（UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001）により **legacy** となった。新規 writer は snake_case v1 系（§3）を使用すること。
+
+v2 系はかつて `task-specification-creator` / `int-test-skill` / `github-issue-manager` / `automation-30` で採用されていたが、現在は全スキルが snake_case v1 系に統一済み。
 
 | フィールド                       | 型        | 意味                                       | 主 writer                  | 主 reader                            |
 | -------------------------------- | --------- | ------------------------------------------ | -------------------------- | ------------------------------------ |
@@ -62,13 +64,14 @@ v2 系は `skill-creator` / `task-specification-creator` などの新規スキ�
 | `levelHistory`            | `levels`                                | 配列構造                    |
 | -                         | `metrics.average_satisfaction`          | v1 固有（v2 に対応フィールドなし） |
 
-### 3.1 どちらが正本か
+### 3.1 正本方言（2026-04-21 確定）
 
-本ファイルでは**断定しない**。理由:
+**snake_case v1 が正本方言**。UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001（Phase 1-12 完了）で統一実施済み。
 
-1. dual root 正本断定禁止方針（`design-docs/phase-2-scope-architecture.md` §3.1）
-2. 方言統一は複数スキルの同時 schema migration が必要で、別タスクで取り扱う
-3. 統一候補は未タスク `UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001` で追跡中（`docs/30-workflows/unassigned-task/task-evals-schema-dialect-unification-001.md`）
+- 全スキルの EVALS.json（`.claude/skills/` + `.agents/skills/`）が snake_case v1 に統一された
+- camelCase v2 系は **legacy 方言**として本ファイルでのみ参照（既存 consumer への後方互換記録目的）
+- 統一実施記録: `docs/30-workflows/completed-tasks/task-evals-schema-dialect-unification-001.md`
+- タスク仕様書: `docs/30-workflows/UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001/index.md`
 
 ### 3.2 方言検出・移行時の注意点
 
@@ -186,5 +189,6 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 
 | Date       | 変更内容                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-21 | UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001 Phase 1-12 完了に伴う更新。§2 を legacy スキーマに改訂、§3.1 を snake_case v1 正本確定に更新。全スキル EVALS.json（`.claude/skills/` + `.agents/skills/`）が snake_case v1 に統一済み。 |
 | 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-19 | 初版作成。TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 Task 2 `system-spec-update-summary.md` §4.1.1 / §4.2.1 / §4.3.1 のドラフトを正本化。camelCase v2 / snake_case v1 / qualityInsights / validator=0 件 を明示。 |
