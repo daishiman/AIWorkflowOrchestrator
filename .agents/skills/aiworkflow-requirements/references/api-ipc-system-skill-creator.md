@@ -42,6 +42,22 @@
 
 `skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。current fact として、ack 受理後に Renderer は `getWorkflowState` を再読込し、`handoffBundle` または `verifyResult.status === "fail"` の snapshot を UI エラーとして扱う（adapter guard failure は `recordExecuteAdapterFailure()` で review-ready snapshot を先に保存する）。この ack 後再読込は `SkillCreateWizard` の failure handling の正本であり、`executeAsync()` の message 伝搬統一は別 follow-up として切り出す。
 
+### `skill-creator:progress` payload tracking contract（TASK-SC-08-FUP-02 / 2026-04-20）
+
+`skill-creator:progress` は createSkill 系 progress の push channel として維持し、payload に追跡用 ID を含める。
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `phase` | `string` | 必須 | progress phase |
+| `percentage` | `number` | 必須 | 進捗率 |
+| `message` | `string` | 必須 | 表示メッセージ |
+| `planId` | `string` | 任意 | どの createSkill 実行に属する progress かを識別する ID |
+| `requestId` | `string` | 任意 | 同一 progress wave の request 単位 ID |
+
+- 後方互換: `planId` / `requestId` 未設定の legacy payload は受信側で受け入れる
+- 受信契約: `useStreamingProgress(options.planId)` は `options.planId` と `progress.planId` が両方ある場合のみ mismatch を skip する
+- 範囲: runtime `execute-plan` の正本進捗は引き続き `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay が担う
+
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。
@@ -108,6 +124,28 @@
 - `IPC_CHANNELS.SKILL_CREATOR_CANCEL` は spread で自動伝播するため、下流コードは追加参照不要
 - cancel 由来の AbortError は UI failure として表示しない（agentSlice / SkillCreateWizard で抑制）
 - UI/UX 変更なし（Phase 11 スクリーンショット N/A）
+
+#### TASK-SW-CANCEL-004 renderer hook 追加実装（2026-04-20）
+
+TASK-SW-CANCEL-004（p04-seq-CANCEL-004）で `useCancelGeneration.ts` が既実装であることを正規化し、以下のテストを追加した。
+
+| テストケース | 内容 |
+| --- | --- |
+| skillCreatorAPI未定義でもcancelledを維持 | `window.skillCreatorAPI = undefined` → optional chain `?.cancelGeneration?.()` で graceful fail。エラー伝播なし |
+| IPC cancelGenerationがrejectしてもcancelledを維持 | try/catch でエラーを握りつぶし、`setStage('cancelled')` を先行させる |
+
+**renderer hook contract（useCancelGeneration.ts 確定動作）**:
+
+| ステップ | 動作 |
+| --- | --- |
+| 1. abort ref clear | `abortControllerRef.current` をリセット |
+| 2. setStage('cancelled') | renderer state を先行更新 |
+| 3. IPC await | `window.skillCreatorAPI?.cancelGeneration?.()` を呼び出し（optional chain 2段）|
+| 4. catch swallow | IPC reject を握りつぶし、cancelled state を維持する |
+
+**optional chain 2段設計**: `window.skillCreatorAPI?.cancelGeneration?.()` により、API namespace 未定義と method 未定義の両方をカバーする Undefined guard として機能する。
+
+**実装モード**: `verify_existing`（useCancelGeneration.ts は既実装。Phase 4/5 は差分確認として再利用）
 
 #### Preload APIに新規チャネルを追加する際の必須手順（3点セット）
 

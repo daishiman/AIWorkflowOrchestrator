@@ -218,7 +218,7 @@ describe("SKILL_CREATOR_CREATE ハンドラー - onProgress コールバック�
 
       expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-        planningProgress,
+        expect.objectContaining(planningProgress),
       );
     });
   });
@@ -249,7 +249,7 @@ describe("SKILL_CREATOR_CREATE ハンドラー - onProgress コールバック�
 
       expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-        doneProgress,
+        expect.objectContaining(doneProgress),
       );
     });
 
@@ -279,12 +279,12 @@ describe("SKILL_CREATOR_CREATE ハンドラー - onProgress コールバック�
       expect(mockMainWindow.webContents.send).toHaveBeenNthCalledWith(
         1,
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-        progressEvents[0],
+        expect.objectContaining(progressEvents[0]),
       );
       expect(mockMainWindow.webContents.send).toHaveBeenNthCalledWith(
         3,
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
-        progressEvents[2],
+        expect.objectContaining(progressEvents[2]),
       );
     });
   });

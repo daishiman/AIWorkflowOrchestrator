@@ -61,7 +61,10 @@ vi.mock("../../../hooks/useStreamingProgress", () => ({
 }));
 
 vi.mock("../../../hooks/useCancelGeneration", () => ({
-  useCancelGeneration: () => ({ cancelGeneration: vi.fn() }),
+  useCancelGeneration: () => ({
+    cancelGeneration: vi.fn(),
+    startGeneration: vi.fn(),
+  }),
 }));
 
 function renderWizard(

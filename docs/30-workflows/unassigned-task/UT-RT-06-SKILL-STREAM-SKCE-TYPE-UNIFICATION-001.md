@@ -1,5 +1,11 @@
 # 未タスク指示書: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001
 
+## メタ情報
+
+```yaml
+issue_number: 2370
+```
+
 | 項目       | 値                                                                       |
 | ---------- | ------------------------------------------------------------------------ |
 | タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                          |

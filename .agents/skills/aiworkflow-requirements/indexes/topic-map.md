@@ -76,8 +76,7 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
-| Phase 12 close-out 必須品質ゲート（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001） | L23 |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | L37 |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | L23 |
 
 ---
 
@@ -1044,7 +1043,8 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L236 |
 | Conversation IPC API（会話履歴永続化） | L280 |
 | Electron IPC API設計 | L316 |
-| 分割ファイル一覧 | L461 |
+| IPC Handler Registration Testing Contract | L461 |
+| 分割ファイル一覧 | L510 |
 
 ### references/api-ipc-system-details.md
 
@@ -2023,8 +2023,8 @@ node scripts/list-specs.js --topics
 | 用語定義 | L190 |
 | 参照 | L205 |
 | クイックリファレンス | L245 |
-| 変更履歴 | L282 |
-| ドキュメント構成 | L303 |
+| 変更履歴 | L285 |
+| ドキュメント構成 | L306 |
 
 ### references/claude-code-skills-agents.md
 
@@ -2813,7 +2813,6 @@ node scripts/list-specs.js --topics
 | 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L259 |
 | リトライ戦略 | L303 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L367 |
-| parity guard エラー分類（UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001） | L404 |
 
 ### references/error-handling-details.md
 
@@ -2845,6 +2844,19 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
+
+### references/evals-schema-spec.md
+
+| セクション | 行 |
+|------------|----|
+| 1. 目的 | L9 |
+| 2. 標準スキーマ（camelCase v2 系） | L24 |
+| 3. 方言スキーマ（snake_case v1 系） | L49 |
+| 4. consumer 一覧 | L80 |
+| 5. schema 変更手順 | L102 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
+| 7. 既知の制約（validator=0 件） | L154 |
+| 8. 変更履歴 | L184 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -3212,26 +3224,26 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| L-CLOSEOUT-PARITY-001: Phase 12 close-out parity guard | L7 |
-| TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19） | L21 |
-| TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18） | L58 |
-| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L98 |
-| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L120 |
-| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L160 |
-| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L191 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L214 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L239 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L270 |
-| TASK-RT-06 教訓（2026-03-29） | L301 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L323 |
-| TASK-P0-04 教訓（2026-03-30） | L354 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L390 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L484 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L538 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L578 |
-| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L618 |
-| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L649 |
-| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L661 |
+| TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE onProgress Renderer 接続 教訓（2026-04-19） | L7 |
+| TASK-SC-LLM-PURPOSE-WIRE-001 purpose 抽出 LLM 統合 教訓（2026-04-18） | L44 |
+| TASK-SC-FIX-GENERATE-SKILL-MD-001 generate_skill_md.js 引数修正 教訓（2026-04-15） | L84 |
+| UT-SKILL-WIZARD-FB-05 テスト証跡一本化テンプレート 教訓（2026-04-13） | L106 |
+| UT-SKILL-WIZARD-FB-03 フィールド独立推論性 教訓（2026-04-11） | L146 |
+| UT-W3-ANALYTICS-ADAPTER-001 trackEvent analytics adapter差し替え 教訓（2026-04-12） | L177 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L200 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L225 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L256 |
+| TASK-RT-06 教訓（2026-03-29） | L287 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L309 |
+| TASK-P0-04 教訓（2026-03-30） | L340 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L376 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L470 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L524 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L564 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L604 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L635 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L647 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L670 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3252,6 +3264,19 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L154 |
 | クイックリファレンス: カテゴリ別検索ガイド | L174 |
 | 分割ファイル一覧 | L178 |
+
+### references/lessons-learned-evals-consumer-audit-001.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L11 |
+| L-EVALS-001: 「正本 coverage 穴」発見過程 | L17 |
+| L-EVALS-002: canonical 4 vs 必須 6 成果物の区別 | L38 |
+| L-EVALS-003: NON_VISUAL 監査タスク Phase-11 再解釈（screenshot 不要） | L59 |
+| L-EVALS-004: dual root bit-for-bit 一致の検証コマンド | L79 |
+| L-EVALS-005: docs-only タスクの `spec_created` ステータス採用根拠 | L114 |
+| 関連ドキュメント | L143 |
+| 変更履歴 | L158 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3747,7 +3772,8 @@ node scripts/list-specs.js --topics
 | L-STREAM-003: 5段階 progress 設計の考え方 | L64 |
 | L-STREAM-FUP-03: PROGRESS_FLOWS 単一集約パターン（TASK-SW-STREAM-FUP-03 / 2026-04-18） | L92 |
 | 再利用メモ（skill-feedback-report.md より抽出） | L126 |
-| 後続タスク・未タスク | L134 |
+| L-STREAM-FUP-05: filter-by-planId 契約（TASK-SC-08-FUP-02 / 2026-04-20） | L134 |
+| 後続タスク・未タスク | L153 |
 
 ### references/lessons-learned-templates.md
 
@@ -5113,10 +5139,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L3 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L28 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L64 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L96 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L3 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L41 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L66 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L102 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L134 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
@@ -5282,9 +5309,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 概要 | L3 |
-| 仕様書インデックス | L31 |
-| 利用順序 | L60 |
-| 関連ドキュメント | L65 |
+| 仕様書インデックス | L30 |
+| 利用順序 | L59 |
+| 関連ドキュメント | L64 |
 
 ### references/testing-accessibility.md
 

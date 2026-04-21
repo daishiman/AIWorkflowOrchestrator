@@ -4,6 +4,33 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
+
+- 操作: optimize-description
+- 変更前: 約407字
+- 変更後: 320字
+- 理由: Progressive Disclosure原則（200-400字）への準拠
+
+## 2026-04-21: TASK-SW-TODO-001（current fact close-out sync）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SW-TODO-001 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow.md`, `references/task-workflow-completed.md`, `references/ui-ux-feature-components-skill-analysis.md`, `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`, `indexes/topic-map.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | 主ツールバッジを current contract から historical pattern へ降格し、stale unassigned ledger を completed retrospective として再同期 |
+
+### 更新詳細
+
+- **更新**: `references/task-workflow.md`
+  - `TASK-SW-TODO-001` verify_existing close-out、Phase 11 canonical evidence 名、stale unassigned ledger 是正を current facts に追加
+- **更新**: `references/ui-ux-feature-components-skill-analysis.md`
+  - 主ツールバッジ節を historical note 化し、current 実装から削除済みである旨を明記
+- **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
+  - 削除待ち前提を current fact に合わせて完了済み手順へ是正
+
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -46,37 +73,39 @@
 
 ---
 
+## 2026-04-20 CANCEL-004実装反映
+
+### 変更内容
+
+- `references/api-ipc-system-skill-creator.md`: SKILL_CREATOR_CANCEL cancel chain セクションに CANCEL-004 renderer hook contract 追加（optional chain 2段 / catch swallow / verify_existing モード）
+- `references/lessons-learned-skill-creator-cancel-chain.md`: L-CANCEL-005〜008 追加（verify_existing宣言 / IPC failure swallow / optional chain 2段 / NON_VISUAL 3点セット）
+- `references/task-workflow-completed-recent-2026-04g.md`: TASK-SW-CANCEL-004 完了記録追加（実装モード: verify_existing / 苦戦箇所5点）
+- `references/lessons-learned-current-2026-04.md`: CANCEL-003/004セクションを cancel 専用ファイルへ分割移動。参照リンクを残した
+- `references/lessons-learned-current-2026-04-cancel.md`: 新規作成（CANCEL-003/004 教訓 L-CANCEL-003-001〜003 / L-CANCEL-004-001〜005 収録）
+
+### 保留事項（分割計画）
+
+以下のファイルは今回の作業で更新検討したが、分割リスク・影響範囲を考慮して今回は保留する。
+
+| ファイル | 現行行数 | 理由 |
+| --- | --- | --- |
+| `references/lessons-learned-current-2026-04.md` | 1845行 | CANCEL系を分割済みだが全体はまだ1845行。次回同期時に wizard / runtime-sdk / cron-validation 等の task family 別に段階的分割を継続する |
+| `LOGS.md` | 3040行 | archive対象エントリを `logs-archive-2026-04-*.md` に移動して500行以内に縮小する計画（次回 archive wave で対応） |
+| `indexes/resource-map.md` | 2632行 | CANCEL-004 参照行の追加は最小変更だが全体分割は影響範囲が広い。分割計画は topic-cluster 別で別波にて対応 |
+| `indexes/quick-reference.md` | 803行 | Skill Creator Cancel Chain への参照追加は次回 index-sync wave で実施 |
+| `indexes/topic-map.md` | 5475行 | 全体分割は今回保留。CANCEL-004 エントリ追加も次回 index-sync wave で対応 |
+
+---
+
 ## 2026-04-19: impl-spec-to-skill-sync（TASK-UT-9I-001 反映）
 
-| 項目 | 内容 |
-| --- | --- |
-| 操作 | spec-reflection / lessons-learned 新規作成 |
-| 変更対象 | `references/lessons-learned-skill-docs-runtime-ipc-contract.md`（新規作成）, `SKILL.md`（TASK-UT-9I-001 エントリ追加）, `references/lessons-learned-current-2026-04.md`（L-SC08-004 追加）, `indexes/resource-map.md`（TASK-UT-9I-001 参照追加） |
-| 結果 | success |
-| 備考 | Phase-12 全5タスク準拠確認済み。スキル未反映だった TASK-UT-9I-001 の IPC error contract 教訓を体系化 |
-
----
-
-## 2026-04-19: TASK-AGENTS-SKILLS-FULL-SYNC-001（canonical/mirror full parity guard 導入）
-
-| 項目         | 内容                                                                                                                                                             |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-AGENTS-SKILLS-FULL-SYNC-001                                                                                                                                 |
-| 操作         | spec-created / Phase 1-12 完了 / Phase 13 は blocked 維持                                                                                                        |
-| 変更対象     | `.claude/scripts/verify-skills-parity.sh` 新規・`.claude/scripts/sync-skills-mirror.sh` 新規・`.husky/pre-push` 追記・`.claude/hooks/session-init.sh` 追記・`.agents/skills/` 一式同期 |
-| 結果         | drift 4 件→0 件収束・Phase 9 品質 8 ステップ全 PASS（shellcheck SKIP 許容）・Phase 10 Blocker 0 件・Phase 11 手動テスト 6 シナリオ全 PASS（session-init 最大 0.443s / AC-6 基準 < 1 秒）  |
-| 検証         | `bash verify-skills-parity.sh` exit=0 / `diff -qr .claude/skills .agents/skills` 空出力 / Phase 11 bash-execution-log.txt + timing-measurement.txt 証跡         |
-| 備考         | NON_VISUAL infra-guard。sync script の実行順序は仕様書から調整（`generate-index → rsync → diff`）。Phase 13 は user 明示承認まで blocked                     |
-
-### 更新詳細
-
-- `references/task-workflow-completed.md` に本タスクの `spec_created` 完了エントリを先頭追加
-- `references/task-workflow.md` の `TASK-CONFLICT-PREVENT-001` 後続タスク列に相互参照追加
-- `indexes/topic-map.md` / `indexes/keywords.json` を `generate-index.js --quiet` で再生成
-- `indexes/resource-map.md` は変更なし（no-op / current facts 不変）
-- `.agents/skills/` 側へ `sync-skills-mirror.sh` 経由で同期（same-wave sync 完了）
-
----
+| 項目     | 内容                                                                                                                  |
+| -------- | --------------------------------------------------------------------------------------------------------------------- |
+| タスクID | TASK-SW-CANCEL-004                                                                                                    |
+| 操作     | Phase 12 close-out / skill-feedback 反映                                                                              |
+| 変更対象 | `task-specification-creator/SKILL.md`（FB-CANCEL-004-1/2 追記）、`task-specification-creator/LOGS.md`（今回エントリ） |
+| 結果     | partial fix 残存課題格下げテンプレート・unassigned重複防止ルールを「よくある漏れ」テーブルに追加。mirror同期完了      |
+| 備考     | system-spec-update-summary.md Step 1-F に従い本体への新規セクション追加はなし（新規IPC契約なし）                      |
 
 ## 2026-04-19: UT-LIFECYCLE-PANEL-AUTH-REGRESSION-SKIP-CLEANUP-001（spec-reflection）
 
@@ -90,13 +119,13 @@
 
 ## 2026-04-19: TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE Phase 12 close-out
 
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE |
-| 操作 | update-spec |
+| 項目         | 内容                                                                                                                                                                                                                       |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE                                                                                                                                                                                     |
+| 操作         | update-spec                                                                                                                                                                                                                |
 | 対象ファイル | `references/task-workflow.md`, `references/task-workflow-completed.md`, `indexes/topic-map.md`, `references/lessons-learned-current-2026-04.md`, workflow `index.md` / `phase-12-documentation.md`, `unassigned-task/` 2件 |
-| 結果 | success |
-| 備考 | impl-spec-to-skill-sync プロンプト実行。Phase 1-12 完了ステータス反映・skill-feedback（実施した同期/未実施同期テンプレート分離提案）反映 |
+| 結果         | success                                                                                                                                                                                                                    |
+| 備考         | impl-spec-to-skill-sync プロンプト実行。Phase 1-12 完了ステータス反映・skill-feedback（実施した同期/未実施同期テンプレート分離提案）反映                                                                                   |
 
 ### 更新詳細
 
@@ -112,13 +141,13 @@
 
 ## 2026-04-19: UNASSIGNED-EMB-005 Late Chunking impl-spec-to-skill-sync
 
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | UNASSIGNED-EMB-005 |
-| 操作 | update-spec / create-spec |
+| 項目         | 内容                                                                                                                                                                                                                      |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | UNASSIGNED-EMB-005                                                                                                                                                                                                        |
+| 操作         | update-spec / create-spec                                                                                                                                                                                                 |
 | 対象ファイル | `references/architecture-embedding-pipeline.md`, `references/llm-embedding.md`, `references/api-internal-embedding.md`, `references/lessons-learned-late-chunking-esbuild-worktree.md`（新規）, `indexes/resource-map.md` |
-| 結果 | success |
-| 備考 | Late Chunking（検索品質10-30%向上）実装内容をsystem specに反映。苦戦箇所（esbuildバイナリバージョン不一致・IEncoderモック雛型設計）をlessons-learnedに記録。 |
+| 結果         | success                                                                                                                                                                                                                   |
+| 備考         | Late Chunking（検索品質10-30%向上）実装内容をsystem specに反映。苦戦箇所（esbuildバイナリバージョン不一致・IEncoderモック雛型設計）をlessons-learnedに記録。                                                              |
 
 ### 更新詳細
 
@@ -3000,17 +3029,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/ui-ux-feature-components-skill-analysis.md` |
 | 結果     | 腐敗データ除去・shared contract 反映完了。Phase-12 準拠チェック PASS。未タスク 0件                       |
 | 検証     | Phase 12 compliance check PASS / vitest 29+37件 PASS / typecheck PASS（仕様書記録より）                  |
-## 2026-04-19 - TASK-SW-CANCEL-003 close-out sync
-
-### 変更内容
-
-- `references/task-workflow-completed.md` に TASK-SW-CANCEL-003 完了記録を追加
-- `docs/30-workflows/p03-seq-CANCEL-003/` の `index.md` / `artifacts.json` / `outputs/artifacts.json` を completed 同期
-- `NON_VISUAL` 証跡、cancel bridge、legacy link 修正を Phase 11/12 成果物へ反映
-
-### 背景
-
-TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台帳・legacy path・close-out 記述にドリフトが残っていた。same-wave sync を行い、後続 CANCEL-004 が正本導線から依存できる状態へ修正した。
 
 ## 2026-04-18 — TASK-EXECUTE-ASYNC-SNAPSHOT-ERROR-PROPAGATION-001 completed (verification / docs close-out)
 
@@ -3020,12 +3038,12 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 - `artifacts.json` / `outputs/artifacts.json` parity を completed / blocked で再同期
 - completed index / recent bundle / stale unassigned-task を same-wave で同期
 
-| 項目     | 内容                                                                                                                    |
-| -------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / verification / docs close-out                                                                              |
+| 項目     | 内容                                                                                                                                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | NON_VISUAL / verification / docs close-out                                                                                           |
 | 変更対象 | `docs/30-workflows/task-execute-async-snapshot-error-propagation-001/`、`task-workflow-completed.md`、recent bundle、stale task docs |
-| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                   |
-| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                      |
+| 結果     | current facts 確認済み。型変更なし。Phase 5 no-op。全 AC PASS。Phase 13 blocked 維持                                                 |
+| 検証     | vitest 19 PASS / typecheck PASS / lint PASS / implementation-guide validator PASS                                                    |
 
 ## 2026-04-18 — TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 completed (Phase 12 close-out)
 
@@ -3034,12 +3052,12 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 - completed ledger / recent bundle / topic-map を same-wave で同期
 - NOTIFY-HELPER-CONSOLIDATION-001（Issue #1936）を新規 open タスクとして backlog に登録
 
-| 項目     | 内容                                                                                      |
-| -------- | ----------------------------------------------------------------------------------------- |
-| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                   |
+| 項目     | 内容                                                                                                                                           |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / runtime notification / Phase 12 close-out                                                                                         |
 | 変更対象 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`、task-workflow-completed.md、recent bundle |
-| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                     |
-| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                          |
+| 結果     | 全 AC PASS。17 tests + 224 regression 全 PASS。Phase 13 blocked 維持                                                                           |
+| 検証     | vitest 17+224 PASS / typecheck PASS / lint PASS                                                                                                |
 
 ## 2026-04-18 — UT-SKILL-WIZARD-W0-CATEGORY-LABEL-MAPPING-001 Phase-12 close-out sync
 
@@ -3062,12 +3080,12 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 - L-CANCEL-003-003: NON_VISUAL task の証跡を `{TASK-ID}-manual-test-report.md` に統一
 - `task-workflow-completed.md` に TASK-SW-CANCEL-003 Phase 12 完了 close-out を追記
 
-| 項目     | 内容                                                                                       |
-| -------- | ------------------------------------------------------------------------------------------ |
-| 種別     | NON_VISUAL / docs-only / lessons-learned-sync                                              |
-| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md`   |
-| 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                              |
-| 検証     | docs-only / 記録のみ                                                                       |
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-only / lessons-learned-sync                                            |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`、`references/task-workflow-completed.md` |
+| 結果     | TASK-SW-CANCEL-003 知見 3件追記・Phase 12 close-out 記録完了                             |
+| 検証     | docs-only / 記録のみ                                                                     |
 
 | 項目     | 内容                                                                                                                                                    |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -3088,3 +3106,39 @@ TASK-SW-CANCEL-003 は実装と成果物が揃っていた一方、workflow 台�
 | 変更対象 | `references/task-workflow-active.md`、`SKILL.md`            |
 | 結果     | task-workflow-active.md 台帳追加・SKILL.md 変更履歴更新完了 |
 | 検証     | Phase 12 close-out sync PASS                                |
+## 2026-04-20 — TASK-SC-08-FUP-02 payload tracking sync
+
+- `references/api-ipc-system-skill-creator.md` に `skill-creator:progress` payload tracking contract（`planId?` / `requestId?` / receiver filter 契約）を追記
+- `references/lessons-learned-stream-001-progress-callback.md` に L-STREAM-FUP-05（filter-by-planId 契約）を追記、後続タスク表に TASK-SC-08-FUP-02 完了と TASK-SC-08-FUP-03 / TASK-SC-08-FUP-04 のクロスリファレンスを追加
+- `references/quick-reference.md` の SkillCreatorService progress セクションに payload tracking contract 導線と受信フック `useStreamingProgress.ts` の参照先を追加
+- mirror parity: `.agents/skills/aiworkflow-requirements/` に同内容を同期
+
+## 2026-04-20 — TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001 close-out repo-wide sync wave
+
+- 親タスク `TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001` Phase 12 close-out の repo-wide 波及を follow-up `TASK-SC-CANCEL-LOGS-SYNC-001` として分離
+- `references/task-workflow-active.md` から親タスクエントリを削除し `references/task-workflow-completed-recent-2026-04g.md` の末尾に completed 形式で移動（AC-3）
+- `references/lessons-learned-current-2026-04.md` に 3 知見を独立 h3 エントリとして追加（L-SC-CANCEL-NON-VISUAL-001 / L-SC-CANCEL-SCOPE-BOUNDARY-001 / L-SC-CANCEL-REPO-WIDE-SYNC-001）（AC-4）
+- 親 `index.md` フロントマター `status: in_progress` → `status: pending_pr` に更新、`closeout_date: 2026-04-20` を追加、Follow-up 同期セクションを追加して本タスクへ逆参照（AC-5）
+- spec-update-workflow.md の canonical spec 更新標準フローに準拠
+
+| 項目     | 内容                                                                                                                                                                                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-sync / repo-wide sync wave / follow-up close-out / lessons-learned-sync                                                                                                           |
+| 変更対象 | `references/task-workflow-active.md`、`references/task-workflow-completed-recent-2026-04g.md`、`references/lessons-learned-current-2026-04.md`、親 `index.md`（TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001）、本 `LOGS.md` |
+| 結果     | AC-2〜AC-5 all PASS。Lane B/C 対応完了。canonical spec active→completed 移動、lessons-learned 3 知見追加、親 index.md 完了宣言                                                                      |
+| 検証     | TC-02〜TC-05 grep PASS（`outputs/phase-11/grep-snapshots/` 参照）/ spec-update-workflow 準拠 / 最小変更原則維持                                                                                       |
+
+## 2026-04-20 — TASK-SC-CANCEL-LOGS-SYNC-001 Phase 12 self-close-out
+
+- 本タスク `TASK-SC-CANCEL-LOGS-SYNC-001` 自体の Phase 1-12 完了を self-close-out として本 LOGS にも記録（親→本タスクの追跡性を双方向で閉鎖）
+- Phase 12 mandatory 5 tasks + compliance check 追加 1 タスク all PASS（`outputs/phase-12/phase12-task-spec-compliance-check.md` の最終判定 COMPLIANCE PASS）
+- spec-update-workflow.md の canonical spec 更新フロー / LOGS 追記規約（h2 形式 / 3 節 + 表） / lessons-learned h3 命名（`L-<TASK-ID>-<NNN>`）すべて準拠
+- `topic-map.md` / `keywords.json` は再生成なし（最小変更原則維持）
+- Phase 13（PR 作成）は user 承認待ちで blocked、commit / push は実施しない
+
+| 項目     | 内容                                                                                                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / docs-sync / self-close-out / spec-update-workflow 準拠                                                                                                         |
+| 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
+| 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |
