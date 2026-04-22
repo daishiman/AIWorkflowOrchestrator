@@ -55,3 +55,52 @@
 
 - L-EMB-005-001〜003: `references/lessons-learned-current-2026-04.md` §UNASSIGNED-EMB-005-A に記録済み
 - 未タスク: `docs/30-workflows/unassigned-task/EMB-005-B-electron-e2e.md`（Electron レンダラー E2E 動作確認）
+
+---
+
+## TASK-RALLY-001: SkillLifecyclePanel dead code 除去（RALLY Wave 0 並列タスク）（2026-04-21）
+
+| 項目       | 内容                                                                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-RALLY-001                                                                                                                                             |
+| ステータス | **完了（全 Phase 1〜12 PASS）/ Phase 13 blocked（user approval 待ち）**                                                                                    |
+| タイプ     | 実装 / NON_VISUAL / dead-code-removal                                                                                                                      |
+| 優先度     | 高（Wave 1 RALLY-005 の前提）                                                                                                                              |
+| 完了日     | 2026-04-21                                                                                                                                                 |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                                                                      |
+| 成果物     | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/` 6 ファイル                                                                                      |
+
+#### 実施内容
+
+- `_handleSubmitWorkflowInput` 関数（41行）を削除
+- 旧入力 state 4種（`selectedOptionId` / `textAnswer` / `secretAnswer` / `confirmAnswer`）を削除
+- companion `useEffect`（workflowSnapshot リセット処理）を削除
+- 入力送信の責務を `ConversationalInterview` 側フローに一本化
+- `docs/30-workflows/wave0-par-RALLY-001/` を canonical 配置先として確定（旧: `skill-create-flow-gaps/wave0-par-RALLY-001/`）
+
+#### Phase 11/12 成果物
+
+| 成果物                       | パス                                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| 実装ガイド                   | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/implementation-guide.md`  |
+| システム仕様更新サマリー     | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/system-spec-update-summary.md` |
+| ドキュメント更新履歴         | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート         | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/unassigned-task-detection.md` |
+| スキルフィードバックレポート | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/skill-feedback-report.md` |
+| Phase 12 準拠チェック        | `docs/30-workflows/wave0-par-RALLY-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 検証証跡
+
+- vitest PASS / typecheck PASS / lint PASS
+- AC-1〜AC-5 + AC-2b all PASS
+- NON_VISUAL: Phase 11 スクリーンショット不要（UI 変更なし）
+
+#### 苦戦箇所
+
+| # | 苦戦箇所                                                                   | 解決策                                                                              |
+|---|--------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| 1 | companion useEffect の削除漏れリスク（AC-2b として設計書に捕捉）          | Phase 1 P50 チェックで事前発見し、Phase 2 設計書の AC-2b として明示化して除去完了 |
+
+#### skill-feedback
+
+- task-specification-creator: 改善点なし。Phase 1 P50 チェックによる companion useEffect 事前発見が特に有効だった。
