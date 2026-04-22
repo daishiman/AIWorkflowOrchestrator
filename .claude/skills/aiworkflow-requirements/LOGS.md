@@ -3313,3 +3313,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
 | 結果 | Late Chunking pipeline integration の正本同期完了 |
 | 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |
+
+## 2026-04-21 — UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 Phase 12 close-out
+
+- `references/evals-schema-spec.md` §6 テーブルを実際の EVALS.json 実装（taskMetrics タスク ID キー辞書）に修正
+- §6.1 に writer・更新タイミング・運用責任を追記
+- §8 に 2026-04-21 変更履歴エントリを追加
+- `indexes/quick-reference.md` に `## EVALS.json qualityInsights クイックアクセス` セクション追加（5 行）
+- `references/task-workflow-completed.md` に本タスクの完了記録を追加
+- `indexes/topic-map.md` を再生成し、§6 行番号を同期
+- Phase 1-12 全 PASS（NON_VISUAL / mirror sync 差分ゼロ / AC-1〜7 全達成）
+- Phase 13（PR 作成）は user 承認待ちで blocked
+
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | docs-only / NON_VISUAL / spec-update / close-out                                          |
+| 変更対象 | `references/evals-schema-spec.md`、`indexes/quick-reference.md`、`references/task-workflow-completed.md`、`indexes/topic-map.md`、`SKILL.md`、本 `LOGS.md` |
+| 結果     | AC-1〜7 all PASS。mirror sync 差分ゼロ。docs-only 制約遵守（アプリコード変更なし、close-out 同期のみ） |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS                 |

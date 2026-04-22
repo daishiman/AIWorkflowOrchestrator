@@ -1,0 +1,137 @@
+{
+  "feature": "unassigned-evals-spec-quality-insights-document-001",
+  "created": "2026-04-21T00:00:00Z",
+  "lastUpdated": "2026-04-21T00:00:00Z",
+  "status": "completed",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/field-inventory.md",
+        "outputs/phase-1/writer-survey.md",
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/field-spec.md",
+        "outputs/phase-2/writer-design.md",
+        "outputs/phase-2/validator-design.md",
+        "outputs/phase-2/spec-addition-plan.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/gate-decision.md",
+        "outputs/phase-3/review-result.md",
+        "outputs/phase-3/solution-elegance-review.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/field-list.md",
+        "outputs/phase-4/manual-check-list.md",
+        "outputs/phase-4/verification-commands.md",
+        "outputs/phase-4/integration-test-scenarios.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/target-file.md",
+        "outputs/phase-5/validator-consideration.md",
+        "outputs/phase-5/verification-result.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/cross-reference-result.md",
+        "outputs/phase-6/int-test-skill-impact.md",
+        "outputs/phase-6/github-issue-manager-impact.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/topic-map-coverage.md",
+        "outputs/phase-7/quick-reference-coverage.md",
+        "outputs/phase-7/resource-map-check.md",
+        "outputs/phase-7/final-field-verification.md",
+        "outputs/phase-7/gate-decision.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/refactoring-results.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/shipping-checklist.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/local-check-result.md"
+      ],
+      "notes": "ユーザーの明示承認があるまで blocked を維持する"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs-only",
+    "implementation_mode": "verify_existing",
+    "taskId": "UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001",
+    "title": "qualityInsights 現行定義を2 skillへ整合反映",
+    "priority": "medium",
+    "issue": 2327
+  }
+}

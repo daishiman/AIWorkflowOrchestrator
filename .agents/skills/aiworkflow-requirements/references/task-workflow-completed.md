@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-21: `UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001` qualityInsights-current-facts-sync（docs-only / verify_existing / spec_created / NON_VISUAL / `references/evals-schema-spec.md` §6・§6.1 修正、`indexes/quick-reference.md` 追加、`references/task-workflow-completed.md`・`indexes/topic-map.md`・mirror parity・task root manifest を same-wave sync）
 - 2026-04-20: `TASK-SW-TODO-001` conversation-round-step-todo-cleanup（verify_existing / NON_VISUAL / Phase 11 canonical evidence を `TASK-SW-TODO-001-manual-test-report.md` へ統一 / stale unassigned ledgers を completed retrospective へ是正 / `ui-ux-feature-components-skill-analysis.md` historical note 反映）
 - 2026-04-21: `UNASSIGNED-EVALS-VALIDATOR-GUARD-001` evals-validator-guard（`validate-evals.js` 契約修正 / `--path <file-or-dir>` / strict 両方言必須 / allowlist-only fixture 除外 / aiworkflow current facts sync / docs-only / NON_VISUAL / Phase 1-12 completed / Phase 13 blocked / Issue #2325 CLOSED）
 - 2026-04-19: `UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001` closeout-parity-guard（`validate-closeout-parity.js` 新規作成・`complete-phase.js`/`verify-all-specs.js` 拡張 / Phase 12 close-out 完了 / NON_VISUAL / Issue #2293 / dogfooding PARITY_OK exit=0 確認済み）
