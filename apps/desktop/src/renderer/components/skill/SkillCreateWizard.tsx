@@ -464,7 +464,7 @@ export const SkillCreateWizard = React.forwardRef<
     trackEvent("skill_wizard_step_complete", { step: 1, stepName: STEPS[1] });
 
     generationLockRef.current = true;
-    startGeneration();
+    const signal = startGeneration();
     invalidateGenerationRequests();
     const requestId = generationRequestIdRef.current;
     const defaults = smartDefaults ?? inferSmartDefaults(formData);
@@ -488,6 +488,7 @@ export const SkillCreateWizard = React.forwardRef<
         formData.purpose,
         SKILL_GENERATION_OPTIONS,
         skillContext,
+        signal,
       );
       if (requestId !== generationRequestIdRef.current) {
         return;

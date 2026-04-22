@@ -374,6 +374,7 @@ export interface AgentActions {
       addReferences: boolean;
     },
     context?: SkillCreationContext,
+    signal?: AbortSignal,
   ) => Promise<string>;
   /** 分析結果をクリアする */
   clearAnalysis: () => void;
@@ -1205,10 +1206,14 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
         addReferences: boolean;
       },
       context?: SkillCreationContext,
+      signal?: AbortSignal,
     ) => {
       // P42準拠: 3段バリデーション
       if (typeof description !== "string" || description.trim() === "") {
         set({ skillError: "スキルの説明が無効です" });
+        return "";
+      }
+      if (signal?.aborted) {
         return "";
       }
       set({ skillError: null });

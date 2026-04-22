@@ -39,6 +39,21 @@
 
 ---
 
+### Renderer store action の current contract 変更 — 参照導線（FB-UT-CANCEL-004-01-02）
+
+Renderer store action（Zustand slice）のシグネチャや contract が変わった場合に最初に開くファイル：
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| store action IPC contract（skill-creator 系） | `references/api-ipc-system-skill-creator.md` |
+| Renderer store / slice 全体像 | `references/arch-state-management-skill-creator.md` |
+| AbortSignal / cancel chain 教訓 | `references/lessons-learned-skill-creator-cancel-chain.md` |
+| 完了タスク参照（2026-04） | `references/task-workflow-completed-recent-2026-04g.md` |
+
+> **探索ヒント**: Renderer store action の引数変更は `api-ipc-system-skill-creator.md` の `current facts` セクションに current contract として記録される。IPC payload shape の変更は別ファイル（`api-ipc-system-core.md`）を参照。
+
+---
+
 ### Skill Wizard Redesign (W2-seq-03a) 参照導線 [2026-04-08完了]
 
 | 目的 | 参照先 |

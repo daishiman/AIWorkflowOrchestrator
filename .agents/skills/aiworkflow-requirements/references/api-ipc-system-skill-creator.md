@@ -123,6 +123,8 @@
 - `SKILL_CREATOR_RUNTIME_CHANNELS` は 3 → 4 チャンネルに増加（`SKILL_CREATOR_CANCEL` 追加）
 - `IPC_CHANNELS.SKILL_CREATOR_CANCEL` は spread で自動伝播するため、下流コードは追加参照不要
 - cancel 由来の AbortError は UI failure として表示しない（agentSlice / SkillCreateWizard で抑制）
+- `agentSlice.createSkill()` は `signal?: AbortSignal` を第4引数で受け取り、aborted の場合は Renderer guard で IPC 呼び出し前に `""` を返す
+- `SkillCreateWizard.handleGenerate()` は `const signal = startGeneration()` として signal を store action まで伝播する
 - UI/UX 変更なし（Phase 11 スクリーンショット N/A）
 
 #### TASK-SW-CANCEL-004 renderer hook 追加実装（2026-04-20）
@@ -146,6 +148,19 @@ TASK-SW-CANCEL-004（p04-seq-CANCEL-004）で `useCancelGeneration.ts` が既実
 **optional chain 2段設計**: `window.skillCreatorAPI?.cancelGeneration?.()` により、API namespace 未定義と method 未定義の両方をカバーする Undefined guard として機能する。
 
 **実装モード**: `verify_existing`（useCancelGeneration.ts は既実装。Phase 4/5 は差分確認として再利用）
+
+#### UT-CANCEL-004-01 Renderer store signal bridge（2026-04-22）
+
+`UT-CANCEL-004-01` で cancel chain の最後の欠けていた Renderer store bridge を current facts として確定した。
+
+| 項目 | 内容 |
+| --- | --- |
+| store action contract | `createSkill(description, options, context?, signal?)` |
+| guard point | `signal?.aborted === true` なら IPC 呼び出し前に `return ""` |
+| Wizard wiring | `const signal = startGeneration()` → `createSkill(..., signal)` |
+| IPC payload | `{ description, options, context }` を維持し、public shape は変更しない |
+
+**設計判断**: `AbortSignal` は Renderer 制御値として扱い、シリアライズ不可な値を preload/public contract へ拡張しない。
 
 #### Preload APIに新規チャネルを追加する際の必須手順（3点セット）
 

@@ -27,6 +27,7 @@ const mockExecuteSkill = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
+const mockStartGeneration = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -64,7 +65,7 @@ vi.mock("../../../hooks/useStreamingProgress", () => ({
 vi.mock("../../../hooks/useCancelGeneration", () => ({
   useCancelGeneration: () => ({
     cancelGeneration: vi.fn(),
-    startGeneration: vi.fn(),
+    startGeneration: mockStartGeneration,
   }),
 }));
 
@@ -99,6 +100,7 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
     mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
+    mockStartGeneration.mockReturnValue(new AbortController().signal);
 
     (window as Record<string, unknown>).electronAPI = {
       skill: { create: spySkillCreate },
@@ -140,6 +142,26 @@ describe("SkillCreateWizard Store統合（current LLM専用 flow）", () => {
           purpose,
           category: "automation",
         }),
+        expect.any(AbortSignal),
+      );
+    });
+
+    it("startGeneration の戻り値を createSkill 第4引数へ渡す", async () => {
+      const signal = new AbortController().signal;
+      mockStartGeneration.mockReturnValueOnce(signal);
+
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      await navigateToStep1();
+      fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "生成する" }));
+      });
+
+      expect(mockCreateSkill).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(Object),
+        expect.any(Object),
+        signal,
       );
     });
 

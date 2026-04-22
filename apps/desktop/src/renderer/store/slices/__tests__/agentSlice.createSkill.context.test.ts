@@ -158,4 +158,42 @@ describe("createSkill context 引き渡しテスト (TASK-SW-FIX-DATAFLOW-001)",
       expect(mockSkillCreate).not.toHaveBeenCalled();
     });
   });
+
+  describe("TC-02: aborted signal は IPC 呼び出し前に中断する", () => {
+    it("signal.aborted === true の場合は空文字を返して API を呼ばない", async () => {
+      const store = createTestStore();
+      const controller = new AbortController();
+      controller.abort();
+
+      const result = await store.createSkill(
+        "テストスキル",
+        defaultOptions,
+        undefined,
+        controller.signal,
+      );
+
+      expect(result).toBe("");
+      expect(mockSkillCreate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("TC-01: non-aborted signal は後方互換の payload shape を維持する", () => {
+    it("signal を渡しても electronAPI.skill.create の payload は現行 shape のまま", async () => {
+      const store = createTestStore();
+      const controller = new AbortController();
+
+      await store.createSkill(
+        "テストスキル",
+        defaultOptions,
+        undefined,
+        controller.signal,
+      );
+
+      expect(mockSkillCreate).toHaveBeenCalledWith({
+        description: "テストスキル",
+        options: defaultOptions,
+        context: undefined,
+      });
+    });
+  });
 });

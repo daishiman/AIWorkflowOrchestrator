@@ -5029,7 +5029,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L655 |
+| 続き | L656 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5188,22 +5188,24 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L3 |
-| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L29 |
-| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L48 |
-| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L86 |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L129 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L154 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L190 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L222 |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L669 |
-| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L709 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L3 |
+| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L22 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L48 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L67 |
+| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L105 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L148 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L173 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L209 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L241 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L688 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L728 |
 
 ### references/task-workflow-completed-recent-2026-04h.md
 
 | セクション | 行 |
 |------------|----|
 | UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
+| TASK-RALLY-001: SkillLifecyclePanel dead code 除去（RALLY Wave 0 並列タスク）（2026-04-21） | L61 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

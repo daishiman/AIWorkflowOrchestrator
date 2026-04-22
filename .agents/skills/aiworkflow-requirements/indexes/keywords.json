@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3276,
+  "totalKeywords": 3279,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1290,6 +1290,7 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -7857,6 +7858,7 @@
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
@@ -9222,6 +9224,12 @@
       "lessons-learned-current-2026-04.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
+    "RALLY": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-rally-002.md",
+      "task-workflow-completed-recent-2026-04h.md",
+      "task-workflow.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -9936,10 +9944,6 @@
     ],
     "メソッドシグネチャを比較": [
       "lessons-learned-rag-embedding-runtime.md"
-    ],
-    "RALLY": [
-      "lessons-learned-rally-002.md",
-      "task-workflow.md"
     ],
     "restoredPendingRequest": [
       "lessons-learned-rally-002.md",
@@ -10791,7 +10795,8 @@
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "Wave": [
-      "lessons-learned-skill-wizard-mode-mgmt.md"
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実施では": [
       "lessons-learned-skill-wizard-mode-mgmt.md"
@@ -14324,7 +14329,8 @@
       "spec-splitting-guidelines.md"
     ],
     "code": [
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実行手順": [
       "spec-splitting-guidelines.md"
@@ -14484,6 +14490,15 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
+    "fixture": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "runner": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "スキーマ検証追加": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "PROMPT": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14495,15 +14510,6 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "実処理実装": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "fixture": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "runner": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "スキーマ検証追加": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
@@ -14549,6 +14555,15 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "IEncoder": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "dead": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "除去": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "並列タスク": [
       "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [

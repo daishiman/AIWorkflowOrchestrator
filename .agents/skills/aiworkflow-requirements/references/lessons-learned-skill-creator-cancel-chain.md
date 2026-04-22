@@ -75,11 +75,21 @@
 | 標準ルール | NON_VISUAL タスクの Phase 11 は「チェックリスト・結果・発見した未タスク」の 3 点セットを成果物として定義し、screenshot N/A の根拠もこの 3 点に含める                             |
 | 関連タスク | TASK-SW-CANCEL-004                                                                                                                                                               |
 
+## L-CANCEL-009: AbortSignal は Renderer guard で消費し IPC payload に含めない
+
+| 項目       | 内容                                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `createSkill` に `signal?: AbortSignal` を追加した際、AbortSignal は`structuredClone`/JSON シリアライズ不可のため IPC payload に含めると型エラーになる            |
+| 解決策     | Renderer 側（`agentSlice.createSkill`）で `if (signal?.aborted) return ""` の early return guard を設け、IPC 呼び出し前に消費する。public IPC payload shape は変更しない |
+| 標準ルール | Renderer store action に `signal?: AbortSignal` を追加する場合は「Renderer guard（aborted check）→ IPC 呼び出しスキップ」パターンを標準とし、signal を IPC 引数へ拡張しない |
+| 関連タスク | UT-CANCEL-004-01                                                                                                                                                  |
+
 ---
 
 ## 変更履歴
 
 | 日付       | 変更内容                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------- |
+| 2026-04-22 | L-CANCEL-009 追加（UT-CANCEL-004-01 Renderer guard + IPC shape 維持パターン） |
 | 2026-04-20 | L-CANCEL-005〜008 追加（TASK-SW-CANCEL-004 verify_existing / IPC swallow / optional chain / NON_VISUAL 3点セット） |
 | 2026-04-16 | 初版作成: L-CANCEL-001〜004（TASK-SW-CANCEL-001〜004 cancel chain の苦戦箇所4件を記録） |

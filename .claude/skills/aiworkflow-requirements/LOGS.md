@@ -6,6 +6,25 @@
 
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+## 2026-04-22: UT-CANCEL-004-01 renderer signal bridge close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CANCEL-004-01 |
+| 操作 | update-spec / close-out sync |
+| 変更対象 | `references/api-ipc-system-skill-creator.md`, `references/task-workflow-completed-recent-2026-04g.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | Renderer store action `createSkill(..., signal?)` の current contract、Wizard wiring、public IPC shape 維持、worktree `esbuild` mismatch note を同期 |
+
+## 2026-04-22: UT-CANCEL-004-01 skill feedback / lessons-learned 反映
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CANCEL-004-01 |
+| 操作 | skill-reflect / feedback-apply |
+| 変更対象 | `references/lessons-learned-skill-creator-cancel-chain.md`, `references/quick-reference.md` |
+| 結果 | success |
+| 備考 | L-CANCEL-009（Renderer guard + IPC shape 維持パターン）追加。FB-UT-CANCEL-004-01-02（renderer store contract 変更時の quick lookup）を quick-reference に追加 |
 ## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
 
 - 操作: optimize-description

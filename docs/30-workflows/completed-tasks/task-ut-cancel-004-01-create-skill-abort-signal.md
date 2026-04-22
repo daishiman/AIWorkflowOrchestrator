@@ -16,7 +16,7 @@ issue_number: 2350
 | 対象機能     | skill-creator キャンセル機能（Renderer Store 層 AbortSignal 伝播） |
 | 優先度       | 中                                                                 |
 | 見積もり規模 | 小規模                                                             |
-| ステータス   | 未実施                                                             |
+| ステータス   | formalized / superseded（UT-CANCEL-004-01 workflow へ統合済み）    |
 | 発見元       | TASK-SW-CANCEL-004 Phase 12 未タスク検出レポート                   |
 | 発見日       | 2026-04-20                                                         |
 
@@ -28,18 +28,20 @@ issue_number: 2350
 
 skill-creator のキャンセル機能は以下のチェーンで段階的に構築されてきた：
 
-| タスク                                | 層                              | 状態      |
-| ------------------------------------- | ------------------------------- | --------- |
-| TASK-SW-CANCEL-001                    | Main: AbortController 基盤      | ✅ 完了   |
-| TASK-SW-CANCEL-002                    | Main: cancelCurrentOperation()  | ✅ 完了   |
-| TASK-SW-CANCEL-003                    | Main: IPC ハンドラ登録          | ✅ 完了   |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 | Main: private workflow 入口保証 | ✅ 完了   |
-| TASK-SW-CANCEL-004                    | Renderer: IPC E2E 接続確認      | ✅ 完了   |
-| **UT-CANCEL-004-01（本タスク）**      | **Renderer Store: signal 引数** | 🔲 未完成 |
+| タスク                                | 層                              | 状態                  |
+| ------------------------------------- | ------------------------------- | --------------------- |
+| TASK-SW-CANCEL-001                    | Main: AbortController 基盤      | ✅ 完了               |
+| TASK-SW-CANCEL-002                    | Main: cancelCurrentOperation()  | ✅ 完了               |
+| TASK-SW-CANCEL-003                    | Main: IPC ハンドラ登録          | ✅ 完了               |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 | Main: private workflow 入口保証 | ✅ 完了               |
+| TASK-SW-CANCEL-004                    | Renderer: IPC E2E 接続確認      | ✅ 完了               |
+| **UT-CANCEL-004-01（本タスク）**      | **Renderer Store: signal 引数** | ✅ formal task で完了 |
 
 TASK-SW-CANCEL-004 の Pattern B 実装では `useCancelGeneration.startGeneration()` が Renderer 内の `AbortController` を初期化する。しかし `agentSlice.createSkill()` の関数シグネチャに `signal` 引数が存在しないため、初期化した AbortController は `createSkill` を通じて IPC 呼び出し層に到達しない。
 
 ### 1.2 問題点・課題
+
+この指示書は `TASK-SW-CANCEL-004` の Phase 12 で抽出された follow-up の初期メモであり、その後 `docs/30-workflows/UT-CANCEL-004-01/` が formal workflow として作成された。以降の正本は formal workflow 側にある。
 
 **現状の断絶箇所:**
 
@@ -52,7 +54,7 @@ Renderer store: createSkill(description, options, context?) → signal なし
 Preload IPC: window.electronAPI.skill.create({...}) → signal 渡せない
 ```
 
-`SkillCreateWizard.tsx` の `handleGenerate` は `startGeneration()` で signal を初期化するが、直後に呼ぶ `createSkill()` に signal を渡す経路がない。結果として Main 側の AbortController（TASK-SW-CANCEL-001〜003 で構築）には到達するが、Renderer 側の AbortSignal は生成処理に参加していない。
+初期検出時点では `SkillCreateWizard.tsx` の `handleGenerate` が `startGeneration()` の戻り値を破棄していた。現在は formal task 側で `createSkill(..., signal)` と Renderer guard が実装済みであり、本指示書の「未実施」前提は stale である。
 
 ### 1.3 放置した場合の影響
 
@@ -66,7 +68,7 @@ Preload IPC: window.electronAPI.skill.create({...}) → signal 渡せない
 
 ### 2.1 目的
 
-`agentSlice.createSkill()` に `signal?: AbortSignal` 引数を追加し、Renderer 内で生成した AbortSignal を IPC 呼び出しまで透過的に渡せるようにする。
+本件は `docs/30-workflows/UT-CANCEL-004-01/` に formalized され、現在は close-out / docs / system-spec sync まで完了した扱いとする。
 
 ### 2.2 最終ゴール
 
@@ -75,8 +77,8 @@ Preload IPC: window.electronAPI.skill.create({...}) → signal 渡せない
 ```
 SkillCreateWizard.handleGenerate()
   → useCancelGeneration.startGeneration() → AbortSignal 取得
-  → createSkill(description, options, context, signal)  ← signal 追加
-  → window.electronAPI.skill.create({..., signal})       ← signal 渡す
+  → createSkill(description, options, context, signal)
+  → window.electronAPI.skill.create({ description, options, context })  ← IPC shape は維持
 ```
 
 ### 2.3 スコープ
@@ -90,7 +92,7 @@ SkillCreateWizard.handleGenerate()
 
 #### 含まないもの
 
-- Preload IPC ブリッジ層の変更（`window.electronAPI.skill.create` のシグネチャ変更は別タスク）
+- Preload IPC ブリッジ層の変更（`window.electronAPI.skill.create` のシグネチャ変更は不要）
 - Main 側の AbortController との接続（TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001 で完了済み）
 - 新規テストの追加（既存 E2E テスト TC-E2E-02 で確認可能な範囲）
 
@@ -152,7 +154,7 @@ SkillCreateWizard.handleGenerate()
 1. `apps/desktop/src/renderer/store/slices/agentSlice.ts` を開く
 2. `createSkill` の型定義（line 369付近）に `signal?: AbortSignal` を第4引数として追加
 3. `createSkill` の実装（line 1200付近）に同様の `signal?: AbortSignal` を追加
-4. `window.electronAPI.skill.create(...)` の引数オブジェクトに `signal` を含める
+4. `window.electronAPI.skill.create(...)` の引数オブジェクト shape は変更しない
 5. `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` を開く
 6. `handleGenerate` 内の `const { cancelGeneration, startGeneration } = useCancelGeneration()` を確認
 7. `startGeneration()` の戻り値を `const signal = startGeneration()` として受け取る
@@ -213,20 +215,20 @@ Phase 12 必須5ファイルが作成済み
 
 ### 機能要件
 
-- [ ] `agentSlice.createSkill()` が `signal?: AbortSignal` を第4引数として受け取る
-- [ ] 受け取った signal が `window.electronAPI.skill.create()` に渡される
-- [ ] `SkillCreateWizard.handleGenerate()` が `startGeneration()` の戻り値を `createSkill` に渡す
+- [x] `agentSlice.createSkill()` が `signal?: AbortSignal` を第4引数として受け取る
+- [x] 受け取った signal は Renderer guard で消費し、IPC shape は維持する
+- [x] `SkillCreateWizard.handleGenerate()` が `startGeneration()` の戻り値を `createSkill` に渡す
 
 ### 品質要件
 
-- [ ] `pnpm typecheck` がエラーなしで完了
+- [x] `pnpm --filter @repo/desktop exec tsc --noEmit` が完了
 - [ ] 既存の cancel E2E テストが全て PASS
-- [ ] `createSkill` の型定義（インターフェース）と実装のシグネチャが一致
+- [x] `createSkill` の型定義（インターフェース）と実装のシグネチャが一致
 
 ### ドキュメント要件
 
-- [ ] Phase 12 の implementation-guide.md が作成済み
-- [ ] このタスク仕様書のステータスが「完了」に更新済み
+- [x] Phase 12 の implementation-guide.md が作成済み
+- [x] formal task `docs/30-workflows/UT-CANCEL-004-01/` が current canonical として同期済み
 
 ---
 
