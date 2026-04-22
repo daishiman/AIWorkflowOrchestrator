@@ -83,6 +83,17 @@ const OVERVIEW_FILES = [
   "glossary.md",
 ];
 
+// 手動登録キーワード（自動抽出できないアンダースコア・複合語キーワード）
+// generate-index.js 再実行後も常に保持される永続ホワイトリスト
+const MANUAL_KEYWORDS = {
+  average_satisfaction: ["evals-schema-spec.md"],
+  "snake_case v1": ["evals-schema-spec.md"],
+  "levels static object": ["evals-schema-spec.md"],
+  "level number string key": ["evals-schema-spec.md"],
+  min_usage_count: ["evals-schema-spec.md"],
+  min_success_rate: ["evals-schema-spec.md"],
+};
+
 // その他カテゴリのファイル（prefix未マッチ）
 const OTHER_FILES = [
   "deployment.md",
@@ -292,6 +303,18 @@ async function generateKeywordIndex() {
             keywords[word].push(file);
           }
         }
+      }
+    }
+  }
+
+  // 手動登録キーワードをマージ（自動抽出できないアンダースコア・複合語）
+  for (const [kw, files] of Object.entries(MANUAL_KEYWORDS)) {
+    if (!keywords[kw]) {
+      keywords[kw] = [];
+    }
+    for (const file of files) {
+      if (!keywords[kw].includes(file)) {
+        keywords[kw].push(file);
       }
     }
   }

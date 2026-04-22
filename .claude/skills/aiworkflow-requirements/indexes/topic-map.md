@@ -2854,13 +2854,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 1. 目的 | L9 |
-| 2. Legacy スキーマ（camelCase v2 系） | L24 |
-| 3. 方言スキーマ（snake_case v1 系） | L51 |
-| 4. consumer 一覧 | L83 |
-| 5. schema 変更手順 | L105 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L131 |
-| 7. 既知の制約（validator=1 件、ただし完全ではない） | L161 |
-| 8. 変更履歴 | L192 |
+| 2. 標準スキーマ（camelCase v2 系） | L24 |
+| 3. 方言スキーマ（snake_case v1 系） | L49 |
+| 4. consumer 一覧 | L138 |
+| 5. schema 変更手順 | L160 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L186 |
+| 7. 既知の制約（validator=1 件、ただし完全ではない） | L212 |
+| 8. 変更履歴 | L243 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -3532,13 +3532,6 @@ node scripts/list-specs.js --topics
 | 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
 
-### references/lessons-learned-rally-002.md
-
-| セクション | 行 |
-|------------|----|
-| TASK-RALLY-002: restoredPendingRequest合成ルール明確化 (2026-04-21) | L6 |
-| 関連ドキュメント | L48 |
-
 ### references/lessons-learned-rt-04-authkey-dedup.md
 
 | セクション | 行 |
@@ -3959,8 +3952,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L53 |
-| 関連ドキュメント | L58 |
+| 利用順序 | L52 |
+| 関連ドキュメント | L57 |
 
 ### references/llm-embedding.md
 
@@ -5329,13 +5322,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L549 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L569 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L571 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L583 |
-| 完了タスク（2026-03後半） | L611 |
-| 完了タスク（機能別アーカイブ） | L619 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L720 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L548 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L568 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L570 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L582 |
+| 完了タスク（2026-03後半） | L610 |
+| 完了タスク（機能別アーカイブ） | L618 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L719 |
 
 ### references/task-workflow-history.md
 
@@ -5370,9 +5363,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 概要 | L3 |
 | 仕様書インデックス | L33 |
-| TASK-RALLY-002: restoredPendingRequest合成ルール明確化（verify_existing / 2026-04-21） | L62 |
-| 利用順序 | L97 |
-| 関連ドキュメント | L102 |
+| 利用順序 | L62 |
+| 関連ドキュメント | L67 |
 
 ### references/testing-accessibility.md
 

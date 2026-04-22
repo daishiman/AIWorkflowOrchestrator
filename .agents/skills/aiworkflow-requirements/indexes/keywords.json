@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3276,
+  "totalKeywords": 3280,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -469,7 +469,6 @@
       "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-late-chunking-token-provider.md",
-      "lessons-learned-rally-002.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -1211,7 +1210,6 @@
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rag-embedding-runtime.md",
-      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -1298,7 +1296,6 @@
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed.md",
-      "task-workflow.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -6190,13 +6187,8 @@
     "スキーマ仕様": [
       "evals-schema-spec.md"
     ],
-    "Legacy": [
-      "evals-schema-spec.md",
-      "legacy-ordinal-family-register.md"
-    ],
-    "スキーマ": [
-      "evals-schema-spec.md",
-      "interfaces-rag-entity-extraction.md"
+    "標準スキーマ": [
+      "evals-schema-spec.md"
     ],
     "camelCase": [
       "evals-schema-spec.md"
@@ -6843,6 +6835,9 @@
       "rag-knowledge-graph.md",
       "security-input-validation.md"
     ],
+    "スキーマ": [
+      "interfaces-rag-entity-extraction.md"
+    ],
     "エンティティタイプ": [
       "interfaces-rag-entity-extraction.md"
     ],
@@ -6939,8 +6934,7 @@
       "interfaces-skill-verify-contract.md",
       "lessons-learned-skill-creator-cancel-chain.md",
       "lessons-learned-verify-contract-consolidation.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md",
-      "task-workflow.md"
+      "task-workflow-completed-skill-lifecycle-ui-verify.md"
     ],
     "Check": [
       "interfaces-skill-verify-contract.md"
@@ -7207,6 +7201,9 @@
     "適用実績": [
       "ipc-type-resolution-guide.md"
     ],
+    "Legacy": [
+      "legacy-ordinal-family-register.md"
+    ],
     "Ordinal": [
       "legacy-ordinal-family-register.md"
     ],
@@ -7298,7 +7295,6 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
-      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -7389,7 +7385,6 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
-      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -9937,18 +9932,6 @@
     "メソッドシグネチャを比較": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
-    "RALLY": [
-      "lessons-learned-rally-002.md",
-      "task-workflow.md"
-    ],
-    "restoredPendingRequest": [
-      "lessons-learned-rally-002.md",
-      "task-workflow.md"
-    ],
-    "合成ルール明確化": [
-      "lessons-learned-rally-002.md",
-      "task-workflow.md"
-    ],
     "AuthKey": [
       "lessons-learned-rt-04-authkey-dedup.md"
     ],
@@ -10414,8 +10397,7 @@
       "lessons-learned-test-cleanup-describe-skip-2026-04.md"
     ],
     "existing": [
-      "lessons-learned-skill-creator-cancel-chain.md",
-      "task-workflow.md"
+      "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "モードで": [
       "lessons-learned-skill-creator-cancel-chain.md"
@@ -16024,6 +16006,24 @@
     "苦戦箇所と標準ルール": [
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "average_satisfaction": [
+      "evals-schema-spec.md"
+    ],
+    "snake_case v1": [
+      "evals-schema-spec.md"
+    ],
+    "levels static object": [
+      "evals-schema-spec.md"
+    ],
+    "level number string key": [
+      "evals-schema-spec.md"
+    ],
+    "min_usage_count": [
+      "evals-schema-spec.md"
+    ],
+    "min_success_rate": [
+      "evals-schema-spec.md"
     ]
   }
 }
