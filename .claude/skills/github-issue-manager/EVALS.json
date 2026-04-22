@@ -1,23 +1,23 @@
 {
-  "skillName": "github-issue-manager",
-  "currentLevel": 1,
+  "skill_name": "github-issue-manager",
+  "current_level": 1,
   "metrics": {
-    "totalUsageCount": 0,
-    "successCount": 0,
-    "failureCount": 0,
-    "successRate": 0,
-    "averageDuration": 0,
-    "lastEvaluated": null
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "success_rate": 0,
+    "average_duration": 0,
+    "last_evaluated": null
   },
-  "levelHistory": [
+  "level_history": [
     {
       "level": 1,
-      "achievedAt": "2026-01-21"
+      "achieved_at": "2026-01-21"
     }
   ],
   "patterns": {
-    "commonErrors": [],
-    "slowPhases": [],
-    "successPatterns": []
+    "common_errors": [],
+    "slow_phases": [],
+    "success_patterns": []
   }
 }

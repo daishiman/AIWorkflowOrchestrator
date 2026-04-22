@@ -1,0 +1,93 @@
+{
+  "task_id": "UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001",
+  "task_name": "EVALS スキーマ方言（camelCase / snake_case）統一",
+  "taskType": "NON_VISUAL",
+  "task_type": "NON_VISUAL",
+  "implementationMode": "new",
+  "implementation_mode": "new",
+  "issue_number": 2324,
+  "created_date": "2026-04-21",
+  "status": "pending",
+  "metadata": {
+    "taskType": "NON_VISUAL",
+    "implementationMode": "new"
+  },
+  "phases": {
+    "phase_1": {
+      "status": "completed",
+      "outputs": [
+        "requirements-summary.md",
+        "spec-extraction-map.md",
+        "risk-register.md"
+      ]
+    },
+    "phase_2": {
+      "status": "completed",
+      "outputs": [
+        "unification-design.md",
+        "consumer-matrix.md",
+        "validation-matrix.md"
+      ]
+    },
+    "phase_3": {
+      "status": "completed",
+      "outputs": ["design-review-result.md"]
+    },
+    "phase_4": {
+      "status": "completed",
+      "outputs": ["test-scenarios.md", "command-suite.md"]
+    },
+    "phase_5": {
+      "status": "completed",
+      "outputs": ["implementation-diff-check.md", "changed-file-plan.md"]
+    },
+    "phase_6": {
+      "status": "completed",
+      "outputs": ["regression-expansion-plan.md"]
+    },
+    "phase_7": {
+      "status": "completed",
+      "outputs": ["coverage-report.md", "traceability-matrix.md"]
+    },
+    "phase_8": {
+      "status": "completed",
+      "outputs": ["refactor-decision-log.md"]
+    },
+    "phase_9": {
+      "status": "completed",
+      "outputs": ["quality-gate-report.md"]
+    },
+    "phase_10": {
+      "status": "completed",
+      "outputs": ["final-review-result.md"]
+    },
+    "phase_11": {
+      "status": "completed",
+      "outputs": [
+        "manual-test-checklist.md",
+        "manual-test-result.md",
+        "discovered-issues.md"
+      ]
+    },
+    "phase_12": {
+      "status": "completed",
+      "outputs": [
+        "implementation-guide.md",
+        "system-spec-update-summary.md",
+        "documentation-changelog.md",
+        "unassigned-task-detection.md",
+        "skill-feedback-report.md",
+        "phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase_13": {
+      "status": "blocked",
+      "reason": "user approval required",
+      "outputs": ["local-check-result.md", "change-summary.md", "pr-info.md"]
+    }
+  },
+  "dependencies": {
+    "blocked_by": ["UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001"],
+    "blocks": ["UNASSIGNED-EVALS-VALIDATOR-GUARD-001"]
+  }
+}
