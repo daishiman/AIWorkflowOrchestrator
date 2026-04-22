@@ -48,6 +48,8 @@ Undoがローカルのステップ履歴のみを巻き戻し、IPCサーバー�
 
 `restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput` という合成式が存在するが、なぜ `restoredPendingRequest` を優先するのか・どの条件下で null になるのかがコード上明示されていない。
 
+> 2026-04-22 close-out: `TASK-RALLY-002` で優先ルール説明コメントとシナリオテスト（S-1〜S-4 / X-1〜X-2）を追加し、意図をコードと証跡で追跡可能にした。
+
 **懸念点3: SkillLifecyclePanelのdead code残存**
 
 `_handleSubmitWorkflowInput`（未使用ハンドラ）と旧入力 state（`selectedOptionId` / `textAnswer` / `secretAnswer` / `confirmAnswer`）が残存している。これらは現在の入力送信フローで使われておらず、読み手を混乱させる。
