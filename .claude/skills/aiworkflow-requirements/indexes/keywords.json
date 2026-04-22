@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3277,
+  "totalKeywords": 3276,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -469,6 +469,7 @@
       "lessons-learned-evals-consumer-audit-001.md",
       "lessons-learned-late-chunking-esbuild-worktree.md",
       "lessons-learned-late-chunking-token-provider.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-templates.md",
       "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-verify-contract-consolidation.md",
@@ -1210,6 +1211,7 @@
       "lessons-learned-phase12-lifecycle-mid.md",
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -1288,7 +1290,6 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-recent-2026-04g.md",
-      "task-workflow-completed-recent-2026-04h.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1297,6 +1298,7 @@
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed.md",
+      "task-workflow.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -6937,7 +6939,8 @@
       "interfaces-skill-verify-contract.md",
       "lessons-learned-skill-creator-cancel-chain.md",
       "lessons-learned-verify-contract-consolidation.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+      "task-workflow-completed-skill-lifecycle-ui-verify.md",
+      "task-workflow.md"
     ],
     "Check": [
       "interfaces-skill-verify-contract.md"
@@ -7295,6 +7298,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -7385,6 +7389,7 @@
       "lessons-learned-phase12-lifecycle-recent.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rally-002.md",
       "lessons-learned-rt-04-authkey-dedup.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -7852,7 +7857,6 @@
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
-      "task-workflow-completed-recent-2026-04h.md",
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
@@ -9933,6 +9937,18 @@
     "メソッドシグネチャを比較": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
+    "RALLY": [
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
+    ],
+    "restoredPendingRequest": [
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
+    ],
+    "合成ルール明確化": [
+      "lessons-learned-rally-002.md",
+      "task-workflow.md"
+    ],
     "AuthKey": [
       "lessons-learned-rt-04-authkey-dedup.md"
     ],
@@ -10398,7 +10414,8 @@
       "lessons-learned-test-cleanup-describe-skip-2026-04.md"
     ],
     "existing": [
-      "lessons-learned-skill-creator-cancel-chain.md"
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "task-workflow.md"
     ],
     "モードで": [
       "lessons-learned-skill-creator-cancel-chain.md"
@@ -10774,8 +10791,7 @@
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "Wave": [
-      "lessons-learned-skill-wizard-mode-mgmt.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "分割実施では": [
       "lessons-learned-skill-wizard-mode-mgmt.md"
@@ -14308,8 +14324,7 @@
       "spec-splitting-guidelines.md"
     ],
     "code": [
-      "spec-splitting-guidelines.md",
-      "task-workflow-completed-recent-2026-04h.md"
+      "spec-splitting-guidelines.md"
     ],
     "分割実行手順": [
       "spec-splitting-guidelines.md"
@@ -14469,15 +14484,6 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
-    "fixture": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "runner": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "スキーマ検証追加": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
     "PROMPT": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14489,6 +14495,15 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "実処理実装": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "fixture": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "runner": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "スキーマ検証追加": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
@@ -14534,18 +14549,6 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "IEncoder": [
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
-    "RALLY": [
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
-    "dead": [
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
-    "除去": [
-      "task-workflow-completed-recent-2026-04h.md"
-    ],
-    "並列タスク": [
       "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [

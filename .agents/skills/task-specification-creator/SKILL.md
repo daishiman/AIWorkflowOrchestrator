@@ -114,6 +114,18 @@ P50チェック結果に基づき、タスク仕様書のメタ情報に `implem
 
 `implementation_mode: "verify_existing"` を選択した場合、Phase 4 では既実装コードのカバレッジを確認する targeted test のみを設計し、Phase 5 では `git diff` によるdiff確認を主要作業とする。詳細は [references/phase-template-core.md](references/phase-template-core.md) の P50チェックセクションを参照。
 
+**verify_existing タスクタイプの典型的アウトカム**:
+
+`verify_existing` は「コードの暗黙知を明文化する」タスクタイプである。コード変更は原則ゼロまたは最小限にとどまり、以下が主な成果物となる:
+
+| アウトカム | 例 |
+| ---------- | -- |
+| コメント追加 | 既存関数・型に JSDoc / インラインコメントを付与 |
+| テスト追加 | 既実装コードの動作を保証する regression test を新設 |
+| ドキュメント更新 | 仕様書・README・インターフェース定義の現行コードへの同期 |
+
+コード変更なしで Phase 12 まで完了するケースが標準パターンであり、`verify-all-specs` が PASS しても仕様書反映が不完全な場合がある（→ [references/phase-template-phase12.md](references/phase-template-phase12.md) §verify-all-specs が PASS しても確認すべき項目 を参照）。
+
 ## 実行フロー
 
 ### create
@@ -308,6 +320,7 @@ summaryファイル作成だけでなく正本仕様ファイルの実際の更�
 
 | Version                | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ---------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v10.09.61**          | **2026-04-21**             | **TASK-RALLY-002 Phase-12 skill-feedback 反映**: `implementation_mode: "verify_existing"` 定義に典型的アウトカム（コメント追加/テスト追加/ドキュメント更新）と false negative 注記を追記。`phase-template-phase12.md` に §verify-all-specs が PASS しても確認すべき項目（false negative 対策）セクションを新設（LOGS.md・lessons-learned・task-workflow・resource-map・skill-feedback の5項目）。`.agents` mirror を同波更新。 |
 | **v10.09.60**          | **2026-04-21**             | **TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync**: NON_VISUAL + headless substitute evidence を task-local Phase 11 正本として反映し、Phase 11/12 completed 同期、`artifacts.json` / `outputs/artifacts.json` parity、unassigned follow-up 1件 formalize を同波で記録。 |
 | **v10.09.59**          | **2026-04-21**             | **TASK-SW-TODO-001 close-out sync**: `verify_existing + NON_VISUAL` task の Phase 11 evidence を `{TASK-ID}-manual-test-report.md` へ統一しつつ、`manual-test-result.md` に fixed phrase / 実施情報 / 仕様判断根拠 / 実行記録を集約する current pattern を close-out 実例へ反映。Phase 12 compliance-check は Task 12-1〜12-6 / Step 1-A〜1-G / Step 2 を root evidence として確認する運用を usage log に追記。 |
 | **v10.09.58**          | **2026-04-19**             | **UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 parity guard実装**: validate-closeout-parity.js新規追加、complete-phase.js/verify-all-specs.js拡張。Phase 12 close-out parity 必須ゲート化。 |

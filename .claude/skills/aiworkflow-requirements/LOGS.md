@@ -13,6 +13,28 @@
 - 変更後: 320字
 - 理由: Progressive Disclosure原則（200-400字）への準拠
 
+## 2026-04-21: TASK-RALLY-002（restoredPendingRequest合成ルール明確化 verify_existing close-out）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RALLY-002 |
+| 操作 | update-spec |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`（コメント追加）、`ConversationalInterview.restoredPendingRequest.test.tsx`（5件追加）、ワークフロー再構成（`docs/30-workflows/wave0-par-RALLY-002/`） |
+| 結果 | success |
+| 備考 | restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null の合成ルールを確定し、TC-RPR-01〜05で全パターン網羅 |
+
+### 更新詳細
+
+- **更新**: `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+  - `const pendingRequest = restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;` の合成ルールにコメント追加
+  - undo後の復元質問優先・requestId変化時の自動クリアを明文化
+- **追加**: `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx`
+  - TC-RPR-01〜05の5件targeted regression test追加
+- **ワークフロー再構成**: `docs/30-workflows/skill-create-flow-gaps/wave0-par-RALLY-002/` → `docs/30-workflows/wave0-par-RALLY-002/` へ移管
+- **更新**: `references/task-workflow.md` — RALLY-002 verify_existingパターン追記
+- **更新**: `references/lessons-learned-current-2026-04.md` — RALLY-002教訓追記
+- **更新**: `indexes/resource-map.md` — RALLY関連エントリ追加
+
 ## 2026-04-21: TASK-SW-TODO-001（current fact close-out sync）
 
 | 項目 | 内容 |
