@@ -139,6 +139,30 @@ Phase 12 で列挙する成果物は、6 つの task outputs と Wave C 引き�
 - [ ] `topic-map.md` 更新要否を確認し、必要な場合は `generate-index.js` を実行した
 - [ ] テストファイルの追加・修正があれば `documentation-changelog.md` に記録した（専用ファイル + 既存ファイル修正の2点セット）
 
+## パターン13: NON_VISUAL task の Phase 11 証跡 — 正本 + summary 併置パターン（FB-UT-CANCEL-004-01-01）
+
+**背景**: UT-CANCEL-004-01（2026-04-22）での経験から。NON_VISUAL task の Phase 11 で `manual-test-result.md`（正本）と task-specific report（summary）を併置する際のドリフトを防ぐパターン。
+
+### 構成ルール
+
+| ファイル                         | 役割                             | 記録内容                                       |
+| -------------------------------- | -------------------------------- | ---------------------------------------------- |
+| `manual-test-result.md`          | **正本**（Phase 12 close-out 参照先） | 環境制約・ブロック理由・スキップ根拠を含む全結果 |
+| `{task-id}-manual-test-report.md` | summary（task-specific 補足）    | 正本を参照しつつ task 固有の追記のみ             |
+
+### 適用条件
+
+- UI/UX 変更なし（NON_VISUAL）
+- Phase 12 の `system-spec-update-summary.md` が両ファイルを参照するケース
+
+### Phase 12 close-out ルール
+
+- `system-spec-update-summary.md` の **Phase 11 参照** セクションには `manual-test-result.md`（正本）を先に書く
+- task-specific report はあくまで補足。正本に含まれない補足事項のみ追記する
+- 両ファイルで「PASS」「BLOCKED」の表記が矛盾しないことを確認する
+
+---
+
 ## パターン12: shared constant 追加タスク（non-visual）の最小単位
 
 **背景**: TASK-SW-CANCEL-001（2026-04-16）での経験から。shared に定数を1件追加する小粒度タスクの Phase 12 close-out パターン。

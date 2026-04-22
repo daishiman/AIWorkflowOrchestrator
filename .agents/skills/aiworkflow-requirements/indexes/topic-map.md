@@ -3649,7 +3649,8 @@ node scripts/list-specs.js --topics
 | L-CANCEL-006: IPC failure swallow は try/catch + stage先行更新の 2 点セット | L51 |
 | L-CANCEL-007: optional chain 2 段チェーン（`?.method?.()）は API/method 両方の Undefined guard | L60 |
 | L-CANCEL-008: NON_VISUAL Phase 11 証跡は checklist / result / discovered-issues の 3 点セット | L69 |
-| 変更履歴 | L80 |
+| L-CANCEL-009: AbortSignal は Renderer guard で消費し IPC payload に含めない | L78 |
+| 変更履歴 | L89 |
 
 ### references/lessons-learned-skill-creator-ipc-handler-scope.md
 
@@ -4766,18 +4767,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | よく使うパターン | L8 |
-| 型定義クイックアクセス | L440 |
-| docs-only status sync | L484 |
-| IPCチャンネル早見表 | L496 |
-| ディレクトリ構成早見表 | L612 |
-| エラーコード早見表 | L638 |
-| テスト基準早見表 | L651 |
-| セキュリティチェックリスト | L663 |
-| 新機能追加フロー | L675 |
-| 仕様書テンプレート選択 | L689 |
-| 関連ドキュメント | L712 |
-| Cron Validation（scheduleConfigValidator） | L770 |
-| SkillCreatorService progressコールバック実装（TASK-SW-STREAM-001 / 2026-04-16完了） | L787 |
+| 型定義クイックアクセス | L455 |
+| docs-only status sync | L499 |
+| IPCチャンネル早見表 | L511 |
+| ディレクトリ構成早見表 | L627 |
+| エラーコード早見表 | L653 |
+| テスト基準早見表 | L666 |
+| セキュリティチェックリスト | L678 |
+| 新機能追加フロー | L690 |
+| 仕様書テンプレート選択 | L704 |
+| 関連ドキュメント | L727 |
+| Cron Validation（scheduleConfigValidator） | L785 |
+| SkillCreatorService progressコールバック実装（TASK-SW-STREAM-001 / 2026-04-16完了） | L802 |
 
 ### references/rag-desktop-state.md
 
@@ -5029,7 +5030,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 残課題（未タスク） | L6 |
-| 続き | L655 |
+| 続き | L656 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -5188,22 +5189,25 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|
-| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L3 |
-| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L29 |
-| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L48 |
-| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L86 |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L129 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L154 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L190 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L222 |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L669 |
-| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L709 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L3 |
+| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L22 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L48 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L67 |
+| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L105 |
+| UT-CANCEL-004-01: createSkill AbortSignal renderer bridge（2026-04-22） | L148 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L177 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L202 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L238 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L270 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L717 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L757 |
 
 ### references/task-workflow-completed-recent-2026-04h.md
 
 | セクション | 行 |
 |------------|----|
 | UNASSIGNED-EMB-005-A: XenovaTransformerEncoder 実装（Late Chunking IEncoder 実装）（2026-04-20） | L3 |
+| TASK-RALLY-001: SkillLifecyclePanel dead code 除去（RALLY Wave 0 並列タスク）（2026-04-21） | L61 |
 
 ### references/task-workflow-completed-skill-create-ui-integration.md
 

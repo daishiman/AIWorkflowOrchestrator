@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3279,
+  "totalKeywords": 3282,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2454,6 +2454,7 @@
       "interfaces-chat-history-core.md",
       "lessons-learned-current-2026-04-state-management.md",
       "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-creator-cancel-chain.md",
       "llm-ipc-types.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "technology-desktop.md"
@@ -9595,7 +9596,8 @@
     "bridge": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-part-1.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "submitUserInput": [
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
@@ -10210,7 +10212,9 @@
       "ui-ux-feature-components-theme-chat.md"
     ],
     "AbortSignal": [
-      "lessons-learned-skill-cancel-abortsignal.md"
+      "lessons-learned-skill-cancel-abortsignal.md",
+      "lessons-learned-skill-creator-cancel-chain.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "主要知見": [
       "lessons-learned-skill-cancel-abortsignal.md"
@@ -10470,6 +10474,15 @@
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "discovered": [
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "で消費し": [
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "payload": [
+      "lessons-learned-skill-creator-cancel-chain.md"
+    ],
+    "に含めない": [
       "lessons-learned-skill-creator-cancel-chain.md"
     ],
     "ハンドラー責務分離": [

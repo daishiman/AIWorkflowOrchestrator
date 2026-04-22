@@ -24,7 +24,7 @@
 
 ## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
 ## 2026-04-21 - TASK-SW-TODO-001 close-out sync
-## 2026-04-22 - UT-CANCEL-004-01 close-out observation
+## 2026-04-22 - UT-CANCEL-004-01 close-out observation + feedback apply
 
 ### コンテキスト
 
@@ -38,6 +38,7 @@
 - stale unassigned を formal workflow 基準へ `formalized / superseded` として整理
 - Phase 11 で `manual-test-result.md` を正本、task-specific report を summary とする併置パターンを実運用で確認
 - worktree `esbuild` mismatch を製品FAILと混同しない記録パターンを再利用
+- FB-UT-CANCEL-004-01-01 を `references/patterns-phase12-sync.md` のパターン13として正式化（NON_VISUAL Phase 11 証跡 正本+summary 併置パターン）
 
 ### 結果
 
