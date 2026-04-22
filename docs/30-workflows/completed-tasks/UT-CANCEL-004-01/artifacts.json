@@ -2,8 +2,8 @@
   "task_id": "UT-CANCEL-004-01",
   "feature_name": "UT-CANCEL-004-01",
   "created_date": "2026-04-22",
-  "lastUpdated": "2026-04-22T12:00:00Z",
-  "status": "phase13_blocked",
+  "lastUpdated": "2026-04-22T05:39:23.536Z",
+  "status": "completed",
   "currentPhase": 13,
   "phases": {
     "1": {
@@ -75,12 +75,29 @@
       ]
     },
     "13": {
-      "status": "blocked",
+      "status": "completed",
+      "completedAt": "2026-04-22T05:39:23.533Z",
       "artifacts": [
-        "outputs/phase-13/local-check-result.md",
-        "outputs/phase-13/change-summary.md",
-        "outputs/phase-13/pr-info.md",
-        "outputs/phase-13/pr-creation-result.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル品質検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-creation-result.md",
+          "description": "PR作成結果"
+        }
       ]
     }
   },

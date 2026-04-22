@@ -8,7 +8,7 @@
 | タスクID     | UT-CANCEL-004-01                     |
 | タスク名     | createSkill AbortSignal サポート追加 |
 | タスク種別   | NON_VISUAL                           |
-| ステータス   | ブロック中（ユーザー承認待ち）       |
+| ステータス   | completed                            |
 | 作成日       | 2026-04-22                           |
 | GitHub Issue | #2350（OPEN）                        |
 
