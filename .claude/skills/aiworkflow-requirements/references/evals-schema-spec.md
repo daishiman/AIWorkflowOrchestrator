@@ -132,24 +132,28 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 
 `task-specification-creator/EVALS.json` の `qualityInsights.*` は、自動計装ではなく**運用担当が手動でメンテする品質 KPI 集合**である。writer は手動、reader は現状 0 件（将来、`select_skill.js` 等が消費する設計）。
 
-| フィールド                                  | 型       | 意味                                                       |
-| ------------------------------------------- | -------- | ---------------------------------------------------------- |
-| `qualityInsights.patternAdoptionRate`         | number   | parent-skill pattern の採用率                              |
-| `qualityInsights.coverageTargetHitRate`       | number   | coverage target 達成率                                     |
-| `qualityInsights.unassignedTaskDetectionRate` | number   | 未タスク検出率（Phase 12 Task 4 件数 / 全 Phase 発見件数） |
-| `qualityInsights.notes`                       | string   | 運用者メモ                                                 |
-| `qualityInsights.taskMetrics.createdCount`    | number   | 起票タスク数                                               |
-| `qualityInsights.taskMetrics.completedCount`  | number   | 完了タスク数                                               |
-| `qualityInsights.taskMetrics.failedCount`     | number   | 失敗タスク数                                               |
-| `qualityInsights.taskMetrics.retriedCount`    | number   | retry 回数                                                 |
-| `qualityInsights.taskMetrics.cancelRate`      | number   | cancel 率                                                  |
-| `qualityInsights.taskMetrics.blockedCount`    | number   | blocked 件数                                               |
-| `qualityInsights.taskMetrics.lastUpdated`     | ISO-8601 | 最終更新                                                   |
+| フィールド                                                      | 型                       | 意味                                                                           |
+| --------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------ |
+| `qualityInsights.patternAdoptionRate`                           | number (0.0〜1.0)        | parent-skill pattern の採用率                                                  |
+| `qualityInsights.coverageTargetHitRate`                         | number (0.0〜1.0)        | coverage target 達成率                                                         |
+| `qualityInsights.unassignedTaskDetectionRate`                   | number (0.0〜1.0)        | 未タスク検出率（Phase 12 Task 4 件数 / 全 Phase 発見件数）                     |
+| `qualityInsights.notes`                                         | string                   | 運用者メモ（フリーテキスト・Phase 12 closeout 時に追記）                       |
+| `qualityInsights.taskMetrics`                                   | Record\<string, object\> | 完了タスクIDをキーとした詳細メトリクス辞書（例: `"TASK-8A": {...}`）           |
+| `qualityInsights.taskMetrics.{TASK_ID}.completedPhases`         | number (整数 1〜13)      | そのタスクで完了した Phase 数                                                  |
+| `qualityInsights.taskMetrics.{TASK_ID}.totalTests`              | number (整数 0以上)      | 総テスト数（docs-only タスクの場合は 0 を記録）                                |
+| `qualityInsights.taskMetrics.{TASK_ID}.avgCoverage`             | number (0.0〜100.0)      | 平均コードカバレッジ（%）（docs-only タスクの場合は 0 を記録）                 |
+| `qualityInsights.taskMetrics.{TASK_ID}.systemSpecsUpdated`      | number (整数 0以上)      | そのタスクで更新したシステム仕様書のファイル数                                 |
+| `qualityInsights.taskMetrics.{TASK_ID}.unassignedTasksDetected` | number (整数 0以上)      | そのタスクの Phase 12 で検出・記録した未タスク数                               |
 
 ### 6.1 運用ルール
 
+- **writer**: Phase 12 closeout を実行するタスク担当者（人間）
+- **更新タイミング**: 各タスクの Phase 12 closeout 時（`taskMetrics` に 1 エントリ追加、rate 系フィールドを再計算）
+- **運用責任**: タスク担当者。自動更新スクリプトは現状 0 件（将来は `log_usage.js` 拡張で自動化予定）
 - 手動更新時は commit メッセージに `chore(evals): qualityInsights update` を付与する
 - validator は導入済みだが、`qualityInsights.*` の詳細妥当性までは未検証
+- `taskMetrics.{TASK_ID}` エントリは完了タスクごとに追記し、削除しない
+- validator 化は UNASSIGNED-EVALS-VALIDATOR-GUARD-001 の設計検討後に実施する（手動値の書式検証）
 - reader 0 件である状態も「既知の制約」として §7 に明記
 
 ---
@@ -192,3 +196,4 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 | 2026-04-21 | UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001 Phase 1-12 完了に伴う更新。§2 を legacy スキーマに改訂、§3.1 を snake_case v1 正本確定に更新。全スキル EVALS.json（`.claude/skills/` + `.agents/skills/`）が snake_case v1 に統一済み。 |
 | 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-19 | 初版作成。TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 Task 2 `system-spec-update-summary.md` §4.1.1 / §4.2.1 / §4.3.1 のドラフトを正本化。camelCase v2 / snake_case v1 / qualityInsights / validator=0 件 を明示。 |
+| 2026-04-21 | §6 update。UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 により `qualityInsights.taskMetrics` 構造を実際の EVALS.json 実装（タスクIDキー辞書）に修正。flat フィールド（`createdCount` 等）を削除し `{TASK_ID}.completedPhases` 等に置換。§6.1 に writer・更新タイミング・運用責任を追記。 |

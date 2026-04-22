@@ -2859,8 +2859,8 @@ node scripts/list-specs.js --topics
 | 4. consumer 一覧 | L83 |
 | 5. schema 変更手順 | L105 |
 | 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L131 |
-| 7. 既知の制約（validator=1 件、ただし完全ではない） | L157 |
-| 8. 変更履歴 | L188 |
+| 7. 既知の制約（validator=1 件、ただし完全ではない） | L161 |
+| 8. 変更履歴 | L192 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -5323,13 +5323,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L548 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L568 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L570 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L582 |
-| 完了タスク（2026-03後半） | L610 |
-| 完了タスク（機能別アーカイブ） | L618 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L719 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L549 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L569 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L571 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L583 |
+| 完了タスク（2026-03後半） | L611 |
+| 完了タスク（機能別アーカイブ） | L619 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L720 |
 
 ### references/task-workflow-history.md
 
