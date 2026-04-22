@@ -2854,13 +2854,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 1. 目的 | L9 |
-| 2. 標準スキーマ（camelCase v2 系） | L24 |
-| 3. 方言スキーマ（snake_case v1 系） | L49 |
-| 4. consumer 一覧 | L80 |
-| 5. schema 変更手順 | L102 |
-| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L128 |
-| 7. 既知の制約（validator=1 件、ただし完全ではない） | L154 |
-| 8. 変更履歴 | L185 |
+| 2. Legacy スキーマ（camelCase v2 系） | L24 |
+| 3. 方言スキーマ（snake_case v1 系） | L51 |
+| 4. consumer 一覧 | L83 |
+| 5. schema 変更手順 | L105 |
+| 6. qualityInsights（拡張メトリクス / writer=手動メンテ） | L131 |
+| 7. 既知の制約（validator=1 件、ただし完全ではない） | L157 |
+| 8. 変更履歴 | L188 |
 
 ### references/governance-hooks-factory-audit-sink.md
 
@@ -5182,14 +5182,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L3 |
-| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L22 |
-| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L60 |
-| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L103 |
-| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L128 |
-| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L164 |
-| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L196 |
-| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L643 |
-| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L683 |
+| TASK-SC-IMPROVE-PROMPT-IMPL-001: SkillCreatorService improve-prompt 実処理実装（2026-04-21） | L22 |
+| UNASSIGNED-EVALS-VALIDATOR-GUARD-001: skill-fixture-runner EVALS.json スキーマ検証追加（2026-04-21） | L48 |
+| TASK-IPC-HANDLER-SNAPSHOT-COVERAGE-001: IPCハンドラー登録スナップショットカバレッジ拡張（2026-04-19） | L67 |
+| TASK-SW-CANCEL-004: useCancelGeneration renderer hook 正規化（2026-04-20） | L105 |
+| TASK-SC-ABORT-SIGNAL-CREATE-SKILL-001: createSkill private workflow abort entry guard（2026-04-19） | L148 |
+| UT-IPC-HANDLER-CI-001: ipcMain.handle() の重複・欠損 CI 自動検出（2026-04-18） | L173 |
+| TASK-CI-FUTURE-007: @repo/backend Codecov カバレッジアップロード対応（2026-04-16） | L209 |
+| TASK-SW-FIX-UI-001: UI整合性修正（カテゴリ複数選択・ボタン統一・ProgressBar修正） | L241 |
+| TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001: キャンセル後の半作成スキルディレクトリ残存クリーンアップ（2026-04-20） | L688 |
+| TASK-SC-CANCEL-LOGS-SYNC-001: キャンセルクリーンアップ仕様書 repo-wide LOGS/lessons-learned同期（2026-04-20） | L728 |
 
 ### references/task-workflow-completed-recent-2026-04h.md
 

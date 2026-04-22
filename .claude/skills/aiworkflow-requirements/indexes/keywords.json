@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3271,
+  "totalKeywords": 3273,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6187,8 +6187,13 @@
     "スキーマ仕様": [
       "evals-schema-spec.md"
     ],
-    "標準スキーマ": [
-      "evals-schema-spec.md"
+    "Legacy": [
+      "evals-schema-spec.md",
+      "legacy-ordinal-family-register.md"
+    ],
+    "スキーマ": [
+      "evals-schema-spec.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "camelCase": [
       "evals-schema-spec.md"
@@ -6485,7 +6490,8 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "quick-reference.md"
+      "quick-reference.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
@@ -6833,9 +6839,6 @@
       "interfaces-rag-entity-extraction.md",
       "rag-knowledge-graph.md",
       "security-input-validation.md"
-    ],
-    "スキーマ": [
-      "interfaces-rag-entity-extraction.md"
     ],
     "エンティティタイプ": [
       "interfaces-rag-entity-extraction.md"
@@ -7199,9 +7202,6 @@
     ],
     "適用実績": [
       "ipc-type-resolution-guide.md"
-    ],
-    "Legacy": [
-      "legacy-ordinal-family-register.md"
     ],
     "Ordinal": [
       "legacy-ordinal-family-register.md"
@@ -9659,6 +9659,7 @@
       "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-viewtype-electron-ui.md",
       "quick-reference-search-patterns-skill-lifecycle.md",
+      "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-agent-execution-core.md",
@@ -13067,7 +13068,8 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "improve": [
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "task-workflow-completed-recent-2026-04g.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
@@ -14472,6 +14474,19 @@
     "スキーマ検証追加": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
+    "PROMPT": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "IMPL": [
+      "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-ut-06-safety-gate.md"
+    ],
+    "prompt": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "実処理実装": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14644,9 +14659,6 @@
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
     "gate": [
-      "task-workflow-completed-ut-06-safety-gate.md"
-    ],
-    "IMPL": [
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
     "evaluateSafety": [
