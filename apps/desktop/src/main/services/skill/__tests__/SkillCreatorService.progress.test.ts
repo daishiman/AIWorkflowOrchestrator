@@ -99,6 +99,8 @@ describe("SkillCreatorService.createSkill - 進捗コールバック (TASK-SW-ST
       stderr: "",
       exitCode: 0,
     });
+    // improve_skill.js フォールバック用デフォルト（improve-prompt モード）
+    mockScriptExecutor.executeJson.mockResolvedValue({ suggestions: [] });
 
     // generate_skill_md.js 成功後 skillMdPath アクセス成功
     vi.mocked(fsPromises.access)
