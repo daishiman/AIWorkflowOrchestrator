@@ -1,90 +1,53 @@
-# Test Specification — Phase 4
+# テスト仕様書
 
-## 方針: verify_existing（RED テストなし、既存挙動の固定）
+## テスト対象
+
+`ConversationalInterview.tsx` の `pendingRequest` 合成ロジック（L44-45）と restoredPendingRequest クリアuseEffect（L55-59）
 
 ## テストファイル
 
-- **ファイル名**: `ConversationalInterview.restoredPendingRequest.test.tsx`
-- **配置**: `apps/desktop/src/renderer/components/skill/__tests__/`
-- **フレームワーク**: Vitest + `@testing-library/react`
-- **環境**: `@vitest-environment happy-dom`
+`apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx`
 
-## 正常系シナリオ定義
+追加する describe ブロック: `pendingRequest合成ロジック`
 
-### TC-S3-01: 通常フロー — snapshot フォールバック
+## シナリオ一覧
 
-```
-前提条件:
-  - restoredPendingRequest = null（初期状態）
-  - workflowSnapshot.awaitingUserInput = { requestId: "req-s3", kind: "single_select", prompt: "..." }
-操作:
-  - コンポーネントをレンダリング
-期待結果:
-  - pendingRequest === workflowSnapshot.awaitingUserInput（フォールバック先）
-  - single_select chips が表示される
-```
+| ID  | シナリオ                                         | テスト手法                              | 期待結果                                                                      | 優先度 |
+| --- | ------------------------------------------------ | --------------------------------------- | ----------------------------------------------------------------------------- | ------ |
+| S-1 | 通常フロー（restoredPendingRequest が null）     | render with snapshot                    | workflowSnapshot.awaitingUserInput の質問テキストが表示される                 | 必須   |
+| S-2 | undo後（restoredPendingRequest が非 null）       | render + submit + undo                  | 前の質問（prevReq）のテキストが表示される                                     | 必須   |
+| S-3 | snapshot更新後（新requestIdのawaitingUserInput） | render + submit + undo + rerender       | restoredPendingRequestがクリアされ、新しいawaitingUserInputの質問が表示される | 必須   |
+| S-4 | awaitingUserInput が null の場合                 | render + submit + undo + rerender(null) | restoredPendingRequestはクリアされず、前の質問が引き続き表示される            | 必須   |
 
-### TC-S1-01: 復元フロー — restoredPendingRequest 優先
+## テスト設計の詳細
 
-```
-前提条件:
-  - Q1 (single_select) を submit → 履歴に追加
-  - workflowSnapshot が Q2 (free_text) に更新
-  - undo 実行 → restoredPendingRequest = Q1
-  - workflowSnapshot.awaitingUserInput = Q2（requestId 異なる）
-操作:
-  - undo ボタンクリック
-期待結果:
-  - pendingRequest === restoredPendingRequest（Q1 が優先）
-  - single_select chips が表示（Q1 の widget）
-  - free_text input が非表示（Q2 の widget ではない）
-```
+### restoredPendingRequest のテスト方法
 
-### TC-S2-01: クリア条件 — requestId 変化でリセット
+内部 state のため直接検証不可。以下のUIフローで間接的に検証する:
+
+1. **undo実行**: 送信 → 戻るボタンクリック → `handleUndo()` → `setRestoredPendingRequest(prevReq)`
+2. **表示確認**: `pendingRequest` が `prevReq` になる → `prevReq.prompt` が画面に表示される
+3. **クリア確認**: `rerender` で新 snapshot（新 requestId）を渡す → `pendingRequest` が `newAwaitingUserInput` に切り替わる
+
+### テストフロー（S-2〜S-4共通）
 
 ```
-前提条件:
-  - S-1 のセットアップ後（restoredPendingRequest = Q1、snapshot = Q2）
-  - workflowSnapshot が Q3（新 requestId）に更新
-操作:
-  - workflowSnapshot を Q3 に変更（rerender）
-期待結果:
-  - クリア条件 useEffect が発火し restoredPendingRequest = null
-- pendingRequest = Q3（snapshot フォールバック）
-- free_text input が表示（Q3 の widget）
+render(req1のsnapshot)
+→ 回答選択・送信（req1の答えをsubmit）
+→ rerender(req2のsnapshot)  ← サーバーから次の質問が届いた
+→ undoクリック  ← setRestoredPendingRequest(req1)
+→ req1の質問テキストが表示されていることを確認（S-2）
+→ rerender(req3のsnapshot)  ← 新requestIdのsnapshotが届いた
+→ req3の質問テキストが表示されていることを確認（S-3）
 ```
 
-## 異常系・境界シナリオ定義
+## テストコード骨格
 
-### TC-EC6-01: undo 復元中の再送信は restored requestId を使う
-
+```typescript
+describe('pendingRequest合成ロジック', () => {
+  it('S-1: 通常フロー: workflowSnapshot.awaitingUserInputを使用する', () => { ... });
+  it('S-2: undo後: restoredPendingRequestを優先する', async () => { ... });
+  it('S-3: snapshot更新後: restoredPendingRequestがクリアされpendingRequestが切り替わる', async () => { ... });
+  it('S-4: awaitingUserInputがnullの場合: restoredPendingRequestはクリアされない', async () => { ... });
+});
 ```
-前提条件:
-  - Q1 (single_select) を submit
-  - workflowSnapshot が Q2 (free_text) に更新
-  - undo 実行 → restoredPendingRequest = Q1
-操作:
-  - Q1 の別選択肢を選んで再送信
-期待結果:
-  - submission.requestId === Q1.requestId
-  - submission.selectedOptionId は再選択した値
-```
-
-### TC-EC7-01: 再送信成功後も新 snapshot 到着まで restored UI を維持
-
-```
-前提条件:
-  - undo 復元中で pendingRequest = Q1, snapshot.awaitingUserInput = Q2
-操作:
-  - Q1 を再送信し、その直後は親 snapshot をまだ更新しない
-期待結果:
-  - restoredPendingRequest は維持される
-  - single_select widget が継続表示される
-  - 新しい requestId の snapshot 到着時のみ通常フローへ戻る
-```
-
-## テストファイルの設計原則（verify_existing）
-
-- 復元 UI と送信 payload の不整合を防ぐ regression guard を優先する
-- `pendingRequest` の表示と submission 生成元が一致していることを固定する
-- 既存フローを壊さず、undo 復元境界の契約だけを明文化する

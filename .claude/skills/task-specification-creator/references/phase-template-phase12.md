@@ -239,6 +239,29 @@ grep -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts
 - `implementation-guide.md` の `## 視覚証跡` セクションに `UI/UX変更なしのため Phase 11 スクリーンショット不要` と明記し、上記パスへのリンクを貼る
 - `screenshots/.gitkeep` は削除し、ディレクトリごと除外する（NON_VISUAL 共通ルール）
 
+## verify-all-specs が PASS しても確認すべき項目（false negative 対策）
+
+`verify-all-specs` が PASS を返しても、以下を手動確認すること。検証スクリプトは構造・形式を検査するが、内容の充足度までは担保しない。
+
+| # | 確認項目 | 確認方法 |
+| -- | -------- | -------- |
+| 1 | `references/LOGS.md` に当タスクのエントリが追加されているか | `grep -n "TASK-ID" .claude/skills/task-specification-creator/LOGS.md` |
+| 2 | `lessons-learned` に苦戦箇所・知見が記録されているか | 該当 `lessons-learned.md` または `interfaces-*.md` を開いて内容を確認 |
+| 3 | `task-workflow.md` に新しいパターンが反映されているか | `grep -n "TASK-ID" docs/30-workflows/*/task-workflow.md` |
+| 4 | `resource-map` の canonical set に新規成果物が追加されているか | `references/resource-map.md` を確認し、今回成果物のパス参照が存在するかチェック |
+| 5 | スキルフィードバックレポートが具体的な改善提案を含んでいるか | `skill-feedback-report.md` を開き「改善点なし」のみで終わっていないかを確認（定型句だけでの閉じは避ける） |
+
+**背景（[TASK-RALLY-002-FB-1] 由来）**:
+
+`verify-all-specs` はファイル存在・スキーマ準拠・リンク整合を機械検証するが、以下のケースで false negative（問題なしと返すが実際には不完全）が発生しやすい:
+
+- LOGS.md へのエントリ追加が別 skill 側のみで、task-specification-creator 側が未更新
+- `lessons-learned` セクションが空のままスクリプトの構造チェックをパスしている
+- `task-workflow.md` のパターン欄が「該当なし」で終わりパターン知見が蓄積されていない
+- `skill-feedback-report.md` の改善候補欄が `改善点なし` の定型句のみで閉じられている
+
+上記5項目は script では検出できないため、Phase 12 完了前に目視で確認すること。
+
 ## 関連ガイド
 
 - [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-6 の詳細手順

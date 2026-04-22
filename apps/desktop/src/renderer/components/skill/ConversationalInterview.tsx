@@ -41,10 +41,15 @@ export function ConversationalInterview({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // restoredPendingRequest はセッション復元または Undo 操作時のみ非 null になる。
-  // 通常フローでは workflowSnapshot?.awaitingUserInput を使用する。
-  // 復元セッション中は restoredPendingRequest を優先し、
-  // workflowSnapshot の awaitingUserInput が届いた時点でクリアして通常フローに戻る。
+  // [優先ルール] restoredPendingRequest は undo 操作時のみ非 null になる。
+  // undo でユーザーが前の質問に戻ったとき、workflowSnapshot がまだ更新前の状態でも
+  // 前の質問を即時表示できるよう restoredPendingRequest を優先して使用する。
+  //
+  // 通常フロー（undo なし）では restoredPendingRequest は null のため、
+  // workflowSnapshot?.awaitingUserInput が使用される。
+  //
+  // サーバーから新しい awaitingUserInput が届いた時点（requestId が変化）で
+  // restoredPendingRequest はクリアされ、通常フローに戻る（下の useEffect 参照）。
   const pendingRequest =
     restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
@@ -56,10 +61,8 @@ export function ConversationalInterview({
     }
   }, [pendingRequest?.requestId]);
 
-  // 復元済みリクエストのクリア条件:
-  // workflowSnapshot.awaitingUserInput が届いたら restoredPendingRequest を null にし、
-  // 通常フローへ切り替える。requestId を依存値にすることで同一質問での再実行を防ぐ。
-  // RALLY-010 以降はこのクリア後の通常フロー状態を前提として動作する。
+  // undo 後、サーバーから新しい awaitingUserInput が届いたら restoredPendingRequest をクリアして通常フローに戻す。
+  // requestId のみを依存配列に含めることで、同一リクエストの参照更新による不要な再実行を防ぐ。
   useEffect(() => {
     if (workflowSnapshot?.awaitingUserInput) {
       setRestoredPendingRequest(null);
@@ -211,19 +214,12 @@ export function ConversationalInterview({
 
   const submitAnswer = useCallback(
     async (answer: InterviewUserAnswer, displayText: string) => {
-      if (!workflowSnapshot || !pendingRequest) return;
+      if (!workflowSnapshot) return;
 
       setIsSubmitting(true);
       interview.addUserMessage(answer, displayText);
 
-      // Undo 復元中の再送信でも、表示中の質問 requestId に紐づく submission を作る。
-      const submission = interview.buildSubmission(
-        {
-          ...workflowSnapshot,
-          awaitingUserInput: pendingRequest,
-        },
-        answer,
-      );
+      const submission = interview.buildSubmission(workflowSnapshot, answer);
       if (!submission) {
         interview.rollbackLastUserMessage();
         onError?.("回答の構築に失敗しました");
@@ -233,6 +229,7 @@ export function ConversationalInterview({
 
       try {
         await onSubmit(submission);
+        setRestoredPendingRequest(null);
         resetInputValues();
       } catch {
         interview.rollbackLastUserMessage();
@@ -241,7 +238,7 @@ export function ConversationalInterview({
         setIsSubmitting(false);
       }
     },
-    [workflowSnapshot, pendingRequest, interview, onSubmit, onError],
+    [workflowSnapshot, interview, onSubmit, onError],
   );
 
   const handleSubmit = useCallback(async () => {

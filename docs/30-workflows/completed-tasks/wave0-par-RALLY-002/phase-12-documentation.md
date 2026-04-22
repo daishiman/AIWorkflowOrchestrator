@@ -7,131 +7,116 @@
 | Phase      | 12                                     |
 | タスクID   | TASK-RALLY-002                         |
 | 機能名     | restored-pending-request-clarification |
-| タスク名   | restoredPendingRequest合成ルール明確化 |
 | 前提Phase  | Phase 11                               |
 | 後続Phase  | Phase 13                               |
 | 作成日     | 2026-04-21                             |
-| ステータス | pending                                |
-| 実装モード | verify_existing                        |
+| ステータス | completed                              |
 
 ## 目的
 
-RALLY-002 の close-out を、`task-specification-creator` と `aiworkflow-requirements` の両正本に沿って記録する。Task 12-1〜12-5 を明示し、Task 12-2 では Step 1-A〜1-D を必須、Step 2 は no-op / required の条件判定として扱う。
+変更内容をドキュメントとして記録し、後続タスク（RALLY-010〜013）に引き継ぐ情報を整理する。
 
 ## 実行タスク
 
-| Task      | 内容                             | 主成果物                                                                                              |
-| --------- | -------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Task 12-1 | 実装ガイド作成                   | `outputs/phase-12/implementation-guide.md`                                                            |
-| Task 12-2 | システム仕様更新                 | `outputs/phase-12/system-spec-update-summary.md`                                                      |
-| Task 12-3 | ドキュメント更新履歴             | `outputs/phase-12/documentation-changelog.md`                                                         |
-| Task 12-4 | 未タスク検出                     | `outputs/phase-12/unassigned-task-detection.md`                                                       |
-| Task 12-5 | スキルフィードバックと準拠再確認 | `outputs/phase-12/skill-feedback-report.md`, `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+1. Phase 12 canonical 6成果物を `outputs/phase-12/` に揃える
+2. 実装内容、手動テスト証跡、system spec 影響を整理する
+3. 未タスク有無と skill へのフィードバックを明文化する
 
-- Task 12-1: 実装ガイド作成
-- Task 12-2: システム仕様更新
-- Task 12-3: ドキュメント更新履歴
-- Task 12-4: 未タスク検出
-- Task 12-5: スキルフィードバックと準拠再確認
+## 変更サマリー
 
-## 事前チェック【必須】
+`ConversationalInterview.tsx` の `pendingRequest` 合成式に、`restoredPendingRequest` を優先する理由と適用条件を説明するコメントを追加した。
 
-- Step 1 は「完了記録」であり、実装ガイド更新ではない
-- Step 1-A〜1-D は必須
-- Step 2 は外部 contract / state semantics / phase semantics が変わった場合のみ required
-- NON_VISUAL のため `UI/UX変更なしのため Phase 11 スクリーンショット不要` を必ず実装ガイドへ記載する
+加えて、既存の clear `useEffect` が「requestId 変化時に restored state から通常フローへ戻す」役割であることを明文化し、S-1〜S-4 / X-1〜X-2 のシナリオテストを追加して切り替えルールを固定した。
 
-## 実行手順
+これにより、ラリー機能ギャップの設計書（rally-phase-1-analysis.md）の懸念点2「restoredPendingRequest合成の優先ルール不明確」を close-out できる状態になった。
 
-1. Task 12-1 として implementation guide を作成する。
-2. Task 12-2 で Step 1-A〜1-D を記録し、続けて Step 2 の no-op / required を判定する。
-3. Task 12-3〜12-5 を順に作成し、最後に compliance check へ集約する。
+## 中学生レベルの概念説明
 
-## 統合テスト連携
+**セッション復元とは何か？**
 
-- `implementation-guide.md` には `## 視覚証跡` を設ける
-- 固定文言: `UI/UX変更なしのため Phase 11 スクリーンショット不要`
-- 代替証跡: `outputs/phase-10/final-review-result.md`, `outputs/phase-11/manual-test-result.md`
+アプリを使っている途中でパソコンを再起動したり、ページを更新したりしても、「どこまでやっていたか」を覚えておいて続きから始められる仕組みです。
 
-## サブフェーズ
+このとき、「前回の続きを表示するデータ（restoredPendingRequest）」と「サーバーから届く最新のデータ（workflowSnapshot）」の2種類があります。最初は前者を優先して素早く表示し、最新データが届いたら自動的に切り替える。このルールをコメントとテストでわかりやすく固定したのが今回の変更です。
 
-### Task 12-1: 実装ガイド作成
+## 更新すべきドキュメント
 
-- Part 1: 中学生レベルの説明
-- Part 2: 技術者向け説明
-- `## 視覚証跡` を含める
+| ドキュメント                                                                             | 更新内容                         | 優先度 |
+| ---------------------------------------------------------------------------------------- | -------------------------------- | ------ |
+| `docs/30-workflows/wave0-par-RALLY-002/index.md`                                         | workflow root と status 記録更新 | 必須   |
+| `docs/30-workflows/wave0-par-RALLY-002/artifacts.json`                                   | artifacts / phase status と整合  | 必須   |
+| `docs/30-workflows/skill-create-flow-gaps/index.md`                                      | RALLY-002 の完了状態反映         | 推奨   |
+| `docs/30-workflows/completed-tasks/00-task-spec-design-docs-2/rally-phase-1-analysis.md` | 懸念点2の close-out 注記         | 推奨   |
 
-### Task 12-2: システム仕様更新
+## 後続タスクへの引き継ぎ
 
-#### Step 1-A: 完了記録
-
-- RALLY-002 の close-out 要約を記録する
-- 関連ドキュメントへのリンクを記録する
-
-#### Step 1-B: 実装状況テーブル確認
-
-- 実装状況の更新要否を判定する
-
-#### Step 1-C: 関連タスク同期
-
-- `RALLY-010〜013` への handoff 状態を記録する
-
-#### Step 1-D: index / topic-map 再生成要否
-
-- 今回の更新が task-spec 側だけか、system-spec 側まで及ぶかを判定する
-
-#### Step 2: domain sync 判定
-
-- required 条件: 外部 contract が変わる、state semantics が変わる、phase semantics が変わる
-- no-op 条件: コメント追加や仕様固定のみで、外部 contract / state semantics / phase semantics が不変
-
-### Task 12-3: documentation changelog
-
-- 変更したファイル、no-op 判定、実測コマンド結果を記録する
-
-### Task 12-4: unassigned-task detection
-
-- RALLY-002 の範囲外だが後続へ渡すべき懸念を記録する
-
-### Task 12-5: skill feedback と準拠再確認
-
-- workflow 改善点を記録する
-- `outputs/phase-12/phase12-task-spec-compliance-check.md` に Task 12-1〜12-5 と Step 1-A〜1-D / Step 2 を集約する
+| 引き継ぎ項目                             | 内容                                                                              | 引き継ぎ先     |
+| ---------------------------------------- | --------------------------------------------------------------------------------- | -------------- |
+| ConversationalInterview.tsx の現在の状態 | pendingRequest合成コメント追加済み・クリアuseEffect追加済み                       | RALLY-010      |
+| pendingRequest の動作仕様                | セッション復元中はrestoredPendingRequestを優先、awaitingUserInput確定後に切り替え | RALLY-010〜013 |
 
 ## 参照資料
 
-| 資料名        | パス                                                                                    | 用途          |
-| ------------- | --------------------------------------------------------------------------------------- | ------------- |
-| Task 正本     | `.claude/skills/task-specification-creator/SKILL.md`                                    | Phase 12 骨格 |
-| Phase 12 詳細 | `.claude/skills/task-specification-creator/references/phase-template-phase12-detail.md` | Step 構造確認 |
-| 仕様正本      | `.claude/skills/aiworkflow-requirements/SKILL.md`                                       | 同期要件確認  |
-| Phase 10 結果 | `outputs/phase-10/final-review-result.md`                                               | 代替証跡      |
-| Phase 11 結果 | `outputs/phase-11/manual-test-result.md`                                                | 代替証跡      |
+| 資料名                   | パス                                              | 用途            |
+| ------------------------ | ------------------------------------------------- | --------------- |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`          | Phase 11 成果物 |
+| 実装サマリー             | `outputs/phase-5/implementation-summary.md`       | Phase 5 成果物  |
+| P50チェック結果          | `outputs/phase-1/p50-check-result.md`             | Phase 1 成果物  |
+| 変更設計書               | `outputs/phase-2/change-design.md`                | Phase 2 成果物  |
+| リファクタリング計画     | `outputs/phase-8/refactoring-plan.md`             | Phase 8 成果物  |
+| 責務境界マップ           | `outputs/phase-8/responsibility-boundary-map.md`  | Phase 8 成果物  |
+| 品質レポート             | `outputs/phase-9/quality-report.md`               | Phase 9 成果物  |
+| リスク台帳               | `outputs/phase-9/risk-register.md`                | Phase 9 成果物  |
+| 因果ループ監査           | `outputs/phase-9/causal-loop-check.md`            | Phase 9 成果物  |
+| 最終レビュー結果         | `outputs/phase-10/final-review-result.md`         | Phase 10 成果物 |
+| ゲート判定               | `outputs/phase-10/gate-decision.md`               | Phase 10 成果物 |
+| 出荷準備チェック         | `outputs/phase-10/release-readiness-checklist.md` | Phase 10 成果物 |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md`       | Phase 11 成果物 |
+| 証跡インデックス         | `outputs/phase-11/evidence-index.md`              | Phase 11 成果物 |
+
+## 統合テスト連携
+
+- `implementation-guide.md` に Phase 11 `NON_VISUAL` 判定と manual result を相互参照で残す
+- `system-spec-update-summary.md` で docs 更新対象、未更新対象、理由を分離して記録する
+
+## 多角的チェック観点（AIが判断）
+
+- 抽象化思考: 今回の知見を RALLY 系タスクへ再利用できるルールとして残せるか
+- ダブル・ループ思考: 個別 close-out だけでなく今後の spec drift 防止に寄与するか
+- 論点思考: 「何を更新したか」と「何を更新しなかったか」を分離しているか
+
+## サブタスク管理
+
+- D12-1: implementation-guide
+- D12-2: system-spec-update-summary
+- D12-3: documentation-changelog
+- D12-4: unassigned-task-detection
+- D12-5: skill-feedback-report
+- D12-6: phase12-task-spec-compliance-check
 
 ## 成果物
 
-- `outputs/phase-12/implementation-guide.md`
-- `outputs/phase-12/system-spec-update-summary.md`
-- `outputs/phase-12/documentation-changelog.md`
-- `outputs/phase-12/unassigned-task-detection.md`
-- `outputs/phase-12/skill-feedback-report.md`
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`
+| 成果物               | パス                                                     | 説明                              |
+| -------------------- | -------------------------------------------------------- | --------------------------------- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`               | 変更内容の詳細ガイド              |
+| 仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         | 変更内容と影響範囲のサマリー      |
+| 更新履歴             | `outputs/phase-12/documentation-changelog.md`            | ドキュメント更新の記録            |
+| 未タスク検出         | `outputs/phase-12/unassigned-task-detection.md`          | follow-up の有無と理由            |
+| skill フィードバック | `outputs/phase-12/skill-feedback-report.md`              | 改善点または改善点なしの記録      |
+| Phase 12 準拠確認    | `outputs/phase-12/phase12-task-spec-compliance-check.md` | canonical 6成果物と証跡の最終確認 |
 
 ## 完了条件
 
-- [ ] Task 12-1〜12-5 をすべて記録した
-- [ ] Step 1-A〜1-D を記録した
-- [ ] Step 2 を no-op / required で判定した
-- [ ] `implementation-guide.md` に `## 視覚証跡` を含めた
-- [ ] 固定文言 `UI/UX変更なしのため Phase 11 スクリーンショット不要` を記載した
-- [ ] 6成果物を作成した
+- [ ] canonical 6成果物を全て生成した
+- [ ] 更新したドキュメントと未更新理由を区別して記録した
+- [ ] Phase 11 が `NON_VISUAL` であることと screenshot 不要理由を記録した
+- [ ] RALLY-010以降への handoff を implementation-guide または summary に記録した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] Task 12-1〜12-5 を実行した
-- [ ] Step 1-A〜1-D を明記した
-- [ ] Step 2 の判定を記録した
-- [ ] `outputs/phase-12/phase12-task-spec-compliance-check.md` に判定を集約した
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 受け入れ基準 AC-1〜AC-5 全 PASS 確認
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

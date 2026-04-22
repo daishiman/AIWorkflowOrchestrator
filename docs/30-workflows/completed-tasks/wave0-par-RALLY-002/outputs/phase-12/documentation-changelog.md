@@ -1,9 +1,11 @@
-# Documentation Changelog
+# Phase 12 成果物: ドキュメント変更ログ
 
-| 対象                                                      | 種別   | 内容                                                                                                               |
-| --------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
-| `ConversationalInterview.tsx`                             | update | undo 復元中の submission 生成元を `pendingRequest` に合わせ、送信成功直後の premature clear を削除                 |
-| `ConversationalInterview.restoredPendingRequest.test.tsx` | update | payload requestId 検証と stale fallback 防止ケースを追加                                                           |
-| workflow outputs phase 4-12                               | update | コメント中心の記録を、実ロジック修正と回帰テスト中心の記録へ更新                                                   |
-| `.claude/.agents` logs                                    | update | `aiworkflow-requirements` / `task-specification-creator` の LOGS と completed ledger に RALLY-002 close-out を追記 |
-| system spec sync                                          | no-op  | public contract / shared type / IPC が不変のため Step 2 は未実施                                                   |
+## タスクID: TASK-RALLY-002
+
+| 日付       | 対象                              | 変更内容                                                |
+| ---------- | --------------------------------- | ------------------------------------------------------- |
+| 2026-04-22 | `wave0-par-RALLY-002` workflow    | Phase 8〜12 成果物を補完し status parity を回復         |
+| 2026-04-22 | `phase-11-manual-test.md`         | `NON_VISUAL` 方針へ修正                                 |
+| 2026-04-22 | `phase-12-documentation.md`       | 事実記述を「コメント明文化 + シナリオテスト追加」に是正 |
+| 2026-04-22 | `skill-create-flow-gaps/index.md` | `RALLY-002 ✅完了` を反映                               |
+| 2026-04-22 | `rally-phase-1-analysis.md`       | 懸念点2の close-out 注記を追加                          |

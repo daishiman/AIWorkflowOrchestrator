@@ -1,9 +1,17 @@
-# Unassigned Task Detection
+# Phase 12 成果物: 未タスク検出レポート
 
-- 新規未タスク: 0 件
-- 継続管理が必要な残件:
-  - Electron 実機での manual verification 再実施
-  - esbuild version mismatch 解消後の vitest 再実行
-- 判定理由:
-  - いずれも今回のコード修正そのものではなく、環境制約由来の追試項目
-  - 対応しないことで直ちに仕様破綻を生む大課題ではないため、新規 formalize は見送り
+## タスクID: TASK-RALLY-002
+
+## 判定
+
+新規未タスク: `0件`
+
+## 理由
+
+- 実装契約の不足は今回waveで close-out できた
+- screenshot 要否の不整合も `NON_VISUAL` 再分類で解消した
+- 後続の UI 強化は既存の RALLY-010〜013 が担当しており、新規 formalize は不要
+
+## 備考
+
+- ローカル実行環境の esbuild mismatch は task 追加より環境整備の問題として扱う

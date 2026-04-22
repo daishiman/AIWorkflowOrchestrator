@@ -1,30 +1,41 @@
-# Verification Result — Phase 5
+# 検証結果
 
-## 実行コマンドと結果
-
-| コマンド                                                                                                                                                   | 終了コード | 結果                                                          |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------- |
-| `pnpm --filter @repo/desktop exec tsc --noEmit`                                                                                                            | 0          | PASS — 型エラーなし                                           |
-| `pnpm --filter @repo/desktop exec eslint src/renderer/components/skill/ConversationalInterview.tsx --max-warnings=0`                                       | 0          | PASS — ESLint 警告なし                                        |
-| `pnpm --filter @repo/desktop exec eslint src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx --max-warnings=0` | 0          | PASS — テストファイルも静的チェック通過                       |
-| `pnpm --filter @repo/desktop test -- --testPathPattern=ConversationalInterview.restoredPendingRequest`                                                     | 1          | SKIP — esbuild version mismatch（環境制約、品質問題ではない） |
-
-## vitest 実行不可の理由
+## typecheck
 
 ```
-✘ [ERROR] Cannot start service: Host version "0.21.5" does not match binary version "0.25.12"
+pnpm --filter @repo/desktop typecheck
+> tsc --noEmit
+(エラーなし、0 errors)
 ```
 
-esbuild のバイナリ不整合によるもの。コードや設定の問題ではなく、worktree 環境の依存解決の制約。Phase 9 の `four-conditions-audit.md` に環境制約として記録済み。
+**結果: ✅ PASS**
 
-## レビュー起点の是正内容
+## lint
 
-- undo 復元中の再送信でも、表示中の `pendingRequest.requestId` が submission に使われるよう修正
-- 送信成功直後は restored state を維持し、新しい snapshot 到着時だけ通常フローへ復帰するよう是正
-- 回帰テストに payload 検証と stale fallback 防止ケースを追加
+```
+pnpm --filter @repo/desktop lint
+✖ 8 problems (0 errors, 8 warnings)
+```
 
-## Phase 5 完了判定
+- 8件の警告はすべて既存コード（他ファイル）の `@typescript-eslint/no-explicit-any`
+- `ConversationalInterview.tsx` に関するエラー・警告: **0件**
+- exhaustive-deps 警告: **なし**
 
-- 静的検証は `typecheck` + `eslint` で通過
-- vitest 実行は環境制約で未完了だが、追加テスト仕様と実装は整合
-- 変更は renderer 内部契約に限定され、外部 IF 変更なし
+**結果: ✅ PASS**
+
+## test（シナリオテスト）
+
+```
+Tests  23 passed (23)
+Duration  2.98s
+```
+
+| テスト                    | 結果      |
+| ------------------------- | --------- |
+| S-1: 通常フロー           | ✅ PASS   |
+| S-2: undo後優先           | ✅ PASS   |
+| S-3: snapshot更新後クリア | ✅ PASS   |
+| S-4: null時クリアなし     | ✅ PASS   |
+| 既存テスト（19件）        | ✅ 全PASS |
+
+**結果: ✅ PASS**

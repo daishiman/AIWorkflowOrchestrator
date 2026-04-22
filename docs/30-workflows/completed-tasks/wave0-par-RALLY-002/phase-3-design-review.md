@@ -7,76 +7,97 @@
 | Phase      | 3                                      |
 | タスクID   | TASK-RALLY-002                         |
 | 機能名     | restored-pending-request-clarification |
-| タスク名   | restoredPendingRequest合成ルール明確化 |
 | 前提Phase  | Phase 2                                |
 | 後続Phase  | Phase 4                                |
 | 作成日     | 2026-04-21                             |
-| ステータス | pending                                |
-| 実装モード | verify_existing                        |
+| ステータス | completed                              |
 
 ## 目的
 
-Phase 2 の設計が RALLY-002 の責務に閉じているかを gate する。レビュー対象は「追加実装不要の根拠」「後続 handoff 契約」「検証可能性」の3点に絞る。
+Phase 2 で設計したコメント追加と useEffect のクリアロジックが安全であることをレビューし、実装に進むかどうかのゲート判定を行う。
 
 ## 実行タスク
 
-1. 設計が `ConversationalInterview.tsx` 単体に閉じているか確認する。
-2. 後続タスク依存を handoff 契約として明文化できているか確認する。
-3. PASS / MINOR / MAJOR の gate 判定と、未解決リスクを記録する。
+1. 設計が受け入れ基準と後続タスク前提を満たすかレビューする
+2. リスクを PASS / MINOR / MAJOR で整理する
+3. Phase 4 に渡すテスト観測点を確定する
+
+## SubAgentチーム編成
+
+| SubAgent   | 関心ごと     | 主担当                   | 並列/直列  |
+| ---------- | ------------ | ------------------------ | ---------- |
+| SubAgent-C | レビュー担当 | 設計レビュー・ゲート判定 | 単独で直列 |
+
+## チェック観点
+
+- [ ] 追加する `useEffect` の依存配列が循環を起こさないことを確認する
+- [ ] `restoredPendingRequest` のクリア条件が「awaitingUserInput が非 null になった時」で正しいかを検証する
+- [ ] コメントの内容が実際の動作と一致していることを確認する
+- [ ] `react-hooks/exhaustive-deps` lint ルールが警告を出さないことを確認する
+- [ ] ConversationalInterview.tsx の後続変更（RALLY-010〜013）に影響がないことを確認する
+
+## リスク評価
+
+| リスク                                                                   | レベル | 対処                                                                    |
+| ------------------------------------------------------------------------ | ------ | ----------------------------------------------------------------------- |
+| useEffect の依存配列が不完全で lint 警告が出る                           | 中     | requestId のみを依存配列に入れ、意図を eslint-disable コメントで補足    |
+| クリア条件が早すぎてセッション復元中に restoredPendingRequest が失われる | 中     | awaitingUserInput の requestId が変化した時のみクリアするよう条件を絞る |
+| コメントが後続変更（RALLY-010〜013）で矛盾を起こす                       | 低     | コメントは優先ルールのみに限定し、実装詳細は含めない                    |
+
+## ゲート判定基準
+
+| 判定                   | 条件                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| PASS（Phase 4に進む）  | 依存配列の循環なし、クリア条件が正しい、コメントが動作と一致 |
+| MINOR（Phase 2に戻る） | useEffect の依存配列調整が必要                               |
+| MAJOR（Phase 2に戻る） | クリア条件の設計が根本的に誤っている                         |
 
 ## 参照資料
 
-| 資料名             | パス                                                                                   | 用途             |
-| ------------------ | -------------------------------------------------------------------------------------- | ---------------- |
-| Phase 2 設計       | `outputs/phase-2/verification-design.md`                                               | レビュー本体     |
-| Phase 2 責務表     | `outputs/phase-2/responsibility-boundary-matrix.md`                                    | スコープ確認     |
-| Phase 2 コマンド表 | `outputs/phase-2/validation-command-matrix.md`                                         | 検証可能性確認   |
-| レビュー資料       | `docs/30-workflows/completed-tasks/00-task-spec-design-docs-2/rally-phase-3-review.md` | 懸念点・依存確認 |
-
-## 実行手順
-
-1. Phase 2 の3成果物を読み、スコープ外要求が混入していないか確認する。
-2. PASS / MINOR / MAJOR を `design-review-result.md` と `gate-decision.md` に整理する。
-3. 依存リスクを `dependency-risk-register.md` に整理し、Phase 4 へ引き渡す。
-
-## 統合テスト連携
-
-- Phase 4 以降で実行するコマンドが review 時点で過不足ないかを確認する。
-- `verify_existing` なのに新規ロジックや広域 AC を背負っていないかを確認する。
-
-## 多角的チェック観点（AIが判断）
-
-- simpler alternative が存在するか
-- Phase 4 で実行不能な前提を置いていないか
-- 後続 RALLY-010〜013 に誤解を残さないか
-
-## サブタスク管理
-
-| 項目         | 内容                                |
-| ------------ | ----------------------------------- |
-| review scope | RALLY-002 固有責務に閉じているか    |
-| risk scope   | 後続 handoff を阻害する依存があるか |
-| gate         | PASS / MINOR / MAJOR                |
+| 資料名          | パス                                             | 用途                       |
+| --------------- | ------------------------------------------------ | -------------------------- |
+| 変更設計書      | `outputs/phase-2/change-design.md`               | Phase 2 成果物             |
+| workflow索引    | `docs/30-workflows/wave0-par-RALLY-002/index.md` | dependency / gate 整合確認 |
+| P50チェック結果 | `outputs/phase-1/p50-check-result.md`            | Phase 1 成果物             |
 
 ## 成果物
 
-- `outputs/phase-3/design-review-result.md`
-- `outputs/phase-3/gate-decision.md`
-- `outputs/phase-3/dependency-risk-register.md`
+| 成果物           | パス                                      | 説明                          |
+| ---------------- | ----------------------------------------- | ----------------------------- |
+| 設計レビュー結果 | `outputs/phase-3/design-review-result.md` | チェック観点ごとの確認結果    |
+| ゲート判定       | `outputs/phase-3/gate-decision.md`        | PASS/MINOR/MAJOR の判定と根拠 |
+| リスク評価表     | `outputs/phase-3/risk-assessment.md`      | 各リスクの評価と対処方針      |
+
+## 統合テスト連携
+
+- Phase 4 へ渡す観測点は `優先表示`, `snapshot到着後切替`, `不要な再クリアなし` の3系統に固定する
+- レビューで未解決の MINOR は Phase 4 仕様書へ持ち込まず、Phase 2 へ戻して閉じる
+
+## 多角的チェック観点（AIが判断）
+
+- 批判的思考: コメントだけで実害が消えるという誤認がないか
+- 因果関係分析: クリア条件の早過ぎ・遅過ぎが UI へどう波及するか
+- 類推思考: 既存の復元系 state 利用パターンと整合しているか
+
+## サブタスク管理
+
+- R-1: 設計妥当性レビュー
+- R-2: リスク分類
+- R-3: Gate 判定確定
 
 ## 完了条件
 
-- [ ] 設計レビュー結果を記録した
-- [ ] gate 判定を記録した
-- [ ] 依存リスクを記録した
-- [ ] Phase 4 へ進める論点だけを残した
+- [ ] 全チェック観点を確認した
+- [ ] リスク評価を実施した
+- [ ] ゲート判定（PASS）を決定した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] Phase 3 の3成果物を作成した
-- [ ] `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/wave0-par-RALLY-002 --phase 3` を実行または実行可能な状態にした
-- [ ] MINOR / MAJOR の戻り先を明文化した
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] ゲート判定が PASS であることを確認
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 
-Phase 4: テスト作成
+Phase 4: テスト作成（ゲート PASS の場合）

@@ -1,98 +1,121 @@
-# Implementation Guide
+# Phase 12 成果物: 実装ガイド
 
-## Part 1
+## タスクID: TASK-RALLY-002
 
-なぜ必要かというと、会話の「戻る」を押したときに、画面に見えている質問と実際に送られる回答先がずれると、ユーザーは正しい質問に答えたつもりでも別の質問へ送信してしまうからです。これは会話の信頼性を壊します。
+## Part 1: 中学生向けの説明
 
-たとえば、学校の面談で先生が前の質問に戻してくれたのに、提出箱だけ次の質問用のままだと、見えている紙と提出先が食い違います。RALLY-002 ではその食い違いをなくし、「今見えている質問」がそのまま送信先になるようにそろえました。
+### なぜ必要か
 
-何をするかというと、復元中に表示している質問を submission 生成でもそのまま使い、新しい snapshot が本当に届くまでは復元表示を維持するようにします。
+アプリで質問に答えている途中に「ひとつ前の質問へ戻る」ことがあります。このとき、画面はすぐ前の質問を見せたいですが、サーバーから新しい情報もあとで届きます。
+
+たとえば、学校のプリントを一時的に机の上へ戻しておいて、新しいプリントが先生から届いたら机の上の古いものを片づける、という整理に近いです。最初は「いま戻りたい質問」を優先して見せ、あとから届く最新情報に自然に切り替わるようにしました。
 
 ### 今回作ったもの
 
-- 復元中の `pendingRequest` を、そのまま submission 生成元にも使う修正
-- 送信成功直後に復元状態を早く消しすぎないようにする修正
-- undo 復元中の再送信 payload と stale fallback を固定する回帰テスト
+何をしたかというと、見た目を変えたのではなく、「なぜそう切り替わるのか」をコメントとテストでわかるようにしました。
 
-## Part 2
+## Part 2: 技術者向け詳細
 
-### 対象コンポーネント
+### 変更概要
 
 - `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx`
+  - `pendingRequest` 合成式直上に優先ルールコメントを追加
+  - clear `useEffect` 直上に requestId ベースの依存意図を追加
+- `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx`
+  - S-1〜S-4 / X-1〜X-2 を追加
 
-### 型定義
-
-```ts
-type PendingSource =
-  | { kind: "restored"; requestId: string }
-  | { kind: "snapshot"; requestId: string }
-  | { kind: "none" };
-
-interface SubmissionSnapshotLike {
-  planId: string;
-  awaitingUserInput: SkillCreatorUserInputRequest | null;
-}
-```
-
-### APIシグネチャ
+### 契約
 
 ```ts
 const pendingRequest =
   restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
-const submission = interview.buildSubmission(
-  {
-    ...workflowSnapshot,
-    awaitingUserInput: pendingRequest,
-  },
-  answer,
-);
+useEffect(() => {
+  if (workflowSnapshot?.awaitingUserInput) {
+    setRestoredPendingRequest(null);
+  }
+}, [workflowSnapshot?.awaitingUserInput?.requestId]);
 ```
+
+### APIシグネチャ
+
+```ts
+type PendingRequestSource =
+  | { kind: "restored"; requestId: string }
+  | { kind: "snapshot"; requestId: string }
+  | { kind: "none" };
+```
+
+実コードでは exported API を追加していないため、ここで管理対象となるのは `pendingRequest` の選択規則と clear `useEffect` の依存契約です。
 
 ### 使用例
 
 ```ts
-fireEvent.click(screen.getByTestId("interview-undo"));
-fireEvent.click(screen.getByTestId("chip-opt-b"));
-fireEvent.click(screen.getByTestId("interview-submit"));
+// undo 直後
+const pendingRequest =
+  restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
-expect(mockOnSubmit).toHaveBeenLastCalledWith(
-  expect.objectContaining({
-    requestId: "req-ec6-001",
-    selectedOptionId: "opt-b",
-  }),
-);
+// 新しい requestId 到着後
+useEffect(() => {
+  if (workflowSnapshot?.awaitingUserInput) {
+    setRestoredPendingRequest(null);
+  }
+}, [workflowSnapshot?.awaitingUserInput?.requestId]);
 ```
+
+### シナリオ一覧
+
+| ID  | 内容                                                           |
+| --- | -------------------------------------------------------------- |
+| S-1 | 通常フローでは `workflowSnapshot.awaitingUserInput` を使う     |
+| S-2 | undo 後は `restoredPendingRequest` を優先する                  |
+| S-3 | 新しい requestId 到着後に restored state をクリアする          |
+| S-4 | `awaitingUserInput = null` の場合はクリアしない                |
+| X-1 | restored state が `null` のときは更新の影響を受けない          |
+| X-2 | 同一 requestId の参照更新では clear `useEffect` を再実行しない |
 
 ### エラーハンドリング
 
-- `pendingRequest` が取れない場合は submission を作らず、ロールバックして `回答の構築に失敗しました` を返す
-- `onSubmit` が失敗した場合は最後の user message をロールバックし、`回答の送信に失敗しました` を返す
+- `workflowSnapshot` が `null` のときは `pendingRequest = null`
+- 入力送信失敗時は既存の `rollbackLastUserMessage()` と `onError` 経路を維持
 
 ### エッジケース
 
-- undo 復元中に live snapshot が残っていても、表示中の restored request を送信元に使う
-- 再送信成功直後は restored state を維持し、新しい `requestId` の snapshot 到着時だけ通常フローへ戻る
-- `requestId` が同じまま snapshot 内容だけ変わる場合は、既存どおり restored 優先を維持する
+- `awaitingUserInput` が `null` の場合は restored state を維持する
+- 同一 requestId の新参照が届いても不要な clear を行わない
+- `workflowSnapshot` が更新されても requestId が変わらなければ契約は維持される
 
 ### 設定項目と定数一覧
 
-| 項目       | 値/規則                                                 | 用途                            |
-| ---------- | ------------------------------------------------------- | ------------------------------- |
-| 優先規則   | `restored ?? snapshot ?? null`                          | 表示中の質問ソースを決定        |
-| クリア条件 | `workflowSnapshot?.awaitingUserInput?.requestId` の変化 | restored から通常フローへの復帰 |
-| エラー文言 | `回答の構築に失敗しました` / `回答の送信に失敗しました` | 失敗時の UI 通知                |
+| 項目           | 値 / 由来                                             | 用途                               |
+| -------------- | ----------------------------------------------------- | ---------------------------------- |
+| clear 判定キー | `workflowSnapshot?.awaitingUserInput?.requestId`      | restore state の解放タイミング制御 |
+| 優先順         | `restoredPendingRequest ?? awaitingUserInput ?? null` | undo 復元を一時優先                |
 
 ### テスト構成
 
-- 正常系: snapshot フォールバック、undo 復元優先、requestId 変化で通常復帰
-- 境界系: 両値非 null、同一 requestId 維持、再マウント、undo 再送信 payload、stale fallback 防止
-- 実測制約: vitest 実行は esbuild host/binary mismatch により未完了
+| ファイル                                    | 役割                               |
+| ------------------------------------------- | ---------------------------------- |
+| `ConversationalInterview.test.tsx`          | S-1〜S-4 / X-1〜X-2 のシナリオ契約 |
+| `outputs/phase-6/regression-test-result.md` | 回帰観点の要約                     |
+| `outputs/phase-7/coverage-check-result.md`  | coverage の追跡                    |
+
+### 検証結果
+
+- `eslint` 対象2ファイル: PASS
+- `vitest`: esbuild binary mismatch により環境ブロック
+- `typecheck`: 結果未確定
 
 ## 視覚証跡
 
-UI/UX変更なしのため Phase 11 スクリーンショット不要
+UI/UX変更なしのため Phase 11 スクリーンショット不要。
 
-- 代替証跡: `outputs/phase-10/final-review-result.md`
-- 代替証跡: `outputs/phase-11/manual-test-result.md`
+参照:
+
+- `outputs/phase-11/manual-test-result.md`
+- `outputs/phase-11/evidence-index.md`
+
+## Handoff
+
+- RALLY-010 以降は `pendingRequest` の表示契約を前提に UI 機能を追加する
+- 「restore優先 → requestId更新で通常フロー復帰」のルールは維持する

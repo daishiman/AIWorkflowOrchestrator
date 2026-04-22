@@ -7,60 +7,95 @@
 | Phase      | 9                                      |
 | タスクID   | TASK-RALLY-002                         |
 | 機能名     | restored-pending-request-clarification |
-| タスク名   | restoredPendingRequest合成ルール明確化 |
 | 前提Phase  | Phase 8                                |
 | 後続Phase  | Phase 10                               |
 | 作成日     | 2026-04-21                             |
-| ステータス | pending                                |
-| 実装モード | verify_existing                        |
+| ステータス | completed                              |
 
 ## 目的
 
-RALLY-002 スコープに限定して 4 条件を再監査する。ここでの PASS は「RALLY-002 が新たな矛盾や依存破壊を持ち込んでいないこと」を意味し、他タスク未完了を理由に自己矛盾した PARTIAL 判定を量産しない。
+実装全体の品質を確認し、Phase 10（最終レビューゲート）に進める状態かを判断する。
 
 ## 実行タスク
 
-1. 4 条件の監査結果を RALLY-002 スコープで判定する。
-2. 実行できた静的検証と実行できなかったテストを分離記録する。
-3. 残リスクを risk register へ記録する。
+1. コード品質、テスト品質、設計整合性を横断で確認する
+2. リスク台帳を更新し、残留リスクを明文化する
+3. Phase 10 のゲート判断材料を揃える
+
+## 品質チェックリスト
+
+### コード品質
+
+- [ ] `pnpm --filter @repo/desktop typecheck` がエラーなしで通過する
+- [ ] `pnpm --filter @repo/desktop lint` がエラーなしで通過する（exhaustive-deps 含む）
+- [ ] `pendingRequest` 合成式の直上にコメントが存在する
+- [ ] `workflowSnapshot?.awaitingUserInput` が非 null のとき `restoredPendingRequest` がクリアされる useEffect が存在する
+
+### テスト品質
+
+- [ ] シナリオテスト（正常系・異常系・境界値）が全通過している
+- [ ] 全既存テストが通過している
+- [ ] useEffect クリアロジックのカバレッジが100%である
+
+### 設計整合性
+
+- [ ] コメントが実際の動作と一致している
+- [ ] 後続タスク（RALLY-010〜013）の前提条件が満たされている
+- [ ] ConversationalInterview.tsx が Wave 1 の次の変更を受け入れられる状態になっている
+
+## リスク台帳
+
+| リスク               | 発生確率 | 影響度 | 対処状況                        |
+| -------------------- | -------- | ------ | ------------------------------- |
+| useEffect の循環     | 低       | 高     | Phase 3 レビューで確認済み      |
+| クリア条件の早期発動 | 低       | 中     | Phase 6 境界値テストで確認済み  |
+| exhaustive-deps 警告 | 低       | 低     | Phase 5 lint チェックで確認済み |
 
 ## 参照資料
 
-| 資料名       | パス                                                                                     | 用途         |
-| ------------ | ---------------------------------------------------------------------------------------- | ------------ |
-| 上流分析書   | `docs/30-workflows/completed-tasks/00-task-spec-design-docs-2/rally-phase-1-analysis.md` | Phase 1 基準 |
-| レビュー資料 | `docs/30-workflows/completed-tasks/00-task-spec-design-docs-2/rally-phase-3-review.md`   | handoff 基準 |
-| Phase 7 出力 | `outputs/phase-7/coverage-check-result.md`                                               | 実測結果     |
-| Phase 8 出力 | `outputs/phase-8/change-rationale-table.md`                                              | no-op 判定   |
-
-## 実行手順
-
-1. 4 条件を `four-conditions-audit.md` に整理する。
-2. `typecheck`、`eslint`、`vitest` の結果を `quality-report.md` に整理する。
-3. 残リスクを `risk-register.md` に整理する。
+| 資料名               | パス                                             | 用途           |
+| -------------------- | ------------------------------------------------ | -------------- |
+| 実装サマリー         | `outputs/phase-5/implementation-summary.md`      | Phase 5 成果物 |
+| 回帰テスト結果       | `outputs/phase-6/regression-test-result.md`      | Phase 6 成果物 |
+| カバレッジ確認結果   | `outputs/phase-7/coverage-check-result.md`       | Phase 7 成果物 |
+| リファクタリング計画 | `outputs/phase-8/refactoring-plan.md`            | Phase 8 成果物 |
+| 責務境界マップ       | `outputs/phase-8/responsibility-boundary-map.md` | Phase 8 成果物 |
 
 ## 統合テスト連携
 
-- `typecheck`: 実行済み PASS
-- `eslint`: 対象ファイル単位で実行済み PASS
-- `vitest`: esbuild version mismatch により未完了。品質問題ではなく環境制約として扱う
+- Phase 5〜7 の検証結果を品質レポートへ集約し、重複した根拠を書かない
+- リスクが残る場合は Phase 10 で PASS 条件から除外せず明示する
+
+## 多角的チェック観点（AIが判断）
+
+- 批判的思考: テスト通過を品質保証と誤認していないか
+- 因果関係ループ: lint warning 回避が将来の理解負債を増やしていないか
+- KJ法: 発見事項を「仕様」「実装」「証跡」に束ねて整理できるか
+
+## サブタスク管理
+
+- Q-1: 品質チェック
+- Q-2: リスク更新
+- Q-3: Gate 入力整理
 
 ## 成果物
 
-- `outputs/phase-9/quality-report.md`
-- `outputs/phase-9/risk-register.md`
-- `outputs/phase-9/four-conditions-audit.md`
+| 成果物         | パス                                   | 説明                              |
+| -------------- | -------------------------------------- | --------------------------------- |
+| 品質レポート   | `outputs/phase-9/quality-report.md`    | 品質チェック結果のサマリー        |
+| リスク台帳     | `outputs/phase-9/risk-register.md`     | リスク評価と対処状況              |
+| 因果ループ監査 | `outputs/phase-9/causal-loop-check.md` | useEffect追加による連鎖影響の確認 |
 
 ## 完了条件
 
-- [ ] 4条件を RALLY-002 スコープで監査した
-- [ ] コマンド結果を記録した
-- [ ] 残リスクを整理した
+- [ ] 品質チェックリストを全項目確認した
+- [ ] リスク台帳を更新した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] Phase 9 の3成果物を作成した
-- [ ] 矛盾した PASS/PARTIAL を混在させていない
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

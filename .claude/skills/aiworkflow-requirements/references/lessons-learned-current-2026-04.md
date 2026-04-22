@@ -1959,3 +1959,31 @@ cronExpression のバリデーションは3段階（syntax → range → semanti
 | 設計原則   | NON_VISUAL + 単一クラス追加 = 「コードが仕様書」。スキル参照は補完的用途に限定し、参照コストを最小化する                                            |
 | 適用条件   | UI 変更なし・既存 interface 実装のみ・単一クラス追加のタスク全般                                                                                     |
 | 関連タスク | UNASSIGNED-EMB-005-A                                                                                                                                 |
+
+---
+
+## TASK-RALLY-002 教訓（2026-04-22）
+
+#### L-RALLY-002-001: restoredPendingRequest優先ルール — useEffect requestId 最小依存配列パターン
+- **症状**: undo操作後、新しいawaitingUserInputが届いてもrestoredPendingRequestが残り続け、古い質問が表示されたまま
+- **原因**: useEffectの依存配列にworkflowSnapshot?.awaitingUserInput全体を含めると、同一requestIdでの参照更新でも再実行が発生し、状態が不安定になる
+- **解決**: requestIdのみを依存配列に含め（`[workflowSnapshot?.awaitingUserInput?.requestId]`）、値の変化時のみクリア処理を実行
+- **標準ルール**: undo復元用一時状態は「requestId更新 = サーバーから新規質問」シグナルでクリアする。優先順序: `restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null`
+- **適用条件**: undo/redo機構を持つConversationalInterviewコンポーネント系
+- **関連タスク**: TASK-RALLY-002
+
+#### L-RALLY-002-002: NON_VISUAL証跡 — コメント+シナリオテストのみでPhase 11/12完結パターン
+- **症状**: UIに変更がないタスクでスクリーンショット証跡を求められ、どう記録するか迷う
+- **原因**: Phase 11テンプレートがUI変更前提の記述になっている
+- **解決**: 手動テストチェックリスト + シナリオテスト4件（S-1〜S-4 + X-1〜X-2）でNON_VISUAL証跡として十分。成果物は`outputs/phase-11/`に配置
+- **標準ルール**: NON_VISUALタスクではscreenshot行を「N/A (NON_VISUAL)」として記録し、代替証跡としてテストシナリオとmanual-test-checklist.mdを配置する
+- **適用条件**: UIコンポーネントへの変更がコメント・ロジック追加のみのタスク
+- **関連タスク**: TASK-RALLY-002
+
+#### L-RALLY-002-003: task-specification-creator フィードバック — Phase 11/12 NON_VISUAL判定例示増強
+- **症状**: NON_VISUALかどうかの判定が曖昧なまま実装が進み、Phase 11で方針転換が必要になる
+- **原因**: Phase 11/12テンプレートにNON_VISUAL判定の分岐例示が少ない
+- **解決**: skill-feedback-report.md にフィードバックを記録済み（TASK-RALLY-002 Phase 12）
+- **標準ルール**: task-specification-creator スキルのPhase 11テンプレートにはNON_VISUAL/VISUAL判定フローチャートを追加すると効果的（改善提案として記録）
+- **適用条件**: UIコンポーネント変更タスクすべて
+- **関連タスク**: TASK-RALLY-002

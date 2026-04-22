@@ -1,15 +1,14 @@
-# Skill Feedback Report
+# Phase 12 成果物: スキルフィードバックレポート
 
-- 良かった点:
-  - Phase 骨格と artifacts parity の検証は有効
-  - NON_VISUAL の screenshot 不要方針が workflow で明示されていた
-- ワークフロー改善点:
-  - `verify_existing` でも review で実害バグが見つかる場合があるので、「コメント整流のみ」と早期に固定しすぎない guard が欲しい
-  - Phase 12 の implementation guide validator を workflow 実行手順にもっと前面表示した方がよい
-- 技術的教訓:
-  - restore UI と submission 生成元は、表示契約と送信契約を必ず同じ source にそろえるべき
-  - restore state の clear は submit 成功時ではなく、新しい snapshot 到着時に寄せた方が競合が少ない
-- スキル改善提案:
-  - `task-specification-creator` の Phase 5/12 テンプレートに「review 発見バグは verify_existing でも実装修正へ切替可」を明記したい
-- 新規Pitfall候補:
-  - undo 復元 UI の見た目だけをテストし、submission payload を固定しないと requestId drift を見逃す
+## タスクID: TASK-RALLY-002
+
+## フィードバック
+
+1. `task-specification-creator` の Phase 11/12 テンプレートは、小規模 `NON_VISUAL` タスクで screenshot 必須に寄りやすい。判定分岐の例示を増やすと再発を減らせる。
+2. `verify-all-specs` の出力は stale report が残ると誤解を招くため、close-out wave で再生成を必須化した方がよい。
+3. `artifacts.json` と `outputs/artifacts.json` の parity が崩れたまま進行しやすいので、Phase 7以降でも `complete-phase.js` を機械的に回す運用が有効。
+
+## 良かった点
+
+- workflow 自体に Phase 8〜12 の型が揃っていたため、正本位置を task-local に戻しやすかった
+- シナリオテストが明確で、NON_VISUAL 証跡へ転換しやすかった

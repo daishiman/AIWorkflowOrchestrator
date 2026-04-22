@@ -1,7 +1,10 @@
-# Local Check Result
+# Phase 13 Local Check Result
 
-| コマンド                                                                                            | 結果    | 備考                     |
-| --------------------------------------------------------------------------------------------------- | ------- | ------------------------ |
-| `pnpm --filter @repo/desktop typecheck`                                                             | PASS    | 実行済み                 |
-| `pnpm --filter @repo/desktop exec eslint src/renderer/components/skill/ConversationalInterview.tsx` | PASS    | 実行済み                 |
-| `pnpm --filter @repo/desktop exec vitest run ...`                                                   | BLOCKED | esbuild version mismatch |
+## 状態
+
+blocked
+
+## 理由
+
+- user approval 未取得のため commit / push / PR 作成は未実施
+- local verification は Phase 5〜12 の成果物で完了

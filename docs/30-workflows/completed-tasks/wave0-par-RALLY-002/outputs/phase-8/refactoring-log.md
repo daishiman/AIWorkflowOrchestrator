@@ -1,5 +1,10 @@
-# Refactoring Log
+# Phase 8 Refactoring Log
 
-- 判定: no-op
-- 理由: `ConversationalInterview.tsx` に未コミット差分なし
-- 結論: verify_existing を維持し、文書整流のみ実施
+| 対象    | Before                       | After                                     | 理由                        |
+| ------- | ---------------------------- | ----------------------------------------- | --------------------------- |
+| comment | 優先規則の文脈が暗黙         | セッション復元時優先と clear 条件を明記   | downstream の再読コスト削減 |
+| test    | submit 後 clear の観測が弱い | waiting state で indirect に clear を確認 | 契約との対応を強化          |
+
+## 結果
+
+動作変更なし。表現と検証点のみ整理。

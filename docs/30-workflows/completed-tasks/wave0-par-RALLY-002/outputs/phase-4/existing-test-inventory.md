@@ -1,25 +1,32 @@
-# Existing Test Inventory — Phase 4
+# Phase 4 既存テスト棚卸し
 
-## 関連テストファイル
+## 対象テストファイル
 
-| ファイル                                                                                         | restoredPendingRequest カバー                 | 備考                                                        |
-| ------------------------------------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx`          | 部分的（undo テストあり、合成式直接検証なし） | TC-E07/TC-E08: snapshot null/pendingRequest null の挙動あり |
-| `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.ipc-edge.test.tsx` | なし                                          | IPC タイムアウト・エラー系のみ                              |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx`       | なし                                          | SkillLifecyclePanel 統合テスト                              |
-| `apps/desktop/src/renderer/components/skill/__tests__/useInterviewState.test.ts`                 | なし                                          | useInterviewState フック単体テスト                          |
+| ファイル                                              | テスト数 | restoredPendingRequest 関連 |
+| ----------------------------------------------------- | -------- | --------------------------- |
+| `__tests__/ConversationalInterview.test.tsx`          | 14       | 間接的（undo テスト1件）    |
+| `__tests__/ConversationalInterview.ipc-edge.test.tsx` | 6        | なし                        |
+| `__tests__/useInterviewState.test.ts`                 | 別フック | なし                        |
 
-## カバレッジギャップ分析
+## restoredPendingRequest を間接的にテストする既存ケース
 
-| シナリオID | 説明                                                | 既存テスト                           |
-| ---------- | --------------------------------------------------- | ------------------------------------ |
-| S-1        | restoredPendingRequest 非 null → 合成式で優先される | **なし** — 新規テスト必要            |
-| S-2        | snapshot requestId 更新でクリアされる               | **なし** — 新規テスト必要            |
-| S-3        | 通常フロー（null）→ snapshot へフォールバック       | 間接的にあり（TC-E08）、直接検証なし |
+| TC ID                                         | 説明                                  | restoredPendingRequest の関与                     |
+| --------------------------------------------- | ------------------------------------- | ------------------------------------------------- |
+| restores previous question and answer on undo | undo で前の質問と回答が復元される     | `handleUndo` → `setRestoredPendingRequest` を経由 |
+| disables undo button at first question        | 最初の質問では戻るボタンが無効        | `canUndo=false` のケース                          |
+| shows waiting message when no pending request | pendingRequest が null のとき待機表示 | null 経路のカバー                                 |
 
-## 新規テストファイル
+## ギャップ分析
 
-- `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx`
-  - S-1, S-2, S-3 正常系 3 シナリオ
-  - EC-1〜EC-5 異常系・エッジケース 5 シナリオ
-  - 計 8 テストケース
+| シナリオ                                                           | 既存テスト                 | 不足           |
+| ------------------------------------------------------------------ | -------------------------- | -------------- |
+| 優先ルール（restoredPendingRequest が awaitingUserInput より優先） | なし                       | 新規作成必要   |
+| clear 条件（requestId 変化でクリア）                               | なし                       | 新規作成必要   |
+| submit 完了後のクリア                                              | 間接的（undo テスト）      | 明示テスト不在 |
+| undo 後の priority 検証                                            | なし（既存は回答復元のみ） | 新規作成必要   |
+
+## 棚卸し結論
+
+- 既存テストは UI 描画・送信フロー・エラーハンドリングをカバーする
+- `restoredPendingRequest` の優先ルールと clear 条件を直接テストするケースが存在しない
+- 新規ファイル `ConversationalInterview.restoredPendingRequest.test.tsx` を作成して targeted regression test を追加する

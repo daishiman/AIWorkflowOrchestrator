@@ -14,14 +14,44 @@
 | 結果 | success |
 | 備考 | `ConversationalInterview.tsx` の undo 復元中 submission requestId 整合修正と stale fallback 防止を close-out として記録。Step 2 は no-op（public contract / IPC / shared type 不変） |
 
+## 2026-04-21: UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 current facts sync
+
+- 操作: update-spec
+- 変更前: `references/evals-schema-spec.md` の canonical 成果物リンクが stale path のまま、`metrics.average_satisfaction` の consumer 記述も実監査と不一致
+- 変更後: completed-task canonical path へ修正し、`average_satisfaction` を read/write 0 件の観測事実へ更新。`indexes/topic-map.md` を再生成し mirror 同期まで完了
+- 理由: EVALS schema 正本と task spec close-out の same-wave 整合を回復するため
+
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
+
 ## 2026-04-21: SKILL.md description Progressive Disclosure準拠化
 
 - 操作: optimize-description
 - 変更前: 約407字
 - 変更後: 320字
 - 理由: Progressive Disclosure原則（200-400字）への準拠
+
+## 2026-04-21: TASK-RALLY-002（restoredPendingRequest合成ルール明確化 verify_existing close-out）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RALLY-002 |
+| 操作 | update-spec |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`（コメント追加）、`ConversationalInterview.restoredPendingRequest.test.tsx`（5件追加）、ワークフロー再構成（`docs/30-workflows/wave0-par-RALLY-002/`） |
+| 結果 | success |
+| 備考 | restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null の合成ルールを確定し、TC-RPR-01〜05で全パターン網羅 |
+
+### 更新詳細
+
+- **更新**: `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+  - `const pendingRequest = restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;` の合成ルールにコメント追加
+  - undo後の復元質問優先・requestId変化時の自動クリアを明文化
+- **追加**: `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx`
+  - TC-RPR-01〜05の5件targeted regression test追加
+- **ワークフロー再構成**: `docs/30-workflows/skill-create-flow-gaps/wave0-par-RALLY-002/` → `docs/30-workflows/wave0-par-RALLY-002/` へ移管
+- **更新**: `references/task-workflow.md` — RALLY-002 verify_existingパターン追記
+- **更新**: `references/lessons-learned-current-2026-04.md` — RALLY-002教訓追記
+- **更新**: `indexes/resource-map.md` — RALLY関連エントリ追加
 
 ## 2026-04-21: TASK-SW-TODO-001（current fact close-out sync）
 
@@ -42,6 +72,16 @@
 - **更新**: `references/lessons-learned-skill-wizard-mso-main-tool-badge.md`
   - 削除待ち前提を current fact に合わせて完了済み手順へ是正
 
+## 2026-04-21: UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 |
+| 操作 | update-spec / close-out sync |
+| 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
+
 ## 2026-04-21: TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
 
 - `references/task-workflow-completed-recent-2026-04g.md` に completed record を追加
@@ -58,6 +98,14 @@
 | 変更対象 | `references/evals-schema-spec.md`, `references/claude-code-overview.md`, `references/quality-requirements.md`, `references/error-handling.md`, `topic-map.md`, `indexes/keywords.json`, `SKILL.md`, `LOGS.md` |
 | 結果 | success |
 | 備考 | validator=0 件表記を validator=1 件へ更新。`validate-evals.js` の L1/L2/L3 契約と quality gate を current facts 化。 |
+
+## 2026-04-21 - impl-spec-to-skill-sync (UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001)
+
+- Phase-12監査PASS確認（全6成果物完備、artifacts parity確認）
+- SKILL.md changelog: UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 close-out エントリ追加
+- LOGS.md 本エントリ追加
+- keywords.json: v1固有フィールド名追加確認
+- .claude ↔ .agents mirror sync 実施
 
 ## 2026-04-19 — UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
@@ -3305,3 +3353,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
 | 結果 | Late Chunking pipeline integration の正本同期完了 |
 | 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |
+
+## 2026-04-21 — UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 Phase 12 close-out
+
+- `references/evals-schema-spec.md` §6 テーブルを実際の EVALS.json 実装（taskMetrics タスク ID キー辞書）に修正
+- §6.1 に writer・更新タイミング・運用責任を追記
+- §8 に 2026-04-21 変更履歴エントリを追加
+- `indexes/quick-reference.md` に `## EVALS.json qualityInsights クイックアクセス` セクション追加（5 行）
+- `references/task-workflow-completed.md` に本タスクの完了記録を追加
+- `indexes/topic-map.md` を再生成し、§6 行番号を同期
+- Phase 1-12 全 PASS（NON_VISUAL / mirror sync 差分ゼロ / AC-1〜7 全達成）
+- Phase 13（PR 作成）は user 承認待ちで blocked
+
+| 項目     | 内容                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| 種別     | docs-only / NON_VISUAL / spec-update / close-out                                          |
+| 変更対象 | `references/evals-schema-spec.md`、`indexes/quick-reference.md`、`references/task-workflow-completed.md`、`indexes/topic-map.md`、`SKILL.md`、本 `LOGS.md` |
+| 結果     | AC-1〜7 all PASS。mirror sync 差分ゼロ。docs-only 制約遵守（アプリコード変更なし、close-out 同期のみ） |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS                 |

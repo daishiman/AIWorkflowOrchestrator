@@ -1,10 +1,24 @@
-# Traceability Coverage Report
+# トレーサビリティ網羅率
 
-| AC   | 根拠                                                                            | 状態 |
-| ---- | ------------------------------------------------------------------------------- | ---- |
-| AC-1 | `verification-result.md`                                                        | PASS |
-| AC-2 | `p50-check-result.md`                                                           | PASS |
-| AC-3 | `requirements-definition.md`, `test-specification.md`                           | PASS |
-| AC-4 | `responsibility-boundary-matrix.md`                                             | PASS |
-| AC-5 | `phase-11-manual-test.md` / `phase-12-documentation.md`                         | PASS |
-| AC-6 | `ConversationalInterview.restoredPendingRequest.test.tsx` TC-EC6-01 / TC-EC7-01 | PASS |
+## AC-テスト対応表
+
+| AC   | 内容                                                      | 対応テスト                                    | 結果 |
+| ---- | --------------------------------------------------------- | --------------------------------------------- | ---- |
+| AC-1 | pendingRequest合成式直上にコメント追加                    | コードレビューで確認                          | ✅   |
+| AC-2 | awaitingUserInput非null時にrestoredPendingRequestがクリア | S-3: 新snapshot到着後クリア                   | ✅   |
+| AC-3 | 切り替わり条件の可読性                                    | S-2（優先）、S-3（クリア）、S-4（null時維持） | ✅   |
+| AC-4 | typecheckエラーなし                                       | Phase 5 typecheck実行                         | ✅   |
+| AC-5 | lintエラーなし                                            | Phase 5 lint実行                              | ✅   |
+
+## テスト-AC対応表
+
+| テスト                     | カバーするAC |
+| -------------------------- | ------------ |
+| S-1: 通常フロー            | AC-3         |
+| S-2: undo後優先            | AC-2, AC-3   |
+| S-3: snapshot更新後クリア  | AC-2, AC-3   |
+| S-4: null時クリアなし      | AC-2, AC-3   |
+| X-1: null状態での更新      | AC-2         |
+| X-2: 同一requestId参照更新 | AC-2         |
+
+**網羅率: 5/5 AC = 100%**
