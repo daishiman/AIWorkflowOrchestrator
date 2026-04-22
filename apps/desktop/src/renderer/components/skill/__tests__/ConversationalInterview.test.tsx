@@ -460,3 +460,239 @@ describe("ConversationalInterview", () => {
     expect(input.type).toBe("password");
   });
 });
+
+// TASK-RALLY-002: pendingRequest合成ロジックのシナリオテスト
+describe("pendingRequest合成ロジック", () => {
+  const mockOnSubmit = vi.fn().mockResolvedValue(undefined);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  function buildReq(
+    id: string,
+    prompt: string,
+    kind: "single_select" | "free_text" | "confirm" = "single_select",
+  ): SkillCreatorUserInputRequest {
+    const base = {
+      requestId: id,
+      reason: "plan_review" as const,
+      title: `Title-${id}`,
+      prompt,
+      requestedAt: new Date().toISOString(),
+    };
+    if (kind === "single_select") {
+      return {
+        ...base,
+        kind: "single_select",
+        options: [{ id: `${id}-opt`, label: "選択肢" }],
+      };
+    }
+    if (kind === "free_text") {
+      return { ...base, kind: "free_text" };
+    }
+    return { ...base, kind: "confirm" };
+  }
+
+  // S-1: 通常フロー
+  it("S-1: 通常フロー — workflowSnapshot.awaitingUserInput を使用する", () => {
+    const req = buildReq("s1", "通常フローの質問");
+    render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    expect(screen.getByText("通常フローの質問")).toBeInTheDocument();
+  });
+
+  // S-2: undo後、restoredPendingRequest が pendingRequest として使われる
+  it("S-2: undo後 — restoredPendingRequest を優先する", async () => {
+    const req1 = buildReq("s2-req1", "最初の質問", "single_select");
+    const req2 = buildReq("s2-req2", "次の質問", "free_text");
+
+    const { rerender } = render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req1)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    // req1（single_select）に回答・送信
+    fireEvent.click(screen.getByTestId("chip-s2-req1-opt"));
+    fireEvent.click(screen.getByTestId("interview-submit"));
+    await waitFor(() => expect(mockOnSubmit).toHaveBeenCalledTimes(1));
+
+    // req2（free_text）のスナップショットが届く
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("free-text-input")).toBeInTheDocument(),
+    );
+
+    // undo クリック → restoredPendingRequest = req1（single_select）
+    fireEvent.click(screen.getByTestId("interview-undo"));
+
+    // req1（single_select）の入力ウィジェットが表示される
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+    expect(screen.queryByTestId("free-text-input")).not.toBeInTheDocument();
+  });
+
+  // S-3: 新 requestId の snapshot が届いたら restoredPendingRequest がクリアされる
+  it("S-3: 新 snapshot 到着後 — restoredPendingRequest がクリアされ pendingRequest が切り替わる", async () => {
+    const req1 = buildReq("s3-req1", "最初の質問", "single_select");
+    const req2 = buildReq("s3-req2", "次の質問", "free_text");
+    const req3 = buildReq("s3-req3", "新しい質問", "confirm");
+
+    const { rerender } = render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req1)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("chip-s3-req1-opt"));
+    fireEvent.click(screen.getByTestId("interview-submit"));
+    await waitFor(() => expect(mockOnSubmit).toHaveBeenCalledTimes(1));
+
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("free-text-input")).toBeInTheDocument(),
+    );
+
+    // undo → restoredPendingRequest = req1（single_select）
+    fireEvent.click(screen.getByTestId("interview-undo"));
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+
+    // req3（confirm）のスナップショットが届く → restoredPendingRequest がクリアされる
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req3)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("confirm-buttons")).toBeInTheDocument(),
+    );
+    expect(screen.queryByTestId("single-select-chips")).not.toBeInTheDocument();
+  });
+
+  // S-4: awaitingUserInput が null → restoredPendingRequest はクリアされない
+  it("S-4: awaitingUserInput が null の場合 — restoredPendingRequest はクリアされない", async () => {
+    const req1 = buildReq("s4-req1", "最初の質問", "single_select");
+    const req2 = buildReq("s4-req2", "次の質問", "free_text");
+
+    const { rerender } = render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req1)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("chip-s4-req1-opt"));
+    fireEvent.click(screen.getByTestId("interview-submit"));
+    await waitFor(() => expect(mockOnSubmit).toHaveBeenCalledTimes(1));
+
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("free-text-input")).toBeInTheDocument(),
+    );
+
+    // undo → restoredPendingRequest = req1（single_select）
+    fireEvent.click(screen.getByTestId("interview-undo"));
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+
+    // awaitingUserInput が null のスナップショットが届く → restoredPendingRequest はクリアされない
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, null)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    // single_select ウィジェットが引き続き表示される（restoredPendingRequest = req1 のまま）
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+  });
+
+  // X-1: restoredPendingRequest が null のとき awaitingUserInput 更新で setRestoredPendingRequest は呼ばれない
+  it("X-1: restoredPendingRequest が null のとき — awaitingUserInput 更新でも影響なし", () => {
+    const req1 = buildReq("x1-req1", "最初の質問", "single_select");
+    const req2 = buildReq("x1-req2", "次の質問", "confirm");
+
+    const { rerender } = render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req1)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    // restoredPendingRequest = null の状態で awaitingUserInput を更新
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    // req2（confirm）のウィジェットが表示される（restoredPendingRequest は null のまま）
+    expect(screen.getByTestId("confirm-buttons")).toBeInTheDocument();
+    expect(screen.queryByTestId("single-select-chips")).not.toBeInTheDocument();
+  });
+
+  // X-2: 同一 requestId の awaitingUserInput 更新では useEffect が再実行されない（deps安定性）
+  it("X-2: 同一 requestId では restoredPendingRequest クリア useEffect が再実行されない", async () => {
+    const req1 = buildReq("x2-req1", "最初の質問", "single_select");
+    const req2 = buildReq("x2-req2", "次の質問", "free_text");
+
+    const { rerender } = render(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req1)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId("chip-x2-req1-opt"));
+    fireEvent.click(screen.getByTestId("interview-submit"));
+    await waitFor(() => expect(mockOnSubmit).toHaveBeenCalledTimes(1));
+
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId("free-text-input")).toBeInTheDocument(),
+    );
+
+    // undo → restoredPendingRequest = req1
+    fireEvent.click(screen.getByTestId("interview-undo"));
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+
+    // 同一 requestId（req2）のまま新しいオブジェクト参照で rerender → useEffect は再実行されない
+    const req2SameId = { ...req2, title: "更新タイトル" };
+    rerender(
+      <ConversationalInterview
+        workflowSnapshot={buildSnapshot({}, req2SameId)}
+        onSubmit={mockOnSubmit}
+      />,
+    );
+
+    // single_select がそのまま表示（restoredPendingRequest が req1 のままクリアされていない）
+    expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+  });
+});

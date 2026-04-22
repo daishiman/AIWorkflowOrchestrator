@@ -105,21 +105,21 @@ IPC invoke戻り値（pull）とIPC pushイベントのどちらが`workflowSnap
 
 ### RALLYタスク一覧
 
-| Wave       | 形態              | 目的                                       | タスクID  | 仕様書                                                 |
-| ---------- | ----------------- | ------------------------------------------ | --------- | ------------------------------------------------------ |
-| **Wave 0** | **par（並列可）** | SkillLifecyclePanel dead code削除          | RALLY-001 | [wave0-par-RALLY-001](../wave0-par-RALLY-001/index.md) |
-| **Wave 0** | **par（並列可）** | restoredPendingRequest合成ルール明確化     | RALLY-002 | [wave0-par-RALLY-002](./wave0-par-RALLY-002/index.md)  |
-| **Wave 0** | **par（並列可）** | selectedOptionIds/selectedValues重複整理   | RALLY-004 | [wave0-par-RALLY-004](./wave0-par-RALLY-004/index.md)  |
-| Wave 1     | seq（直列）       | workflowSnapshot更新権限設計確立           | RALLY-005 | [wave1-seq-RALLY-005](./wave1-seq-RALLY-005/index.md)  |
-| Wave 2     | seq（直列）       | L675-708 useEffect依存配列修正             | RALLY-006 | [wave2-seq-RALLY-006](./wave2-seq-RALLY-006/index.md)  |
-| Wave 2     | **par（並列可）** | addAssistantMessage依存配列修正            | RALLY-007 | [wave2-par-RALLY-007](./wave2-par-RALLY-007/index.md)  |
-| Wave 2     | **par（並列可）** | getSkillCreatorApi()型ガード強化           | RALLY-009 | [wave2-par-RALLY-009](./wave2-par-RALLY-009/index.md)  |
-| Wave 3     | seq（直列）       | processWorkflowOutcome fire-and-forget修正 | RALLY-008 | [wave3-seq-RALLY-008](./wave3-seq-RALLY-008/index.md)  |
-| Wave 3     | seq（直列）       | UndoサーバーsideRollback API追加           | RALLY-003 | [wave3-seq-RALLY-003](./wave3-seq-RALLY-003/index.md)  |
-| Wave 3     | seq（直列）       | ラリー完了状態UI表示追加                   | RALLY-010 | [wave3-seq-RALLY-010](./wave3-seq-RALLY-010/index.md)  |
-| Wave 4     | seq（直列）       | 送信中競合防止UI強化                       | RALLY-011 | [wave4-seq-RALLY-011](./wave4-seq-RALLY-011/index.md)  |
-| Wave 4     | seq（直列）       | エラー回復導線追加                         | RALLY-012 | [wave4-seq-RALLY-012](./wave4-seq-RALLY-012/index.md)  |
-| Wave 4     | seq（直列）       | Undo可能範囲の視覚的表現追加               | RALLY-013 | [wave4-seq-RALLY-013](./wave4-seq-RALLY-013/index.md)  |
+| Wave       | 形態              | 目的                                       | タスクID         | 仕様書                                                                 |
+| ---------- | ----------------- | ------------------------------------------ | ---------------- | ---------------------------------------------------------------------- |
+| **Wave 0** | **par（並列可）** | SkillLifecyclePanel dead code削除          | RALLY-001 ✅完了 | [wave0-par-RALLY-001](../wave0-par-RALLY-001/index.md)                 |
+| **Wave 0** | **par（並列可）** | restoredPendingRequest合成ルール明確化     | RALLY-002 ✅完了 | [wave0-par-RALLY-002](../completed-tasks/wave0-par-RALLY-002/index.md) |
+| **Wave 0** | **par（並列可）** | selectedOptionIds/selectedValues重複整理   | RALLY-004        | [wave0-par-RALLY-004](./wave0-par-RALLY-004/index.md)                  |
+| Wave 1     | seq（直列）       | workflowSnapshot更新権限設計確立           | RALLY-005        | [wave1-seq-RALLY-005](./wave1-seq-RALLY-005/index.md)                  |
+| Wave 2     | seq（直列）       | L675-708 useEffect依存配列修正             | RALLY-006        | [wave2-seq-RALLY-006](./wave2-seq-RALLY-006/index.md)                  |
+| Wave 2     | **par（並列可）** | addAssistantMessage依存配列修正            | RALLY-007        | [wave2-par-RALLY-007](./wave2-par-RALLY-007/index.md)                  |
+| Wave 2     | **par（並列可）** | getSkillCreatorApi()型ガード強化           | RALLY-009        | [wave2-par-RALLY-009](./wave2-par-RALLY-009/index.md)                  |
+| Wave 3     | seq（直列）       | processWorkflowOutcome fire-and-forget修正 | RALLY-008        | [wave3-seq-RALLY-008](./wave3-seq-RALLY-008/index.md)                  |
+| Wave 3     | seq（直列）       | UndoサーバーsideRollback API追加           | RALLY-003        | [wave3-seq-RALLY-003](./wave3-seq-RALLY-003/index.md)                  |
+| Wave 3     | seq（直列）       | ラリー完了状態UI表示追加                   | RALLY-010        | [wave3-seq-RALLY-010](./wave3-seq-RALLY-010/index.md)                  |
+| Wave 4     | seq（直列）       | 送信中競合防止UI強化                       | RALLY-011        | [wave4-seq-RALLY-011](./wave4-seq-RALLY-011/index.md)                  |
+| Wave 4     | seq（直列）       | エラー回復導線追加                         | RALLY-012        | [wave4-seq-RALLY-012](./wave4-seq-RALLY-012/index.md)                  |
+| Wave 4     | seq（直列）       | Undo可能範囲の視覚的表現追加               | RALLY-013        | [wave4-seq-RALLY-013](./wave4-seq-RALLY-013/index.md)                  |
 
 ### RALLYファイル衝突ドメイン
 
