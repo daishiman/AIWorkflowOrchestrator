@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3266,
+  "totalKeywords": 3269,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -9029,6 +9029,15 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
+    ],
+    "RALLY": [
+      "lessons-learned-current-2026-04-state-management.md"
+    ],
+    "restoredPendingRequest": [
+      "lessons-learned-current-2026-04-state-management.md"
+    ],
+    "合成ルール教訓": [
+      "lessons-learned-current-2026-04-state-management.md"
     ],
     "Wizard": [
       "lessons-learned-current-2026-04-wizard-integration.md",

@@ -3200,14 +3200,9 @@ node scripts/list-specs.js --topics
 | TASK-CRON-SEMANTIC-VALIDATION-001 教訓（2026-04-12） | L6 |
 | TASK-SW-FIX-MODE-MGMT-001: SkillCreateWizard LLM専用化・状態管理修正 教訓（2026-04-13） | L45 |
 | TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13） | L86 |
-| TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14） | L99 |
-| TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13） | L118 |
-| TASK-SW-FIX-UI-001 UI整合性修正 教訓（2026-04-14） | L132 |
-| TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14） | L181 |
-| TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13） | L197 |
-| TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13） | L211 |
-| TASK-UT-RT-01-RENDERER-ERROR-UI-CHECK-001: Renderer エラー UI 表示 E2E 確認 教訓（2026-04-13） | L229 |
-| TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14） | L243 |
+| TASK-SW-FIX-MODE-MGMT-001 スキルウィザード mode 管理廃止 教訓（2026-04-14） | L100 |
+| TASK-SW-FIX-UI-001 UI整合性修正 教訓（2026-04-14） | L112 |
+| TASK-RALLY-002 restoredPendingRequest 合成ルール教訓（2026-04-22） | L161 |
 
 ### references/lessons-learned-current-2026-04-wizard-integration.md
 
@@ -5318,13 +5313,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L547 |
-| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L567 |
-| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L569 |
-| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L581 |
-| 完了タスク（2026-03後半） | L609 |
-| 完了タスク（機能別アーカイブ） | L617 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L718 |
+| 2026-04-13 - TASK-SW-FIX-MODE-MGMT-001 SkillCreateWizard mode/state current facts sync | L548 |
+| 2026-04-14 - TASK-SW-FIX-UI-001 UI整合性修正 current facts sync | L568 |
+| 2026-04-14 - TASK-SW-FIX-STATE-DETAIL-001 state detail current facts sync | L570 |
+| 2026-04-12 - UT-W3-E2E-WIZARD-TRACKING-UI-REACH-001 trackEvent E2E UI reach close-out sync | L582 |
+| 完了タスク（2026-03後半） | L610 |
+| 完了タスク（機能別アーカイブ） | L618 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L719 |
 
 ### references/task-workflow-history.md
 

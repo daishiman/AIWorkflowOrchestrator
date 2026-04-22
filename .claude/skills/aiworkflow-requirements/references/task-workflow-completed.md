@@ -6,6 +6,7 @@
 
 ## 最近の完了タスク（2026-04）
 
+- 2026-04-22: `TASK-RALLY-002` restoredPendingRequest合成ルール明確化（`ConversationalInterview.tsx` の undo 復元中 submission requestId 整合修正 / stale fallback 防止 / renderer local state correction / Step 2 no-op）
 - 2026-04-20: `TASK-SW-TODO-001` conversation-round-step-todo-cleanup（verify_existing / NON_VISUAL / Phase 11 canonical evidence を `TASK-SW-TODO-001-manual-test-report.md` へ統一 / stale unassigned ledgers を completed retrospective へ是正 / `ui-ux-feature-components-skill-analysis.md` historical note 反映）
 - 2026-04-19: `UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001` closeout-parity-guard（`validate-closeout-parity.js` 新規作成・`complete-phase.js`/`verify-all-specs.js` 拡張 / Phase 12 close-out 完了 / NON_VISUAL / Issue #2293 / dogfooding PARITY_OK exit=0 確認済み）
 - 2026-04-19: `TASK-EVALS-CONSUMER-AUDIT-001` evals-consumer-audit（EVALS.json 構造体 consumer 監査 / NON_VISUAL / 監査タスク / docs-only / spec_created close-out / AC-6 解除可能 PASS 4/4 / canonical 4 成果物 + 必須 6 成果物 / 未タスク 7 件 `unassigned-task/` 配置済み / `references/evals-schema-spec.md` / `references/lessons-learned-evals-consumer-audit-001.md` / `references/claude-code-overview.md` validator=0 件注記追加）

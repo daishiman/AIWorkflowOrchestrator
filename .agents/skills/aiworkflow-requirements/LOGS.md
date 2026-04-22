@@ -4,6 +4,16 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-22: TASK-RALLY-002 restoredPendingRequest close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RALLY-002 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow-completed.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | `ConversationalInterview.tsx` の undo 復元中 submission requestId 整合修正と stale fallback 防止を close-out として記録。Step 2 は no-op（public contract / IPC / shared type 不変） |
+
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-20: TASK-SW-CANCEL-004 Phase 12 spec-reflection
 ## 2026-04-21: SKILL.md description Progressive Disclosure準拠化

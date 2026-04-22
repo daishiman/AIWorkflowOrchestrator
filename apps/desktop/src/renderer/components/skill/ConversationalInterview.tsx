@@ -41,6 +41,10 @@ export function ConversationalInterview({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // restoredPendingRequest はセッション復元または Undo 操作時のみ非 null になる。
+  // 通常フローでは workflowSnapshot?.awaitingUserInput を使用する。
+  // 復元セッション中は restoredPendingRequest を優先し、
+  // workflowSnapshot の awaitingUserInput が届いた時点でクリアして通常フローに戻る。
   const pendingRequest =
     restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
@@ -52,6 +56,10 @@ export function ConversationalInterview({
     }
   }, [pendingRequest?.requestId]);
 
+  // 復元済みリクエストのクリア条件:
+  // workflowSnapshot.awaitingUserInput が届いたら restoredPendingRequest を null にし、
+  // 通常フローへ切り替える。requestId を依存値にすることで同一質問での再実行を防ぐ。
+  // RALLY-010 以降はこのクリア後の通常フロー状態を前提として動作する。
   useEffect(() => {
     if (workflowSnapshot?.awaitingUserInput) {
       setRestoredPendingRequest(null);
@@ -203,12 +211,19 @@ export function ConversationalInterview({
 
   const submitAnswer = useCallback(
     async (answer: InterviewUserAnswer, displayText: string) => {
-      if (!workflowSnapshot) return;
+      if (!workflowSnapshot || !pendingRequest) return;
 
       setIsSubmitting(true);
       interview.addUserMessage(answer, displayText);
 
-      const submission = interview.buildSubmission(workflowSnapshot, answer);
+      // Undo 復元中の再送信でも、表示中の質問 requestId に紐づく submission を作る。
+      const submission = interview.buildSubmission(
+        {
+          ...workflowSnapshot,
+          awaitingUserInput: pendingRequest,
+        },
+        answer,
+      );
       if (!submission) {
         interview.rollbackLastUserMessage();
         onError?.("回答の構築に失敗しました");
@@ -218,7 +233,6 @@ export function ConversationalInterview({
 
       try {
         await onSubmit(submission);
-        setRestoredPendingRequest(null);
         resetInputValues();
       } catch {
         interview.rollbackLastUserMessage();
@@ -227,7 +241,7 @@ export function ConversationalInterview({
         setIsSubmitting(false);
       }
     },
-    [workflowSnapshot, interview, onSubmit, onError],
+    [workflowSnapshot, pendingRequest, interview, onSubmit, onError],
   );
 
   const handleSubmit = useCallback(async () => {

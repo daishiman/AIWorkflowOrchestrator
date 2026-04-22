@@ -414,3 +414,39 @@
 
 - **発見日**: 2026-04-20
 - **関連タスク**: p04-seq-CANCEL-004, TASK-SW-CANCEL-004-ipc-e2e-cancel-integration
+
+---
+
+## `verify_existing` → 実装修正切替パターン（RALLY-002 知見 2026-04-22）
+
+### RALLY-002: restoredPendingRequest 合成ルール明確化
+
+- **タスクID**: TASK-RALLY-002
+- **モード宣言**: `verify_existing`
+- **対象**: `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+- **タスクの本質**: undo 復元中の submission requestId ずれを発見し、実装修正まで実施した verify_existing
+
+#### verify_existing でも実装修正が発生した経緯
+
+| Phase | 当初想定 | 実際の動き |
+| --- | --- | --- |
+| Phase 1 | コメント整流のみ | コード観測で restore UI と submission 生成元のずれを発見 |
+| Phase 5 | diff 確認のみ | 実害バグのため実装修正に切替 |
+| Phase 6 | targeted 追加のみ | requestId drift 防止の回帰テスト追加 |
+| Phase 12 | no-op | Step 2（domain sync）は no-op、Step 1-A〜1-D は必須記録 |
+
+#### 切替条件と判断基準
+
+- **実装修正に切替可** : review で外部観測可能な実害バグ（誤 payload 送信・ UI と送信先のずれ等）が発見された場合
+- **コメント整流に留まる**: 内部実装の可読性問題のみで、外部契約・state semantics・送信 payload に影響がない場合
+- **切替時の Phase 12 Step 2 判定**: renderer 内部 state correction のみなら no-op。IPC channel / public 型 / preload contract が変わる場合は required
+
+#### 教訓と新規 Pitfall
+
+- `verify_existing` は「実装修正禁止」ではなく「実害バグがあれば修正可」。Phase 5 テンプレートの「空振り」は実害バグ発見時は適用外
+- **Pitfall**: undo 復元 UI の見た目だけをテストし submission payload を固定しないと `requestId drift` を見逃す。`fireEvent.click(undo) → submit → toHaveBeenLastCalledWith({ requestId: ... })` まで検証する
+- restore state の clear は submit 成功直後ではなく、新しい `workflowSnapshot?.awaitingUserInput?.requestId` 到着時に寄せると競合が少ない
+- 表示契約（表示する質問）と送信契約（submission の requestId）は必ず同じ source から生成する
+
+- **発見日**: 2026-04-22
+- **関連タスク**: TASK-RALLY-002
