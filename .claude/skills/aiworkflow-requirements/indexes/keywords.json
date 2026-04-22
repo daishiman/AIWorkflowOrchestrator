@@ -1,5 +1,5 @@
 {
-  "totalKeywords": 3280,
+  "totalKeywords": 3279,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1288,6 +1288,7 @@
       "task-workflow-completed-recent-2026-04b.md",
       "task-workflow-completed-recent-2026-04e.md",
       "task-workflow-completed-recent-2026-04g.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -6187,8 +6188,13 @@
     "スキーマ仕様": [
       "evals-schema-spec.md"
     ],
-    "標準スキーマ": [
-      "evals-schema-spec.md"
+    "Legacy": [
+      "evals-schema-spec.md",
+      "legacy-ordinal-family-register.md"
+    ],
+    "スキーマ": [
+      "evals-schema-spec.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "camelCase": [
       "evals-schema-spec.md"
@@ -6835,9 +6841,6 @@
       "rag-knowledge-graph.md",
       "security-input-validation.md"
     ],
-    "スキーマ": [
-      "interfaces-rag-entity-extraction.md"
-    ],
     "エンティティタイプ": [
       "interfaces-rag-entity-extraction.md"
     ],
@@ -7200,9 +7203,6 @@
     ],
     "適用実績": [
       "ipc-type-resolution-guide.md"
-    ],
-    "Legacy": [
-      "legacy-ordinal-family-register.md"
     ],
     "Ordinal": [
       "legacy-ordinal-family-register.md"
@@ -7852,6 +7852,7 @@
       "lessons-learned-2026-04-early.md",
       "lessons-learned-current-2026-04-wizard-integration.md",
       "lessons-learned-current-2026-04.md",
+      "task-workflow-completed-recent-2026-04h.md",
       "ui-result-panel-pattern.md"
     ],
     "ウィザード遷移ボタン化": [
@@ -9052,6 +9053,16 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed.md",
       "ui-ux-feature-components-skill-analysis.md"
+    ],
+    "RALLY": [
+      "lessons-learned-current-2026-04-state-management.md",
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "restoredPendingRequest": [
+      "lessons-learned-current-2026-04-state-management.md"
+    ],
+    "合成ルール教訓": [
+      "lessons-learned-current-2026-04-state-management.md"
     ],
     "Wizard": [
       "lessons-learned-current-2026-04-wizard-integration.md",
@@ -10773,7 +10784,8 @@
       "lessons-learned-skill-wizard-mode-mgmt.md"
     ],
     "Wave": [
-      "lessons-learned-skill-wizard-mode-mgmt.md"
+      "lessons-learned-skill-wizard-mode-mgmt.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実施では": [
       "lessons-learned-skill-wizard-mode-mgmt.md"
@@ -14306,7 +14318,8 @@
       "spec-splitting-guidelines.md"
     ],
     "code": [
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "task-workflow-completed-recent-2026-04h.md"
     ],
     "分割実行手順": [
       "spec-splitting-guidelines.md"
@@ -14531,6 +14544,15 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "IEncoder": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "dead": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "除去": [
+      "task-workflow-completed-recent-2026-04h.md"
+    ],
+    "並列タスク": [
       "task-workflow-completed-recent-2026-04h.md"
     ],
     "TerminalHandoff": [
@@ -16006,24 +16028,6 @@
     "苦戦箇所と標準ルール": [
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
-    ],
-    "average_satisfaction": [
-      "evals-schema-spec.md"
-    ],
-    "snake_case v1": [
-      "evals-schema-spec.md"
-    ],
-    "levels static object": [
-      "evals-schema-spec.md"
-    ],
-    "level number string key": [
-      "evals-schema-spec.md"
-    ],
-    "min_usage_count": [
-      "evals-schema-spec.md"
-    ],
-    "min_success_rate": [
-      "evals-schema-spec.md"
     ]
   }
 }

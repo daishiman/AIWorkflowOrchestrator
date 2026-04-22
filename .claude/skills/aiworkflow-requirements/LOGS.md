@@ -4,6 +4,16 @@
 
 このログは aiworkflow-requirements の current facts 同期履歴を残す。
 
+## 2026-04-22: TASK-RALLY-002 restoredPendingRequest close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RALLY-002 |
+| 操作 | update-spec |
+| 対象ファイル | `references/task-workflow-completed.md`, `LOGS.md` |
+| 結果 | success |
+| 備考 | `ConversationalInterview.tsx` の undo 復元中 submission requestId 整合修正と stale fallback 防止を close-out として記録。Step 2 は no-op（public contract / IPC / shared type 不変） |
+
 ## 2026-04-21: UNASSIGNED-EVALS-SPEC-SNAKE-CASE-V1-DOCUMENT-001 current facts sync
 
 - 操作: update-spec
@@ -3294,6 +3304,20 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `task-specification-creator/LOGS.md`（self-close-out エントリ）、本 `LOGS.md`（同エントリ）                                                                                |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、spec-update-workflow 準拠、artifacts.json parity 一致、親→子逆参照の双方向閉鎖完了、Phase 13 blocked 宣言                              |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / lessons-learned 3 知見（NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 / 最小変更原則維持 |
+
+## 2026-04-20 — TASK-EMB-LATE-CHUNKING-PIPELINE-INTEGRATION-001 Phase 12 close-out sync
+
+- `references/llm-embedding.md` に `PipelineConfig.lateChunking` / `StageTimings.lateChunking` / `PipelineStage.lateChunking` を追記
+- `references/api-internal-embedding.md` に `EmbeddingPipeline.process()` の Late Chunking 分岐、progress、skip semantics を追記
+- `references/architecture-embedding-pipeline.md` に Stage 2.5 と `chunkId` 整列責務を追記
+- `references/task-workflow-completed.md` に close-out エントリを追記
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | NON_VISUAL / feature-integration / phase12 close-out |
+| 変更対象 | `references/llm-embedding.md`、`references/api-internal-embedding.md`、`references/architecture-embedding-pipeline.md`、`references/task-workflow-completed.md` |
+| 結果 | Late Chunking pipeline integration の正本同期完了 |
+| 検証 | `pnpm --filter @repo/shared typecheck` PASS / pipeline integration tests 18 PASS |
 
 ## 2026-04-21 — TASK-RALLY-001 Phase 12 close-out (SkillLifecyclePanel dead code 除去)
 

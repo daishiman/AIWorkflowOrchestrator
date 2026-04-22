@@ -2,6 +2,26 @@
 
 ## 役割
 
+## 2026-04-22 - TASK-RALLY-002 close-out sync
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-RALLY-002
+- タスク名: restoredPendingRequest合成ルール明確化
+- Phase: 4-12
+
+### 成果
+
+- undo 復元中の submission payload と表示中 pendingRequest を一致させる修正を記録
+- stale snapshot への premature fallback を防ぐ close-out へ是正
+- Phase 12 implementation guide / system spec summary / changelog / compliance-check を実修正ベースへ更新
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-04-22
+
 ## 2026-04-22 - UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 skill-feedback 反映
 
 ### 変更内容
