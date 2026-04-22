@@ -189,6 +189,7 @@ schema 変更時は dual root 同時更新・consumer 逐次確認・JSON parse 
 
 | Date       | 変更内容                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-21 | UNASSIGNED-EVALS-SCHEMA-DIALECT-UNIFICATION-001 Phase 1-12 完了に伴う更新。§2 を legacy スキーマに改訂、§3.1 を snake_case v1 正本確定に更新。全スキル EVALS.json（`.claude/skills/` + `.agents/skills/`）が snake_case v1 に統一済み。 |
 | 2026-04-21 | UNASSIGNED-EVALS-VALIDATOR-GUARD-001 close-out sync: `validate-evals.js` 導入に合わせ、validator=0 件表記を validator=1 件へ更新。L1/L2/L3 の対象範囲と残制約を明文化。 |
 | 2026-04-19 | 初版作成。TASK-EVALS-CONSUMER-AUDIT-001 Phase 12 Task 2 `system-spec-update-summary.md` §4.1.1 / §4.2.1 / §4.3.1 のドラフトを正本化。camelCase v2 / snake_case v1 / qualityInsights / validator=0 件 を明示。 |

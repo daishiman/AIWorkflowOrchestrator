@@ -14469,6 +14469,15 @@
       "task-workflow-completed-recent-2026-04g.md",
       "task-workflow-completed-recent-2026-04h.md"
     ],
+    "fixture": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "runner": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
+    "スキーマ検証追加": [
+      "task-workflow-completed-recent-2026-04g.md"
+    ],
     "PROMPT": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
@@ -14480,15 +14489,6 @@
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "実処理実装": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "fixture": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "runner": [
-      "task-workflow-completed-recent-2026-04g.md"
-    ],
-    "スキーマ検証追加": [
       "task-workflow-completed-recent-2026-04g.md"
     ],
     "ハンドラー登録スナップショットカバレッジ拡張": [
