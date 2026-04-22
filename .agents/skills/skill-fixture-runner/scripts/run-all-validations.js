@@ -82,6 +82,36 @@ function main() {
     results.push({ script: 'validate-schemas.js', valid: schemasResult.valid, errors: schemasResult.errors || [] });
   }
 
+  // 5. Validate EVALS.json (all skills + dual root check)
+  const evalsValidatorPath = path.join(__dirname, 'validate-evals.js');
+  if (fs.existsSync(evalsValidatorPath)) {
+    try {
+      const evalsOutput = execSync(
+        `node ${evalsValidatorPath} --all-skills --check-dual-root --json`,
+        { encoding: 'utf-8', timeout: 30000 }
+      );
+      const evalsResult = JSON.parse(evalsOutput.trim());
+      const evalsValid = evalsResult.summary ? evalsResult.summary.fail === 0 : false;
+      const evalsErrors = (evalsResult.results || [])
+        .filter(r => !r.ok)
+        .map(r => r.error || `${r.skillName || r.path}: 検証失敗`);
+      results.push({ script: 'validate-evals.js', valid: evalsValid, errors: evalsErrors });
+    } catch (err) {
+      let evalsValid = false;
+      let evalsErrors = [`validate-evals.js 実行エラー: ${err.message}`];
+      if (err.stdout) {
+        try {
+          const evalsResult = JSON.parse(err.stdout.trim());
+          evalsValid = evalsResult.summary ? evalsResult.summary.fail === 0 : false;
+          evalsErrors = (evalsResult.results || [])
+            .filter(r => !r.ok)
+            .map(r => r.error || `${r.skillName || r.path}: 検証失敗`);
+        } catch { /* fall through */ }
+      }
+      results.push({ script: 'validate-evals.js', valid: evalsValid, errors: evalsErrors });
+    }
+  }
+
   const overall = results.every(r => r.valid);
   console.log(JSON.stringify({ overall, results }));
   process.exit(overall ? EXIT_CODES.SUCCESS : EXIT_CODES.VALIDATION_FAILED);

@@ -73,6 +73,8 @@ type SkillCreatorProgressCallback = (
   progress: SkillCreatorProgressData,
 ) => void;
 
+const SKILL_FRONTMATTER_PATTERN = /^---\n[\s\S]*?\n---\n?/;
+
 /**
  * モード別進捗フロー定義（単一集約）
  * TASK-SW-STREAM-FUP-03: progress emission contract の所有権を createSkill() に集約
@@ -380,6 +382,7 @@ export class SkillCreatorService {
 
       // モード別ワークフロー実行（各モードの先頭フェーズを emit してから業務ロジックを呼ぶ）
       let structurePlan: StructurePlanJson | null = null;
+      let shouldRunGenericSkillGeneration = true;
 
       switch (options.mode) {
         case "collaborative":
@@ -434,102 +437,108 @@ export class SkillCreatorService {
           break;
         case "improve-prompt":
           emitProgress("loading-skill");
+          this.throwIfAborted(operationSignal);
           emitProgress("analyzing");
+          this.throwIfAborted(operationSignal);
+          await this.runImprovePromptWorkflow(options, operationSignal);
+          shouldRunGenericSkillGeneration = false;
           emitProgress("improving");
           break;
       }
 
       this.throwIfAborted(operationSignal);
 
-      // 段階: generating-skill（SKILL.md 生成開始直前・モード別 percentage は PROGRESS_FLOWS で定義）
-      emitProgress("generating-skill");
+      if (shouldRunGenericSkillGeneration) {
+        // 段階: generating-skill（SKILL.md 生成開始直前・モード別 percentage は PROGRESS_FLOWS で定義）
+        emitProgress("generating-skill");
 
-      // スキル初期化
-      const initResult = await this.executeScript(
-        "init_skill.js",
-        [
-          "--name",
-          options.name,
-          "--description",
-          options.description,
-          "--output",
-          skillDir,
-        ],
-        operationSignal,
-      );
-
-      this.throwIfAborted(operationSignal);
-
-      if (!initResult.success) {
-        const shouldTryLegacyInit =
-          this.isMissingScriptError(initResult.stderr) ||
-          /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
-            initResult.stderr,
-          );
-        if (!shouldTryLegacyInit) {
-          throw new Error(`Failed to initialize skill: ${initResult.stderr}`);
-        }
-
-        const legacyInitResult = await this.executeScript(
+        // スキル初期化
+        const initResult = await this.executeScript(
           "init_skill.js",
-          [options.name, "--path", this.skillsDir],
+          [
+            "--name",
+            options.name,
+            "--description",
+            options.description,
+            "--output",
+            skillDir,
+          ],
           operationSignal,
         );
 
         this.throwIfAborted(operationSignal);
 
-        if (!legacyInitResult.success) {
-          const shouldUseInitFallback =
-            this.isMissingScriptError(legacyInitResult.stderr) ||
+        if (!initResult.success) {
+          const shouldTryLegacyInit =
+            this.isMissingScriptError(initResult.stderr) ||
             /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
-              legacyInitResult.stderr,
+              initResult.stderr,
             );
-          if (!shouldUseInitFallback) {
-            throw new Error(
-              `Failed to initialize skill: ${legacyInitResult.stderr}`,
-            );
+          if (!shouldTryLegacyInit) {
+            throw new Error(`Failed to initialize skill: ${initResult.stderr}`);
           }
 
-          await this.initializeSkillFallback(
+          const legacyInitResult = await this.executeScript(
+            "init_skill.js",
+            [options.name, "--path", this.skillsDir],
+            operationSignal,
+          );
+
+          this.throwIfAborted(operationSignal);
+
+          if (!legacyInitResult.success) {
+            const shouldUseInitFallback =
+              this.isMissingScriptError(legacyInitResult.stderr) ||
+              /ベースパスが存在しません|スキル名が指定されていません|unknown option|--path/i.test(
+                legacyInitResult.stderr,
+              );
+            if (!shouldUseInitFallback) {
+              throw new Error(
+                `Failed to initialize skill: ${legacyInitResult.stderr}`,
+              );
+            }
+
+            await this.initializeSkillFallback(
+              skillDir,
+              options.name,
+              options.description,
+              operationSignal,
+            );
+          }
+        }
+
+        this.throwIfAborted(operationSignal);
+        // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
+        if (structurePlan !== null) {
+          await this.generateSkillMd(skillDir, structurePlan, operationSignal);
+        } else if (options.mode === "create") {
+          this.logger.warn(
+            "structurePlan is null, falling back to ensureSkillMdExists",
+            {
+              skillDir,
+              skillName: options.name,
+              mode: options.mode,
+            },
+          );
+          await this.ensureSkillMdExists(
+            skillDir,
+            options.name,
+            options.description,
+            operationSignal,
+          );
+        } else {
+          await this.ensureSkillMdExists(
             skillDir,
             options.name,
             options.description,
             operationSignal,
           );
         }
-      }
 
-      this.throwIfAborted(operationSignal);
-      // SKILL.md生成: create モードのみ structurePlan を使い、他モードは従来どおりテンプレート生成
-      if (structurePlan !== null) {
-        await this.generateSkillMd(skillDir, structurePlan, operationSignal);
-      } else if (options.mode === "create") {
-        this.logger.warn(
-          "structurePlan is null, falling back to ensureSkillMdExists",
-          {
-            skillDir,
-            skillName: options.name,
-            mode: options.mode,
-          },
-        );
-        await this.ensureSkillMdExists(
-          skillDir,
-          options.name,
-          options.description,
-          operationSignal,
-        );
-      } else {
-        await this.ensureSkillMdExists(
-          skillDir,
-          options.name,
-          options.description,
-          operationSignal,
-        );
+        this.throwIfAborted(operationSignal);
+        // 段階: generating-agents（update/improve-prompt では flow に含まれないため no-op）
+        emitProgress("generating-agents");
       }
-
-      this.throwIfAborted(operationSignal);
-      // 段階: generating-agents（update/improve-prompt では flow に含まれないため no-op）
-      emitProgress("generating-agents");
 
       // タスク仕様書生成（オプション）
       if (options.generateTasks) {
@@ -1019,6 +1028,73 @@ export class SkillCreatorService {
       if (this.isAbortError(error)) throw error;
       return null;
     }
+  }
+
+  /**
+   * TASK-SC-IMPROVE-PROMPT-IMPL-001: improve-prompt モードのワークフロー実行
+   * SKILL.md を読み込み、LLM でプロンプトを改善して書き戻す。
+   * llmClient 不在またはエラー時は improveSkill() フォールバックを使用する。
+   */
+  private async runImprovePromptWorkflow(
+    options: CreateSkillOptions,
+    signal?: AbortSignal,
+  ): Promise<void> {
+    this.throwIfAborted(signal);
+    const skillMdPath = path.join(this.skillsDir, options.name, "SKILL.md");
+
+    if (!this.llmClient) {
+      await this.improveSkill(options.name, true);
+      return;
+    }
+
+    let currentContent: string;
+    try {
+      currentContent = await fs.readFile(skillMdPath, "utf-8");
+    } catch (error) {
+      if (this.isAbortError(error)) throw error;
+      await this.improveSkill(options.name, true);
+      return;
+    }
+
+    this.throwIfAborted(signal);
+
+    try {
+      const agentDef = await this.resourceLoader.loadAgent("improve-prompt", {
+        signal,
+      });
+      const improved = await this.llmClient.generate({
+        system: agentDef,
+        user: currentContent,
+      });
+      const nextContent = this.preserveOriginalFrontmatter(
+        currentContent,
+        improved,
+      );
+      this.throwIfAborted(signal);
+      await fs.writeFile(skillMdPath, nextContent, "utf-8");
+    } catch (error) {
+      if (this.isAbortError(error)) throw error;
+      await this.improveSkill(options.name, true);
+    }
+  }
+
+  private preserveOriginalFrontmatter(
+    originalContent: string,
+    improvedContent: string,
+  ): string {
+    const originalFrontmatter = originalContent.match(
+      SKILL_FRONTMATTER_PATTERN,
+    );
+    if (!originalFrontmatter) {
+      return improvedContent;
+    }
+
+    const improvedWithoutFrontmatter = improvedContent.replace(
+      SKILL_FRONTMATTER_PATTERN,
+      "",
+    );
+
+    return `${originalFrontmatter[0]}${improvedWithoutFrontmatter}`;
   }
 
   /**

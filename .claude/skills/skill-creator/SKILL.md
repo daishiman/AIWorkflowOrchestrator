@@ -66,7 +66,7 @@ allowed-tools:
 | **orchestrate**   | 実行エンジン選択                 | AskUserQuestionでヒアリング開始                 |
 | create            | 要件が明確な場合の新規作成       | `scripts/detect_mode.js --request "..."`        |
 | update            | 既存スキル更新                   | `scripts/detect_mode.js --skill-path <path>`    |
-| improve-prompt    | プロンプト改善                   | `scripts/analyze_prompt.js --skill-path <path>` |
+| improve-prompt    | プロンプト改善                   | `createSkill({ mode: 'improve-prompt', name: '<skill>' })` |
 
 ---
 
@@ -104,6 +104,56 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 📖 [agents/model-domain.md](.claude/skills/skill-creator/agents/model-domain.md) — DDD/Clean Architecture
 📖 [agents/interview-user.md](.claude/skills/skill-creator/agents/interview-user.md)
 📖 [agents/select-resources.md](.claude/skills/skill-creator/agents/select-resources.md)
+
+### Improve Prompt モード（TASK-SC-IMPROVE-PROMPT-IMPL-001）
+
+`createSkill({ mode: 'improve-prompt', name: '<skill>' })` で起動する LLM プロンプト改善ワークフロー。
+
+#### 5段階フロー
+
+```
+loading-skill(10%) → analyzing(30%) → improving(65%) → validating(90%) → done(100%)
+```
+
+| フェーズ       | percentage | 処理内容                                            |
+| -------------- | ---------- | --------------------------------------------------- |
+| loading-skill  | 10%        | スキルを読み込んでいます                            |
+| analyzing      | 30%        | 分析しています（`throwIfAborted` でAbort検知）      |
+| improving      | 65%        | improve-promptエージェント定義でLLM改善実行         |
+| validating     | 90%        | スキルを検証しています                              |
+| done           | 100%       | 完了しました                                        |
+
+#### frontmatter 保全パターン
+
+LLMがfrontmatterも上書きする問題を回避するため、`preserveOriginalFrontmatter()` で元のfrontmatterを抽出・再結合する。
+
+```
+正規表現: /^---
+[\s\S]*?
+---
+?/
+処理: 元frontmatter + LLM改善本文（frontmatter除去済み）を結合
+```
+
+#### llmClient フォールバック契約
+
+以下のいずれかの条件で `improveSkill(skillName, true)` にフォールバックする:
+
+| フォールバック条件          | 説明                               |
+| --------------------------- | ---------------------------------- |
+| `llmClient` 未注入          | constructor DI で渡されていない    |
+| `fs.readFile` 失敗          | SKILL.md読み込みエラー             |
+| LLM生成（`generate()`）失敗 | API呼び出し例外                    |
+
+abort系例外（AbortError）は必ず rethrow し、フォールバックしない。
+
+#### bootstrap 除外
+
+`improve-prompt` モードでは `shouldRunGenericSkillGeneration = false` を設定し、`init_skill.js` / `generate_skill_md.js` 等のスクリプト実行（bootstrap処理）をスキップする。
+
+#### improveSkill() との関係
+
+`improveSkill(skillName: string, autoApply: boolean)` はスクリプトベースの改善メソッド。`improve-prompt` フロー内では LLM 改善失敗時のフォールバックとして `autoApply=true` で呼び出す。通常の Runtime verify→improve→re-verify 閉ループとは独立した経路。
 
 ### Runtime ワークフロー状態遷移
 
@@ -507,6 +557,7 @@ const purpose = this.normalizePurposeResponse(response);
 | Phase 12 再監査                | references/update-process.md, `references/output-patterns.md`, `references/patterns-success-ipc-auth.md`, `references/patterns-success-ipc-auth-b.md`, `references/patterns-success-skill-phase12.md`, `references/patterns-success-skill-phase12-b.md`, `references/patterns-success-testing-security.md`, `references/patterns-failure-misc.md`, `references/patterns-failure-phase12.md`, `references/patterns-pitfall-phase12.md`, `references/patterns-pitfall-testing-ui.md` |
 | 自己改善サイクル               | references/self-improvement-cycle.md                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ライブラリ管理                 | references/library-management.md                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Improve Promptワークフロー知見 | references/lessons-learned-improve-prompt-workflow-001.md                                                                                                                                                                                                                                                                                                                                                                                                                          |
 
 ### 追加リファレンス
 

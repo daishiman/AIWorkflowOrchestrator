@@ -45,6 +45,12 @@
 - ステータス: success
 - 完了日時: 2026-04-21
 
+## 2026-04-21 - TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- NON_VISUAL + headless substitute evidence を Phase 11 primary evidence として task-local に固定
+- Phase 11 / 12 spec, root `artifacts.json`, `outputs/artifacts.json` を completed へ同期
+- unassigned follow-up `UNASSIGNED-SKILL-CREATOR-IMPROVE-PROMPT-CONTRACT-ALIGNMENT-001` を formalize
+
 ## 2026-04-19 - UT-IMP-WORKFLOW-CLOSEOUT-PARITY-GUARD-001 完了
 
 - validate-closeout-parity.js 新規作成（S1〜S4 parity validator）
@@ -3344,3 +3350,23 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | 本 `LOGS.md`（self-close-out エントリ）、`aiworkflow-requirements/LOGS.md`（同エントリ）                                                                            |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、task-spec-creator テンプレート準拠、artifacts.json parity 一致、self-close-out 完了、Phase 13 blocked 宣言                    |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / 全 Phase 1-12 成果物 parity PASS / 3 知見（L-SC-CANCEL-NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 |
+
+## 2026-04-21 — TASK-RALLY-001 Phase 12 close-out (SkillLifecyclePanel dead code 除去)
+
+### 変更内容
+
+- `SkillLifecyclePanel.tsx` から dead code 3グループを削除（`_handleSubmitWorkflowInput` 関数・旧入力 state 4種・companion `useEffect`）
+- Wave 0 並列タスク RALLY-001 の Phase 1〜12 を全完了
+- Phase 12 mandatory 6 成果物 all PASS（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+- skill feedback: 改善点なし。P50 チェックによる companion useEffect（AC-2b）事前発見が有効で、Phase 2 設計への反映がスムーズだった
+
+### 背景
+
+ラリー機能設計ギャップ（IPC invoke pull と IPC push の両方が `workflowSnapshot` 更新権限を持つ問題）の修正を Wave 0 並列タスクとして実施。dead code を先行除去し、Wave 1 以降の IPC 権限設計確立の前提を整えた。task-specification-creator の Phase 1 P50 チェックが companion useEffect（AC-2b）を事前発見し、Phase 2 設計にスムーズに反映できた実証事例となった。
+
+| 項目     | 内容                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / dead-code-removal / impl-spec-to-skill-sync / phase12 close-out                                                                                                 |
+| 変更対象 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`docs/30-workflows/wave0-par-RALLY-001/`、本 `LOGS.md`、`aiworkflow-requirements/LOGS.md` |
+| 結果     | AC-1〜AC-5 + AC-2b all PASS。dead code 3グループ（state 4種 + useEffect + _handleSubmitWorkflowInput）除去完了。Phase 13 blocked（user approval 待ち）                       |
+| 検証     | vitest PASS / typecheck PASS / lint PASS / Phase 12 compliance PASS                                                                                                          |

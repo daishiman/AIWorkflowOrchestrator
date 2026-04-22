@@ -4,6 +4,14 @@
 
 ---
 
+## 2026-04-21 TASK-SC-IMPROVE-PROMPT-IMPL-001 close-out sync
+
+- runImprovePromptWorkflow()実装内容をSKILL.mdに反映（Improve Promptモードセクション追加）
+- lessons-learned-improve-prompt-workflow-001.md 新規作成（L-IP-001〜005）
+- クイックスタートテーブルのimprove-prompt行を最新パターンに修正
+
+---
+
 ## 2026-04-16 - TASK-SC-IMP-CREATE-WORKFLOW-001 runCreateWorkflow create モード実装の知見を SKILL.md へ反映
 
 - **Agent**: skill-creator (update)
