@@ -1,0 +1,95 @@
+{
+  "feature": "TASK-RALLY-002",
+  "created": "2026-04-21T00:00:00.000Z",
+  "lastUpdated": "2026-04-21T00:00:00.000Z",
+  "status": "blocked",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:32:04.201Z"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:33:09.864Z"
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:34:09.503Z"
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:49:15.601Z"
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:51:28.554Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T10:52:47.435Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:23.888Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:24.917Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:26.394Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:29.227Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:32.118Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [],
+      "completedAt": "2026-04-21T21:27:34.948Z"
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "refactor",
+    "waveGroup": "0",
+    "parallelTasks": ["RALLY-001", "RALLY-004"],
+    "blockedBy": [],
+    "blocks": ["RALLY-010"],
+    "conflictDomain": "ConversationalInterview",
+    "targetFile": "apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx"
+  }
+}

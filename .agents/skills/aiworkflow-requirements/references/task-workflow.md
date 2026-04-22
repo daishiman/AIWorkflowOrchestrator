@@ -59,6 +59,41 @@ Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-wor
 | [task-workflow-backlog.md](task-workflow-backlog.md)                                                                                     | backlog                                                                                                     | 残課題（未タスク） / 2026-04-07 UT-RT-02 follow-up 1件（type-expansion test） / 2026-04-04 TASK-RT-01 follow-up 1件（executeAsync snapshot message format） / 2026-03-21 runtime policy capability bridge follow-up 2件 / 2026-03-26 TASK-SDK-01 follow-up は code hardening 吸収後に close                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [task-workflow-history.md](task-workflow-history.md)                                                                                     | history bundle                                                                                              | 関連ドキュメント / 変更履歴                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
+## TASK-RALLY-002: restoredPendingRequest合成ルール明確化（verify_existing / 2026-04-21）
+
+### verify_existingタスク典型パターン
+
+TASK-RALLY-002は `verify_existing` として分類された NON_VISUAL タスクである。
+実装変更ではなく、既存コードのコメント追加とregression test 5件追加が主成果物。
+NON_VISUAL + verify_existing の固定フレーズを使い、canonical output ルールに従って close-out を整流することが有効だった。
+
+### restoredPendingRequestの状態所有権と合成ルール
+
+```typescript
+// apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx
+const pendingRequest = restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
+```
+
+| 優先度 | ソース | 条件 |
+| --- | --- | --- |
+| 1位 | `restoredPendingRequest` | undo後の復元質問（undoで復元された状態は通常フローより優先される） |
+| 2位 | `workflowSnapshot?.awaitingUserInput` | 通常フロー（新規の質問待ち状態） |
+| fallback | `null` | どちらも存在しない場合 |
+
+**自動クリア条件**: `requestId` 変化時（新しいリクエストが来ると restoredPendingRequest は自動的にクリアされ、通常フローへ移行する）
+
+### タスク依存関係（RALLY系）
+
+- **RALLY-002** → RALLY-010 → RALLY-011 → RALLY-012 → RALLY-013
+
+RALLY-010以降は RALLY-002で確定した合成ルールを前提知識として扱う。
+
+### ワークフロー格納場所の規則
+
+wave固有タスク（`wave0-par-RALLY-*`）のワークフローは `docs/30-workflows/` 直下に配置する（`skill-create-flow-gaps/` サブディレクトリではない）。
+
+---
+
 ## 利用順序
 - まずこの親仕様書で対象 child companion を選ぶ。
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。

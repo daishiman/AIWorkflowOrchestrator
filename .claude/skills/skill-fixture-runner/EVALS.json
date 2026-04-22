@@ -1,9 +1,40 @@
 {
   "skill_name": "skill-fixture-runner",
   "current_level": 1,
+  "levels": {
+    "1": {
+      "name": "Beginner",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0
+      }
+    },
+    "2": {
+      "name": "Intermediate",
+      "requirements": {
+        "min_usage_count": 3,
+        "min_success_rate": 0.7
+      }
+    },
+    "3": {
+      "name": "Advanced",
+      "requirements": {
+        "min_usage_count": 10,
+        "min_success_rate": 0.8
+      }
+    },
+    "4": {
+      "name": "Expert",
+      "requirements": {
+        "min_usage_count": 20,
+        "min_success_rate": 0.9
+      }
+    }
+  },
   "metrics": {
     "total_usage_count": 0,
     "success_count": 0,
-    "failure_count": 0
+    "failure_count": 0,
+    "last_evaluated": null
   }
 }

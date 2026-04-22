@@ -122,6 +122,13 @@
         "avg_coverage": 97.2,
         "system_specs_updated": 6,
         "unassigned_tasks_detected": 4
+      },
+      "UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001": {
+        "completed_phases": 12,
+        "total_tests": 0,
+        "avg_coverage": 0,
+        "system_specs_updated": 2,
+        "unassigned_tasks_detected": 0
       }
     }
   },

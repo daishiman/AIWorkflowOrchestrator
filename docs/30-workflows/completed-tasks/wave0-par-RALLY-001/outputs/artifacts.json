@@ -1,0 +1,131 @@
+{
+  "feature": "TASK-RALLY-001",
+  "created": "2026-04-21T00:00:00.000Z",
+  "lastUpdated": "2026-04-21T18:30:00.000Z",
+  "status": "in-progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md:要件定義書（dead code特定・useEffect追加gap含む）",
+        "outputs/phase-1/acceptance-criteria.md:受け入れ基準AC-1〜AC-5+AC-2b",
+        "outputs/phase-1/p50-check-result.md:grep確認結果・影響範囲分析"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/dead-code-list.md:削除対象コードリスト（L482-485, L607-631, L793-833の3グループ・計70行）",
+        "outputs/phase-2/deletion-procedure.md:削除手順設計書・検証・ロールバック",
+        "outputs/phase-2/dependency-consistency-matrix.md:依存整合マトリクス・4条件評価"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md:設計レビュー結果（チェック観点5項目・全OK）",
+        "outputs/phase-3/gate-decision.md:ゲート判定PASS",
+        "outputs/phase-3/risk-assessment.md:リスク評価（総合LOW）"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md:テスト仕様書（targeted run・AC-検証コマンド対応表）",
+        "outputs/phase-4/dead-code-reference-check.md:テストコード内dead code参照確認（0件）"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md:実装サマリー（削除3グループ・AC全PASS）",
+        "outputs/phase-5/changed-files.md:変更ファイル一覧（1ファイル削除のみ）",
+        "outputs/phase-5/verification-result.md:typecheck/lint/test検証結果（全PASS）"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/regression-test-result.md:回帰テスト結果（全PASS）",
+        "outputs/phase-6/test-expansion-decision.md:テスト拡充判断（追加不要）"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-check-result.md:カバレッジ確認結果（向上）",
+        "outputs/phase-7/traceability-coverage-report.md:AC-テスト対応表"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md:リファクタリング計画（追加不要）",
+        "outputs/phase-8/responsibility-boundary-map.md:責務境界マップ・RALLY-005引き継ぎ"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md:品質レポート（全チェックPASS）",
+        "outputs/phase-9/risk-register.md:リスク台帳（残存リスクなし）",
+        "outputs/phase-9/causal-loop-check.md:因果ループ監査（連鎖影響なし）"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md:最終レビュー結果（全AC PASS）",
+        "outputs/phase-10/gate-decision.md:ゲート判定PASS",
+        "outputs/phase-10/release-readiness-checklist.md:出荷準備チェックリスト"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md:手動テスト結果（primary evidence）",
+        "outputs/phase-11/manual-test-checklist.md:手動テストチェック表",
+        "outputs/phase-11/discovered-issues.md:発見課題（0件）"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md:実装ガイド（中学生説明+技術要点）",
+        "outputs/phase-12/system-spec-update-summary.md:system spec update summary（N/A）",
+        "outputs/phase-12/documentation-changelog.md:更新履歴",
+        "outputs/phase-12/unassigned-task-detection.md:未タスク検出（0件）",
+        "outputs/phase-12/skill-feedback-report.md:skill feedback",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md:compliance check（全PASS）"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "refactor",
+    "waveGroup": "0",
+    "parallelTasks": ["RALLY-002", "RALLY-004"],
+    "blockedBy": [],
+    "blocks": ["RALLY-005"],
+    "conflictDomain": "SkillLifecyclePanel",
+    "targetFile": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+    "notes": "Phase 1調査でuseEffect（L607-631）を追加dead codeとして発見。phase-1-requirements.md・phase-2-design.mdを更新済み。taskType は refactor、UI種別は NON_VISUAL。Phase 13 は user approval 未取得のため blocked。"
+  }
+}
