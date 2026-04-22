@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: null
+issue_number: 2329
 task_id: UNASSIGNED-EVALS-SKILL-SCANNER-CONTENT-VALIDATE-001
 task_name: SkillScanner EVALS.json 内容バリデーション追加
 category: 改善

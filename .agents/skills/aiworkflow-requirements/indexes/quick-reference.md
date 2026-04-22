@@ -854,3 +854,15 @@ export interface IEmbeddingClient {
   getTokenEmbeddings?(text: string): Promise<TokenEmbeddingsResult>; // オプショナル
 }
 ```
+
+---
+
+## EVALS.json qualityInsights クイックアクセス
+
+| 項目 | 内容 | 参照先 |
+| --- | --- | --- |
+| qualityInsights | 品質インサイト（10フィールド / writer=手動 / reader=0件）| `references/evals-schema-spec.md` §6 |
+| taskMetrics 構造 | タスクIDキー辞書 `{TASK_ID}.completedPhases` 等 | `references/evals-schema-spec.md` §6 |
+| writer・更新タイミング | Phase 12 closeout 実行者（手動） | `references/evals-schema-spec.md` §6.1 |
+| validator 状況 | 0件（設計案のみ: UNASSIGNED-EVALS-VALIDATOR-GUARD-001）| `references/evals-schema-spec.md` §7 |
+| 他スキル展開 | opt-in（usage count 10以上で推奨）| `references/evals-schema-spec.md` §6.1 |

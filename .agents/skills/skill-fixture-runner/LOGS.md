@@ -17,6 +17,16 @@
   - `validate-evals.test.js` の skip 2件を実測テストへ置換
   - SKILL.md に CLI 契約・変更履歴を追記
 
+## 2026-04-22
+
+### EVALS.json 更新: levels オブジェクト追加
+- **変更種別**: 仕様同期
+- **変更内容**: `levels` オブジェクトを追加（skill-creator パターンに準拠）
+- **理由**: UNASSIGNED-EVALS-SKILL-SCANNER-CONTENT-VALIDATE-001 の設計に合わせ、EVALS.json が SkillScanner の内容バリデーションを通過できる形式に整備
+- **影響範囲**: EVALS.json のみ（scripts, SKILL.md は変更なし）
+
+---
+
 ## 2026-02-01: skill-creator準拠リファクタリング
 
 - **操作**: update (skill-creator standards optimization)

@@ -1,0 +1,228 @@
+{
+  "task_id": "UNASSIGNED-EVALS-VALIDATOR-GUARD-001",
+  "task_name": "skill-fixture-runner EVALS.json スキーマ検証追加",
+  "issue_number": 2325,
+  "status": "spec_created",
+  "implementation_mode": "new",
+  "taskType": "docs-only",
+  "created_date": "2026-04-21",
+  "metadata": {
+    "taskType": "docs-only",
+    "taskKind": "NON_VISUAL",
+    "cliContractSource": "phase-2-design.md#cli-インターフェース"
+  },
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-1/script-inventory.md",
+        "outputs/phase-1/evals-target-list.md",
+        "outputs/phase-1/dialect-field-map.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-2/validator-architecture.md",
+        "outputs/phase-2/interface-design.md",
+        "outputs/phase-2/fixture-exclusion-policy.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-3/elegance-thinking-audit.md",
+        "outputs/phase-3/design-review-result.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-5": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-6": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-7": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-8": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-9": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-10": {
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-11": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    }
+  },
+  "artifacts": [
+    {
+      "id": "PHASE1-SCRIPT-INVENTORY",
+      "name": "既存スクリプト棚卸し",
+      "path": "outputs/phase-1/script-inventory.md",
+      "phase": "phase-1",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE1-EVALS-TARGET-LIST",
+      "name": "EVALS 対象一覧",
+      "path": "outputs/phase-1/evals-target-list.md",
+      "phase": "phase-1",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE1-DIALECT-FIELD-MAP",
+      "name": "方言フィールド対応表",
+      "path": "outputs/phase-1/dialect-field-map.md",
+      "phase": "phase-1",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE2-VALIDATOR-ARCHITECTURE",
+      "name": "validator アーキテクチャ設計",
+      "path": "outputs/phase-2/validator-architecture.md",
+      "phase": "phase-2",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE2-INTERFACE-DESIGN",
+      "name": "CLI / I-F 設計",
+      "path": "outputs/phase-2/interface-design.md",
+      "phase": "phase-2",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE2-FIXTURE-EXCLUSION-POLICY",
+      "name": "fixture 除外ポリシー",
+      "path": "outputs/phase-2/fixture-exclusion-policy.md",
+      "phase": "phase-2",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE3-ELEGANCE-THINKING-AUDIT",
+      "name": "30思考法監査",
+      "path": "outputs/phase-3/elegance-thinking-audit.md",
+      "phase": "phase-3",
+      "status": "spec_created"
+    },
+    {
+      "id": "VALIDATE-EVALS-JS",
+      "name": "EVALS.json validator スクリプト",
+      "path": ".claude/skills/skill-fixture-runner/scripts/validate-evals.js",
+      "phase": "phase-5",
+      "status": "spec_created"
+    },
+    {
+      "id": "VALIDATE-SKILL-STRUCTURE-JS",
+      "name": "構造チェッカー更新",
+      "path": ".claude/skills/skill-fixture-runner/scripts/validate-skill-structure.js",
+      "phase": "phase-5",
+      "status": "spec_created"
+    },
+    {
+      "id": "RUN-ALL-VALIDATIONS-JS",
+      "name": "統合ランナー更新",
+      "path": ".claude/skills/skill-fixture-runner/scripts/run-all-validations.js",
+      "phase": "phase-5",
+      "status": "spec_created"
+    },
+    {
+      "id": "AGENTS-MIRROR",
+      "name": ".agents/ ミラー同期",
+      "path": ".agents/skills/skill-fixture-runner/scripts/",
+      "phase": "phase-5",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE11-MANUAL-TEST-CHECKLIST",
+      "name": "Phase 11 手動テストチェックリスト",
+      "path": "outputs/phase-11/manual-test-checklist.md",
+      "phase": "phase-11",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE11-MANUAL-TEST-RESULT",
+      "name": "Phase 11 手動テスト結果",
+      "path": "outputs/phase-11/manual-test-result.md",
+      "phase": "phase-11",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE11-DISCOVERED-ISSUES",
+      "name": "Phase 11 発見課題",
+      "path": "outputs/phase-11/discovered-issues.md",
+      "phase": "phase-11",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-IMPLEMENTATION-GUIDE",
+      "name": "実装ガイド",
+      "path": "outputs/phase-12/implementation-guide.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-SYSTEM-SPEC-UPDATE-SUMMARY",
+      "name": "システム仕様更新サマリー",
+      "path": "outputs/phase-12/system-spec-update-summary.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-DOCUMENTATION-CHANGELOG",
+      "name": "ドキュメント更新履歴",
+      "path": "outputs/phase-12/documentation-changelog.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-UNASSIGNED-TASK-DETECTION",
+      "name": "未タスク検出レポート",
+      "path": "outputs/phase-12/unassigned-task-detection.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-SKILL-FEEDBACK-REPORT",
+      "name": "スキルフィードバックレポート",
+      "path": "outputs/phase-12/skill-feedback-report.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    },
+    {
+      "id": "PHASE12-TASK-SPEC-COMPLIANCE-CHECK",
+      "name": "Phase 12 準拠チェック",
+      "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+      "phase": "phase-12",
+      "status": "spec_created"
+    }
+  ]
+}

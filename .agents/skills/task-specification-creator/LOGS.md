@@ -2,6 +2,26 @@
 
 ## 役割
 
+## 2026-04-22 - UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 skill-feedback 反映
+
+### 変更内容
+
+| ID | 内容 | 反映先 |
+| -- | ---- | ------ |
+| EVALS-DOC-001 | docs-only タスクでは Phase 7 を `totalTests=0 / avgCoverage=0` / 「対象コードなし（N/A）」として記録するルールを明示 | `SKILL.md` Phase 7 実行表 |
+| Step-1-D | Phase 12 Task 2 に EVALS.json taskMetrics 追記を必須ステップとして標準化 | `SKILL.md` Phase 12 Task 2 テーブル |
+
+### 変更ファイル
+
+- `.claude/skills/task-specification-creator/SKILL.md`: Phase 7 行 + Task 2 Step 1-D 追加・v10.09.60 変更履歴追記
+- `.claude/skills/task-specification-creator/LOGS.md`: 本エントリ
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-04-22
+- 参照タスク: `docs/30-workflows/UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001/outputs/phase-12/skill-feedback-report.md`
+
 ## 2026-04-20 - TASK-SW-CANCEL-004 フィードバック反映
 ## 2026-04-21 - TASK-SW-TODO-001 close-out sync
 
@@ -3330,3 +3350,46 @@ TASK-SC-CANCEL-CLEANUP-PARTIAL-DIR-001（キャンセル後の半作成スキル
 | 変更対象 | 本 `LOGS.md`（self-close-out エントリ）、`aiworkflow-requirements/LOGS.md`（同エントリ）                                                                            |
 | 結果     | Phase 12 mandatory 5 tasks all PASS、task-spec-creator テンプレート準拠、artifacts.json parity 一致、self-close-out 完了、Phase 13 blocked 宣言                    |
 | 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS / 全 Phase 1-12 成果物 parity PASS / 3 知見（L-SC-CANCEL-NON-VISUAL-001 / SCOPE-BOUNDARY-001 / REPO-WIDE-SYNC-001）定着確認 |
+
+## 2026-04-21 — TASK-RALLY-001 Phase 12 close-out (SkillLifecyclePanel dead code 除去)
+
+### 変更内容
+
+- `SkillLifecyclePanel.tsx` から dead code 3グループを削除（`_handleSubmitWorkflowInput` 関数・旧入力 state 4種・companion `useEffect`）
+- Wave 0 並列タスク RALLY-001 の Phase 1〜12 を全完了
+- Phase 12 mandatory 6 成果物 all PASS（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+- skill feedback: 改善点なし。P50 チェックによる companion useEffect（AC-2b）事前発見が有効で、Phase 2 設計への反映がスムーズだった
+
+### 背景
+
+ラリー機能設計ギャップ（IPC invoke pull と IPC push の両方が `workflowSnapshot` 更新権限を持つ問題）の修正を Wave 0 並列タスクとして実施。dead code を先行除去し、Wave 1 以降の IPC 権限設計確立の前提を整えた。task-specification-creator の Phase 1 P50 チェックが companion useEffect（AC-2b）を事前発見し、Phase 2 設計にスムーズに反映できた実証事例となった。
+
+| 項目     | 内容                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | NON_VISUAL / dead-code-removal / impl-spec-to-skill-sync / phase12 close-out                                                                                                 |
+| 変更対象 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`docs/30-workflows/wave0-par-RALLY-001/`、本 `LOGS.md`、`aiworkflow-requirements/LOGS.md` |
+| 結果     | AC-1〜AC-5 + AC-2b all PASS。dead code 3グループ（state 4種 + useEffect + _handleSubmitWorkflowInput）除去完了。Phase 13 blocked（user approval 待ち）                       |
+| 検証     | vitest PASS / typecheck PASS / lint PASS / Phase 12 compliance PASS                                                                                                          |
+
+## 2026-04-21 - UNASSIGNED-EVALS-SPEC-QUALITY-INSIGHTS-DOCUMENT-001 Phase 12 close-out
+
+### 変更内容
+
+- `aiworkflow-requirements/references/evals-schema-spec.md` §6 qualityInsights 定義を実装実態（タスク ID キー辞書）に修正
+- `aiworkflow-requirements/indexes/quick-reference.md` に qualityInsights クイックアクセスセクション追加
+- `aiworkflow-requirements/references/task-workflow-completed.md` に完了記録を追加
+- `aiworkflow-requirements/indexes/topic-map.md` を再生成し mirror parity を再同期
+- `task-specification-creator/EVALS.json` の `taskMetrics` に本タスク完了エントリを追加
+- Phase 12 mandatory 6 tasks all PASS（NON_VISUAL / AC-1〜7 全達成 / mirror sync 差分ゼロ）
+- Phase 13（PR 作成）は user 承認待ちで blocked
+
+### 背景
+
+本タスクは `evals-schema-spec.md` §6 の taskMetrics 定義が実際の EVALS.json 実装と乖離していた問題を修正する docs-only タスク。flat フィールド（`createdCount` 等）を削除し、タスク ID キー辞書（`{TASK_ID}.completedPhases` 等）に置換。Phase 12 close-out として EVALS.json の `taskMetrics` に本タスクのエントリを追加した。
+
+| 項目     | 内容                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------ |
+| 種別     | docs-only / NON_VISUAL / spec-update / close-out / evals-update                             |
+| 変更対象 | `aiworkflow-requirements/references/evals-schema-spec.md`、`aiworkflow-requirements/indexes/quick-reference.md`、`aiworkflow-requirements/references/task-workflow-completed.md`、`aiworkflow-requirements/indexes/topic-map.md`、`task-specification-creator/EVALS.json`、両 `SKILL.md`、両 `LOGS.md` |
+| 結果     | Phase 12 mandatory 6 tasks all PASS。docs-only 制約遵守。mirror sync 差分ゼロ              |
+| 検証     | `outputs/phase-12/phase12-task-spec-compliance-check.md` COMPLIANCE PASS                   |

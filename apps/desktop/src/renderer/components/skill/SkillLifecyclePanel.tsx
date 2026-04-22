@@ -479,10 +479,6 @@ export function SkillLifecyclePanel({
   } | null>(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [textAnswer, setTextAnswer] = useState("");
-  const [secretAnswer, setSecretAnswer] = useState("");
-  const [confirmAnswer, setConfirmAnswer] = useState<boolean | null>(null);
   const [sessionEntries, setSessionEntries] = useState<SessionEntry[]>([
     {
       id: "lifecycle-guide",
@@ -603,32 +599,6 @@ export function SkillLifecyclePanel({
 
     previousStatus.current = skillExecutionStatus;
   }, [createdSkillName, skillError, skillExecutionStatus]);
-
-  useEffect(() => {
-    const requestState = workflowSnapshot?.awaitingUserInput;
-    if (!requestState) {
-      setSelectedOptionId(null);
-      setTextAnswer("");
-      setSecretAnswer("");
-      setConfirmAnswer(null);
-      return;
-    }
-
-    if (requestState.kind === "single_select") {
-      setSelectedOptionId(
-        (current) => current ?? requestState.options?.[0]?.id ?? null,
-      );
-      return;
-    }
-
-    if (requestState.kind === "confirm") {
-      setConfirmAnswer((current) => current ?? true);
-      return;
-    }
-
-    setSelectedOptionId(null);
-    setConfirmAnswer(null);
-  }, [workflowSnapshot]);
 
   useEffect(() => {
     const skillCreatorApi = getSkillCreatorApi();
@@ -790,47 +760,6 @@ export function SkillLifecyclePanel({
     clearHandoffGuidance();
   };
 
-  const _handleSubmitWorkflowInput = async () => {
-    if (!workflowSnapshot?.awaitingUserInput) {
-      return;
-    }
-
-    const skillCreatorApi = getSkillCreatorApi();
-    if (!skillCreatorApi?.submitUserInput) {
-      setWorkflowError("workflow user input API が利用できません");
-      return;
-    }
-
-    const requestState = workflowSnapshot.awaitingUserInput;
-    const submission: SkillCreatorUserInputSubmission = {
-      planId: workflowSnapshot.planId,
-      requestId: requestState.requestId,
-    };
-
-    if (requestState.kind === "single_select") {
-      submission.selectedOptionId = selectedOptionId ?? undefined;
-    } else if (requestState.kind === "free_text") {
-      submission.textValue = textAnswer;
-    } else if (requestState.kind === "secret") {
-      submission.secretValue = secretAnswer;
-    } else {
-      submission.confirmed = confirmAnswer ?? undefined;
-    }
-
-    const result = await skillCreatorApi.submitUserInput(submission);
-    if (!result.success || !result.data) {
-      setWorkflowError(
-        result.error ?? "workflow user input の送信に失敗しました",
-      );
-      return;
-    }
-
-    applyWorkflowSnapshot(result.data);
-    setSelectedOptionId(null);
-    setTextAnswer("");
-    setSecretAnswer("");
-    setConfirmAnswer(null);
-  };
   useEffect(() => {
     if (storePlanId && storePlanId !== activeWorkflowId) {
       setActiveWorkflowId(storePlanId);
