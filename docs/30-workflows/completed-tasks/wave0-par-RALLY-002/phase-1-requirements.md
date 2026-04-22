@@ -15,93 +15,122 @@
 
 ## 目的
 
-本ブランチ上の既存実装を観測し、`restoredPendingRequest` の優先規則とクリア条件が上流設計書・skill定義・RALLY-010 以降の依存条件と矛盾なく説明できる状態へ固定する。
+`ConversationalInterview.tsx` の `pendingRequest` 合成式における優先ルールの不明確さを特定し、修正の受け入れ基準を確定する。
 
 ## 実行タスク
 
-1. P50 で実装済みコードと最近の履歴を確認する
-2. `rally-phase-1-analysis.md`、`rally-phase-2-solution.md`、`rally-phase-3-review.md` を読み、RALLY-002 の責務境界を抽出する
-3. `task-specification-creator` と `aiworkflow-requirements` の要求を照合し、verify_existing / NON_VISUAL 判定を確定する
-4. 30種の思考法を使って 4 条件監査を行い、要件・非目標・受け入れ基準を定義する
+1. 現状コード、既存テスト、RALLY 波及先の依存関係を確認する
+2. `pendingRequest` の優先ルール、クリア条件、UI観点の受け入れ基準を定義する
+3. Phase 2 以降が迷わないよう、参照根拠と成果物名を固定する
 
-## 実行手順
+## SubAgentチーム編成
+
+| SubAgent   | 関心ごと           | 主担当                                                           | 並列/直列          |
+| ---------- | ------------------ | ---------------------------------------------------------------- | ------------------ |
+| SubAgent-A | 現状コード解析     | pendingRequest合成式・restoredPendingRequestの現在の使われ方確認 | 並列（B と同時）   |
+| SubAgent-B | 期待動作定義       | セッション復元フローでの正しい動作・クリア条件の整理             | 並列（A と同時）   |
+| SubAgent-C | 統合・矛盾チェック | A・B の結果統合と変更方針の最終確認                              | 直列（A・B完了後） |
+
+## P50チェック（実施必須）
 
 ```bash
+# 対象ファイルの最近のコミット履歴
 git log --oneline -20 -- apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx
 
-rg -n "restoredPendingRequest|pendingRequest|awaitingUserInput|setRestoredPendingRequest" \
+# restoredPendingRequest の現在の使われ方を確認（SubAgent-A担当）
+grep -n "restoredPendingRequest\|pendingRequest\|awaitingUserInput" \
+  apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx
+
+# restoredPendingRequest がセットされる箇所を確認（SubAgent-A担当）
+grep -n "setRestoredPendingRequest" \
+  apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx
+
+# workflowSnapshot の更新箇所を確認（SubAgent-B担当）
+grep -n "setWorkflowSnapshot\|workflowSnapshot" \
   apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx
 ```
 
-現在コードで確認済みの事実:
+### 現状（2026-04-21 時点の確認結果）
 
-- `pendingRequest = restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null`
-- `workflowSnapshot?.awaitingUserInput?.requestId` を依存とする `useEffect` が存在し、`restoredPendingRequest` を `null` に戻している
-- したがって本タスクは新規ロジック追加ではなく、**既存ロジックの意味を仕様へ整流する verify_existing** が中心となる
+- `ConversationalInterview.tsx` の L34〜45 付近に以下が存在する:
 
-## 統合テスト連携
+  ```typescript
+  const [restoredPendingRequest, setRestoredPendingRequest] = ...;
 
-- Phase 4 では新規実装前提の RED ではなく、既存挙動を固定する targeted regression test を優先する
-- Phase 5 は diff 確認を主作業とし、コード変更は不一致があった場合に限定する
-- Phase 11 は NON_VISUAL 手動確認として semantic behavior のみを監査する
+  const pendingRequest =
+    restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
+  ```
 
-## 多角的チェック観点（30思考法）
-
-| カテゴリ     | 思考法                                                               | 本タスクでの使い方                                                        |
-| ------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 論理分析系   | 批判的思考、演繹思考、帰納的思考、アブダクション、垂直思考           | 上流設計書と現コードの差を仮説ではなく観測ベースで詰める                  |
-| 構造分解系   | 要素分解、MECE、2軸思考、プロセス思考                                | comment / clear logic / downstream dependency / close-out を分離する      |
-| メタ・抽象系 | メタ思考、抽象化思考、ダブル・ループ思考                             | RALLY-002 の真の責務が「新規実装」か「既存挙動の固定」かを再判定する      |
-| 発想・拡張系 | ブレインストーミング、水平思考、逆説思考、類推思考、if思考、素人思考 | useEffect を増やすより verify_existing へ寄せる方がエレガントかを比較する |
-| システム系   | システム思考、因果関係分析、因果ループ                               | `RALLY-002 -> RALLY-010..013` の依存連鎖を明示する                        |
-| 戦略・価値系 | トレードオン思考、プラスサム思考、価値提案思考、戦略的思考           | 変更量を増やさず downstream の読みやすさを上げる                          |
-| 問題解決系   | why思考、改善思考、仮説思考、論点思考、KJ法                          | 「何を直すか」より「何を固定し、何を触らないか」を整理する                |
-
-## サブタスク管理
-
-| SubAgent | 主担当                      | 並列/直列        |
-| -------- | --------------------------- | ---------------- |
-| A        | 現状コード観測              | 並列             |
-| B        | 上流設計書 / skill 正本照合 | 並列             |
-| C        | 30思考法による4条件監査     | 並列             |
-| D        | 統合判断と受け入れ基準確定  | A-C 完了後に直列 |
+- 合成式の優先ルールを説明するコメントは存在しない
+- `workflowSnapshot?.awaitingUserInput` が更新されたときに `restoredPendingRequest` がクリアされるロジックが不明確
 
 ## 受け入れ基準
 
-- AC-1: `RALLY-002` は verify_existing タスクとして定義され、Phase 4/5 がその前提で書かれている
-- AC-2: `restoredPendingRequest` 優先規則と `workflowSnapshot` 到着後のクリア条件が仕様書で説明される
-- AC-3: `RALLY-002` が `ConversationalInterview.tsx` に閉じた責務であることが明記される
-- AC-4: `RALLY-010` 以降への依存が index / artifacts / 本文で一致している
-- AC-5: Phase 11 は NON_VISUAL、Phase 13 は approval-blocked 原則に整合している
+- AC-1: `pendingRequest` 合成式の直上に、`restoredPendingRequest` を優先する理由と適用条件を説明するコメントが追加されている
+- AC-2: `workflowSnapshot?.awaitingUserInput` が非 null になったとき、`restoredPendingRequest` がクリア（null 化）されるロジックが存在する
+- AC-3: コードを読んだ開発者が「どの状態のとき restoredPendingRequest が使われ、いつ workflowSnapshot 側に切り替わるか」を理解できる
+- AC-4: `pnpm typecheck` がエラーなしで通過する
+- AC-5: `pnpm lint` がエラーなしで通過する（exhaustive-deps 警告含む）
+
+## 実行手順
+
+1. SubAgent-A: `grep` で `pendingRequest` / `restoredPendingRequest` / `awaitingUserInput` の現状コードを確認する
+2. SubAgent-B: セッション復元フローのドキュメントや設計書から期待動作を確認する
+3. SubAgent-C: A・B の結果を統合し、変更方針（コメント追加 + useEffect追加）を確定する
+
+## 統合テスト連携
+
+- Phase 4 では `pendingRequest` 優先ルールを deterministic に観測できるテスト方針へ落とす
+- Phase 6 では復元直後と snapshot 到着後の切替境界を回帰ケースとして固定する
+- Phase 11 では Renderer UI と console error を実機確認し、Phase 12 で証跡へ昇格する
+
+## 多角的チェック観点（AIが判断）
+
+- システム思考: 復元状態、snapshot 到着、通常フローの状態遷移が閉じているか
+- why思考: 問題の本質が「コメント不足」ではなく「優先ルールの暗黙化」であることを明文化できているか
+- トレードオン思考: 即時表示の価値と stale state 温存リスクの均衡が取れているか
+- 論点思考: RALLY-010 以降が前提として必要とする契約を Phase 1 で固定できているか
+
+## サブタスク管理
+
+- A: 現状コード解析
+- B: 期待動作定義
+- C: 矛盾チェックと受け入れ基準確定
 
 ## 参照資料
 
-| 資料名     | パス                                                                     | 用途         |
-| ---------- | ------------------------------------------------------------------------ | ------------ |
-| 対象コード | `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx` | 現状観測     |
-| 分析書     | `docs/30-workflows/00-task-spec-design-docs/rally-phase-1-analysis.md`   | 問題起点     |
-| 解決策設計 | `docs/30-workflows/00-task-spec-design-docs/rally-phase-2-solution.md`   | 責務境界     |
-| レビュー   | `docs/30-workflows/00-task-spec-design-docs/rally-phase-3-review.md`     | 依存関係整理 |
+| 資料名        | パス                                                                     | 用途                        |
+| ------------- | ------------------------------------------------------------------------ | --------------------------- |
+| 対象ファイル  | `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx` | 現状コード確認              |
+| workflow索引  | `docs/30-workflows/wave0-par-RALLY-002/index.md`                         | 成果物・依存の正本          |
+| artifacts台帳 | `docs/30-workflows/wave0-par-RALLY-002/artifacts.json`                   | Phase依存と status 整合確認 |
 
 ## 成果物
 
-- `outputs/phase-1/requirements-definition.md`
-- `outputs/phase-1/acceptance-criteria.md`
-- `outputs/phase-1/p50-check-result.md`
-- `outputs/phase-1/thinking-coverage-map.md`
+| 成果物          | パス                                         | 説明                           |
+| --------------- | -------------------------------------------- | ------------------------------ |
+| 要件定義書      | `outputs/phase-1/requirements-definition.md` | 問題の特定と修正方針           |
+| 受け入れ基準    | `outputs/phase-1/acceptance-criteria.md`     | AC-1〜AC-5の詳細               |
+| P50チェック結果 | `outputs/phase-1/p50-check-result.md`        | grep実行結果と合成式の現状分析 |
 
 ## 完了条件
 
-- [ ] P50 で既存コードの事実を記録した
-- [ ] verify_existing / NON_VISUAL 判定を固定した
-- [ ] 30種の思考法を 4 条件監査へ割り当てた
-- [ ] AC-1〜AC-5 を確定した
+- [ ] P50チェックコマンドを実行し、現状の合成式を確認した
+- [ ] セッション復元フローにおける期待動作を確認した
+- [ ] 受け入れ基準 AC-1〜AC-5 を確定した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] A〜D のサブタスクを完了
-- [ ] 成果物を全件定義
-- [ ] Phase 1-3 完了前に Phase 4 へ進まないことを明記
+- [ ] SubAgent-A（現状コード解析）完了
+- [ ] SubAgent-B（期待動作定義）完了
+- [ ] SubAgent-C（統合・矛盾チェック）完了
+- [ ] 成果物テーブル記載のファイルを全件生成
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/wave0-par-RALLY-002
+```
 
 ## 次のPhase
 

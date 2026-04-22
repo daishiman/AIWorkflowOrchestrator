@@ -1,11 +1,9 @@
-# Phase 11 Manual Test Checklist
+# Phase 11 成果物: 手動テストチェックリスト
 
-- [x] 通常フローで snapshot の質問が表示される
-- [x] undo 後に restored request が優先される
-- [x] 新しい requestId 到着で通常フローへ戻る
-- [x] submit 成功後に restored state が残留しない
-- [x] console error / warning が新規に増えていないことを確認した
+## タスクID: TASK-RALLY-002
 
-## NON_VISUAL 判定
-
-UI/UX変更なしのため Phase 11 スクリーンショット不要
+- [x] 差分対象が `ConversationalInterview.tsx` コメント追加であることを確認
+- [x] JSX / CSS / レイアウト変更なしを確認
+- [x] S-1〜S-4 / X-1〜X-2 の参照先を確認
+- [x] screenshot / capture metadata が不要である理由を記録
+- [x] Phase 12 から逆参照できる task-local 証跡を整備

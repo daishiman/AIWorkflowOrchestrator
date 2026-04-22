@@ -41,10 +41,15 @@ export function ConversationalInterview({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // セッション復元時は restoredPendingRequest が優先される。
-  // 通常フローでは workflowSnapshot?.awaitingUserInput を使用する。
-  // 復元セッション中は restoredPendingRequest を優先し、
-  // snapshot が更新されたタイミング（requestId 変化）で自動クリアされる。
+  // [優先ルール] restoredPendingRequest は undo 操作時のみ非 null になる。
+  // undo でユーザーが前の質問に戻ったとき、workflowSnapshot がまだ更新前の状態でも
+  // 前の質問を即時表示できるよう restoredPendingRequest を優先して使用する。
+  //
+  // 通常フロー（undo なし）では restoredPendingRequest は null のため、
+  // workflowSnapshot?.awaitingUserInput が使用される。
+  //
+  // サーバーから新しい awaitingUserInput が届いた時点（requestId が変化）で
+  // restoredPendingRequest はクリアされ、通常フローに戻る（下の useEffect 参照）。
   const pendingRequest =
     restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
@@ -56,7 +61,8 @@ export function ConversationalInterview({
     }
   }, [pendingRequest?.requestId]);
 
-  // workflowSnapshot に新しい質問が届いたら復元状態をクリアし通常フローへ戻す。
+  // undo 後、サーバーから新しい awaitingUserInput が届いたら restoredPendingRequest をクリアして通常フローに戻す。
+  // requestId のみを依存配列に含めることで、同一リクエストの参照更新による不要な再実行を防ぐ。
   useEffect(() => {
     if (workflowSnapshot?.awaitingUserInput) {
       setRestoredPendingRequest(null);

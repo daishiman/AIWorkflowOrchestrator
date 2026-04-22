@@ -1,30 +1,30 @@
-# Implementation Guide
+# Phase 12 成果物: 実装ガイド
 
-## Part 1: まず何を直したのか
+## タスクID: TASK-RALLY-002
 
-### 日常生活での例え
+## Part 1: 中学生向けの説明
 
-たとえば、会話の途中で前の質問に戻って確認し直す場面を考えると分かりやすい。いま表示している質問と、あとから届いた新しい質問が混ざると、どちらに答えればよいか分からなくなる。RALLY-002 は、その「いったん戻した質問を優先し、新しい質問が届いたら通常の流れへ戻る」という約束を、後から読んでも迷わない形に固定した。
+### なぜ必要か
 
-### この task でできるようになったこと
+アプリで質問に答えている途中に「ひとつ前の質問へ戻る」ことがあります。このとき、画面はすぐ前の質問を見せたいですが、サーバーから新しい情報もあとで届きます。
 
-| 項目                            | 説明                                                  |
-| ------------------------------- | ----------------------------------------------------- |
-| 復元時の優先規則を固定          | undo 後は復元した質問を優先表示する                   |
-| 通常復帰条件を固定              | 新しい `requestId` が来たら通常の snapshot 表示へ戻る |
-| 後続 task への handoff を簡潔化 | RALLY-010 以降が前提を再調査しなくてよくなる          |
+たとえば、学校のプリントを一時的に机の上へ戻しておいて、新しいプリントが先生から届いたら机の上の古いものを片づける、という整理に近いです。最初は「いま戻りたい質問」を優先して見せ、あとから届く最新情報に自然に切り替わるようにしました。
 
-## Part 2: 技術者向けガイド
+### 今回作ったもの
 
-### 変更サマリ
+何をしたかというと、見た目を変えたのではなく、「なぜそう切り替わるのか」をコメントとテストでわかるようにしました。
 
-| ファイル                                                                                                       | 内容                                                                |
-| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`                                       | `restoredPendingRequest` の優先規則と clear 条件を comment で明文化 |
-| `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.restoredPendingRequest.test.tsx` | targeted regression 5件を追加                                       |
-| `docs/30-workflows/wave0-par-RALLY-002/outputs/phase-5`〜`phase-13`                                            | task 固有 close-out を補完                                          |
+## Part 2: 技術者向け詳細
 
-### 型と契約
+### 変更概要
+
+- `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+  - `pendingRequest` 合成式直上に優先ルールコメントを追加
+  - clear `useEffect` 直上に requestId ベースの依存意図を追加
+- `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx`
+  - S-1〜S-4 / X-1〜X-2 を追加
+
+### 契約
 
 ```ts
 const pendingRequest =
@@ -37,32 +37,85 @@ useEffect(() => {
 }, [workflowSnapshot?.awaitingUserInput?.requestId]);
 ```
 
+### APIシグネチャ
+
+```ts
+type PendingRequestSource =
+  | { kind: "restored"; requestId: string }
+  | { kind: "snapshot"; requestId: string }
+  | { kind: "none" };
+```
+
+実コードでは exported API を追加していないため、ここで管理対象となるのは `pendingRequest` の選択規則と clear `useEffect` の依存契約です。
+
 ### 使用例
 
-- undo 後に `restoredPendingRequest` が入る
-- その間は `pendingRequest` が restored 側を採用する
-- 新しい `awaitingUserInput.requestId` が来たら restored を clear して通常フローに戻る
+```ts
+// undo 直後
+const pendingRequest =
+  restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
 
-### エラーハンドリングと境界
+// 新しい requestId 到着後
+useEffect(() => {
+  if (workflowSnapshot?.awaitingUserInput) {
+    setRestoredPendingRequest(null);
+  }
+}, [workflowSnapshot?.awaitingUserInput?.requestId]);
+```
 
-| 条件                             | 動作                    |
-| -------------------------------- | ----------------------- |
-| `restoredPendingRequest` が null | snapshot をそのまま使う |
-| `awaitingUserInput` が null      | 待機表示                |
-| submit 成功後                    | restored state を clear |
+### シナリオ一覧
 
-### 設定可能パラメータ / 定数
+| ID  | 内容                                                           |
+| --- | -------------------------------------------------------------- |
+| S-1 | 通常フローでは `workflowSnapshot.awaitingUserInput` を使う     |
+| S-2 | undo 後は `restoredPendingRequest` を優先する                  |
+| S-3 | 新しい requestId 到着後に restored state をクリアする          |
+| S-4 | `awaitingUserInput = null` の場合はクリアしない                |
+| X-1 | restored state が `null` のときは更新の影響を受けない          |
+| X-2 | 同一 requestId の参照更新では clear `useEffect` を再実行しない |
 
-| 項目                | 値                |
-| ------------------- | ----------------- |
-| taskId              | `TASK-RALLY-002`  |
-| implementation_mode | `verify_existing` |
-| visualMode          | `NON_VISUAL`      |
+### エラーハンドリング
+
+- `workflowSnapshot` が `null` のときは `pendingRequest = null`
+- 入力送信失敗時は既存の `rollbackLastUserMessage()` と `onError` 経路を維持
+
+### エッジケース
+
+- `awaitingUserInput` が `null` の場合は restored state を維持する
+- 同一 requestId の新参照が届いても不要な clear を行わない
+- `workflowSnapshot` が更新されても requestId が変わらなければ契約は維持される
+
+### 設定項目と定数一覧
+
+| 項目           | 値 / 由来                                             | 用途                               |
+| -------------- | ----------------------------------------------------- | ---------------------------------- |
+| clear 判定キー | `workflowSnapshot?.awaitingUserInput?.requestId`      | restore state の解放タイミング制御 |
+| 優先順         | `restoredPendingRequest ?? awaitingUserInput ?? null` | undo 復元を一時優先                |
+
+### テスト構成
+
+| ファイル                                    | 役割                               |
+| ------------------------------------------- | ---------------------------------- |
+| `ConversationalInterview.test.tsx`          | S-1〜S-4 / X-1〜X-2 のシナリオ契約 |
+| `outputs/phase-6/regression-test-result.md` | 回帰観点の要約                     |
+| `outputs/phase-7/coverage-check-result.md`  | coverage の追跡                    |
+
+### 検証結果
+
+- `eslint` 対象2ファイル: PASS
+- `vitest`: esbuild binary mismatch により環境ブロック
+- `typecheck`: 結果未確定
 
 ## 視覚証跡
 
-UI/UX変更なしのため Phase 11 スクリーンショット不要
+UI/UX変更なしのため Phase 11 スクリーンショット不要。
 
-- primary evidence: `outputs/phase-11/TASK-RALLY-002-manual-test-report.md`
-- supplemental evidence: `outputs/phase-10/final-review-result.md`
-- supplemental evidence: `outputs/phase-11/manual-test-result.md`
+参照:
+
+- `outputs/phase-11/manual-test-result.md`
+- `outputs/phase-11/evidence-index.md`
+
+## Handoff
+
+- RALLY-010 以降は `pendingRequest` の表示契約を前提に UI 機能を追加する
+- 「restore優先 → requestId更新で通常フロー復帰」のルールは維持する

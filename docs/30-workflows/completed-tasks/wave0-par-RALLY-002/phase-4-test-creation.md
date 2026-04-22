@@ -14,59 +14,84 @@
 
 ## 目的
 
-既存実装の contract を固定する targeted regression test を設計し、新規ロジック前提の過剰テストを避ける。
+ロジック変更（useEffect によるクリア条件の追加）が伴うため、シナリオテストを作成する。
 
 ## 実行タスク
 
-1. 既存テストの有無を棚卸しする
-2. 必要最小限の targeted scenario を定義する
-3. verify_existing 向けに RED ではなく「既存挙動固定」を主目的とする
+1. 受け入れ基準と Phase 3 のレビュー結果をもとにテスト観点を固定する
+2. RED で失敗すべきケースと GREEN で維持すべきケースを分ける
+3. 回帰しやすい状態遷移に focused test を割り当てる
 
-## 実行手順
+## テスト方針
 
-- `pendingRequest` 優先順
-- `workflowSnapshot?.awaitingUserInput` 到着後のクリア
-- restored value が null の通常経路
-- undo / resubmit 周辺の回帰観点
+コメント追加は動作変更を伴わないため追加テスト不要。useEffect によるクリアロジックは動作変更であるためシナリオテストを追加する。
 
-## 統合テスト連携
+## テストシナリオ
 
-- typecheck / lint と重複する観点はテストへ持ち込まない
-- UI 描画差分ではなく state transition を固定する
+| シナリオ                                             | 期待結果                                                               | 優先度 |
+| ---------------------------------------------------- | ---------------------------------------------------------------------- | ------ |
+| セッション復元時（restoredPendingRequest が非 null） | pendingRequest = restoredPendingRequest                                | 必須   |
+| workflowSnapshot.awaitingUserInput が届いた後        | restoredPendingRequest がクリアされ pendingRequest = awaitingUserInput | 必須   |
+| 通常フロー（restoredPendingRequest が null）         | pendingRequest = workflowSnapshot?.awaitingUserInput                   | 必須   |
+| awaitingUserInput が null の場合                     | restoredPendingRequest はクリアされない                                | 必須   |
 
-## 多角的チェック観点（AIが判断）
+## テストファイル設計
 
-- MECE: 正常系 / 遷移系 / 回帰系が漏れなく分かれているか
-- 改善思考: 後続タスクに効く契約だけを固定できているか
+```typescript
+// テスト対象: ConversationalInterview.tsx の pendingRequest 合成ロジック
+// テストフレームワーク: Vitest + React Testing Library
 
-## サブタスク管理
-
-| 種別           | 内容                                              |
-| -------------- | ------------------------------------------------- |
-| existing tests | 既存の `ConversationalInterview` 関連テスト棚卸し |
-| targeted tests | requestId 依存の clear condition 固定             |
+describe('pendingRequest合成ロジック', () => {
+  it('セッション復元時はrestoredPendingRequestを優先する', () => { ... });
+  it('awaitingUserInputが届いたらrestoredPendingRequestをクリアする', () => { ... });
+  it('通常フローではworkflowSnapshotのawaitingUserInputを使う', () => { ... });
+  it('awaitingUserInputがnullの場合はrestoredPendingRequestをクリアしない', () => { ... });
+});
+```
 
 ## 参照資料
 
-| 資料名         | パス                   | 用途           |
-| -------------- | ---------------------- | -------------- |
-| Phase 2 成果物 | `outputs/phase-2/*.md` | テスト設計根拠 |
+| 資料名           | パス                                      | 用途                     |
+| ---------------- | ----------------------------------------- | ------------------------ |
+| 変更設計書       | `outputs/phase-2/change-design.md`        | テスト対象のロジック確認 |
+| テスト戦略       | `outputs/phase-2/test-strategy.md`        | テスト方針確認           |
+| P50チェック結果  | `outputs/phase-1/p50-check-result.md`     | Phase 1 成果物           |
+| 設計レビュー結果 | `outputs/phase-3/design-review-result.md` | Phase 3 成果物           |
+
+## 統合テスト連携
+
+- RTL / Vitest で復元状態と snapshot 反映を deterministic に再現する
+- Phase 6 で境界ケースを拡張し、Phase 7 の traceability に接続する
+
+## 多角的チェック観点（AIが判断）
+
+- 演繹思考: AC から必要テストを機械的に導出できるか
+- 逆説思考: テストが通っても仕様逸脱しうる抜け道を潰せているか
+- 仮説思考: 最も壊れやすいのは request 更新境界だという仮説を検証できるか
+
+## サブタスク管理
+
+- T-1: テストケース設計
+- T-2: RED 条件定義
+- T-3: 実行コマンド固定
 
 ## 成果物
 
-- `outputs/phase-4/test-specification.md`
-- `outputs/phase-4/existing-test-inventory.md`
+| 成果物         | パス                                    | 説明                          |
+| -------------- | --------------------------------------- | ----------------------------- |
+| テスト仕様書   | `outputs/phase-4/test-specification.md` | シナリオテストの仕様          |
+| Red テスト結果 | `outputs/phase-4/red-test-result.md`    | 実装前のテスト失敗確認（TDD） |
 
 ## 完了条件
 
-- [ ] 既存テスト棚卸しを完了した
-- [ ] targeted scenario を定義した
-- [ ] verify_existing に不要な RED 前提を除去した
+- [ ] シナリオテストを作成した
+- [ ] テストが RED 状態（実装前に失敗）であることを確認した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

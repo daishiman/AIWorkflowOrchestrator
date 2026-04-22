@@ -1,11 +1,41 @@
-# Phase 5 Verification Result
+# 検証結果
 
-| 検証                 | 結果 | メモ                                         |
-| -------------------- | ---- | -------------------------------------------- |
-| コード観測           | PASS | comment と targeted test が仕様意図に一致    |
-| verify_existing 方針 | PASS | 既存ロジック固定が主目的                     |
-| 追加変更の必要性     | NO   | hook / state owner / contract の追加修正不要 |
+## typecheck
 
-## 結論
+```
+pnpm --filter @repo/desktop typecheck
+> tsc --noEmit
+(エラーなし、0 errors)
+```
 
-RALLY-002 の Phase 5 は「最小変更で current fact を固定する」方針で完了。
+**結果: ✅ PASS**
+
+## lint
+
+```
+pnpm --filter @repo/desktop lint
+✖ 8 problems (0 errors, 8 warnings)
+```
+
+- 8件の警告はすべて既存コード（他ファイル）の `@typescript-eslint/no-explicit-any`
+- `ConversationalInterview.tsx` に関するエラー・警告: **0件**
+- exhaustive-deps 警告: **なし**
+
+**結果: ✅ PASS**
+
+## test（シナリオテスト）
+
+```
+Tests  23 passed (23)
+Duration  2.98s
+```
+
+| テスト                    | 結果      |
+| ------------------------- | --------- |
+| S-1: 通常フロー           | ✅ PASS   |
+| S-2: undo後優先           | ✅ PASS   |
+| S-3: snapshot更新後クリア | ✅ PASS   |
+| S-4: null時クリアなし     | ✅ PASS   |
+| 既存テスト（19件）        | ✅ 全PASS |
+
+**結果: ✅ PASS**

@@ -1,117 +1,214 @@
 {
   "feature": "TASK-RALLY-002",
   "created": "2026-04-21T00:00:00.000Z",
-  "lastUpdated": "2026-04-21T00:00:00.000Z",
+  "lastUpdated": "2026-04-21T21:27:34.944Z",
   "status": "blocked",
   "phases": {
     "1": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:32:04.195Z",
       "artifacts": [
-        "outputs/phase-1/requirements-definition.md",
-        "outputs/phase-1/acceptance-criteria.md",
-        "outputs/phase-1/p50-check-result.md",
-        "outputs/phase-1/thinking-coverage-map.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-1/p50-check-result.md",
+          "description": "P50チェック結果"
+        }
       ]
     },
     "2": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:33:09.858Z",
       "artifacts": [
-        "outputs/phase-2/verification-design.md",
-        "outputs/phase-2/responsibility-boundary-matrix.md",
-        "outputs/phase-2/validation-command-matrix.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-2/change-design.md",
+          "description": "変更設計書"
+        }
       ]
     },
     "3": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:34:09.498Z",
       "artifacts": [
-        "outputs/phase-3/design-review-result.md",
-        "outputs/phase-3/gate-decision.md",
-        "outputs/phase-3/dependency-risk-register.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
       ]
     },
     "4": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:49:15.594Z",
       "artifacts": [
-        "outputs/phase-4/test-specification.md",
-        "outputs/phase-4/existing-test-inventory.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        }
       ]
     },
     "5": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:51:28.546Z",
       "artifacts": [
-        "outputs/phase-5/diff-check-result.md",
-        "outputs/phase-5/changed-files.md",
-        "outputs/phase-5/verification-result.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        }
       ]
     },
     "6": {
       "status": "completed",
+      "completedAt": "2026-04-21T10:52:47.429Z",
       "artifacts": [
-        "outputs/phase-6/expanded-test-cases.md",
-        "outputs/phase-6/regression-test-result.md",
-        "outputs/phase-6/edge-case-result.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "description": "拡張テストケース"
+        }
       ]
     },
     "7": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:23.879Z",
       "artifacts": [
-        "outputs/phase-7/coverage-check-result.md",
-        "outputs/phase-7/traceability-coverage-report.md",
-        "outputs/phase-7/uncovered-analysis.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-check-result.md",
+          "description": "カバレッジ確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/traceability-coverage-report.md",
+          "description": "トレーサビリティ確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-analysis.md",
+          "description": "未カバー分析"
+        }
       ]
     },
     "8": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:24.910Z",
       "artifacts": [
-        "outputs/phase-8/refactoring-log.md",
-        "outputs/phase-8/change-rationale-table.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタリング計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/responsibility-boundary-map.md",
+          "description": "責務境界マップ"
+        }
       ]
     },
     "9": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:26.384Z",
       "artifacts": [
-        "outputs/phase-9/quality-report.md",
-        "outputs/phase-9/risk-register.md",
-        "outputs/phase-9/four-conditions-audit.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/risk-register.md",
+          "description": "リスク台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/causal-loop-check.md",
+          "description": "因果ループ監査"
+        }
       ]
     },
     "10": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:29.212Z",
       "artifacts": [
-        "outputs/phase-10/final-review-result.md",
-        "outputs/phase-10/gate-decision.md",
-        "outputs/phase-10/release-readiness-checklist.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/gate-decision.md",
+          "description": "ゲート判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/release-readiness-checklist.md",
+          "description": "出荷準備チェック"
+        }
       ]
     },
     "11": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:32.103Z",
       "artifacts": [
-        "outputs/phase-11/manual-test-result.md",
-        "outputs/phase-11/manual-test-checklist.md",
-        "outputs/phase-11/TASK-RALLY-002-manual-test-report.md",
-        "outputs/phase-11/discovered-issues.md",
-        "outputs/phase-11/screenshot-plan.json"
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "証跡インデックス"
+        }
       ]
     },
     "12": {
       "status": "completed",
+      "completedAt": "2026-04-21T21:27:34.939Z",
       "artifacts": [
-        "outputs/phase-12/implementation-guide.md",
-        "outputs/phase-12/system-spec-update-summary.md",
-        "outputs/phase-12/documentation-changelog.md",
-        "outputs/phase-12/unassigned-task-detection.md",
-        "outputs/phase-12/skill-feedback-report.md",
-        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "変更ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "準拠チェック"
+        }
       ]
     },
     "13": {
       "status": "blocked",
-      "artifacts": [
-        "outputs/phase-13/local-check-result.md",
-        "outputs/phase-13/change-summary.md",
-        "outputs/phase-13/pr-info.md",
-        "outputs/phase-13/pr-creation-result.md"
-      ]
+      "artifacts": []
     }
   },
   "dependencies": {
@@ -129,13 +226,11 @@
     "13": ["12"]
   },
   "metadata": {
-    "taskType": "improvement",
-    "implementationMode": "verify_existing",
-    "visualMode": "NON_VISUAL",
+    "taskType": "refactor",
     "waveGroup": "0",
     "parallelTasks": ["RALLY-001", "RALLY-004"],
     "blockedBy": [],
-    "blocks": ["RALLY-010", "RALLY-011", "RALLY-012", "RALLY-013"],
+    "blocks": ["RALLY-010"],
     "conflictDomain": "ConversationalInterview",
     "targetFile": "apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx"
   }

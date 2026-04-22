@@ -1,4 +1,4 @@
-# Phase 7: カバレッジ確認
+# Phase 7: テストカバレッジ確認
 
 ## メタ情報
 
@@ -14,59 +14,71 @@
 
 ## 目的
 
-RALLY-002 の契約が targeted test と手動確認で十分に覆われているかを確認する。
+追加した useEffect のクリアロジックがテストでカバーされていることを確認する。
 
 ## 実行タスク
 
-1. AC と test の対応表を作る
-2. uncovered path が downstream リスクになるか評価する
-3. coverage 結果を簡潔にまとめる
+1. coverage と traceability の両面で網羅性を確認する
+2. 未到達ケースが仕様不足かテスト不足かを切り分ける
+3. Phase 8 以降へ必要な改善のみを渡す
 
-## 実行手順
+## カバレッジ確認方針
 
 ```bash
-pnpm --filter @repo/desktop test -- --coverage
+# カバレッジ付きテスト実行
+pnpm --filter @repo/desktop test -- --coverage --reporter=verbose
 ```
 
-## 統合テスト連携
+## 確認ポイント
 
-- quantitative coverage より AC トレースを優先する
-- downstream で再テストすべき箇所は uncovered-analysis に送る
-
-## 多角的チェック観点（AIが判断）
-
-- MECE: AC と test が 1:1 で説明できるか
-- 戦略的思考: 今ここで取るべき coverage と downstream に残す coverage を分けられているか
-
-## サブタスク管理
-
-| 項目         | 内容                  |
-| ------------ | --------------------- |
-| traceability | AC と test の対応表   |
-| uncovered    | downstream 影響の判定 |
+| 確認項目                                 | 期待値         | 確認方法              |
+| ---------------------------------------- | -------------- | --------------------- |
+| useEffect クリアロジックのカバレッジ     | 100%           | coverage レポート確認 |
+| pendingRequest 合成式のカバレッジ        | 100%           | coverage レポート確認 |
+| ConversationalInterview 全体のカバレッジ | 維持または向上 | coverage レポート確認 |
 
 ## 参照資料
 
-| 資料名         | パス                   | 用途 |
-| -------------- | ---------------------- | ---- |
-| Phase 6 成果物 | `outputs/phase-6/*.md` | 入力 |
+| 資料名           | パス                                        | 用途           |
+| ---------------- | ------------------------------------------- | -------------- |
+| 拡張テストケース | `outputs/phase-6/expanded-test-cases.md`    | Phase 6 成果物 |
+| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | Phase 6 成果物 |
+
+## 統合テスト連携
+
+- coverage 値だけでなく AC 対応表を Phase 7 の正本にする
+- 未到達が残る場合は Phase 8 の refactor ではなく仕様・テストのどちらへ戻すか判断する
+
+## 多角的チェック観点（AIが判断）
+
+- 2軸思考: line coverage と acceptance coverage を混同していないか
+- 論点思考: 重要なのが 100% 数値なのか、境界条件の担保なのかを区別できているか
+- 価値提案思考: 後続 task が安心して再利用できる証跡になっているか
+
+## サブタスク管理
+
+- C-1: coverage 実測
+- C-2: traceability 作成
+- C-3: 未到達分析
 
 ## 成果物
 
-- `outputs/phase-7/coverage-check-result.md`
-- `outputs/phase-7/traceability-coverage-report.md`
-- `outputs/phase-7/uncovered-analysis.md`
+| 成果物                 | パス                                              | 説明                               |
+| ---------------------- | ------------------------------------------------- | ---------------------------------- |
+| カバレッジ確認結果     | `outputs/phase-7/coverage-check-result.md`        | カバレッジレポートのサマリー       |
+| トレーサビリティ網羅率 | `outputs/phase-7/traceability-coverage-report.md` | AC-1〜AC-5とテストの対応表         |
+| 未到達分析             | `outputs/phase-7/uncovered-analysis.md`           | カバレッジ未達箇所の分析（あれば） |
 
 ## 完了条件
 
-- [ ] AC と test の対応を整理した
-- [ ] uncovered の要否を判断した
-- [ ] coverage を summary 化した
+- [ ] カバレッジレポートを確認した
+- [ ] useEffect クリアロジックが100%カバーされていることを確認した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

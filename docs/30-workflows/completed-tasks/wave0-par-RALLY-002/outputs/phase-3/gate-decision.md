@@ -1,25 +1,23 @@
-# Phase 3 ゲート判定
+# ゲート判定
 
 ## 判定結果
 
-**PASS（MINOR 修正なし）**
+**PASS** — Phase 4（テスト作成）に進む
 
-## 判定根拠
+## 根拠
 
-| チェック項目                       | 状態    | 詳細                                                  |
-| ---------------------------------- | ------- | ----------------------------------------------------- |
-| verify_existing 方針の妥当性       | ✅ PASS | P50 観測でロジックが正しいことを確認                  |
-| rally-phase-2-solution.md との整合 | ✅ PASS | 「コメント追加・ロジック変更なし」方針を踏襲          |
-| Phase 4 以降の接続                 | ✅ PASS | テスト→diff check→close-out が連続している            |
-| downstream 依存整合                | ✅ PASS | RALLY-002 → RALLY-010〜013 の直列依存が保持されている |
-| Phase 11/12/13 の運用              | ✅ PASS | NON_VISUAL / approval-blocked の原則に反していない    |
+| チェック項目                | 結果    | 備考                                       |
+| --------------------------- | ------- | ------------------------------------------ |
+| useEffect依存配列の循環なし | ✅ PASS | requestIdのみの依存で循環しない            |
+| クリア条件の正確性          | ✅ PASS | awaitingUserInput非null時のクリアは正しい  |
+| コメントと動作の一致        | ✅ PASS | handleUndo操作時のみセットされる事実と一致 |
+| exhaustive-deps警告対策     | ✅ PASS | 深いアクセスは通常警告対象外               |
+| 後続タスクへの影響なし      | ✅ PASS | コメントのみの変更                         |
 
-## 進行判断
+## Phase 4への引き渡し事項
 
-Phase 4: テスト作成 へ進行する。
+テスト観点（3系統）:
 
-条件:
-
-- 設計フェーズ（Phase 1〜3）の成果物が outputs/ に存在する ✅
-- verify_existing 方針が全フェーズに反映されている ✅
-- downstream 依存に矛盾がない ✅
+1. **優先表示**: restoredPendingRequest が非 null のとき pendingRequest として使われること
+2. **snapshot到着後切替**: awaitingUserInput の requestId 変化後に restoredPendingRequest がクリアされること
+3. **不要な再クリアなし**: awaitingUserInput が null のとき restoredPendingRequest がクリアされないこと

@@ -1,14 +1,24 @@
-# Phase 6 Expanded Test Cases
+# 拡張テストケース一覧
 
-| ID        | 観点            | 内容                                                   |
-| --------- | --------------- | ------------------------------------------------------ |
-| TC-RPR-01 | 通常経路        | `restoredPendingRequest === null` なら snapshot を表示 |
-| TC-RPR-02 | 復元優先        | undo 後は restored request を優先表示                  |
-| TC-RPR-03 | 切替条件        | requestId 変化で restored state を clear               |
-| TC-RPR-04 | submit 後 clear | 成功送信後に restored state が残留しない               |
-| TC-RPR-05 | 待機表示        | restored / awaiting の両方が null なら待機 UI          |
+## 追加したテストケース
 
-## 追加観点
+### X-1: restoredPendingRequest が null のとき awaitingUserInput 更新でも影響なし
 
-- same requestId では clear effect が過剰発火しない
-- `RALLY-010` の waiting UI 変更と競合しない
+- **シナリオ**: restoredPendingRequest = null の状態で awaitingUserInput（requestId 変化）が届く
+- **期待結果**: setRestoredPendingRequest は呼ばれない（null のまま）、新しい awaitingUserInput が pendingRequest になる
+- **優先度**: 高
+
+### X-2: 同一 requestId では restoredPendingRequest クリア useEffect が再実行されない
+
+- **シナリオ**: undo状態（restoredPendingRequest 非 null）で、同一 requestId の awaitingUserInput オブジェクトが新参照で届く
+- **期待結果**: useEffect は再実行されない（deps の requestId が変化していないため）、restoredPendingRequest は維持される
+- **優先度**: 中
+
+## 合計テスト数
+
+| describe                               | テスト数 |
+| -------------------------------------- | -------- |
+| ConversationalInterview（既存）        | 19       |
+| pendingRequest合成ロジック（S-1〜S-4） | 4        |
+| pendingRequest合成ロジック（X-1〜X-2） | 2        |
+| **合計**                               | **25**   |

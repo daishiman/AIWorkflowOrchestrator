@@ -1,34 +1,37 @@
-# Phase 12 Task Spec Compliance Check
+# Phase 12 成果物: 準拠チェック
 
-## 最終判定
+## タスクID: TASK-RALLY-002
 
-PASS
+## canonical 6成果物
 
-## Task 1〜6
+| 成果物               | パス                                                     | 存在 |
+| -------------------- | -------------------------------------------------------- | ---- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`               | ✅   |
+| 仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         | ✅   |
+| 変更ログ             | `outputs/phase-12/documentation-changelog.md`            | ✅   |
+| 未タスク検出         | `outputs/phase-12/unassigned-task-detection.md`          | ✅   |
+| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`              | ✅   |
+| 準拠チェック         | `outputs/phase-12/phase12-task-spec-compliance-check.md` | ✅   |
 
-| Task                       | 判定 |
-| -------------------------- | ---- |
-| implementation-guide       | PASS |
-| system-spec-update-summary | PASS |
-| documentation-changelog    | PASS |
-| unassigned-task-detection  | PASS |
-| skill-feedback-report      | PASS |
-| compliance-check           | PASS |
+## Phase 11 証跡
 
-## Phase 11 / NON_VISUAL
+| 成果物                   | パス                                        | 判定                    |
+| ------------------------ | ------------------------------------------- | ----------------------- |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | ✅                      |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | ✅                      |
+| 証跡インデックス         | `outputs/phase-11/evidence-index.md`        | ✅                      |
+| screenshot / metadata    | N/A                                         | `NON_VISUAL` のため不要 |
 
-UI/UX変更なしのため Phase 11 スクリーンショット不要
+## 4条件チェック
 
-- evidence: `outputs/phase-11/TASK-RALLY-002-manual-test-report.md`
+| 条件         | 結果 |
+| ------------ | ---- |
+| 矛盾なし     | PASS |
+| 漏れなし     | PASS |
+| 整合性あり   | PASS |
+| 依存関係整合 | PASS |
 
-## parity
+## 補足
 
-| 対象                       | 判定 |
-| -------------------------- | ---- |
-| `artifacts.json`           | PASS |
-| `outputs/artifacts.json`   | PASS |
-| Phase 12 canonical 6 files | PASS |
-
-## user approval gate
-
-Phase 13 は blocked を維持。
+- `vitest` は環境ブロックを別記した
+- task-local outputs を正本とし、repo root の他タスク成果物は参照対象外とした

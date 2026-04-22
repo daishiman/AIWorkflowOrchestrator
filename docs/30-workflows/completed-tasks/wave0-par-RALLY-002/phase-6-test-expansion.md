@@ -14,60 +14,77 @@
 
 ## 目的
 
-既存実装で取りこぼしやすい遷移系と境界条件を追加確認し、RALLY-010 以降の前提を固める。
+実装後のテスト状況を確認し、異常系・境界値テストを追加する。
 
 ## 実行タスク
 
-1. null / same requestId / undo 復元の境界ケースを洗い出す
-2. targeted test に追加観点を足す
-3. regressions を記録する
+1. Phase 4 で扱えなかった境界・異常系を追加する
+2. 回帰テストを実行し、優先ルールとクリア条件の安定性を確認する
+3. 見つかった揺らぎを Phase 7 以降へ引き継ぐ
 
-## 実行手順
+## テスト拡充方針
 
-- restored が null のまま snapshot が更新される場合
-- requestId が変わらない場合
-- undo 後に restored request が再度表示される場合
+Phase 4 で作成した正常系シナリオテストに加え、以下の異常系・境界値ケースを追加する。
 
-## 統合テスト連携
+| 追加シナリオ                                                           | 期待結果                                                             | 優先度 |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------- | ------ |
+| restoredPendingRequest が null の状態で awaitingUserInput が更新された | setRestoredPendingRequest が呼ばれない                               | 高     |
+| awaitingUserInput が null → 非 null → null と変化した                  | クリア後に null になっても restoredPendingRequest は再セットされない | 中     |
+| requestId が同じ値で awaitingUserInput が更新された                    | useEffect が再実行されない（deps の安定性確認）                      | 中     |
 
-- Phase 4 の targeted scenario を再利用する
-- downstream の RALLY-010 へ影響する挙動だけを追加監査する
+## 回帰テスト確認
 
-## 多角的チェック観点（AIが判断）
+```bash
+# 全テスト実行
+pnpm --filter @repo/desktop test -- --reporter=verbose
 
-- if思考: requestId が変わらない場合に何が起こるか
-- 因果ループ: clear effect が別の再描画を誘発しないか
-
-## サブタスク管理
-
-| 項目       | 内容                  |
-| ---------- | --------------------- |
-| edge cases | null / same id / undo |
-| regression | 既存挙動維持の確認    |
+# ConversationalInterviewに関連するテストのみ実行
+pnpm --filter @repo/desktop test -- --reporter=verbose ConversationalInterview
+```
 
 ## 参照資料
 
-| 資料名         | パス                   | 用途   |
-| -------------- | ---------------------- | ------ |
-| Phase 5 成果物 | `outputs/phase-5/*.md` | 基準化 |
+| 資料名       | パス                                        | 用途           |
+| ------------ | ------------------------------------------- | -------------- |
+| テスト仕様書 | `outputs/phase-4/test-specification.md`     | Phase 4 成果物 |
+| 実装サマリー | `outputs/phase-5/implementation-summary.md` | Phase 5 成果物 |
+
+## 統合テスト連携
+
+- expanded cases は Phase 7 の traceability と coverage 根拠になるよう AC に対応付ける
+- エッジケースで判明した仕様差分は Phase 8 の軽微整理対象とする
+
+## 多角的チェック観点（AIが判断）
+
+- if思考: snapshot が遅延・重複・null 往復したら何が起きるか
+- 水平思考: hook 単体ではなく UI 観測レベルで false green になっていないか
+- 帰納的思考: 境界ケースの挙動から本質的な state 契約を再確認できるか
+
+## サブタスク管理
+
+- X-1: 境界ケース追加
+- X-2: 回帰実行
+- X-3: 失敗要因整理
 
 ## 成果物
 
-- `outputs/phase-6/expanded-test-cases.md`
-- `outputs/phase-6/regression-test-result.md`
-- `outputs/phase-6/edge-case-result.md`
+| 成果物           | パス                                        | 説明                     |
+| ---------------- | ------------------------------------------- | ------------------------ |
+| 拡張テストケース | `outputs/phase-6/expanded-test-cases.md`    | 追加したテストケース一覧 |
+| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | 全テスト実行結果         |
+| 異常系結果       | `outputs/phase-6/edge-case-result.md`       | 境界値・異常系テスト結果 |
 
 ## 完了条件
 
-- [ ] 境界ケースを追加した
-- [ ] regressions を記録した
-- [ ] downstream 前提を確認した
+- [ ] 異常系・境界値テストを追加した
+- [ ] 全テストが通過していることを確認した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 
-Phase 7: カバレッジ確認
+Phase 7: テストカバレッジ確認

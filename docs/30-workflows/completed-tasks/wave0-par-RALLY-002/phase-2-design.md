@@ -14,72 +14,115 @@
 
 ## 目的
 
-既存コードを壊さずに意味づけを固定する検証設計を定義し、Phase 4 以降を verify_existing モードで運用できる形にする。
+`pendingRequest` 合成式の優先ルールをコメントで明示し、`restoredPendingRequest` の自動クリアロジックを `useEffect` で追加する設計を確定する。
 
 ## 実行タスク
 
-1. 変更責務を `comment semantics`、`clear condition verification`、`downstream handoff` に分割する
-2. 現コードと上流設計書の矛盾点を設計レベルで解消する
-3. 検証コマンド、targeted test、手動確認の責務境界を明記する
+1. 変更対象を `pendingRequest` 契約、クリア条件、テスト観測点に分解する
+2. 最小変更で受け入れ基準を満たす実装方針を定義する
+3. 後続タスクが誤読しないよう、設計の根拠と検証経路を固定する
 
-## 実行手順
+## 変更箇所
 
-1. `ConversationalInterview.tsx` の既存 `useEffect` と comment 周辺を確認する
-2. `rally-phase-2-solution.md` の「ロジック変更なし」方針と現コード差分を比較する
-3. RALLY-002 の成果を RALLY-010 以降が参照できる表現へ圧縮する
+**対象ファイル**: `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+
+### 変更1: 合成式へのコメント追加
+
+```typescript
+// [優先ルール] restoredPendingRequest はセッション復元時のみ非 null になる。
+// セッション復元（リロードや再起動後のセッション継続）では、
+// workflowSnapshot がまだ最新状態に到達する前に UI を表示する必要があるため、
+// restoredPendingRequest を優先して表示する。
+//
+// 通常フロー（セッション復元なし）では restoredPendingRequest は null のため、
+// workflowSnapshot?.awaitingUserInput が使用される。
+//
+// 送信完了後は workflowSnapshot?.awaitingUserInput が次の質問に更新されるため、
+// その時点で restoredPendingRequest をクリアして通常フローに戻る。
+const pendingRequest =
+  restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
+```
+
+### 変更2: workflowSnapshot 更新時の restoredPendingRequest クリアロジック
+
+`workflowSnapshot?.awaitingUserInput` が更新されたとき（次の質問がサーバーから返ってきたとき）に `restoredPendingRequest` をクリアする `useEffect` を追加する。
+
+```typescript
+// workflowSnapshot が更新されて awaitingUserInput が非 null になった場合、
+// セッション復元フェーズが終了したと判断し restoredPendingRequest をクリアする。
+useEffect(() => {
+  if (workflowSnapshot?.awaitingUserInput && restoredPendingRequest) {
+    setRestoredPendingRequest(null);
+  }
+}, [workflowSnapshot?.awaitingUserInput?.requestId]);
+```
+
+**注意**: `restoredPendingRequest` を依存配列に含めると無限ループになるため、`workflowSnapshot?.awaitingUserInput?.requestId` のみを依存配列に含める。
+
+## 設計の根拠
+
+`restoredPendingRequest` は、セッション復元時に「最後に出ていた質問」を UI に即時表示するために使われる。セッション復元後、サーバーから `workflowSnapshot` が届き `awaitingUserInput` が確定した時点で、`restoredPendingRequest` は役目を終える。この切り替えタイミングをコードで明示することが本タスクの核心である。
+
+## 検証方法
+
+```bash
+# 型チェック
+pnpm --filter @repo/desktop typecheck
+
+# lint チェック（exhaustive-deps 警告を含む）
+pnpm --filter @repo/desktop lint
+
+# テスト実行
+pnpm --filter @repo/desktop test
+```
 
 ## 統合テスト連携
 
-- 単体: `pendingRequest` 優先順と `requestId` 依存でのクリア条件
-- 回帰: undo / submit 後の `restoredPendingRequest` ハンドリング
-- 手動: リロード後に旧質問を即時表示し、その後 snapshot 側へ切り替わること
+- Phase 4 は UI 全体ではなく `pendingRequest` 切替条件を観測できる targeted test を優先する
+- Phase 5 は lint と既存 hook 規約の両立を満たす依存配列へ調整する
+- Phase 11 は UI task として復元前後の表示切替を実機確認する
 
 ## 多角的チェック観点（AIが判断）
 
-- システム思考: downstream の UI 追加タスクへどう波及するか
-- 因果関係分析: `awaitingUserInput` 更新と `restoredPendingRequest` クリアの因果を分離できているか
-- トレードオン思考: 新規実装を増やすより既存実装を検証する方が適切か
-- 論点思考: RALLY-002 の責務を「説明固定」に絞れているか
+- MECE: コメント、状態遷移、テスト、handoff の4要素が欠けていないか
+- 垂直思考: どの state 変化で `restoredPendingRequest` を無効化するかをコード単位で特定できるか
+- 改善思考: 新規 state を増やさず既存 state の責務だけで閉じられるか
+- 戦略的思考: Wave 1 の `ConversationalInterview.tsx` 変更直列性を壊さないか
 
 ## サブタスク管理
 
-| 項目                | 設計判断                                                            |
-| ------------------- | ------------------------------------------------------------------- |
-| topology            | `ConversationalInterview.tsx` 単一ファイルに閉じる                  |
-| downstream contract | RALLY-010 以降は「pendingRequest の意味が既に固定済み」を前提とする |
-| validation path     | typecheck / lint / targeted test / manual semantic check            |
-
-## 設計要点
-
-- `implementation_mode` は `verify_existing`
-- `pendingRequest` 合成式は既存の null 合体順を維持する
-- Phase 5 は「diff check が主、コード修正は従」とする
-- Phase 11 は NON_VISUAL とし、視覚証跡ではなく semantic result を残す
+- D-1: コメントと優先ルールの設計
+- D-2: クリア条件と hook 依存の設計
+- D-3: テスト観測点と検証コマンドの固定
 
 ## 参照資料
 
-| 資料名         | パス                                                                   | 用途     |
-| -------------- | ---------------------------------------------------------------------- | -------- |
-| Phase 1 成果物 | `outputs/phase-1/*.md`                                                 | 要件固定 |
-| 上流解決策     | `docs/30-workflows/00-task-spec-design-docs/rally-phase-2-solution.md` | 設計整合 |
+| 資料名          | パス                                         | 用途               |
+| --------------- | -------------------------------------------- | ------------------ |
+| 要件定義書      | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物     |
+| 受け入れ基準    | `outputs/phase-1/acceptance-criteria.md`     | Phase 1 成果物     |
+| P50チェック結果 | `outputs/phase-1/p50-check-result.md`        | 現状コード確認結果 |
 
 ## 成果物
 
-- `outputs/phase-2/verification-design.md`
-- `outputs/phase-2/responsibility-boundary-matrix.md`
-- `outputs/phase-2/validation-command-matrix.md`
+| 成果物             | パス                                               | 説明                              |
+| ------------------ | -------------------------------------------------- | --------------------------------- |
+| 変更設計書         | `outputs/phase-2/change-design.md`                 | コメント内容・useEffect設計の詳細 |
+| 依存整合マトリクス | `outputs/phase-2/dependency-consistency-matrix.md` | 変更による影響範囲の確認表        |
+| テスト戦略         | `outputs/phase-2/test-strategy.md`                 | シナリオテストの方針              |
 
 ## 完了条件
 
-- [ ] verify_existing 前提の設計に置き換えた
-- [ ] validation path をコマンド単位で定義した
-- [ ] RALLY-010 以降への handoff を明文化した
+- [ ] コメント内容を確定した
+- [ ] useEffect の依存配列設計を確定した（循環なし）
+- [ ] 検証方法を文書化した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
-- [ ] 4条件で設計矛盾がない
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
+- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
 
 ## 次のPhase
 

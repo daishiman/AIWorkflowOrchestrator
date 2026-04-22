@@ -1,42 +1,43 @@
-# Phase 1 受け入れ基準
+# 受け入れ基準
 
-## TASK-RALLY-002 受け入れ基準定義
+## AC-1〜AC-5 詳細
 
-| ID   | 基準                                                                                          | 検証方法                          |
-| ---- | --------------------------------------------------------------------------------------------- | --------------------------------- |
-| AC-1 | `RALLY-002` は verify_existing タスクとして定義され、Phase 4/5 がその前提で書かれている       | phase-4, phase-5 仕様書の内容確認 |
-| AC-2 | `restoredPendingRequest` 優先規則と `workflowSnapshot` 到着後のクリア条件が仕様書で説明される | コメント追加後のコードレビュー    |
-| AC-3 | `RALLY-002` が `ConversationalInterview.tsx` に閉じた責務であることが明記される               | 本仕様書・設計書の確認            |
-| AC-4 | `RALLY-010` 以降への依存が index / artifacts / 本文で一致している                             | index.md の依存関係記述確認       |
-| AC-5 | Phase 11 は NON_VISUAL、Phase 13 は approval-blocked 原則に整合している                       | phase-11, phase-13 仕様書確認     |
+### AC-1: pendingRequest合成式へのコメント追加
 
-## 確認結果
+**判定**: 未達（コメントなし）  
+**内容**: `pendingRequest` 合成式の直上に、`restoredPendingRequest` を優先する理由と適用条件を説明するコメントが追加されていること  
+**確認方法**: `ConversationalInterview.tsx` の L44 付近にコメントが存在することを確認
 
-### AC-1: verify_existing タスク定義
+### AC-2: restoredPendingRequestクリアロジックの存在
 
-- ✅ Phase 5 仕様書に「diff check が主、コード修正は従」と明記
-- ✅ Phase 4 仕様書に「RED ではなく既存挙動固定」と明記
-- **判定: PASS**
+**判定**: 達成済み（L55-59 に useEffect 実装済み）  
+**内容**: `workflowSnapshot?.awaitingUserInput` が非 null になったとき、`restoredPendingRequest` がクリア（null 化）されるロジックが存在すること  
+**確認方法**: L55-59 の useEffect が存在し、条件 `workflowSnapshot?.awaitingUserInput` が非 null のとき `setRestoredPendingRequest(null)` を呼ぶことを確認
 
-### AC-2: 優先規則とクリア条件の仕様化
+### AC-3: コードの可読性
 
-- ✅ rally-phase-2-solution.md に設計コメントが定義済み
-- ✅ Phase 5 実装でコメント追加により達成予定
-- **判定: Phase 5 完了後に PASS**
+**判定**: 未達（コメントなし）  
+**内容**: コードを読んだ開発者が「どの状態のとき restoredPendingRequest が使われ、いつ workflowSnapshot 側に切り替わるか」を理解できること  
+**確認方法**: コメント追加後、第三者がコードを読んで理解できるかレビューで確認
 
-### AC-3: 責務の境界明記
+### AC-4: typecheckエラーなし
 
-- ✅ index.md に「ConversationalInterview.tsx に限定し、SkillLifecyclePanel.tsx や IPC 契約変更を含めない」と記載
-- **判定: PASS**
+**判定**: 達成済み（変更前から通過）  
+**内容**: `pnpm typecheck` がエラーなしで通過すること  
+**確認方法**: `pnpm --filter @repo/desktop typecheck` を実行してエラーがないことを確認
 
-### AC-4: RALLY-010 以降への依存整合
+### AC-5: lintエラーなし
 
-- ✅ index.md の依存関係セクションに `RALLY-002 -> RALLY-010 -> RALLY-011 -> RALLY-012 -> RALLY-013` が明記
-- ✅ rally-phase-2-solution.md の依存グラフと一致
-- **判定: PASS**
+**判定**: 達成済み（変更前から通過）  
+**内容**: `pnpm lint` がエラーなしで通過すること（exhaustive-deps 警告含む）  
+**確認方法**: `pnpm --filter @repo/desktop lint` を実行してエラー・警告がないことを確認
 
-### AC-5: Phase 11 NON_VISUAL / Phase 13 approval-blocked
+## 変更で達成すべきAC
 
-- ✅ phase-11 仕様書に `NON_VISUAL として semantic behavior のみを監査する` と明記
-- ✅ index.md に「Phase 13 はユーザー明示承認があるまで blocked 扱い」と明記
-- **判定: PASS**
+| AC   | 状態          | 変更種別     |
+| ---- | ------------- | ------------ |
+| AC-1 | 未達 → 要対応 | コメント追加 |
+| AC-2 | 達成済み      | 変更不要     |
+| AC-3 | 未達 → 要対応 | コメント追加 |
+| AC-4 | 達成済み      | 変更不要     |
+| AC-5 | 達成済み      | 変更不要     |

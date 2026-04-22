@@ -14,73 +14,75 @@
 
 ## 目的
 
-NON_VISUAL タスクとして、セッション復元と snapshot 追従の意味論的挙動を手動確認する。
+今回の差分が `NON_VISUAL` タスクであることを明示し、`pendingRequest` の切り替えルールがコード・テスト・成果物で矛盾なく追跡できる状態にする。
 
 ## 実行タスク
 
-1. 通常フロー / 復元フロー / 復元後切替の 3 シナリオを実行する
-2. console error と不整合表示の有無を確認する
-3. 発見事項を discovered-issues へ記録する
+1. 今回差分が DOM/CSS/レイアウト変更を伴わない `NON_VISUAL` タスクであることを確認する
+2. `ConversationalInterview.tsx` の差分と `ConversationalInterview.test.tsx` の S-1〜S-4 / X-1〜X-2 を一次証跡として整理する
+3. Phase 12 の close-out に使える `manual-test-result.md` / `manual-test-checklist.md` / `evidence-index.md` を生成する
 
-## 実行手順
+## NON_VISUAL 判定
 
-```bash
-pnpm --filter @repo/desktop dev
-```
+- 差分対象は `pendingRequest` 合成式直上の説明コメントと clear `useEffect` 直上コメント、ならびにシナリオテスト追加のみ
+- `ConversationalInterview.tsx` の JSX 構造、スタイル、ラベル、入力ウィジェット構成に変更なし
+- よって Phase 11 は screenshot evidence ではなく、コード差分と automated scenario test を一次証跡とする
 
-手動シナリオ:
+## 確認シナリオ
 
-- 通常フロー: snapshot の質問が表示される
-- 復元フロー: restored request が即時表示される
-- 切替確認: snapshot 到着後に restored value がクリアされる
-
-NON_VISUAL 固定文言:
-
-- `UI/UX変更なしのため Phase 11 スクリーンショット不要`
-- primary evidence は `outputs/phase-11/TASK-RALLY-002-manual-test-report.md` とする
+| シナリオ  | 確認方法                                                            | 期待結果                                              |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------------- |
+| S-1       | `workflowSnapshot.awaitingUserInput` をそのまま表示するテストを確認 | 通常フローで現在の質問が表示される                    |
+| S-2       | undo 後の single-select 表示テストを確認                            | `restoredPendingRequest` が優先される                 |
+| S-3       | requestId 更新後の rerender テストを確認                            | `restoredPendingRequest` がクリアされ通常フローへ戻る |
+| S-4       | `awaitingUserInput = null` の rerender テストを確認                 | クリアされず restored state が維持される              |
+| X-1 / X-2 | 境界値テストを確認                                                  | 不要な再クリアや副作用再実行が発生しない              |
 
 ## 統合テスト連携
 
-- Phase 4〜7 の regression check と重複しない semantic behavior を確認する
-- NON_VISUAL のため screenshot は必須にしない
+- Phase 5〜7 の成果物に加え、Phase 11 では `NON_VISUAL` 判定根拠と targeted scenario test の参照関係を固定する
+- screenshot / capture metadata は不要とし、その理由を Phase 12 `implementation-guide.md` に明記する
 
 ## 多角的チェック観点（AIが判断）
 
-- 素人思考: コードを知らない利用者目線で意味が破綻していないか
-- 因果関係分析: 復元表示から通常表示への切替が説明可能か
+- システム思考: 復元直後、snapshot 到着後、通常入力再開後の3状態が連続で破綻しないか
+- 水平思考: console と DOM の両方で問題が出ていないか
+- 素人思考: 実際の利用者視点で「続きから自然に始まる」体験になっているか
 
 ## サブタスク管理
 
-| 項目     | 内容               |
-| -------- | ------------------ |
-| semantic | 質問の表示順と切替 |
-| console  | エラー・warning    |
-| issues   | follow-up 記録     |
+- M-1: NON_VISUAL 判定
+- M-2: targeted scenario test の証跡整理
+- M-3: Phase 12 向け一次証跡整理
 
 ## 参照資料
 
-| 資料名          | パス                    | 用途     |
-| --------------- | ----------------------- | -------- |
-| Phase 10 成果物 | `outputs/phase-10/*.md` | 前提確認 |
+| 資料名           | パス                                                                                    | 用途                           |
+| ---------------- | --------------------------------------------------------------------------------------- | ------------------------------ |
+| 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                               | Phase 10 成果物                |
+| ゲート判定       | `outputs/phase-10/gate-decision.md`                                                     | 実施可否の確認                 |
+| シナリオテスト   | `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx` | S-1〜S-4 / X-1〜X-2 の一次証跡 |
+| 出荷準備チェック | `outputs/phase-10/release-readiness-checklist.md`                                       | Phase 10 成果物                |
 
 ## 成果物
 
-- `outputs/phase-11/manual-test-result.md`
-- `outputs/phase-11/manual-test-checklist.md`
-- `outputs/phase-11/TASK-RALLY-002-manual-test-report.md`
-- `outputs/phase-11/discovered-issues.md`
-- `outputs/phase-11/screenshot-plan.json`
+| 成果物                   | パス                                        | 説明                   |
+| ------------------------ | ------------------------------------------- | ---------------------- |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | シナリオごとの実行結果 |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | 実施前確認と観点一覧   |
+| 証跡インデックス         | `outputs/phase-11/evidence-index.md`        | テスト証跡の一覧       |
 
 ## 完了条件
 
-- [ ] 3シナリオを確認した
-- [ ] console を確認した
-- [ ] discovered-issues を整理した
+- [ ] `NON_VISUAL` 判定根拠を記録した
+- [ ] S-1〜S-4 / X-1〜X-2 の参照先を明記した
+- [ ] screenshot 不要理由を明記した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

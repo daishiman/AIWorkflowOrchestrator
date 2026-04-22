@@ -14,60 +14,88 @@
 
 ## 目的
 
-4条件・skill準拠・downstream 依存整合を同時に確認し、最終レビュー前の品質を固める。
+実装全体の品質を確認し、Phase 10（最終レビューゲート）に進める状態かを判断する。
 
 ## 実行タスク
 
-1. 4条件を再監査する
-2. validator / lint / targeted test / manual semantic check の結果を統合する
-3. RALLY-010 以降への前提不足がないか確認する
+1. コード品質、テスト品質、設計整合性を横断で確認する
+2. リスク台帳を更新し、残留リスクを明文化する
+3. Phase 10 のゲート判断材料を揃える
 
-## 実行手順
+## 品質チェックリスト
 
-- 矛盾なし: 上流設計書と現コードが説明可能か
-- 漏れなし: Phase 11/12/13 の canonical outputs が揃っているか
-- 整合性あり: index / artifacts / phase 本文が一致しているか
-- 依存関係整合: blocks / downstream chain が一致しているか
+### コード品質
 
-## 統合テスト連携
+- [ ] `pnpm --filter @repo/desktop typecheck` がエラーなしで通過する
+- [ ] `pnpm --filter @repo/desktop lint` がエラーなしで通過する（exhaustive-deps 含む）
+- [ ] `pendingRequest` 合成式の直上にコメントが存在する
+- [ ] `workflowSnapshot?.awaitingUserInput` が非 null のとき `restoredPendingRequest` がクリアされる useEffect が存在する
 
-- machine validation と human review の両方を記録する
-- Phase 12 close-out の前提不足はここで潰す
+### テスト品質
 
-## 多角的チェック観点（AIが判断）
+- [ ] シナリオテスト（正常系・異常系・境界値）が全通過している
+- [ ] 全既存テストが通過している
+- [ ] useEffect クリアロジックのカバレッジが100%である
 
-- システム思考: 単一 phase の修正が全体台帳を壊していないか
-- KJ法: 課題を構造違反 / close-out 不足 / downstream 依存に束ねる
+### 設計整合性
 
-## サブタスク管理
+- [ ] コメントが実際の動作と一致している
+- [ ] 後続タスク（RALLY-010〜013）の前提条件が満たされている
+- [ ] ConversationalInterview.tsx が Wave 1 の次の変更を受け入れられる状態になっている
 
-| 項目  | 内容                                 |
-| ----- | ------------------------------------ |
-| 4条件 | 矛盾 / 漏れ / 整合 / 依存            |
-| gates | validator / lint / targeted / manual |
+## リスク台帳
+
+| リスク               | 発生確率 | 影響度 | 対処状況                        |
+| -------------------- | -------- | ------ | ------------------------------- |
+| useEffect の循環     | 低       | 高     | Phase 3 レビューで確認済み      |
+| クリア条件の早期発動 | 低       | 中     | Phase 6 境界値テストで確認済み  |
+| exhaustive-deps 警告 | 低       | 低     | Phase 5 lint チェックで確認済み |
 
 ## 参照資料
 
-| 資料名            | パス                                 | 用途     |
-| ----------------- | ------------------------------------ | -------- |
-| Phase 5〜8 成果物 | `outputs/phase-5`〜`outputs/phase-8` | 品質統合 |
+| 資料名               | パス                                             | 用途           |
+| -------------------- | ------------------------------------------------ | -------------- |
+| 実装サマリー         | `outputs/phase-5/implementation-summary.md`      | Phase 5 成果物 |
+| 回帰テスト結果       | `outputs/phase-6/regression-test-result.md`      | Phase 6 成果物 |
+| カバレッジ確認結果   | `outputs/phase-7/coverage-check-result.md`       | Phase 7 成果物 |
+| リファクタリング計画 | `outputs/phase-8/refactoring-plan.md`            | Phase 8 成果物 |
+| 責務境界マップ       | `outputs/phase-8/responsibility-boundary-map.md` | Phase 8 成果物 |
+
+## 統合テスト連携
+
+- Phase 5〜7 の検証結果を品質レポートへ集約し、重複した根拠を書かない
+- リスクが残る場合は Phase 10 で PASS 条件から除外せず明示する
+
+## 多角的チェック観点（AIが判断）
+
+- 批判的思考: テスト通過を品質保証と誤認していないか
+- 因果関係ループ: lint warning 回避が将来の理解負債を増やしていないか
+- KJ法: 発見事項を「仕様」「実装」「証跡」に束ねて整理できるか
+
+## サブタスク管理
+
+- Q-1: 品質チェック
+- Q-2: リスク更新
+- Q-3: Gate 入力整理
 
 ## 成果物
 
-- `outputs/phase-9/quality-report.md`
-- `outputs/phase-9/risk-register.md`
-- `outputs/phase-9/four-conditions-audit.md`
+| 成果物         | パス                                   | 説明                              |
+| -------------- | -------------------------------------- | --------------------------------- |
+| 品質レポート   | `outputs/phase-9/quality-report.md`    | 品質チェック結果のサマリー        |
+| リスク台帳     | `outputs/phase-9/risk-register.md`     | リスク評価と対処状況              |
+| 因果ループ監査 | `outputs/phase-9/causal-loop-check.md` | useEffect追加による連鎖影響の確認 |
 
 ## 完了条件
 
-- [ ] 4条件監査を完了した
-- [ ] quality gate を統合した
-- [ ] downstream 前提不足を除去した
+- [ ] 品質チェックリストを全項目確認した
+- [ ] リスク台帳を更新した
+- [ ] 成果物テーブル記載のファイルを全件生成した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 実行タスク 1〜3 完了
-- [ ] 成果物を全件定義
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 成果物テーブル記載のファイルを全件生成
 
 ## 次のPhase
 

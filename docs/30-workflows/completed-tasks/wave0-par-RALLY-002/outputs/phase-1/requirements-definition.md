@@ -1,45 +1,52 @@
-# Phase 1 要件定義書
+# 要件定義書
 
 ## タスク概要
 
-| 項目                | 値                                                                       |
-| ------------------- | ------------------------------------------------------------------------ |
-| タスクID            | TASK-RALLY-002                                                           |
-| implementation_mode | verify_existing                                                          |
-| タスク種別          | NON_VISUAL                                                               |
-| 対象ファイル        | `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx` |
+**タスクID**: TASK-RALLY-002  
+**機能名**: restoredPendingRequest合成ルール明確化  
+**対象ファイル**: `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
 
-## 要件
+## 問題の特定
 
-### 主要件
+### 問題1: pendingRequest合成式にコメントなし
 
-`restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null` の合成式に対して、以下の意味を仕様として固定する。
+```typescript
+// ← コメントなし
+const pendingRequest =
+  restoredPendingRequest ?? workflowSnapshot?.awaitingUserInput ?? null;
+```
 
-1. **優先ルール**: `restoredPendingRequest` はセッション復元時のみ非 null になる。通常フローでは `workflowSnapshot?.awaitingUserInput` を使用する。
-2. **クリア条件1**: `workflowSnapshot?.awaitingUserInput?.requestId` が変化した場合（新しい質問が届いた場合）に `restoredPendingRequest` を null にクリアし、通常フローに戻る。
-3. **クリア条件2**: `submitAnswer` 完了後に `restoredPendingRequest` を null にクリアする。
-4. **復元条件**: `handleUndo` 実行時に前回の `request` を `setRestoredPendingRequest` で復元する。
+`restoredPendingRequest` を `??` で優先している理由が不明確。コードを読んだ開発者が「なぜ restoredPendingRequest が優先されるのか」「いつ null になるのか」を理解できない。
 
-### 非目標
+### 問題2: クリアuseEffectにコメントなし
 
-- `SkillLifecyclePanel.tsx` の変更（RALLY-001, RALLY-005〜008 の責務）
-- IPC 契約変更（RALLY-003, RALLY-005 の責務）
-- UX 追加（RALLY-010〜013 の責務）
-- ロジックの変更（既存実装は正しい）
+```typescript
+useEffect(() => {
+  if (workflowSnapshot?.awaitingUserInput) {
+    setRestoredPendingRequest(null);
+  }
+}, [workflowSnapshot?.awaitingUserInput?.requestId]);
+```
 
-## 変更スコープ
+このuseEffectの存在意義・依存配列の選択理由（なぜ `?.requestId` か）が説明されていない。
 
-| 変更種別     | 対象                                                      | 内容                                              |
-| ------------ | --------------------------------------------------------- | ------------------------------------------------- |
-| コメント追加 | `ConversationalInterview.tsx` L44 上                      | `restoredPendingRequest` 優先ルールの説明コメント |
-| コメント追加 | `ConversationalInterview.tsx` L55 上                      | clear useEffect の意図説明コメント                |
-| 新規テスト   | `ConversationalInterview.restoredPendingRequest.test.tsx` | targeted regression test                          |
-| 変更なし     | ロジック全般                                              | 既存実装は仕様に合致している                      |
+## 変更方針
 
-## downstream への handoff 条件
+**最小変更原則**: ロジック変更は不要。コメント追加のみで受け入れ基準を達成できる。
 
-RALLY-002 完了後、RALLY-010 以降は以下を前提として実装できる。
+### 変更内容
 
-- `pendingRequest` は「復元された質問 OR 通常の質問 OR null」を返す
-- 復元された質問は `workflowSnapshot?.awaitingUserInput` の requestId が変化した時点で自動的にクリアされる
-- この前提が仕様書（コメント）に明記されている
+1. `pendingRequest` 合成式の直上にコメントを追加する（AC-1達成）
+2. `restoredPendingRequest` クリアuseEffectにコメントを追加する（AC-3達成）
+
+### 変更対象
+
+| ファイル                                                                 | 変更種別              |
+| ------------------------------------------------------------------------ | --------------------- |
+| `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx` | コメント追加（2箇所） |
+
+## 背景: restoredPendingRequest の設計意図
+
+`restoredPendingRequest` は undo操作によってセットされる state。ユーザーが回答を取り消した際に「前の質問」を即時表示するために使われる。サーバーから新しい `workflowSnapshot` が届くまでの間、この state が `pendingRequest` の源泉になる。
+
+サーバー側が新しい `awaitingUserInput` を送ってきた時点で `restoredPendingRequest` は役目を終え、null にクリアされる。この切替タイミングを実装しているのが L55-59 の useEffect。

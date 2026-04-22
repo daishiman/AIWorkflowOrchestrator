@@ -1,10 +1,17 @@
-# Unassigned Task Detection
+# Phase 12 成果物: 未タスク検出レポート
 
-## 結果
+## タスクID: TASK-RALLY-002
 
-0件
+## 判定
+
+新規未タスク: `0件`
 
 ## 理由
 
-- current wave で解消すべき task 固有 close-out 漏れは全て同一 wave 内で補完した
-- validator false negative 疑いは task 固有変更ではなく wider governance 論点のため、新規 unassigned task は起こさない
+- 実装契約の不足は今回waveで close-out できた
+- screenshot 要否の不整合も `NON_VISUAL` 再分類で解消した
+- 後続の UI 強化は既存の RALLY-010〜013 が担当しており、新規 formalize は不要
+
+## 備考
+
+- ローカル実行環境の esbuild mismatch は task 追加より環境整備の問題として扱う

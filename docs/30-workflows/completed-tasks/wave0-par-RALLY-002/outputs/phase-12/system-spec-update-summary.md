@@ -1,30 +1,35 @@
-# System Spec Update Summary
+# Phase 12 成果物: システム仕様更新サマリー
 
-## Step 判定
+## タスクID: TASK-RALLY-002
 
-| Step     | 判定      | 内容                                                                                 |
-| -------- | --------- | ------------------------------------------------------------------------------------ |
-| Step 1-A | completed | task local workflow artifacts / evidence を補完                                      |
-| Step 1-B | completed | `artifacts.json` と `outputs/artifacts.json` の status / artifact 名を同期           |
-| Step 1-C | no-op     | RALLY-002 専用の official ledger 行は未作成、同 wave での新規 system spec 追加は不要 |
-| Step 1-D | no-op     | aiworkflow topic-map 再生成対象となる official spec 更新なし                         |
-| Step 2   | no-op     | public interface / API / architecture / state owner の変更なし                       |
+## Step 1-A 実施した同期
 
-## 判定理由
+- `docs/30-workflows/wave0-par-RALLY-002/index.md`
+- `docs/30-workflows/wave0-par-RALLY-002/artifacts.json`
+- `docs/30-workflows/wave0-par-RALLY-002/outputs/artifacts.json`
+- `docs/30-workflows/wave0-par-RALLY-002/phase-11-manual-test.md`
+- `docs/30-workflows/wave0-par-RALLY-002/phase-12-documentation.md`
+- `docs/30-workflows/skill-create-flow-gaps/index.md`
+- `docs/30-workflows/completed-tasks/00-task-spec-design-docs-2/rally-phase-1-analysis.md`
 
-- 本 task の code change は renderer 内 comment と targeted regression の追加に留まる
-- shared/public contract は不変
-- official aiworkflow system spec を増やすより、task 固有 workflow close-out を閉じる方が適切
+## Step 1-B 実施しなかった同期・理由
 
-## Phase 11 参照
+| 対象                                                                  | 理由                                                                                               |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `aiworkflow-requirements` 配下の interfaces / API / architecture 正本 | 本タスクは local UI contract の明文化とテスト補強であり、システム契約追加や API 変更を伴わないため |
+| repo root `outputs/phase-11/` / `outputs/phase-12/`                   | 他タスクの canonical 成果物であり、本タスクの正本ではないため                                      |
 
-UI/UX変更なしのため Phase 11 スクリーンショット不要
+## Step 1-C 関連タスク更新
 
-- `outputs/phase-11/TASK-RALLY-002-manual-test-report.md`
+- parent lane index `docs/30-workflows/skill-create-flow-gaps/index.md` で `RALLY-002 ✅完了` に更新
+- `rally-phase-1-analysis.md` の懸念点2に close-out 注記を追記
 
-## artifacts parity
+## Step 2 判定
 
-| ファイル                 | 判定 |
-| ------------------------ | ---- |
-| `artifacts.json`         | PASS |
-| `outputs/artifacts.json` | PASS |
+`N/A`
+
+理由:
+
+- 新規インターフェース追加なし
+- preload / IPC / backend / shared schema 変更なし
+- state ownership の意味論追加ではなく、既存 clear 契約の説明とテスト固定が中心のため

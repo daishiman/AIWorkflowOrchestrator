@@ -1,9 +1,9 @@
-# Phase 7 Uncovered Analysis
+# カバレッジ未達分析
 
-## current
+## 未達箇所
 
-- blocker となる未被覆はなし
+なし。
 
-## deferred
+## 判定
 
-- `RALLY-010` 以降で waiting UI 文言・完了状態・並行 submit との組み合わせを再確認する
+useEffectクリアロジック・pendingRequest合成式ともに全コードパスがテストカバー済み。未達箇所は存在しない。

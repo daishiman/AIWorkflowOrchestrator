@@ -1,6 +1,10 @@
-# Phase 9 Risk Register
+# Phase 9 成果物: リスク台帳
 
-| ID   | リスク                                     | 影響                     | 対応                                                   |
-| ---- | ------------------------------------------ | ------------------------ | ------------------------------------------------------ |
-| R-01 | `esbuild` binary drift が再発する          | targeted test が起動不能 | local binary を修正し、Phase 13 に再現手順を記録       |
-| R-02 | downstream が comment をロジック変更と誤認 | RALLY-010 以降で過剰修正 | implementation-guide と change-summary で no-op を明記 |
+## タスクID: TASK-RALLY-002
+
+| リスク                                                               | 発生確率 | 影響度 | 状態 | 対応                                               |
+| -------------------------------------------------------------------- | -------- | ------ | ---- | -------------------------------------------------- |
+| worktree 環境で esbuild binary mismatch が発生し Vitest が起動しない | 中       | 中     | 継続 | Phase 9 で既知リスクとして記録。環境整備後に再実行 |
+| `restoredPendingRequest` の契約が後続Waveで再度暗黙化される          | 中       | 高     | 低減 | コメント・シナリオテスト・Phase 12 handoff を整備  |
+| close-out 不足で RALLY-010 以降の前提が曖昧になる                    | 高       | 高     | 解消 | Phase 8〜12 成果物と status parity を更新          |
+| `typecheck` 結果が未確定のまま見なされる                             | 低       | 中     | 継続 | 未確認として明記し、PASS扱いしない                 |
