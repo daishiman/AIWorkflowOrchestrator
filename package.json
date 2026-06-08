@@ -48,7 +48,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.48.1",
-    "vitest": "^2.1.8"
+    "vitest": "^3.2.6"
   },
   "engines": {
     "node": ">=22.21.1 <23.0.0",
