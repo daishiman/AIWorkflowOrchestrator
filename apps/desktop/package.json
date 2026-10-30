@@ -116,7 +116,7 @@
     "electron": "^39.2.4",
     "electron-builder": "^26.0.0",
     "electron-vite": "^4.0.1",
-    "happy-dom": "^20.8.8",
+    "happy-dom": "^21.0.4",
     "jest-axe": "^10.0.0",
     "msw": "^2.12.7",
     "playwright": "^1.57.0",
